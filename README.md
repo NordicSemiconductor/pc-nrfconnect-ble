@@ -51,8 +51,27 @@ export npm_config_runtime=electron
 export npm_config_runtime_version=0.30.3
 export npm_config_arch=x64
 ```
+
 http://verysimple.com/2015/05/30/using-node_sqlite3-with-electron/
 https://github.com/mapbox/node-sqlite3/issues/357
+
+Snag:
+SerialPort seems to fail upon running the app when the npm_config variables are set.
+Solution:
+```
+unset npm_config_runtime
+unset npm_config_runtime_version
+unset npm_config_arch # It is probably just this variable that causes problems
+
+npm install
+
+export npm_config_runtime=electron
+export npm_config_runtime_version=0.30.3
+export npm_config_arch=x64
+
+npm install
+```
+The last round of installation is to successfully build the javascript driver bindings which also seem to need these variables.
 
 # Run the Yggdrasil application
 ```
