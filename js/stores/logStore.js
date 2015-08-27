@@ -65,12 +65,15 @@ var logStore = reflux.createStore({
 
         var self = this;
 
-        fs.unlinkSync(db_filename);
+        try {
+            fs.unlinkSync(db_filename);
+        } catch(err) {
+            console.log(`Error removing file ${db_filename}. Error is ${err}`);
+        }
         db = new sqlite3.Database(db_filename);
 
         db.serialize(function() {
             db.run("CREATE TABLE IF NOT EXISTS log_entries(id INTEGER PRIMARY KEY, time TEXT, level INTEGER, logger TEXT, data TEXT)");
-            // db.run("CREATE TABLE IF NOT EXISTS counters(key TEXT PRIMARY KEY, count INTEGER");
             db.run("CREATE INDEX IF NOT EXISTS log_entries_time on log_entries(time)");
             db.run("CREATE INDEX IF NOT EXISTS log_entries_id on log_entries(id)");
             db.run("CREATE INDEX IF NOT EXISTS log_entries_level on log_entries(level)");
