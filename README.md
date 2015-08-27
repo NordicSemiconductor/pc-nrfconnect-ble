@@ -37,11 +37,20 @@ npm install
 
 ## OS X specific procedure
 For OS X:
+
+Let CMake know where the ble driver is:
+```
+export PC_BLE_DRIVER_DIR=/Users/torleifs/customers/nordic/build/release/
+```
+
+Handle sqlite build issues:
+
 Use 'export' instead of 'set', i.e:
+```
 export npm_config_runtime=electron
 export npm_config_runtime_version=0.30.3
-export npm_config_arch=ia32
-
+export npm_config_arch=x64
+```
 http://verysimple.com/2015/05/30/using-node_sqlite3-with-electron/
 https://github.com/mapbox/node-sqlite3/issues/357
 
