@@ -103,7 +103,7 @@ var MainView = React.createClass({
     DiscoveryActions.connectToDevice({'address': 'C0:D4:94:D7:39:22', 'type': 'BLE_GAP_ADDR_TYPE_RANDOM_STATIC'});
   },
   render: function(){
-    var self = this, targets = this.state.discoveredBleTargets;
+    var self = this, targets = this.state.discoveredBleTargets.concat({payload: "22", text: "/dev/tty.usbmodem1d111"});
     var discoveryButtonBackgroundColor;
     var discoveryButtonStyle = {
         color: 'white', margin: '0px 10px'

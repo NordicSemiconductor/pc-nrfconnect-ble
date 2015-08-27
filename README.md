@@ -56,7 +56,7 @@ http://verysimple.com/2015/05/30/using-node_sqlite3-with-electron/
 https://github.com/mapbox/node-sqlite3/issues/357
 
 Snag:
-SerialPort seems to fail upon running the app when the npm_config variables are set.
+serialport-electron seems to fail upon running the app when the npm_config variables are set.
 Solution:
 ```
 unset npm_config_runtime

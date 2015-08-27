@@ -11,10 +11,12 @@ var connectionActions = require('./actions/connectionActions');
 var DiscoveredDevice = require('./discoveredDevicesContainer.jsx').DiscoveredDevice;
 var mui = require('material-ui');
 var RaisedButton = mui.RaisedButton;
-
+var Card = mui.Card;
+var CardTitle= mui.CardTitle;
+var _ = require('underscore');
 var BleNodeContainer = React.createClass({
 
-    mixins: [Reflux.listenTo(nodeStore, "onGraphChanged")],
+    mixins: [Reflux.listenTo(nodeStore, "onGraphChanged"), Reflux.connect(driverStore)],
     componentWillMount: function() {
         this.nodeIdToConnectionMap = {};
     },
@@ -41,7 +43,7 @@ var BleNodeContainer = React.createClass({
             };
             var connection = jsPlumb.connect(connectionParameters);
             this.nodeIdToConnectionMap[change.nodeId] = connection;
-            this.setState({graph: newGraph});
+            //this.setState({graph: newGraph});
         }
         
 
@@ -86,12 +88,8 @@ var BleNodeContainer = React.createClass({
         var plumbNodes = [];
         
         for (var i = 0; i < this.state.graph.length; i++) {
-            if (this.state.graph[i].id === 'central') {
-                plumbNodes.push(<BleCentral key={i} nodeId={this.state.graph[i].id} centralAttributes = {this.state.centralAttributes}/>);
-            } else {
-                var connection = this.nodeIdToConnectionMap[this.state.graph[i].id];
-                plumbNodes.push(<BleNode key={i} nodeId={this.state.graph[i].id} device={this.state.graph[i].device} connection={connection}/>);
-            }
+            var connection = this.nodeIdToConnectionMap[this.state.graph[i].id];
+            plumbNodes.push(<BleNode key={i} nodeId={this.state.graph[i].id} device={this.state.graph[i].device} connection={connection} centralName = {this.state.centralName} centralAddress = {this.state.centralAddress}/>);
         }
 
         return (
@@ -111,12 +109,7 @@ var BleCentral = React.createClass({
         });
     },
     render: function(){
-        return (
-            <div key={this.props.nodeId} id={this.props.nodeId} className="item node" style={{position: 'absolute', width: '150px', height: '200px'}}>
-                <div>{this.state.centralName}</div>
-                <div>{this.state.centralAddress.address}</div>
-            </div>
-        );
+        
     }
 });
 
@@ -145,37 +138,39 @@ var BleNode = React.createClass({
         connectionActions.disconnectFromDevice(this.props.device.peer_addr.address);
     },
     render: function() {
-        var self = this;
-        var connectionViewStyle = {
-            display: 'none',
-            width: '150px',
-            height: '200px',
-            position: 'absolute',
-            left: '150px',
-            boxShadow: "0px 0px 4px 0px #777A89",
-        };
-        if (this.props.connection && !this.didAddConnectionEventHandler) {
-            this.props.connection.bind('click', this._onToggleConnectionView);
-            this.didAddConnectionEventHandler = true;
-            console.log('added event handler');
-        }
-
-        connectionViewStyle.display = this.state.isShowingConnectionSlideIn ? 'inline-block': 'none';
-
-        return (
-      <div key={this.props.nodeId} id={this.props.nodeId} className="item node" style={{position: 'absolute', width: '150px', height: '200px'}}>
-        <div style={connectionViewStyle}>
-           <RaisedButton onClick={this._disconnect} label="Disconnect..."/>
-        </div>
-         <DiscoveredDevice
-                                standalone={true}
-                                star={false}
-                                bonded={false}
-                                device= {this.props.device}
-                            />
         
-      </div>
-      );
+            var self = this;
+            var connectionViewStyle = {
+                display: 'none',
+                width: '150px',
+                height: '200px',
+                position: 'absolute',
+                left: '150px',
+                boxShadow: "0px 0px 4px 0px #777A89",
+            };
+            if (this.props.connection && !this.didAddConnectionEventHandler) {
+                this.props.connection.bind('click', this._onToggleConnectionView);
+                this.didAddConnectionEventHandler = true;
+                console.log('added event handler');
+            }
+
+            connectionViewStyle.display = this.state.isShowingConnectionSlideIn ? 'inline-block': 'none';
+
+            return (
+          <div key={this.props.nodeId} id={this.props.nodeId} className="item node" style={{position: 'absolute', width: '150px', height: '200px'}}>
+            <div style={connectionViewStyle}>
+               <RaisedButton onClick={this._disconnect} label="Disconnect..."/>
+            </div>
+             <DiscoveredDevice
+                                    standalone={true}
+                                    star={false}
+                                    bonded={false}
+                                    device= {this.props.device}
+                                />
+            
+          </div>
+          );
+        
   }
 });
 
