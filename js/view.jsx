@@ -79,7 +79,7 @@ var MainView = React.createClass({
   _onBleTargetChange: function(evt, index, obj) {
     //console.log(evt + " " + index + " " + JSON.stringify(obj));
     this.state.chosen_port = obj.text;
-    logActions.log('ui',' INFO', "Port: " + this.state.chosen_port);
+    logActions.log('ui',' INFO', `Opening serial port: ${this.state.chosen_port}`);
     this._onOpen();
   },
   _onOpen: function() {

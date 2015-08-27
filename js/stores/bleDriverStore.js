@@ -45,12 +45,12 @@ var bleDriverStore = reflux.createStore({
         var self = this;
         bleDriver.open(port, connectionParameters, function(err) {
             if (err) {
-                logActions.log('ble_driver', 'INFO', 'Error occured opening serial port: ' + err);
+                logActions.log('ble_driver', 'ERROR', `Error occured opening serial port. ${err}`);
                 self.state.connectedToDriver = false;
             }
             else
             {
-                logActions.log('ble_driver', 'INFO', 'Finished opening UART on port ' + port);
+                logActions.log('ble_driver', 'INFO', `Finished opening serial port ${port}.`);
                 self.state.connectedToDriver = true;
                 bleDriver.gap_get_address(function(gapAddress){
                     self.state.centralAddress = gapAddress;
