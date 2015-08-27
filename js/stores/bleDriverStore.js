@@ -1,13 +1,14 @@
 'use strict';
 
 import reflux from 'reflux';
+
+import bleDriver from 'pc-ble-driver-js';
+
 import bleDriverActions from '../actions/bleDriverActions';
 import discoveryActions from '../actions/discoveryActions';
 import connectionActions from '../actions/connectionActions';
 import deviceActions from '../actions/deviceActions';
 import logActions from '../actions/logActions';
-
-import bleDriver from 'pc-ble-driver-js';
 
 import dummyAttributeData from '../utils/dummyAttributeData';
 
@@ -38,7 +39,6 @@ var bleDriverStore = reflux.createStore({
             'eventInterval': 200,
             'logCallback': function(severity, message) {
                 logActions.log('ble_driver', 'INFO', message);
-                // console.log("Severity: " + severity + ", message: " + message);
             },
             eventCallback: this._mainEventListener.bind(this)
         };
@@ -78,7 +78,7 @@ var bleDriverStore = reflux.createStore({
                 logActions.log('ble_driver', 'ERROR', err);
             } else {
                 logActions.log('ble_driver', 'DEBUG',
-                    'started getting all characteristics for connection: ' + connectionHandle);
+                    `Started getting all characteristics for connection: ${connectionHandle}`);
             }
 
         });
@@ -89,7 +89,7 @@ var bleDriverStore = reflux.createStore({
         this.connectionHandleToDescriptorsMap[connectionHandle].currentIndex = 0;
         bleDriver.gattc_read(connectionHandle, firstAttributeHandle, 0, function(err){
             if (err) {
-                logActions.log('ble_driver', 'ERROR', err);
+                logActions.log('ble_driver', 'ERROR', `Error reading all attributes: ${err}`);
             }
         });
     },
@@ -109,7 +109,7 @@ var bleDriverStore = reflux.createStore({
                             logActions.log('ble_driver', 'INFO', 'Scan timed out');
                             break;
                         default:
-                            logActions.log('ble_driver', 'INFO', 'Something timed out:' + event.src);
+                            logActions.log('ble_driver', 'INFO', `Something timed out: ${event.src}`);
                         }
                     break;
                 case bleDriver.BLE_GAP_EVT_CONNECTED:
@@ -168,8 +168,6 @@ var bleDriverStore = reflux.createStore({
                     console.log('Unsupported event: ' + event.id + '-' + event.name);
             }
         }
-
-        //logActions.add('ble_driver.event', 'INFO', eventArray);
     }
 });
 

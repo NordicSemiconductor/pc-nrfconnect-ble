@@ -1,11 +1,14 @@
 'use strict';
-var reflux = require('reflux');
-var connectionActions = require('../actions/connectionActions');
-var graphActions = require('../actions/bleGraphActions');
-var discoveryActions = require('../actions/discoveryActions');
-var driverActions = require('../actions/bleDriverActions');
-var _ = require('underscore');
-var bleDriver = require('pc-ble-driver-js');
+
+import reflux from 'reflux';
+import _ from 'underscore';
+
+import bleDriver from 'pc-ble-driver-js';
+
+import connectionActions from'../actions/connectionActions';
+import graphActions from '../actions/bleGraphActions';
+import discoveryActions from '../actions/discoveryActions';
+import driverActions from '../actions/bleDriverActions';
 
 var connectionStore = reflux.createStore({
     listenables: [connectionActions],

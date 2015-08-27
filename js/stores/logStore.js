@@ -3,16 +3,16 @@
 // Evaluate different way to update data from stores
 // http://stackoverflow.com/questions/29048164/can-refluxjs-stores-indicate-which-property-has-changed-when-they-call-trigger
 
-var reflux = require('reflux');
-var logActions = require('../actions/logActions');
-var discoveryActions = require('../actions/discoveryActions');
+import fs from 'fs';
 
-var sqlite3 = require('sqlite3').verbose();
+import sqlite3 from'sqlite3';
+import reflux from 'reflux';
+
+import logActions from '../actions/logActions';
+import discoveryActions from '../actions/discoveryActions';
+
 var db = null;
-
 var db_filename = 'database.db';
-
-var fs = require('fs');
 
 var convert_level = function(level) {
     /**
@@ -104,7 +104,6 @@ var logStore = reflux.createStore({
             return;
         }
 
-        //console.log('Querying for elements with id > ' + self.state.last_log_entry_id);
         if(last_log_entry_id == newest_log_entry_id) return;
 
         var sql = "SELECT * FROM log_entries WHERE id > "
@@ -143,7 +142,6 @@ var logStore = reflux.createStore({
                     JSON.stringify({text: text}),
                     function(err) {
                         if(newest_log_entry_id < this.lastID) newest_log_entry_id = this.lastID;
-                        //console.log("on_log:" + this.lastID);
                     });
             });
         }
@@ -179,7 +177,6 @@ var logStore = reflux.createStore({
                     logger_name,
                     JSON.stringify(event), function(err) {
                         if(newest_log_entry_id < this.lastID) newest_log_entry_id = this.lastID;
-                        // console.log("on_add: " + this.lastID);
                     });
             }
         } else {

@@ -1,8 +1,9 @@
 'use strict';
 
-var reflux = require('reflux');
-var bleTargetActions = require('../actions/bleTargetActions');
-var serialPort = require('serialport-electron');
+import reflux from 'reflux';
+import serialPort from 'serialport-electron';
+
+import bleTargetActions from '../actions/bleTargetActions';
 
 var bleTargetStore = reflux.createStore({
     listenables: [bleTargetActions],

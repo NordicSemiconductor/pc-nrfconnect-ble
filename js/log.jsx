@@ -159,6 +159,7 @@ var LogContainer = React.createClass({
         LogActions.follow(follow);
     },
     componentDidUpdate: function() {
+/*
         if(this.state !== undefined
             && this.state.follow_state !== undefined
             && this.state.follow_state == true) {
@@ -167,7 +168,7 @@ var LogContainer = React.createClass({
             if(log_entries !== undefined) {
                 // TODO: add automatic scrolling here, I think...
             }
-        }
+        }*/
     },
     render: function() {
         return (

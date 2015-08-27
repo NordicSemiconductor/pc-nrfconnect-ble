@@ -1,8 +1,10 @@
 'use strict';
 
-var reflux = require('reflux');
-var bleGraphActions = require('../actions/bleGraphActions');
-var _ = require('underscore');
+import reflux from 'reflux';
+import _ from 'underscore';
+
+import bleGraphActions from '../actions/bleGraphActions';
+
 var bleNodeStore = reflux.createStore({
     listenables: [bleGraphActions],
     init: function(){
