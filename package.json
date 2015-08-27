@@ -1,13 +1,13 @@
 {
-  "name": "react-test",
-  "version": "1.0.0",
-  "description": "",
+  "name": "pc-yggdrasil",
+  "version": "0.0.51",
+  "description": "A natural first choice for BLE development.",
   "main": "index.js",
   "scripts": {
     "start": "electron ."
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Nordic Semiconductor ASA",
+  "license": "Proprietary",
   "devDependencies": {
     "asar": "^0.7.2",
     "electron-prebuilt": "0.30.3",
@@ -49,6 +49,8 @@
     "reflux": "^0.2.8",
     "serialport-electron": "1.7.4-electron-0.30.3",
     "sqlite3": "^3.0.10",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "util": "^0.10.3",
+    "winston": "^1.0.1"
   }
 }
