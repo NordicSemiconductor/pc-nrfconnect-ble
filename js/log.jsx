@@ -27,11 +27,10 @@ var logger_render = function(column, row) {
     return column;
 }
 
-var data_render = function(column, row) {
+var message_render = function(column, row) {
     if(column === undefined) return "";
 
-    var data = JSON.parse(column);
-
+    /* History: used previously to show different views for different data. To be removed.
     if(row.logger == 'ble_driver.event') {
         var short_local_name = 'n/a';
         var peer_address = null;
@@ -78,11 +77,12 @@ var data_render = function(column, row) {
                 </service-info>
             </div>
     } else {
-        return <div id="log-entry">{data.text}</div>;
-    }
+        */
+    return <div id="log-entry">{column}</div>;
 }
 
 var row_factory = function(row) {
+    /* History: used previously to show different views for different data. To be removed.
     if(row.data !== undefined) {
         if(row.data.logger !== undefined) {
             if(row.data.logger === 'ble_driver.event') {
@@ -90,6 +90,7 @@ var row_factory = function(row) {
             }
         }
     }
+    */
 }
 
 var level_render = function(entry) {
@@ -126,12 +127,10 @@ var row_style_render = function(data, props) {
     switch(data.level) {
         case 0:
         case 1:
-            style.background = '#FFFFFF';
-            break;
         case 2:
+        case 3:
             style.background = '#FFFFFF';
             break;
-        case 3:
         case 4:
         case 5:
             style.background = '#FF0000';
@@ -149,8 +148,7 @@ var columns = [
     { 'name': 'id', visible: false },
     { 'name': 'time', render: time_render, width: 210 },
     { 'name': 'level', render: level_render, width: 50, visible: false },
-    { 'name': 'logger', render: logger_render, visible: false },
-    { 'name': 'data', render: data_render, width: '100%' }
+    { 'name': 'message', render: message_render, width: '100%' }
 ];
 
 var LogContainer = React.createClass({

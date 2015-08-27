@@ -3,6 +3,7 @@
 import reflux from 'reflux';
 
 import bleDriver from 'pc-ble-driver-js';
+import logger from '../logging';
 
 import bleDriverActions from '../actions/bleDriverActions';
 import discoveryActions from '../actions/discoveryActions';
@@ -38,28 +39,29 @@ var bleDriverStore = reflux.createStore({
             'logLevel': 'fatal',
             'eventInterval': 200,
             'logCallback': function(severity, message) {
-                logActions.log('ble_driver', 'INFO', message);
+                // TODO: convert from the pc-ble-driver log levels to winston logger levels
+                logger.info(message);
             },
             eventCallback: this._mainEventListener.bind(this)
         };
         var self = this;
         bleDriver.open(port, connectionParameters, function(err) {
             if (err) {
-                logActions.log('ble_driver', 'ERROR', `Error occured opening serial port. ${err}`);
+                logger.error(`Error occured opening serial port. ${err}`);
                 self.state.connectedToDriver = false;
             }
             else
             {
-                logActions.log('ble_driver', 'INFO', `Finished opening serial port ${port}.`);
+                logger.info(`Finished opening serial port ${port}.`);
                 self.state.connectedToDriver = true;
                 bleDriver.gap_get_address(function(gapAddress){
                     self.state.centralAddress = gapAddress;
-                    logActions.log('ble_driver', 'INFO', 'Central BLE address is: ' + gapAddress.address);
+                    logger.info('Central BLE address is: ' + gapAddress.address);
                 });
 
                 bleDriver.gap_get_device_name(function(name){
                     self.state.centralName = name;
-                    logActions.log('ble_driver', 'INFO', 'Central name is: ' + name);
+                    logger.info('Central name is: ' + name);
                 });
             }
             self.trigger(self.state);
@@ -75,10 +77,9 @@ var bleDriverStore = reflux.createStore({
         bleDriver.gattc_descriptor_discover(connectionHandle, fullHandleRange, function(err){
             // This function will trigger sending of BLE_GATTC_EVT_DESC_DISC_RSP events from driver
             if (err) {
-                logActions.log('ble_driver', 'ERROR', err);
+                logger.error(err);
             } else {
-                logActions.log('ble_driver', 'DEBUG',
-                    `Started getting all characteristics for connection: ${connectionHandle}`);
+                logger.debug(`Started getting all characteristics for connection: ${connectionHandle}`);
             }
 
         });
@@ -89,7 +90,7 @@ var bleDriverStore = reflux.createStore({
         this.connectionHandleToDescriptorsMap[connectionHandle].currentIndex = 0;
         bleDriver.gattc_read(connectionHandle, firstAttributeHandle, 0, function(err){
             if (err) {
-                logActions.log('ble_driver', 'ERROR', `Error reading all attributes: ${err}`);
+                logger.error(`Error reading all attributes: ${err}`);
             }
         });
     },
@@ -97,6 +98,8 @@ var bleDriverStore = reflux.createStore({
         for (var i = 0; i < eventArray.length; i++) {
             this.eventCount++;
             var event = eventArray[i];
+
+            logger.debug(event.name, event);
 
             switch(event.id){
                 case bleDriver.BLE_GAP_EVT_ADV_REPORT:
@@ -106,15 +109,15 @@ var bleDriverStore = reflux.createStore({
                     switch(event.src) {
                         case bleDriver.BLE_GAP_TIMEOUT_SRC_SCAN:
                             discoveryActions.scanTimedOut(event);
-                            logActions.log('ble_driver', 'INFO', 'Scan timed out');
+                            logger.info('Scan timed out');
                             break;
                         default:
-                            logActions.log('ble_driver', 'INFO', `Something timed out: ${event.src}`);
+                            logger.info(`Something timed out: ${event.src}`);
                         }
                     break;
                 case bleDriver.BLE_GAP_EVT_CONNECTED:
                     connectionActions.deviceConnected(event);
-                    logActions.log('ble_driver', 'INFO', 'Device connected');
+                    logger.info('Device connected');
                     break;
                 case bleDriver.BLE_GAP_EVT_DISCONNECTED:
                 if (this.descriptorDiscoveryInProgress) {
@@ -125,8 +128,7 @@ var bleDriverStore = reflux.createStore({
                     break;
                 case bleDriver.BLE_GATTC_EVT_DESC_DISC_RSP:
                     if (event.count === 0) {
-                        logActions.log('ble_driver', 'INFO', JSON.stringify(this.connectionHandleToDescriptorsMap));
-                        console.log(JSON.stringify(this.connectionHandleToDescriptorsMap));
+                        logger.debug(JSON.stringify(this.connectionHandleToDescriptorsMap));
                         delete this.connectionHandleToDescriptorsMap[event.connecionHandle];
                         this.onReadAllAttributes(event.conn_handle);
                     } else {
@@ -139,7 +141,7 @@ var bleDriverStore = reflux.createStore({
                         };
                         bleDriver.gattc_descriptor_discover(event.conn_handle, handleRange, function(err){
                             if (err) {
-                                logActions.log('ble_driver', 'ERROR', err);
+                                logger.error(err);
                             }
                         });
                     }
@@ -150,22 +152,19 @@ var bleDriverStore = reflux.createStore({
                     descriptors[descriptors.currentIndex].data = event.data;
                     descriptors.currentIndex = descriptors.currentIndex + 1;
                     if (descriptors.currentIndex >= descriptors.length) {
-                        logActions.log('ble_driver', 'INFO', JSON.stringify(descriptors));
-                        console.log(JSON.stringify(descriptors));
+                        logger.debug(JSON.stringify(descriptors));
                         deviceActions.deviceAttributesUpdated(dummyAttributeData);
                     } else {
                         bleDriver.gattc_read(event.conn_handle, descriptors[descriptors.currentIndex].handle, 0, function(err){
                             if (err) {
-                                logActions.log('ble_driver', 'ERROR', err);
-                                console.log(err);
+                                logger.error(err);
                             }
                         });
                     }
 
                     break;
                 default:
-                    logActions.log('ble_driver', 'INFO', 'Unsupported event received from SoftDevice: ' + event.id + '-' + event.name);
-                    console.log('Unsupported event: ' + event.id + '-' + event.name);
+                    logger.info(`Unsupported event received from SoftDevice: ${event.id} - ${event.name}`);
             }
         }
     }

@@ -1,7 +1,27 @@
 'use strict';
 
-var React = require('react');
-var mui = require('material-ui');
+import React from 'react';
+import mui from 'material-ui';
+
+import Reflux from 'reflux';
+import BleNode from './node.jsx';
+import DeviceDetails from './DeviceDetails.jsx';
+
+import Log from './log.jsx';
+import logger from './logging';
+
+var DiscoveredDevicesContainer = require('./discoveredDevicesContainer.jsx').DiscoveredDevicesContainer;
+import DiscoveryActions from './actions/discoveryActions';
+
+import driverActions from './actions/bleDriverActions';
+import bleTargetStore from './stores/bleTargetStore';
+import discoveryStore from './stores/discoveryStore';
+import logStore from './stores/logStore';
+
+import BleTargetActions from './actions/bleTargetActions';
+import logActions from './actions/logActions';
+import DiscoveryButton from './discoveryButton.jsx';
+import DiscoveryView from './discoveryView.jsx';
 
 var Tabs = mui.Tabs,
   Tab = mui.Tab,
@@ -19,28 +39,8 @@ var Tabs = mui.Tabs,
 
 var ThemeManager = new mui.Styles.ThemeManager();
 
-var Reflux = require('reflux');
-
-var BleNode = require('./node.jsx');
-var DeviceDetails = require('./DeviceDetails.jsx');
-
-var Log = require('./log.jsx');
-
-var DiscoveredDevicesContainer = require('./discoveredDevicesContainer.jsx').DiscoveredDevicesContainer;
-var DiscoveryActions = require('./actions/discoveryActions');
-
-var driverActions = require('./actions/bleDriverActions');
-var bleTargetStore = require('./stores/bleTargetStore');
-var discoveryStore = require('./stores/discoveryStore');
-var logStore = require('./stores/logStore');
-
-var BleTargetActions = require('./actions/bleTargetActions');
-var logActions = require('./actions/logActions');
-var DiscoveryButton = require('./discoveryButton.jsx');
-var DiscoveryView = require('./discoveryView.jsx');
 let { Typography } = Styles;
 var ColorManipulator = mui.Utils.ColorManipulator;
-
 
 setTimeout(function() {
   BleTargetActions.startBleTargetDetect();
@@ -73,21 +73,19 @@ var MainView = React.createClass({
     });
   },
   _onStartScanClick: function() {
-    logActions.log('ui', 'INFO', "StartScanClick!");
-
+    logger.debug("StartScanClick!");
   },
   _onBleTargetChange: function(evt, index, obj) {
-    //console.log(evt + " " + index + " " + JSON.stringify(obj));
     this.state.chosen_port = obj.text;
-    logActions.log('ui',' INFO', `Opening serial port: ${this.state.chosen_port}`);
+    logger.info(`Opening serial port: ${this.state.chosen_port}`);
     this._onOpen();
   },
   _onOpen: function() {
-    console.log(this.state.chosen_port);
+
+    logger.debug(this.state.chosen_port);
 
     driverActions.connectToDriver(this.state.chosen_port);
     logActions.open();
-
   },
   _onShowDiscoveryView: function() {
     if (this.state.isShowingDiscoverySlideIn) {
@@ -99,7 +97,7 @@ var MainView = React.createClass({
     }
   },
   _onConnect: function() {
-    logActions.log('ui', 'INFO', "Connecting");
+    logger.info("Connecting");
     DiscoveryActions.connectToDevice({'address': 'C0:D4:94:D7:39:22', 'type': 'BLE_GAP_ADDR_TYPE_RANDOM_STATIC'});
   },
   render: function(){
@@ -109,7 +107,6 @@ var MainView = React.createClass({
         color: 'white', margin: '0px 10px'
     };
 
-    //console.log("scan_in_progress: " + self.state.discoveryStore.scan_in_progress);
     return (
       <div>
         <Toolbar>

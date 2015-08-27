@@ -8,50 +8,14 @@ import fs from 'fs';
 import sqlite3 from'sqlite3';
 import reflux from 'reflux';
 
+import logger from '../logging';
+
 import logActions from '../actions/logActions';
 import discoveryActions from '../actions/discoveryActions';
 
 var db = null;
-var db_filename = 'database.db';
-
-var convert_level = function(level) {
-    /**
-    * @brief Adds log entries to database and datastore
-    * @details Adds log entries to database and datastore
-    *
-    * @param entries An array with log entries
-    * @param level Log level used for array of entries. May be one of the following:
-    *
-    *    TRACE   = 0
-    *    DEBUG   = 1
-    *    INFO    = 2
-    *    WARNING = 3
-    *    ERROR   = 4
-    *    FATAL   = 5
-    *
-    * @return undefined
-    */
-
-    // Convert log level
-    if(level === 'TRACE') {
-        return 0;
-    } else if(level === 'DEBUG') {
-        return 1;
-    } else if(level === 'INFO') {
-        return 2;
-    } else if(level === 'WARNING') {
-        return 3;
-    } else if(level === 'ERROR') {
-        return 4;
-    } else if(level === 'FATAL') {
-        return 5;
-    } else {
-        return 2; // If level is not known, set it to INFO
-    }
-}
 
 var last_log_entry_id = 0;
-var newest_log_entry_id = 0;
 
 var logStore = reflux.createStore({
     listenables: [logActions, discoveryActions],
@@ -59,31 +23,12 @@ var logStore = reflux.createStore({
         this.state = {
             logEntries: [],
             follow_state: false,
-            db_loaded: false,
-            //last_log_entry_id: 0
         }
 
         var self = this;
 
-        try {
-            fs.unlinkSync(db_filename);
-        } catch(err) {
-            console.log(`Error removing file ${db_filename}. Error is ${err}`);
-        }
-        db = new sqlite3.Database(db_filename);
-
-        db.serialize(function() {
-            db.run("CREATE TABLE IF NOT EXISTS log_entries(id INTEGER PRIMARY KEY, time TEXT, level INTEGER, logger TEXT, data TEXT)");
-            db.run("CREATE INDEX IF NOT EXISTS log_entries_time on log_entries(time)");
-            db.run("CREATE INDEX IF NOT EXISTS log_entries_id on log_entries(id)");
-            db.run("CREATE INDEX IF NOT EXISTS log_entries_level on log_entries(level)");
-            self.state.db_loaded = true;
-        });
-
         setInterval(function() {
-            if(last_log_entry_id < newest_log_entry_id) {
-                self.triggerUpdate(self);
-            }
+            self.triggerUpdate(self);
         }, 400);
     },
     getInitialState: function() {
@@ -99,54 +44,31 @@ var logStore = reflux.createStore({
         self.state.follow_state = follow;
     },
     triggerUpdate: function(self) {
-        if(self.state.db_loaded == false) {
-            console.log("Database not open, not able to process queries.");
-            return;
-        }
-
-        if(last_log_entry_id == newest_log_entry_id) return;
-
-        var sql = "SELECT * FROM log_entries WHERE id > "
-        + last_log_entry_id + " AND id <= " + newest_log_entry_id
-        + " ORDER BY id ASC";
-
-        db.each(sql,
-            function(err, row) {
-                if(err) {
-                    console.log("Error fetching log entry: " + err);
-                    return;
-                }
-
-                if(row == null) return;
-
-                self.state.logEntries.push(row);
-
-                last_log_entry_id = row.id;
-            }, function(err, row_count) {
-                if(row_count != 0) self.trigger(self.state);
-                last_log_entry_id = newest_log_entry_id;
+        // TODO: look into optimizing the transport of entries by sending
+        // TODO: the self.state.logEntries array as option to the query
+        // TODO: and let the query implementation add directory to self.state.logEntries.
+        logger.query({start: last_log_entry_id + 1}, function(err, results) {
+            if(err) {
+                throw err;
             }
-        );
+
+            if(results.db === undefined || results.db.length == 0) return;
+
+            for(var i = 0; i < results.db.length; i++) {
+                self.state.logEntries.push(results.db[i]);
+            }
+
+            // Fetch the latest id received
+            last_log_entry_id = results.db[results.db.length-1].id;
+            self.trigger(self.state);
+        });
     },
     onLog: function(logger_name, level, text) {
-        var self = this;
-        var level = convert_level(level);
-
-        if(this.state.db_loaded) {
-            db.serialize(function() {
-                var stmt = db.prepare("INSERT INTO log_entries(time, level, logger, data) VALUES(?,?,?,?)");
-                stmt.run(
-                    new Date().toISOString(),
-                    level,
-                    logger_name,
-                    JSON.stringify({text: text}),
-                    function(err) {
-                        if(newest_log_entry_id < this.lastID) newest_log_entry_id = this.lastID;
-                    });
-            });
-        }
+        console.log("REMOVE ME!");
     },
     onAdd: function(logger_name, level, entries) {
+        console.log("REMOVE ME!");
+        /*
         var self = this;
 
         var level = convert_level(level);
@@ -181,7 +103,7 @@ var logStore = reflux.createStore({
             }
         } else {
             console.log("Database not up an running, not able to store log entries to DB");
-        }
+        } */
     }
 });
 

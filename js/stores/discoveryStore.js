@@ -2,11 +2,11 @@
 
 import reflux from 'reflux';
 
+import logger from '../logging';
 import discoveryActions from '../actions/discoveryActions';
 import logActions from '../actions/logActions';
 
 import bleDriver from 'pc-ble-driver-js';
-
 
 var discoveryStore = reflux.createStore({
     listenables: [discoveryActions],
@@ -22,7 +22,7 @@ var discoveryStore = reflux.createStore({
     },
     onStartScan: function() {
         var self = this;
-        logActions.log('ui', 'INFO', "Starting scan...");
+        logger.info('Starting scan...');
 
         var scanParameters = {
             active: true,
@@ -33,7 +33,7 @@ var discoveryStore = reflux.createStore({
 
         bleDriver.start_scan(scanParameters, function(err) {
             if (err) {
-                logActions.log('ui', 'ERROR', 'Error occured when starting scan');
+                logger.error('Error occured when starting scan');
                 return;
             }
             self.state.scanInProgress = true;
@@ -42,12 +42,12 @@ var discoveryStore = reflux.createStore({
     },
     onStopScan: function() {
         var self = this;
-        logActions.log('ui', 'INFO', "Stopping scan.");
+        logger.info('Stopping scan.');
         self.state.scanInProgress = false;
 
         bleDriver.stop_scan(function(err) {
             if (err) {
-                logActions.log('ui', 'ERROR', `Error occurred when stopping scan: ${err}`);
+                logger.error(`Error occurred when stopping scan: ${err}`);
             } else {
                 self.trigger(self.state);
             }
