@@ -48,29 +48,15 @@ var dummyData = [
     }
 ];
 
-var deviceDetailsStyle = {
-    boxShadow: "0px 0px 4px 0px #777A89",
-    width: '300px',
-    position: 'absolute',
-    left: '40px',
-    top: '20px'
-};
-
-var listItemStyle = {
-    border: "grey solid thin",
-    paddingLeft: "0px"
-};
-
 var ServiceItem = React.createClass({
     getInitialState: function() {
         return {
             expanded: true // See UGLY HACK below in componentDidMount
         };
-
     },
     componentWillMount: function() {
-        this.expandPubsubToken = pubsub.subscribe('expanded', this._expanded.bind(this));
-        this.contractPubsubToken = pubsub.subscribe('contracted', this._expanded.bind(this));
+        this.expandPubsubToken = pubsub.subscribe('expanded', this._heightChanged);
+        this.contractPubsubToken = pubsub.subscribe('contracted', this._heightChanged);
     },
     componentWillUnMount: function() {
         pubsub.unsubscripe(this.expandPubsubToken);
@@ -82,7 +68,7 @@ var ServiceItem = React.createClass({
     _updateHeight: function() {
         this.height = this.getDOMNode().offsetHeight;
     },
-    _expanded: function(){
+    _heightChanged: function(){
         this.height= this.getDOMNode().offsetHeight;
         this.setState({});
     },
@@ -112,7 +98,7 @@ var ServiceItem = React.createClass({
                             <span style={{marginLeft: '13px'}}>{this.props.serviceData.uuid}</span><span style={{float: 'right'}}>0x180f</span>
                         </div>
                     </div>
-                    <Collapse onEntered={this._expanded.bind(this)} onExited={this._expanded.bind(this)} timeout="0" ref="coll" className="panel-body" in={this.state.expanded}>
+                    <Collapse onEntered={this._heightChanged} onExited={this._heightChanged} timeout="0" ref="coll" className="panel-body" in={this.state.expanded}>
                         {this.props.children}
                     </Collapse>
                 </div>
@@ -163,15 +149,6 @@ var CharacteristicItem = React.createClass({
     },
     componentDidMount: function() {
         this.height = React.findDOMNode(this).offsetHeight;
-        console.log('height in didmount: ', this.height);
-    },
-    componentWillUpdate: function() {
-        this.height = React.findDOMNode(this).offsetHeight;
-    },
-    componentDidUpdate: function() {
-        this.height = React.findDOMNode(this).offsetHeight;
-        console.log('the height is ',this.height);
-
     },
     render: function() {
         var expandIcon = this.state.expanded ? 'fa-caret-down' : 'fa-caret-right';
@@ -181,14 +158,12 @@ var CharacteristicItem = React.createClass({
             <div className="panel panel-default" style={{marginBottom: '0px'}}>
                 <div style={{backgroundColor: '#66C4EB', height: this.height, width: '10px', float: 'left'}}/>
                 <div className="panel-heading" style={{fontSize: '11px', marginLeft: '10px', backgroundColor: 'white', padding: '5px 8px'}} onClick={this._toggleExpanded}>
-                    
                     <i className={"fa " + expandIcon} style={{paddingRight: iconPadding}}></i>
                     <span>{this.props.characteristicData.name}</span>
                     <span style={{float: 'right'}}>{this.props.characteristicData.value}</span>
                     <div style={{color: 'grey', fontSize: '12px'}}>
                         <span style={{marginLeft: '13px'}}>{this.props.characteristicData.uuid}</span><span style={{float: 'right'}}>0x180f</span>
                     </div>
-
                 </div>
             <Collapse  onEntered={this._expanded} onExited={this._contracted} timeout="0" ref="coll" className="panel-body" in= {this.state.expanded}>
                 <div>
@@ -200,8 +175,6 @@ var CharacteristicItem = React.createClass({
         );
     }
 });
-
-
 
 var DeviceDetailsView = React.createClass({
     render: function() {
