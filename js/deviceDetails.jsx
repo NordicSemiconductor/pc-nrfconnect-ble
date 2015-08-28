@@ -6,13 +6,9 @@ var connectionStore = require('./stores/connectionStore');
 var deviceStore = require('./stores/deviceStore');
 
 var pubsub = require('pubsub-js');
-var mui = require('material-ui');
-var RaisedButton = mui.RaisedButton;
-var ListItem = mui.ListItem;
-var List = mui.List;
 
 var bs = require('react-bootstrap');
-var Accordion = bs.Accordion;
+
 var Panel = bs.Panel;
 var PanelGroup = bs.PanelGroup;
 var Collapse = bs.Collapse;
@@ -68,8 +64,9 @@ var listItemStyle = {
 var ServiceItem = React.createClass({
     getInitialState: function() {
         return {
-            expanded: false
+            expanded: true // See UGLY HACK below in componentDidMount
         };
+
     },
     componentWillMount: function() {
         this.expandPubsubToken = pubsub.subscribe('expanded', this._expanded.bind(this));
@@ -88,20 +85,21 @@ var ServiceItem = React.createClass({
     _expanded: function(){
         this.height= this.getDOMNode().offsetHeight;
         this.setState({});
-    },/*
-    componentDidUpdate: function() {
-        this._updateHeight();
-    },*/
+    },
     componentDidMount: function() {
         this._updateHeight();
-
-    },
-    _calculate: function(){
-        console.log('calc: ', this.getDOMNode().offsetHeight);
+        // UGLY HACK to make the Descriptor's hierarchy div show on first expand
+        // Race condition: 
+        // If descriptor child is not done setting it's height by the time this timeout fires, there will be no hierarchy bar for it.
+        var that = this;
+        setTimeout(function() {
+            that.setState({expanded: false});
+        }, 1000);
     },
     render: function() {
         var expandIcon = this.state.expanded ? 'fa-caret-down' : 'fa-caret-right';
         var iconPadding = this.state.expanded ? '0px' :'3px';
+        
         return (
             <div>
                 <div className="panel panel-default" style={{marginBottom: '0px'}}>
@@ -113,11 +111,10 @@ var ServiceItem = React.createClass({
                         <div style={{color: 'grey', fontSize: '12px'}}>
                             <span style={{marginLeft: '13px'}}>{this.props.serviceData.uuid}</span><span style={{float: 'right'}}>0x180f</span>
                         </div>
-
                     </div>
-                        <Collapse onEntered={this._expanded.bind(this)} onExited={this._expanded.bind(this)} timeout="0" ref="coll" className="panel-body" in={this.state.expanded}>
-                            {this.props.children}
-                        </Collapse>
+                    <Collapse onEntered={this._expanded.bind(this)} onExited={this._expanded.bind(this)} timeout="0" ref="coll" className="panel-body" in={this.state.expanded}>
+                        {this.props.children}
+                    </Collapse>
                 </div>
             </div>
         );
@@ -127,8 +124,6 @@ var ServiceItem = React.createClass({
 var DescriptorItem = React.createClass({
     componentWillUpdate: function() {
         this.height = React.findDOMNode(this).offsetHeight;
-        console.log('the height is ',this.height);
-
     },
     render: function() {
          return (
@@ -170,6 +165,9 @@ var CharacteristicItem = React.createClass({
         this.height = React.findDOMNode(this).offsetHeight;
         console.log('height in didmount: ', this.height);
     },
+    componentWillUpdate: function() {
+        this.height = React.findDOMNode(this).offsetHeight;
+    },
     componentDidUpdate: function() {
         this.height = React.findDOMNode(this).offsetHeight;
         console.log('the height is ',this.height);
@@ -203,38 +201,9 @@ var CharacteristicItem = React.createClass({
     }
 });
 
-var DeviceDetailsNode = React.createClass({
-/*
-    render: function() {
-        var services = dummyData.map(function(service){
-            return (
-                <ListItem>
-                    {service.name}
-                    {service.characteristics.map(function(characteristic){
-                        return (
-                            <ListItem primaryText={characteristic.name} secondaryText={characteristic.value} insetChildren={false}>
-                                {characteristic.descriptors.map(function(descriptor){
-                                    return <ListItem primaryText={descriptor.name} secondaryText={descriptor.value}/>
-                                })}
-                            </ListItem>);
-                    })}
-                </ListItem>
-            );
-        });
-        return (
-            <div style={deviceDetailsStyle}>
-                <List subheader="Services">
-                    {services}
 
-                </List>
-            </div>
-        );
-    }*/
-    getInitialState: function(){
-        return {
-            open: true
-        };
-    },
+
+var DeviceDetailsView = React.createClass({
     render: function() {
         var services = dummyData.map(function(service){
             return (
@@ -251,23 +220,9 @@ var DeviceDetailsNode = React.createClass({
             );
         });
         return (
-            <div>
+            <div style={{width: '220px', top: '20px', left: '20px', position: 'relative'}}>
                 {services}
             </div>
-        );
-    }
-});
-
-
-var DeviceDetailsView = React.createClass({
-    mixins: [reflux.connect(deviceStore)],
-    
-    render: function() {
-        return (
-            <div style={{width: '220px', top: '20px', left: '20px', position: 'relative'}}>
-                <DeviceDetailsNode  deviceData={this.state.devices[0]}/>
-            </div>
-           
           );
     }
 });
