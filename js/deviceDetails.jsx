@@ -22,6 +22,7 @@ var dummyData = [
         "handle": 1,
         "uuid": "0x1809",
         "name": "Health Thermometer",
+        "value": '57%',
         "characteristics": [
         {
             "name": "Temperature",
@@ -107,10 +108,10 @@ var ServiceItem = React.createClass({
                     <div style={{backgroundColor: '#B3E1F5', height: this.height, width: '10px', float: 'left'}}/>
                     <div onClick={this._toggleExpanded} className="panel-heading" style={{backgroundColor: 'white', padding: '5px 8px'}}>
                         <i className={"fa " + expandIcon} style={{paddingRight: iconPadding}}></i>
-                        <span style={{marginLeft: '5px'}}>Generic Access</span>
-                        <span style={{float: 'right'}}> 56%</span>
+                        <span style={{marginLeft: '5px'}}>{this.props.serviceData.name}</span>
+                        <span style={{float: 'right'}}>{this.props.serviceData.value}</span>
                         <div style={{color: 'grey', fontSize: '12px'}}>
-                            <span style={{marginLeft: '13px'}}>0xffaabb</span><span style={{float: 'right'}}>0x180f</span>
+                            <span style={{marginLeft: '13px'}}>{this.props.serviceData.uuid}</span><span style={{float: 'right'}}>0x180f</span>
                         </div>
 
                     </div>
@@ -184,10 +185,10 @@ var CharacteristicItem = React.createClass({
                 <div className="panel-heading" style={{fontSize: '11px', marginLeft: '10px', backgroundColor: 'white', padding: '5px 8px'}} onClick={this._toggleExpanded}>
                     
                     <i className={"fa " + expandIcon} style={{paddingRight: iconPadding}}></i>
-                    <span>Temperature Measurement</span>
-                    <span style={{float: 'right'}}> 37,5 C</span>
+                    <span>{this.props.characteristicData.name}</span>
+                    <span style={{float: 'right'}}>{this.props.characteristicData.value}</span>
                     <div style={{color: 'grey', fontSize: '12px'}}>
-                        <span style={{marginLeft: '13px'}}>0xffaabb</span><span style={{float: 'right'}}>0x180f</span>
+                        <span style={{marginLeft: '13px'}}>{this.props.characteristicData.uuid}</span><span style={{float: 'right'}}>0x180f</span>
                     </div>
 
                 </div>
@@ -241,7 +242,7 @@ var DeviceDetailsNode = React.createClass({
                     <div>
                     {service.characteristics.map(function(characteristic){
                         return (
-                            <CharacteristicItem/>
+                            <CharacteristicItem characteristicData={characteristic}/>
                         )
                     }
                     )}
