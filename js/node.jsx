@@ -11,9 +11,21 @@ var connectionActions = require('./actions/connectionActions');
 var DiscoveredDevice = require('./discoveredDevicesContainer.jsx').DiscoveredDevice;
 var mui = require('material-ui');
 var RaisedButton = mui.RaisedButton;
-var Card = mui.Card;
-var CardTitle= mui.CardTitle;
+var bs = require('react-bootstrap');
+var Popover = bs.Popover;
+var OverlayTrigger = bs.OverlayTrigger;
+
 var _ = require('underscore');
+var TestComp = React.createClass({
+
+    render: function() {
+        return <OverlayTrigger trigger='click' placement='left' overlay={<Popover title='Popover top'><strong>Holy guacamole!</strong> Check this info.</Popover>}> 
+                    <button>dsfsdf</button>
+                </OverlayTrigger>;
+    }
+});
+
+
 var BleNodeContainer = React.createClass({
 
     mixins: [Reflux.listenTo(nodeStore, "onGraphChanged"), Reflux.connect(driverStore)],
@@ -35,7 +47,7 @@ var BleNodeContainer = React.createClass({
                 connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0, alwaysRespectStubs: false }],
                 overlays:[["Custom", {
                     create:function(component) {
-                        return $('<span><span class="fa-stack fa-lg" style="font-size: 15px;"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-link fa-stack-1x fa-inverse"></i></span></span>');
+                        return $('<span><span class="fa-stack fa-lg" style="font-size: 15px;"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-link fa-stack-1x fa-inverse"></i><div id="connection3"/></span></span>');
                     },
                     location:0.5,
                     id:"customOverlay"
@@ -43,10 +55,14 @@ var BleNodeContainer = React.createClass({
             };
             var connection = jsPlumb.connect(connectionParameters);
             this.nodeIdToConnectionMap[change.nodeId] = connection;
-            //this.setState({graph: newGraph});
-        }
-        
 
+            this.setState({graph: newGraph}, function() {
+                  React.render(<TestComp/>, document.getElementById('connection3'));
+            });
+            setTimeout(function(){
+
+            }, 1000);
+        }
         this.autoLayout();
 
         console.log('onAddnode');
@@ -128,10 +144,11 @@ var BleNode = React.createClass({
     toggleShowConnectionDetails: function() {
         this.showConnectionDetails = !this.showConnectionDetails;
     },
-    _onToggleConnectionView: function() {
-        console.log('_onShowConnectionView');
+    _onToggleConnectionView: function(c, e) {
+        console.log(c);
+        console.log(e);
         this.setState({isShowingConnectionSlideIn: !this.state.isShowingConnectionSlideIn});
-    
+        React.render(<TestComp/>, document.getElementById('connection3'));
     }, 
     _disconnect: function() {
         console.log('disconnect');
