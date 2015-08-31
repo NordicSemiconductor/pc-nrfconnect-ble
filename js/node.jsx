@@ -18,6 +18,11 @@ var OverlayTrigger = bs.OverlayTrigger;
 var _ = require('underscore');
 
 var ConnectionSetup = React.createClass({
+    _disconnect: function() {
+        console.log('disconnect');
+        connectionActions.disconnectFromDevice(this.props.device.peer_addr.address);
+        this.props.closePopover();
+    },
     render: function() {
         return (
             <div>
@@ -41,21 +46,28 @@ var ConnectionSetup = React.createClass({
                         </div>
                     </div>
                 </form>
+                <button onClick = {this._disconnect}>Disconnect</button>
             </div>
             );
     }
 });
 
 var ConnectionOverlay = React.createClass({
-
+    closeme: function() {
+        this.refs.overlayTrigger.hide();
+    },
     render: function() {
+        var overlayRef = this.refs.overlayTrigger;
         return (
-            <OverlayTrigger trigger='click' placement='top' overlay={<Popover title='Connection Setup'><ConnectionSetup/></Popover>}> 
-                <span className="fa-stack fa-lg" style={{fontSize: '15px'}}>
-                    <i className="fa fa-circle fa-stack-2x"></i>
-                    <i className="fa fa-link fa-stack-1x fa-inverse"></i>
-                </span>
-            </OverlayTrigger>
+            <div>
+                <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']}  placement='top' overlay={<Popover title='Connection Setup'><ConnectionSetup device ={this.props.device} closePopover = {this.closeme} connection={this.props.connection}/></Popover>}> 
+                    <span className="fa-stack fa-lg" style={{fontSize: '15px'}}>
+                        <i className="fa fa-circle fa-stack-2x"></i>
+                        <i className="fa fa-link fa-stack-1x fa-inverse"></i>
+                    </span>
+                </OverlayTrigger>
+                <button onClick={this.closeme}>closeme</button>
+            </div>
             );
     }
 });
@@ -65,14 +77,12 @@ var BleNodeContainer = React.createClass({
 
     mixins: [Reflux.listenTo(nodeStore, "onGraphChanged"), Reflux.connect(driverStore)],
     componentWillMount: function() {
-        this.nodeIdToConnectionMap = {};
     },
 
     onGraphChanged: function(newGraph, change){
         this.setState({graph: newGraph}); // Must be done before connection is made since connection target is created by render
         if (change.remove) {
             jsPlumb.remove(change.nodeId);
-            delete this.nodeIdToConnectionMap[change.nodeId];
         } else {
             var overlayId= "connection" + change.nodeId;
             var connectionParameters = {
@@ -90,16 +100,12 @@ var BleNodeContainer = React.createClass({
                 }]]
             };
             var connection = jsPlumb.connect(connectionParameters);
-            this.nodeIdToConnectionMap[change.nodeId] = connection;
 
             this.setState({graph: newGraph}, function() {
-                  React.render(<ConnectionOverlay/>, document.getElementById(overlayId));
+                  React.render(<ConnectionOverlay device={change.device} connection={change.connection}/>, document.getElementById(overlayId));
             });
-           
         }
         this.autoLayout();
-
-        console.log('onAddnode');
     },
     getInitialState: function(){
         return nodeStore.getInitialState();
@@ -138,8 +144,7 @@ var BleNodeContainer = React.createClass({
         var plumbNodes = [];
         
         for (var i = 0; i < this.state.graph.length; i++) {
-            var connection = this.nodeIdToConnectionMap[this.state.graph[i].id];
-            plumbNodes.push(<BleNode key={i} nodeId={this.state.graph[i].id} device={this.state.graph[i].device} connection={connection} centralName = {this.state.centralName} centralAddress = {this.state.centralAddress}/>);
+            plumbNodes.push(<BleNode key={i} nodeId={this.state.graph[i].id} device={this.state.graph[i].device} centralName = {this.state.centralName} centralAddress = {this.state.centralAddress}/>);
         }
 
         return (
@@ -174,7 +179,6 @@ var BleNode = React.createClass({
             jsPlumb.draggable(that.props.nodeId);
         });
         console.log('BleNode did mount');
-        this.didAddConnectionEventHandler = false;
     },
     toggleShowConnectionDetails: function() {
         this.showConnectionDetails = !this.showConnectionDetails;
@@ -185,10 +189,7 @@ var BleNode = React.createClass({
         this.setState({isShowingConnectionSlideIn: !this.state.isShowingConnectionSlideIn});
         React.render(<TestComp/>, document.getElementById('connection3'));
     }, 
-    _disconnect: function() {
-        console.log('disconnect');
-        connectionActions.disconnectFromDevice(this.props.device.peer_addr.address);
-    },
+    
     render: function() {
         
             var self = this;
@@ -200,11 +201,7 @@ var BleNode = React.createClass({
                 left: '150px',
                 boxShadow: "0px 0px 4px 0px #777A89",
             };
-            if (this.props.connection && !this.didAddConnectionEventHandler) {
-                this.props.connection.bind('click', this._onToggleConnectionView);
-                this.didAddConnectionEventHandler = true;
-                console.log('added event handler');
-            }
+
 
             connectionViewStyle.display = this.state.isShowingConnectionSlideIn ? 'inline-block': 'none';
 

@@ -17,15 +17,15 @@ var bleNodeStore = reflux.createStore({
     getInitialState: function() {
         return this.state;
     },
-    onAddNode: function(data) {
+    onAddNode: function(connectedDevice, newConnection) {
 
-      console.log("Adding node ", JSON.stringify(data));
+      console.log("Adding node ", JSON.stringify(connectedDevice));
       var newNodeId = 'node' + this.idCounter++;
 
-      this.state.graph.push({id: newNodeId, deviceId: data.peer_addr.address, device: data});
+      this.state.graph.push({id: newNodeId, deviceId: connectedDevice.peer_addr.address, device: connectedDevice});
       var centralNode = this._findCentralNode();
       centralNode.ancestorOf.push(newNodeId);
-      this.trigger(this.state.graph, {remove: false, nodeId: newNodeId});
+      this.trigger(this.state.graph, {remove: false, nodeId: newNodeId, device: connectedDevice, connection: newConnection});
     },
     onRemoveNode: function(deviceAddress) {
       console.log('removing node');

@@ -72,7 +72,7 @@ var connectionStore = reflux.createStore({
 
         var device = this.devicesAboutToBeConnected[eventPayload.peer_addr.addr];
         delete this.devicesAboutToBeConnected[eventPayload.peer_addr.addr];
-        graphActions.addNode(device);
+        graphActions.addNode(device, eventPayload);
     },
     onDeviceDisconnected: function(eventPayload){
         console.log('disconnected');
