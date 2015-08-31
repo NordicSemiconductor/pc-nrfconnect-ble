@@ -19,7 +19,6 @@ var _ = require('underscore');
 
 var ConnectionSetup = React.createClass({
     _disconnect: function() {
-        console.log('disconnect');
         connectionActions.disconnectFromDevice(this.props.device.peer_addr.address);
         this.props.closePopover();
     },
@@ -30,22 +29,23 @@ var ConnectionSetup = React.createClass({
                     <div className="form-group">
                         <label className="col-sm-8 control-label" htmlFor="interval">Connection Interval</label>
                         <div className="col-sm-4">
-                            <input className="form-control" type="number" id="interval"/>
+                            <input disabled className="form-control" type="number" id="interval" value = {this.props.connection.conn_params.max_conn_interval}/>
                         </div>
                     </div>
                     <div className="form-group">
                         <label className="col-sm-8 control-label" htmlFor="latency">Latency</label>
                         <div className="col-sm-4">
-                            <input className="form-control" type="number" id="latency"/>
+                            <input disabled  className="form-control" type="number" id="latency" value={this.props.connection.conn_params.slave_latency}/>
                         </div>
                     </div>
                     <div className="form-group">
                         <label className="col-sm-8 control-label" htmlFor="timeout">Timeout</label>
                         <div className="col-sm-4">
-                            <input className="form-control" type="number" id="timeout"/>
+                            <input disabled  className="form-control" type="number" id="timeout" value={this.props.connection.conn_params.conn_sup_timeout}/>
                         </div>
                     </div>
                 </form>
+                <hr/>
                 <button onClick = {this._disconnect}>Disconnect</button>
             </div>
             );
@@ -66,18 +66,14 @@ var ConnectionOverlay = React.createClass({
                         <i className="fa fa-link fa-stack-1x fa-inverse"></i>
                     </span>
                 </OverlayTrigger>
-                <button onClick={this.closeme}>closeme</button>
             </div>
             );
     }
 });
 
-
 var BleNodeContainer = React.createClass({
 
     mixins: [Reflux.listenTo(nodeStore, "onGraphChanged"), Reflux.connect(driverStore)],
-    componentWillMount: function() {
-    },
 
     onGraphChanged: function(newGraph, change){
         this.setState({graph: newGraph}); // Must be done before connection is made since connection target is created by render
@@ -146,11 +142,9 @@ var BleNodeContainer = React.createClass({
         for (var i = 0; i < this.state.graph.length; i++) {
             plumbNodes.push(<BleNode key={i} nodeId={this.state.graph[i].id} device={this.state.graph[i].device} centralName = {this.state.centralName} centralAddress = {this.state.centralAddress}/>);
         }
-
         return (
             <div id="diagramContainer" style={{position: 'absolute'}} >
                 {plumbNodes}
-                <ConnectionOverlay/>
             </div>
         );
     }
@@ -191,35 +185,32 @@ var BleNode = React.createClass({
     }, 
     
     render: function() {
-        
-            var self = this;
-            var connectionViewStyle = {
-                display: 'none',
-                width: '150px',
-                height: '200px',
-                position: 'absolute',
-                left: '150px',
-                boxShadow: "0px 0px 4px 0px #777A89",
-            };
+        var self = this;
+        var connectionViewStyle = {
+            display: 'none',
+            width: '150px',
+            height: '200px',
+            position: 'absolute',
+            left: '150px',
+            boxShadow: "0px 0px 4px 0px #777A89",
+        };
 
 
-            connectionViewStyle.display = this.state.isShowingConnectionSlideIn ? 'inline-block': 'none';
+        connectionViewStyle.display = this.state.isShowingConnectionSlideIn ? 'inline-block': 'none';
 
-            return (
-          <div key={this.props.nodeId} id={this.props.nodeId} className="item node" style={{position: 'absolute', width: '150px', height: '200px'}}>
-            <div style={connectionViewStyle}>
-               <RaisedButton onClick={this._disconnect} label="Disconnect..."/>
+        return (
+            <div key={this.props.nodeId} id={this.props.nodeId} className="item node" style={{position: 'absolute', width: '150px', height: '200px'}}>
+                <div style={connectionViewStyle}>
+                    <RaisedButton onClick={this._disconnect} label="Disconnect..."/>
+                </div>
+                <DiscoveredDevice
+                    standalone={true}
+                    star={false}
+                    bonded={false}
+                    device= {this.props.device}
+                />
             </div>
-             <DiscoveredDevice
-                                    standalone={true}
-                                    star={false}
-                                    bonded={false}
-                                    device= {this.props.device}
-                                />
-            
-          </div>
-          );
-        
+        );
   }
 });
 
