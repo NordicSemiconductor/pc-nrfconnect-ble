@@ -20,7 +20,10 @@ var TestComp = React.createClass({
 
     render: function() {
         return <OverlayTrigger trigger='click' placement='left' overlay={<Popover title='Popover top'><strong>Holy guacamole!</strong> Check this info.</Popover>}> 
-                    <button>dsfsdf</button>
+                    <span className="fa-stack fa-lg" style={{fontSize: '15px'}}>
+                        <i className="fa fa-circle fa-stack-2x"></i>
+                        <i className="fa fa-link fa-stack-1x fa-inverse"></i>
+                    </span>
                 </OverlayTrigger>;
     }
 });
@@ -47,7 +50,7 @@ var BleNodeContainer = React.createClass({
                 connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0, alwaysRespectStubs: false }],
                 overlays:[["Custom", {
                     create:function(component) {
-                        return $('<span><span class="fa-stack fa-lg" style="font-size: 15px;"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-link fa-stack-1x fa-inverse"></i><div id="connection3"/></span></span>');
+                        return $('<span><div id="connection3"/></span>');
                     },
                     location:0.5,
                     id:"customOverlay"
@@ -59,9 +62,7 @@ var BleNodeContainer = React.createClass({
             this.setState({graph: newGraph}, function() {
                   React.render(<TestComp/>, document.getElementById('connection3'));
             });
-            setTimeout(function(){
-
-            }, 1000);
+           
         }
         this.autoLayout();
 
