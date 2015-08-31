@@ -16,15 +16,47 @@ var Popover = bs.Popover;
 var OverlayTrigger = bs.OverlayTrigger;
 
 var _ = require('underscore');
-var TestComp = React.createClass({
+
+var ConnectionSetup = React.createClass({
+    render: function() {
+        return (
+            <div>
+                <form className="form-horizontal">
+                    <div className="form-group">
+                        <label className="col-sm-8 control-label" htmlFor="interval">Connection Interval</label>
+                        <div className="col-sm-4">
+                            <input className="form-control" type="number" id="interval"/>
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label className="col-sm-8 control-label" htmlFor="latency">Latency</label>
+                        <div className="col-sm-4">
+                            <input className="form-control" type="number" id="latency"/>
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label className="col-sm-8 control-label" htmlFor="timeout">Timeout</label>
+                        <div className="col-sm-4">
+                            <input className="form-control" type="number" id="timeout"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            );
+    }
+});
+
+var ConnectionOverlay = React.createClass({
 
     render: function() {
-        return <OverlayTrigger trigger='click' placement='left' overlay={<Popover title='Popover top'><strong>Holy guacamole!</strong> Check this info.</Popover>}> 
-                    <span className="fa-stack fa-lg" style={{fontSize: '15px'}}>
-                        <i className="fa fa-circle fa-stack-2x"></i>
-                        <i className="fa fa-link fa-stack-1x fa-inverse"></i>
-                    </span>
-                </OverlayTrigger>;
+        return (
+            <OverlayTrigger trigger='click' placement='top' overlay={<Popover title='Connection Setup'><ConnectionSetup/></Popover>}> 
+                <span className="fa-stack fa-lg" style={{fontSize: '15px'}}>
+                    <i className="fa fa-circle fa-stack-2x"></i>
+                    <i className="fa fa-link fa-stack-1x fa-inverse"></i>
+                </span>
+            </OverlayTrigger>
+            );
     }
 });
 
@@ -42,6 +74,7 @@ var BleNodeContainer = React.createClass({
             jsPlumb.remove(change.nodeId);
             delete this.nodeIdToConnectionMap[change.nodeId];
         } else {
+            var overlayId= "connection" + change.nodeId;
             var connectionParameters = {
                 source: 'central',
                 target: change.nodeId,
@@ -50,7 +83,7 @@ var BleNodeContainer = React.createClass({
                 connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0, alwaysRespectStubs: false }],
                 overlays:[["Custom", {
                     create:function(component) {
-                        return $('<span><div id="connection3"/></span>');
+                        return $('<span><div id="' + overlayId + '"/></span>');
                     },
                     location:0.5,
                     id:"customOverlay"
@@ -60,7 +93,7 @@ var BleNodeContainer = React.createClass({
             this.nodeIdToConnectionMap[change.nodeId] = connection;
 
             this.setState({graph: newGraph}, function() {
-                  React.render(<TestComp/>, document.getElementById('connection3'));
+                  React.render(<ConnectionOverlay/>, document.getElementById(overlayId));
             });
            
         }
@@ -112,9 +145,10 @@ var BleNodeContainer = React.createClass({
         return (
             <div id="diagramContainer" style={{position: 'absolute'}} >
                 {plumbNodes}
+                <ConnectionOverlay/>
             </div>
-    );
-  }
+        );
+    }
 });
 
 var BleCentral = React.createClass({
