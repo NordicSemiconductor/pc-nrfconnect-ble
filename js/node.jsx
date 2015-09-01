@@ -4,13 +4,11 @@ var React = require('react');
 var dagre = require('dagre');
 var Reflux = require('reflux');
 var nodeStore = require('./stores/bleNodeStore');
-var deviceStore = require('./stores/deviceStore');
+
 var driverStore = require('./stores/bleDriverStore');
-var connectionStore = require('./stores/connectionStore');
 var connectionActions = require('./actions/connectionActions');
 var DiscoveredDevice = require('./discoveredDevicesContainer.jsx').DiscoveredDevice;
-var mui = require('material-ui');
-var RaisedButton = mui.RaisedButton;
+
 var bs = require('react-bootstrap');
 var Popover = bs.Popover;
 var OverlayTrigger = bs.OverlayTrigger;
@@ -48,7 +46,7 @@ var ConnectionSetup = React.createClass({
                 <hr/>
                 <button onClick = {this._disconnect}>Disconnect</button>
             </div>
-            );
+        );
     }
 });
 
@@ -78,8 +76,13 @@ var BleNodeContainer = React.createClass({
     onGraphChanged: function(newGraph, change){
         this.setState({graph: newGraph}); // Must be done before connection is made since connection target is created by render
         if (change.remove) {
+            
+            
             jsPlumb.remove(change.nodeId);
-        } else {
+            this.autoLayout();
+            
+
+        } else if (change.remove === false){
             var overlayId= "connection" + change.nodeId;
             var connectionParameters = {
                 source: 'central',
@@ -100,8 +103,11 @@ var BleNodeContainer = React.createClass({
             this.setState({graph: newGraph}, function() {
                   React.render(<ConnectionOverlay device={change.device} connection={change.connection}/>, document.getElementById(overlayId));
             });
+            this.autoLayout();
+        } else {
+            var element = document.getElementById(change.nodeId);
+            element.style.backgroundColor = "grey";
         }
-        this.autoLayout();
     },
     getInitialState: function(){
         return nodeStore.getInitialState();
