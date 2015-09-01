@@ -1,6 +1,7 @@
 'use strict';
 
 import reflux from 'reflux';
+
 import deviceActions from '../actions/deviceActions';
 import dummyData from '../utils/dummyAttributeData';
 

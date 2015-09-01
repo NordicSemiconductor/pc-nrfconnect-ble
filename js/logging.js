@@ -146,6 +146,22 @@ DbLogger.prototype.query = function(options, callback) {
     );
 }
 
+var create_line = function(options) {
+    var timestamp = options.timestamp();
+    var event_id = null;
+
+    if(options.meta !== undefined) {
+        if(options.meta.timestamp != null) {
+            timestamp = options.meta.timestamp;
+        }
+    }
+
+    var level = options.level.toUpperCase();
+    var message = undefined !== options.message ? options.message : '';
+
+    return `${timestamp.toISOString()} ${level} ${message}`;
+}
+
 var logger = new (winston.Logger)({
     transports: [
         new (winston.transports.DbLogger)({
@@ -156,11 +172,16 @@ var logger = new (winston.Logger)({
         new (winston.transports.File)({
             name: 'file',
             filename: 'log.txt',
-            level: 'debug'
+            level: 'debug',
+            json: false,
+            timestamp: function() { return new Date(); },
+            formatter: create_line
         }),
         new (winston.transports.Console)({
             name: 'console',
-            level: 'info'
+            level: 'info',
+            timestamp: function() { return new Date(); },
+            formatter: create_line
         })
     ]
 });

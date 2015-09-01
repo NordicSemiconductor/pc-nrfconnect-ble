@@ -4,6 +4,7 @@ import reflux from 'reflux';
 
 import bleDriver from 'pc-ble-driver-js';
 import logger from '../logging';
+import textual from '../ble_driver_textual';
 
 import bleDriverActions from '../actions/bleDriverActions';
 import discoveryActions from '../actions/discoveryActions';
@@ -99,7 +100,7 @@ var bleDriverStore = reflux.createStore({
             this.eventCount++;
             var event = eventArray[i];
 
-            logger.debug(event.name, event);
+            logger.debug(new textual(event).toString());
 
             switch(event.id){
                 case bleDriver.BLE_GAP_EVT_ADV_REPORT:
@@ -113,7 +114,7 @@ var bleDriverStore = reflux.createStore({
                             break;
                         default:
                             logger.info(`Something timed out: ${event.src}`);
-                        }
+                    }
                     break;
                 case bleDriver.BLE_GAP_EVT_CONNECTED:
                     connectionActions.deviceConnected(event);
