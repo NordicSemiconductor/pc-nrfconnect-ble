@@ -172,37 +172,10 @@ var BleNode = React.createClass({
         jsPlumb.bind("ready", function(){
             jsPlumb.draggable(that.props.nodeId);
         });
-        console.log('BleNode did mount');
     },
-    toggleShowConnectionDetails: function() {
-        this.showConnectionDetails = !this.showConnectionDetails;
-    },
-    _onToggleConnectionView: function(c, e) {
-        console.log(c);
-        console.log(e);
-        this.setState({isShowingConnectionSlideIn: !this.state.isShowingConnectionSlideIn});
-        React.render(<TestComp/>, document.getElementById('connection3'));
-    }, 
-    
     render: function() {
-        var self = this;
-        var connectionViewStyle = {
-            display: 'none',
-            width: '150px',
-            height: '200px',
-            position: 'absolute',
-            left: '150px',
-            boxShadow: "0px 0px 4px 0px #777A89",
-        };
-
-
-        connectionViewStyle.display = this.state.isShowingConnectionSlideIn ? 'inline-block': 'none';
-
         return (
             <div key={this.props.nodeId} id={this.props.nodeId} className="item node" style={{position: 'absolute', width: '150px', height: '200px'}}>
-                <div style={connectionViewStyle}>
-                    <RaisedButton onClick={this._disconnect} label="Disconnect..."/>
-                </div>
                 <DiscoveredDevice
                     standalone={true}
                     star={false}
@@ -211,9 +184,7 @@ var BleNode = React.createClass({
                 />
             </div>
         );
-  }
+   }
 });
-
-
 
 module.exports = BleNodeContainer;
