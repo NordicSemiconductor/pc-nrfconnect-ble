@@ -140,7 +140,12 @@ var BleNodeContainer = React.createClass({
         var plumbNodes = [];
         
         for (var i = 0; i < this.state.graph.length; i++) {
-            plumbNodes.push(<BleNode key={i} nodeId={this.state.graph[i].id} device={this.state.graph[i].device} centralName = {this.state.centralName} centralAddress = {this.state.centralAddress}/>);
+            var nodeId = this.state.graph[i].id;
+            if (nodeId === 'central') {
+                plumbNodes.push(<BleNode key={i} nodeId={nodeId} centralName={this.state.centralName} centralAddress={this.state.centralAddress}/>);
+            } else {
+                plumbNodes.push(<BleNode key={i} nodeId={this.state.graph[i].id} device={this.state.graph[i].device} />);
+            }
         }
         return (
             <div id="diagramContainer" style={{position: 'absolute'}} >
@@ -150,23 +155,7 @@ var BleNodeContainer = React.createClass({
     }
 });
 
-var BleCentral = React.createClass({
-    mixins: [Reflux.connect(driverStore)],
-    componentDidMount: function(){
-        var that = this;
-        jsPlumb.bind("ready", function(){
-            jsPlumb.draggable(that.props.nodeId);
-        });
-    },
-    render: function(){
-        
-    }
-});
-
 var BleNode = React.createClass({
-    getInitialState: function(){
-        return {isShowingConnectionSlideIn: false};
-    },
     componentDidMount: function(){
         var that = this;
         jsPlumb.bind("ready", function(){
@@ -174,14 +163,15 @@ var BleNode = React.createClass({
         });
     },
     render: function() {
+        var theDevice;
+        if (this.props.nodeId === 'central') {
+            theDevice = (<div><h3>{this.props.centralName}</h3><div className="text-muted">{this.props.centralAddress.address}</div></div>);
+        } else {
+            theDevice = (<DiscoveredDevice standalone={true} star={false} bonded={false} device= {this.props.device}/>);
+        }
         return (
             <div key={this.props.nodeId} id={this.props.nodeId} className="item node" style={{position: 'absolute', width: '150px', height: '200px'}}>
-                <DiscoveredDevice
-                    standalone={true}
-                    star={false}
-                    bonded={false}
-                    device= {this.props.device}
-                />
+                {theDevice}
             </div>
         );
    }

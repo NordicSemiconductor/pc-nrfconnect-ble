@@ -58,11 +58,13 @@ var bleDriverStore = reflux.createStore({
                 bleDriver.gap_get_address(function(gapAddress){
                     self.state.centralAddress = gapAddress;
                     logger.info('Central BLE address is: ' + gapAddress.address);
+                    self.trigger(self.state);
                 });
 
                 bleDriver.gap_get_device_name(function(name){
                     self.state.centralName = name;
                     logger.info('Central name is: ' + name);
+                    self.trigger(self.state);
                 });
             }
             self.trigger(self.state);
