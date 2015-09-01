@@ -106,7 +106,7 @@ var BleNodeContainer = React.createClass({
             this.autoLayout();
         } else {
             var element = document.getElementById(change.nodeId);
-            element.style.backgroundColor = "grey";
+            element.style.opacity = 0.5;
         }
     },
     getInitialState: function(){
