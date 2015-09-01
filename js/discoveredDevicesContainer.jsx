@@ -9,26 +9,9 @@ var connectionStore = require('./stores/connectionStore');
 
 var discoveryActions = require('./actions/discoveryActions');
 var connectionActions = require('./actions/connectionActions');
-
+var DiscoveryButton = require('./discoveryButton');
 var MIN_RSSI = -100;
 var MAX_RSSI = -45;
-
-const nodes = [
-    {
-        id: 'DA388F959F',
-        name: 'My device',
-        bonded: false,
-        star: false,
-        strength: 2
-    },
-    {
-        id: 'EA318F959A',
-        name: 'Your device',
-        bonded: true,
-        star: true,
-        strength: 5
-    }
-];
 
 const deviceStyles = {
     item: {
@@ -86,10 +69,7 @@ var DiscoveredDevice = React.createClass({
                 );
         }
 
-        var starClass = this.props.star ? 'fa fa-star' : 'fa fa-star-o';
-        var lockClass = this.props.bonded ? 'fa fa-lock' : 'fa fa-unlock';
         var signalClass = 'material-icons';
-        //console.log("DEV: " + JSON.stringify(this.props.device));
 
         var short_local_name = "";
         var flags = [];
@@ -124,8 +104,6 @@ var DiscoveredDevice = React.createClass({
                     <span style={deviceStyles.name}>{complete_local_name}</span>
                     <span style={{float: 'right'}}>{rssi}</span>
                     <span style={deviceStyles.rssi} className={signalClass}></span>
-                    <span style={{float: 'right'}}><i className={starClass}/>&nbsp;</span>
-                    <span style={{float: 'right'}}><i className={lockClass}/>&nbsp;</span>
                 </div>
                 <div style={deviceStyles.body}>
                     <div style={{display: 'inline'}}>
@@ -173,7 +151,9 @@ const containerStyle = {
 
 var DiscoveredDevicesContainer = React.createClass({
     mixins: [Reflux.connect(discoveryStore), Reflux.connect(connectionStore)],
-
+    _clearContainer: function() {
+        this.setState({discoveredDevices: {}});
+    },
     render: function() {
         if (this.state.discoveredDevices) {
             var connectedDevices = this.state.connections;
@@ -196,18 +176,18 @@ var DiscoveredDevicesContainer = React.createClass({
             }
             return (
               <div id="discoveredDevicesContainer" style={containerStyle.body}>
-                <div style={containerStyle.heading}>Discovered devices</div>
+                <div style={containerStyle.heading}>Discovered devices <button onClick={this._clearContainer} style={{marginLeft: '56px'}}>Clear</button> </div>
                 <div style={{display: 'flex', alignItems: 'center', borderBottomColor: 'lightgrey', borderBottomStyle: 'solid', borderBottomWidth:'thin'}}>
                     <CircularProgress style={progressStyle} mode={progressMode} size={0.5}/>
                     <span style={{marginLeft: '15px'}}>{Object.keys(this.state.discoveredDevices).length} &nbsp; devices found.</span>
+                    <span style={{marginLeft: '15px'}}><DiscoveryButton/></span>
+
                 </div>
                 <List style={{paddingTop: '0px'}}>
                   {Object.keys(devices).map(function(device, index) {
                     return (
                             <DiscoveredDevice key= {index}
                                 device={devices[device]}
-                                star={false}
-                                bonded={false}
                                 standalone={false}
                             />)
                   })}

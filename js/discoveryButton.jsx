@@ -2,12 +2,9 @@
 
 var React = require('react');
 var Reflux = require('reflux');
-var mui = require('material-ui');
 var driverStore = require('./stores/bleDriverStore');
 var DiscoveryActions = require('./actions/discoveryActions');
 var discoveryStore = require('./stores/discoveryStore');
-
-var RaisedButton = mui.RaisedButton;
 
 var buttonStyle= {
     marginTop: '10px'
@@ -27,7 +24,7 @@ var DiscoveryButton = React.createClass({
     render: function() {
         var labelString = this.state.discoveryStore.scanInProgress ? 'Stop scan' : 'Start scan';
         return (
-            <RaisedButton primary={true} disabled= {!this.state.driverStore.connectedToDriver} label={labelString} onClick={this.buttonClicked} style={buttonStyle}/> 
+            <button type="button" className="btn btn-default btn-sm" disabled= {!this.state.driverStore.connectedToDriver} onClick={this.buttonClicked} style={buttonStyle}>{labelString}</button> 
         );
     }
 });
