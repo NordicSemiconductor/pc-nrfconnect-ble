@@ -2,27 +2,27 @@
 
 import reflux from 'reflux';
 import serialPort from 'serialport-electron';
-import child_process from 'child_process';
 
-import bleTargetActions from '../actions/bleTargetActions';
+import _ from 'underscore';
 import fs from 'fs';
 
 var bleTargetStore = reflux.createStore({
-    listenables: [bleTargetActions],
 
     init: function() {
-        this.discoveredBleTargets = [{payload: '1', text: 'None'}];
-        this.chosen_port = null;
+        this._detectTargets();
+
+        // TODO: Cannot find a way to clear this interval. No hook in reflux stores?
+        this.detectInterval = setInterval(this._detectTargets.bind(this), 5000);
     },
 
     getInitialState: function() {
-        return this.discoveredBleTargets;
+        return {discoveredBleTargets: this.discoveredBleTargets};
     },
-    onStartBleTargetDetect: function() {
+    _detectTargets: function() {
         var self = this;
         var portName = '';
         serialPort.list(function(err, ports) {
-            self.discoveredBleTargets = ports.map(function(port){
+            var newlyDiscoveredTargets = ports.map(function(port){
                 portName = port.comName;
                 if (process.platform === 'darwin') {
                     var modPortName = portName.replace('/dev/cu.', '/dev/tty.'); //workaround for wrong port location on darwin (OSX)
@@ -30,10 +30,13 @@ var bleTargetStore = reflux.createStore({
                         portName = modPortName;
                     }
                 }
-                return  {payload: 'maybenoutused', text: portName}; 
+                return portName; 
             });
-            self.discoveredBleTargets.unshift({payload: 'notused', text:'None'});
-            self.trigger(self.discoveredBleTargets);
+            newlyDiscoveredTargets.unshift('None');
+            if (!_.isEqual(self.discoveredBleTargets,newlyDiscoveredTargets)) {
+                self.discoveredBleTargets = newlyDiscoveredTargets;
+                self.trigger({discoveredBleTargets: self.discoveredBleTargets});
+            }
         });
     }
 });
