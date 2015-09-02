@@ -14,7 +14,8 @@ var rewriter = function(value) {
             { expr: /(\d{4})-(\d{2})-(\d{2})T(\d{2})\:(\d{2})\:(\d{2})\.(\d+)Z/,
                     on_match: function(matches) { return matches.input }},
             { expr: /BLE_GAP_ROLE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
-            { expr: /BLE_HCI_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }}
+            { expr: /BLE_HCI_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
+            { expr: /BLE_GATT_STATUS_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }}
     ];
 
     try {
