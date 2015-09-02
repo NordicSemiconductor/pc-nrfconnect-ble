@@ -3,6 +3,9 @@ import util from 'util';
 import sqlite3 from'sqlite3';
 import fs from 'fs';
 
+var default_log_file = 'log.txt';
+var default_db_file = 'logger.db';
+
 var convert_level = function(level) {
     /**
     * @brief Adds log entries to database and datastore
@@ -42,7 +45,7 @@ var convert_level = function(level) {
 var DbLogger = winston.transports.DbLogger = function(options) {
     this.name = 'db';
     this.level = options.level || 'info';
-    this.filename = options.filename || 'logger.db';
+    this.filename = options.filename || default_db_file;
     this.db = null;
     this.db_ready = false;
 
@@ -162,16 +165,23 @@ var create_line = function(options) {
     return `${timestamp.toISOString()} ${level} ${message}`;
 }
 
+// Delete the log file for now so that it easier to debug
+try {
+    fs.unlinkSync(default_log_file);
+} catch(err) {
+    console.log(`Error removing file ${default_log_file}. Error is ${err}`);
+}
+
 var logger = new (winston.Logger)({
     transports: [
         new (winston.transports.DbLogger)({
             name: 'db_logger',
-            filename: 'my_cool_db.db',
+            filename: default_db_file,
             level: 'info'
         }),
         new (winston.transports.File)({
             name: 'file',
-            filename: 'log.txt',
+            filename: default_log_file,
             level: 'debug',
             json: false,
             timestamp: function() { return new Date(); },
