@@ -53,11 +53,13 @@ var bleDriverStore = reflux.createStore({
             if (err) {
                 logger.error(`Error occured opening serial port. ${err}`);
                 self.state.connectedToDriver = false;
+                self.state.error = err;
             }
             else
             {
                 logger.info(`Finished opening serial port ${port}.`);
                 self.state.connectedToDriver = true;
+                self.state.comPort = port;
                 bleDriver.gap_get_address(function(gapAddress){
                     self.state.centralAddress = gapAddress;
                     logger.info('Central BLE address is: ' + gapAddress.address);

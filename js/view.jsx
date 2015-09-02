@@ -107,9 +107,6 @@ var MainView = React.createClass({
       <div>
         <NavBar />
         <Toolbar>
-          <ToolbarGroup key={0} float="left">
-<ToolbarSeparator/>
-          </ToolbarGroup>
 
           <ToolbarGroup key={1} float="right">
             <RaisedButton ref="showDiscoveryButton" primary={true} label="Discovery" onClick={this._onShowDiscoveryView}>
