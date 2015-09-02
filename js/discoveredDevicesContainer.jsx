@@ -111,7 +111,7 @@ var DiscoveredDevice = React.createClass({
                             Last seen: {time.toLocaleTimeString()}<br/>
                             {address}
                         </div>
-                        <RaisedButton primary={true} onClick={this._onConnect} style={{ position: 'absolute', right: '12px', height: '20px', marginTop: '10px', display: displayConnect, color: 'white'}}>Connect <i className="fa fa-plug"></i></RaisedButton>
+                        <RaisedButton primary={true} onClick={this._onConnect} style={{ position: 'absolute', right: '12px', height: '20px', marginTop: '10px', display: displayConnect, color: 'white'}}>Connect <i className="icon-plug"></i></RaisedButton>
 
                     </div>
                     <div style={{marginTop: '5px', overflow: 'hidden'}}>
