@@ -34,8 +34,6 @@ var logStore = reflux.createStore({
     getInitialState: function() {
         return this.state;
     },
-    onOpen: function() {
-    },
     onSearch: function(filter) {
         var self = this;
     },
@@ -62,48 +60,6 @@ var logStore = reflux.createStore({
             last_log_entry_id = results.db[results.db.length-1].id;
             self.trigger(self.state);
         });
-    },
-    onLog: function(logger_name, level, text) {
-        console.log("REMOVE ME!");
-    },
-    onAdd: function(logger_name, level, entries) {
-        console.log("REMOVE ME!");
-        /*
-        var self = this;
-
-        var level = convert_level(level);
-
-        // Check logger name
-        if(logger_name === undefined || logger_name == null) {
-            logger_name = 'unknown';
-        }
-
-        // Check timestamp, if it does not exist, create one
-        var timestamp = null;
-
-        if(event === undefined || event.time === undefined || event.time === null) {
-            timestamp = new Date().toISOString();
-        } else {
-            timestamp = event.time;
-        }
-
-        if(this.state.db_loaded) {
-            var stmt = db.prepare("INSERT INTO log_entries(time, level, logger, data) VALUES(?, ?, ?, ?)");
-
-            for (var i = 0; i < entries.length; i++)
-            {
-                event = entries[i];
-                stmt.run(
-                    timestamp,
-                    level,
-                    logger_name,
-                    JSON.stringify(event), function(err) {
-                        if(newest_log_entry_id < this.lastID) newest_log_entry_id = this.lastID;
-                    });
-            }
-        } else {
-            console.log("Database not up an running, not able to store log entries to DB");
-        } */
     }
 });
 

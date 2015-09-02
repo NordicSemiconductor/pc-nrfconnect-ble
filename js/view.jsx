@@ -84,7 +84,6 @@ var MainView = React.createClass({
     logger.debug(this.state.chosen_port);
 
     driverActions.connectToDriver(this.state.chosen_port);
-    logActions.open();
   },
   _onShowDiscoveryView: function() {
     if (this.state.isShowingDiscoverySlideIn) {
