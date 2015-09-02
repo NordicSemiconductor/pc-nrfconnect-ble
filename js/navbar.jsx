@@ -10,13 +10,14 @@ import driverActions from './actions/bleDriverActions.js';
 var ComPortSelector = React.createClass({
     getInitialState: function(){
         var targets = bleTargetStore.getInitialState();
-        return {discoveredBleTargets: targets.discoveredBleTargets};
+        return {discoveredBleTargets: targets.discoveredBleTargets || []};
     },
     onMenuItemSelect: function(theEvent, port) {
         driverActions.connectToDriver(port);
     },
     mixins: [Reflux.connect(bleTargetStore)],
     render: function() {
+
         var menuItems = this.state.discoveredBleTargets.map(function(portName, i){
             return (<MenuItem eventKey={portName} onSelect={this.onMenuItemSelect}>{portName}</MenuItem>);
         }, this);
