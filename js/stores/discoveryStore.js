@@ -6,6 +6,8 @@ import logger from '../logging';
 import discoveryActions from '../actions/discoveryActions';
 import logActions from '../actions/logActions';
 
+import uuidDefinitions from '../utils/uuid_definitions'
+
 import bleDriver from 'pc-ble-driver-js';
 
 var discoveryStore = reflux.createStore({
@@ -144,13 +146,18 @@ function camelCaseFlag(flag) {
 // TODO: http://projecttools.nordicsemi.no/stash/projects/APPS-ANDROID/repos/nrf-master-control-panel/browse/app/src/main/java/no/nordicsemi/android/mcp/database/init
 // TODO: http://projecttools.nordicsemi.no/stash/projects/APPS-ANDROID/repos/nrf-master-control-panel/browse/app/src/main/java/no/nordicsemi/android/mcp/database/DatabaseHelper.java
 function uuidToService(uuid) {
-    if(uuid === '0000180D-0000-1000-8000-00805F9B34FB') {
-        return "HRM";
-    } if(uuid === '180D') {
-        return "HRM";
+    var uuidName;
+    if (uuid.match('0000....-0000-1000-8000-00805F9B34FB')) {
+        uuidName = uuidDefinitions['0x' + uuid.slice(4, 8)];
+
+        if (uuidName === undefined) {
+            uuidName = uuid.slice(4, 8);
+        }
     } else {
-        return "..." + uuid.slice(-4);
+        uuidName = uuid.slice(4, 8) + '*';
     }
+
+    return uuidName;
 }
 
 //Merges the events received, the newest event overrides old values

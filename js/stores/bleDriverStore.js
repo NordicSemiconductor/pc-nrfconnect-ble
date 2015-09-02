@@ -29,7 +29,6 @@ var bleDriverStore = reflux.createStore({
             centralAddress: {}
         };
         this.eventCount = 0;
-        this.connectionHandleToDescriptorsMap = {};
         this.gattDatabases = new GattDatabases();
     },
     getInitialState: function() {
@@ -76,7 +75,7 @@ var bleDriverStore = reflux.createStore({
         });
     },
     onGetCharacteristics: function(connectionHandle){
-        this.connectionHandleToDescriptorsMap[connectionHandle] = [];
+        // TODO: Remove current database data?
         var fullHandleRange = {
             start_handle: 1,
             end_handle: 0xffff
@@ -93,9 +92,7 @@ var bleDriverStore = reflux.createStore({
         });
     },
     onReadAllAttributes: function(connectionHandle) {
-        // assumes that all attributes are already in this.connectionHandleToDescriptorsMap
-        var firstAttributeHandle = this.connectionHandleToDescriptorsMap[connectionHandle][0].handle;
-        this.connectionHandleToDescriptorsMap[connectionHandle].currentIndex = 0;
+        var firstAttributeHandle = this.gattDatabases.getHandleList(connectionHandle)[0];
         bleDriver.gattc_read(connectionHandle, firstAttributeHandle, 0, function(err){
             if (err) {
                 logger.error(`Error reading all attributes: ${err}`);
@@ -136,16 +133,12 @@ var bleDriverStore = reflux.createStore({
                     break;
                 case bleDriver.BLE_GATTC_EVT_DESC_DISC_RSP:
                     if (event.count === 0) {
-                        logger.debug(JSON.stringify(this.connectionHandleToDescriptorsMap));
-                        delete this.connectionHandleToDescriptorsMap[event.connecionHandle];
                         this.onReadAllAttributes(event.conn_handle);
                     } else {
                         this.gattDatabases.onDescriptorDiscoverResponseEvent(event);
-                        this.connectionHandleToDescriptorsMap[event.conn_handle] =
-                            this.connectionHandleToDescriptorsMap[event.conn_handle].concat(event.descs);
                         var handleRange = {
                             // TODO: Is it ok to assume contiguous handles here?
-                            start_handle: this.connectionHandleToDescriptorsMap[event.conn_handle].length,
+                            start_handle: event.descs[event.count - 1].handle + 1,
                             end_handle: 0xFFFF
                         };
                         bleDriver.gattc_descriptor_discover(event.conn_handle, handleRange, function(err){
@@ -157,16 +150,14 @@ var bleDriverStore = reflux.createStore({
                     break;
                 case bleDriver.BLE_GATTC_EVT_READ_RSP:
                     this.gattDatabases.onReadResponse(event);
+                    var attributeHandleList = this.gattDatabases.getHandleList(event.conn_handle);
 
-                    var descriptors = this.connectionHandleToDescriptorsMap[event.conn_handle];
-
-                    descriptors[descriptors.currentIndex].data = event.data;
-                    descriptors.currentIndex = descriptors.currentIndex + 1;
-                    if (descriptors.currentIndex >= descriptors.length) {
-                        logger.debug(JSON.stringify(descriptors));
-                        deviceActions.deviceAttributesUpdated(dummyAttributeData);
+                    if (event.handle >= attributeHandleList[attributeHandleList.length - 1]) {
+                        var gd = this.gattDatabases;
+                        // TODO: send gd to UI
                     } else {
-                        bleDriver.gattc_read(event.conn_handle, descriptors[descriptors.currentIndex].handle, 0, function(err){
+                        var nextHandle = attributeHandleList[attributeHandleList.indexOf(event.handle) + 1];
+                        bleDriver.gattc_read(event.conn_handle, nextHandle, 0, function(err) {
                             if (err) {
                                 logger.error(err);
                             }

@@ -178,6 +178,31 @@ class GattDatabases {
         return true;
     }
 
+    getHandleList(connectionHandle) {
+        var handleList = [];
+        var gattDatabase = this.getGattDatabase(connectionHandle);
+        var services = gattDatabase.services;
+
+        for (var serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
+            var service = services[serviceIndex];
+            var characteristics = service.characteristics;
+            handleList.push(service.handle);
+
+            for (var characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
+                var characteristic = characteristics[characteristicIndex];
+                var descriptors = characteristic.descriptors;
+                handleList.push(characteristic.handle);
+
+                for (var descriptorIndex = 0; descriptorIndex < descriptors.length; descriptorIndex++) {
+                    var descriptor = descriptors[descriptorIndex];
+                    handleList.push(descriptor.handle);
+                }
+            }
+        }
+
+        return handleList;
+    }
+
     findParentService(connectionHandle, handle) {
         var gattDatabase = this.getGattDatabase(connectionHandle);
         var previousService;
