@@ -13,7 +13,9 @@ var rewriter = function(value) {
                     on_match: function(matches) { return matches[1] }},
             { expr: /(\d{4})-(\d{2})-(\d{2})T(\d{2})\:(\d{2})\:(\d{2})\.(\d+)Z/,
                     on_match: function(matches) { return matches.input }},
-            { expr: /BLE_GAP_ROLE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }}
+            { expr: /BLE_GAP_ROLE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
+            { expr: /BLE_HCI_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
+            { expr: /BLE_GATT_STATUS_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }}
     ];
 
     try {
@@ -50,7 +52,7 @@ class Textual {
         this.eventToTextual();
         this.genericToTextual();
         this.gapToTextual();
-        this.rawToTextual();
+        this.dataToTextual();
 
         switch(this.event.id) {
             case bleDriver.BLE_GAP_EVT_ADV_REPORT:
@@ -58,6 +60,8 @@ class Textual {
             case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE_REQUEST:
             case bleDriver.BLE_GAP_EVT_TIMEOUT:
             case bleDriver.BLE_GAP_EVT_DISCONNECTED:
+            case bleDriver.BLE_GATTC_EVT_DESC_DISC_RSP:
+            case bleDriver.BLE_GATTC_EVT_READ_RSP:
                 break;
             default:
                 break;
@@ -104,7 +108,8 @@ class Textual {
                 var array_stack = [];
 
                 for(var entry in value) {
-                    array_stack.push(this._extractValues(value[entry]));
+                    var entry_data = this._extractValues(value[entry]);
+                    array_stack.push(`[${entry_data}]`);
                 }
 
                 var data = array_stack.join(',');
@@ -183,15 +188,19 @@ class Textual {
         this.current_stack.push(`gap:[${text}]`);
     }
 
-    rawToTextual() {
+    dataToTextual() {
         var event = this.event;
 
         if(event == undefined) return;
         if(event.data == undefined) return;
-        if(event.data.raw == undefined) return;
 
-        var raw = event.data.raw.toString('hex').toUpperCase();
-        this.current_stack.push(`raw:[${raw}]`);
+        if(event.data.raw !== undefined) {
+            var raw = event.data.raw.toString('hex').toUpperCase();
+            this.current_stack.push(`raw:[${raw}]`);
+        } else if(event.data.constructor === Buffer) {
+            var data = event.data.toString('hex').toUpperCase();
+            this.current_stack.push(`data:[${data}]`);
+        }
     }
 };
 
