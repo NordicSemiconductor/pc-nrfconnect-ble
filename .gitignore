@@ -3,4 +3,5 @@ node_modules
 vendor
 dist
 *.db
+log.txt
 css/styles.css #is generated from .less files

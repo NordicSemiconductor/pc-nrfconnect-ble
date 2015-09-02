@@ -4,6 +4,7 @@ import reflux from 'reflux';
 
 import bleDriver from 'pc-ble-driver-js';
 import logger from '../logging';
+import textual from '../ble_driver_textual';
 
 import bleDriverActions from '../actions/bleDriverActions';
 import discoveryActions from '../actions/discoveryActions';
@@ -12,6 +13,8 @@ import deviceActions from '../actions/deviceActions';
 import logActions from '../actions/logActions';
 
 import dummyAttributeData from '../utils/dummyAttributeData';
+
+import GattDatabases from '../gattDatabases';
 
 // No support for ecmascript6 classes in reflux
 // https://github.com/reflux/refluxjs/issues/225
@@ -27,6 +30,7 @@ var bleDriverStore = reflux.createStore({
         };
         this.eventCount = 0;
         this.connectionHandleToDescriptorsMap = {};
+        this.gattDatabases = new GattDatabases();
     },
     getInitialState: function() {
         return this.state;
@@ -57,11 +61,13 @@ var bleDriverStore = reflux.createStore({
                 bleDriver.gap_get_address(function(gapAddress){
                     self.state.centralAddress = gapAddress;
                     logger.info('Central BLE address is: ' + gapAddress.address);
+                    self.trigger(self.state);
                 });
 
                 bleDriver.gap_get_device_name(function(name){
                     self.state.centralName = name;
                     logger.info('Central name is: ' + name);
+                    self.trigger(self.state);
                 });
             }
             self.trigger(self.state);
@@ -99,7 +105,7 @@ var bleDriverStore = reflux.createStore({
             this.eventCount++;
             var event = eventArray[i];
 
-            logger.debug(event.name, event);
+            logger.debug(new textual(event).toString());
 
             switch(event.id){
                 case bleDriver.BLE_GAP_EVT_ADV_REPORT:
@@ -113,7 +119,7 @@ var bleDriverStore = reflux.createStore({
                             break;
                         default:
                             logger.info(`Something timed out: ${event.src}`);
-                        }
+                    }
                     break;
                 case bleDriver.BLE_GAP_EVT_CONNECTED:
                     connectionActions.deviceConnected(event);
@@ -132,6 +138,7 @@ var bleDriverStore = reflux.createStore({
                         delete this.connectionHandleToDescriptorsMap[event.connecionHandle];
                         this.onReadAllAttributes(event.conn_handle);
                     } else {
+                        this.gattDatabases.onDescriptorDiscoverResponseEvent(event);
                         this.connectionHandleToDescriptorsMap[event.conn_handle] =
                             this.connectionHandleToDescriptorsMap[event.conn_handle].concat(event.descs);
                         var handleRange = {
@@ -147,6 +154,8 @@ var bleDriverStore = reflux.createStore({
                     }
                     break;
                 case bleDriver.BLE_GATTC_EVT_READ_RSP:
+                    this.gattDatabases.onReadResponse(event);
+
                     var descriptors = this.connectionHandleToDescriptorsMap[event.conn_handle];
 
                     descriptors[descriptors.currentIndex].data = event.data;

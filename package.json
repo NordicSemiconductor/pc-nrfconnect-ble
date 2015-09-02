@@ -2,6 +2,10 @@
   "name": "pc-yggdrasil",
   "version": "0.0.51",
   "description": "A natural first choice for BLE development.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NordicSemiconductor/pc-yggdrasil.git"
+  },
   "main": "index.js",
   "scripts": {
     "start": "electron ."
@@ -37,6 +41,7 @@
   "dependencies": {
     "babel": "^5.6.14",
     "bootstrap": "^3.3.5",
+    "change-case": "^2.3.0",
     "dagre": "^0.7.2",
     "express": "^4.12.4",
     "font-awesome": "^4.3.0",

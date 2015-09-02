@@ -17,31 +17,35 @@ var bleNodeStore = reflux.createStore({
     getInitialState: function() {
         return this.state;
     },
-    onAddNode: function(data) {
+    onAddNode: function(connectedDevice, newConnection) {
 
-      console.log("Adding node ", JSON.stringify(data));
+      console.log("Adding node ", JSON.stringify(connectedDevice));
       var newNodeId = 'node' + this.idCounter++;
 
-      this.state.graph.push({id: newNodeId, deviceId: data.peer_addr.address, device: data});
+      this.state.graph.push({id: newNodeId, deviceId: connectedDevice.peer_addr.address, device: connectedDevice});
       var centralNode = this._findCentralNode();
       centralNode.ancestorOf.push(newNodeId);
-      this.trigger(this.state.graph, {remove: false, nodeId: newNodeId});
+      this.trigger(this.state.graph, {remove: false, nodeId: newNodeId, device: connectedDevice, connection: newConnection});
     },
     onRemoveNode: function(deviceAddress) {
-      console.log('removing node');
-      var node = _.find(this.state.graph, function(node){
-        return node.deviceId === deviceAddress;
-      });
+        console.log('removing node');
+        var node = _.find(this.state.graph, function(node){
+            return node.deviceId === deviceAddress;
+        });
+        node.connectionLost = true;
+        var that = this;
+        setTimeout(function() {
+            var centralNode = that._findCentralNode();
+            centralNode.ancestorOf = _.reject(centralNode.ancestorOf, function(nodeId){
+                return nodeId === node.id;
+            });
 
-      var centralNode = this._findCentralNode();
-      centralNode.ancestorOf = _.reject(centralNode.ancestorOf, function(nodeId){
-        return nodeId === node.id;
-      });
-
-      this.state.graph = _.reject(this.state.graph, function(node){
-        return node.deviceId === deviceAddress;
-      });
-      this.trigger(this.state.graph, {remove: true, nodeId: node.id});
+            that.state.graph = _.reject(that.state.graph, function(node){
+                return node.deviceId === deviceAddress;
+            });
+            that.trigger(that.state.graph, {remove: true, nodeId: node.id});
+        }, 5000);
+        this.trigger(this.state.graph, {remove: undefined, nodeId: node.id});
     },
 
     _findCentralNode: function() {

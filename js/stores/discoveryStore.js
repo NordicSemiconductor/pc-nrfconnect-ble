@@ -149,7 +149,7 @@ function uuidToService(uuid) {
     } if(uuid === '180D') {
         return "HRM";
     } else {
-        return "?";
+        return "..." + uuid.slice(-4);
     }
 }
 

@@ -20,7 +20,6 @@ import logStore from './stores/logStore';
 
 import BleTargetActions from './actions/bleTargetActions';
 import logActions from './actions/logActions';
-import DiscoveryButton from './discoveryButton.jsx';
 import DiscoveryView from './discoveryView.jsx';
 
 var Tabs = mui.Tabs,
@@ -85,7 +84,6 @@ var MainView = React.createClass({
     logger.debug(this.state.chosen_port);
 
     driverActions.connectToDriver(this.state.chosen_port);
-    logActions.open();
   },
   _onShowDiscoveryView: function() {
     if (this.state.isShowingDiscoverySlideIn) {
@@ -116,7 +114,6 @@ var MainView = React.createClass({
           </ToolbarGroup>
 
           <ToolbarGroup key={1} float="right">
-            <DiscoveryButton/>
             <RaisedButton ref="showDiscoveryButton" primary={true} label="Discovery" onClick={this._onShowDiscoveryView}>
                 <i className="fa fa-wifi" style={{color: 'white', float: 'left', margin: '10px 5px 10px 15px'}}></i>
             </RaisedButton>

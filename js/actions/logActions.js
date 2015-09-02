@@ -5,10 +5,7 @@ var Reflux = require('reflux');
 var logActions = Reflux.createActions(
     [
         "search",
-        "follow",
-        "open",
-        "add",
-        "log"
+        "follow"
     ]);
 
 module.exports = logActions;

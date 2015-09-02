@@ -2,8 +2,10 @@
 
 import reflux from 'reflux';
 import serialPort from 'serialport-electron';
+import child_process from 'child_process';
 
 import bleTargetActions from '../actions/bleTargetActions';
+import fs from 'fs';
 
 var bleTargetStore = reflux.createStore({
     listenables: [bleTargetActions],
@@ -18,13 +20,19 @@ var bleTargetStore = reflux.createStore({
     },
     onStartBleTargetDetect: function() {
         var self = this;
-        var portNum = 1;
+        var portName = '';
         serialPort.list(function(err, ports) {
-            ports.forEach(function(port) {
-                self.discoveredBleTargets.push({payload: '' + portNum, text: port.comName});
-                portNum = portNum + 1;
+            self.discoveredBleTargets = ports.map(function(port){
+                portName = port.comName;
+                if (process.platform === 'darwin') {
+                    var modPortName = portName.replace('/dev/cu.', '/dev/tty.'); //workaround for wrong port location on darwin (OSX)
+                    if(fs.existsSync(modPortName)) {
+                        portName = modPortName;
+                    }
+                }
+                return  {payload: 'maybenoutused', text: portName}; 
             });
-
+            self.discoveredBleTargets.unshift({payload: 'notused', text:'None'});
             self.trigger(self.discoveredBleTargets);
         });
     }
