@@ -3,6 +3,32 @@ import changeCase from 'change-case';
 import bleDriver from 'pc-ble-driver-js';
 import logger from './logging';
 
+var rewriter = function(value) {
+    var rewrite_rules = [
+            { expr:/BLE_GAP_ADV_FLAGS?_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
+            { expr:/BLE_GAP_AD_TYPE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
+            { expr:/BLE_GAP_ADDR_TYPE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
+            { expr: /BLE_GAP_ADV_TYPE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
+            { expr: /([0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2})/,
+                    on_match: function(matches) { return matches[1] }},
+            { expr: /(\d{4})-(\d{2})-(\d{2})T(\d{2})\:(\d{2})\:(\d{2})\.(\d+)Z/,
+                    on_match: function(matches) { return matches.input }},
+            { expr: /BLE_GAP_ROLE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }}
+    ];
+
+    for(var rewrite_rule in rewrite_rules) {
+        var rule = rewrite_rules[rewrite_rule];
+
+        if(rule.expr.test(value)) {
+            return rule.on_match(rule.expr.exec(value));
+        }
+    }
+
+    // We did not find any rules to rewrite the value, return original value
+    return changeCase.camelCase(value);
+}
+
+
 class Textual {
     constructor(event) {
         this.event = event;
@@ -18,99 +44,18 @@ class Textual {
 
         this.current_stack = this.stack;
         this.eventToTextual();
-        this.rssiToTextual();
-        this.addressToTextual();
-        this.connHandleToTextual();
+        this.genericToTextual();
         this.gapToTextual();
         this.rawToTextual();
 
         switch(this.event.id) {
+            case bleDriver.BLE_GAP_EVT_ADV_REPORT:
             case bleDriver.BLE_GAP_EVT_CONNECTED:
-                break;
+            case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE_REQUEST:
+            case bleDriver.BLE_GAP_EVT_TIMEOUT:
             case bleDriver.BLE_GAP_EVT_DISCONNECTED:
                 break;
-            case bleDriver.BLE_GAP_EVT_TIMEOUT:
-                break;
-            case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE:
-                break;
-            case bleDriver.BLE_GAP_EVT_ADV_REPORT:
-                break;
-            case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE:
-                break;
-            case bleDriver.BLE_GAP_EVT_RSSI_CHANGED:
-                break;
-            case bleDriver.BLE_GAP_EVT_ADV_REPORT:
-                break;
-            case bleDriver.BLE_GAP_EVT_SCAN_REQ_REPORT:
-                break;
-            case bleDriver.BLE_GAP_EVT_SEC_PARAMS_REQUEST:
-                break;
-            case bleDriver.BLE_GAP_EVT_SEC_INFO_REQUEST:
-                break;
-            case bleDriver.BLE_GAP_EVT_CONN_SEC_UPDATE:
-                break;
-            case bleDriver.BLE_GAP_EVT_AUTH_KEY_REQUEST:
-                break;
-            case bleDriver.BLE_GAP_EVT_SEC_REQUEST:
-                break;
-            case bleDriver.BLE_GAP_EVT_PASSKEY_DISPLAY:
-                break;
-            case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE_REQUEST:
-                break;
-            case bleDriver.BLE_GAP_EVT_AUTH_STATUS:
-                break;
-            case bleDriver.BLE_GATTC_EVT_READ_RSP:
-                break;
-            case bleDriver.BLE_GATTC_EVT_WRITE_RSP:
-                break;
-            case bleDriver.BLE_GATTC_EVT_TIMEOUT:
-                break;
-            case bleDriver.BLE_GATTC_EVT_HVX:
-                break;
-            case bleDriver.BLE_GATTC_EVT_READ_RSP:
-                break;
-            case bleDriver.BLE_GATTC_EVT_PRIM_SRVC_DISC_RSP:
-                break;
-            case bleDriver.BLE_GATTC_EVT_CHAR_DISC_RSP:
-                break;
-            case bleDriver.BLE_GATTC_EVT_DESC_DISC_RSP:
-                break;
-            case bleDriver.BLE_GATTC_EVT_CHAR_VALS_READ_RSP:
-                break;
-            case bleDriver.BLE_GATTC_EVT_PRIM_SRVC_DISC_RSP:
-                break;
-            case bleDriver.BLE_GATTC_EVT_REL_DISC_RSP:
-                break;
-            case bleDriver.BLE_GATTC_EVT_CHAR_DISC_RSP:
-                break;
-            case bleDriver.BLE_GATTC_EVT_DESC_DISC_RSP:
-                break;
-            case bleDriver.BLE_GATTC_EVT_CHAR_VAL_BY_UUID_READ_RSP:
-                break;
-            case bleDriver.BLE_GATTC_EVT_CHAR_VALS_READ_RSP:
-                break;
-            case bleDriver.BLE_GATTS_EVT_TIMEOUT:
-                break;
-            case bleDriver.BLE_GATTS_EVT_WRITE:
-                break;
-            case bleDriver.BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST:
-                break;
-            case bleDriver.BLE_GATTS_EVT_SYS_ATTR_MISSING:
-                break;
-            case bleDriver.BLE_GATTS_EVT_HVC:
-                break;
-            case bleDriver.BLE_GATTS_EVT_SC_CONFIRM:
-                break;
-            case bleDriver.BLE_EVT_TX_COMPLETE:
-                break;
-            case bleDriver.BLE_EVT_TX_COMPLETE:
-                break;
-            case bleDriver.BLE_EVT_USER_MEM_REQUEST:
-                break;
-            case bleDriver.BLE_EVT_USER_MEM_RELEASE:
-                break;
             default:
-
                 break;
         }
 
@@ -128,22 +73,46 @@ class Textual {
         }
     }
 
-    addressToTextual() {
-        if(this.event.peer_addr === undefined) return;
+    genericToTextual() {
+        var evt = this.event;
+        this.current_stack.push(this._extractValues(evt).join(' '));
+    }
 
-        var address = this.event.peer_addr;
-        var type = address.type.split('BLE_GAP_ADDR_TYPE_')[1];
-        this.current_stack.push(`addr:${type}/${address.address}`);
+    _extractValues(obj) {
+        var old_stack = this.current_stack;
+        var new_stack = []
+        this.current_stack = new_stack;
+
+        var keys = Object.keys(obj);
+
+        for(var key in keys) {
+            var key = keys[key];
+
+            if(key == 'id') continue;
+            if(key == 'data') continue;
+            if(key == 'name') continue;
+
+            var value = eval(`obj.${key}`);
+
+            key = rewriter(key);
+
+            if(typeof value === 'object') {
+                var data = this._extractValues(value);
+                data = data.join(' ');
+                this.current_stack.push(`${key}:[${data}]`);
+            } else {
+                value = rewriter(value);
+                this.current_stack.push(`${key}:${value}`);
+            }
+        }
+
+        this.current_stack = old_stack;
+        return new_stack;
     }
 
     rssiToTextual() {
         if(this.event.rssi === undefined) return;
         this.current_stack.push(`rssi:${this.event.rssi}`);
-    }
-
-    connHandleToTextual() {
-        if(this.event.conn_handle === undefined || this.event.conn_handle == 65535) return;
-        this.current_stack.push(`connHandle:${this.event.conn_handle}`);
     }
 
     gapGeneric() {
@@ -161,8 +130,7 @@ class Textual {
                 if(key.search("BLE_GAP_AD_TYPE_FLAGS") != -1) continue;
 
                 var value = eval(`event.data.${key}`);
-                var name = key.split("BLE_GAP_AD_TYPE_")[1];
-                name = changeCase.camelCase(name);
+                var name = rewriter(key);
                 this.current_stack.push(`${name}:${value}`);
             }
         }
@@ -180,28 +148,26 @@ class Textual {
 
         // Process flags if they are present
         if(event.data.BLE_GAP_AD_TYPE_FLAGS !== undefined) {
-            var re = /BLE_GAP_ADV_FLAGS?_(.*)/;
             var flags = [];
 
             event.data.BLE_GAP_AD_TYPE_FLAGS.forEach(flag => {
-                flags.push(changeCase.camelCase(re.exec(flag)[1]));
+                flags.push(rewriter(flag));
             });
 
             flags = flags.join(',');
             gap.push(`adTypeFlags:[${flags}]`);
         }
 
-        // Add scan response if that is present
-        if(event.scan_rsp !== undefined && event.scan_rsp == true) gap.push("scanRsp");
-
         // Add GAP information that can be processed in a generic way
         this.gapGeneric();
 
+        this.current_stack = old_stack;
+
+        if(gap.length == 0) return;
+
         // Join all GAP information and add to stack
         var text = gap.join(' ');
-
-        this.current_stack = old_stack;
-        this.current_stack.push(`GAP:[${text}]`);
+        this.current_stack.push(`gap:[${text}]`);
     }
 
     rawToTextual() {
@@ -211,7 +177,7 @@ class Textual {
         if(event.data == undefined) return;
         if(event.data.raw == undefined) return;
 
-        var raw = event.data.raw.toString('hex');
+        var raw = event.data.raw.toString('hex').toUpperCase();
         this.current_stack.push(`raw:[${raw}]`);
     }
 };
