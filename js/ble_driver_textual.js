@@ -16,12 +16,16 @@ var rewriter = function(value) {
             { expr: /BLE_GAP_ROLE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }}
     ];
 
-    for(var rewrite_rule in rewrite_rules) {
-        var rule = rewrite_rules[rewrite_rule];
+    try {
+        for(var rewrite_rule in rewrite_rules) {
+            var rule = rewrite_rules[rewrite_rule];
 
-        if(rule.expr.test(value)) {
-            return rule.on_match(rule.expr.exec(value));
+            if(rule.expr.test(value)) {
+                return rule.on_match(rule.expr.exec(value));
+            }
         }
+    } catch(err) {
+        console.log(err);
     }
 
     // We did not find any rules to rewrite the value, return original value
@@ -96,7 +100,16 @@ class Textual {
 
             key = rewriter(key);
 
-            if(typeof value === 'object') {
+            if(value.constructor === Array) {
+                var array_stack = [];
+
+                for(var entry in value) {
+                    array_stack.push(this._extractValues(value[entry]));
+                }
+
+                var data = array_stack.join(',');
+                this.current_stack.push(`${key}:[${data}]`);
+            } else if(typeof value === 'object') {
                 var data = this._extractValues(value);
                 data = data.join(' ');
                 this.current_stack.push(`${key}:[${data}]`);
