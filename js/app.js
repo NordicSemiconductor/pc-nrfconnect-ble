@@ -27,6 +27,9 @@ jsPlumb.bind("ready", function(){
 });
 
 
-compileLess("css/styles.less", "css/styles.css"); 
+compileLess("css/styles.less", "css/styles.css", function(err) {
+	if (err) console.error("Error compiling LESS: " + err);
+	else console.debug("Successfully compiled LESS");
+	React.render(React.createElement(view), document.getElementById('app'));
+}); 
 
-React.render(React.createElement(view), document.getElementById('app'));
