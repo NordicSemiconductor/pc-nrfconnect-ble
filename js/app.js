@@ -9,6 +9,7 @@ var React = require('react');
 
 var view = require('./js/view.jsx');
 var injectTapEventPlugin = require("react-tap-event-plugin");
+var compileLess = require("./js/utils/compileLess.js");
 
 //Needed for onTouchTap
 //Can go away when react 1.0 release
@@ -24,5 +25,8 @@ jsPlumb.bind("ready", function(){
         }
     });
 });
+
+
+compileLess("css/styles.less", "css/styles.css"); 
 
 React.render(React.createElement(view), document.getElementById('app'));
