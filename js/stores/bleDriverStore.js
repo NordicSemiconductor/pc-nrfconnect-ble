@@ -14,6 +14,8 @@ import logActions from '../actions/logActions';
 
 import dummyAttributeData from '../utils/dummyAttributeData';
 
+import GattDatabases from '../gattDatabases';
+
 // No support for ecmascript6 classes in reflux
 // https://github.com/reflux/refluxjs/issues/225
 var bleDriverStore = reflux.createStore({
@@ -28,6 +30,7 @@ var bleDriverStore = reflux.createStore({
         };
         this.eventCount = 0;
         this.connectionHandleToDescriptorsMap = {};
+        this.gattDatabases = new GattDatabases();
     },
     getInitialState: function() {
         return this.state;
@@ -58,11 +61,13 @@ var bleDriverStore = reflux.createStore({
                 bleDriver.gap_get_address(function(gapAddress){
                     self.state.centralAddress = gapAddress;
                     logger.info('Central BLE address is: ' + gapAddress.address);
+                    self.trigger(self.state);
                 });
 
                 bleDriver.gap_get_device_name(function(name){
                     self.state.centralName = name;
                     logger.info('Central name is: ' + name);
+                    self.trigger(self.state);
                 });
             }
             self.trigger(self.state);
@@ -133,6 +138,7 @@ var bleDriverStore = reflux.createStore({
                         delete this.connectionHandleToDescriptorsMap[event.connecionHandle];
                         this.onReadAllAttributes(event.conn_handle);
                     } else {
+                        this.gattDatabases.onDescriptorDiscoverResponseEvent(event);
                         this.connectionHandleToDescriptorsMap[event.conn_handle] =
                             this.connectionHandleToDescriptorsMap[event.conn_handle].concat(event.descs);
                         var handleRange = {
@@ -148,6 +154,8 @@ var bleDriverStore = reflux.createStore({
                     }
                     break;
                 case bleDriver.BLE_GATTC_EVT_READ_RSP:
+                    this.gattDatabases.onReadResponse(event);
+
                     var descriptors = this.connectionHandleToDescriptorsMap[event.conn_handle];
 
                     descriptors[descriptors.currentIndex].data = event.data;

@@ -4,13 +4,11 @@ var React = require('react');
 var dagre = require('dagre');
 var Reflux = require('reflux');
 var nodeStore = require('./stores/bleNodeStore');
-var deviceStore = require('./stores/deviceStore');
+
 var driverStore = require('./stores/bleDriverStore');
-var connectionStore = require('./stores/connectionStore');
 var connectionActions = require('./actions/connectionActions');
 var DiscoveredDevice = require('./discoveredDevicesContainer.jsx').DiscoveredDevice;
-var mui = require('material-ui');
-var RaisedButton = mui.RaisedButton;
+
 var bs = require('react-bootstrap');
 var Popover = bs.Popover;
 var OverlayTrigger = bs.OverlayTrigger;
@@ -48,7 +46,7 @@ var ConnectionSetup = React.createClass({
                 <hr/>
                 <button onClick = {this._disconnect}>Disconnect</button>
             </div>
-            );
+        );
     }
 });
 
@@ -78,8 +76,13 @@ var BleNodeContainer = React.createClass({
     onGraphChanged: function(newGraph, change){
         this.setState({graph: newGraph}); // Must be done before connection is made since connection target is created by render
         if (change.remove) {
+            
+            
             jsPlumb.remove(change.nodeId);
-        } else {
+            this.autoLayout();
+            
+
+        } else if (change.remove === false){
             var overlayId= "connection" + change.nodeId;
             var connectionParameters = {
                 source: 'central',
@@ -100,8 +103,11 @@ var BleNodeContainer = React.createClass({
             this.setState({graph: newGraph}, function() {
                   React.render(<ConnectionOverlay device={change.device} connection={change.connection}/>, document.getElementById(overlayId));
             });
+            this.autoLayout();
+        } else {
+            var element = document.getElementById(change.nodeId);
+            element.style.opacity = 0.5;
         }
-        this.autoLayout();
     },
     getInitialState: function(){
         return nodeStore.getInitialState();
@@ -140,7 +146,12 @@ var BleNodeContainer = React.createClass({
         var plumbNodes = [];
         
         for (var i = 0; i < this.state.graph.length; i++) {
-            plumbNodes.push(<BleNode key={i} nodeId={this.state.graph[i].id} device={this.state.graph[i].device} centralName = {this.state.centralName} centralAddress = {this.state.centralAddress}/>);
+            var nodeId = this.state.graph[i].id;
+            if (nodeId === 'central') {
+                plumbNodes.push(<BleNode key={i} nodeId={nodeId} centralName={this.state.centralName} centralAddress={this.state.centralAddress}/>);
+            } else {
+                plumbNodes.push(<BleNode key={i} nodeId={this.state.graph[i].id} device={this.state.graph[i].device} />);
+            }
         }
         return (
             <div id="diagramContainer" style={{position: 'absolute'}} >
@@ -150,70 +161,26 @@ var BleNodeContainer = React.createClass({
     }
 });
 
-var BleCentral = React.createClass({
-    mixins: [Reflux.connect(driverStore)],
-    componentDidMount: function(){
-        var that = this;
-        jsPlumb.bind("ready", function(){
-            jsPlumb.draggable(that.props.nodeId);
-        });
-    },
-    render: function(){
-        
-    }
-});
-
 var BleNode = React.createClass({
-    getInitialState: function(){
-        return {isShowingConnectionSlideIn: false};
-    },
     componentDidMount: function(){
         var that = this;
         jsPlumb.bind("ready", function(){
             jsPlumb.draggable(that.props.nodeId);
         });
-        console.log('BleNode did mount');
     },
-    toggleShowConnectionDetails: function() {
-        this.showConnectionDetails = !this.showConnectionDetails;
-    },
-    _onToggleConnectionView: function(c, e) {
-        console.log(c);
-        console.log(e);
-        this.setState({isShowingConnectionSlideIn: !this.state.isShowingConnectionSlideIn});
-        React.render(<TestComp/>, document.getElementById('connection3'));
-    }, 
-    
     render: function() {
-        var self = this;
-        var connectionViewStyle = {
-            display: 'none',
-            width: '150px',
-            height: '200px',
-            position: 'absolute',
-            left: '150px',
-            boxShadow: "0px 0px 4px 0px #777A89",
-        };
-
-
-        connectionViewStyle.display = this.state.isShowingConnectionSlideIn ? 'inline-block': 'none';
-
+        var theDevice;
+        if (this.props.nodeId === 'central') {
+            theDevice = (<div><h3>{this.props.centralName}</h3><div className="text-muted">{this.props.centralAddress.address}</div></div>);
+        } else {
+            theDevice = (<DiscoveredDevice standalone={true} star={false} bonded={false} device= {this.props.device}/>);
+        }
         return (
             <div key={this.props.nodeId} id={this.props.nodeId} className="item node" style={{position: 'absolute', width: '150px', height: '200px'}}>
-                <div style={connectionViewStyle}>
-                    <RaisedButton onClick={this._disconnect} label="Disconnect..."/>
-                </div>
-                <DiscoveredDevice
-                    standalone={true}
-                    star={false}
-                    bonded={false}
-                    device= {this.props.device}
-                />
+                {theDevice}
             </div>
         );
-  }
+   }
 });
-
-
 
 module.exports = BleNodeContainer;
