@@ -18,9 +18,10 @@ import bleTargetStore from './stores/bleTargetStore';
 import discoveryStore from './stores/discoveryStore';
 import logStore from './stores/logStore';
 
-import BleTargetActions from './actions/bleTargetActions';
 import logActions from './actions/logActions';
 import DiscoveryView from './discoveryView.jsx';
+
+import NavBar from './navbar.jsx';
 
 var Tabs = mui.Tabs,
   Tab = mui.Tab,
@@ -41,9 +42,6 @@ var ThemeManager = new mui.Styles.ThemeManager();
 let { Typography } = Styles;
 var ColorManipulator = mui.Utils.ColorManipulator;
 
-setTimeout(function() {
-  BleTargetActions.startBleTargetDetect();
-}, 1000);
 
 var MainView = React.createClass({
   mixins: [Reflux.connect(bleTargetStore, "discoveredBleTargets", "chosen_port"),
@@ -99,7 +97,7 @@ var MainView = React.createClass({
     DiscoveryActions.connectToDevice({'address': 'C0:D4:94:D7:39:22', 'type': 'BLE_GAP_ADDR_TYPE_RANDOM_STATIC'});
   },
   render: function(){
-    var self = this, targets = this.state.discoveredBleTargets.concat({payload: "22", text: "/dev/tty.usbmodem1d111"});
+    var self = this;
     var discoveryButtonBackgroundColor;
     var discoveryButtonStyle = {
         color: 'white', margin: '0px 10px'
@@ -107,9 +105,9 @@ var MainView = React.createClass({
 
     return (
       <div>
+        <NavBar />
         <Toolbar>
           <ToolbarGroup key={0} float="left">
-          <DropDownMenu iconClassName="icon-expand_more"menuItems={targets} onChange={self._onBleTargetChange} />
 <ToolbarSeparator/>
           </ToolbarGroup>
 
@@ -121,7 +119,7 @@ var MainView = React.createClass({
           </ToolbarGroup>
         </Toolbar>
 
-        <Tabs onChange={this._onChange}>
+        <Tabs>
           <Tab label="Connection Map" >
               <div id="scan_comp">
                 <p>
