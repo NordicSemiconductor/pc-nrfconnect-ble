@@ -65,7 +65,7 @@ var message_render = function(column, row) {
                 </device-info>
                 <device-status>
                     <div>{pairing_status}</div>
-                    <div><i className="fa fa-wifi" style={{color: 'black', float: 'center', margin: '10px 5px 10px 15px'}}></i>{rssi}</div>
+                    <div><i className="icon-wifi" style={{color: 'black', float: 'center', margin: '10px 5px 10px 15px'}}></i>{rssi}</div>
                 </device-status>
                 <service-info>
                     <service-flags>

@@ -44,7 +44,6 @@
     "change-case": "^2.3.0",
     "dagre": "^0.7.2",
     "express": "^4.12.4",
-    "font-awesome": "^4.3.0",
     "material-design-icons": "^2.0.0",
     "material-ui": "^0.10.4",
     "mkdirp": "^0.5.1",
