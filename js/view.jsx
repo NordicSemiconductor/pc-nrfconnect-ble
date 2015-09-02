@@ -110,7 +110,7 @@ var MainView = React.createClass({
 
           <ToolbarGroup key={1} float="right">
             <RaisedButton ref="showDiscoveryButton" primary={true} label="Discovery" onClick={this._onShowDiscoveryView}>
-                <i className="fa fa-wifi" style={{color: 'white', float: 'left', margin: '10px 5px 10px 15px'}}></i>
+                <i className="icon-wifi" style={{color: 'white', float: 'left', margin: '10px 5px 10px 15px'}}></i>
             </RaisedButton>
 
           </ToolbarGroup>
