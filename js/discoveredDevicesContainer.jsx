@@ -35,14 +35,6 @@ const deviceStyles = {
         display: 'inline-block',
         float: 'left',
         color: 'white'
-    },
-    rssi: {
-        float: 'right',
-        width: '19px',
-        height: '19px',
-        marginRight: '5px',
-        marginTop: '-5px',
-        marginLeft: '-5px'
     }
 };
 
@@ -69,8 +61,6 @@ var DiscoveredDevice = React.createClass({
                 );
         }
 
-        var signalClass = 'material-icons';
-
         var short_local_name = "";
         var flags = [];
         var services = [];
@@ -79,8 +69,7 @@ var DiscoveredDevice = React.createClass({
         var time = new Date(this.props.device.time);
         var address = this.props.device.peer_addr.address;
         var rssi = this.props.device.rssi;
-        var rssi_level = calculateRssiIcon(rssi, 5);
-        var signalClass = 'svg-ic_signal_cellular_' + rssi_level + '_bar_24px';
+        var rssi_level = mapRange(rssi, MIN_RSSI, MAX_RSSI, 4, 20);
 
         if('data' in this.props.device)
         {
@@ -103,7 +92,10 @@ var DiscoveredDevice = React.createClass({
                     <span style={deviceStyles.name}>{short_local_name}</span>
                     <span style={deviceStyles.name}>{complete_local_name}</span>
                     <span style={{float: 'right'}}>{rssi}</span>
-                    <span style={deviceStyles.rssi} className={signalClass}></span>
+                    <div style={{float: 'right'}}>
+                        <span style={{width: rssi_level + 'px'}} className="icon-signal icon-foreground"></span>
+                        <span className="icon-signal icon-background"></span>
+                    </div>
                 </div>
                 <div style={deviceStyles.body}>
                     <div style={{display: 'inline'}}>
@@ -128,16 +120,11 @@ var DiscoveredDevice = React.createClass({
     }
 });
 
-function calculateRssiIcon(rssi, num_levels)
-{
-  if (rssi <= MIN_RSSI) {
-      return 0;
-  } else if (rssi >= MAX_RSSI) {
-      return num_levels - 1;
-  } else {
-      var partitionSize = (MAX_RSSI - MIN_RSSI) / (num_levels - 1);
-      return Math.round((rssi - MIN_RSSI) / partitionSize);
-  }
+function mapRange(n, fromMin, fromMax, toMin, toMax) {
+    //scale number n from the range [fromMin, fromMax] to [toMin, toMax]
+    n = toMin + ((toMax - toMin) / (fromMax - fromMin)) * (n - fromMin)
+    n = Math.round(n);
+    return Math.max(toMin, Math.min(toMax, n));
 }
 
 const containerStyle = {
