@@ -9,9 +9,7 @@ var moment = require('moment');
 
 var View = React.View;
 
-var mui = require('material-ui');
 
-var Checkbox = mui.Checkbox;
 
 var logViewPeerAddress = {}
 
@@ -171,6 +169,7 @@ var LogContainer = React.createClass({
     render: function() {
         return (
             <div>
+                <input type="checkbox" onClick={this._onFollow}>follow</input>
                 <DataGrid
                     ref="log_entries"
                     idProperty="id"
@@ -184,8 +183,6 @@ var LogContainer = React.createClass({
                     rowFactory={row_factory}
                     style={{height: 700}}
                 />
-
-                <Checkbox name="followLogCheckBox" label="Follow" onCheck={this._onFollow} />
             </div>);
     }
 });

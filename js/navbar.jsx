@@ -9,8 +9,18 @@ import {DropdownButton, MenuItem} from 'react-bootstrap';
 import driverActions from './actions/bleDriverActions.js';
 
 var ComPortSelector = React.createClass({
+    componentWillMount: function() {
+        this.currentPort = 'None';
+    },
     onMenuItemSelect: function(theEvent, port) {
-        driverActions.connectToDriver(port);
+        if (this.state.driverState.connectedToDriver && this.currentPort !== 'None') {
+            driverActions.disconnectFromDriver();
+            this.currentPort = 'None';
+        }
+        if (port !== 'None') {
+            driverActions.connectToDriver(port);
+            this.currentPort = port;
+        }
     },
     _getTitle: function() {
         if (this.state.driverState.connectedToDriver && !this.state.driverState.error) {

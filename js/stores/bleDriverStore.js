@@ -74,6 +74,14 @@ var bleDriverStore = reflux.createStore({
             self.trigger(self.state);
         });
     },
+    onDisconnectFromDriver: function() {
+        bleDriver.close();
+        this.trigger({
+            connectedToDriver: false,
+            centralName: '',
+            centralAddress: ''
+        });
+    },
     onGetCharacteristics: function(connectionHandle){
         // TODO: Remove current database data?
         var fullHandleRange = {
