@@ -54,6 +54,7 @@ var NavBar = React.createClass({
             boxShadow: 'inset 0 5px 10px #133e40'
         };
         this.passiveStyle = {};
+        this.driverState = { connectedToDriver: false };
         return{
             activeTab: 'ConnectionMap'
         }
@@ -65,13 +66,14 @@ var NavBar = React.createClass({
     _getClassForTabButton: function(itemName) {
         return "nav-bar-element " + (this.state.activeTab === itemName ? "active" : "");
     },
+    mixins: [Reflux.connect(bleDriverStore, 'driverState')],
     render: function() {
         return (
             <div className="nav-bar">
                 <div className="nav-section">
                     <div className="nav-bar-element">
                         <ComPortSelector/>
-                        <div className="indicator on"></div>
+                        <div className={ this.state.driverState.connectedToDriver ? "indicator on" : "indicator off" }></div>
                     </div>
                 </div>
                 <div className="nav-section bl">
