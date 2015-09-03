@@ -204,7 +204,6 @@
 
 .nav-bar {
   background-color: #FFF;
-  box-shadow:0px 1px 1px #de1dde;
   padding: 0;
   
   .nav-bar-element {
@@ -245,16 +244,18 @@ table.main-layout {
   width: 100%;
   > tbody > tr:nth-child(1) {
     > td:nth-child(1) {
+      box-shadow: inset 0px 0px 10px gray;
     }
     > td:nth-child(2) {
       width: 250px;
+      background-color: white;
     }
   }
   > tbody > tr:nth-child(2) > td {
     height: 250px;
   }
   > tbody > tr > td {
-    border: 1px solid gray;
+    border-top: 1px solid gray;
     vertical-align: top;
   }
 }
