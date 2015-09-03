@@ -13,15 +13,21 @@ var rewriter = function(value) {
                     on_match: function(matches) { return matches[1] }},
             { expr: /(\d{4})-(\d{2})-(\d{2})T(\d{2})\:(\d{2})\:(\d{2})\.(\d+)Z/,
                     on_match: function(matches) { return matches.input }},
-            { expr: /BLE_GAP_ROLE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }}
+            { expr: /BLE_GAP_ROLE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
+            { expr: /BLE_HCI_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
+            { expr: /BLE_GATT_STATUS_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }}
     ];
 
-    for(var rewrite_rule in rewrite_rules) {
-        var rule = rewrite_rules[rewrite_rule];
+    try {
+        for(var rewrite_rule in rewrite_rules) {
+            var rule = rewrite_rules[rewrite_rule];
 
-        if(rule.expr.test(value)) {
-            return rule.on_match(rule.expr.exec(value));
+            if(rule.expr.test(value)) {
+                return rule.on_match(rule.expr.exec(value));
+            }
         }
+    } catch(err) {
+        console.log(err);
     }
 
     // We did not find any rules to rewrite the value, return original value
@@ -46,7 +52,7 @@ class Textual {
         this.eventToTextual();
         this.genericToTextual();
         this.gapToTextual();
-        this.rawToTextual();
+        this.dataToTextual();
 
         switch(this.event.id) {
             case bleDriver.BLE_GAP_EVT_ADV_REPORT:
@@ -54,6 +60,8 @@ class Textual {
             case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE_REQUEST:
             case bleDriver.BLE_GAP_EVT_TIMEOUT:
             case bleDriver.BLE_GAP_EVT_DISCONNECTED:
+            case bleDriver.BLE_GATTC_EVT_DESC_DISC_RSP:
+            case bleDriver.BLE_GATTC_EVT_READ_RSP:
                 break;
             default:
                 break;
@@ -96,7 +104,17 @@ class Textual {
 
             key = rewriter(key);
 
-            if(typeof value === 'object') {
+            if(value.constructor === Array) {
+                var array_stack = [];
+
+                for(var entry in value) {
+                    var entry_data = this._extractValues(value[entry]);
+                    array_stack.push(`[${entry_data}]`);
+                }
+
+                var data = array_stack.join(',');
+                this.current_stack.push(`${key}:[${data}]`);
+            } else if(typeof value === 'object') {
                 var data = this._extractValues(value);
                 data = data.join(' ');
                 this.current_stack.push(`${key}:[${data}]`);
@@ -170,15 +188,19 @@ class Textual {
         this.current_stack.push(`gap:[${text}]`);
     }
 
-    rawToTextual() {
+    dataToTextual() {
         var event = this.event;
 
         if(event == undefined) return;
         if(event.data == undefined) return;
-        if(event.data.raw == undefined) return;
 
-        var raw = event.data.raw.toString('hex').toUpperCase();
-        this.current_stack.push(`raw:[${raw}]`);
+        if(event.data.raw !== undefined) {
+            var raw = event.data.raw.toString('hex').toUpperCase();
+            this.current_stack.push(`raw:[${raw}]`);
+        } else if(event.data.constructor === Buffer) {
+            var data = event.data.toString('hex').toUpperCase();
+            this.current_stack.push(`data:[${data}]`);
+        }
     }
 };
 

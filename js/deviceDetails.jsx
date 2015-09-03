@@ -83,7 +83,7 @@ var ServiceItem = React.createClass({
         }, 1000);
     },
     render: function() {
-        var expandIcon = this.state.expanded ? 'fa-caret-down' : 'fa-caret-right';
+        var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
         var iconPadding = this.state.expanded ? '0px' :'3px';
         
         return (
@@ -91,7 +91,7 @@ var ServiceItem = React.createClass({
                 <div className="panel panel-default" style={{marginBottom: '0px'}}>
                     <div style={{backgroundColor: '#B3E1F5', height: this.height, width: '10px', float: 'left'}}/>
                     <div onClick={this._toggleExpanded} className="panel-heading" style={{backgroundColor: 'white', padding: '5px 8px'}}>
-                        <i className={"fa " + expandIcon} style={{paddingRight: iconPadding}}></i>
+                        <i className={"icon-slim " + expandIcon} style={{paddingRight: iconPadding}}></i>
                         <span style={{marginLeft: '5px'}}>{this.props.serviceData.name}</span>
                         <span style={{float: 'right'}}>{this.props.serviceData.value}</span>
                         <div style={{color: 'grey', fontSize: '12px'}}>
@@ -151,14 +151,14 @@ var CharacteristicItem = React.createClass({
         this.height = React.findDOMNode(this).offsetHeight;
     },
     render: function() {
-        var expandIcon = this.state.expanded ? 'fa-caret-down' : 'fa-caret-right';
+        var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
         var iconPadding = this.state.expanded ? '0px' :'3px';
         return (
         <div >
             <div className="panel panel-default" style={{marginBottom: '0px'}}>
                 <div style={{backgroundColor: '#66C4EB', height: this.height, width: '10px', float: 'left'}}/>
                 <div className="panel-heading" style={{fontSize: '11px', marginLeft: '10px', backgroundColor: 'white', padding: '5px 8px'}} onClick={this._toggleExpanded}>
-                    <i className={"fa " + expandIcon} style={{paddingRight: iconPadding}}></i>
+                    <i className={"icon-slim " + expandIcon} style={{paddingRight: iconPadding}}></i>
                     <span>{this.props.characteristicData.name}</span>
                     <span style={{float: 'right'}}>{this.props.characteristicData.value}</span>
                     <div style={{color: 'grey', fontSize: '12px'}}>

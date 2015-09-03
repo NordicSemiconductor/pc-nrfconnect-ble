@@ -59,9 +59,8 @@ var ConnectionOverlay = React.createClass({
         return (
             <div>
                 <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']}  placement='top' overlay={<Popover title='Connection Setup'><ConnectionSetup device ={this.props.device} closePopover = {this.closeme} connection={this.props.connection}/></Popover>}> 
-                    <span className="fa-stack fa-lg" style={{fontSize: '15px'}}>
-                        <i className="fa fa-circle fa-stack-2x"></i>
-                        <i className="fa fa-link fa-stack-1x fa-inverse"></i>
+                    <span style={{fontSize: '15px'}}>
+                        <i className="icon-link icon-encircled"></i>
                     </span>
                 </OverlayTrigger>
             </div>
