@@ -87,16 +87,32 @@ var MyView = React.createClass({
         this.setState({currentlyShowing: viewToShow});
     },
     render: function() {
-        var mainAreaWrapperStyle = {
-          minHeight: this.state.mainViewMinHeight
+        var topBarHeight = 54;
+        var mainAreaStyle = {
+          minHeight: this.state.mainViewMinHeight - topBarHeight
         };
         return (
-            <div id="main-area-wrapper" style={mainAreaWrapperStyle}>
-                <NavBar onChangeMainView={this._onChangedMainView}/>
-                <div id="main-area">
-                  <BleNodeContainer style={{display:  this.state.currentlyShowing === 'ConnectionMap' ? 'inline': 'none'}}/>
-                  <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'inline-block': 'none'}}/>
-                </div>
+            <div id="main-area-wrapper">
+              <NavBar onChangeMainView={this._onChangedMainView}/>
+              <table className="main-layout" style={mainAreaStyle}>
+                <tbody>
+                  <tr>
+                    <td id="main-area">
+
+                      <BleNodeContainer style={{display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
+                      <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'block': 'none'}}/>
+
+                    </td>
+                    <td>
+                      <DiscoveredDevicesContainer />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colSpan="2">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
         );
     }

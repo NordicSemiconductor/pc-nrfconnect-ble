@@ -206,7 +206,7 @@
   }
 }
 
-#main-area-wrapper{
+#main-area-wrapper {
   background-color: #F2F2F2;
   width: 100%;
 }
@@ -233,6 +233,23 @@
     }
   }
 }
-  
+
+
+table.main-layout {
+  width: 100%;
+  > tbody > tr:nth-child(1) {
+    > td:nth-child(1) {
+    }
+    > td:nth-child(2) {
+      width: 250px;
+    }
+  }
+  > tbody > tr:nth-child(2) > td {
+    height: 250px;
+  }
+  > tbody > tr > td {
+    border: 1px solid gray;
+  }
+}
 
 

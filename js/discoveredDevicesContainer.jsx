@@ -87,7 +87,7 @@ var DiscoveredDevice = React.createClass({
         }
         var displayConnect =  this.props.standalone ? 'none!important' : 'inline-block';
         return (
-            <ListItem  style={deviceStyles.item}>
+            <div  style={deviceStyles.item}>
                 <div style={{display: 'inline-block', width: '100%'}}>
                     <span style={deviceStyles.name}>{short_local_name}</span>
                     <span style={deviceStyles.name}>{complete_local_name}</span>
@@ -103,7 +103,7 @@ var DiscoveredDevice = React.createClass({
                             Last seen: {time.toLocaleTimeString()}<br/>
                             {address}
                         </div>
-                        <RaisedButton primary={true} onClick={this._onConnect} style={{ position: 'absolute', right: '12px', height: '20px', marginTop: '10px', display: displayConnect, color: 'white'}}>Connect <i className="icon-plug"></i></RaisedButton>
+                        <div primary={true} onClick={this._onConnect} style={{ position: 'absolute', right: '12px', height: '20px', marginTop: '10px', display: displayConnect, color: 'white'}}>Connect <i className="icon-plug"></i></div>
 
                     </div>
                     <div style={{marginTop: '5px', overflow: 'hidden'}}>
@@ -115,7 +115,7 @@ var DiscoveredDevice = React.createClass({
                 </div>
 
 
-            </ListItem>
+            </div>
         );
     }
 });
@@ -165,12 +165,12 @@ var DiscoveredDevicesContainer = React.createClass({
               <div id="discoveredDevicesContainer" style={containerStyle.body}>
                 <div style={containerStyle.heading}>Discovered devices <button onClick={this._clearContainer} style={{marginLeft: '56px'}}>Clear</button> </div>
                 <div style={{display: 'flex', alignItems: 'center', borderBottomColor: 'lightgrey', borderBottomStyle: 'solid', borderBottomWidth:'thin'}}>
-                    <CircularProgress style={progressStyle} mode={progressMode} size={0.5}/>
+                    <div style={progressStyle} mode={progressMode} size={0.5}/>
                     <span style={{marginLeft: '15px'}}>{Object.keys(this.state.discoveredDevices).length} &nbsp; devices found.</span>
                     <span style={{marginLeft: '15px'}}><DiscoveryButton/></span>
 
                 </div>
-                <List style={{paddingTop: '0px'}}>
+                <div style={{paddingTop: '0px'}}>
                   {Object.keys(devices).map(function(device, index) {
                     return (
                             <DiscoveredDevice key= {index}
@@ -178,11 +178,11 @@ var DiscoveredDevicesContainer = React.createClass({
                                 standalone={false}
                             />)
                   })}
-                </List>
+                </div>
               </div>)
       } else {
           console.log("No data!!!!!!!!!!!!!!!!!!!!!!!!!!");
-          return <Paper id="discoveredDevicesContainer"></Paper>;
+          return <div id="discoveredDevicesContainer"></div>;
       }
     }
 });
