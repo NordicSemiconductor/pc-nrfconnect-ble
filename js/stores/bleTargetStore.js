@@ -8,14 +8,14 @@ import fs from 'fs';
 var bleTargetStore = reflux.createStore({
 
     init: function() {
-        this._detectTargets();
-
+        this.discoveredBleTargets = [];
         // TODO: Cannot find a way to clear this interval. No hook in reflux stores?
         this.detectInterval = setInterval(this._detectTargets.bind(this), 5000);
     },
 
     getInitialState: function() {
-        return {discoveredBleTargets: []};
+        this._detectTargets();
+        return {discoveredBleTargets: this.discoveredBleTargets};
     },
     _detectTargets: function() {
         var self = this;

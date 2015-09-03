@@ -9,9 +9,6 @@ import {DropdownButton, MenuItem} from 'react-bootstrap';
 import driverActions from './actions/bleDriverActions.js';
 
 var ComPortSelector = React.createClass({
-    getInitialState: function(){
-     //   return bleTargetStore.getInitialState();
-    },
     onMenuItemSelect: function(theEvent, port) {
         driverActions.connectToDriver(port);
     },
@@ -29,7 +26,7 @@ var ComPortSelector = React.createClass({
 
         var dropdownTitle = this._getTitle();
         var menuItems = this.state.discoveredBleTargets.map(function(portName, i){
-            return (<MenuItem eventKey={portName} onSelect={this.onMenuItemSelect}>{portName} key={i}</MenuItem>);
+            return (<MenuItem eventKey={portName} onSelect={this.onMenuItemSelect} key={i}>{portName}</MenuItem>);
         }, this);
         return (
             <DropdownButton title={dropdownTitle}>
