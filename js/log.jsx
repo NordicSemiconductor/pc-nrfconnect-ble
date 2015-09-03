@@ -181,7 +181,7 @@ var LogContainer = React.createClass({
                     rowStyle={row_style_render}
                     showCellBorders={true}
                     rowFactory={row_factory}
-                    style={{height: 700}}
+                    style={{height: 250}}
                 />
             </div>);
     }
