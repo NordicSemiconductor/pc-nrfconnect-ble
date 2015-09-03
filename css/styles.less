@@ -197,15 +197,6 @@
   padding: 5px 10px 10px 5px;
 }
 
-
-.nav-bar .nav-bar-element {
-  display: inline-block;
-  padding: 10px;
-  a {
-
-  }
-}
-
 #main-area-wrapper {
   background-color: #F2F2F2;
   width: 100%;
@@ -214,22 +205,24 @@
 .nav-bar {
   background-color: #FFF;
   box-shadow:0px 1px 1px #de1dde;
+  padding: 10px;
   
   .nav-bar-element {
       display: inline-block;
-      padding: 10px;
       margin-right: 20px;
   }
-  .navbar-element .active {
-    background-color: #D9ECF4
-  }
-  a.nav-bar-element {
-    background-color: black;
-    padding: 5px 15px;
-    border-radius: 5px;
-    border: solid thin blue;
+  > a {
+    cursor: pointer;
+    padding: 6px 15px;
+    border-radius: 4px;
+    border: 1px solid white;
+    text-decoration: none;
     &:hover {
       text-decoration: none
+    }
+    &.active {
+      background-color: #d9edf7;
+      border-color: #bce8f1;
     }
   }
 }

@@ -52,8 +52,8 @@ var NavBar = React.createClass({
         this.props.onChangeMainView(newView);
         this.setState({activeTab: newView});
     },
-    _getStyleForTabButton: function(itemName) {
-        return (this.state.activeTab === itemName) ? this.activeStyle: this.passiveStyle;
+    _getClassForTabButton: function(itemName) {
+        return "nav-bar-element " + (this.state.activeTab === itemName ? "active" : "");
     },
     render: function() {
         return (
@@ -61,12 +61,12 @@ var NavBar = React.createClass({
                 <div className="nav-bar-element">
                     <ComPortSelector/>
                 </div>
-                <a href="#" onClick={this._onViewChange.bind(this, 'DeviceDetails').bind(this)} className="nav-bar-element" style={this._getStyleForTabButton('DeviceDetails')}>
-                    DeviceDetails
+                <a onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
+                    Connection map
                 </a>
-                <div onClick={this._onViewChange.bind(this, 'ConnectionMap')} className="nav-bar-element" style={this._getStyleForTabButton('ConnectionMap')}>
-                    Connection Map
-                </div>
+                <a onClick={this._onViewChange.bind(this, 'DeviceDetails').bind(this)}  className={this._getClassForTabButton('DeviceDetails')}>
+                    Device details
+                </a>
             </div>
         );
     }

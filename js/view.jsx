@@ -87,7 +87,7 @@ var MyView = React.createClass({
         this.setState({currentlyShowing: viewToShow});
     },
     render: function() {
-        var topBarHeight = 54;
+        var topBarHeight = 55;
         var mainAreaStyle = {
           minHeight: this.state.mainViewMinHeight - topBarHeight
         };
@@ -97,7 +97,7 @@ var MyView = React.createClass({
               <table className="main-layout" style={mainAreaStyle}>
                 <tbody>
                   <tr>
-                    <td id="main-area">
+                    <td>
 
                       <BleNodeContainer style={{display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
                       <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'block': 'none'}}/>
