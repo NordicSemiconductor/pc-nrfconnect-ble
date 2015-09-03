@@ -10,7 +10,14 @@ import driverActions from './actions/bleDriverActions.js';
 
 var ComPortSelector = React.createClass({
     onMenuItemSelect: function(theEvent, port) {
-        driverActions.connectToDriver(port);
+        if (this.state.driverState.connectedToDriver && this.currentPort && this.currentPort !== 'None') {
+            driverActions.disconnectFromDriver(this.previousPort);
+            this.currentPort = 'None';
+        }
+        if (port !== 'None') {
+            driverActions.connectToDriver(port);
+            this.currentPort = port;
+        }
     },
     _getTitle: function() {
         if (this.state.driverState.connectedToDriver && !this.state.driverState.error) {
