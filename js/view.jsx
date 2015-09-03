@@ -42,11 +42,44 @@ var ThemeManager = new mui.Styles.ThemeManager();
 let { Typography } = Styles;
 var ColorManipulator = mui.Utils.ColorManipulator;
 
+
 var MyView = React.createClass({
     mixins: [],
+
+    componentWillMount: function(){
+        var that = this;
+        (function() {
+            var throttle = function(type, name, obj) {
+                var obj = obj || window;
+                var running = false;
+                var func = function() {
+                    if (running) { return; }
+                    running = true;
+                    requestAnimationFrame(function() {
+                        obj.dispatchEvent(new CustomEvent(name));
+                        running = false;
+                    });
+                };
+            obj.addEventListener(type, func);
+        };
+
+       
+        throttle("resize", "optimizedResize");
+        })();
+
+        // handle event
+
+        window.addEventListener("optimizedResize", function() {
+            that.setState({mainViewMinHeight: $(window).height()}); //document.documentElement.clientHeight;
+        });
+    },
+    componentDidMount: function() {
+
+    },
     getInitialState: function() {
         return {
-            currentlyShowing: "ConnectionMap"
+            currentlyShowing: "ConnectionMap",
+            mainViewMinHeight: $(window).height()
         };
     },
     _onChangedMainView: function(viewToShow) {
@@ -54,12 +87,16 @@ var MyView = React.createClass({
         this.setState({currentlyShowing: viewToShow});
     },
     render: function() {
-        
+        var mainAreaWrapperStyle = {
+          minHeight: this.state.mainViewMinHeight
+        };
         return (
-            <div>
+            <div id="main-area-wrapper" style={mainAreaWrapperStyle}>
                 <NavBar onChangeMainView={this._onChangedMainView}/>
-                <BleNodeContainer style={{display:  this.state.currentlyShowing === 'ConnectionMap' ? 'inline': 'none'}}/>
-                <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'inline-block': 'none'}}/>
+                <div id="main-area">
+                  <BleNodeContainer style={{display:  this.state.currentlyShowing === 'ConnectionMap' ? 'inline': 'none'}}/>
+                  <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'inline-block': 'none'}}/>
+                </div>
             </div>
         );
     }

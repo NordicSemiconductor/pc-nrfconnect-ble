@@ -35,7 +35,6 @@
 #diagramContainer {
   padding: 20px;
   width:80%; height: 500px;
-  border: 1px solid gray;
 }
 
 .item {
@@ -231,5 +230,38 @@
 .nav-bar .nav-bar-element {
   display: inline-block;
   padding: 10px;
+  a {
+
+  }
 }
+
+#main-area-wrapper{
+  background-color: #F2F2F2;
+  width: 100%;
+}
+
+.nav-bar {
+  background-color: #FFF;
+  box-shadow:0px 1px 1px #de1dde;
+  
+  .nav-bar-element {
+      display: inline-block;
+      padding: 10px;
+      margin-right: 20px;
+  }
+  .navbar-element .active {
+    background-color: #D9ECF4
+  }
+  a.nav-bar-element {
+    background-color: black;
+    padding: 5px 15px;
+    border-radius: 5px;
+    border: solid thin blue;
+    &:hover {
+      text-decoration: none
+    }
+  }
+}
+  
+
 

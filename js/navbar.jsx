@@ -64,9 +64,9 @@ var NavBar = React.createClass({
                 <div className="nav-bar-element">
                     <ComPortSelector/>
                 </div>
-                <div onClick={this._onViewChange.bind(this, 'DeviceDetails').bind(this)} className="nav-bar-element" style={this._getStyleForTabButton('DeviceDetails')}>
+                <a href="#" onClick={this._onViewChange.bind(this, 'DeviceDetails').bind(this)} className="nav-bar-element" style={this._getStyleForTabButton('DeviceDetails')}>
                     DeviceDetails
-                </div>
+                </a>
                 <div onClick={this._onViewChange.bind(this, 'ConnectionMap')} className="nav-bar-element" style={this._getStyleForTabButton('ConnectionMap')}>
                     Connection Map
                 </div>
