@@ -205,13 +205,13 @@
 .nav-bar {
   background-color: #FFF;
   box-shadow:0px 1px 1px #de1dde;
-  padding: 10px;
+  padding: 0;
   
   .nav-bar-element {
       display: inline-block;
-      margin-right: 20px;
+      margin: 0 10px;
   }
-  > a {
+  a.nav-bar-element {
     cursor: pointer;
     padding: 6px 15px;
     border-radius: 4px;
@@ -223,6 +223,19 @@
     &.active {
       background-color: #d9edf7;
       border-color: #bce8f1;
+    }
+  }
+
+  .indicator {
+    margin-left: 10px;
+  }
+  .nav-section {
+    display: inline-block;
+    vertical-align: top;
+    padding: 10px 10px 0 10px;
+    height: 55px;
+    &.bl {
+      border-left: 1px solid #F2F2F2;
     }
   }
 }
@@ -242,7 +255,21 @@ table.main-layout {
   }
   > tbody > tr > td {
     border: 1px solid gray;
+    vertical-align: top;
   }
 }
 
+.indicator {
+  display: inline-block;
+  height: 11px;
+  width: 11px;
+  border-radius: 50%;
+  border: 1px solid rgb(100, 94, 94);
+  &.on {
+    background-color: rgb(32, 255, 32);
+  }
+  &.off {
+    background-color: rgb(207, 207, 207)
+  }
+}
 

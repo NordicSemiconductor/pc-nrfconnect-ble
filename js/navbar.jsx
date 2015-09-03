@@ -68,15 +68,20 @@ var NavBar = React.createClass({
     render: function() {
         return (
             <div className="nav-bar">
-                <div className="nav-bar-element">
-                    <ComPortSelector/>
+                <div className="nav-section">
+                    <div className="nav-bar-element">
+                        <ComPortSelector/>
+                        <div className="indicator on"></div>
+                    </div>
                 </div>
-                <a onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
-                    Connection map
-                </a>
-                <a onClick={this._onViewChange.bind(this, 'DeviceDetails').bind(this)}  className={this._getClassForTabButton('DeviceDetails')}>
-                    Device details
-                </a>
+                <div className="nav-section bl">
+                    <a onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
+                        Connection map
+                    </a>
+                    <a onClick={this._onViewChange.bind(this, 'DeviceDetails').bind(this)}  className={this._getClassForTabButton('DeviceDetails')}>
+                        Device details
+                    </a>
+                </div>
             </div>
         );
     }
