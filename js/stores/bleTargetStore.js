@@ -2,7 +2,7 @@
 
 import reflux from 'reflux';
 import serialPort from 'serialport-electron';
-
+import _ from 'underscore';
 import fs from 'fs';
 
 var bleTargetStore = reflux.createStore({
@@ -32,7 +32,10 @@ var bleTargetStore = reflux.createStore({
                 return portName; 
             });
             newlyDiscoveredTargets.unshift('None');
-            self.trigger({discoveredBleTargets: newlyDiscoveredTargets});
+            if (!_.isEqual(newlyDiscoveredTargets, self.discoveredBleTargets)) {
+                self.trigger({discoveredBleTargets: newlyDiscoveredTargets});
+            }
+            self.discoveredBleTargets = newlyDiscoveredTargets;
         });
     }
 });
