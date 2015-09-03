@@ -4,7 +4,7 @@ import React from 'react';
 import mui from 'material-ui';
 
 import Reflux from 'reflux';
-import BleNode from './node.jsx';
+import BleNodeContainer from './node.jsx';
 import DeviceDetails from './DeviceDetails.jsx';
 
 import Log from './log.jsx';
@@ -42,7 +42,28 @@ var ThemeManager = new mui.Styles.ThemeManager();
 let { Typography } = Styles;
 var ColorManipulator = mui.Utils.ColorManipulator;
 
-
+var MyView = React.createClass({
+    mixins: [],
+    getInitialState: function() {
+        return {
+            currentlyShowing: "ConnectionMap"
+        };
+    },
+    _onChangedMainView: function(viewToShow) {
+        console.log('changed View');
+        this.setState({currentlyShowing: viewToShow});
+    },
+    render: function() {
+        
+        return (
+            <div>
+                <NavBar onChangeMainView={this._onChangedMainView}/>
+                <BleNodeContainer style={{display:  this.state.currentlyShowing === 'ConnectionMap' ? 'inline': 'none'}}/>
+                <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'inline-block': 'none'}}/>
+            </div>
+        );
+    }
+});
 var MainView = React.createClass({
   mixins: [Reflux.connect(bleTargetStore, "discoveredBleTargets", "chosen_port"),
            Reflux.connect(discoveryStore, "discoveryStore")],
@@ -120,7 +141,7 @@ var MainView = React.createClass({
           <Tab label="Connection Map" >
               <div id="scan_comp">
                 <p>
-                  <BleNode/>
+                  <BleNodeContainer/>
                 </p>
               </div>
           </Tab>
@@ -146,4 +167,4 @@ var MainView = React.createClass({
 }
 });
 
-module.exports = MainView;
+module.exports = MyView;

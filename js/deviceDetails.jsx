@@ -98,7 +98,7 @@ var ServiceItem = React.createClass({
                             <span style={{marginLeft: '13px'}}>{this.props.serviceData.uuid}</span><span style={{float: 'right'}}>0x180f</span>
                         </div>
                     </div>
-                    <Collapse onEntered={this._heightChanged} onExited={this._heightChanged} timeout="0" ref="coll" className="panel-body" in={this.state.expanded}>
+                    <Collapse onEntered={this._heightChanged} onExited={this._heightChanged} timeout={0} ref="coll" className="panel-body" in={this.state.expanded}>
                         {this.props.children}
                     </Collapse>
                 </div>
@@ -165,7 +165,7 @@ var CharacteristicItem = React.createClass({
                         <span style={{marginLeft: '13px'}}>{this.props.characteristicData.uuid}</span><span style={{float: 'right'}}>0x180f</span>
                     </div>
                 </div>
-            <Collapse  onEntered={this._expanded} onExited={this._contracted} timeout="0" ref="coll" className="panel-body" in= {this.state.expanded}>
+            <Collapse  onEntered={this._expanded} onExited={this._contracted} timeout={0} ref="coll" className="panel-body" in= {this.state.expanded}>
                 <div>
                     <DescriptorItem/>
                 </div>
@@ -178,13 +178,13 @@ var CharacteristicItem = React.createClass({
 
 var DeviceDetailsView = React.createClass({
     render: function() {
-        var services = dummyData.map(function(service){
+        var services = dummyData.map(function(service, i){
             return (
-                <ServiceItem serviceData={service}>
+                <ServiceItem serviceData={service} key={i}>
                     <div>
-                    {service.characteristics.map(function(characteristic){
+                    {service.characteristics.map(function(characteristic, j){
                         return (
-                            <CharacteristicItem characteristicData={characteristic}/>
+                            <CharacteristicItem characteristicData={characteristic} key={j}/>
                         )
                     }
                     )}
@@ -192,8 +192,13 @@ var DeviceDetailsView = React.createClass({
                 </ServiceItem>
             );
         });
+        var localStyles = {
+            width: '220px', top: '20px', left: '20px', position: 'relative'
+        };
+
+        var combinedStyles = Object.assign({}, this.props.style, localStyles);
         return (
-            <div style={{width: '220px', top: '20px', left: '20px', position: 'relative'}}>
+            <div style={combinedStyles}>
                 {services}
             </div>
           );

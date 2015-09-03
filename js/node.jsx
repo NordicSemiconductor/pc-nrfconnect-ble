@@ -153,8 +153,9 @@ var BleNodeContainer = React.createClass({
                 plumbNodes.push(<BleNode key={i} nodeId={this.state.graph[i].id} device={this.state.graph[i].device} />);
             }
         }
+        var combinedStyles = Object.assign({}, {position: 'absolute'}, this.props.style)
         return (
-            <div id="diagramContainer" style={{position: 'absolute'}} >
+            <div id="diagramContainer" style={combinedStyles} >
                 {plumbNodes}
             </div>
         );

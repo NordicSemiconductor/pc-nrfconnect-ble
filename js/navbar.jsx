@@ -29,7 +29,7 @@ var ComPortSelector = React.createClass({
 
         var dropdownTitle = this._getTitle();
         var menuItems = this.state.discoveredBleTargets.map(function(portName, i){
-            return (<MenuItem eventKey={portName} onSelect={this.onMenuItemSelect}>{portName}</MenuItem>);
+            return (<MenuItem eventKey={portName} onSelect={this.onMenuItemSelect}>{portName} key={i}</MenuItem>);
         }, this);
         return (
             <DropdownButton title={dropdownTitle}>
@@ -39,22 +39,36 @@ var ComPortSelector = React.createClass({
     }
 });
 
-function renderDropdownButton (title, i) {
 
-}
 
 var NavBar = React.createClass({
+    getInitialState: function(){
+        this.activeStyle = {
+            boxShadow: 'inset 0 5px 10px #133e40'
+        };
+        this.passiveStyle = {};
+        return{
+            activeTab: 'ConnectionMap'
+        }
+    },
+    _onViewChange: function(newView){
+        this.props.onChangeMainView(newView);
+        this.setState({activeTab: newView});
+    },
+    _getStyleForTabButton: function(itemName) {
+        return (this.state.activeTab === itemName) ? this.activeStyle: this.passiveStyle;
+    },
     render: function() {
         return (
             <div className="nav-bar">
                 <div className="nav-bar-element">
                     <ComPortSelector/>
                 </div>
-                <div className="nav-bar-element">
-                    dsfdsf
+                <div onClick={this._onViewChange.bind(this, 'DeviceDetails').bind(this)} className="nav-bar-element" style={this._getStyleForTabButton('DeviceDetails')}>
+                    DeviceDetails
                 </div>
-                <div className="nav-bar-element">
-                    dsfdsf
+                <div onClick={this._onViewChange.bind(this, 'ConnectionMap')} className="nav-bar-element" style={this._getStyleForTabButton('ConnectionMap')}>
+                    Connection Map
                 </div>
             </div>
         );
