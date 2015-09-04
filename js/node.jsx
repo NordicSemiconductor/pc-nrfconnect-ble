@@ -71,7 +71,9 @@ var ConnectionOverlay = React.createClass({
 var BleNodeContainer = React.createClass({
 
     mixins: [Reflux.listenTo(nodeStore, "onGraphChanged"), Reflux.connect(driverStore)],
-
+    componentDidMount: function() {
+        jsPlumb.setContainer(React.findDOMNode(this));
+    },
     onGraphChanged: function(newGraph, change){
         this.setState({graph: newGraph}); // Must be done before connection is made since connection target is created by render
         if (change.remove) {
@@ -157,6 +159,9 @@ var BleNodeContainer = React.createClass({
                 {plumbNodes}
             </div>
         );
+    },
+    componentDidUpdate: function() {
+        jsPlumb.repaintEverything(); // solves connection line chaos
     }
 });
 

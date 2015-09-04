@@ -52,9 +52,6 @@ var MyView = React.createClass({
             that.setState({mainViewMinHeight: $(window).height()}); //document.documentElement.clientHeight;
         });
     },
-    componentDidMount: function() {
-
-    },
     getInitialState: function() {
         return {
             currentlyShowing: "ConnectionMap",

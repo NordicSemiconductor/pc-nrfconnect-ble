@@ -190,7 +190,7 @@ var DeviceDetailsContainer = React.createClass({
             var nodeId = this.state.graph[i].id;
             
             var xPos = i*200 + "px";
-            detailNodes.push(<DeviceDetailsView style={{width: '220px', position: 'relative', top: '20px', left: xPos}}/>)
+            detailNodes.push(<DeviceDetailsView style={{width: '220px', position: 'relative', top: '20px', left: xPos}} key={i}/>)
         }
         return (<div style={this.props.style}>{detailNodes}</div>)
     }
