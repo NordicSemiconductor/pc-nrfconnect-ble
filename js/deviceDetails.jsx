@@ -1,10 +1,10 @@
 'use strict';
 
 var react = require('react');
-var reflux = require('reflux');
+var Reflux = require('reflux');
 var connectionStore = require('./stores/connectionStore');
 var deviceStore = require('./stores/deviceStore');
-
+var nodeStore = require('./stores/bleNodeStore');
 var pubsub = require('pubsub-js');
 
 var bs = require('react-bootstrap');
@@ -176,6 +176,26 @@ var CharacteristicItem = React.createClass({
     }
 });
 
+var DeviceDetailsContainer = React.createClass({
+    mixins: [Reflux.listenTo(nodeStore, "onGraphChanged")],
+    getInitialState: function(){
+        return nodeStore.getInitialState();
+    },
+    onGraphChanged: function(newGraph, change) {
+        this.setState({graph: newGraph});
+    },
+    render: function() {
+        var detailNodes = [];
+        for(var i = 0; i<this.state.graph.length; i++) {
+            var nodeId = this.state.graph[i].id;
+            
+            var xPos = i*200 + "px";
+            detailNodes.push(<DeviceDetailsView style={{width: '220px', position: 'relative', top: '20px', left: xPos}}/>)
+        }
+        return (<div style={this.props.style}>{detailNodes}</div>)
+    }
+});
+
 var DeviceDetailsView = React.createClass({
     render: function() {
         var services = dummyData.map(function(service, i){
@@ -192,16 +212,13 @@ var DeviceDetailsView = React.createClass({
                 </ServiceItem>
             );
         });
-        var localStyles = {
-            width: '220px', top: '20px', left: '20px', position: 'relative'
-        };
 
-        var combinedStyles = Object.assign({}, this.props.style, localStyles);
+        
         return (
-            <div style={combinedStyles}>
+            <div style={this.props.style}>
                 {services}
             </div>
           );
     }
 });
-module.exports = DeviceDetailsView;
+module.exports = DeviceDetailsContainer;

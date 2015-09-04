@@ -62,6 +62,13 @@ var NavBar = React.createClass({
     _onViewChange: function(newView){
         this.props.onChangeMainView(newView);
         this.setState({activeTab: newView});
+        if (newView==='DeviceDetails') {
+            $('._jsPlumb_connector').hide();
+            $('._jsPlumb_overlay').hide();
+        } else if (newView == 'ConnectionMap') {
+            $('._jsPlumb_connector').show();
+            $('._jsPlumb_overlay').show();
+        }
     },
     _getClassForTabButton: function(itemName) {
         return "nav-bar-element " + (this.state.activeTab === itemName ? "active" : "");
