@@ -178,6 +178,25 @@ var CharacteristicItem = React.createClass({
 
 var DeviceDetailsContainer = React.createClass({
     mixins: [Reflux.listenTo(nodeStore, "onGraphChanged")],
+    componentWillMount: function() {
+        this.plumb = jsPlumb.getInstance();
+    },
+    componentDidUpdate: function() {
+        this.plumb.setContainer(React.findDOMNode(this));
+        var central = this.state.graph.find(function(node){
+            return node.id ==='central';
+        });
+        for(var i = 0; i< central.ancestorOf.length; i++) {
+            var connectionParameters = {
+                source: 'central_details',
+                target: central.ancestorOf[i]+ "_details",
+                anchor:[ "Continuous", { faces:["top","bottom"] }],
+                endpoint:"Blank",
+                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0, alwaysRespectStubs: false }],
+            };
+            var connection = this.plumb.connect(connectionParameters);
+        }
+    },
     getInitialState: function(){
         return nodeStore.getInitialState();
     },
@@ -188,20 +207,20 @@ var DeviceDetailsContainer = React.createClass({
         var detailNodes = [];
         for(var i = 0; i<this.state.graph.length; i++) {
             var nodeId = this.state.graph[i].id;
-            
             var xPos = i*200 + "px";
-            detailNodes.push(<DeviceDetailsView style={{width: '220px', position: 'relative', top: '20px', left: xPos}} key={i}/>)
+            detailNodes.push(<DeviceDetailsView nodeId={nodeId+ '_details'} style={{width: '220px', position: 'relative', top: '20px', left: xPos}} key={i}/>)
         }
-        return (<div style={this.props.style}>{detailNodes}</div>)
+        return (<div className="device-details-container" style={this.props.style}>{detailNodes}</div>)
     }
 });
 
 var DeviceDetailsView = React.createClass({
     render: function() {
+        console.log(this.props.nodeId)
         var services = dummyData.map(function(service, i){
             return (
                 <ServiceItem serviceData={service} key={i}>
-                    <div>
+                <div>
                     {service.characteristics.map(function(characteristic, j){
                         return (
                             <CharacteristicItem characteristicData={characteristic} key={j}/>
@@ -210,6 +229,7 @@ var DeviceDetailsView = React.createClass({
                     )}
                     </div>
                 </ServiceItem>
+
             );
         });
 

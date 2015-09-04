@@ -76,7 +76,7 @@ var MyView = React.createClass({
                     <td>
 
                       <BleNodeContainer style={{display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
-                      <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'block': 'none'}}/>
+                      <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex': 'none'}}/>
 
                     </td>
                     <td>
