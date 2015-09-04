@@ -30,6 +30,10 @@
   color: #aaa;
 }
 
+.icon-rotate-270:before {
+  transform: rotate(90deg);
+}
+
 .border-box { box-sizing:border-box; -moz-box-sizing:border-box; }
 .slidein {
   display:block;
@@ -333,6 +337,22 @@ table.main-layout {
       padding: 4px 10px 10px 10px;
     }
   }
+  &.main-device {
+    padding: 10px;
+    .main-device-table {
+      display: table;
+      > div {
+        display: table-cell;
+        vertical-align: top;
+      }
+      .icon-wrap {
+        font-size: 30px;
+        width: 42px;
+        height: 85px;
+        padding-top: 7px;
+      }
+    }
+  }
 }
 
 .device-details-container {
@@ -364,4 +384,5 @@ table.main-layout {
 }
 .role-flag {
   background-color: @device-role-color;
+  padding: 3px 15px;
 }

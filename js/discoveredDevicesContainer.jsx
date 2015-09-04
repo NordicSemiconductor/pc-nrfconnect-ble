@@ -90,15 +90,32 @@ var ConnectedDevice = React.createClass({
                 <div className="device-body text-small">
                     <div>
                         <div className="role-flag pull-right">Peripheral</div>
-                        <h4>{device.name}</h4>
+                        <strong>{device.name}</strong>
                     </div>
-                    <div>
-                        {device.address}
-                    </div>
+                    <div>{device.address}</div>
                     <div className="flag-line">
                         {device.services.map(function(service, index) {
                             return (<div key={index} className="device-flag">{service}</div>)
                         })}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+});
+
+var MainDevice = React.createClass({
+    render: function() {
+        return (
+            <div className="device standalone main-device">
+                <div className="main-device-table">
+                    <div className="icon-wrap"><i className="icon-usb icon-rotate-270"></i></div>
+                    <div className="device-body text-small">
+                        <div>
+                            <strong>{this.props.name}</strong>
+                        </div>
+                        <div>{this.props.address}</div>
+                        <div className="role-flag">Central</div>
                     </div>
                 </div>
             </div>
@@ -173,5 +190,6 @@ var DiscoveredDevicesContainer = React.createClass({
 module.exports = {
     DiscoveredDevicesContainer: DiscoveredDevicesContainer,
     DiscoveredDevice: DiscoveredDevice,
-    ConnectedDevice: ConnectedDevice
+    ConnectedDevice: ConnectedDevice,
+    MainDevice: MainDevice
 }
