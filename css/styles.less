@@ -274,3 +274,52 @@ table.main-layout {
   }
 }
 
+#discoveredDevicesContainer {
+  padding: 15px;
+  .buttons {
+    padding: 10px 0;
+    border-bottom: 1px solid lightgray;
+    button {
+      margin-right: 5px;
+    }
+  }
+  .spinner {
+    margin-left: 10px;
+  }
+}
+
+.discovered-device {
+  border-bottom: 1px solid lightgrey;
+  padding: 4px 0;
+
+  .connect-btn {
+    position: absolute;
+    right: 12px;
+    height: 20px;
+    margin-top: 16px;
+    color: white;
+  }
+
+  .device-flag {
+    border-radius: 5px;
+    font-size: smaller;
+    background: dodgerblue;
+    padding: 3px;
+    display: inline-block;
+    float: left;
+    color: white;
+    margin-right: 2px;
+  }
+  .device-body {
+    color: grey;
+    > div {
+      margin-top: 5px;
+    }
+  }
+  .flag-line {
+    overflow: hidden;
+  }
+  .text-small {
+    font-size: small;
+  }
+}
