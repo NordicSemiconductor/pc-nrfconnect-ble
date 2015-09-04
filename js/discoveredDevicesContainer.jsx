@@ -13,6 +13,21 @@ var DiscoveryButton = require('./discoveryButton');
 var MIN_RSSI = -100;
 var MAX_RSSI = -45;
 
+
+function prepareDeviceData(device) {
+    return {
+        time: new Date(device.time),
+        name: (device.data 
+            ? (device.data.BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME || device.data.BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME || "")
+            : ""),
+        flags: device.processed ? device.processed.flags : [],
+        services: device.processed && device.processed.services ? device.processed.services : [],
+        address: device.peer_addr.address,
+        rssi: device.rssi,
+        rssi_level: mapRange(device.rssi, MIN_RSSI, MAX_RSSI, 4, 20)
+    };
+}
+
 var DiscoveredDevice = React.createClass({
     _onConnect: function() {
         connectionActions.connectToDevice(this.props.device);
@@ -20,69 +35,71 @@ var DiscoveredDevice = React.createClass({
 
     mixins: [Reflux.connect(discoveryStore)],
     render: function() {
-        var itemStyle = {}
-        if (this.state.discoveredDevices && (Object.keys(this.state.discoveredDevices).length !==0) && this.props.standalone) {
-            itemStyle.border = "none";
-        }
         if(!this.props.device) {
             return (<div>
                     <h3 style={{textAlign: 'center'}}>Local dongle</h3>
                     </div>
                 );
         }
-
-        var short_local_name = "";
-        var flags = [];
-        var services = [];
-        var complete_local_name = "";
-
-        var time = new Date(this.props.device.time);
-        var address = this.props.device.peer_addr.address;
-        var rssi = this.props.device.rssi;
-        var rssi_level = mapRange(rssi, MIN_RSSI, MAX_RSSI, 4, 20);
-
-        if('data' in this.props.device)
-        {
-            if('BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME' in this.props.device.data)
-                short_local_name = this.props.device.data.BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME;
-
-            if('BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME' in this.props.device.data)
-                complete_local_name = this.props.device.data.BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME;
-
-            if('flags' in this.props.device.processed)
-                flags = this.props.device.processed.flags;
-
-            if('services' in this.props.device.processed)
-                services = this.props.device.processed.services;
-        }
-        var displayConnect =  this.props.standalone ? 'none!important' : 'inline-block';
+        var device = prepareDeviceData(this.props.device);
         return (
-            <div className="discovered-device" style={itemStyle}>
-                <div style={{display: 'inline-block', width: '100%'}}>
-                    <span className="text-small">{short_local_name}</span>
-                    <span className="text-small">{complete_local_name}</span>
-                    <span style={{float: 'right'}}>{rssi}</span>
+            <div className={ this.props.standalone ? "device standalone" : "device" }>
+                <div className="top-bar">
+                    <span className="text-small">{device.name}</span>
+                    <span style={{float: 'right'}}>{device.rssi}</span>
                     <div style={{float: 'right'}}>
-                        <span style={{width: rssi_level + 'px'}} className="icon-signal icon-foreground"></span>
+                        <span style={{width: device.rssi_level + 'px'}} className="icon-signal icon-foreground"></span>
+                        <span className="icon-signal icon-background"></span>
+                    </div>
+                </div>
+                <div className="device-body text-small">
+                    <div className="subtle-text">
+                        <button onClick={this._onConnect} className="btn btn-primary btn-xs connect-btn">
+                            Connect <i className="icon-plug"></i>
+                        </button>
+                        <div>
+                            Last seen: {device.time.toLocaleTimeString()}<br/>
+                            {device.address}
+                        </div>
+                    </div>
+                    <div className="flag-line">
+                        {device.services.map(function(service, index) {
+                            return (<div key={index} className="device-flag">{service}</div>)
+                        })}
+                    </div>
+
+                </div>
+            </div>
+        );
+    }
+});
+
+var ConnectedDevice = React.createClass({
+    render: function() {
+        var device = prepareDeviceData(this.props.device);
+        return (
+            <div className="device standalone">
+                <div className="top-bar">
+                    <i className="icon-link"></i><span className="subtle-text"> Connected</span>
+                    <span className="subtle-text pull-right" style={{marginTop: '2px'}}>{device.rssi}</span>
+                    <div style={{float: 'right'}}>
+                        <span style={{width: device.rssi_level + 'px'}} className="icon-signal icon-foreground"></span>
                         <span className="icon-signal icon-background"></span>
                     </div>
                 </div>
                 <div className="device-body text-small">
                     <div>
-                        <button onClick={this._onConnect} className="btn btn-primary btn-xs connect-btn" style={{ display: displayConnect }}>
-                            Connect <i className="icon-plug"></i>
-                        </button>
-                        <div>
-                            Last seen: {time.toLocaleTimeString()}<br/>
-                            {address}
-                        </div>
+                        <div className="role-flag pull-right">Peripheral</div>
+                        <h4>{device.name}</h4>
+                    </div>
+                    <div>
+                        {device.address}
                     </div>
                     <div className="flag-line">
-                        {services.map(function(service, index) {
+                        {device.services.map(function(service, index) {
                             return (<div key={index} className="device-flag">{service}</div>)
                         })}
                     </div>
-
                 </div>
             </div>
         );
@@ -155,5 +172,6 @@ var DiscoveredDevicesContainer = React.createClass({
 
 module.exports = {
     DiscoveredDevicesContainer: DiscoveredDevicesContainer,
-    DiscoveredDevice: DiscoveredDevice
+    DiscoveredDevice: DiscoveredDevice,
+    ConnectedDevice: ConnectedDevice
 }
