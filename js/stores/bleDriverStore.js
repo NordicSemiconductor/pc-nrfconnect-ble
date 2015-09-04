@@ -53,6 +53,7 @@ var bleDriverStore = reflux.createStore({
                 logger.error(`Error occured opening serial port. ${err}`);
                 self.state.connectedToDriver = false;
                 self.state.error = err;
+                bleDriver.close();
             }
             else
             {
