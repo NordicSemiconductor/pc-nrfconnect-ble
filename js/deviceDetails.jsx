@@ -178,30 +178,60 @@ var CharacteristicItem = React.createClass({
 
 var DeviceDetailsContainer = React.createClass({
     mixins: [Reflux.listenTo(nodeStore, "onGraphChanged")],
+    componentWillMount: function() {
+        this.plumb = jsPlumb.getInstance();
+    },
+    componentDidMount: function() {
+        this.plumb.setContainer(React.findDOMNode(this));
+    },
     getInitialState: function(){
         return nodeStore.getInitialState();
     },
     onGraphChanged: function(newGraph, change) {
-        this.setState({graph: newGraph});
+        this.setState({graph: newGraph});   
+        this.plumb.detachEveryConnection();
+        var central = this.state.graph.find(function(node){
+            return node.id ==='central';
+        });
+        for(var i = 0; i< central.ancestorOf.length; i++) {
+            var connectionParameters = {
+                source: 'central_details',
+                target: central.ancestorOf[i]+ "_details",
+                anchor: ["Top", "Right"],
+                endpoint:"Blank",
+                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0, alwaysRespectStubs: false }],
+            };
+            var connection = this.plumb.connect(connectionParameters);
+        }
+        this.plumb.repaintEverything();
     },
     render: function() {
         var detailNodes = [];
         for(var i = 0; i<this.state.graph.length; i++) {
             var nodeId = this.state.graph[i].id;
-            
             var xPos = i*200 + "px";
-            detailNodes.push(<DeviceDetailsView style={{width: '220px', position: 'relative', top: '20px', left: xPos}} key={i}/>)
+            detailNodes.push(<DeviceDetailsView plumb={this.plumb} nodeId={nodeId+ '_details'} style={{width: '220px', position: 'relative', top: '20px', left: xPos}} key={i}/>)
         }
-        return (<div style={this.props.style}>{detailNodes}</div>)
+        return (<div className="device-details-container" style={this.props.style}>{detailNodes}</div>)
+    },
+    componentDidUpdate: function() {
+         this.plumb.repaintEverything();
     }
 });
 
 var DeviceDetailsView = React.createClass({
+    componentDidMount: function() {
+        var that = this;
+        this.props.plumb.bind("ready", function(){
+            jsPlumb.draggable(that.props.nodeId);
+        });
+    },
     render: function() {
+        console.log(this.props.nodeId)
         var services = dummyData.map(function(service, i){
             return (
                 <ServiceItem serviceData={service} key={i}>
-                    <div>
+                <div>
                     {service.characteristics.map(function(characteristic, j){
                         return (
                             <CharacteristicItem characteristicData={characteristic} key={j}/>
@@ -210,12 +240,13 @@ var DeviceDetailsView = React.createClass({
                     )}
                     </div>
                 </ServiceItem>
+
             );
         });
 
         
         return (
-            <div style={this.props.style}>
+            <div id={this.props.nodeId} style={this.props.style}>
                 {services}
             </div>
           );

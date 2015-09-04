@@ -77,6 +77,7 @@ var bleDriverStore = reflux.createStore({
     },
     onDisconnectFromDriver: function() {
         bleDriver.close();
+        logger.debug('Closed connection to driver');
         this.trigger({
             connectedToDriver: false,
             centralName: '',
