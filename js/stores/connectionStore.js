@@ -16,6 +16,7 @@ var connectionStore = reflux.createStore({
     init: function() {
         this.state = {
             connections: [],
+            deviceAddressToServicesMap: {}
         };
         this.devicesAboutToBeConnected = {};
     },
@@ -90,6 +91,18 @@ var connectionStore = reflux.createStore({
         bleDriver.gap_disconnect(connectionHandle, bleDriver.BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION, function(err){
             console.log('call to disconnect ok', err);
         });
+    },
+    onServicesDiscovered: function(attributeDatabase) {
+        var deviceAddressToServicesMap = {}
+        for(var i = 0; i< attributeDatabase.attributeDatabase.length; i++) {
+            var connectionHandle = attributeDatabase.attributeDatabase[i].connectionHandle;
+            var connection = this.state.connections.find(function(conn) {
+                return (conn.conn_handle === connectionHandle); 
+            });
+            deviceAddressToServicesMap[connection.peer_addr.address] = attributeDatabase.attributeDatabase[i].services;
+        }
+
+        this.trigger({deviceAddressToServicesMap: deviceAddressToServicesMap});
     }
 });
 module.exports = connectionStore;

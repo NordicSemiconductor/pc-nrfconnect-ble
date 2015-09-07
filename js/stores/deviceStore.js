@@ -13,9 +13,10 @@ var deviceStore = reflux.createStore({
             devices: [
                 {
                     name: 'mydevice',
-                    attributeData: dummyData
+
                 }
-            ]
+            ],
+            attributeDatabase: []
         };
     },
     getInitialState: function() {

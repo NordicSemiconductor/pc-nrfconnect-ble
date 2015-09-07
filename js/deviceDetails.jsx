@@ -3,7 +3,7 @@
 var react = require('react');
 var Reflux = require('reflux');
 var connectionStore = require('./stores/connectionStore');
-var deviceStore = require('./stores/deviceStore');
+
 var nodeStore = require('./stores/bleNodeStore');
 var pubsub = require('pubsub-js');
 
@@ -93,9 +93,9 @@ var ServiceItem = React.createClass({
                     <div onClick={this._toggleExpanded} className="panel-heading" style={{backgroundColor: 'white', padding: '5px 8px'}}>
                         <i className={"icon-slim " + expandIcon} style={{paddingRight: iconPadding}}></i>
                         <span style={{marginLeft: '5px'}}>{this.props.serviceData.name}</span>
-                        <span style={{float: 'right'}}>{this.props.serviceData.value}</span>
+                        <span style={{float: 'right'}}>{this.props.serviceData.uuid}</span>
                         <div style={{color: 'grey', fontSize: '12px'}}>
-                            <span style={{marginLeft: '13px'}}>{this.props.serviceData.uuid}</span><span style={{float: 'right'}}>0x180f</span>
+                            <span style={{marginLeft: '13px'}}>{this.props.serviceData.serviceUuid}</span><span style={{float: 'right'}}>0x180f</span>
                         </div>
                     </div>
                     <Collapse onEntered={this._heightChanged} onExited={this._heightChanged} timeout={0} ref="coll" className="panel-body" in={this.state.expanded}>
@@ -160,9 +160,9 @@ var CharacteristicItem = React.createClass({
                 <div className="panel-heading" style={{fontSize: '11px', marginLeft: '10px', backgroundColor: 'white', padding: '5px 8px'}} onClick={this._toggleExpanded}>
                     <i className={"icon-slim " + expandIcon} style={{paddingRight: iconPadding}}></i>
                     <span>{this.props.characteristicData.name}</span>
-                    <span style={{float: 'right'}}>{this.props.characteristicData.value}</span>
+                    <span style={{float: 'right'}}>{this.props.characteristicData.uuid}</span>
                     <div style={{color: 'grey', fontSize: '12px'}}>
-                        <span style={{marginLeft: '13px'}}>{this.props.characteristicData.uuid}</span><span style={{float: 'right'}}>0x180f</span>
+                        <span style={{marginLeft: '13px'}}>{this.props.characteristicData.serviceUuid}</span><span style={{float: 'right'}}>0x180f</span>
                     </div>
                 </div>
             <Collapse  onEntered={this._expanded} onExited={this._contracted} timeout={0} ref="coll" className="panel-body" in= {this.state.expanded}>
@@ -177,7 +177,7 @@ var CharacteristicItem = React.createClass({
 });
 
 var DeviceDetailsContainer = React.createClass({
-    mixins: [Reflux.listenTo(nodeStore, "onGraphChanged")],
+    mixins: [Reflux.listenTo(nodeStore, "onGraphChanged"), Reflux.connect(connectionStore)],
     componentWillMount: function() {
         this.plumb = jsPlumb.getInstance();
     },
@@ -197,9 +197,9 @@ var DeviceDetailsContainer = React.createClass({
             var connectionParameters = {
                 source: 'central_details',
                 target: central.ancestorOf[i]+ "_details",
-                anchor: ["Top", "Right"],
+                anchor: "Top",
                 endpoint:"Blank",
-                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0, alwaysRespectStubs: false }],
+                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0.5, alwaysRespectStubs: false }],
             };
             var connection = this.plumb.connect(connectionParameters);
         }
@@ -207,10 +207,13 @@ var DeviceDetailsContainer = React.createClass({
     },
     render: function() {
         var detailNodes = [];
+        // TODO: Use flexbox for positioning elements?
         for(var i = 0; i<this.state.graph.length; i++) {
             var nodeId = this.state.graph[i].id;
+            var deviceAddress = this.state.graph[i].deviceId;
+            var deviceServices = this.state.deviceAddressToServicesMap[deviceAddress];
             var xPos = i*200 + "px";
-            detailNodes.push(<DeviceDetailsView plumb={this.plumb} nodeId={nodeId+ '_details'} style={{width: '220px', position: 'relative', top: '20px', left: xPos}} key={i}/>)
+            detailNodes.push(<DeviceDetailsView services={deviceServices} plumb={this.plumb} nodeId={nodeId+ '_details'} style={{width: '220px', position: 'relative', top: '20px', left: xPos}} key={i}/>)
         }
         return (<div className="device-details-container" style={this.props.style}>{detailNodes}</div>)
     },
@@ -227,29 +230,35 @@ var DeviceDetailsView = React.createClass({
         });
     },
     render: function() {
-        console.log(this.props.nodeId)
-        var services = dummyData.map(function(service, i){
+        console.log(this.props.services);
+        var services = [];
+        if (this.props.services) {
+            services = this.props.services.map(function(service, i){
+                return (
+                    <ServiceItem serviceData={service} key={i}>
+                    <div>
+                        {service.characteristics.map(function(characteristic, j){
+                            return (
+                                <CharacteristicItem characteristicData={characteristic} key={j}/>
+                            )
+                        }
+                        )}
+                        </div>
+                    </ServiceItem>
+
+                );
+            });
             return (
-                <ServiceItem serviceData={service} key={i}>
-                <div>
-                    {service.characteristics.map(function(characteristic, j){
-                        return (
-                            <CharacteristicItem characteristicData={characteristic} key={j}/>
-                        )
-                    }
-                    )}
-                    </div>
-                </ServiceItem>
-
-            );
-        });
-
-        
-        return (
-            <div id={this.props.nodeId} style={this.props.style}>
-                {services}
-            </div>
-          );
+                <div id={this.props.nodeId} style={this.props.style}>
+                    {services}
+                </div>
+        );
+        } else {
+            return (
+                <div className="panel panel-default" id={this.props.nodeId} style={this.props.style}>
+                </div>
+            )
+        }
     }
 });
 module.exports = DeviceDetailsContainer;

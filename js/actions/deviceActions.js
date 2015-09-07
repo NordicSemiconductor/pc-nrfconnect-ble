@@ -2,4 +2,4 @@
 
 var reflux = require('reflux');
 
-module.exports = reflux.createActions(["deviceAttributesUpdated"]);
+module.exports = reflux.createActions(["deviceAttributesUpdated",]);
