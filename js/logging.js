@@ -123,7 +123,7 @@ DbLogger.prototype.query = function(options, callback) {
     var self = this;
 
     if(!self.db_ready) {
-        callback("Database is not ready.");
+        callback(null);
         return;
     }
 
