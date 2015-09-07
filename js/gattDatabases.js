@@ -4,31 +4,11 @@
  *  We assume that parent is always found before its children.
  */
 
+import _ from 'underscore';
+
 //import logger from './logging';
 import bleDriver from 'pc-ble-driver-js';
 import uuidDefinitions from './utils/uuid_definitions';
-
-//in event:
-var gattDescDiscEvent = {
-    "id":51,
-    "name":"BLE_GATTC_EVT_DESC_DISC_RSP",
-    "time":"2015-08-28T11:12:48.802Z",
-    "conn_handle":0,
-    "gatt_status":0,
-    "error_handle":0,
-    "count":1,
-    "descs":[{
-        "handle":1,
-        "uuid":{
-            "uuid":10240,
-            "type":1,
-            "typeString":"BLE_UUID_TYPE_BLE"
-        }
-    }],
-    "level":"debug",
-    "message":"BLE_GATTC_EVT_DESC_DISC_RSP",
-    "timestamp":"2015-08-28T11:12:48.936Z"
-};
 
 const SERVICE_UUID = "0x2800";
 const CHARACTERISTIC_UUID = "0x2803";
@@ -260,7 +240,7 @@ class GattDatabases {
         for (var i = 0; i < attributeList.length; i++) {
             var currentAttribute = attributeList[i];
 
-            if (currentAttribute.handle == handle) {
+            if (currentAttribute.handle === handle) {
                 return currentAttribute;
             }
             else if (currentAttribute.handle > handle) {
@@ -269,6 +249,8 @@ class GattDatabases {
 
             previousAttribute = currentAttribute;
         }
+
+        return this.findAttribute(previousAttribute, handle);
     }
 
     parseServiceData(service, data, length, readOffset) {
@@ -373,6 +355,37 @@ class GattDatabases {
 
     removeGattDatabase(connectionHandle) {
         delete this.attributeDatabase[connectionHandle];
+    }
+
+    getPrettyGattDatabase(connectionHandle) {
+        var gattDatabase = this.getGattDatabase(connectionHandle);
+        var prettyDatabase = JSON.parse(JSON.stringify(gattDatabase));
+
+        var services = prettyDatabase.services;
+
+        var findPredicate = function(characteristic, descriptor) {
+            return descriptor.handle === characteristic.valueHandle;
+        };
+
+        var rejectPredicate = function(characteristic, descriptor) {
+            return descriptor.handle !== characteristic.valueHandle;
+        };
+
+        for (var serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
+            var characteristics = services[serviceIndex].characteristics;
+
+            for (var characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
+                var characteristic = characteristics[characteristicIndex];
+
+                var valueDescriptor = characteristic.descriptors.find(findPredicate.bind(undefined, characteristic));
+                var descriptors = characteristic.descriptors.filter(rejectPredicate.bind(undefined, characteristic));
+
+                characteristic.value = valueDescriptor.data;
+                characteristic.descriptors = descriptors;
+            }
+        }
+
+        return prettyDatabase;
     }
 }
 
