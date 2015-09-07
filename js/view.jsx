@@ -79,12 +79,12 @@ var MyView = React.createClass({
                       <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex': 'none'}}/>
 
                     </td>
-                    <td>
+                    <td rowSpan="2">
                       <DiscoveredDevicesContainer />
                     </td>
                   </tr>
                   <tr>
-                    <td colSpan="2">
+                    <td>
                         <Log/>
                     </td>
                   </tr>
