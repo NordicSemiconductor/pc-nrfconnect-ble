@@ -6,10 +6,12 @@ import Reflux from 'reflux';
 let {Paper, List, ListItem, RaisedButton, CircularProgress} = require('material-ui');
 var discoveryStore = require('./stores/discoveryStore');
 var connectionStore = require('./stores/connectionStore');
+var nodeStore = require('./stores/bleNodeStore');
 
 var discoveryActions = require('./actions/discoveryActions');
 var connectionActions = require('./actions/connectionActions');
 var DiscoveryButton = require('./discoveryButton');
+
 var MIN_RSSI = -100;
 var MAX_RSSI = -45;
 
@@ -77,10 +79,13 @@ var DiscoveredDevice = React.createClass({
 var ConnectedDevice = React.createClass({
     render: function() {
         var device = prepareDeviceData(this.props.device);
+        var role = this.props.node.id === "central" ? "Central" : "Peripheral";
+        var connected = !this.props.node.connectionLost;
         return (
             <div className="device standalone">
                 <div className="top-bar">
-                    <i className="icon-link"></i><span className="subtle-text"> Connected</span>
+                    <i className={connected ? "icon-link" : "icon-link-broken" }></i>
+                    <span className="subtle-text">{connected ? 'Connected' : 'Disconnected'}</span>
                     <span className="subtle-text pull-right" style={{marginTop: '2px'}}>{device.rssi}</span>
                     <div style={{float: 'right'}}>
                         <span style={{width: device.rssi_level + 'px'}} className="icon-signal icon-foreground"></span>
@@ -89,7 +94,7 @@ var ConnectedDevice = React.createClass({
                 </div>
                 <div className="device-body text-small">
                     <div>
-                        <div className="role-flag pull-right">Peripheral</div>
+                        <div className="role-flag pull-right">{role}</div>
                         <strong>{device.name}</strong>
                     </div>
                     <div>{device.address}</div>

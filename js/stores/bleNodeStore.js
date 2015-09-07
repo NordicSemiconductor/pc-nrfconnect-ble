@@ -34,7 +34,7 @@ var bleNodeStore = reflux.createStore({
         });
         node.connectionLost = true;
         var that = this;
-        setTimeout(function() {
+        var timeout = setTimeout(function() {
             var centralNode = that._findCentralNode();
             centralNode.ancestorOf = _.reject(centralNode.ancestorOf, function(nodeId){
                 return nodeId === node.id;
@@ -45,6 +45,7 @@ var bleNodeStore = reflux.createStore({
             });
             that.trigger(that.state.graph, {remove: true, nodeId: node.id});
         }, 5000);
+        //TODO: clear timeout if node is found again
         this.trigger(this.state.graph, {remove: undefined, nodeId: node.id});
     },
 

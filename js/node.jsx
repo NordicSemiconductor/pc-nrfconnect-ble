@@ -147,11 +147,11 @@ var BleNodeContainer = React.createClass({
         var plumbNodes = [];
         
         for (var i = 0; i < this.state.graph.length; i++) {
-            var nodeId = this.state.graph[i].id;
-            if (nodeId === 'central') {
-                plumbNodes.push(<BleNode key={i} nodeId={nodeId} centralName={this.state.centralName} centralAddress={this.state.centralAddress}/>);
+            var node = this.state.graph[i];
+            if (node.id === 'central') {
+                plumbNodes.push(<BleNode key={i} node={node} centralName={this.state.centralName} centralAddress={this.state.centralAddress}/>);
             } else {
-                plumbNodes.push(<BleNode key={i} nodeId={this.state.graph[i].id} device={this.state.graph[i].device} />);
+                plumbNodes.push(<BleNode key={i} node={node} device={this.state.graph[i].device} />);
             }
         }
         return (
@@ -169,18 +169,18 @@ var BleNode = React.createClass({
     componentDidMount: function(){
         var that = this;
         jsPlumb.bind("ready", function(){
-            jsPlumb.draggable(that.props.nodeId);
+            jsPlumb.draggable(that.props.node.id);
         });
     },
     render: function() {
         var theDevice;
-        if (this.props.nodeId === 'central') {
+        if (this.props.node.id === 'central') {
             theDevice = (<MainDevice name={this.props.centralName} address={this.props.centralAddress.address} />);
         } else {
-            theDevice = (<ConnectedDevice device={this.props.device}/>);
+            theDevice = (<ConnectedDevice device={this.props.device} node={this.props.node}/>);
         }
         return (
-            <div key={this.props.nodeId} id={this.props.nodeId} className="node" style={{position: 'absolute', width: '250px' }}>
+            <div key={this.props.nodeId} id={this.props.node.id} className="node" style={{position: 'absolute', width: '250px' }}>
                 {theDevice}
             </div>
         );
