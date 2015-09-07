@@ -100,14 +100,14 @@ var connectionStore = reflux.createStore({
             console.log('call to disconnect ok', err);
         });
     },
-    onServicesDiscovered: function(attributeDatabase) {
-        var deviceAddressToServicesMap = {}
-        for(var i = 0; i< attributeDatabase.attributeDatabase.length; i++) {
-            var connectionHandle = attributeDatabase.attributeDatabase[i].connectionHandle;
+    onServicesDiscovered: function(gattDatabases) {
+        var deviceAddressToServicesMap = {};
+        for(var i = 0; i< gattDatabases.gattDatabases.length; i++) {
+            var connectionHandle = gattDatabases.gattDatabases[i].connectionHandle;
             var connection = this.state.connections.find(function(conn) {
                 return (conn.conn_handle === connectionHandle);
             });
-            deviceAddressToServicesMap[connection.peer_addr.address] = attributeDatabase.attributeDatabase[i].services;
+            deviceAddressToServicesMap[connection.peer_addr.address] = gattDatabases.gattDatabases[i].services;
         }
 
         this.trigger({deviceAddressToServicesMap: deviceAddressToServicesMap});

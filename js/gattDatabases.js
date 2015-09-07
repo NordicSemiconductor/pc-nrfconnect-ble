@@ -13,7 +13,7 @@ import uuidDefinitions from './utils/uuid_definitions';
 const SERVICE_UUID = "0x2800";
 const CHARACTERISTIC_UUID = "0x2803";
 
-class AttributeDatabase {
+class GattDatabase {
     constructor(connectionHandle) {
         this.connectionHandle = connectionHandle;
         this.services = [];
@@ -43,7 +43,7 @@ class Descriptor {
         this.handle = handle;
         this.uuid = uuid;
         this.name = uuidDefinitions[uuid];
-        this.data = [];
+        this.value = [];
     }
 }
 
@@ -64,7 +64,7 @@ class GattDatabases {
 
     constructor() {
         // TODO: Keep a example database structure?
-        this.attributeDatabase = [];
+        this.gattDatabases = [];
     }
 /*
 [{
@@ -222,7 +222,7 @@ class GattDatabases {
     findAttribute(parent, handle) {
         var attributeList;
 
-        if (parent instanceof AttributeDatabase) {
+        if (parent instanceof GattDatabase) {
             attributeList = parent.services;
         }
         else if (parent instanceof Service) {
@@ -266,8 +266,8 @@ class GattDatabases {
     }
 
     parseDescriptorData(descriptor, data, length, readOffset) {
-        var remainingData = descriptor.data.slice(0, readOffset);
-        descriptor.data = remainingData.concat(data);
+        var remainingData = descriptor.value.slice(0, readOffset);
+        descriptor.value = remainingData.concat(data);
     }
 
     setCharacteristicValue(connectionHandle, valueHandle, value) {
@@ -340,28 +340,36 @@ class GattDatabases {
     }
 
     getGattDatabase(connectionHandle) {
-        for (var i = 0; i < this.attributeDatabase.length; i++) {
-            if (this.attributeDatabase[i].connectionHandle == connectionHandle) {
-                return this.attributeDatabase[i];
+        for (var i = 0; i < this.gattDatabases.length; i++) {
+            if (this.gattDatabases[i].connectionHandle == connectionHandle) {
+                return this.gattDatabases[i];
             }
         }
 
-        var gattDatabase = new AttributeDatabase(connectionHandle);
+        var gattDatabase = new GattDatabase(connectionHandle);
 
-        this.attributeDatabase.push(gattDatabase);
+        this.gattDatabases.push(gattDatabase);
 
         return gattDatabase;
     }
 
     removeGattDatabase(connectionHandle) {
-        delete this.attributeDatabase[connectionHandle];
+        delete this.gattDatabases[connectionHandle];
     }
 
-    getPrettyGattDatabase(connectionHandle) {
-        var gattDatabase = this.getGattDatabase(connectionHandle);
-        var prettyDatabase = JSON.parse(JSON.stringify(gattDatabase));
+    valueToString(value) {
+        var valueString = '';
 
-        var services = prettyDatabase.services;
+        for (var i = 0; i < value.length; i++) {
+            valueString += value[i].toString(16);
+            valueString += '-';
+        }
+
+        return valueString.slice(0,-1);
+    }
+
+    getPrettyGattDatabases() {
+        var prettyDatabases = JSON.parse(JSON.stringify(this));
 
         var findPredicate = function(characteristic, descriptor) {
             return descriptor.handle === characteristic.valueHandle;
@@ -371,21 +379,31 @@ class GattDatabases {
             return descriptor.handle !== characteristic.valueHandle;
         };
 
-        for (var serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
-            var characteristics = services[serviceIndex].characteristics;
+        var gattDatabases = prettyDatabases.gattDatabases;
 
-            for (var characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
-                var characteristic = characteristics[characteristicIndex];
+        for (var gattDatabaseIndex = 0; gattDatabaseIndex < gattDatabases.length; gattDatabaseIndex++) {
+            var services = gattDatabases[gattDatabaseIndex].services;
 
-                var valueDescriptor = characteristic.descriptors.find(findPredicate.bind(undefined, characteristic));
-                var descriptors = characteristic.descriptors.filter(rejectPredicate.bind(undefined, characteristic));
+            for (var serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
+                var characteristics = services[serviceIndex].characteristics;
 
-                characteristic.value = valueDescriptor.data;
-                characteristic.descriptors = descriptors;
+                for (var characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
+                    var characteristic = characteristics[characteristicIndex];
+
+                    var valueDescriptor = characteristic.descriptors.find(findPredicate.bind(undefined, characteristic));
+                    var descriptors = characteristic.descriptors.filter(rejectPredicate.bind(undefined, characteristic));
+
+                    characteristic.value = this.valueToString(valueDescriptor.value);
+                    characteristic.descriptors = descriptors;
+
+                    for (var descriptorIndex = 0; descriptorIndex < descriptors.length; descriptorIndex++) {
+                        var descriptor = descriptors[descriptorIndex];
+                        descriptor.value = this.valueToString(descriptor.value);
+                    }
+                }
             }
         }
-
-        return prettyDatabase;
+        return prettyDatabases;
     }
 }
 

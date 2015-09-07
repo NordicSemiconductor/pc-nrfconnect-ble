@@ -163,7 +163,7 @@ var bleDriverStore = reflux.createStore({
                     var attributeHandleList = this.gattDatabases.getHandleList(event.conn_handle);
 
                     if (event.handle >= attributeHandleList[attributeHandleList.length - 1]) {
-                        var gd = this.gattDatabases.getPrettyGattDatabase(event.conn_handle);
+                        var gd = this.gattDatabases.getPrettyGattDatabases(event.conn_handle);
                         connectionActions.servicesDiscovered(gd);
                     } else {
                         var nextHandle = attributeHandleList[attributeHandleList.indexOf(event.handle) + 1];
