@@ -138,7 +138,7 @@ function mapRange(n, fromMin, fromMax, toMin, toMax) {
 var DiscoveredDevicesContainer = React.createClass({
     mixins: [Reflux.connect(discoveryStore), Reflux.connect(connectionStore)],
     _clearContainer: function() {
-        this.setState({discoveredDevices: {}});
+        discoveryActions.clearItems();
     },
     _numDevicesFoundText: function() {
         var n = Object.keys(this.state.discoveredDevices).length 

@@ -1,3 +1,4 @@
+@import "node_modules/bootstrap/less/bootstrap.less";
 @import (inline) "css/fontello.css";
 @import "css/variables.less";
 
@@ -69,7 +70,7 @@
 
 #diagramContainer {
   padding: 20px;
-  width:80%; height: 500px;
+  width:100%;
 }
 
 @font-face {
@@ -238,25 +239,35 @@
     }
   }
 }
+.main-layout > div:nth-child(1) {
+    flex: 1;
+    display: flex;
+    flex-flow: row;
+  }
 
-
-table.main-layout {
-  width: 100%;
-  > tbody > tr:nth-child(1) {
-    > td:nth-child(1) {
+.main-layout {
+  display: flex;
+  flex-flow: row;
+  > div:nth-child(1) {
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    > div:nth-child(1) { //main
+      flex: 1;
       box-shadow: inset 0px 0px 10px gray;
+      border-top: 1px solid gray;
     }
-    > td:nth-child(2) {
-      width: 250px;
-      background-color: white;
+    > div:nth-child(2) { //log
+      border-top: 1px solid gray;
     }
   }
-  > tbody > tr:nth-child(2) > td {
-    height: 250px;
-  }
-  > tbody > tr > td {
+
+  > div:nth-child(2) { //device details
+    background-color: white;
+    width: 260px;
     border-top: 1px solid gray;
-    vertical-align: top;
+    border-left: 1px solid gray;
+    overflow-y: auto;
   }
 }
 
@@ -292,6 +303,7 @@ table.main-layout {
   border-bottom: 1px solid lightgrey;
   padding: 4px 0;
   background-color: white;
+  position: relative;
 
   .connect-btn {
     position: absolute;
@@ -385,4 +397,13 @@ table.main-layout {
 .role-flag {
   background-color: @device-role-color;
   padding: 3px 15px;
+}
+
+.log-wrap {
+  .follow {
+    height: 20px;
+  }
+  .react-datagrid {
+    height: 250px;
+  }
 }

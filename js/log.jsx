@@ -168,8 +168,8 @@ var LogContainer = React.createClass({
     },
     render: function() {
         return (
-            <div>
-                <input type="checkbox" onClick={this._onFollow}>follow</input>
+            <div className="log-wrap">
+                <div className="follow"><input type="checkbox" onClick={this._onFollow}>follow</input></div>
                 <DataGrid
                     ref="log_entries"
                     idProperty="id"

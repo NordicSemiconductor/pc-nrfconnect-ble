@@ -65,31 +65,27 @@ var MyView = React.createClass({
     render: function() {
         var topBarHeight = 55;
         var mainAreaStyle = {
-          minHeight: this.state.mainViewMinHeight - topBarHeight
+          height: this.state.mainViewMinHeight - topBarHeight
         };
         return (
             <div id="main-area-wrapper">
               <NavBar onChangeMainView={this._onChangedMainView}/>
-              <table className="main-layout" style={mainAreaStyle}>
-                <tbody>
-                  <tr>
-                    <td>
+              <div className="main-layout" style={mainAreaStyle}>
+                <div>
+                  <div>
 
-                      <BleNodeContainer style={{display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
-                      <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex': 'none'}}/>
+                    <BleNodeContainer style={{height: (mainAreaStyle.height - 272), display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
+                    <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex': 'none'}}/>
 
-                    </td>
-                    <td>
-                      <DiscoveredDevicesContainer />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan="2">
-                        <Log/>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                  </div>
+                  <div>
+                    <Log/>
+                  </div>
+                </div>
+                <div>
+                  <DiscoveredDevicesContainer />
+                </div>
+              </div>
             </div>
         );
     }

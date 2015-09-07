@@ -169,7 +169,7 @@ var BleNode = React.createClass({
     componentDidMount: function(){
         var that = this;
         jsPlumb.bind("ready", function(){
-            jsPlumb.draggable(that.props.node.id);
+            jsPlumb.draggable(that.props.node.id, {containment: '#mainView'});
         });
     },
     render: function() {
@@ -180,7 +180,7 @@ var BleNode = React.createClass({
             theDevice = (<ConnectedDevice device={this.props.device} node={this.props.node}/>);
         }
         return (
-            <div key={this.props.nodeId} id={this.props.node.id} className="node" style={{position: 'absolute', width: '250px' }}>
+            <div key={this.props.node.id} id={this.props.node.id} className="node" style={{position: 'absolute', width: '250px' }}>
                 {theDevice}
             </div>
         );
