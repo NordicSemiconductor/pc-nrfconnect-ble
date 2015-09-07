@@ -53,7 +53,7 @@ var connectionStore = reflux.createStore({
         var self = this;
         bleDriver.gap_connect(device.peer_addr, scanParameters, connectionParameters, function(err) {
             if(err) {
-                logger.error(`Could not connect to ${textual.peerAddressToTextual(device)} due to error. ${err}`);
+                logger.error(`Could not connect to ${textual.peerAddressToTextual(device)} due to error. ${err.message}`);
                 bleDriver.gap_cancel_connect(function(err) {
                     if (err) {
                         logger.error(`Could not cancel connection to ${textual.peerAddressToTextual(device)}.`);
@@ -83,7 +83,7 @@ var connectionStore = reflux.createStore({
             return (connection.conn_handle == eventPayload.conn_handle);
         });
 
-        logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(connectionThatWasDisconnected))}} disconnected. Disconnect reason is ${eventPayload.reason_name}.`);
+        logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(connectionThatWasDisconnected))} disconnected. Disconnect reason is ${eventPayload.reason_name}.`);
         graphActions.removeNode(connectionThatWasDisconnected.peer_addr.address);
         this.state.connections = _.reject(this.state.connections, function(device) {
             return (device.conn_handle === eventPayload.conn_handle); // Prune all with invalid connectionHandle
@@ -94,7 +94,7 @@ var connectionStore = reflux.createStore({
         var connectionHandle = this._findConnectionHandleFromDeviceAddress(deviceAddress);
         bleDriver.gap_disconnect(connectionHandle, bleDriver.BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION, function(err){
             if(err) {
-                logger.error(`Error disconnecting from ${textual.peerAddressToTextual(deviceAddress)}. Error is ${err}`);
+                logger.error(`Error disconnecting from ${textual.peerAddressToTextual(deviceAddress)}. Error is ${err.message}.`);
                 return;
             }
             console.log('call to disconnect ok', err);

@@ -94,7 +94,7 @@ var bleDriverStore = reflux.createStore({
         bleDriver.gattc_descriptor_discover(connectionHandle, fullHandleRange, function(err){
             // This function will trigger sending of BLE_GATTC_EVT_DESC_DISC_RSP events from driver
             if (err) {
-                logger.error(err);
+                logger.error(err.message);
             } else {
                 logger.debug(`Started getting all characteristics for connection with handle: ${connectionHandle}`);
             }
@@ -127,7 +127,7 @@ var bleDriverStore = reflux.createStore({
                             logger.info('Scan timed out');
                             break;
                         default:
-                            logger.info(`Something timed out: ${event.src}`);
+                            logger.info(`GAP operation timed out: ${event.src_name} (${event.src}).`);
                     }
                     break;
                 case bleDriver.BLE_GAP_EVT_CONNECTED:
@@ -153,7 +153,7 @@ var bleDriverStore = reflux.createStore({
                         };
                         bleDriver.gattc_descriptor_discover(event.conn_handle, handleRange, function(err){
                             if (err) {
-                                logger.error(err);
+                                logger.error(err.message);
                             }
                         });
                     }
@@ -169,7 +169,7 @@ var bleDriverStore = reflux.createStore({
                         var nextHandle = attributeHandleList[attributeHandleList.indexOf(event.handle) + 1];
                         bleDriver.gattc_read(event.conn_handle, nextHandle, 0, function(err) {
                             if (err) {
-                                logger.error(err);
+                                logger.error(err.message);
                             }
                         });
                     }
