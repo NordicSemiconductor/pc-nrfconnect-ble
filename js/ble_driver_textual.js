@@ -27,6 +27,7 @@ var rewriter = function(value) {
             }
         }
     } catch(err) {
+        // Log to console.log because we may not have a valid logger if we get here.
         console.log(err);
     }
 
