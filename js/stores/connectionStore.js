@@ -5,6 +5,8 @@ import _ from 'underscore';
 
 import bleDriver from 'pc-ble-driver-js';
 
+import logger from '../logging';
+
 import connectionActions from'../actions/connectionActions';
 import graphActions from '../actions/bleGraphActions';
 import discoveryActions from '../actions/discoveryActions';
@@ -49,13 +51,15 @@ var connectionStore = reflux.createStore({
         var self = this;
         bleDriver.gap_connect(device.peer_addr, scanParameters, connectionParameters, function(err) {
             if(err) {
-                console.log('Could not connect: ', err);
+                logger.error(`Could not connect: ${err}`);
                 bleDriver.gap_cancel_connect(function(err) {
                     if (err) {
-                        console.log('Could not cancel connection');
+
+                        logger.error('Could not cancel connection');
                         return;
                     }
-                    console.log('Canceled connection');
+
+                    logger.info('Canceled connection');
                 });
             } else {
                 console.log('successfully sent connection request to driver');
@@ -89,6 +93,10 @@ var connectionStore = reflux.createStore({
     onDisconnectFromDevice: function(deviceAddress) {
         var connectionHandle = this._findConnectionHandleFromDeviceAddress(deviceAddress);
         bleDriver.gap_disconnect(connectionHandle, bleDriver.BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION, function(err){
+            if(err) {
+                logger.error(`Error disconnecting from device ${err}`);
+                return;
+            }
             console.log('call to disconnect ok', err);
         });
     },
