@@ -203,6 +203,24 @@ class Textual {
             this.current_stack.push(`data:[${data}]`);
         }
     }
+
+    static peerAddressToTextual(event) {
+        var role = '';
+
+        if(event.peer_addr !== undefined) {
+            if(event.role !== undefined) {
+                if(event.role === 'BLE_GAP_ROLE_CENTRAL') {
+                    role = 'peripheral';
+                } else if(event.role === 'BLE_GAP_ROLE_PERIPH') {
+                    role = 'central';
+                }
+            }
+
+            return `${role} ${event.peer_addr.address.toUpperCase()}`;
+        }
+
+        return ''
+    }
 };
 
 module.exports = Textual;

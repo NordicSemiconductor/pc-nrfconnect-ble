@@ -132,7 +132,7 @@ var bleDriverStore = reflux.createStore({
                     break;
                 case bleDriver.BLE_GAP_EVT_CONNECTED:
                     connectionActions.deviceConnected(event);
-                    logger.info(`Connected to peripheral ${event.peer_addr.address}.`);
+                    logger.info(`Connected to ${textual.peerAddressToTextual(event)}.`);
                     break;
                 case bleDriver.BLE_GAP_EVT_DISCONNECTED:
                 if (this.descriptorDiscoveryInProgress) {
