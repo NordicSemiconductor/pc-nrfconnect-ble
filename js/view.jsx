@@ -65,7 +65,7 @@ var MyView = React.createClass({
     render: function() {
         var topBarHeight = 55;
         var mainAreaStyle = {
-          minHeight: this.state.mainViewMinHeight - topBarHeight
+          height: this.state.mainViewMinHeight - topBarHeight
         };
         return (
             <div id="main-area-wrapper">
@@ -74,7 +74,7 @@ var MyView = React.createClass({
                 <div>
                   <div>
 
-                    <BleNodeContainer style={{height: (mainAreaStyle.minHeight - 250), display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
+                    <BleNodeContainer style={{height: (mainAreaStyle.height - 272), display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
                     <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex': 'none'}}/>
 
                   </div>

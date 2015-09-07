@@ -264,9 +264,10 @@
 
   > div:nth-child(2) { //device details
     background-color: white;
-    width: 250px;
+    width: 260px;
     border-top: 1px solid gray;
     border-left: 1px solid gray;
+    overflow-y: auto;
   }
 }
 
@@ -302,6 +303,7 @@
   border-bottom: 1px solid lightgrey;
   padding: 4px 0;
   background-color: white;
+  position: relative;
 
   .connect-btn {
     position: absolute;
@@ -395,4 +397,13 @@
 .role-flag {
   background-color: @device-role-color;
   padding: 3px 15px;
+}
+
+.log-wrap {
+  .follow {
+    height: 20px;
+  }
+  .react-datagrid {
+    height: 250px;
+  }
 }
