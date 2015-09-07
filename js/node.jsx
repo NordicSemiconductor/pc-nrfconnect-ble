@@ -169,7 +169,7 @@ var BleNode = React.createClass({
     componentDidMount: function(){
         var that = this;
         jsPlumb.bind("ready", function(){
-            jsPlumb.draggable(that.props.node.id);
+            jsPlumb.draggable(that.props.node.id, {containment: '#mainView'});
         });
     },
     render: function() {
