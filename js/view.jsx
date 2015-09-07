@@ -70,26 +70,22 @@ var MyView = React.createClass({
         return (
             <div id="main-area-wrapper">
               <NavBar onChangeMainView={this._onChangedMainView}/>
-              <table className="main-layout" style={mainAreaStyle}>
-                <tbody>
-                  <tr>
-                    <td id="mainView">
+              <div className="main-layout" style={mainAreaStyle}>
+                <div>
+                  <div>
 
-                      <BleNodeContainer style={{height: (mainAreaStyle.minHeight - 250), display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
-                      <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex': 'none'}}/>
+                    <BleNodeContainer style={{height: (mainAreaStyle.minHeight - 250), display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
+                    <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex': 'none'}}/>
 
-                    </td>
-                    <td rowSpan="2">
-                      <DiscoveredDevicesContainer />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                        <Log/>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                  </div>
+                  <div>
+                    <Log/>
+                  </div>
+                </div>
+                <div>
+                  <DiscoveredDevicesContainer />
+                </div>
+              </div>
             </div>
         );
     }
