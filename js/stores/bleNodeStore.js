@@ -22,8 +22,17 @@ var bleNodeStore = reflux.createStore({
       console.log("Adding node ", JSON.stringify(connectedDevice));
       var newNodeId = 'node' + this.idCounter++;
 
+      if(connectedDevice.peer_addr === undefined) return;
+      if(connectedDevice.peer_addr.address === undefined) return;
+
       this.state.graph.push({id: newNodeId, deviceId: connectedDevice.peer_addr.address, device: connectedDevice});
       var centralNode = this._findCentralNode();
+
+      if(centralNode === undefined) {
+          console.log('Central node not found.');
+          return;
+      }
+
       centralNode.ancestorOf.push(newNodeId);
       this.trigger(this.state.graph, {remove: false, nodeId: newNodeId, device: connectedDevice, connection: newConnection});
     },
@@ -32,6 +41,9 @@ var bleNodeStore = reflux.createStore({
         var node = _.find(this.state.graph, function(node){
             return node.deviceId === deviceAddress;
         });
+
+        if(node === undefined) return;
+
         node.connectionLost = true;
         var that = this;
         var timeout = setTimeout(function() {

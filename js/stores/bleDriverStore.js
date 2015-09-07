@@ -96,7 +96,7 @@ var bleDriverStore = reflux.createStore({
             if (err) {
                 logger.error(err);
             } else {
-                logger.debug(`Started getting all characteristics for connection: ${connectionHandle}`);
+                logger.debug(`Started getting all characteristics for connection with handle: ${connectionHandle}`);
             }
 
         });
@@ -132,7 +132,7 @@ var bleDriverStore = reflux.createStore({
                     break;
                 case bleDriver.BLE_GAP_EVT_CONNECTED:
                     connectionActions.deviceConnected(event);
-                    logger.info(`Connected to ${event.peer_addr.address}.`);
+                    logger.info(`Connected to peripheral ${event.peer_addr.address}.`);
                     break;
                 case bleDriver.BLE_GAP_EVT_DISCONNECTED:
                 if (this.descriptorDiscoveryInProgress) {
