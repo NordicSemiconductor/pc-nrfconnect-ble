@@ -2,9 +2,11 @@
 
 import reflux from 'reflux';
 import _ from 'underscore';
+import changeCase from 'change-case';
 
 import bleDriver from 'pc-ble-driver-js';
 
+import textual from '../ble_driver_textual';
 import logger from '../logging';
 
 import connectionActions from'../actions/connectionActions';
@@ -41,7 +43,7 @@ var connectionStore = reflux.createStore({
 
     onConnectToDevice: function(device) {
         // There is no connection until we receive the BLE_GAP_EVT_CONNECTED event
-        logger.info(`Initiated connection to ${device.peer_addr.addr}`);
+        logger.info(`Initiated connection to ${textual.peerAddressToTextual(device)}.`);
         var scanParameters = {
             'active': true, 'interval': 100, 'window': 50, 'timeout': 20
         };
@@ -51,18 +53,15 @@ var connectionStore = reflux.createStore({
         var self = this;
         bleDriver.gap_connect(device.peer_addr, scanParameters, connectionParameters, function(err) {
             if(err) {
-                logger.error(`Could not connect: ${err}`);
+                logger.error(`Could not connect to ${textual.peerAddressToTextual(device)} due to error. ${err}`);
                 bleDriver.gap_cancel_connect(function(err) {
                     if (err) {
-
-                        logger.error('Could not cancel connection');
+                        logger.error(`Could not cancel connection to ${textual.peerAddressToTextual(device)}.`);
                         return;
                     }
-
-                    logger.info('Canceled connection');
                 });
             } else {
-                logger.debug('successfully sent connection request to driver');
+                logger.debug(`Successfully sent connection request to driver (${textual.peerAddressToTextual(device)}).`);
                 discoveryActions.scanStopped();
                 self.devicesAboutToBeConnected[device.peer_addr.addr] = device;
             }
@@ -70,7 +69,7 @@ var connectionStore = reflux.createStore({
 
     },
     onDeviceConnected: function(eventPayload){
-        logger.info(`Connection to ${eventPayload.peer_addr.address} complete.`);
+        logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(eventPayload))} connected.`);
         driverActions.getCharacteristics(eventPayload.conn_handle);
         this.state.connections.push(eventPayload);
         this.trigger(this.state);
@@ -84,7 +83,7 @@ var connectionStore = reflux.createStore({
             return (connection.conn_handle == eventPayload.conn_handle);
         });
 
-        logger.info(`Device ${connectionThatWasDisconnected.peer_addr.address} disconnected`);
+        logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(connectionThatWasDisconnected))}} disconnected. Disconnect reason is ${eventPayload.reason_name}.`);
         graphActions.removeNode(connectionThatWasDisconnected.peer_addr.address);
         this.state.connections = _.reject(this.state.connections, function(device) {
             return (device.conn_handle === eventPayload.conn_handle); // Prune all with invalid connectionHandle
@@ -95,7 +94,7 @@ var connectionStore = reflux.createStore({
         var connectionHandle = this._findConnectionHandleFromDeviceAddress(deviceAddress);
         bleDriver.gap_disconnect(connectionHandle, bleDriver.BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION, function(err){
             if(err) {
-                logger.error(`Error disconnecting from device. ${err}`);
+                logger.error(`Error disconnecting from ${textual.peerAddressToTextual(deviceAddress)}. Error is ${err}`);
                 return;
             }
             console.log('call to disconnect ok', err);

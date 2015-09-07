@@ -69,6 +69,10 @@ var discoveryStore = reflux.createStore({
     scanTimedOut: function() {
         this.state.scanInProgress = false;
         this.trigger(this.state);
+    },
+    onClearItems: function() {
+        this.state.discoveredDevices = {};
+        this.trigger({discoveredDevices: {}});
     }
 });
 
