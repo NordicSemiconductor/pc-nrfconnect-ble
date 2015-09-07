@@ -132,7 +132,7 @@ var bleDriverStore = reflux.createStore({
                     break;
                 case bleDriver.BLE_GAP_EVT_CONNECTED:
                     connectionActions.deviceConnected(event);
-                    logger.info('Device connected');
+                    logger.info(`Connected to ${event.peer_addr.address}.`);
                     break;
                 case bleDriver.BLE_GAP_EVT_DISCONNECTED:
                 if (this.descriptorDiscoveryInProgress) {
@@ -164,7 +164,7 @@ var bleDriverStore = reflux.createStore({
 
                     if (event.handle >= attributeHandleList[attributeHandleList.length - 1]) {
                         var gd = this.gattDatabases;
-                        // TODO: send gd to UI
+                        connectionActions.servicesDiscovered(gd);
                     } else {
                         var nextHandle = attributeHandleList[attributeHandleList.indexOf(event.handle) + 1];
                         bleDriver.gattc_read(event.conn_handle, nextHandle, 0, function(err) {

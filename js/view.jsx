@@ -73,9 +73,9 @@ var MyView = React.createClass({
               <table className="main-layout" style={mainAreaStyle}>
                 <tbody>
                   <tr>
-                    <td>
+                    <td id="mainView">
 
-                      <BleNodeContainer style={{display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
+                      <BleNodeContainer style={{height: (mainAreaStyle.minHeight - 250), display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
                       <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex': 'none'}}/>
 
                     </td>

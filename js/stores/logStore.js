@@ -15,14 +15,13 @@ import discoveryActions from '../actions/discoveryActions';
 
 var db = null;
 
-var last_log_entry_id = 0;
-
 var logStore = reflux.createStore({
     listenables: [logActions, discoveryActions],
     init: function() {
         this.state = {
             logEntries: [],
             follow_state: false,
+            last_log_entry_id: 0
         }
 
         var self = this;
@@ -45,7 +44,7 @@ var logStore = reflux.createStore({
         // TODO: look into optimizing the transport of entries by sending
         // TODO: the self.state.logEntries array as option to the query
         // TODO: and let the query implementation add directory to self.state.logEntries.
-        logger.query({start: last_log_entry_id + 1}, function(err, results) {
+        logger.query({start: self.state.last_log_entry_id + 1}, function(err, results) {
             if(err) {
                 throw err;
             }
@@ -57,7 +56,7 @@ var logStore = reflux.createStore({
             }
 
             // Fetch the latest id received
-            last_log_entry_id = results.db[results.db.length-1].id;
+            self.state.last_log_entry_id = results.db[results.db.length-1].id;
             self.trigger(self.state);
         });
     }

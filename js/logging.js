@@ -54,6 +54,7 @@ var DbLogger = winston.transports.DbLogger = function(options) {
     try {
         fs.unlinkSync(this.filename);
     } catch(err) {
+         // Log to console.log because we may not have a valid logger if we get here.
         console.log(`Error removing file ${this.filename}. Error is ${err}`);
     }
 
@@ -81,6 +82,7 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
     var self = this;
 
     if(!self.db_ready) {
+        // Log to console.log because we may not have a valid logger if we get here.
         console.log("Database is not ready yet. Entry will not be stored.");
         return callback(null, true);
     }
@@ -107,6 +109,7 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
         meta,
         function(err) {
             if(err) {
+                 // Log to console.log because we may not have a valid logger if we get here.
                 console.log(`Error storing log entry, ${err}`)
             }
 
@@ -169,6 +172,7 @@ var create_line = function(options) {
 try {
     fs.unlinkSync(default_log_file);
 } catch(err) {
+     // Log to console.log because we may not have a valid logger if we get here.
     console.log(`Error removing file ${default_log_file}. Error is ${err}`);
 }
 

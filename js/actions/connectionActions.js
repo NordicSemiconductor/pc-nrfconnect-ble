@@ -8,7 +8,8 @@ var connectionActions = Reflux.createActions(
     "connectToDevice",
     "disconnectFromDevice",
     "deviceConnected",
-    "deviceDisconnected"
+    "deviceDisconnected",
+    "servicesDiscovered"
   ]);
 
 module.exports = connectionActions;
