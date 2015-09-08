@@ -18,6 +18,52 @@ class GattDatabase {
         this.connectionHandle = connectionHandle;
         this.services = [];
     }
+
+    getPrettyGattDatabase() {
+        var prettyDatabase = JSON.parse(JSON.stringify(this));
+
+        var findPredicate = function(characteristic, descriptor) {
+            return descriptor.handle === characteristic.valueHandle;
+        };
+
+        var rejectPredicate = function(characteristic, descriptor) {
+            return descriptor.handle !== characteristic.valueHandle;
+        };
+
+        var services = prettyDatabase.services;
+
+        for (var serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
+            var characteristics = services[serviceIndex].characteristics;
+
+            for (var characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
+                var characteristic = characteristics[characteristicIndex];
+
+                var valueDescriptor = characteristic.descriptors.find(findPredicate.bind(undefined, characteristic));
+                var descriptors = characteristic.descriptors.filter(rejectPredicate.bind(undefined, characteristic));
+
+                characteristic.value = this.valueToString(valueDescriptor.value);
+                characteristic.descriptors = descriptors;
+
+                for (var descriptorIndex = 0; descriptorIndex < descriptors.length; descriptorIndex++) {
+                    var descriptor = descriptors[descriptorIndex];
+                    descriptor.value = this.valueToString(descriptor.value);
+                }
+            }
+        }
+
+        return prettyDatabase;
+    }
+
+    valueToString(value) {
+        var valueString = '';
+
+        for (var i = 0; i < value.length; i++) {
+            var byteString = '0' + value[i].toString(16);
+            valueString += byteString.slice(-2) + '-';
+        }
+
+        return valueString.slice(0,-1).toUpperCase();
+    }
 }
 
 class Service {
@@ -364,52 +410,14 @@ class GattDatabases {
 
     }
 
-    valueToString(value) {
-        var valueString = '';
-
-        for (var i = 0; i < value.length; i++) {
-            var byteString = '0' + value[i].toString(16);
-            valueString += byteString.slice(-2) + '-';
-        }
-
-        return valueString.slice(0,-1);
-    }
-
     getPrettyGattDatabases() {
         var prettyDatabases = JSON.parse(JSON.stringify(this));
-
-        var findPredicate = function(characteristic, descriptor) {
-            return descriptor.handle === characteristic.valueHandle;
-        };
-
-        var rejectPredicate = function(characteristic, descriptor) {
-            return descriptor.handle !== characteristic.valueHandle;
-        };
-
         var gattDatabases = prettyDatabases.gattDatabases;
 
         for (var gattDatabaseIndex = 0; gattDatabaseIndex < gattDatabases.length; gattDatabaseIndex++) {
-            var services = gattDatabases[gattDatabaseIndex].services;
-
-            for (var serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
-                var characteristics = services[serviceIndex].characteristics;
-
-                for (var characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
-                    var characteristic = characteristics[characteristicIndex];
-
-                    var valueDescriptor = characteristic.descriptors.find(findPredicate.bind(undefined, characteristic));
-                    var descriptors = characteristic.descriptors.filter(rejectPredicate.bind(undefined, characteristic));
-
-                    characteristic.value = this.valueToString(valueDescriptor.value);
-                    characteristic.descriptors = descriptors;
-
-                    for (var descriptorIndex = 0; descriptorIndex < descriptors.length; descriptorIndex++) {
-                        var descriptor = descriptors[descriptorIndex];
-                        descriptor.value = this.valueToString(descriptor.value);
-                    }
-                }
-            }
+            gattDatabases[gattDatabaseIndex] = gattDatabases.getPrettyGattDatabase();
         }
+
         return prettyDatabases;
     }
 }

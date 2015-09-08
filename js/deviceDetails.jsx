@@ -94,7 +94,7 @@ var ServiceItem = React.createClass({
                     <div style={{backgroundColor: '#B3E1F5', height: this.height-1, width: '10px', marginBottom: '1px', marginRight: '1px', float: 'left'}}/>
                     <div onClick={this._toggleExpanded} className="panel-heading" style={{backgroundColor: 'white', padding: '5px 8px'}}>
                         <i className={"icon-slim " + expandIcon} style={{paddingRight: iconPadding}}></i>
-                        <span style={{marginLeft: '5px'}}>{this.props.serviceData.name} ({this.props.serviceData.serviceUuid})</span>
+                        <span style={{marginLeft: '5px'}}>{this.props.serviceData.name}</span>
                     </div>
                     <Collapse onEntered={this._heightChanged} onExited={this._heightChanged} timeout={0} ref="coll" className="panel-body" in={this.state.expanded}>
                         {this.props.children}
@@ -114,7 +114,7 @@ var DescriptorItem = React.createClass({
             <div className="panel panel-default" style={{marginBottom: '0px'}}>
                 <div style={{backgroundColor: '#009CDE', height: this.height-1, width: '10px', marginBottom: '1px', marginRight: '1px', float: 'left'}}/>
                 <div className="panel-heading" style={{fontSize: '11px', marginLeft: '10px', backgroundColor: 'white', padding: '5px 8px'}}>
-                    <span>{this.props.descriptorData.name} ({this.props.descriptorData.uuid})</span>
+                    <span>{this.props.descriptorData.name}</span>
                     <div style={{color: 'grey', fontSize: '12px'}}>
                         <span style={{marginLeft: '13px'}}>{this.props.descriptorData.value}</span>
                     </div>
@@ -155,7 +155,7 @@ var CharacteristicItem = React.createClass({
                 <div style={{backgroundColor: '#66C4EB', height: this.height-1, width: '10px', marginBottom: '1px', marginRight: '1px', float: 'left'}}/>
                 <div className="panel-heading" style={{fontSize: '11px', marginLeft: '10px', backgroundColor: 'white', padding: '5px 8px'}} onClick={this._toggleExpanded}>
                     <i className={"icon-slim " + expandIcon} style={{paddingRight: iconPadding}}></i>
-                    <span>{this.props.characteristicData.name} ({this.props.characteristicData.characteristicUuid})</span>
+                    <span>{this.props.characteristicData.name}</span>
                     <div style={{color: 'grey', fontSize: '12px'}}>
                         <span style={{marginLeft: '13px'}}>{this.props.characteristicData.value}</span>
                     </div>
