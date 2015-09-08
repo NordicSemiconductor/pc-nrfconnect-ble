@@ -10,7 +10,7 @@ var nodeStore = require('./stores/bleNodeStore');
 var pubsub = require('pubsub-js');
 
 var bs = require('react-bootstrap');
-
+import CentralDevice from './components/CentralDevice.jsx';
 var Panel = bs.Panel;
 var PanelGroup = bs.PanelGroup;
 var Collapse = bs.Collapse;
@@ -255,9 +255,8 @@ var DeviceDetailsView = React.createClass({
         );
         } else {
             return (
-                <div className="device-details-view" id={this.props.nodeId} style={this.props.style}>
-                </div>
-            )
+                <CentralDevice name="dummy"/>
+            );
         }
     }
 });
