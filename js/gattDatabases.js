@@ -361,15 +361,15 @@ class GattDatabases {
         if(indexOfItemToDelete !== -1) {
             this.gattDatabases.splice(indexOfItemToDelete, 1);
         }
-        
+
     }
 
     valueToString(value) {
         var valueString = '';
 
         for (var i = 0; i < value.length; i++) {
-            valueString += value[i].toString(16);
-            valueString += '-';
+            var byteString = '0' + value[i].toString(16);
+            valueString += byteString.slice(-2) + '-';
         }
 
         return valueString.slice(0,-1);
