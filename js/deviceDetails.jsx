@@ -114,9 +114,9 @@ var DescriptorItem = React.createClass({
             <div className="panel panel-default" style={{marginBottom: '0px'}}>
                 <div style={{backgroundColor: '#009CDE', height: this.height, width: '10px', float: 'left'}}/>
                 <div className="panel-heading" style={{fontSize: '11px', marginLeft: '10px', backgroundColor: 'white', padding: '5px 8px'}}>
-                    <span>this.props.descriptorData.name</span>
+                    <span>{this.props.descriptorData.name}</span>
                     <div style={{color: 'grey', fontSize: '12px'}}>
-                        <span style={{marginLeft: '13px'}}>this.props.descriptorData.value</span>
+                        <span style={{marginLeft: '13px'}}>{this.props.descriptorData.value}</span>
                     </div>
 
                 </div>
@@ -162,9 +162,7 @@ var CharacteristicItem = React.createClass({
                     </div>
                 </div>
             <Collapse  onEntered={this._expanded} onExited={this._contracted} timeout={0} ref="coll" className="panel-body" in= {this.state.expanded}>
-                <div>
-                    <DescriptorItem/>
-                </div>
+                {this.props.children}
             </Collapse>
             </div>
         </div>
@@ -209,7 +207,7 @@ var DeviceDetailsContainer = React.createClass({
             var deviceAddress = this.state.graph[i].deviceId;
             var deviceServices = this.state.deviceAddressToServicesMap[deviceAddress];
             var xPos = i*200 + "px";
-            detailNodes.push(<DeviceDetailsView services={deviceServices} plumb={this.plumb} nodeId={nodeId+ '_details'} style={{width: '220px', position: 'relative', top: '20px', left: xPos}} key={i}/>)
+            detailNodes.push(<DeviceDetailsView services={deviceServices} plumb={this.plumb} nodeId={nodeId+ '_details'}  key={i}/>)
         }
         return (<div className="device-details-container" style={this.props.style}>{detailNodes}</div>)
     },
@@ -221,9 +219,6 @@ var DeviceDetailsContainer = React.createClass({
 var DeviceDetailsView = React.createClass({
     componentDidMount: function() {
         var that = this;
-        this.props.plumb.bind("ready", function(){
-            jsPlumb.draggable(that.props.nodeId);
-        });
     },
     render: function() {
         logger.silly(this.props.services);
@@ -254,13 +249,13 @@ var DeviceDetailsView = React.createClass({
                 );
             });
             return (
-                <div id={this.props.nodeId} style={this.props.style}>
+                <div className="device-details-view" id={this.props.nodeId} style={this.props.style}>
                     {services}
                 </div>
         );
         } else {
             return (
-                <div className="panel panel-default" id={this.props.nodeId} style={this.props.style}>
+                <div className="device-details-view" id={this.props.nodeId} style={this.props.style}>
                 </div>
             )
         }
