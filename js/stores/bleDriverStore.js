@@ -58,6 +58,7 @@ var bleDriverStore = reflux.createStore({
             else
             {
                 logger.info(`Finished opening serial port ${port}.`);
+                self.state.error = undefined;
                 self.state.connectedToDriver = true;
                 self.state.comPort = port;
                 bleDriver.gap_get_address(function(gapAddress){
