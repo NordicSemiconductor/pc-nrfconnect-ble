@@ -107,10 +107,10 @@ var connectionStore = reflux.createStore({
             var connection = this.state.connections.find(function(conn) {
                 return (conn.conn_handle === connectionHandle);
             });
-            deviceAddressToServicesMap[connection.peer_addr.address] = gattDatabases.gattDatabases[i].services;
+            this.state.deviceAddressToServicesMap[connection.peer_addr.address] = gattDatabases.gattDatabases[i].services;
         }
 
-        this.trigger({deviceAddressToServicesMap: deviceAddressToServicesMap});
+        this.trigger({deviceAddressToServicesMap: this.state.deviceAddressToServicesMap});
     }
 });
 module.exports = connectionStore;
