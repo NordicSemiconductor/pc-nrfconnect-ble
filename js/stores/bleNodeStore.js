@@ -3,6 +3,7 @@
 import reflux from 'reflux';
 import _ from 'underscore';
 
+import logger from '../logging';
 import bleGraphActions from '../actions/bleGraphActions';
 
 var bleNodeStore = reflux.createStore({
@@ -19,7 +20,7 @@ var bleNodeStore = reflux.createStore({
     },
     onAddNode: function(connectedDevice, newConnection) {
 
-      console.log("Adding node ", JSON.stringify(connectedDevice));
+      logger.silly("Adding node ", JSON.stringify(connectedDevice));
       var newNodeId = 'node' + this.idCounter++;
 
       if(connectedDevice.peer_addr === undefined) return;
@@ -29,7 +30,7 @@ var bleNodeStore = reflux.createStore({
       var centralNode = this._findCentralNode();
 
       if(centralNode === undefined) {
-          console.log('Central node not found.');
+          logger.silly('Central node not found.');
           return;
       }
 
@@ -37,7 +38,7 @@ var bleNodeStore = reflux.createStore({
       this.trigger(this.state.graph, {remove: false, nodeId: newNodeId, device: connectedDevice, connection: newConnection});
     },
     onRemoveNode: function(deviceAddress) {
-        console.log('removing node');
+        logger.silly('removing node');
         var node = _.find(this.state.graph, function(node){
             return node.deviceId === deviceAddress;
         });

@@ -4,6 +4,7 @@ import sqlite3 from'sqlite3';
 import fs from 'fs';
 
 var default_log_file = 'log.txt';
+var default_trace_file = 'app_log.txt'
 var default_db_file = 'logger.db';
 
 var convert_level = function(level) {
@@ -193,7 +194,7 @@ var logger = new (winston.Logger)({
         }),
         new (winston.transports.Console)({
             name: 'console',
-            level: 'info',
+            level: 'silly',
             timestamp: function() { return new Date(); },
             formatter: create_line
         })

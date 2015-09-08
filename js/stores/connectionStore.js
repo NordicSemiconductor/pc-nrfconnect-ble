@@ -97,7 +97,7 @@ var connectionStore = reflux.createStore({
                 logger.error(`Error disconnecting from ${textual.peerAddressToTextual(deviceAddress)}. Error is ${err.message}.`);
                 return;
             }
-            console.log('call to disconnect ok', err);
+            logger.silly('call to disconnect ok', err);
         });
     },
     onServicesDiscovered: function(gattDatabases) {

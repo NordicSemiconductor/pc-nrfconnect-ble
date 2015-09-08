@@ -3,6 +3,8 @@
 import React from 'react';
 import Reflux from 'reflux';
 
+import logger from './logging';
+
 let {Paper, List, ListItem, RaisedButton, CircularProgress} = require('material-ui');
 var discoveryStore = require('./stores/discoveryStore');
 var connectionStore = require('./stores/connectionStore');
@@ -19,7 +21,7 @@ var MAX_RSSI = -45;
 function prepareDeviceData(device) {
     return {
         time: new Date(device.time),
-        name: (device.data 
+        name: (device.data
             ? (device.data.BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME || device.data.BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME || "")
             : ""),
         flags: device.processed ? device.processed.flags : [],
@@ -141,7 +143,7 @@ var DiscoveredDevicesContainer = React.createClass({
         discoveryActions.clearItems();
     },
     _numDevicesFoundText: function() {
-        var n = Object.keys(this.state.discoveredDevices).length 
+        var n = Object.keys(this.state.discoveredDevices).length
         return n == 1 ? "1 device found." : n + " devices found";
     },
     render: function() {
@@ -173,7 +175,7 @@ var DiscoveredDevicesContainer = React.createClass({
                 </div>
                 <div className="buttons">
                     <DiscoveryButton/>
-                    <button onClick={this._clearContainer} type="button" className="btn btn-default btn-sm">Clear</button> 
+                    <button onClick={this._clearContainer} type="button" className="btn btn-default btn-sm">Clear</button>
                 </div>
                 <div style={{paddingTop: '0px'}}>
                   {Object.keys(devices).map(function(device, index) {
@@ -186,7 +188,7 @@ var DiscoveredDevicesContainer = React.createClass({
                 </div>
               </div>)
       } else {
-          console.log("No data!!!!!!!!!!!!!!!!!!!!!!!!!!");
+          logger.silly("No data!!!!!!!!!!!!!!!!!!!!!!!!!!");
           return <div id="discoveredDevicesContainer"></div>;
       }
     }

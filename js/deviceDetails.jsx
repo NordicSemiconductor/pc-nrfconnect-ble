@@ -1,5 +1,7 @@
 'use strict';
 
+import logger from './logging';
+
 var react = require('react');
 var Reflux = require('reflux');
 var connectionStore = require('./stores/connectionStore');
@@ -224,7 +226,7 @@ var DeviceDetailsView = React.createClass({
         });
     },
     render: function() {
-        console.log(this.props.services);
+        logger.silly(this.props.services);
         var services = [];
         if (this.props.services) {
             services = this.props.services.map(function(service, i){

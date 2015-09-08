@@ -42,7 +42,7 @@ var MyView = React.createClass({
             obj.addEventListener(type, func);
         };
 
-       
+
         throttle("resize", "optimizedResize");
         })();
 
@@ -59,7 +59,7 @@ var MyView = React.createClass({
         };
     },
     _onChangedMainView: function(viewToShow) {
-        console.log('changed View');
+        logger.silly('changed View');
         this.setState({currentlyShowing: viewToShow});
     },
     render: function() {
