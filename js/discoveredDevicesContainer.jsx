@@ -5,7 +5,6 @@ import Reflux from 'reflux';
 
 import logger from './logging';
 
-let {Paper, List, ListItem, RaisedButton, CircularProgress} = require('material-ui');
 var discoveryStore = require('./stores/discoveryStore');
 var connectionStore = require('./stores/connectionStore');
 var nodeStore = require('./stores/bleNodeStore');
@@ -111,24 +110,6 @@ var ConnectedDevice = React.createClass({
     }
 });
 
-var MainDevice = React.createClass({
-    render: function() {
-        return (
-            <div className="device standalone main-device">
-                <div className="main-device-table">
-                    <div className="icon-wrap"><i className="icon-usb icon-rotate-270"></i></div>
-                    <div className="device-body text-small">
-                        <div>
-                            <strong>{this.props.name}</strong>
-                        </div>
-                        <div>{this.props.address}</div>
-                        <div className="role-flag">Central</div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-});
 
 function mapRange(n, fromMin, fromMax, toMin, toMax) {
     //scale number n from the range [fromMin, fromMax] to [toMin, toMax]
@@ -198,5 +179,4 @@ module.exports = {
     DiscoveredDevicesContainer: DiscoveredDevicesContainer,
     DiscoveredDevice: DiscoveredDevice,
     ConnectedDevice: ConnectedDevice,
-    MainDevice: MainDevice
 }

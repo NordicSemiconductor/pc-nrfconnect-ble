@@ -18,7 +18,6 @@ import discoveryStore from './stores/discoveryStore';
 import logStore from './stores/logStore';
 
 import logActions from './actions/logActions';
-import DiscoveryView from './discoveryView.jsx';
 
 import NavBar from './navbar.jsx';
 

@@ -7,8 +7,8 @@ var nodeStore = require('./stores/bleNodeStore');
 
 var driverStore = require('./stores/bleDriverStore');
 var connectionActions = require('./actions/connectionActions');
-var {ConnectedDevice, MainDevice} = require('./discoveredDevicesContainer.jsx');
-
+var {ConnectedDevice} = require('./discoveredDevicesContainer.jsx');
+var CentralDevice = require('./components/CentralDevice.jsx');
 var bs = require('react-bootstrap');
 var Popover = bs.Popover;
 var OverlayTrigger = bs.OverlayTrigger;
@@ -175,7 +175,7 @@ var BleNode = React.createClass({
     render: function() {
         var theDevice;
         if (this.props.node.id === 'central') {
-            theDevice = (<MainDevice name={this.props.centralName} address={this.props.centralAddress.address} />);
+            theDevice = (<CentralDevice name={this.props.centralName} address={this.props.centralAddress.address} />);
         } else {
             theDevice = (<ConnectedDevice device={this.props.device} node={this.props.node}/>);
         }
