@@ -181,7 +181,7 @@ var DeviceDetailsContainer = React.createClass({
         return nodeStore.getInitialState();
     },
     onGraphChanged: function(newGraph, change) {
-        this.setState({graph: newGraph});
+        //this.setState({graph: newGraph});
         this.plumb.detachEveryConnection();
         var central = this.state.graph.find(function(node){
             return node.id ==='central';
@@ -211,14 +211,11 @@ var DeviceDetailsContainer = React.createClass({
         return (<div className="device-details-container" style={this.props.style}>{detailNodes}</div>)
     },
     componentDidUpdate: function() {
-         this.plumb.repaintEverything();
+         //this.onGraphChanged();
     }
 });
 
 var DeviceDetailsView = React.createClass({
-    componentDidMount: function() {
-        var that = this;
-    },
     render: function() {
         logger.silly(this.props.services);
         var services = [];
@@ -254,7 +251,7 @@ var DeviceDetailsView = React.createClass({
         );
         } else {
             return (
-                <CentralDevice name="dummy"/>
+                <CentralDevice id={this.props.nodeId} name="dummy"/>
             );
         }
     }
