@@ -1,7 +1,6 @@
 
 var compileLess = require("./js/utils/compileLess.js");
 
-DEBUG = true;
 //compile less and then insert css/styles.css
 function insertStyles() {
     var link = document.createElement("link");
@@ -10,7 +9,7 @@ function insertStyles() {
     link.setAttribute("href", "css/styles.css");
     document.querySelector("head").appendChild(link);
 }
-if (!DEBUG) {
+if (process.env.NODE_ENV === 'production') {
     insertStyles();
 } else {
     compileLess("css/styles.less", "css/styles.css", function(err) {
