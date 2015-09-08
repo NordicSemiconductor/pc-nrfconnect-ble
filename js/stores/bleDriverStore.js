@@ -139,6 +139,7 @@ var bleDriverStore = reflux.createStore({
                     this.descriptorDiscoveryInProgress = false;
                     this.currentConnectionHandle = -1;
                 }
+                    this.gattDatabases.removeGattDatabase(event.conn_handle);
                     connectionActions.deviceDisconnected(event);
                     break;
                 case bleDriver.BLE_GATTC_EVT_DESC_DISC_RSP:

@@ -354,7 +354,14 @@ class GattDatabases {
     }
 
     removeGattDatabase(connectionHandle) {
-        delete this.gattDatabases[connectionHandle];
+        var indexOfItemToDelete = this.gattDatabases.findIndex(function(gattDatabase) {
+            return gattDatabase.connectionHandle === connectionHandle;
+        });
+
+        if(indexOfItemToDelete !== -1) {
+            this.gattDatabases.splice(indexOfItemToDelete, 1);
+        }
+        
     }
 
     valueToString(value) {
