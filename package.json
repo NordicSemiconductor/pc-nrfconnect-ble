@@ -52,6 +52,7 @@
     "pubsub-js": "^1.5.2",
     "react-bootstrap": "^0.25.0",
     "react-datagrid": "^1.2.13",
+    "react-infinite": "file:..\\react-infinite",
     "react-tap-event-plugin": "^0.1.7",
     "reflux": "^0.2.8",
     "serialport-electron": "1.7.4-electron-0.30.3",
