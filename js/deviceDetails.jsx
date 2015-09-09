@@ -1,5 +1,7 @@
 'use strict';
 
+import logger from './logging';
+
 var react = require('react');
 var Reflux = require('reflux');
 var connectionStore = require('./stores/connectionStore');
@@ -8,7 +10,7 @@ var nodeStore = require('./stores/bleNodeStore');
 var pubsub = require('pubsub-js');
 
 var bs = require('react-bootstrap');
-
+import CentralDevice from './components/CentralDevice.jsx';
 var Panel = bs.Panel;
 var PanelGroup = bs.PanelGroup;
 var Collapse = bs.Collapse;
@@ -75,7 +77,7 @@ var ServiceItem = React.createClass({
     componentDidMount: function() {
         this._updateHeight();
         // UGLY HACK to make the Descriptor's hierarchy div show on first expand
-        // Race condition: 
+        // Race condition:
         // If descriptor child is not done setting it's height by the time this timeout fires, there will be no hierarchy bar for it.
         var that = this;
         setTimeout(function() {
@@ -85,18 +87,14 @@ var ServiceItem = React.createClass({
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
         var iconPadding = this.state.expanded ? '0px' :'3px';
-        
+
         return (
             <div>
                 <div className="panel panel-default" style={{marginBottom: '0px'}}>
-                    <div style={{backgroundColor: '#B3E1F5', height: this.height, width: '10px', float: 'left'}}/>
+                    <div style={{backgroundColor: '#B3E1F5', height: this.height-1, width: '10px', marginBottom: '1px', marginRight: '1px', float: 'left'}}/>
                     <div onClick={this._toggleExpanded} className="panel-heading" style={{backgroundColor: 'white', padding: '5px 8px'}}>
                         <i className={"icon-slim " + expandIcon} style={{paddingRight: iconPadding}}></i>
                         <span style={{marginLeft: '5px'}}>{this.props.serviceData.name}</span>
-                        <span style={{float: 'right'}}>{this.props.serviceData.uuid}</span>
-                        <div style={{color: 'grey', fontSize: '12px'}}>
-                            <span style={{marginLeft: '13px'}}>{this.props.serviceData.serviceUuid}</span><span style={{float: 'right'}}>0x180f</span>
-                        </div>
                     </div>
                     <Collapse onEntered={this._heightChanged} onExited={this._heightChanged} timeout={0} ref="coll" className="panel-body" in={this.state.expanded}>
                         {this.props.children}
@@ -114,14 +112,12 @@ var DescriptorItem = React.createClass({
     render: function() {
          return (
             <div className="panel panel-default" style={{marginBottom: '0px'}}>
-                <div style={{backgroundColor: '#009CDE', height: this.height, width: '10px', float: 'left'}}/>
+                <div style={{backgroundColor: '#009CDE', height: this.height-1, width: '10px', marginBottom: '1px', marginRight: '1px', float: 'left'}}/>
                 <div className="panel-heading" style={{fontSize: '11px', marginLeft: '10px', backgroundColor: 'white', padding: '5px 8px'}}>
-                    <span>Client Characteristic config</span>
-                    <span style={{float: 'right'}}> 300sec</span>
+                    <span>{this.props.descriptorData.name}</span>
                     <div style={{color: 'grey', fontSize: '12px'}}>
-                        <span style={{marginLeft: '13px'}}>0xffaabb</span><span style={{float: 'right'}}>0x180f</span>
+                        <span style={{marginLeft: '13px'}}>{this.props.descriptorData.value}</span>
                     </div>
-
                 </div>
             </div>
         );
@@ -156,19 +152,16 @@ var CharacteristicItem = React.createClass({
         return (
         <div >
             <div className="panel panel-default" style={{marginBottom: '0px'}}>
-                <div style={{backgroundColor: '#66C4EB', height: this.height, width: '10px', float: 'left'}}/>
+                <div style={{backgroundColor: '#66C4EB', height: this.height-1, width: '10px', marginBottom: '1px', marginRight: '1px', float: 'left'}}/>
                 <div className="panel-heading" style={{fontSize: '11px', marginLeft: '10px', backgroundColor: 'white', padding: '5px 8px'}} onClick={this._toggleExpanded}>
                     <i className={"icon-slim " + expandIcon} style={{paddingRight: iconPadding}}></i>
                     <span>{this.props.characteristicData.name}</span>
-                    <span style={{float: 'right'}}>{this.props.characteristicData.uuid}</span>
                     <div style={{color: 'grey', fontSize: '12px'}}>
-                        <span style={{marginLeft: '13px'}}>{this.props.characteristicData.serviceUuid}</span><span style={{float: 'right'}}>0x180f</span>
+                        <span style={{marginLeft: '13px'}}>{this.props.characteristicData.value}</span>
                     </div>
                 </div>
             <Collapse  onEntered={this._expanded} onExited={this._contracted} timeout={0} ref="coll" className="panel-body" in= {this.state.expanded}>
-                <div>
-                    <DescriptorItem/>
-                </div>
+                {this.props.children}
             </Collapse>
             </div>
         </div>
@@ -188,7 +181,7 @@ var DeviceDetailsContainer = React.createClass({
         return nodeStore.getInitialState();
     },
     onGraphChanged: function(newGraph, change) {
-        this.setState({graph: newGraph});   
+        //this.setState({graph: newGraph});
         this.plumb.detachEveryConnection();
         var central = this.state.graph.find(function(node){
             return node.id ==='central';
@@ -213,24 +206,18 @@ var DeviceDetailsContainer = React.createClass({
             var deviceAddress = this.state.graph[i].deviceId;
             var deviceServices = this.state.deviceAddressToServicesMap[deviceAddress];
             var xPos = i*200 + "px";
-            detailNodes.push(<DeviceDetailsView services={deviceServices} plumb={this.plumb} nodeId={nodeId+ '_details'} style={{width: '220px', position: 'relative', top: '20px', left: xPos}} key={i}/>)
+            detailNodes.push(<DeviceDetailsView services={deviceServices} plumb={this.plumb} nodeId={nodeId+ '_details'}  key={i}/>)
         }
         return (<div className="device-details-container" style={this.props.style}>{detailNodes}</div>)
     },
     componentDidUpdate: function() {
-         this.plumb.repaintEverything();
+         //this.onGraphChanged();
     }
 });
 
 var DeviceDetailsView = React.createClass({
-    componentDidMount: function() {
-        var that = this;
-        this.props.plumb.bind("ready", function(){
-            jsPlumb.draggable(that.props.nodeId);
-        });
-    },
     render: function() {
-        console.log(this.props.services);
+        logger.silly(this.props.services);
         var services = [];
         if (this.props.services) {
             services = this.props.services.map(function(service, i){
@@ -239,25 +226,33 @@ var DeviceDetailsView = React.createClass({
                     <div>
                         {service.characteristics.map(function(characteristic, j){
                             return (
-                                <CharacteristicItem characteristicData={characteristic} key={j}/>
+                                <CharacteristicItem characteristicData={characteristic} key={j}>
+                                <div>
+                                    {characteristic.descriptors.map(function(descriptor, k) {
+                                        return (
+                                            <DescriptorItem descriptorData={descriptor} key={k}/>
+                                        )
+                                    }
+                                    )}
+                                </div>
+                                </CharacteristicItem>
                             )
                         }
                         )}
-                        </div>
+                    </div>
                     </ServiceItem>
 
                 );
             });
             return (
-                <div id={this.props.nodeId} style={this.props.style}>
+                <div className="device-details-view" id={this.props.nodeId} style={this.props.style}>
                     {services}
                 </div>
         );
         } else {
             return (
-                <div className="panel panel-default" id={this.props.nodeId} style={this.props.style}>
-                </div>
-            )
+                <CentralDevice id={this.props.nodeId} name="dummy"/>
+            );
         }
     }
 });

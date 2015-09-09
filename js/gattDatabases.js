@@ -4,39 +4,65 @@
  *  We assume that parent is always found before its children.
  */
 
+import _ from 'underscore';
+
 //import logger from './logging';
 import bleDriver from 'pc-ble-driver-js';
 import uuidDefinitions from './utils/uuid_definitions';
 
-//in event:
-var gattDescDiscEvent = {
-    "id":51,
-    "name":"BLE_GATTC_EVT_DESC_DISC_RSP",
-    "time":"2015-08-28T11:12:48.802Z",
-    "conn_handle":0,
-    "gatt_status":0,
-    "error_handle":0,
-    "count":1,
-    "descs":[{
-        "handle":1,
-        "uuid":{
-            "uuid":10240,
-            "type":1,
-            "typeString":"BLE_UUID_TYPE_BLE"
-        }
-    }],
-    "level":"debug",
-    "message":"BLE_GATTC_EVT_DESC_DISC_RSP",
-    "timestamp":"2015-08-28T11:12:48.936Z"
-};
-
 const SERVICE_UUID = "0x2800";
 const CHARACTERISTIC_UUID = "0x2803";
 
-class AttributeDatabase {
+class GattDatabase {
     constructor(connectionHandle) {
         this.connectionHandle = connectionHandle;
         this.services = [];
+    }
+
+    getPrettyGattDatabase() {
+        var prettyDatabase = JSON.parse(JSON.stringify(this));
+
+        var findPredicate = function(characteristic, descriptor) {
+            return descriptor.handle === characteristic.valueHandle;
+        };
+
+        var rejectPredicate = function(characteristic, descriptor) {
+            return descriptor.handle !== characteristic.valueHandle;
+        };
+
+        var services = prettyDatabase.services;
+
+        for (var serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
+            var characteristics = services[serviceIndex].characteristics;
+
+            for (var characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
+                var characteristic = characteristics[characteristicIndex];
+
+                var valueDescriptor = characteristic.descriptors.find(findPredicate.bind(undefined, characteristic));
+                var descriptors = characteristic.descriptors.filter(rejectPredicate.bind(undefined, characteristic));
+
+                characteristic.value = this.valueToString(valueDescriptor.value);
+                characteristic.descriptors = descriptors;
+
+                for (var descriptorIndex = 0; descriptorIndex < descriptors.length; descriptorIndex++) {
+                    var descriptor = descriptors[descriptorIndex];
+                    descriptor.value = this.valueToString(descriptor.value);
+                }
+            }
+        }
+
+        return prettyDatabase;
+    }
+
+    valueToString(value) {
+        var valueString = '';
+
+        for (var i = 0; i < value.length; i++) {
+            var byteString = '0' + value[i].toString(16);
+            valueString += byteString.slice(-2) + '-';
+        }
+
+        return valueString.slice(0,-1).toUpperCase();
     }
 }
 
@@ -63,7 +89,7 @@ class Descriptor {
         this.handle = handle;
         this.uuid = uuid;
         this.name = uuidDefinitions[uuid];
-        this.data = [];
+        this.value = [];
     }
 }
 
@@ -84,7 +110,7 @@ class GattDatabases {
 
     constructor() {
         // TODO: Keep a example database structure?
-        this.attributeDatabase = [];
+        this.gattDatabases = [];
     }
 /*
 [{
@@ -242,7 +268,7 @@ class GattDatabases {
     findAttribute(parent, handle) {
         var attributeList;
 
-        if (parent instanceof AttributeDatabase) {
+        if (parent instanceof GattDatabase) {
             attributeList = parent.services;
         }
         else if (parent instanceof Service) {
@@ -260,7 +286,7 @@ class GattDatabases {
         for (var i = 0; i < attributeList.length; i++) {
             var currentAttribute = attributeList[i];
 
-            if (currentAttribute.handle == handle) {
+            if (currentAttribute.handle === handle) {
                 return currentAttribute;
             }
             else if (currentAttribute.handle > handle) {
@@ -269,6 +295,8 @@ class GattDatabases {
 
             previousAttribute = currentAttribute;
         }
+
+        return this.findAttribute(previousAttribute, handle);
     }
 
     parseServiceData(service, data, length, readOffset) {
@@ -284,8 +312,8 @@ class GattDatabases {
     }
 
     parseDescriptorData(descriptor, data, length, readOffset) {
-        var remainingData = descriptor.data.slice(0, readOffset);
-        descriptor.data = remainingData.concat(data);
+        var remainingData = descriptor.value.slice(0, readOffset);
+        descriptor.value = remainingData.concat(data);
     }
 
     setCharacteristicValue(connectionHandle, valueHandle, value) {
@@ -358,21 +386,39 @@ class GattDatabases {
     }
 
     getGattDatabase(connectionHandle) {
-        for (var i = 0; i < this.attributeDatabase.length; i++) {
-            if (this.attributeDatabase[i].connectionHandle == connectionHandle) {
-                return this.attributeDatabase[i];
+        for (var i = 0; i < this.gattDatabases.length; i++) {
+            if (this.gattDatabases[i].connectionHandle == connectionHandle) {
+                return this.gattDatabases[i];
             }
         }
 
-        var gattDatabase = new AttributeDatabase(connectionHandle);
+        var gattDatabase = new GattDatabase(connectionHandle);
 
-        this.attributeDatabase.push(gattDatabase);
+        this.gattDatabases.push(gattDatabase);
 
         return gattDatabase;
     }
 
     removeGattDatabase(connectionHandle) {
-        delete this.attributeDatabase[connectionHandle];
+        var indexOfItemToDelete = this.gattDatabases.findIndex(function(gattDatabase) {
+            return gattDatabase.connectionHandle === connectionHandle;
+        });
+
+        if(indexOfItemToDelete !== -1) {
+            this.gattDatabases.splice(indexOfItemToDelete, 1);
+        }
+
+    }
+
+    getPrettyGattDatabases() {
+        var prettyDatabases = JSON.parse(JSON.stringify(this));
+        var gattDatabases = prettyDatabases.gattDatabases;
+
+        for (var gattDatabaseIndex = 0; gattDatabaseIndex < gattDatabases.length; gattDatabaseIndex++) {
+            gattDatabases[gattDatabaseIndex] = gattDatabases.getPrettyGattDatabase();
+        }
+
+        return prettyDatabases;
     }
 }
 

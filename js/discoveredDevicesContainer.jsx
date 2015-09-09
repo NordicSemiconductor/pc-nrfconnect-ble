@@ -3,7 +3,8 @@
 import React from 'react';
 import Reflux from 'reflux';
 
-let {Paper, List, ListItem, RaisedButton, CircularProgress} = require('material-ui');
+import logger from './logging';
+
 var discoveryStore = require('./stores/discoveryStore');
 var connectionStore = require('./stores/connectionStore');
 var nodeStore = require('./stores/bleNodeStore');
@@ -19,7 +20,7 @@ var MAX_RSSI = -45;
 function prepareDeviceData(device) {
     return {
         time: new Date(device.time),
-        name: (device.data 
+        name: (device.data
             ? (device.data.BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME || device.data.BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME || "")
             : ""),
         flags: device.processed ? device.processed.flags : [],
@@ -109,24 +110,6 @@ var ConnectedDevice = React.createClass({
     }
 });
 
-var MainDevice = React.createClass({
-    render: function() {
-        return (
-            <div className="device standalone main-device">
-                <div className="main-device-table">
-                    <div className="icon-wrap"><i className="icon-usb icon-rotate-270"></i></div>
-                    <div className="device-body text-small">
-                        <div>
-                            <strong>{this.props.name}</strong>
-                        </div>
-                        <div>{this.props.address}</div>
-                        <div className="role-flag">Central</div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-});
 
 function mapRange(n, fromMin, fromMax, toMin, toMax) {
     //scale number n from the range [fromMin, fromMax] to [toMin, toMax]
@@ -141,7 +124,7 @@ var DiscoveredDevicesContainer = React.createClass({
         discoveryActions.clearItems();
     },
     _numDevicesFoundText: function() {
-        var n = Object.keys(this.state.discoveredDevices).length 
+        var n = Object.keys(this.state.discoveredDevices).length
         return n == 1 ? "1 device found." : n + " devices found";
     },
     render: function() {
@@ -173,7 +156,7 @@ var DiscoveredDevicesContainer = React.createClass({
                 </div>
                 <div className="buttons">
                     <DiscoveryButton/>
-                    <button onClick={this._clearContainer} type="button" className="btn btn-default btn-sm">Clear</button> 
+                    <button onClick={this._clearContainer} type="button" className="btn btn-default btn-sm">Clear</button>
                 </div>
                 <div style={{paddingTop: '0px'}}>
                   {Object.keys(devices).map(function(device, index) {
@@ -186,7 +169,7 @@ var DiscoveredDevicesContainer = React.createClass({
                 </div>
               </div>)
       } else {
-          console.log("No data!!!!!!!!!!!!!!!!!!!!!!!!!!");
+          logger.silly("No data!!!!!!!!!!!!!!!!!!!!!!!!!!");
           return <div id="discoveredDevicesContainer"></div>;
       }
     }
@@ -196,5 +179,4 @@ module.exports = {
     DiscoveredDevicesContainer: DiscoveredDevicesContainer,
     DiscoveredDevice: DiscoveredDevice,
     ConnectedDevice: ConnectedDevice,
-    MainDevice: MainDevice
 }
