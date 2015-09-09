@@ -85,13 +85,16 @@ var ConnectedDevice = React.createClass({
         return (
             <div className="device standalone">
                 <div className="top-bar">
-                    <i className={connected ? "icon-link" : "icon-link-broken" }></i>
-                    <span className="subtle-text">{connected ? 'Connected' : 'Disconnected'}</span>
-                    <span className="subtle-text pull-right" style={{marginTop: '2px'}}>{device.rssi}</span>
-                    <div style={{float: 'right'}}>
-                        <span style={{width: device.rssi_level + 'px'}} className="icon-signal icon-foreground"></span>
-                        <span className="icon-signal icon-background"></span>
-                    </div>
+                {
+                 //   <i className={connected ? "icon-link" : "icon-link-broken" }></i>
+                 //   <span className="subtle-text">{connected ? 'Connected' : 'Disconnected'}</span>
+                 //   <span className="subtle-text pull-right" style={{marginTop: '2px'}}>{device.rssi}</span>
+                 //
+                 //    <div style={{float: 'right'}}>
+                 //       <span style={{width: device.rssi_level + 'px'}} className="icon-signal icon-foreground"></span>
+                 //       <span className="icon-signal icon-background"></span>
+                 //   </div>
+                }
                 </div>
                 <div className="device-body text-small">
                     <div>
