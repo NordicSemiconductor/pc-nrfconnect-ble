@@ -439,15 +439,10 @@
 }
 
 .device-details-view {
+  background-color: white;
   width: 220px;
   margin: 5px;
-  border: thin black solid;
-}
-
-
-.device-details-view {
-  background-color: white;
-
+  box-shadow: @draggable-box-shadow;
   .bar1, .bar2, .bar3 {
     width: 11px;
     flex-grow: 0;
@@ -475,6 +470,8 @@
     width: 11px;
     position: absolute;
     line-height: 45px;
+    padding-left: 3px;
+    color: rgb(0, 129, 183);
   }
   .content-wrap {
     cursor: pointer;
@@ -485,7 +482,7 @@
     .content {
       align-self: center;
       padding: 5px 0;
-      margin-left: 11px;
+      margin-left: 15px;
     }
   }
   .text-subtle {
@@ -493,13 +490,5 @@
   }
   .characteristic-item, .descriptor-item {
     font-size: 11px;
-  }
-  .service-item {
-  }
-
-  .characteristic-item {
-  }
-
-  .descriptor-item {
   }
 }
