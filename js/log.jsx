@@ -1,189 +1,72 @@
 'use strict';
 
 var React = require('react');
-var DataGrid = require('react-datagrid');
 var Reflux = require('reflux');
 var logStore = require('./stores/logStore.js');
-var LogActions = require('./actions/logActions');
 var moment = require('moment');
 
-var View = React.View;
-
-
-
-var logViewPeerAddress = {}
-
-var time_render = function(column, row) {
-    if(column === undefined) return '';
-
-    var time = new Date(column);
-    return moment(time).format('HH:mm:ss.SSSS');
-}
-
-var logger_render = function(column, row) {
-    if(column === undefined) return "";
-    return column;
-}
-
-var message_render = function(column, row) {
-    if(column === undefined) return "";
-
-    /* History: used previously to show different views for different data. To be removed.
-    if(row.logger == 'ble_driver.event') {
-        var short_local_name = 'n/a';
-        var peer_address = null;
-        var pairing_status = 'NOT BONDED';
-        var flags = [];
-        var rssi = null;
-
-        if(data.peer_addr !== undefined) {
-            peer_address = data.peer_addr.address.toUpperCase();
-        }
-
-        if(data.rssi !== undefined) {
-            rssi = data.rssi;
-        }
-
-        if(data.data !== undefined) {
-            if(data.data.BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME !== undefined) {
-                short_local_name = data.data.BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME;
-            }
-        }
-
-        if(data.processed !== undefined) {
-            if(data.processed.flags !== undefined) {
-                flags = data.processed.flags;
-            }
-        }
-
-        return <div id="log-entry">
-                <device-info>
-                    <div>{short_local_name}</div>
-                    <div>{peer_address}</div>
-                </device-info>
-                <device-status>
-                    <div>{pairing_status}</div>
-                    <div><i className="icon-wifi" style={{color: 'black', float: 'center', margin: '10px 5px 10px 15px'}}></i>{rssi}</div>
-                </device-status>
-                <service-info>
-                    <service-flags>
-                    Flags:
-                        { flags.map(function(flag) { return <service-flag>{flag}</service-flag> }
-                        )
-                        }
-                    </service-flags>
-                </service-info>
-            </div>
-    } else {
-        */
-    return <div id="log-entry">{column}</div>;
-}
-
-var row_factory = function(row) {
-    /* History: used previously to show different views for different data. To be removed.
-    if(row.data !== undefined) {
-        if(row.data.logger !== undefined) {
-            if(row.data.logger === 'ble_driver.event') {
-                row.rowHeight = undefined;
-            }
-        }
-    }
-    */
-}
-
-var level_render = function(entry) {
-    if(entry === undefined) return "";
-
-    switch(entry) {
+function entryClassName(entry) {
+    switch(entry.level) {
         case 0:
-            return 'TRACE';
-            break;
+            return 'log-trace';
         case 1:
-            return 'DEBUG';
-            break;
+            return 'log-debug';
         case 2:
-            return 'INFO';
-            break;
+            return 'log-info';
         case 3:
-            return 'WARNING';
-            break;
+            return 'log-warning';
         case 4:
-            return 'ERROR';
-            break;
+            return 'log-error';
         case 5:
-            return 'FATAL';
-            break;
+            return 'log-fatal';
         default:
-            return "UNKNOWN";
-            break;
+            return 'log-unknown';
     }
 }
 
-var row_style_render = function(data, props) {
-    var style = {}
-
-    switch(data.level) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-            style.background = '#FFFFFF';
-            break;
-        case 4:
-        case 5:
-            style.background = '#FF0000';
-            break;
-        default:
-            style.background = '#0000FF';
-            break;
-    }
-
-    return style;
-}
-
-// TODO: Have to ask @torleifs how to get HTML5/CSS to automatically format column width based on content
-var columns = [
-    { 'name': 'id', visible: false },
-    { 'name': 'time', render: time_render, width: 210 },
-    { 'name': 'level', render: level_render, width: 50, visible: false },
-    { 'name': 'message', render: message_render, width: '100%' }
-];
+var Infinite = require('react-infinite');
 
 var LogContainer = React.createClass({
     mixins: [Reflux.connect(logStore)],
-    _onFollow: function(event, follow) {
-        LogActions.follow(follow);
+    getInitialState: function() {
+        return {
+            isInfiniteLoading: false,
+            elements: [],
+            follow: false
+        }
     },
-    componentDidUpdate: function() {
-/*
-        if(this.state !== undefined
-            && this.state.follow_state !== undefined
-            && this.state.follow_state == true) {
-            var log_entries = this.refs['log_entries'];
-
-            if(log_entries !== undefined) {
-                // TODO: add automatic scrolling here, I think...
-            }
-        }*/
+    componentWillUpdate: function() {
+        this.createElementsForLogEntries();
+    },
+    createElementsForLogEntries: function() {
+        for (var i = this.state.elements.length, j = this.state.logEntries.length; i < j; i++) {
+            var entry = this.state.logEntries[i];
+            this.state.elements.push(this.createElement(entry, i));
+        }
+    },
+    createElement: function(entry, i) {
+        var className = "log-entry " + entryClassName(entry);
+        return <div className={className} key={entry.id}>
+            <div className="time">{moment(new Date(entry.time)).format('HH:mm:ss.SSSS')}</div>
+            <div className="message">{entry.message}</div>
+        </div>
+    },
+    toggleFollow: function() {
+        this.setState({follow: !this.state.follow});
     },
     render: function() {
-        return (
-            <div className="log-wrap">
-                <div className="follow"><input type="checkbox" onClick={this._onFollow}>follow</input></div>
-                <DataGrid
-                    ref="log_entries"
-                    idProperty="id"
-                    dataSource={this.state.logEntries}
-                    columns={columns}
-                    pagination={false}
-                    emptyText={'No log entries'}
-                    withColumnMenu={false}
-                    rowStyle={row_style_render}
-                    showCellBorders={true}
-                    rowFactory={row_factory}
-                    style={{height: 250}}
-                />
-            </div>);
+        return <div className="log-wrap">
+            <h4>Log</h4>
+            <Infinite elementHeight={30}
+                             containerHeight={220}
+                             infiniteLoadBeginBottomOffset={200}
+                             className="infinite-log"
+                             follow={this.state.follow}
+                             >
+                {this.state.elements}
+            </Infinite>
+            <div className="follow"><label><input type="checkbox" onChange={this.toggleFollow} /> follow</label></div>
+        </div>;
     }
 });
 

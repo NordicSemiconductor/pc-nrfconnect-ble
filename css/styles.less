@@ -374,11 +374,66 @@
 }
 
 .log-wrap {
-  .follow {
-    height: 20px;
+  .infinite-log {
+    overflow-x: auto !important;
+    background-color: white;
+    > div {
+      display: table;
+      min-width: 100%;
+    }
   }
-  .react-datagrid {
-    height: 250px;
+
+  .log-entry {
+    height: 30px;
+    white-space: nowrap;
+    background-color: white;
+    display: table-row;
+    min-width: 100%;
+    .time, .message {
+      display: table-cell;
+      padding: 0 20px;
+      border-right: 1px dotted gray;
+      border-bottom: 1px dotted gray;
+      height: 30px;
+      line-height: 30px;
+    }
+    .time {
+      width: 132px;
+    }
+  }
+
+  .log-trace, .log-debug,.log-info,.log-warning {
+    background-color: white;
+  }
+  .log-error,.log-fatal {
+    color: @state-danger-text;
+    background-color: @state-danger-bg;
+  }
+  .log-unknown {
+    color: @state-info-text;
+    background-color: @state-info-bg;
+  }
+  .follow {
+    text-align: right;
+    padding-right: 30px;
+    line-height: 30px;
+    height: 30px;
+    label {
+      font-weight: normal;
+    }
+    input {
+      position: relative;
+      bottom: -1px;
+    }
+  }
+  h4 {
+    height: 30px;
+    line-height: 30px;
+    font-weight: bold;
+    padding-left: 20px;
+    font-size: 14px;
+    margin:0;
+    border-bottom: 1px solid rgb(190, 190, 190);
   }
 }
 
