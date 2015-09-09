@@ -53,70 +53,49 @@ var dummyData = [
 var ServiceItem = React.createClass({
     getInitialState: function() {
         return {
-            expanded: true // See UGLY HACK below in componentDidMount
+            expanded: false
         };
-    },
-    componentWillMount: function() {
-        this.expandPubsubToken = pubsub.subscribe('expanded', this._heightChanged);
-        this.contractPubsubToken = pubsub.subscribe('contracted', this._heightChanged);
-    },
-    componentWillUnMount: function() {
-        pubsub.unsubscripe(this.expandPubsubToken);
-        pubsub.unsubscripe(this.contractPubsubToken);
     },
     _toggleExpanded: function(){
         this.setState({expanded: !this.state.expanded});
     },
-    _updateHeight: function() {
-        this.height = this.getDOMNode().offsetHeight;
-    },
-    _heightChanged: function(){
-        this.height= this.getDOMNode().offsetHeight;
-        this.setState({});
-    },
-    componentDidMount: function() {
-        this._updateHeight();
-        // UGLY HACK to make the Descriptor's hierarchy div show on first expand
-        // Race condition:
-        // If descriptor child is not done setting it's height by the time this timeout fires, there will be no hierarchy bar for it.
-        var that = this;
-        setTimeout(function() {
-            that.setState({expanded: false});
-        }, 1000);
-    },
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        var iconPadding = this.state.expanded ? '0px' :'3px';
-
+        var iconStyle = React.Children.count(this.props.children) === 0 ? { display: 'none' } : {};
         return (
             <div>
-                <div className="panel panel-default" style={{marginBottom: '0px'}}>
-                    <div style={{backgroundColor: '#B3E1F5', height: this.height-1, width: '10px', marginBottom: '1px', marginRight: '1px', float: 'left'}}/>
-                    <div onClick={this._toggleExpanded} className="panel-heading" style={{backgroundColor: 'white', padding: '5px 8px'}}>
-                        <i className={"icon-slim " + expandIcon} style={{paddingRight: iconPadding}}></i>
-                        <span style={{marginLeft: '5px'}}>{this.props.serviceData.name}</span>
+                <div className="service-item">
+                    <div className="bar1"></div>
+                    <div className="content-wrap" onClick={this._toggleExpanded}>
+                        <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
+                        <div className="content">
+                            <span>{this.props.serviceData.name}</span>
+                        </div>
                     </div>
-                    <Collapse onEntered={this._heightChanged} onExited={this._heightChanged} timeout={0} ref="coll" className="panel-body" in={this.state.expanded}>
-                        {this.props.children}
-                    </Collapse>
                 </div>
+                <Collapse timeout={0} ref="coll" in={this.state.expanded}>
+                    <div>
+                        {this.props.children}
+                    </div>
+                </Collapse>
             </div>
         );
     }
 });
 
 var DescriptorItem = React.createClass({
-    componentWillUpdate: function() {
-        this.height = React.findDOMNode(this).offsetHeight;
-    },
     render: function() {
          return (
-            <div className="panel panel-default" style={{marginBottom: '0px'}}>
-                <div style={{backgroundColor: '#009CDE', height: this.height-1, width: '10px', marginBottom: '1px', marginRight: '1px', float: 'left'}}/>
-                <div className="panel-heading" style={{fontSize: '11px', marginLeft: '10px', backgroundColor: 'white', padding: '5px 8px'}}>
-                    <span>{this.props.descriptorData.name}</span>
-                    <div style={{color: 'grey', fontSize: '12px'}}>
-                        <span style={{marginLeft: '13px'}}>{this.props.descriptorData.value}</span>
+            <div className="descriptor-item">
+                <div className="bar1"></div>
+                <div className="bar2"></div>
+                <div className="bar3"></div>
+                <div className="content-wrap">
+                    <div className="content">
+                        <span>{this.props.descriptorData.name}</span>
+                        <div className="text-subtle">
+                            <span>{this.props.descriptorData.value}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -133,37 +112,29 @@ var CharacteristicItem = React.createClass({
     _toggleExpanded: function() {
         this.setState({expanded: !this.state.expanded});
     },
-    _expanded: function() {
-        this.height= this.getDOMNode().offsetHeight;
-        this.setState({});
-        pubsub.publish('expanded');
-    },
-    _contracted: function() {
-        this.height= this.getDOMNode().offsetHeight;
-        this.setState({});
-        pubsub.publish('contracted');
-    },
-    componentDidMount: function() {
-        this.height = React.findDOMNode(this).offsetHeight;
-    },
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        var iconPadding = this.state.expanded ? '0px' :'3px';
+        var iconStyle = React.Children.count(this.props.children) === 0 ? { display: 'none' } : {};
         return (
-        <div >
-            <div className="panel panel-default" style={{marginBottom: '0px'}}>
-                <div style={{backgroundColor: '#66C4EB', height: this.height-1, width: '10px', marginBottom: '1px', marginRight: '1px', float: 'left'}}/>
-                <div className="panel-heading" style={{fontSize: '11px', marginLeft: '10px', backgroundColor: 'white', padding: '5px 8px'}} onClick={this._toggleExpanded}>
-                    <i className={"icon-slim " + expandIcon} style={{paddingRight: iconPadding}}></i>
-                    <span>{this.props.characteristicData.name}</span>
-                    <div style={{color: 'grey', fontSize: '12px'}}>
-                        <span style={{marginLeft: '13px'}}>{this.props.characteristicData.value}</span>
+        <div>
+            <div className="characteristic-item">
+                <div className="bar1"></div>
+                <div className="bar2"></div>
+                <div className="content-wrap" onClick={this._toggleExpanded}>
+                    <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
+                    <div className="content">
+                        <span>{this.props.characteristicData.name}</span>
+                        <div className="text-subtle">
+                            <span>{this.props.characteristicData.value}</span>
+                        </div>
                     </div>
                 </div>
-            <Collapse  onEntered={this._expanded} onExited={this._contracted} timeout={0} ref="coll" className="panel-body" in= {this.state.expanded}>
-                {this.props.children}
-            </Collapse>
             </div>
+            <Collapse timeout={0} ref="coll" in={this.state.expanded}>
+                <div>
+                    {this.props.children}
+                </div>
+            </Collapse>
         </div>
         );
     }
@@ -220,35 +191,23 @@ var DeviceDetailsView = React.createClass({
         logger.silly(this.props.services);
         var services = [];
         if (this.props.services) {
-            services = this.props.services.map(function(service, i){
-                return (
-                    <ServiceItem serviceData={service} key={i}>
-                    <div>
-                        {service.characteristics.map(function(characteristic, j){
-                            return (
-                                <CharacteristicItem characteristicData={characteristic} key={j}>
-                                <div>
+            return (
+                <div className="device-details-view" id={this.props.nodeId} style={this.props.style}>
+                    {this.props.services.map(function(service, i) {
+                        return (<ServiceItem serviceData={service} key={i}>
+                            {service.characteristics.map(function(characteristic, j) {
+                                return (<CharacteristicItem characteristicData={characteristic} key={j}>
                                     {characteristic.descriptors.map(function(descriptor, k) {
                                         return (
                                             <DescriptorItem descriptorData={descriptor} key={k}/>
                                         )
-                                    }
-                                    )}
-                                </div>
-                                </CharacteristicItem>
-                            )
-                        }
-                        )}
-                    </div>
-                    </ServiceItem>
-
-                );
-            });
-            return (
-                <div className="device-details-view" id={this.props.nodeId} style={this.props.style}>
-                    {services}
+                                    })}
+                                </CharacteristicItem>)
+                            })}
+                        </ServiceItem>)
+                    })}
                 </div>
-        );
+            );
         } else {
             return (
                 <CentralDevice id={this.props.nodeId} name="dummy"/>
