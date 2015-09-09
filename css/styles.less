@@ -373,11 +373,14 @@
   padding: 3px 15px;
 }
 
-.infinite-log {
-  overflow-x: auto !important;
-  > div {
-    display: table;
-    min-width: 100%;
+.log-wrap {
+  .infinite-log {
+    overflow-x: auto !important;
+    background-color: white;
+    > div {
+      display: table;
+      min-width: 100%;
+    }
   }
 
   .log-entry {
@@ -410,18 +413,27 @@
     color: @state-info-text;
     background-color: @state-info-bg;
   }
-}
   .follow {
-  text-align: right;
-  padding-right: 30px;
-  line-height: 30px;
-  height: 30px;
-  label {
-    font-weight: normal;
+    text-align: right;
+    padding-right: 30px;
+    line-height: 30px;
+    height: 30px;
+    label {
+      font-weight: normal;
+    }
+    input {
+      position: relative;
+      bottom: -1px;
+    }
   }
-  input {
-    position: relative;
-    bottom: -1px;
+  h4 {
+    height: 30px;
+    line-height: 30px;
+    font-weight: bold;
+    padding-left: 20px;
+    font-size: 14px;
+    margin:0;
+    border-bottom: 1px solid rgb(190, 190, 190);
   }
 }
 
