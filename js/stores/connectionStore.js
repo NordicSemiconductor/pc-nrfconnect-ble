@@ -92,12 +92,18 @@ var connectionStore = reflux.createStore({
     },
     onDisconnectFromDevice: function(deviceAddress) {
         var connectionHandle = this._findConnectionHandleFromDeviceAddress(deviceAddress);
+
+        if(connectionHandle === undefined) {
+            logger.error(`Device ${deviceAddress} is not in connection database. Removing node from graph. TODO: this should not happen!`);
+            return;
+        }
+
         bleDriver.gap_disconnect(connectionHandle, bleDriver.BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION, function(err){
             if(err) {
                 logger.error(`Error disconnecting from ${textual.peerAddressToTextual(deviceAddress)}. Error is ${err.message}.`);
                 return;
             }
-            logger.silly('call to disconnect ok', err);
+            logger.silly(`call to disconnect from ${deviceAddress} ok.`);
         });
     },
     onServicesDiscovered: function(gattDatabase) {

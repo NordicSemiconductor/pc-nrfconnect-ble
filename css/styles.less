@@ -302,6 +302,7 @@
     box-shadow: @draggable-box-shadow;
     .top-bar {
       background-color: #E6E6E6;
+      min-height: 20px;
       .subtle-text {
         color: rgb(108, 108, 108);
         font-size: 13px;
@@ -435,7 +436,56 @@
 }
 
 .device-details-view {
+  background-color: white;
   width: 220px;
   margin: 5px;
-  border: thin black solid;
+  box-shadow: @draggable-box-shadow;
+  .bar1, .bar2, .bar3 {
+    width: 11px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    border-bottom: 1px solid white;
+    margin-right: 2px;
+  }
+  .bar1 {
+    background-color: rgb(179, 225, 245);
+  }
+  .bar2 {
+    background-color: rgb(102, 196, 235);
+  }
+  .bar3 {
+    background-color: rgb(0, 156, 222);
+  }
+  .service-item, .characteristic-item, .descriptor-item {
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+    min-height: 45px;
+  }
+  .icon-wrap {
+    height: 45px;
+    width: 11px;
+    position: absolute;
+    line-height: 45px;
+    padding-left: 3px;
+    color: rgb(0, 129, 183);
+  }
+  .content-wrap {
+    cursor: pointer;
+    display: flex;
+    border-bottom: 1px solid rgb(207, 207, 207);
+    flex: 1;
+
+    .content {
+      align-self: center;
+      padding: 5px 0;
+      margin-left: 15px;
+    }
+  }
+  .text-subtle {
+    color: grey;
+  }
+  .characteristic-item, .descriptor-item {
+    font-size: 11px;
+  }
 }
