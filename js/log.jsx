@@ -31,7 +31,8 @@ var LogContainer = React.createClass({
     getInitialState: function() {
         return {
             isInfiniteLoading: false,
-            elements: []
+            elements: [],
+            follow: false
         }
     },
     componentWillUpdate: function() {
@@ -50,15 +51,21 @@ var LogContainer = React.createClass({
             <div className="message">{entry.message}</div>
         </div>
     },
+    toggleFollow: function() {
+        this.setState({follow: !this.state.follow});
+    },
     render: function() {
-        return <Infinite elementHeight={30}
-                         containerHeight={250}
-                         infiniteLoadBeginBottomOffset={200}
-                         className="infinite-log"
-                         follow={false}
-                         >
-            {this.state.elements}
-        </Infinite>;
+        return <div>
+            <Infinite elementHeight={30}
+                             containerHeight={250}
+                             infiniteLoadBeginBottomOffset={200}
+                             className="infinite-log"
+                             follow={this.state.follow}
+                             >
+                {this.state.elements}
+            </Infinite>
+            <div className="follow"><label><input type="checkbox" onChange={this.toggleFollow} /> follow</label></div>
+        </div>;
     }
 });
 
