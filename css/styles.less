@@ -292,9 +292,6 @@
   .flag-line {
     overflow: hidden;
   }
-  .text-small {
-    font-size: small;
-  }
 
   &.standalone {
     border-bottom: none;
@@ -303,10 +300,6 @@
     .top-bar {
       background-color: #E6E6E6;
       min-height: 20px;
-      .subtle-text {
-        color: rgb(108, 108, 108);
-        font-size: 13px;
-      }
     }
     > div {
       padding: 4px 10px;
@@ -336,6 +329,14 @@
   }
 }
 
+.text-small {
+  font-size: 13px;
+}
+
+.text-smaller {
+  font-size: 11px;
+}
+
 .device-details-container {
   display: flex;
   align-items: flex-start;
@@ -347,6 +348,12 @@
 
 .subtle-text {
   color: grey;
+}
+
+.truncate-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .item {
