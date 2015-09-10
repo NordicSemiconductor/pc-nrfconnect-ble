@@ -21,8 +21,8 @@ function prepareDeviceData(device) {
     return {
         time: new Date(device.time),
         name: (device.data
-            ? (device.data.BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME || device.data.BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME || "")
-            : ""),
+            ? (device.data.BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME || device.data.BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME || "<Unkown name>")
+            : "<Unkown name>"),
         flags: device.processed ? device.processed.flags : [],
         services: device.processed && device.processed.services ? device.processed.services : [],
         address: device.peer_addr.address,
@@ -46,23 +46,24 @@ var DiscoveredDevice = React.createClass({
         }
         var device = prepareDeviceData(this.props.device);
         return (
-            <div className={ this.props.standalone ? "device standalone" : "device" }>
+            <div className="device">
                 <div className="top-bar">
                     <span className="text-small">{device.name}</span>
                     <span style={{float: 'right'}}>{device.rssi}</span>
                     <div style={{float: 'right'}}>
-                        <span style={{width: device.rssi_level + 'px'}} className="icon-signal icon-foreground"></span>
-                        <span className="icon-signal icon-background"></span>
+                        <span style={{width: device.rssi_level + 'px'}} className="icon-signal icon-foreground" />
+                        <span className="icon-signal icon-background" />
                     </div>
                 </div>
                 <div className="device-body text-small">
-                    <div className="subtle-text">
-                        <button onClick={this._onConnect} className="btn btn-primary btn-xs connect-btn">
-                            Connect <i className="icon-plug"></i>
+                    <div>
+                        <button onClick={this._onConnect} className="btn btn-primary btn-xs btn-nordic">
+                                Connect <i className="icon-link"></i>
                         </button>
-                        <div>
-                            Last seen: {device.time.toLocaleTimeString()}<br/>
-                            {device.address}
+                        <div className="subtle-text">
+                            <div>
+                                {device.address}
+                            </div>
                         </div>
                     </div>
                     <div className="flag-line">
@@ -159,7 +160,7 @@ var DiscoveredDevicesContainer = React.createClass({
                 </div>
                 <div className="buttons">
                     <DiscoveryButton/>
-                    <button onClick={this._clearContainer} type="button" className="btn btn-default btn-sm">Clear</button>
+                    <button onClick={this._clearContainer} type="button" className="btn btn-primary btn-sm btn-nordic">Clear</button>
                 </div>
                 <div style={{paddingTop: '0px'}}>
                   {Object.keys(devices).map(function(device, index) {

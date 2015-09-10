@@ -48,7 +48,7 @@ var connectionStore = reflux.createStore({
             'active': true, 'interval': 100, 'window': 50, 'timeout': 20
         };
         var connectionParameters = {
-            'min_conn_interval': 30, 'max_conn_interval': 60, 'slave_latency': 0, 'conn_sup_timeout': 4000
+            'min_conn_interval': 7.5, 'max_conn_interval': 7.5, 'slave_latency': 0, 'conn_sup_timeout': 4000
         };
         var self = this;
         bleDriver.gap_connect(device.peer_addr, scanParameters, connectionParameters, function(err) {

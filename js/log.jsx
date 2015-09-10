@@ -57,9 +57,9 @@ var LogContainer = React.createClass({
     render: function() {
         return <div className="log-wrap">
             <h4>Log</h4>
-            <Infinite elementHeight={30}
-                             containerHeight={220}
-                             infiniteLoadBeginBottomOffset={200}
+            <Infinite elementHeight={20}
+                             containerHeight={155}
+                             infiniteLoadBeginBottomOffset={135}
                              className="infinite-log"
                              follow={this.state.follow}
                              >
