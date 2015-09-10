@@ -43,14 +43,13 @@ Let CMake know where the ble driver is:
 export PC_BLE_DRIVER_DIR=/Users/torleifs/customers/nordic/build/release/
 ```
 
-Handle sqlite build issues:
-
-Use 'export' instead of 'set', i.e:
+Let the pc-ble-driver know that we are using electron and which version and architecture:
 ```
 export npm_config_runtime=electron
 export npm_config_runtime_version=0.30.3
 export npm_config_arch=x64
 ```
+Handle sqlite build issues:
 
 http://verysimple.com/2015/05/30/using-node_sqlite3-with-electron/
 https://github.com/mapbox/node-sqlite3/issues/357
@@ -64,14 +63,6 @@ unset npm_config_runtime_version
 unset npm_config_arch # It is probably just this variable that causes problems
 
 npm install
-
-export npm_config_runtime=electron
-export npm_config_runtime_version=0.30.3
-export npm_config_arch=x64
-
-npm install
-```
-The last round of installation is to successfully build the javascript driver bindings which also seem to need these variables.
 
 # Run the Yggdrasil application
 ```
