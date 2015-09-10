@@ -261,13 +261,6 @@
 
 #discoveredDevicesContainer {
   padding: 15px;
-  .buttons {
-    padding: 10px 0;
-    border-bottom: 1px solid lightgray;
-    button {
-      margin-right: 5px;
-    }
-  }
   .spinner {
     margin-left: 10px;
   }
@@ -337,6 +330,42 @@
 
 .text-smaller {
   font-size: 11px;
+}
+
+.buttons-padded-list {
+  button {
+    margin-right: 5px;
+
+    &:last-of-type {
+      margin-right: 0px;
+    }
+  }
+}
+
+.buttons-right {
+  button {
+    margin-left: 5px;
+  }
+}
+
+//no outline when button only active
+.btn-primary:active {
+  outline: none;
+}
+
+//used when tabbing and space
+.btn-primary:focus {
+  outline-color: @brand-info;
+}
+
+//used when tabbing and space
+.btn-primary.active:focus {
+  outline-color: @brand-info;
+}
+
+//used when tabbing and space
+.btn-primary:active:focus {
+  outline-color: @brand-info;
 }
 
 .device-details-container {
