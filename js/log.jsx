@@ -60,14 +60,14 @@ var LogContainer = React.createClass({
         this.setState(this.state);
     },
     _getClassForFollow: function() {
-        return "btn btn-primary btn-sm btn-nordic " + (this.state.follow ? "active" : "");
+        return "btn btn-primary btn-xs btn-nordic " + (this.state.follow ? "active" : "");
     },
     render: function() {
         return <div className="log-wrap">
             <div className="log-header">
                 <div className="log-header-text">Log</div>
                 <div className="buttons-padded-list log-header-buttons">
-                    <button type="button" title="Clear log" className="btn btn-primary btn-sm btn-nordic" onClick={this.clearLog}>
+                    <button type="button" title="Clear log" className="btn btn-primary btn-xs btn-nordic" onClick={this.clearLog}>
                         <span className="icon-trash" aria-hidden="true" />
                     </button>
                     <button type="button" title="Scroll automatically" className={this._getClassForFollow()} onClick={this.toggleFollow}>
