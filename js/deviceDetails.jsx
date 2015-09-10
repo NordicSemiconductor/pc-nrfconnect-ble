@@ -153,10 +153,31 @@ var DeviceDetailsContainer = React.createClass({
         return nodeStore.getInitialState();
     },
     onGraphChanged: function(newGraph, change) {
-        //this.setState({graph: newGraph});
+        if (change.remove) {
+            this.plumb.remove(change.nodeId+'_details');
+            this.plumb.repaintEverything();
+        }
+/*        this.setState({graph: newGraph});
         this.plumb.detachEveryConnection();
         var central = this.state.graph.find(function(node){
             return node.id ==='central';
+        });
+        for(var i = 0; i< central.ancestorOf.length; i++) {
+            var connectionParameters = {
+                source: 'central_details',
+                target: central.ancestorOf[i]+ "_details",
+                anchor: "Top",
+                endpoint:"Blank",
+                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0.5, alwaysRespectStubs: false }],
+            };
+            var connection = this.plumb.connect(connectionParameters);
+        }
+        this.plumb.repaintEverything();*/
+    },
+    _drawGraph: function() {
+        this.plumb.detachEveryConnection();
+        var central = this.state.graph.find(function(node){
+            return node.id === 'central';
         });
         for(var i = 0; i< central.ancestorOf.length; i++) {
             var connectionParameters = {
@@ -184,7 +205,7 @@ var DeviceDetailsContainer = React.createClass({
         return (<div className="device-details-container" style={this.props.style}>{detailNodes}</div>)
     },
     componentDidUpdate: function() {
-         //this.onGraphChanged();
+        this._drawGraph();
     }
 });
 
@@ -214,11 +235,11 @@ var DeviceDetailsView = React.createClass({
                     </div>
                 </div>
             );
-        } else {
+        } else if (this.props.nodeId === 'central_details'){
             return (
-                <CentralDevice id={this.props.nodeId} name="dummy"/>
+                <CentralDevice id={'central_details'} name="dummy"/>
             );
-        }
+        } else {return <div/>}
     }
 });
 module.exports = DeviceDetailsContainer;
