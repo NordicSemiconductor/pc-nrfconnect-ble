@@ -211,6 +211,10 @@ var DeviceDetailsContainer = React.createClass({
 
 var DeviceDetailsView = React.createClass({
     render: function() {
+        var centralPosition = {
+          x: 50,
+            y: 50
+        };
         logger.silly(this.props.services);
         var services = [];
         var topBoxHeight = 105;
@@ -237,7 +241,7 @@ var DeviceDetailsView = React.createClass({
             );
         } else if (this.props.nodeId === 'central_details'){
             return (
-                <CentralDevice id={'central_details'} name="dummy"/>
+                <CentralDevice id={'central_details'} name="dummy" position={centralPosition}/>
             );
         } else {return <div/>}
     }
