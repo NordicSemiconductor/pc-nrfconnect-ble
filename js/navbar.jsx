@@ -36,13 +36,13 @@ var ComPortSelector = React.createClass({
 
         var dropdownTitle = this._getTitle();
         var menuItems = this.state.discoveredBleTargets.map(function(portName, i){
-            return (<MenuItem eventKey={portName} onSelect={this.onMenuItemSelect} key={i}>{portName}</MenuItem>);
+            return (<MenuItem className="btn-primary" eventKey={portName} onSelect={this.onMenuItemSelect} key={i}>{portName}</MenuItem>);
         }, this);
         return (
-            <DropdownButton title={dropdownTitle}>
+            <DropdownButton className="btn-primary btn-nordic padded-list-element" title={dropdownTitle}>
                 {menuItems}
             </DropdownButton>
-        );        
+        );
     }
 });
 
@@ -64,25 +64,25 @@ var NavBar = React.createClass({
         this.setState({activeTab: newView});
     },
     _getClassForTabButton: function(itemName) {
-        return "nav-bar-element " + (this.state.activeTab === itemName ? "active" : "");
+        return "btn btn-primary btn-nordic padded-list-element" + (this.state.activeTab === itemName ? " active" : "");
     },
     mixins: [Reflux.connect(bleDriverStore, 'driverState')],
     render: function() {
         return (
             <div className="nav-bar">
                 <div className="nav-section">
-                    <div className="nav-bar-element">
+                    <div className="padded-list">
                         <ComPortSelector/>
-                        <div className={ this.state.driverState.connectedToDriver ? "indicator on" : "indicator off" }></div>
+                        <div className={"padded-list-element " + this.state.driverState.connectedToDriver ? "indicator on" : "indicator off" }></div>
                     </div>
                 </div>
-                <div className="nav-section bl">
-                    <a onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
+                <div className="nav-section bl padded-list">
+                    <button onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
                         Connection map
-                    </a>
-                    <a onClick={this._onViewChange.bind(this, 'DeviceDetails').bind(this)}  className={this._getClassForTabButton('DeviceDetails')}>
+                    </button>
+                    <button onClick={this._onViewChange.bind(this, 'DeviceDetails')}  className={this._getClassForTabButton('DeviceDetails')}>
                         Device details
-                    </a>
+                    </button>
                 </div>
             </div>
         );
