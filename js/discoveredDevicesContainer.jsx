@@ -48,22 +48,19 @@ var DiscoveredDevice = React.createClass({
         return (
             <div className="device">
                 <div className="top-bar">
-                    <span className="text-small">{device.name}</span>
-                    <span style={{float: 'right'}}>{device.rssi}</span>
                     <div style={{float: 'right'}}>
                         <span style={{width: device.rssi_level + 'px'}} className="icon-signal icon-foreground" />
                         <span className="icon-signal icon-background" />
                     </div>
+                    <div className="text-small truncate-text">{device.name}</div>
                 </div>
                 <div className="device-body text-small">
                     <div>
                         <button onClick={this._onConnect} className="btn btn-primary btn-xs btn-nordic">
                                 Connect <i className="icon-link"></i>
                         </button>
-                        <div className="subtle-text">
-                            <div>
-                                {device.address}
-                            </div>
+                        <div className="text-smaller subtle-text">
+                            {device.address}
                         </div>
                     </div>
                     <div className="flag-line">

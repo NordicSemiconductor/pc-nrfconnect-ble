@@ -73,7 +73,7 @@ var MyView = React.createClass({
                 <div>
                   <div>
 
-                    <BleNodeContainer style={{height: (mainAreaStyle.height - 281), display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
+                    <BleNodeContainer style={{height: (mainAreaStyle.height - 215), display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
                     <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex': 'none'}}/>
 
                   </div>
