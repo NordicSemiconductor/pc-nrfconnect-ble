@@ -43,6 +43,8 @@
 #diagramContainer {
   padding: 20px;
   width:100%;
+  position: relative;
+  overflow: scroll;
 }
 
 @font-face {
@@ -418,27 +420,23 @@
     color: @state-info-text;
     background-color: @state-info-bg;
   }
-  .follow {
-    text-align: right;
-    padding-right: 30px;
-    line-height: 30px;
-    height: 30px;
-    label {
-      font-weight: normal;
-    }
-    input {
-      position: relative;
-      bottom: -1px;
-    }
+  .log-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
-  h4 {
-    height: 30px;
-    line-height: 30px;
-    font-weight: bold;
-    padding-left: 20px;
-    font-size: 14px;
-    margin:0;
-    border-bottom: 1px solid rgb(190, 190, 190);
+  .log-header-text {
+      height: 30px;
+      line-height: 30px;
+      font-weight: bold;
+      padding-left: 20px;
+      font-size: 14px;
+      margin:0;
+      flex: 1;
+  }
+  .log-header-buttons {
+      align-content: flex-end;
+      padding: 6px 6px 6px 0px;
   }
 }
 

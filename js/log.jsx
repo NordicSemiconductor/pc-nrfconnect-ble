@@ -54,9 +54,28 @@ var LogContainer = React.createClass({
     toggleFollow: function() {
         this.setState({follow: !this.state.follow});
     },
+    clearLog: function() {
+        this.state.elements.length = 0;
+        this.state.logEntries.length = 0;
+        this.setState(this.state);
+    },
+    _getClassForFollow: function() {
+        return "btn btn-default " + (this.state.follow ? "active" : "");
+    },
     render: function() {
         return <div className="log-wrap">
-            <h4>Log</h4>
+            <div className="log-header">
+                <div className="log-header-text">Log</div>
+                <div className="log-header-buttons">
+                    <button type="button" className="btn btn-default" onClick={this.clearLog}>
+                        <span className="icon-trash" aria-hidden="true" />
+                    </button>
+                    <button type="button" className={this._getClassForFollow()} onClick={this.toggleFollow}>
+                        <span className="icon-down" aria-hidden="true" />
+                    </button>
+                </div>
+            </div>
+
             <Infinite elementHeight={20}
                              containerHeight={155}
                              infiniteLoadBeginBottomOffset={135}
@@ -65,7 +84,6 @@ var LogContainer = React.createClass({
                              >
                 {this.state.elements}
             </Infinite>
-            <div className="follow"><label><input type="checkbox" onChange={this.toggleFollow} /> follow</label></div>
         </div>;
     }
 });
