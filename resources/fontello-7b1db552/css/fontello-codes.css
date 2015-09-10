@@ -4,6 +4,7 @@
 .icon-wifi:before { content: '\e802'; } /* '' */
 .icon-plug:before { content: '\e803'; } /* '' */
 .icon-circle:before { content: '\e804'; } /* '' */
-.icon-link:before { content: '\e805'; } /* '' */
 .icon-signal:before { content: '\e806'; } /* '' */
 .icon-usb:before { content: '\e807'; } /* '' */
+.icon-trash:before { content: '\e808'; } /* '' */
+.icon-down:before { content: '\e809'; } /* '' */
