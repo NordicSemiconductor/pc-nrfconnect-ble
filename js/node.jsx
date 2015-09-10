@@ -77,25 +77,20 @@ var BleNodeContainer = React.createClass({
     onGraphChanged: function(newGraph, change){
         this.setState({graph: newGraph}); // Must be done before connection is made since connection target is created by render
         if (change.remove) {
-            
-            
             jsPlumb.remove(change.nodeId);
-//            this.autoLayout();
-            
-
         } else if (change.remove === false){
             var overlayId= "connection" + change.nodeId;
             var connectionParameters = {
                 source: 'central',
                 target: change.nodeId,
-                anchor:[ "Continuous", { faces:["left","right"] }],
+                anchor: ["Left", "Right"],
                 endpoint:"Blank",
                 connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0, alwaysRespectStubs: false }],
                 overlays:[["Custom", {
                     create:function(component) {
                         return $('<span><div id="' + overlayId + '"/></span>');
                     },
-                    location:0.5,
+                    location:0.8,
                     id:"customOverlay"
                 }]]
             };
@@ -104,7 +99,6 @@ var BleNodeContainer = React.createClass({
             this.setState({graph: newGraph}, function() {
                   React.render(<ConnectionOverlay device={change.device} connection={change.connection}/>, document.getElementById(overlayId));
             });
-//            this.autoLayout();
         } else {
             var element = document.getElementById(change.nodeId);
             element.id = element.id+ '_disconnected';
@@ -114,35 +108,6 @@ var BleNodeContainer = React.createClass({
     getInitialState: function(){
         return nodeStore.getInitialState();
     },
-    autoLayout: function() {
-        var nodes = $('.node');
-        var edges = jsPlumb.getConnections();
-
-        var dag = new dagre.graphlib.Graph();
-        dag.setGraph({});
-        dag.setDefaultEdgeLabel(function(){return{};});
-        for(var i = 0; i < nodes.length; i++) {
-            var n = $(nodes[i]);
-            //console.log(n);
-            dag.setNode(n.attr('id'), {width: n.width(), height: n.height()});
-        }
-        for(var i = 0; i < edges.length; i++) {
-            var c = edges[i];
-            //console.log(c);
-            dag.setEdge(c.source.id, c.target.id);
-        }
-        dag.rankdir = 'TB';
-        dag.nodeSep = 200;
-        dagre.layout(dag, {rankdir: 'TB', ranksep: 200});
-        dag.nodes().forEach(function(v) {
-            if (v !== "undefined") {
-                $("#" + v).css("left", dag.node(v).x + "px");
-                $("#" + v).css("top", dag.node(v).y + "px");
-            }
-        });
-        jsPlumb.repaintEverything();
-    },
-
     render: function(){
         
         var plumbNodes = [];
@@ -155,7 +120,6 @@ var BleNodeContainer = React.createClass({
             var connectedDeviceCounter = 0;
             var node = this.state.graph[i];
             if (node.id === 'central') {
-                //plumbNodes.push(<BleNode key={i} node={node} centralName={this.state.centralName} centralAddress={this.state.centralAddress} position ={centralPosition}/>);
                 central = (<CentralDevice id={node.id} name={this.state.centralName} address={this.state.centralAddress.address} position={centralPosition}/>)
             } else {
 
@@ -170,7 +134,7 @@ var BleNodeContainer = React.createClass({
         return (
             <div id="diagramContainer" style={this.props.style} >
                 {central}
-                <div style={{width: '300px',position: 'relative', left: '400px'}}>
+                <div style={{width: '300px',position: 'absolute', top: '10px', left: '400px'}}>
                     {plumbNodes}
                 </div>
             </div>
@@ -180,27 +144,5 @@ var BleNodeContainer = React.createClass({
         jsPlumb.repaintEverything(); // solves connection line chaos
     }
 });
-/*
-var BleNode = React.createClass({
-    componentDidMount: function(){
-        var that = this;
-        jsPlumb.bind("ready", function(){
-            jsPlumb.draggable(that.props.node.id, {containment: '#mainView'});
-        });
-    },
-    render: function() {
-        var theDevice;
-        if (this.props.node.id === 'central') {
-            theDevice = (<CentralDevice name={this.props.centralName} address={this.props.centralAddress.address} />);
-        } else {
-            theDevice = (<ConnectedDevice device={this.props.device} node={this.props.node}/>);
-        }
-        return (
-            <div key={this.props.node.id} id={this.props.node.id} className="node" style={{position: 'absolute', width: '250px' }}>
-                {theDevice}
-            </div>
-        );
-    }
-});*/
 
 module.exports = BleNodeContainer;
