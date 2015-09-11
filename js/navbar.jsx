@@ -80,6 +80,9 @@ var NavBar = React.createClass({
     render: function() {
         return (
             <div className="nav-bar">
+                <div>
+                    <img className="nordic-logo" src="resources/NordicS_neg_ol.png" />
+                </div>
                 <div className="nav-section">
                     <div className="padded-list">
                         <ComPortSelector/>
