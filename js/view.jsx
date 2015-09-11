@@ -27,14 +27,6 @@ var MyView = React.createClass({
     handleHotkey: function(e) {
         if(e.getModifierState('Control')) {
             switch(e.keyCode) {
-                case 83: // S
-                    e.preventDefault();
-                    DiscoveryActions.toggleScan();
-                    break;
-                case 67: // C
-                    e.preventDefault();
-                    DiscoveryActions.clearItems();
-                    break;
                 default:
                     logger.silly(`Ctrl pressed, keycode ${e.keyCode}.`);
                     break;
@@ -46,6 +38,15 @@ var MyView = React.createClass({
                     break;
                 case 50: // 2
                     this._onChangedMainView('DeviceDetails');
+                    break;
+                case 67: // C
+                    DiscoveryActions.clearItems();
+                    break;
+                case 83: // S
+                    DiscoveryActions.toggleScan();
+                    break;
+                case 80: // P
+                    this.refs.navBar.focusOnComPorts();
                     break;
                 default:
                     logger.silly(`Alt pressed, keycode ${e.keyCode}.`);
@@ -100,7 +101,7 @@ var MyView = React.createClass({
         var mainAreaHeight = layoutStyle.height - 189;
         return (
             <div id="main-area-wrapper">
-              <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} />
+              <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />
               <div className="main-layout" style={layoutStyle}>
                 <div>
                   <div>

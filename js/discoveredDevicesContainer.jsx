@@ -12,7 +12,7 @@ var nodeStore = require('./stores/bleNodeStore');
 var discoveryActions = require('./actions/discoveryActions');
 var connectionActions = require('./actions/connectionActions');
 var DiscoveryButton = require('./discoveryButton');
-
+var ConnectedDevice = require('./components/ConnectedDevice.jsx');
 var MIN_RSSI = -100;
 var MAX_RSSI = -45;
 
@@ -75,41 +75,7 @@ var DiscoveredDevice = React.createClass({
     }
 });
 
-var ConnectedDevice = React.createClass({
-    render: function() {
-        var device = prepareDeviceData(this.props.device);
-        var role = this.props.node.id === "central" ? "Central" : "Peripheral";
-        var connected = !this.props.node.connectionLost;
-        return (
-            <div className="device standalone">
-                <div className="top-bar">
-                {
-                 //   <i className={connected ? "icon-link" : "icon-link-broken" }></i>
-                 //   <span className="subtle-text">{connected ? 'Connected' : 'Disconnected'}</span>
-                 //   <span className="subtle-text pull-right" style={{marginTop: '2px'}}>{device.rssi}</span>
-                 //
-                 //    <div style={{float: 'right'}}>
-                 //       <span style={{width: device.rssi_level + 'px'}} className="icon-signal icon-foreground"></span>
-                 //       <span className="icon-signal icon-background"></span>
-                 //   </div>
-                }
-                </div>
-                <div className="device-body text-small">
-                    <div>
-                        <div className="role-flag pull-right">{role}</div>
-                        <strong>{device.name}</strong>
-                    </div>
-                    <div>{device.address}</div>
-                    <div className="flag-line">
-                        {device.services.map(function(service, index) {
-                            return (<div key={index} className="device-flag">{service}</div>)
-                        })}
-                    </div>
-                </div>
-            </div>
-        );
-    }
-});
+
 
 
 function mapRange(n, fromMin, fromMax, toMin, toMax) {

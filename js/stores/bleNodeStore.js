@@ -53,8 +53,8 @@ var bleNodeStore = reflux.createStore({
                 return nodeId === node.id;
             });
 
-            that.state.graph = _.reject(that.state.graph, function(node){
-                return node.deviceId === deviceAddress;
+            that.state.graph = _.reject(that.state.graph, function(theNode){
+                return node.id === theNode.id;
             });
             that.trigger(that.state.graph, {remove: true, nodeId: node.id});
         }, 5000);

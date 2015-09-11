@@ -68,3 +68,13 @@ npm install
 ```
 gulp run
 ```
+
+# Build packager
+```
+npm install electron-packager -g
+electron-packager ./ yggdrasil --platform=win32 --arch=ia32 --version=0.30.3 --out=../pc-yggdrasil-deploy
+```
+Current issues:
+* style.less: Need to prefix all includes with resources/app/
+* compileAnInsertLess.js: Need to prefix css with resources/app/
+* need to copy driver dll file to build/Release folder.

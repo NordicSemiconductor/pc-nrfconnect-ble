@@ -180,6 +180,11 @@
 .nav-bar {
   background-color: @brand-primary;
 
+  .nordic-logo {
+    float: right;
+    height: 55px;
+  }
+
   .nav-section {
     display: inline-block;
     padding: 10px 10px 0 10px;
@@ -236,7 +241,7 @@
     background-color: rgb(207, 207, 207)
   }
   &.error {
-    background-color: @brand-warning
+    background-color: @brand-danger
   }
 }
 
@@ -279,6 +284,9 @@
   &.standalone {
     border-bottom: none;
     padding: 0;
+    margin: 20px 0px;
+    box-shadow: @draggable-box-shadow;
+
     .top-bar {
       background-color: #E6E6E6;
       min-height: 20px;

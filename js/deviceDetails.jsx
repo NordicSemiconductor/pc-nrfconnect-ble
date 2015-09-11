@@ -153,10 +153,31 @@ var DeviceDetailsContainer = React.createClass({
         return nodeStore.getInitialState();
     },
     onGraphChanged: function(newGraph, change) {
-        //this.setState({graph: newGraph});
+        if (change.remove) {
+            this.plumb.remove(change.nodeId+'_details');
+            this.plumb.repaintEverything();
+        }
+/*        this.setState({graph: newGraph});
         this.plumb.detachEveryConnection();
         var central = this.state.graph.find(function(node){
             return node.id ==='central';
+        });
+        for(var i = 0; i< central.ancestorOf.length; i++) {
+            var connectionParameters = {
+                source: 'central_details',
+                target: central.ancestorOf[i]+ "_details",
+                anchor: "Top",
+                endpoint:"Blank",
+                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0.5, alwaysRespectStubs: false }],
+            };
+            var connection = this.plumb.connect(connectionParameters);
+        }
+        this.plumb.repaintEverything();*/
+    },
+    _drawGraph: function() {
+        this.plumb.detachEveryConnection();
+        var central = this.state.graph.find(function(node){
+            return node.id === 'central';
         });
         for(var i = 0; i< central.ancestorOf.length; i++) {
             var connectionParameters = {
@@ -181,15 +202,19 @@ var DeviceDetailsContainer = React.createClass({
             var xPos = i*200 + "px";
             detailNodes.push(<DeviceDetailsView services={deviceServices} plumb={this.plumb} node={node} device={device} containerHeight={this.props.style.height} key={i}/>)
         }
-        return (<div className="device-details-container" style={this.props.style}>{detailNodes}</div>)
+        return (<div className="device-details-container" style={this.props.style}></div>);//{detailNodes}</div>)
     },
     componentDidUpdate: function() {
-         //this.onGraphChanged();
+        //this._drawGraph();
     }
 });
 
 var DeviceDetailsView = React.createClass({
     render: function() {
+        var centralPosition = {
+          x: 50,
+            y: 50
+        };
         logger.silly(this.props.services);
         var services = [];
         var topBoxHeight = 105;
@@ -214,11 +239,11 @@ var DeviceDetailsView = React.createClass({
                     </div>
                 </div>
             );
-        } else {
+        } else if (this.props.nodeId === 'central_details'){
             return (
-                <CentralDevice id={this.props.nodeId} name="dummy"/>
+                <CentralDevice id={'central_details'} name="dummy" position={centralPosition}/>
             );
-        }
+        } else {return <div/>}
     }
 });
 module.exports = DeviceDetailsContainer;

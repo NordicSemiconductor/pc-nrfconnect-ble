@@ -69,117 +69,128 @@ var ConnectionOverlay = React.createClass({
 });
 
 var BleNodeContainer = React.createClass({
-
     mixins: [Reflux.listenTo(nodeStore, "onGraphChanged"), Reflux.connect(driverStore)],
+
+    getInitialState: function() {
+        this.wasMounted = false;
+    },
     componentDidMount: function() {
         jsPlumb.setContainer(React.findDOMNode(this));
+
+
+        this.wasMounted = true;
     },
     onGraphChanged: function(newGraph, change){
         this.setState({graph: newGraph}); // Must be done before connection is made since connection target is created by render
-        if (change.remove) {
-            
-            
-            jsPlumb.remove(change.nodeId);
-            this.autoLayout();
-            
-
-        } else if (change.remove === false){
-            var overlayId= "connection" + change.nodeId;
+        jsPlumb.detachEveryConnection();
+        for (var i = 0; i < this.state.graph.length; i++) {
+            var node = this.state.graph[i];
+            if (node.id === 'central') {
+                continue;
+            }
+            var overlayId= "connection" + node.id;
             var connectionParameters = {
                 source: 'central',
-                target: change.nodeId,
-                anchor:[ "Continuous", { faces:["top","bottom"] }],
+                target: node.id,
+                anchor: ["Left", "Right"],
                 endpoint:"Blank",
                 connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0, alwaysRespectStubs: false }],
                 overlays:[["Custom", {
                     create:function(component) {
                         return $('<span><div id="' + overlayId + '"/></span>');
                     },
-                    location:0.5,
+                    location:0.85,
                     id:"customOverlay"
                 }]]
             };
+            
+            if (node.connectionLost) {
+                var element = document.getElementById(node.id);
+                element.id = element.id+ '_disconnected';
+                element.style.opacity = 0.5;
+            }
+           /* var connection = jsPlumb.connect(connectionParameters);
+            
+            this.setState({graph: newGraph}, function() {
+                  React.render(<ConnectionOverlay device={change.device} connection={change.connection}/>, document.getElementById(overlayId));
+            });*/
+        }
+/*
+        if (change.remove) {
+            jsPlumb.remove(change.nodeId);
+            jsPlumb.repaintEverything(); // solves connection line chaos
+        } else if (change.remove === false){
+            var overlayId= "connection" + change.nodeId;
+            var connectionParameters = {
+                source: 'central',
+                target: change.nodeId,
+                anchor: ["Left", "Right"],
+                endpoint:"Blank",
+                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0, alwaysRespectStubs: false }],
+                overlays:[["Custom", {
+                    create:function(component) {
+                        return $('<span><div id="' + overlayId + '"/></span>');
+                    },
+                    location:0.8,
+                    id:"customOverlay"
+                }]]
+            };
+
             var connection = jsPlumb.connect(connectionParameters);
 
             this.setState({graph: newGraph}, function() {
                   React.render(<ConnectionOverlay device={change.device} connection={change.connection}/>, document.getElementById(overlayId));
             });
-            this.autoLayout();
         } else {
             var element = document.getElementById(change.nodeId);
+            element.id = element.id+ '_disconnected';
             element.style.opacity = 0.5;
         }
+        */
     },
     getInitialState: function(){
         return nodeStore.getInitialState();
     },
-    autoLayout: function() {
-        var nodes = $('.node');
-        var edges = jsPlumb.getConnections();
+    render: function(){
+        
+        var plumbNodes = [];
+        var centralPosition = {
+            x: 10,
+            y: 200,
+        };
+		var connectedToCentral = this.state.centralName !== null && Object.keys(this.state.centralAddress).length !== 0;
+        var central;
+        var nodePositions = [];
+        if (connectedToCentral) {
+            for (var i = 0; i < this.state.graph.length; i++) {
+                var connectedDeviceCounter = 0;
+                var node = this.state.graph[i];
+                if (node.id === 'central') {
+                    central = (<CentralDevice id={node.id} name={this.state.centralName} address={this.state.centralAddress.address} position={centralPosition}/>)
+                } else {
 
-        var dag = new dagre.graphlib.Graph();
-        dag.setGraph({});
-        dag.setDefaultEdgeLabel(function(){return{};});
-        for(var i = 0; i < nodes.length; i++) {
-            var n = $(nodes[i]);
-            //console.log(n);
-            dag.setNode(n.attr('id'), {width: n.width(), height: n.height()});
-        }
-        for(var i = 0; i < edges.length; i++) {
-            var c = edges[i];
-            //console.log(c);
-            dag.setEdge(c.source.id, c.target.id);
-        }
-        dag.rankdir = 'TB';
-        dag.nodeSep = 200;
-        dagre.layout(dag, {rankdir: 'TB', ranksep: 200});
-        dag.nodes().forEach(function(v) {
-            if (v !== "undefined") {
-                $("#" + v).css("left", dag.node(v).x + "px");
-                $("#" + v).css("top", dag.node(v).y + "px");
+                    var nodePosition = {
+                        x: centralPosition.x + 250,
+                        y: connectedDeviceCounter* 200
+                    };
+                    nodePositions.push(nodePosition);
+                    connectedDeviceCounter++;
+                    plumbNodes.push(<ConnectedDevice id={node.id} sourceId='central' parentId='diagramContainer' key={i} node={node} device={this.state.graph[i].device} position={nodePosition}/>);
+                }
             }
-        });
-        jsPlumb.repaintEverything();
-    },
-
-    render: function() {
-        var hasCentral = this.state.centralName !== null && Object.keys(this.state.centralAddress).length !== 0;
-        var plumbNodes = !hasCentral ? [] : this.state.graph.map(function(node, i) {
-            return node.id === 'central'
-                ? <BleNode key={i} node={node} centralName={this.state.centralName} centralAddress={this.state.centralAddress}/>
-                : <BleNode key={i} node={node} device={this.state.graph[i].device} />
-        }, this);
+        }
 
         return (
             <div id="diagramContainer" style={this.props.style} >
+                {central}
+                <div style={{width: '300px',position: 'absolute', top: '10px', left: '400px'}}>
                 {plumbNodes}
+            </div>
             </div>
         );
     },
     componentDidUpdate: function() {
         jsPlumb.repaintEverything(); // solves connection line chaos
-    }
-});
-
-var BleNode = React.createClass({
-    componentDidMount: function(){
-        var that = this;
-        jsPlumb.bind("ready", function(){
-            jsPlumb.draggable(that.props.node.id, {containment: '#mainView'});
-        });
-    },
-    render: function() {
-        var theDevice;
-        if (this.props.node.id === 'central') {
-            theDevice = (<CentralDevice name={this.props.centralName} address={this.props.centralAddress.address} />);
-        } else {
-            theDevice = (<ConnectedDevice device={this.props.device} node={this.props.node}/>);
-        }
-        return (
-            <div key={this.props.node.id} id={this.props.node.id} className="node" style={{position: 'absolute', width: '250px' }}>
-                {theDevice}
-            </div>
-        );
     }
 });
 
