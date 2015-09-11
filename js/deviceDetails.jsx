@@ -205,7 +205,7 @@ var DeviceDetailsContainer = React.createClass({
         return (<div className="device-details-container" style={this.props.style}></div>);//{detailNodes}</div>)
     },
     componentDidUpdate: function() {
-        this._drawGraph();
+        //this._drawGraph();
     }
 });
 

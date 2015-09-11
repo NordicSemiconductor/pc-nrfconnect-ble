@@ -1,5 +1,6 @@
 'use strict';
 import React from 'react';
+import Connector from './Connector.jsx';
 
 var MIN_RSSI = -100;
 var MAX_RSSI = -45;
@@ -26,6 +27,11 @@ function prepareDeviceData(device) {
 }
 
 var ConnectedDevice = React.createClass({
+    getInitialState: function() {
+        return {
+            connectorCanBeDrawn: false
+        };
+    },
     render: function() {
         var device = prepareDeviceData(this.props.device);
         var role = this.props.node.id === "central" ? "Central" : "Peripheral";
@@ -34,7 +40,7 @@ var ConnectedDevice = React.createClass({
             width: '250px',
         };
         return (
-            <div id={this.props.id} className="device standalone" style={style}>
+            <div ref="outerDiv" id={this.props.id} className="device standalone" style={style}>
                 <div className="top-bar">
                 {
                  //   <i className={connected ? "icon-link" : "icon-link-broken" }></i>
@@ -59,8 +65,12 @@ var ConnectedDevice = React.createClass({
                         })}
                     </div>
                 </div>
+                {this.state.connectorCanBeDrawn ? <Connector sourceId={this.props.sourceId} targetId={this.props.id} parentId={this.props.parentId}/> : <div/>}
             </div>
         );
+    },
+    componentDidMount: function() {
+        this.setState({connectorCanBeDrawn: true});
     }
 });
 module.exports = ConnectedDevice;
