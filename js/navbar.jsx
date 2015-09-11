@@ -64,7 +64,17 @@ var NavBar = React.createClass({
         this.setState({activeTab: newView});
     },
     _getClassForTabButton: function(itemName) {
-        return "btn btn-primary btn-nordic" + (this.state.activeTab === itemName ? " active" : "");
+        return "btn btn-primary btn-nordic padded-list" + (this.state.activeTab === itemName ? " active" : "");
+    },
+    _getClassForIndicatorState: function() {
+        if (this.state.driverState.error) {
+            return "error";
+        }
+        if (this.state.driverState.connectedToDriver) {
+            return "on";
+        }
+
+        return "off";
     },
     mixins: [Reflux.connect(bleDriverStore, 'driverState')],
     render: function() {
@@ -73,15 +83,17 @@ var NavBar = React.createClass({
                 <div className="nav-section">
                     <div className="padded-list">
                         <ComPortSelector/>
-                        <div className={this.state.driverState.connectedToDriver ? "indicator on" : "indicator off" }></div>
+                        <div className={"indicator " + this._getClassForIndicatorState()}></div>
                     </div>
                 </div>
                 <div className="nav-section bl padded-list">
                     <button onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
-                        Connection map
+                        <span className="icon-sitemap" />
+                        <span>Connection map</span>
                     </button>
                     <button onClick={this._onViewChange.bind(this, 'DeviceDetails')}  className={this._getClassForTabButton('DeviceDetails')}>
-                        Device details
+                        <span className="icon-columns" />
+                        <span>Device details</span>
                     </button>
                 </div>
             </div>
