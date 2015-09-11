@@ -67,10 +67,10 @@ var LogContainer = React.createClass({
             <div className="log-header">
                 <div className="log-header-text">Log</div>
                 <div className="padded-list log-header-buttons">
-                    <button type="button" title="Clear log" className="btn btn-primary btn-xs btn-nordic padded-list-element" onClick={this.clearLog}>
+                    <button type="button" title="Clear log" className="btn btn-primary btn-xs btn-nordic" onClick={this.clearLog}>
                         <span className="icon-trash" aria-hidden="true" />
                     </button>
-                    <button type="button" title="Scroll automatically" className={"btn btn-primary btn-xs btn-nordic padded-list-element " + this._getClassForFollow()} onClick={this.toggleFollow}>
+                    <button type="button" title="Scroll automatically" className={"btn btn-primary btn-xs btn-nordic " + this._getClassForFollow()} onClick={this.toggleFollow}>
                         <span className="icon-down" aria-hidden="true" />
                     </button>
                 </div>

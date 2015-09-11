@@ -157,7 +157,7 @@ var DiscoveredDevicesContainer = React.createClass({
                 </div>
                 <div className="padded-list">
                     <DiscoveryButton/>
-                    <button onClick={this._clearContainer} type="button" className="btn btn-primary btn-sm btn-nordic padded-list-element">Clear</button>
+                    <button onClick={this._clearContainer} type="button" className="btn btn-primary btn-sm btn-nordic">Clear</button>
                 </div>
                 <div style={{paddingTop: '0px'}}>
                   {Object.keys(devices).map(function(device, index) {

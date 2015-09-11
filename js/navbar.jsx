@@ -39,7 +39,7 @@ var ComPortSelector = React.createClass({
             return (<MenuItem className="btn-primary" eventKey={portName} onSelect={this.onMenuItemSelect} key={i}>{portName}</MenuItem>);
         }, this);
         return (
-            <DropdownButton className="btn-primary btn-nordic padded-list-element" title={dropdownTitle}>
+            <DropdownButton className="btn-primary btn-nordic" title={dropdownTitle}>
                 {menuItems}
             </DropdownButton>
         );
@@ -64,7 +64,7 @@ var NavBar = React.createClass({
         this.setState({activeTab: newView});
     },
     _getClassForTabButton: function(itemName) {
-        return "btn btn-primary btn-nordic padded-list-element" + (this.state.activeTab === itemName ? " active" : "");
+        return "btn btn-primary btn-nordic" + (this.state.activeTab === itemName ? " active" : "");
     },
     mixins: [Reflux.connect(bleDriverStore, 'driverState')],
     render: function() {
@@ -73,7 +73,7 @@ var NavBar = React.createClass({
                 <div className="nav-section">
                     <div className="padded-list">
                         <ComPortSelector/>
-                        <div className={"padded-list-element " + this.state.driverState.connectedToDriver ? "indicator on" : "indicator off" }></div>
+                        <div className={this.state.driverState.connectedToDriver ? "indicator on" : "indicator off" }></div>
                     </div>
                 </div>
                 <div className="nav-section bl padded-list">
