@@ -155,9 +155,9 @@ var DiscoveredDevicesContainer = React.createClass({
                     <span>{this._numDevicesFoundText()}</span>
                     <img className="spinner" src="resources/ajax-loader.gif" height="16" width="16" style={progressStyle} />
                 </div>
-                <div className="buttons">
+                <div className="padded-list">
                     <DiscoveryButton/>
-                    <button onClick={this._clearContainer} type="button" className="btn btn-primary btn-sm btn-nordic">Clear</button>
+                    <button onClick={this._clearContainer} type="button" className="btn btn-primary btn-sm btn-nordic padded-list-element">Clear</button>
                 </div>
                 <div style={{paddingTop: '0px'}}>
                   {Object.keys(devices).map(function(device, index) {

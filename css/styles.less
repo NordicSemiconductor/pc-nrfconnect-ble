@@ -178,34 +178,10 @@
 }
 
 .nav-bar {
-  background-color: #FFF;
-  padding: 0;
+  background-color: @brand-primary;
 
-  .nav-bar-element {
-      display: inline-block;
-      margin: 0 10px;
-  }
-  a.nav-bar-element {
-    cursor: pointer;
-    padding: 6px 15px;
-    border-radius: 4px;
-    border: 1px solid white;
-    text-decoration: none;
-    &:hover {
-      text-decoration: none
-    }
-    &.active {
-      background-color: #d9edf7;
-      border-color: #bce8f1;
-    }
-  }
-
-  .indicator {
-    margin-left: 10px;
-  }
   .nav-section {
     display: inline-block;
-    vertical-align: top;
     padding: 10px 10px 0 10px;
     height: 55px;
     &.bl {
@@ -213,11 +189,12 @@
     }
   }
 }
+
 .main-layout > div:nth-child(1) {
     flex: 1;
     display: flex;
     flex-flow: row;
-  }
+}
 
 .main-layout {
   display: flex;
@@ -233,8 +210,8 @@
     }
     > div:nth-child(2) { //log
       border-top: 1px solid gray;
-    }
   }
+}
 
   > div:nth-child(2) { //device details
     background-color: white;
@@ -261,13 +238,6 @@
 
 #discoveredDevicesContainer {
   padding: 15px;
-  .buttons {
-    padding: 10px 0;
-    border-bottom: 1px solid lightgray;
-    button {
-      margin-right: 5px;
-    }
-  }
   .spinner {
     margin-left: 10px;
   }
@@ -331,12 +301,54 @@
   }
 }
 
+.dropdown {
+  padding: 0px;
+  border: 0px;
+
+  > .dropdown-menu {
+    background-color: @brand-primary;
+
+    li {
+      a {
+        color: white;
+        background-color: @brand-primary;
+      }
+      a:hover {
+        color: white;
+        background-color: #005c84;
+      }
+      a:focus {
+        background-color: #005c84;
+      }
+    }
+  }
+}
+
+.dropdown-toggle:focus {
+  outline: 5px auto;
+}
+
 .text-small {
   font-size: 13px;
 }
 
 .text-smaller {
   font-size: 11px;
+}
+
+.padded-list {
+  > .padded-list-element {
+    margin-right: 5px;
+
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
+}
+
+//used when tabbing and space
+:focus {
+  outline-color: @brand-info !important;
 }
 
 .device-details-container {
