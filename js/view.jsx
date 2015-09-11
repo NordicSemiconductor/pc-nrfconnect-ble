@@ -48,13 +48,13 @@ var MyView = React.createClass({
         // handle event
 
         window.addEventListener("optimizedResize", function() {
-            that.setState({mainViewMinHeight: $(window).height()}); //document.documentElement.clientHeight;
+            that.setState({windowHeight: $(window).height()}); //document.documentElement.clientHeight;
         });
     },
     getInitialState: function() {
         return {
             currentlyShowing: "ConnectionMap",
-            mainViewMinHeight: $(window).height()
+            windowHeight: $(window).height()
         };
     },
     _onChangedMainView: function(viewToShow) {
@@ -63,18 +63,19 @@ var MyView = React.createClass({
     },
     render: function() {
         var topBarHeight = 55;
-        var mainAreaStyle = {
-          height: this.state.mainViewMinHeight - topBarHeight
+        var layoutStyle = {
+          height: this.state.windowHeight - topBarHeight
         };
+        var mainAreaHeight = layoutStyle.height - 215
         return (
             <div id="main-area-wrapper">
               <NavBar onChangeMainView={this._onChangedMainView}/>
-              <div className="main-layout" style={mainAreaStyle}>
+              <div className="main-layout" style={layoutStyle}>
                 <div>
                   <div>
 
-                    <BleNodeContainer style={{height: (mainAreaStyle.height - 215), display:  this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
-                    <DeviceDetails style={{display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex': 'none'}}/>
+                    <BleNodeContainer style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
+                    <DeviceDetails    style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex':  'none'}}/>
 
                   </div>
                   <div>

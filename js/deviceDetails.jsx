@@ -177,7 +177,7 @@ var DeviceDetailsContainer = React.createClass({
             var deviceAddress = this.state.graph[i].deviceId;
             var deviceServices = this.state.deviceAddressToServicesMap[deviceAddress];
             var xPos = i*200 + "px";
-            detailNodes.push(<DeviceDetailsView services={deviceServices} plumb={this.plumb} nodeId={nodeId+ '_details'}  key={i}/>)
+            detailNodes.push(<DeviceDetailsView services={deviceServices} plumb={this.plumb} nodeId={nodeId+ '_details'} containerHeight={this.props.style.height} key={i}/>)
         }
         return (<div className="device-details-container" style={this.props.style}>{detailNodes}</div>)
     },
@@ -190,22 +190,26 @@ var DeviceDetailsView = React.createClass({
     render: function() {
         logger.silly(this.props.services);
         var services = [];
+        var topBoxHeight = 100;
         if (this.props.services) {
             return (
                 <div className="device-details-view" id={this.props.nodeId} style={this.props.style}>
-                    {this.props.services.map(function(service, i) {
-                        return (<ServiceItem serviceData={service} key={i}>
-                            {service.characteristics.map(function(characteristic, j) {
-                                return (<CharacteristicItem characteristicData={characteristic} key={j}>
-                                    {characteristic.descriptors.map(function(descriptor, k) {
-                                        return (
-                                            <DescriptorItem descriptorData={descriptor} key={k}/>
-                                        )
-                                    })}
-                                </CharacteristicItem>)
-                            })}
-                        </ServiceItem>)
-                    })}
+                    <div style={{height: topBoxHeight }}></div>
+                    <div className="service-items-wrap" style={{maxHeight: this.props.containerHeight - topBoxHeight - 50}}>
+                        {this.props.services.map(function(service, i) {
+                            return (<ServiceItem serviceData={service} key={i}>
+                                {service.characteristics.map(function(characteristic, j) {
+                                    return (<CharacteristicItem characteristicData={characteristic} key={j}>
+                                        {characteristic.descriptors.map(function(descriptor, k) {
+                                            return (
+                                                <DescriptorItem descriptorData={descriptor} key={k}/>
+                                            )
+                                        })}
+                                    </CharacteristicItem>)
+                                })}
+                            </ServiceItem>)
+                        })}
+                    </div>
                 </div>
             );
         } else {

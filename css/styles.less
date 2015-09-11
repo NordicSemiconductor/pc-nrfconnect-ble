@@ -44,7 +44,7 @@
   padding: 20px;
   width:100%;
   position: relative;
-  overflow: scroll;
+  overflow: auto;
 }
 
 @font-face {
@@ -343,9 +343,10 @@
   display: flex;
   align-items: flex-start;
   flex-direction: row;
-  flex-wrap: wrap;
-  margin-top: 30px;
-  margin-left: 15px;
+  flex-wrap: wrap;  
+  padding-top: 30px;
+  padding-left: 15px;
+  overflow: auto;
 }
 
 .subtle-text {
@@ -381,6 +382,7 @@
 }
 
 .log-wrap {
+  background-color: @background-color;
   .infinite-log {
     overflow-x: auto !important;
     background-color: white;
@@ -445,6 +447,9 @@
   width: 250px;
   margin: 5px;
   box-shadow: @draggable-box-shadow;
+  .service-items-wrap {
+    overflow: auto;
+  }
   .bar1, .bar2, .bar3 {
     width: 8px;
     flex-grow: 0;
@@ -470,7 +475,7 @@
   .icon-wrap {
     height: 40px;
     width: 8px;
-    position: absolute;
+    position: relative;
     line-height: 40px;
     padding-left: 3px;
     color: rgb(0, 129, 183);
@@ -484,7 +489,7 @@
     .content {
       align-self: center;
       padding: 5px 0;
-      margin-left: 15px;
+      margin-left: 8px;
     }
   }
   .text-subtle {
