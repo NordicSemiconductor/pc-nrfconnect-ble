@@ -7,6 +7,7 @@ var discoveryActions = Reflux.createActions(
     "advertisingPacketReceived",
     "startScan",
     "stopScan",
+    "toggleScan",
     "connectDriver",
     "scanStopped",
     "scanTimedOut",

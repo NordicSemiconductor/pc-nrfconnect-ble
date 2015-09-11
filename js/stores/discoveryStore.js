@@ -55,6 +55,14 @@ var discoveryStore = reflux.createStore({
             }
         });
     },
+    onToggleScan: function(){
+        logger.silly(`Toggling scan from ${this.state.scanInProgress} to ${!this.state.scanInProgress}.`);
+        if(this.state.scanInProgress) {
+            this.onStopScan()
+        } else {
+            this.onStartScan();
+        }
+    },
     onScanStopped: function() {
         this.state.scanInProgress = false;
         this.trigger(this.state);

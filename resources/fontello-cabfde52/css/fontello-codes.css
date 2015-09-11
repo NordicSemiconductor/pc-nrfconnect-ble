@@ -12,3 +12,7 @@
 .icon-to-end:before { content: '\e80a'; } /* '' */
 .icon-exchange:before { content: '\e80b'; } /* '' */
 .icon-link:before { content: '\e80c'; } /* '' */
+.icon-sitemap:before { content: '\e80d'; } /* '' */
+.icon-columns:before { content: '\e80e'; } /* '' */
+.icon-play:before { content: '\e80f'; } /* '' */
+.icon-stop:before { content: '\e810'; } /* '' */

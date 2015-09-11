@@ -18,9 +18,22 @@ var DiscoveryButton = React.createClass({
     },
 
     render: function() {
-        var labelString = this.state.discoveryStore.scanInProgress ? 'Stop scan' : 'Start scan';
+        var labelString;
+        var iconName;
+
+        if (this.state.discoveryStore.scanInProgress) {
+            labelString = 'Stop scan';
+            iconName = 'icon-stop'
+         } else {
+            labelString = 'Start scan';
+            iconName = 'icon-play';
+        }
+
         return (
-            <button className="btn btn-primary btn-sm btn-nordic padded-list-element" disabled= {!this.state.driverStore.connectedToDriver} onClick={this.buttonClicked}>{labelString}</button>
+            <button className="btn btn-primary btn-sm btn-nordic padded-list" disabled= {!this.state.driverStore.connectedToDriver} onClick={this.buttonClicked}>
+            <span className={iconName} />
+            {labelString}
+            </button>
         );
     }
 });

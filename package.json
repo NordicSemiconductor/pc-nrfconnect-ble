@@ -50,6 +50,7 @@
     "pc-ble-driver-js": "git+https://af77a4a4f0a6a5cc47a3eeaf8d65c7ea8bfbd2a7:x-oauth-basic@github.com/NordicSemiconductor/pc-ble-driver-js.git",
     "pubsub-js": "^1.5.2",
     "react-bootstrap": "^0.25.0",
+    "react-hotkey": "^0.3.0",
     "react-infinite": "NordicSemiconductor/react-infinite",
     "react-tap-event-plugin": "^0.1.7",
     "reflux": "^0.2.8",

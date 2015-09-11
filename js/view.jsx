@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Reflux from 'reflux';
+import hotkey from 'react-hotkey';
 
 import BleNodeContainer from './node.jsx';
 import DeviceDetails from './DeviceDetails.jsx';
@@ -22,8 +23,36 @@ import logActions from './actions/logActions';
 import NavBar from './navbar.jsx';
 
 var MyView = React.createClass({
-    mixins: [],
-
+    mixins: [hotkey.Mixin('handleHotkey')],
+    handleHotkey: function(e) {
+        if(e.getModifierState('Control')) {
+            switch(e.keyCode) {
+                case 83: // S
+                    e.preventDefault();
+                    DiscoveryActions.toggleScan();
+                    break;
+                case 67: // C
+                    e.preventDefault();
+                    DiscoveryActions.clearItems();
+                    break;
+                default:
+                    logger.silly(`Ctrl pressed, keycode ${e.keyCode}.`);
+                    break;
+            }
+        } else if (e.getModifierState('Alt')) {
+            switch(e.keyCode) {
+                case 49: // 1
+                    this._onChangedMainView('ConnectionMap');
+                    break;
+                case 50: // 2
+                    this._onChangedMainView('DeviceDetails');
+                    break;
+                default:
+                    logger.silly(`Alt pressed, keycode ${e.keyCode}.`);
+                    break;
+            }
+        }
+    },
     componentWillMount: function(){
         var that = this;
         (function() {
@@ -50,6 +79,8 @@ var MyView = React.createClass({
         window.addEventListener("optimizedResize", function() {
             that.setState({windowHeight: $(window).height()}); //document.documentElement.clientHeight;
         });
+
+        hotkey.activate();
     },
     getInitialState: function() {
         return {
@@ -58,7 +89,7 @@ var MyView = React.createClass({
         };
     },
     _onChangedMainView: function(viewToShow) {
-        logger.silly('changed View');
+        logger.silly(`changed view to ${viewToShow}`);
         this.setState({currentlyShowing: viewToShow});
     },
     render: function() {
@@ -69,14 +100,12 @@ var MyView = React.createClass({
         var mainAreaHeight = layoutStyle.height - 189;
         return (
             <div id="main-area-wrapper">
-              <NavBar onChangeMainView={this._onChangedMainView}/>
+              <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} />
               <div className="main-layout" style={layoutStyle}>
                 <div>
                   <div>
-
                     <BleNodeContainer style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
                     <DeviceDetails    style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex':  'none'}}/>
-
                   </div>
                   <div>
                     <Log/>

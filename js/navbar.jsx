@@ -39,7 +39,7 @@ var ComPortSelector = React.createClass({
             return (<MenuItem className="btn-primary" eventKey={portName} onSelect={this.onMenuItemSelect} key={i}>{portName}</MenuItem>);
         }, this);
         return (
-            <DropdownButton className="btn-primary btn-nordic padded-list-element" title={dropdownTitle}>
+            <DropdownButton className="btn-primary btn-nordic" title={dropdownTitle}>
                 {menuItems}
             </DropdownButton>
         );
@@ -55,16 +55,26 @@ var NavBar = React.createClass({
         };
         this.passiveStyle = {};
         this.driverState = { connectedToDriver: false };
-        return{
-            activeTab: 'ConnectionMap'
-        }
+        /*return{
+            activeTab: this.props.view
+        }*/
     },
     _onViewChange: function(newView){
         this.props.onChangeMainView(newView);
-        this.setState({activeTab: newView});
+        this.props.view = newView;
     },
     _getClassForTabButton: function(itemName) {
-        return "btn btn-primary btn-nordic padded-list-element" + (this.state.activeTab === itemName ? " active" : "");
+        return "btn btn-primary btn-nordic padded-list" + (this.props.view === itemName ? " active" : "");
+    },
+    _getClassForIndicatorState: function() {
+        if (this.state.driverState.error) {
+            return "error";
+        }
+        if (this.state.driverState.connectedToDriver) {
+            return "on";
+        }
+
+        return "off";
     },
     mixins: [Reflux.connect(bleDriverStore, 'driverState')],
     render: function() {
@@ -73,15 +83,17 @@ var NavBar = React.createClass({
                 <div className="nav-section">
                     <div className="padded-list">
                         <ComPortSelector/>
-                        <div className={"padded-list-element " + this.state.driverState.connectedToDriver ? "indicator on" : "indicator off" }></div>
+                        <div className={"indicator " + this._getClassForIndicatorState()}></div>
                     </div>
                 </div>
                 <div className="nav-section bl padded-list">
                     <button onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
-                        Connection map
+                        <span className="icon-sitemap" />
+                        <span>Connection map</span>
                     </button>
                     <button onClick={this._onViewChange.bind(this, 'DeviceDetails')}  className={this._getClassForTabButton('DeviceDetails')}>
-                        Device details
+                        <span className="icon-columns" />
+                        <span>Device details</span>
                     </button>
                 </div>
             </div>
