@@ -185,7 +185,7 @@
     padding: 10px 10px 0 10px;
     height: 55px;
     &.bl {
-      border-left: 1px solid #F2F2F2;
+      border-left: 1px solid @brand-primary-dark;
     }
   }
 }
@@ -229,10 +229,13 @@
   border-radius: 50%;
   border: 1px solid rgb(100, 94, 94);
   &.on {
-    background-color: rgb(32, 255, 32);
+    background-color: @brand-success;
   }
   &.off {
     background-color: rgb(207, 207, 207)
+  }
+  &.error {
+    background-color: @brand-warning
   }
 }
 
@@ -315,10 +318,10 @@
       }
       a:hover {
         color: white;
-        background-color: #005c84;
+        background-color: @brand-primary-darker;
       }
       a:focus {
-        background-color: #005c84;
+        background-color: @brand-primary-darker;
       }
     }
   }
