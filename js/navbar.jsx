@@ -42,7 +42,7 @@ var ComPortSelector = React.createClass({
             <DropdownButton title={dropdownTitle}>
                 {menuItems}
             </DropdownButton>
-        );        
+        );
     }
 });
 
@@ -55,16 +55,16 @@ var NavBar = React.createClass({
         };
         this.passiveStyle = {};
         this.driverState = { connectedToDriver: false };
-        return{
-            activeTab: 'ConnectionMap'
-        }
+        /*return{
+            activeTab: this.props.view
+        }*/
     },
     _onViewChange: function(newView){
         this.props.onChangeMainView(newView);
-        this.setState({activeTab: newView});
+        this.props.view = newView;
     },
     _getClassForTabButton: function(itemName) {
-        return "nav-bar-element " + (this.state.activeTab === itemName ? "active" : "");
+        return "nav-bar-element " + (this.props.view === itemName ? "active" : "");
     },
     mixins: [Reflux.connect(bleDriverStore, 'driverState')],
     render: function() {
@@ -80,7 +80,7 @@ var NavBar = React.createClass({
                     <a onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
                         Connection map
                     </a>
-                    <a onClick={this._onViewChange.bind(this, 'DeviceDetails').bind(this)}  className={this._getClassForTabButton('DeviceDetails')}>
+                    <a onClick={this._onViewChange.bind(this, 'DeviceDetails').bind(this)} className={this._getClassForTabButton('DeviceDetails')}>
                         Device details
                     </a>
                 </div>
