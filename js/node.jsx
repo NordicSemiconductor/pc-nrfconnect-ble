@@ -142,18 +142,14 @@ var BleNodeContainer = React.createClass({
         jsPlumb.repaintEverything();
     },
 
-    render: function(){
-        
-        var plumbNodes = [];
-        
-        for (var i = 0; i < this.state.graph.length; i++) {
-            var node = this.state.graph[i];
-            if (node.id === 'central') {
-                plumbNodes.push(<BleNode key={i} node={node} centralName={this.state.centralName} centralAddress={this.state.centralAddress}/>);
-            } else {
-                plumbNodes.push(<BleNode key={i} node={node} device={this.state.graph[i].device} />);
-            }
-        }
+    render: function() {
+        var hasCentral = this.state.centralName !== null && Object.keys(this.state.centralAddress).length !== 0;
+        var plumbNodes = !hasCentral ? [] : this.state.graph.map(function(node, i) {
+            return node.id === 'central'
+                ? <BleNode key={i} node={node} centralName={this.state.centralName} centralAddress={this.state.centralAddress}/>
+                : <BleNode key={i} node={node} device={this.state.graph[i].device} />
+        }, this);
+
         return (
             <div id="diagramContainer" style={this.props.style} >
                 {plumbNodes}

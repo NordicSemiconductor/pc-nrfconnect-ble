@@ -25,7 +25,7 @@ var bleDriverStore = reflux.createStore({
     init: function(){
         this.state = {
             connectedToDriver: false,
-            centralName: '',
+            centralName: null,
             centralAddress: {}
         };
         this.eventCount = 0;
