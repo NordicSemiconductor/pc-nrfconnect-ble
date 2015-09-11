@@ -35,6 +35,9 @@ var MyView = React.createClass({
                     e.preventDefault();
                     DiscoveryActions.clearItems();
                     break;
+                case 80: // P
+                    this.refs.navBar.focusOnComPorts();
+                    break;
                 default:
                     logger.silly(`Ctrl pressed, keycode ${e.keyCode}.`);
                     break;
@@ -99,7 +102,7 @@ var MyView = React.createClass({
         };
         return (
             <div id="main-area-wrapper">
-              <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} />
+              <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />
               <div className="main-layout" style={mainAreaStyle}>
                 <div>
                   <div>

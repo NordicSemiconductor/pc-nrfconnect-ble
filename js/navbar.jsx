@@ -31,6 +31,10 @@ var ComPortSelector = React.createClass({
             return "Select com port";
         }
     },
+    focusOnComPorts: function() {
+        var dropDown = React.findDOMNode(this.refs.comPortDropdown);
+        dropDown.firstChild.click();
+    },
     mixins: [Reflux.connect(bleTargetStore), Reflux.connect(bleDriverStore, 'driverState')],
     render: function() {
 
@@ -39,7 +43,7 @@ var ComPortSelector = React.createClass({
             return (<MenuItem className="btn-primary" eventKey={portName} onSelect={this.onMenuItemSelect} key={i}>{portName}</MenuItem>);
         }, this);
         return (
-            <DropdownButton className="btn-primary btn-nordic" title={dropdownTitle}>
+            <DropdownButton className="btn-primary btn-nordic" title={dropdownTitle} ref="comPortDropdown">
                 {menuItems}
             </DropdownButton>
         );
@@ -76,13 +80,16 @@ var NavBar = React.createClass({
 
         return "off";
     },
+    focusOnComPorts: function() {
+        this.refs.comPortSelector.focusOnComPorts();
+    },
     mixins: [Reflux.connect(bleDriverStore, 'driverState')],
     render: function() {
         return (
             <div className="nav-bar">
                 <div className="nav-section">
                     <div className="padded-list">
-                        <ComPortSelector/>
+                        <ComPortSelector ref="comPortSelector"/>
                         <div className={"indicator " + this._getClassForIndicatorState()}></div>
                     </div>
                 </div>
