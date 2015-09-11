@@ -178,46 +178,23 @@
 }
 
 .nav-bar {
-  background-color: #FFF;
-  padding: 0;
+  background-color: @brand-primary;
 
-  .nav-bar-element {
-      display: inline-block;
-      margin: 0 10px;
-  }
-  a.nav-bar-element {
-    cursor: pointer;
-    padding: 6px 15px;
-    border-radius: 4px;
-    border: 1px solid white;
-    text-decoration: none;
-    &:hover {
-      text-decoration: none
-    }
-    &.active {
-      background-color: #d9edf7;
-      border-color: #bce8f1;
-    }
-  }
-
-  .indicator {
-    margin-left: 10px;
-  }
   .nav-section {
     display: inline-block;
-    vertical-align: top;
     padding: 10px 10px 0 10px;
     height: 55px;
     &.bl {
-      border-left: 1px solid #F2F2F2;
+      border-left: 1px solid @brand-primary-dark;
     }
   }
 }
+
 .main-layout > div:nth-child(1) {
     flex: 1;
     display: flex;
     flex-flow: row;
-  }
+}
 
 .main-layout {
   display: flex;
@@ -233,8 +210,8 @@
     }
     > div:nth-child(2) { //log
       border-top: 1px solid gray;
-    }
   }
+}
 
   > div:nth-child(2) { //device details
     background-color: white;
@@ -252,10 +229,13 @@
   border-radius: 50%;
   border: 1px solid rgb(100, 94, 94);
   &.on {
-    background-color: rgb(32, 255, 32);
+    background-color: @brand-success;
   }
   &.off {
     background-color: rgb(207, 207, 207)
+  }
+  &.error {
+    background-color: @brand-warning
   }
 }
 
@@ -324,6 +304,33 @@
   }
 }
 
+.dropdown {
+  padding: 0px;
+  border: 0px;
+
+  > .dropdown-menu {
+    background-color: @brand-primary;
+
+    li {
+      a {
+        color: white;
+        background-color: @brand-primary;
+      }
+      a:hover {
+        color: white;
+        background-color: @brand-primary-darker;
+      }
+      a:focus {
+        background-color: @brand-primary-darker;
+      }
+    }
+  }
+}
+
+.dropdown-toggle:focus {
+  outline: 5px auto;
+}
+
 .text-small {
   font-size: 13px;
 }
@@ -332,40 +339,19 @@
   font-size: 11px;
 }
 
-.buttons-padded-list {
-  button {
+.padded-list {
+  > * {
     margin-right: 5px;
 
-    &:last-of-type {
+    &:last-child {
       margin-right: 0px;
     }
   }
 }
 
-.buttons-right {
-  button {
-    margin-left: 5px;
-  }
-}
-
-//no outline when button only active
-.btn-primary:active {
-  outline: none;
-}
-
 //used when tabbing and space
-.btn-primary:focus {
-  outline-color: @brand-info;
-}
-
-//used when tabbing and space
-.btn-primary.active:focus {
-  outline-color: @brand-info;
-}
-
-//used when tabbing and space
-.btn-primary:active:focus {
-  outline-color: @brand-info;
+:focus {
+  outline-color: @brand-info !important;
 }
 
 .device-details-container {
