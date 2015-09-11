@@ -4,10 +4,13 @@ import React from 'react';
 
 var Connector = React.createClass({
     _calculateConnectorBox: function(sourceRect, targetRect) {
-        var top = -2 + targetRect.height/2; 
-        //var bottom = Math.max(targetRect.bottom - targetRect.height/2, sourceRect.bottom - sourceRect.height/2);
-        var height = 4 + (sourceRect.top + sourceRect.height/2) - (targetRect.top + targetRect.height/2);
-        var width = targetRect.left - (sourceRect.left + sourceRect.width); 
+        var strokeWidth = 3;
+        var sourceRectMid = sourceRect.top - targetRect.top + sourceRect.height/2;
+        var targetRectMid = (targetRect.height/2);
+
+        var top = -(strokeWidth + 1)/2 + (sourceRectMid < targetRectMid ? sourceRectMid : targetRectMid);
+        var height = 2*((strokeWidth + 1)/2) + Math.abs(sourceRectMid - targetRectMid);
+        var width = targetRect.left - (sourceRect.left + sourceRect.width);
         return {
             top: top,
             left: -width,
@@ -18,7 +21,7 @@ var Connector = React.createClass({
     render: function() {
         var sourceElement = document.getElementById(this.props.sourceId);
         var targetElement = document.getElementById(this.props.targetId);
-        
+
         var sourceRect = sourceElement.getBoundingClientRect();
         var targetRect = targetElement.getBoundingClientRect();
 
