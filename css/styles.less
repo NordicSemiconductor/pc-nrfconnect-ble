@@ -247,6 +247,13 @@
   border-radius: 0px
 }
 
+#diagramContainer .device.standalone {
+    box-shadow: @draggable-box-shadow;
+}
+.device-details-view .device.standalone {
+    border-bottom: 1px solid @device-details-light-border-color;
+}
+
 .device {
   border-bottom: 1px solid lightgrey;
   padding: 4px 0;
@@ -268,7 +275,6 @@
   &.standalone {
     border-bottom: none;
     padding: 0;
-    box-shadow: @draggable-box-shadow;
     .top-bar {
       background-color: #E6E6E6;
       min-height: 20px;
@@ -495,7 +501,7 @@
   .content-wrap {
     cursor: pointer;
     display: flex;
-    border-bottom: 1px solid rgb(207, 207, 207);
+    border-bottom: 1px solid @device-details-light-border-color;
     flex: 1;
 
     .content {

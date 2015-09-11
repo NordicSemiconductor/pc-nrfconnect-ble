@@ -66,7 +66,7 @@ var MyView = React.createClass({
         var layoutStyle = {
           height: this.state.windowHeight - topBarHeight
         };
-        var mainAreaHeight = layoutStyle.height - 215
+        var mainAreaHeight = layoutStyle.height - 189;
         return (
             <div id="main-area-wrapper">
               <NavBar onChangeMainView={this._onChangedMainView}/>
