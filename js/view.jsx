@@ -27,17 +27,6 @@ var MyView = React.createClass({
     handleHotkey: function(e) {
         if(e.getModifierState('Control')) {
             switch(e.keyCode) {
-                case 83: // S
-                    e.preventDefault();
-                    DiscoveryActions.toggleScan();
-                    break;
-                case 67: // C
-                    e.preventDefault();
-                    DiscoveryActions.clearItems();
-                    break;
-                case 80: // P
-                    this.refs.navBar.focusOnComPorts();
-                    break;
                 default:
                     logger.silly(`Ctrl pressed, keycode ${e.keyCode}.`);
                     break;
@@ -49,6 +38,15 @@ var MyView = React.createClass({
                     break;
                 case 50: // 2
                     this._onChangedMainView('DeviceDetails');
+                    break;
+                case 67: // C
+                    DiscoveryActions.clearItems();
+                    break;
+                case 83: // S
+                    DiscoveryActions.toggleScan();
+                    break;
+                case 80: // P
+                    this.refs.navBar.focusOnComPorts();
                     break;
                 default:
                     logger.silly(`Alt pressed, keycode ${e.keyCode}.`);
