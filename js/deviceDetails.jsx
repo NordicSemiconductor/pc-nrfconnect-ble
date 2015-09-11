@@ -202,7 +202,7 @@ var DeviceDetailsContainer = React.createClass({
             var xPos = i*200 + "px";
             detailNodes.push(<DeviceDetailsView services={deviceServices} plumb={this.plumb} node={node} device={device} containerHeight={this.props.style.height} key={i}/>)
         }
-        return (<div className="device-details-container" style={this.props.style}></div>);//{detailNodes}</div>)
+        return (<div className="device-details-container" style={this.props.style}>{detailNodes}</div>);
     },
     componentDidUpdate: function() {
         //this._drawGraph();

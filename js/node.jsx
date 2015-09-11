@@ -103,14 +103,14 @@ var BleNodeContainer = React.createClass({
                     id:"customOverlay"
                 }]]
             };
-
+            
             if (node.connectionLost) {
                 var element = document.getElementById(node.id);
                 element.id = element.id+ '_disconnected';
                 element.style.opacity = 0.5;
             }
            /* var connection = jsPlumb.connect(connectionParameters);
-
+            
             this.setState({graph: newGraph}, function() {
                   React.render(<ConnectionOverlay device={change.device} connection={change.connection}/>, document.getElementById(overlayId));
             });*/
@@ -158,22 +158,25 @@ var BleNodeContainer = React.createClass({
             x: 10,
             y: 200,
         };
+		var connectedToCentral = this.state.centralName !== null && Object.keys(this.state.centralAddress).length !== 0;
         var central;
         var nodePositions = [];
-        for (var i = 0; i < this.state.graph.length; i++) {
-            var connectedDeviceCounter = 0;
-            var node = this.state.graph[i];
-            if (node.id === 'central') {
-                central = (<CentralDevice id={node.id} name={this.state.centralName} address={this.state.centralAddress.address} position={centralPosition}/>)
-            } else {
+        if (connectedToCentral) {
+            for (var i = 0; i < this.state.graph.length; i++) {
+                var connectedDeviceCounter = 0;
+                var node = this.state.graph[i];
+                if (node.id === 'central') {
+                    central = (<CentralDevice id={node.id} name={this.state.centralName} address={this.state.centralAddress.address} position={centralPosition}/>)
+                } else {
 
-                var nodePosition = {
-                    x: centralPosition.x + 250,
-                    y: connectedDeviceCounter* 200
-                };
-                nodePositions.push(nodePosition);
-                connectedDeviceCounter++;
-                plumbNodes.push(<ConnectedDevice id={node.id} sourceId='central' parentId='diagramContainer' key={i} node={node} device={this.state.graph[i].device} position={nodePosition}/>);
+                    var nodePosition = {
+                        x: centralPosition.x + 250,
+                        y: connectedDeviceCounter* 200
+                    };
+                    nodePositions.push(nodePosition);
+                    connectedDeviceCounter++;
+                    plumbNodes.push(<ConnectedDevice id={node.id} sourceId='central' parentId='diagramContainer' key={i} node={node} device={this.state.graph[i].device} position={nodePosition}/>);
+                }
             }
         }
 
@@ -181,8 +184,8 @@ var BleNodeContainer = React.createClass({
             <div id="diagramContainer" style={this.props.style} >
                 {central}
                 <div style={{width: '300px',position: 'absolute', top: '10px', left: '400px'}}>
-                    {plumbNodes}
-                </div>
+                {plumbNodes}
+            </div>
             </div>
         );
     },
