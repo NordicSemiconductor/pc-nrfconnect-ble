@@ -40,7 +40,7 @@ For OS X:
 
 Let CMake know where the ble driver is:
 ```
-export PC_BLE_DRIVER_DIR=/Users/torleifs/customers/nordic/build/release/
+export PC_BLE_DRIVER_DIR=(path to pc-ble-driver release folder, or pc-ble-driver-js root folder)
 ```
 
 Let the pc-ble-driver know that we are using electron and which version and architecture:
@@ -49,20 +49,16 @@ export npm_config_runtime=electron
 export npm_config_runtime_version=0.30.3
 export npm_config_arch=x64
 ```
-Handle sqlite build issues:
-
-http://verysimple.com/2015/05/30/using-node_sqlite3-with-electron/
-https://github.com/mapbox/node-sqlite3/issues/357
-
-Snag:
-serialport-electron seems to fail upon running the app when the npm_config variables are set.
-Solution:
-```
-unset npm_config_runtime
-unset npm_config_runtime_version
-unset npm_config_arch # It is probably just this variable that causes problems
 
 npm install
+
+Handle sqlite build issues:
+```
+cd node_modules/sqlite3
+npm run prepublish
+node-gyp configure --module_name=node_sqlite3 --module_path=../lib/binding/node-v44-darwin-x64
+node-gyp rebuild --target=0.30.3 --arch=x64 --target_platform=darwin --dist-url=https://atom.io/download/atom-shell --module_name=node_sqlite3 --module_path=../lib/binding/node-v44-darwin-x64
+```
 
 # Run the Yggdrasil application
 ```
