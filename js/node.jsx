@@ -21,82 +21,8 @@ var _ = require('underscore');
 var BleNodeContainer = React.createClass({
     mixins: [Reflux.listenTo(nodeStore, "onGraphChanged"), Reflux.connect(driverStore)],
 
-    getInitialState: function() {
-        this.wasMounted = false;
-    },
-    componentDidMount: function() {
-        jsPlumb.setContainer(React.findDOMNode(this));
-
-
-        this.wasMounted = true;
-    },
     onGraphChanged: function(newGraph, change){
         this.setState({graph: newGraph}); // Must be done before connection is made since connection target is created by render
-        jsPlumb.detachEveryConnection();
-        for (var i = 0; i < this.state.graph.length; i++) {
-            var node = this.state.graph[i];
-            if (node.id === 'central') {
-                continue;
-            }
-            var overlayId= "connection" + node.id;
-            var connectionParameters = {
-                source: 'central',
-                target: node.id,
-                anchor: ["Left", "Right"],
-                endpoint:"Blank",
-                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0, alwaysRespectStubs: false }],
-                overlays:[["Custom", {
-                    create:function(component) {
-                        return $('<span><div id="' + overlayId + '"/></span>');
-                    },
-                    location:0.85,
-                    id:"customOverlay"
-                }]]
-            };
-            
-            if (node.connectionLost) {
-                var element = document.getElementById(node.id);
-                element.id = element.id+ '_disconnected';
-                element.style.opacity = 0.5;
-            }
-           /* var connection = jsPlumb.connect(connectionParameters);
-            
-            this.setState({graph: newGraph}, function() {
-                  React.render(<ConnectionOverlay device={change.device} connection={change.connection}/>, document.getElementById(overlayId));
-            });*/
-        }
-/*
-        if (change.remove) {
-            jsPlumb.remove(change.nodeId);
-            jsPlumb.repaintEverything(); // solves connection line chaos
-        } else if (change.remove === false){
-            var overlayId= "connection" + change.nodeId;
-            var connectionParameters = {
-                source: 'central',
-                target: change.nodeId,
-                anchor: ["Left", "Right"],
-                endpoint:"Blank",
-                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0, alwaysRespectStubs: false }],
-                overlays:[["Custom", {
-                    create:function(component) {
-                        return $('<span><div id="' + overlayId + '"/></span>');
-                    },
-                    location:0.8,
-                    id:"customOverlay"
-                }]]
-            };
-
-            var connection = jsPlumb.connect(connectionParameters);
-
-            this.setState({graph: newGraph}, function() {
-                  React.render(<ConnectionOverlay device={change.device} connection={change.connection}/>, document.getElementById(overlayId));
-            });
-        } else {
-            var element = document.getElementById(change.nodeId);
-            element.id = element.id+ '_disconnected';
-            element.style.opacity = 0.5;
-        }
-        */
     },
     getInitialState: function(){
         return nodeStore.getInitialState();
@@ -108,7 +34,7 @@ var BleNodeContainer = React.createClass({
             x: 10,
             y: 200,
         };
-		var connectedToCentral = this.state.centralName !== null && Object.keys(this.state.centralAddress).length !== 0;
+        var connectedToCentral = this.state.centralName !== null && Object.keys(this.state.centralAddress).length !== 0;
         var central;
         var nodePositions = [];
         if (connectedToCentral) {

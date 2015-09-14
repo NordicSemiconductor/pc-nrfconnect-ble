@@ -65,7 +65,7 @@ var ConnectedDevice = React.createClass({
                         })}
                     </div>
                 </div>
-                {this.state.connectorCanBeDrawn ? <Connector sourceId={this.props.sourceId} targetId={this.props.id} parentId={this.props.parentId}/> : <div/>}
+                {this.state.connectorCanBeDrawn ? <Connector sourceId={this.props.sourceId} targetId={this.props.id} parentId={this.props.parentId} device={this.props.device}/> : <div/>}
             </div>
         );
     },
