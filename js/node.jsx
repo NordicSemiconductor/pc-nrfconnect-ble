@@ -15,58 +15,8 @@ var OverlayTrigger = bs.OverlayTrigger;
 
 var _ = require('underscore');
 
-var ConnectionSetup = React.createClass({
-    _disconnect: function() {
-        connectionActions.disconnectFromDevice(this.props.device.peer_addr.address);
-        this.props.closePopover();
-    },
-    render: function() {
-        return (
-            <div>
-                <form className="form-horizontal">
-                    <div className="form-group">
-                        <label className="col-sm-8 control-label" htmlFor="interval">Connection Interval</label>
-                        <div className="col-sm-4">
-                            <input disabled className="form-control" type="number" id="interval" value = {this.props.connection.conn_params.max_conn_interval}/>
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="col-sm-8 control-label" htmlFor="latency">Latency</label>
-                        <div className="col-sm-4">
-                            <input disabled  className="form-control" type="number" id="latency" value={this.props.connection.conn_params.slave_latency}/>
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="col-sm-8 control-label" htmlFor="timeout">Timeout</label>
-                        <div className="col-sm-4">
-                            <input disabled  className="form-control" type="number" id="timeout" value={this.props.connection.conn_params.conn_sup_timeout}/>
-                        </div>
-                    </div>
-                </form>
-                <hr/>
-                <button onClick = {this._disconnect}>Disconnect</button>
-            </div>
-        );
-    }
-});
 
-var ConnectionOverlay = React.createClass({
-    closeme: function() {
-        this.refs.overlayTrigger.hide();
-    },
-    render: function() {
-        var overlayRef = this.refs.overlayTrigger;
-        return (
-            <div>
-                <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']}  placement='top' overlay={<Popover title='Connection Setup'><ConnectionSetup device ={this.props.device} closePopover = {this.closeme} connection={this.props.connection}/></Popover>}> 
-                    <span style={{fontSize: '15px'}}>
-                        <i className="icon-link icon-encircled"></i>
-                    </span>
-                </OverlayTrigger>
-            </div>
-            );
-    }
-});
+
 
 var BleNodeContainer = React.createClass({
     mixins: [Reflux.listenTo(nodeStore, "onGraphChanged"), Reflux.connect(driverStore)],
