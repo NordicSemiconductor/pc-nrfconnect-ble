@@ -199,8 +199,8 @@ var DeviceDetailsContainer = React.createClass({
         var detailNodes = this.state.graph.map((node, i) => {
             var deviceAddress = this.state.graph[i].deviceId;
             var deviceServices = this.state.deviceAddressToServicesMap[deviceAddress];
-            return <DeviceDetailsView services={deviceServices} plumb={this.plumb} node={node} device={node.device} 
-                                    containerHeight={this.props.style.height} style={{margin: margin}} key={i}/>
+            return <DeviceDetailsView services={deviceServices} plumb={this.plumb} node={node} device={node.device}
+                                    style={{margin: margin}} key={i}/>
         });
         var perNode = (margin * 2) + elemWidth;
         var width = (perNode * detailNodes.length) + buffer;
@@ -220,12 +220,11 @@ var DeviceDetailsView = React.createClass({
         };
         logger.silly(this.props.services);
         var services = [];
-        var topBoxHeight = 105;
         if (this.props.services) {
             return (
                 <div className="device-details-view" id={this.props.node.id + '_details'} style={this.props.style}>
                     <ConnectedDevice device={this.props.device} node={this.props.node}/>
-                    <div className="service-items-wrap" style={{maxHeight: this.props.containerHeight - topBoxHeight - 50}}>
+                    <div className="service-items-wrap">
                         {this.props.services.map(function(service, i) {
                             return (<ServiceItem serviceData={service} key={i}>
                                 {service.characteristics.map(function(characteristic, j) {
