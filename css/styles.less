@@ -369,13 +369,19 @@
 }
 
 .device-details-container {
-  display: flex;
-  align-items: flex-start;
-  flex-direction: row;
-  flex-wrap: wrap;  
   padding-top: 30px;
   padding-left: 15px;
   overflow: auto;
+  .main-device {
+    margin: 5px;
+    box-shadow: @draggable-box-shadow;
+  }
+  > div {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;  
+  }
 }
 
 .subtle-text {
@@ -474,7 +480,6 @@
 .device-details-view {
   background-color: white;
   width: 250px;
-  margin: 5px;
   box-shadow: @draggable-box-shadow;
   .service-items-wrap {
     overflow: auto;

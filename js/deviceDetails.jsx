@@ -192,17 +192,18 @@ var DeviceDetailsContainer = React.createClass({
         this.plumb.repaintEverything();
     },
     render: function() {
-        var detailNodes = [];
-        // TODO: Use flexbox for positioning elements?
-        for(var i = 0; i<this.state.graph.length; i++) {
-            var node = this.state.graph[i];
-            var device = this.state.graph[i].device;
+        var margin = 5;
+        var elemWidth = 250;
+        var buffer = 30;
+        var detailNodes = this.state.graph.map((node, i) => {
             var deviceAddress = this.state.graph[i].deviceId;
             var deviceServices = this.state.deviceAddressToServicesMap[deviceAddress];
-            var xPos = i*200 + "px";
-            detailNodes.push(<DeviceDetailsView services={deviceServices} plumb={this.plumb} node={node} device={device} containerHeight={this.props.style.height} key={i}/>)
-        }
-        return (<div className="device-details-container" style={this.props.style}>{detailNodes}</div>);
+            return <DeviceDetailsView services={deviceServices} plumb={this.plumb} node={node} device={node.device} 
+                                    containerHeight={this.props.style.height} style={{margin: margin}} key={i}/>
+        });
+        var perNode = (margin * 2) + elemWidth;
+        var width = (perNode * detailNodes.length) + buffer;
+        return (<div className="device-details-container" style={this.props.style}><div style={{width: width}}>{detailNodes}</div></div>);
     },
     componentDidUpdate: function() {
         //this._drawGraph();
@@ -212,8 +213,8 @@ var DeviceDetailsContainer = React.createClass({
 var DeviceDetailsView = React.createClass({
     render: function() {
         var centralPosition = {
-          x: 50,
-            y: 50
+            x: 0,
+            y: 0
         };
         logger.silly(this.props.services);
         var services = [];
@@ -239,9 +240,9 @@ var DeviceDetailsView = React.createClass({
                     </div>
                 </div>
             );
-        } else if (this.props.nodeId === 'central_details'){
+        } else if (this.props.node.id === 'central'){
             return (
-                <CentralDevice id={'central_details'} name="dummy" position={centralPosition}/>
+                <CentralDevice id="central_details" name="dummy" position={centralPosition}/>
             );
         } else {return <div/>}
     }

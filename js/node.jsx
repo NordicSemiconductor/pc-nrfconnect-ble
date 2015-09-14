@@ -184,8 +184,8 @@ var BleNodeContainer = React.createClass({
             <div id="diagramContainer" style={this.props.style} >
                 {central}
                 <div style={{width: '300px',position: 'absolute', top: '10px', left: '400px'}}>
-                {plumbNodes}
-            </div>
+                    {plumbNodes}
+                </div>
             </div>
         );
     },
