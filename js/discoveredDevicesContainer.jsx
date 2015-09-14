@@ -55,7 +55,7 @@ var DiscoveredDevice = React.createClass({
                     <div className="text-small truncate-text">{device.name}</div>
                 </div>
                 <div className="device-body text-small">
-                    <div>
+                    <div className="discovered-device-address-line">
                         <button onClick={this._onConnect} className="btn btn-primary btn-xs btn-nordic">
                                 Connect <i className="icon-link"></i>
                         </button>
@@ -90,10 +90,6 @@ var DiscoveredDevicesContainer = React.createClass({
     _clearContainer: function() {
         discoveryActions.clearItems();
     },
-    _numDevicesFoundText: function() {
-        var n = Object.keys(this.state.discoveredDevices).length
-        return n == 1 ? "1 device found." : n + " devices found";
-    },
     render: function() {
         if (this.state.discoveredDevices) {
             var connectedDevices = this.state.connections;
@@ -116,10 +112,11 @@ var DiscoveredDevicesContainer = React.createClass({
             }
             return (
               <div id="discoveredDevicesContainer">
-                <h4>Discovered devices </h4>
                 <div>
-                    <span>{this._numDevicesFoundText()}</span>
-                    <img className="spinner" src="resources/ajax-loader.gif" height="16" width="16" style={progressStyle} />
+                    <h4>
+                        Discovered devices
+                        <img className="spinner" src="resources/ajax-loader.gif" height="16" width="16" style={progressStyle} />
+                    </h4>
                 </div>
                 <div className="padded-list">
                     <DiscoveryButton/>

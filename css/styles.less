@@ -255,6 +255,11 @@
   .spinner {
     margin-left: 10px;
   }
+
+  > .padded-list {
+    border-bottom: 1px solid @device-details-light-border-color;
+    padding-bottom: 5px;
+  }
 }
 
 .btn-nordic {
@@ -281,6 +286,10 @@
   .device-body {
     > div {
       margin-top: 5px;
+    }
+
+    .discovered-device-address-line {
+      height: 22px;
     }
   }
   .flag-line {
@@ -385,7 +394,7 @@
   display: flex;
   align-items: flex-start;
   flex-direction: row;
-  flex-wrap: wrap;  
+  flex-wrap: wrap;
   }
 }
 
