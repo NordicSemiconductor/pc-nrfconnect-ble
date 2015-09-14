@@ -204,6 +204,7 @@ var DeviceDetailsContainer = React.createClass({
         var perNode = (margin * 2) + elemWidth;
         var width = (perNode * detailNodes.length) + buffer;
         return (<div className="device-details-container" style={this.props.style}><div style={{width: width}}>{detailNodes}</div></div>);
+
     },
     componentDidUpdate: function() {
         //this._drawGraph();
@@ -222,7 +223,7 @@ var DeviceDetailsView = React.createClass({
         if (this.props.services) {
             return (
                 <div className="device-details-view" id={this.props.node.id + '_details'} style={this.props.style}>
-                    <ConnectedDevice device={this.props.device} node={this.props.node}/>
+                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" targetId={this.props.node.id+ '_details'} parentId="device_details"/>
                     <div className="service-items-wrap" style={{maxHeight: this.props.containerHeight - topBoxHeight - 50}}>
                         {this.props.services.map(function(service, i) {
                             return (<ServiceItem serviceData={service} key={i}>
