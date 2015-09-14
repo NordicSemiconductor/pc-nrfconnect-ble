@@ -68,11 +68,11 @@ var MyView = React.createClass({
                         running = false;
                     });
                 };
-            obj.addEventListener(type, func);
-        };
+                obj.addEventListener(type, func);
+            };
 
 
-        throttle("resize", "optimizedResize");
+            throttle("resize", "optimizedResize");
         })();
 
         // handle event
@@ -106,7 +106,7 @@ var MyView = React.createClass({
                 <div>
                   <div>
                     <BleNodeContainer style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
-                    <DeviceDetails    style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'DeviceDetails' ? 'flex':  'none'}}/>
+                    <DeviceDetails    style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'DeviceDetails' ? 'block':  'none'}}/>
                   </div>
                   <div>
                     <Log/>

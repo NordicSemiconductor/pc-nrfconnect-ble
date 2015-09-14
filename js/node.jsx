@@ -26,10 +26,9 @@ var BleNodeContainer = React.createClass({
             x: 10,
             y: 200,
         };
-        var connectedToCentral = this.state.centralName !== null && Object.keys(this.state.centralAddress).length !== 0;
         var central;
         var nodePositions = [];
-        if (connectedToCentral) {
+        if (this.state.connectedToDriver) {
             for (var i = 0; i < this.state.graph.length; i++) {
                 var connectedDeviceCounter = 0;
                 var node = this.state.graph[i];
@@ -52,8 +51,8 @@ var BleNodeContainer = React.createClass({
             <div id="diagramContainer" style={this.props.style} >
                 {central}
                 <div style={{width: '300px',position: 'absolute', top: '10px', left: '400px'}}>
-                {plumbNodes}
-            </div>
+                    {plumbNodes}
+                </div>
             </div>
         );
     }
