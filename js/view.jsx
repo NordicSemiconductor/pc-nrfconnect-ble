@@ -68,11 +68,11 @@ var MyView = React.createClass({
                         running = false;
                     });
                 };
-            obj.addEventListener(type, func);
-        };
+                obj.addEventListener(type, func);
+            };
 
 
-        throttle("resize", "optimizedResize");
+            throttle("resize", "optimizedResize");
         })();
 
         // handle event

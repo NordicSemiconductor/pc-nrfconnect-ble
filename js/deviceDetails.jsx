@@ -8,6 +8,7 @@ var connectionStore = require('./stores/connectionStore');
 var ConnectedDevice = require('./components/ConnectedDevice.jsx');
 
 var nodeStore = require('./stores/bleNodeStore');
+var driverStore = require('./stores/bleDriverStore');
 var pubsub = require('pubsub-js');
 
 var bs = require('react-bootstrap');
@@ -211,6 +212,7 @@ var DeviceDetailsContainer = React.createClass({
 });
 
 var DeviceDetailsView = React.createClass({
+    mixins: [Reflux.connect(driverStore)],
     render: function() {
         var centralPosition = {
             x: 0,
@@ -240,9 +242,9 @@ var DeviceDetailsView = React.createClass({
                     </div>
                 </div>
             );
-        } else if (this.props.node.id === 'central'){
+        } else if (this.props.node.id === 'central' && this.state.connectedToDriver){
             return (
-                <CentralDevice id="central_details" name="dummy" position={centralPosition}/>
+                <CentralDevice id="central_details" name={this.state.centralName} address={this.state.centralAddress.address} position={centralPosition}/>
             );
         } else {return <div/>}
     }
