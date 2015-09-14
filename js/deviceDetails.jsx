@@ -5,7 +5,7 @@ import logger from './logging';
 var react = require('react');
 var Reflux = require('reflux');
 var connectionStore = require('./stores/connectionStore');
-var {ConnectedDevice} = require('./discoveredDevicesContainer.jsx');
+var ConnectedDevice = require('./components/ConnectedDevice.jsx');
 
 var nodeStore = require('./stores/bleNodeStore');
 var pubsub = require('pubsub-js');
