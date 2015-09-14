@@ -40,7 +40,7 @@ var bleDriverStore = reflux.createStore({
             'parity': 'none',
             'flowControl': 'none',
             'logLevel': 'fatal',
-            'eventInterval': 200,
+            'eventInterval': 10,
             'logCallback': function(severity, message) {
                 // TODO: convert from the pc-ble-driver log levels to winston logger levels
                 logger.info(message);
@@ -111,6 +111,7 @@ var bleDriverStore = reflux.createStore({
         });
     },
     _mainEventListener: function(eventArray){
+        console.timeStamp('_mainEventListener');
         for (var i = 0; i < eventArray.length; i++) {
             this.eventCount++;
             var event = eventArray[i];
