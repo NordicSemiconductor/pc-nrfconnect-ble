@@ -26,10 +26,9 @@ var BleNodeContainer = React.createClass({
             x: 10,
             y: 200,
         };
-        var connectedToCentral = this.state.centralName !== null && Object.keys(this.state.centralAddress).length !== 0;
         var central;
         var nodePositions = [];
-        if (connectedToCentral) {
+        if (this.state.connectedToDriver) {
             for (var i = 0; i < this.state.graph.length; i++) {
                 var connectedDeviceCounter = 0;
                 var node = this.state.graph[i];
