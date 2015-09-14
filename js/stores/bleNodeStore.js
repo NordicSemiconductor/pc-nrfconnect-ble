@@ -25,7 +25,7 @@ var bleNodeStore = reflux.createStore({
 
       if(connectedDevice.peer_addr === undefined) return;
       if(connectedDevice.peer_addr.address === undefined) return;
-
+      connectedDevice.connection = newConnection;
       this.state.graph.push({id: newNodeId, deviceId: connectedDevice.peer_addr.address, device: connectedDevice});
       var centralNode = this._findCentralNode();
 
@@ -43,7 +43,9 @@ var bleNodeStore = reflux.createStore({
             return node.deviceId === deviceAddress;
         });
 
-        if(node === undefined) return;
+        if (node === undefined) {
+            return;
+        }
 
         node.connectionLost = true;
         var that = this;
