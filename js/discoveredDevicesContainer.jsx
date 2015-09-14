@@ -146,6 +146,5 @@ var DiscoveredDevicesContainer = React.createClass({
 
 module.exports = {
     DiscoveredDevicesContainer: DiscoveredDevicesContainer,
-    DiscoveredDevice: DiscoveredDevice,
-    ConnectedDevice: ConnectedDevice,
+    DiscoveredDevice: DiscoveredDevice
 }

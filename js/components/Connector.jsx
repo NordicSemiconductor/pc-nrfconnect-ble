@@ -5,7 +5,7 @@ import React from 'react';
 var bs = require('react-bootstrap');
 var Popover = bs.Popover;
 var OverlayTrigger = bs.OverlayTrigger;
-
+import connectionActions from '../actions/connectionActions.js';
 
 var ConnectionSetup = React.createClass({
     _disconnect: function() {

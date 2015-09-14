@@ -43,7 +43,9 @@ var bleNodeStore = reflux.createStore({
             return node.deviceId === deviceAddress;
         });
 
-        if(node === undefined) return;
+        if (node === undefined) {
+            return;
+        }
 
         node.connectionLost = true;
         var that = this;

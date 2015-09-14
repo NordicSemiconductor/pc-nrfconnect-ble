@@ -66,7 +66,6 @@ var connectionStore = reflux.createStore({
                 self.devicesAboutToBeConnected[device.peer_addr.addr] = device;
             }
         });
-
     },
     onDeviceConnected: function(eventPayload){
         logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(eventPayload))} connected.`);

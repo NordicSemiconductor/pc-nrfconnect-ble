@@ -1,21 +1,13 @@
 'use strict';
 
 var React = require('react');
-var dagre = require('dagre');
+
 var Reflux = require('reflux');
 var nodeStore = require('./stores/bleNodeStore');
-
 var driverStore = require('./stores/bleDriverStore');
-var connectionActions = require('./actions/connectionActions');
-var {ConnectedDevice} = require('./discoveredDevicesContainer.jsx');
+
+var ConnectedDevice = require('./components/ConnectedDevice.jsx');
 var CentralDevice = require('./components/CentralDevice.jsx');
-var bs = require('react-bootstrap');
-var Popover = bs.Popover;
-var OverlayTrigger = bs.OverlayTrigger;
-
-var _ = require('underscore');
-
-
 
 
 var BleNodeContainer = React.createClass({
@@ -44,13 +36,13 @@ var BleNodeContainer = React.createClass({
                 if (node.id === 'central') {
                     central = (<CentralDevice id={node.id} name={this.state.centralName} address={this.state.centralAddress.address} position={centralPosition}/>)
                 } else {
-
                     var nodePosition = {
                         x: centralPosition.x + 250,
                         y: connectedDeviceCounter* 200
                     };
                     nodePositions.push(nodePosition);
                     connectedDeviceCounter++;
+                    
                     plumbNodes.push(<ConnectedDevice id={node.id} sourceId='central' parentId='diagramContainer' key={i} node={node} device={this.state.graph[i].device} position={nodePosition}/>);
                 }
             }
@@ -64,9 +56,6 @@ var BleNodeContainer = React.createClass({
             </div>
             </div>
         );
-    },
-    componentDidUpdate: function() {
-        jsPlumb.repaintEverything(); // solves connection line chaos
     }
 });
 
