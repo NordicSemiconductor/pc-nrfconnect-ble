@@ -334,6 +334,15 @@
 .dropdown {
   padding: 0px;
   border: 0px;
+  min-width: 143px;
+
+  > .dropdown-toggle {
+    min-width: 143px;
+
+    >:last-child {
+      float: right;
+    }
+  }
 
   > .dropdown-menu {
     background-color: @brand-primary;
