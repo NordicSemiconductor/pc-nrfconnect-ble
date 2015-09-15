@@ -50,7 +50,7 @@ var ConnectionOverlay = React.createClass({
     render: function() {
         var overlayRef = this.refs.overlayTrigger;
         return (
-            <div style={this.props.style}>
+            <div className="connection-info-button" style={this.props.style}>
                 <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']}  rootClose={true} placement='left' overlay={<Popover title='Connection Setup'><ConnectionSetup device ={this.props.device} closePopover = {this.closeme}/></Popover>}>
                     <span style={{fontSize: '15px'}}>
                         <i className="icon-link icon-encircled"></i>
