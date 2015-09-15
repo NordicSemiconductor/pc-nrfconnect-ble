@@ -31,12 +31,12 @@
   color: #aaa;
 }
 
-.icon-rotate-270:before {
+.icon-rotate-90:before {
   transform: rotate(90deg);
 }
 
-.icon-sitemap:before {
-  transform: rotate(-90deg);
+.icon-rotate-270:before {
+  transform: rotate(270deg);
 }
 
 .border-box { box-sizing:border-box; -moz-box-sizing:border-box; }
@@ -214,8 +214,8 @@
     flex-flow: column;
     > div:nth-child(1) { //main
       flex: 1;
-      box-shadow: inset 0px 0px 10px gray;
       border-top: 1px solid gray;
+      box-shadow: inset -0px 0px 6px 0px gray;
     }
     > div:nth-child(2) { //log
       border-top: 1px solid gray;
@@ -224,6 +224,7 @@
 }
 
   > div:nth-child(2) { //device details
+    box-shadow: inset 0px 5px 6px -5px gray;
     background-color: white;
     width: 260px;
     border-top: 1px solid gray;
@@ -254,6 +255,11 @@
   .spinner {
     margin-left: 10px;
   }
+
+  > .padded-row {
+    border-bottom: 1px solid @device-details-light-border-color;
+    padding-bottom: 5px;
+}
 }
 
 .btn-nordic {
@@ -261,7 +267,6 @@
 }
 
 #diagramContainer .device.standalone {
-    margin: 20px 0px;
     box-shadow: @draggable-box-shadow;
 }
 .device-details-view .device.standalone {
@@ -281,6 +286,10 @@
     > div {
       margin-top: 5px;
     }
+
+    .discovered-device-address-line {
+      height: 22px;
+  }
   }
   .flag-line {
     overflow: hidden;
@@ -357,14 +366,32 @@
   font-size: 11px;
 }
 
-.padded-list {
-  > * {
-    margin-right: 5px;
+.padded-row-list(@margin: 5px) {
+  >:not(:last-child) {
+    margin-right: @margin;
+  }
 
-    &:last-child {
+  >:last-child {
       margin-right: 0px;
     }
   }
+
+.padded-row {
+  .padded-row-list;
+}
+
+.padded-column-list(@margin: 5px) {
+  >:not(:last-child) {
+    margin-bottom: @margin;
+  }
+
+  >:last-child {
+    margin-bottom: 0px;
+  }
+}
+
+.padded-column {
+  .padded-column-list;
 }
 
 //used when tabbing and space
@@ -381,9 +408,9 @@
     box-shadow: @draggable-box-shadow;
   }
   > div {
-    display: flex;
-    align-items: flex-start;
-    flex-direction: row;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
   }
 }
 
@@ -486,6 +513,7 @@
   box-shadow: @draggable-box-shadow;
   .service-items-wrap {
     overflow: auto;
+    max-height: calc(~"100vh - 430px");
   }
   .bar1, .bar2, .bar3 {
     width: 8px;
@@ -544,8 +572,8 @@
         //border: 0;
         width: 86%;
         background-color: rgb(238, 238, 238);
-      }
     }
+  }
   }
   .characteristic-item, .descriptor-item {
     font-size: 11px;

@@ -1,5 +1,6 @@
 'use strict';
 
+import $ from 'jquery';
 import React from 'react';
 import Reflux from 'reflux';
 import hotkey from 'react-hotkey';
@@ -21,6 +22,7 @@ import logStore from './stores/logStore';
 import logActions from './actions/logActions';
 
 import NavBar from './navbar.jsx';
+
 
 var MyView = React.createClass({
     mixins: [hotkey.Mixin('handleHotkey')],

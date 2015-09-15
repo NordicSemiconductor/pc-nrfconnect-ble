@@ -51,7 +51,7 @@ var ConnectionOverlay = React.createClass({
         var overlayRef = this.refs.overlayTrigger;
         return (
             <div style={this.props.style}>
-                <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']}  rootClose={true} placement='left' overlay={<Popover title='Connection Setup'><ConnectionSetup device ={this.props.device} closePopover = {this.closeme}/></Popover>}> 
+                <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']}  rootClose={true} placement='left' overlay={<Popover title='Connection Setup'><ConnectionSetup device ={this.props.device} closePopover = {this.closeme}/></Popover>}>
                     <span style={{fontSize: '15px'}}>
                         <i className="icon-link icon-encircled"></i>
                     </span>
@@ -81,6 +81,9 @@ var Connector = React.createClass({
         var sourceElement = document.getElementById(this.props.sourceId);
         var targetElement = document.getElementById(this.props.targetId);
 
+        if(!sourceElement || !targetElement) {
+            return (<div/>);
+        }
         var sourceRect = sourceElement.getBoundingClientRect();
         var targetRect = targetElement.getBoundingClientRect();
 
@@ -95,7 +98,7 @@ var Connector = React.createClass({
                         <line x1={connectorBox.width/2} y1={sourceYCoordinate} x2={connectorBox.width/2} y2={targetYCoordinate} stroke="black" strokeWidth="3" strokeLinecap="square"/>
                         <line x1={connectorBox.width/2} y1={targetYCoordinate}s x2={connectorBox.width} y2={targetYCoordinate} stroke="black" strokeWidth="3" strokeLinecap="square"/>
                     </svg>
-                    <ConnectionOverlay style={{position: 'absolute', left: '-27px', top: targetRect.height/2 - 12}} device={this.props.device}/>
+                    <ConnectionOverlay style={{position: 'absolute', left: -connectorBox.width/4 - 12, top: targetRect.height/2 - 12}} device={this.props.device}/>
                 </div>);
     }
 });

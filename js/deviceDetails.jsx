@@ -10,7 +10,6 @@ var EditableField = require('./components/EditableField.jsx');
 
 var nodeStore = require('./stores/bleNodeStore');
 var driverStore = require('./stores/bleDriverStore');
-var pubsub = require('pubsub-js');
 
 var bs = require('react-bootstrap');
 import CentralDevice from './components/CentralDevice.jsx';
@@ -140,55 +139,8 @@ var CharacteristicItem = React.createClass({
 });
 
 var DeviceDetailsContainer = React.createClass({
-    mixins: [Reflux.listenTo(nodeStore, "onGraphChanged"), Reflux.connect(connectionStore)],
-    componentWillMount: function() {
-        this.plumb = jsPlumb.getInstance();
-    },
-    componentDidMount: function() {
-        this.plumb.setContainer(React.findDOMNode(this));
-    },
-    getInitialState: function(){
-        return nodeStore.getInitialState();
-    },
-    onGraphChanged: function(newGraph, change) {
-        if (change.remove) {
-            this.plumb.remove(change.nodeId+'_details');
-            this.plumb.repaintEverything();
-        }
-/*        this.setState({graph: newGraph});
-        this.plumb.detachEveryConnection();
-        var central = this.state.graph.find(function(node){
-            return node.id ==='central';
-        });
-        for(var i = 0; i< central.ancestorOf.length; i++) {
-            var connectionParameters = {
-                source: 'central_details',
-                target: central.ancestorOf[i]+ "_details",
-                anchor: "Top",
-                endpoint:"Blank",
-                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0.5, alwaysRespectStubs: false }],
-            };
-            var connection = this.plumb.connect(connectionParameters);
-        }
-        this.plumb.repaintEverything();*/
-    },
-    _drawGraph: function() {
-        this.plumb.detachEveryConnection();
-        var central = this.state.graph.find(function(node){
-            return node.id === 'central';
-        });
-        for(var i = 0; i< central.ancestorOf.length; i++) {
-            var connectionParameters = {
-                source: 'central_details',
-                target: central.ancestorOf[i]+ "_details",
-                anchor: "Top",
-                endpoint:"Blank",
-                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0.5, alwaysRespectStubs: false }],
-            };
-            var connection = this.plumb.connect(connectionParameters);
-        }
-        this.plumb.repaintEverything();
-    },
+    mixins: [Reflux.connect(nodeStore), Reflux.connect(connectionStore)],
+    
     render: function() {
         var margin = 5;
         var elemWidth = 250;
@@ -196,15 +148,13 @@ var DeviceDetailsContainer = React.createClass({
         var detailNodes = this.state.graph.map((node, i) => {
             var deviceAddress = this.state.graph[i].deviceId;
             var deviceServices = this.state.deviceAddressToServicesMap[deviceAddress];
-            return <DeviceDetailsView services={deviceServices} plumb={this.plumb} node={node} device={node.device} 
+            return <DeviceDetailsView services={deviceServices} plumb={this.plumb} node={node} device={node.device}
                                     containerHeight={this.props.style.height} style={{margin: margin}} key={i}/>
+
         });
         var perNode = (margin * 2) + elemWidth;
         var width = (perNode * detailNodes.length) + buffer;
         return (<div className="device-details-container" style={this.props.style}><div style={{width: width}}>{detailNodes}</div></div>);
-    },
-    componentDidUpdate: function() {
-        //this._drawGraph();
     }
 });
 
@@ -217,12 +167,11 @@ var DeviceDetailsView = React.createClass({
         };
         logger.silly(this.props.services);
         var services = [];
-        var topBoxHeight = 105;
         if (this.props.services) {
             return (
                 <div className="device-details-view" id={this.props.node.id + '_details'} style={this.props.style}>
-                    <ConnectedDevice device={this.props.device} node={this.props.node}/>
-                    <div className="service-items-wrap" style={{maxHeight: this.props.containerHeight - topBoxHeight - 50}}>
+                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={this.props.node.id+ '_details'} parentId="device_details"/>
+                    <div className="service-items-wrap">
                         {this.props.services.map(function(service, i) {
                             return (<ServiceItem serviceData={service} key={i}>
                                 {service.characteristics.map(function(characteristic, j) {

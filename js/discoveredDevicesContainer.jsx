@@ -13,30 +13,23 @@ var discoveryActions = require('./actions/discoveryActions');
 var connectionActions = require('./actions/connectionActions');
 var DiscoveryButton = require('./discoveryButton');
 var ConnectedDevice = require('./components/ConnectedDevice.jsx');
-var MIN_RSSI = -100;
-var MAX_RSSI = -45;
-
-
-function prepareDeviceData(device) {
-    return {
-        time: new Date(device.time),
-        name: (device.data
-            ? (device.data.BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME || device.data.BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME || "<Unkown name>")
-            : "<Unkown name>"),
-        flags: device.processed ? device.processed.flags : [],
-        services: device.processed && device.processed.services ? device.processed.services : [],
-        address: device.peer_addr.address,
-        rssi: device.rssi,
-        rssi_level: mapRange(device.rssi, MIN_RSSI, MAX_RSSI, 4, 20)
-    };
-}
+var prepareDeviceData = require('./common/deviceProcessing.js');
 
 var DiscoveredDevice = React.createClass({
+    mixins: [Reflux.connect(discoveryStore)],
+
     _onConnect: function() {
         connectionActions.connectToDevice(this.props.device);
+        this.myButtonIsConnecting = true;
+    },
+    _onCancelConnect: function() {
+        connectionActions.cancelConnect();
+        this.myButtonIsConnecting = false;
+    },
+    componentDidMount: function() {
+        this.myButtonIsConnecting = false;
     },
 
-    mixins: [Reflux.connect(discoveryStore)],
     render: function() {
         if(!this.props.device) {
             return (<div>
@@ -45,6 +38,18 @@ var DiscoveredDevice = React.createClass({
                 );
         }
         var device = prepareDeviceData(this.props.device);
+        var button = (
+            <button onClick={this._onConnect} className="btn btn-primary btn-xs btn-nordic" disabled ={this.props.isConnecting}>
+                Connect <i className="icon-link"></i>
+            </button>
+        );
+        if (this.props.isConnecting && this.myButtonIsConnecting) {
+            button = (
+                <button onClick={this._onCancelConnect} className="btn btn-primary btn-xs btn-nordic">
+                    Cancel connect <i className="icon-link"></i>
+                </button>
+            );
+        }
         return (
             <div className="device">
                 <div className="top-bar">
@@ -55,10 +60,8 @@ var DiscoveredDevice = React.createClass({
                     <div className="text-small truncate-text">{device.name}</div>
                 </div>
                 <div className="device-body text-small">
-                    <div>
-                        <button onClick={this._onConnect} className="btn btn-primary btn-xs btn-nordic">
-                                Connect <i className="icon-link"></i>
-                        </button>
+                    <div className="discovered-device-address-line">
+                        {button}
                         <div className="text-smaller subtle-text">
                             {device.address}
                         </div>
@@ -77,22 +80,10 @@ var DiscoveredDevice = React.createClass({
 
 
 
-
-function mapRange(n, fromMin, fromMax, toMin, toMax) {
-    //scale number n from the range [fromMin, fromMax] to [toMin, toMax]
-    n = toMin + ((toMax - toMin) / (fromMax - fromMin)) * (n - fromMin)
-    n = Math.round(n);
-    return Math.max(toMin, Math.min(toMax, n));
-}
-
 var DiscoveredDevicesContainer = React.createClass({
     mixins: [Reflux.connect(discoveryStore), Reflux.connect(connectionStore)],
     _clearContainer: function() {
         discoveryActions.clearItems();
-    },
-    _numDevicesFoundText: function() {
-        var n = Object.keys(this.state.discoveredDevices).length
-        return n == 1 ? "1 device found." : n + " devices found";
     },
     render: function() {
         if (this.state.discoveredDevices) {
@@ -114,16 +105,18 @@ var DiscoveredDevicesContainer = React.createClass({
             var progressStyle = {
                 visibility: this.state.scanInProgress ? 'visible' : 'hidden',
             }
+            var isConnecting = this.state.isConnecting;
             return (
               <div id="discoveredDevicesContainer">
-                <h4>Discovered devices </h4>
                 <div>
-                    <span>{this._numDevicesFoundText()}</span>
-                    <img className="spinner" src="resources/ajax-loader.gif" height="16" width="16" style={progressStyle} />
+                    <h4>
+                        Discovered devices
+                        <img className="spinner" src="resources/ajax-loader.gif" height="16" width="16" style={progressStyle} />
+                    </h4>
                 </div>
-                <div className="padded-list">
+                <div className="padded-row">
                     <DiscoveryButton/>
-                    <button onClick={this._clearContainer} type="button" className="btn btn-primary btn-sm btn-nordic padded-list">
+                    <button onClick={this._clearContainer} type="button" className="btn btn-primary btn-sm btn-nordic padded-row">
                         <span className="icon-trash" />Clear
                     </button>
                 </div>
@@ -133,6 +126,7 @@ var DiscoveredDevicesContainer = React.createClass({
                             <DiscoveredDevice key= {index}
                                 device={devices[device]}
                                 standalone={false}
+                                isConnecting={isConnecting}
                             />)
                   })}
                 </div>
