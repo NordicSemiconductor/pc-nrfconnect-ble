@@ -42,17 +42,19 @@ var bleNodeStore = reflux.createStore({
         }
 
         node.connectionLost = true;
-        var centralNode = this._findCentralNode();
-        centralNode.ancestorOf = _.reject(centralNode.ancestorOf, function(nodeId){
-            return nodeId === node.id;
-        });
+        var that = this;
+        setTimeout(function(){
+            var centralNode = that._findCentralNode();
+            centralNode.ancestorOf = _.reject(centralNode.ancestorOf, function(nodeId){
+                return nodeId === node.id;
+            });
 
-        this.graph = _.reject(this.graph, function(theNode){
-            return node.id === theNode.id;
-        });
-        //that.trigger(that.state.graph, {remove: true, nodeId: node.id})
+            that.graph = _.reject(that.graph, function(theNode){
+                return node.id === theNode.id;
+            });
 
-        //TODO: clear timeout if node is found again
+            that.trigger({graph: that.graph});
+        }, 5000);
         this.trigger({graph: this.graph});
     },
 
