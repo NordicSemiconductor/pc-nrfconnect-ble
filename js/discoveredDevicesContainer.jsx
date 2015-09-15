@@ -32,11 +32,20 @@ function prepareDeviceData(device) {
 }
 
 var DiscoveredDevice = React.createClass({
+    mixins: [Reflux.connect(discoveryStore)],
+
     _onConnect: function() {
         connectionActions.connectToDevice(this.props.device);
+        this.myButtonIsConnecting = true;
+    },
+    _onCancelConnect: function() {
+        connectionActions.cancelConnect();
+        this.myButtonIsConnecting = false;
+    },
+    componentDidMount: function() {
+        this.myButtonIsConnecting = false;
     },
 
-    mixins: [Reflux.connect(discoveryStore)],
     render: function() {
         if(!this.props.device) {
             return (<div>
@@ -45,6 +54,18 @@ var DiscoveredDevice = React.createClass({
                 );
         }
         var device = prepareDeviceData(this.props.device);
+        var button = (
+            <button onClick={this._onConnect} className="btn btn-primary btn-xs btn-nordic" disabled ={this.props.isConnecting}>
+                Connect <i className="icon-link"></i>
+            </button>
+        );
+        if (this.props.isConnecting && this.myButtonIsConnecting) {
+            button = (
+                <button onClick={this._onCancelConnect} className="btn btn-primary btn-xs btn-nordic">
+                    Cancel connect <i className="icon-link"></i>
+                </button>
+            );
+        }
         return (
             <div className="device">
                 <div className="top-bar">
@@ -56,9 +77,7 @@ var DiscoveredDevice = React.createClass({
                 </div>
                 <div className="device-body text-small">
                     <div className="discovered-device-address-line">
-                        <button onClick={this._onConnect} className="btn btn-primary btn-xs btn-nordic">
-                                Connect <i className="icon-link"></i>
-                        </button>
+                        {button}
                         <div className="text-smaller subtle-text">
                             {device.address}
                         </div>
@@ -74,9 +93,6 @@ var DiscoveredDevice = React.createClass({
         );
     }
 });
-
-
-
 
 function mapRange(n, fromMin, fromMax, toMin, toMax) {
     //scale number n from the range [fromMin, fromMax] to [toMin, toMax]
@@ -110,6 +126,7 @@ var DiscoveredDevicesContainer = React.createClass({
             var progressStyle = {
                 visibility: this.state.scanInProgress ? 'visible' : 'hidden',
             }
+            var isConnecting = this.state.isConnecting;
             return (
               <div id="discoveredDevicesContainer">
                 <div>
@@ -130,6 +147,7 @@ var DiscoveredDevicesContainer = React.createClass({
                             <DiscoveredDevice key= {index}
                                 device={devices[device]}
                                 standalone={false}
+                                isConnecting={isConnecting}
                             />)
                   })}
                 </div>
