@@ -6,6 +6,7 @@ var react = require('react');
 var Reflux = require('reflux');
 var connectionStore = require('./stores/connectionStore');
 var ConnectedDevice = require('./components/ConnectedDevice.jsx');
+var EditableField = require('./components/EditableField.jsx');
 
 var nodeStore = require('./stores/bleNodeStore');
 var driverStore = require('./stores/bleDriverStore');
@@ -95,9 +96,7 @@ var DescriptorItem = React.createClass({
                 <div className="content-wrap">
                     <div className="content">
                         <span>{this.props.descriptorData.name}</span>
-                        <div className="text-subtle">
-                            <span>{this.props.descriptorData.value}</span>
-                        </div>
+                        <EditableField value={this.props.descriptorData.value}/>
                     </div>
                 </div>
             </div>
@@ -126,9 +125,7 @@ var CharacteristicItem = React.createClass({
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     <div className="content">
                         <span>{this.props.characteristicData.name}</span>
-                        <div className="text-subtle">
-                            <span>{this.props.characteristicData.value}</span>
-                        </div>
+                        <EditableField value={this.props.characteristicData.value}/>
                     </div>
                 </div>
             </div>

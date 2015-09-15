@@ -381,10 +381,9 @@
     box-shadow: @draggable-box-shadow;
   }
   > div {
-  display: flex;
-  align-items: flex-start;
-  flex-direction: row;
-  flex-wrap: wrap;  
+    display: flex;
+    align-items: flex-start;
+    flex-direction: row;
   }
 }
 
@@ -528,10 +527,25 @@
       align-self: center;
       padding: 5px 0;
       margin-left: 8px;
+      width: 100%;
+      .editable {
+        cursor: text;
+        &:hover span {
+          background: @gray-lighter;
+        }
+      }
+      .btn {
+        padding: 1px 1px 0 1px;
+        margin-right: 5px;
+        float: right;
+        font-size: 12px;
+      }
+      textarea {
+        //border: 0;
+        width: 86%;
+        background-color: rgb(238, 238, 238);
+      }
     }
-  }
-  .text-subtle {
-    color: grey;
   }
   .characteristic-item, .descriptor-item {
     font-size: 11px;
