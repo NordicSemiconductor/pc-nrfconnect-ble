@@ -31,12 +31,12 @@
   color: #aaa;
 }
 
-.icon-rotate-270:before {
+.icon-rotate-90:before {
   transform: rotate(90deg);
 }
 
-.icon-sitemap:before {
-  transform: rotate(-90deg);
+.icon-rotate-270:before {
+  transform: rotate(270deg);
 }
 
 .border-box { box-sizing:border-box; -moz-box-sizing:border-box; }
@@ -256,7 +256,7 @@
     margin-left: 10px;
   }
 
-  > .padded-list {
+  > .padded-row {
     border-bottom: 1px solid @device-details-light-border-color;
     padding-bottom: 5px;
   }
@@ -267,7 +267,6 @@
 }
 
 #diagramContainer .device.standalone {
-    margin: 20px 0px;
     box-shadow: @draggable-box-shadow;
 }
 .device-details-view .device.standalone {
@@ -320,11 +319,11 @@
       display: table;
       > div {
         display: table-cell;
-        vertical-align: top;
-      }
-      .icon-wrap {
-        font-size: 30px;
-        width: 42px;
+      vertical-align: top;
+    }
+    .icon-wrap {
+      font-size: 30px;
+      width: 42px;
         height: 85px;
         padding-top: 7px;
       }
@@ -367,14 +366,32 @@
   font-size: 11px;
 }
 
-.padded-list {
-  > * {
-    margin-right: 5px;
-
-    &:last-child {
-      margin-right: 0px;
-    }
+.padded-row-list(@margin: 5px) {
+  >:not(:last-child) {
+    margin-right: @margin;
   }
+
+  >:last-child {
+    margin-right: 0px;
+  }
+}
+
+.padded-row {
+  .padded-row-list;
+}
+
+.padded-column-list(@margin: 5px) {
+  >:not(:last-child) {
+    margin-bottom: @margin;
+  }
+
+  >:last-child {
+    margin-bottom: 0px;
+  }
+}
+
+.padded-column {
+  .padded-column-list;
 }
 
 //used when tabbing and space

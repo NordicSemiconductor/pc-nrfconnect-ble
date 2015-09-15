@@ -14,36 +14,25 @@ var BleNodeContainer = React.createClass({
     mixins: [Reflux.connect(nodeStore), Reflux.connect(driverStore)],
 
     render: function(){
-        
+
         var plumbNodes = [];
-        var centralPosition = {
-            x: 10,
-            y: 200,
-        };
         var central;
-        var nodePositions = [];
         if (this.state.connectedToDriver) {
             for (var i = 0; i < this.state.graph.length; i++) {
                 var connectedDeviceCounter = 0;
                 var node = this.state.graph[i];
                 if (node.id === 'central') {
-                    central = (<CentralDevice id={node.id} name={this.state.centralName} address={this.state.centralAddress.address} position={centralPosition}/>)
+                    central = (<CentralDevice id={node.id} name={this.state.centralName} address={this.state.centralAddress.address} />)
                 } else {
-                    var nodePosition = {
-                        x: centralPosition.x + 250,
-                        y: connectedDeviceCounter* 200
-                    };
-                    nodePositions.push(nodePosition);
                     connectedDeviceCounter++;
-                    
-                    plumbNodes.push(<ConnectedDevice id={node.id} sourceId='central' parentId='diagramContainer' key={i} node={node} drawConnector device={this.state.graph[i].device} position={nodePosition}/>);
+                    plumbNodes.push(<ConnectedDevice id={node.id} sourceId='central' parentId='diagramContainer' key={i} node={node} drawConnector device={this.state.graph[i].device} />);
                 }
             }
         }
         return (
             <div id="diagramContainer" style={this.props.style} >
                 {central}
-                <div style={{width: '300px',position: 'absolute', top: '10px', left: '400px'}}>
+                <div className="padded-column" style={{position: 'absolute', top: '20px', left: '400px'}}>
                     {plumbNodes}
                 </div>
             </div>

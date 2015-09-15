@@ -118,9 +118,9 @@ var DiscoveredDevicesContainer = React.createClass({
                         <img className="spinner" src="resources/ajax-loader.gif" height="16" width="16" style={progressStyle} />
                     </h4>
                 </div>
-                <div className="padded-list">
+                <div className="padded-row">
                     <DiscoveryButton/>
-                    <button onClick={this._clearContainer} type="button" className="btn btn-primary btn-sm btn-nordic padded-list">
+                    <button onClick={this._clearContainer} type="button" className="btn btn-primary btn-sm btn-nordic padded-row">
                         <span className="icon-trash" />Clear
                     </button>
                 </div>

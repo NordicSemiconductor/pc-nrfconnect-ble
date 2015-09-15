@@ -30,7 +30,7 @@ var DiscoveryButton = React.createClass({
         }
 
         return (
-            <button className="btn btn-primary btn-sm btn-nordic padded-list" disabled= {!this.state.driverStore.connectedToDriver} onClick={this.buttonClicked}>
+            <button className="btn btn-primary btn-sm btn-nordic padded-row" disabled= {!this.state.driverStore.connectedToDriver} onClick={this.buttonClicked}>
             <span className={iconName} />
             {labelString}
             </button>

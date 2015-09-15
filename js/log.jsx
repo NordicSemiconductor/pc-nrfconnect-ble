@@ -66,7 +66,7 @@ var LogContainer = React.createClass({
         return <div className="log-wrap">
             <div className="log-header">
                 <div className="log-header-text">Log</div>
-                <div className="padded-list log-header-buttons">
+                <div className="padded-row log-header-buttons">
                     <button type="button" title="Clear log" className="btn btn-primary btn-xs btn-nordic" onClick={this.clearLog}>
                         <span className="icon-trash" aria-hidden="true" />
                     </button>

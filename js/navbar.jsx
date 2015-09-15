@@ -68,7 +68,7 @@ var NavBar = React.createClass({
         this.props.view = newView;
     },
     _getClassForTabButton: function(itemName) {
-        return "btn btn-primary btn-nordic padded-list" + (this.props.view === itemName ? " active" : "");
+        return "btn btn-primary btn-nordic padded-row" + (this.props.view === itemName ? " active" : "");
     },
     _getClassForIndicatorState: function() {
         if (this.state.driverState.error) {
@@ -91,14 +91,14 @@ var NavBar = React.createClass({
                     <img className="nordic-logo" src="resources/NordicS_neg_ol.png" />
                 </div>
                 <div className="nav-section">
-                    <div className="padded-list">
+                    <div className="padded-row">
                         <ComPortSelector ref="comPortSelector"/>
                         <div className={"indicator " + this._getClassForIndicatorState()}></div>
                     </div>
                 </div>
-                <div className="nav-section bl padded-list">
+                <div className="nav-section bl padded-row">
                     <button onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
-                        <span className="icon-sitemap" />
+                        <span className="icon-sitemap icon-rotate-270" />
                         <span>Connection map</span>
                     </button>
                     <button onClick={this._onViewChange.bind(this, 'DeviceDetails')}  className={this._getClassForTabButton('DeviceDetails')}>

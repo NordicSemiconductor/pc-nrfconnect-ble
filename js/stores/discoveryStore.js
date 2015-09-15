@@ -80,7 +80,7 @@ var discoveryStore = reflux.createStore({
     },
     onClearItems: function() {
         this.state.discoveredDevices = {};
-        this.trigger({discoveredDevices: {}});
+        this.trigger(this.state);
     }
 });
 
