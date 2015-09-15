@@ -20,7 +20,8 @@ var connectionStore = reflux.createStore({
     init: function() {
         this.state = {
             connections: [],
-            deviceAddressToServicesMap: {}
+            deviceAddressToServicesMap: {},
+            isConnecting: false
         };
         this.devicesAboutToBeConnected = {};
     },
@@ -64,7 +65,21 @@ var connectionStore = reflux.createStore({
                 logger.debug(`Successfully sent connection request to driver (${textual.peerAddressToTextual(device)}).`);
                 discoveryActions.scanStopped();
                 self.devicesAboutToBeConnected[device.peer_addr.addr] = device;
+                self.state.isConnecting = true;
+                self.trigger(self.state);
             }
+        });
+    },
+    onCancelConnect: function() {
+        var self = this;
+        bleDriver.gap_cancel_connect(function(err) {
+            if (err) {
+                logger.error(`Could not cancel connection to ${textual.peerAddressToTextual(device)}.`);
+                //TODO: what happens here? If driver fails to cancel connection can we just move on?
+            }
+            logger.info('canceled connection');
+            self.state.isConnecting = false;
+            self.trigger(self.state);
         });
     },
     onDeviceConnected: function(eventPayload){
@@ -76,6 +91,8 @@ var connectionStore = reflux.createStore({
         var device = this.devicesAboutToBeConnected[eventPayload.peer_addr.addr];
         delete this.devicesAboutToBeConnected[eventPayload.peer_addr.addr];
         graphActions.addNode(device, eventPayload);
+        this.state.isConnecting = false;
+        this.trigger(this.state);
     },
     onDeviceDisconnected: function(eventPayload){
         var connectionThatWasDisconnected = _.find(this.state.connections, function(connection){

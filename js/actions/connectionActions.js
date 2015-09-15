@@ -7,6 +7,7 @@ var connectionActions = Reflux.createActions(
 
     "connectToDevice",
     "disconnectFromDevice",
+    "cancelConnect",
     "deviceConnected",
     "deviceDisconnected",
     "servicesDiscovered"
