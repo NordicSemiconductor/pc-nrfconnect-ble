@@ -9,7 +9,6 @@ var ConnectedDevice = require('./components/ConnectedDevice.jsx');
 
 var nodeStore = require('./stores/bleNodeStore');
 var driverStore = require('./stores/bleDriverStore');
-var pubsub = require('pubsub-js');
 
 var bs = require('react-bootstrap');
 import CentralDevice from './components/CentralDevice.jsx';
