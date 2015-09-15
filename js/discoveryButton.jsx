@@ -7,9 +7,9 @@ var DiscoveryActions = require('./actions/discoveryActions');
 var discoveryStore = require('./stores/discoveryStore');
 
 var DiscoveryButton = React.createClass({
-    mixins: [Reflux.connect(driverStore, "driverStore"), Reflux.connect(discoveryStore, "discoveryStore")],
+    mixins: [Reflux.connect(driverStore, "driverStore")],
     buttonClicked: function(){
-        if (this.state.discoveryStore.scanInProgress) {
+        if (this.props.scanInProgress) {
             DiscoveryActions.stopScan();
         } else {
             DiscoveryActions.startScan();
@@ -21,7 +21,7 @@ var DiscoveryButton = React.createClass({
         var labelString;
         var iconName;
 
-        if (this.state.discoveryStore.scanInProgress) {
+        if (this.props.scanInProgress) {
             labelString = 'Stop scan';
             iconName = 'icon-stop'
          } else {
@@ -30,7 +30,7 @@ var DiscoveryButton = React.createClass({
         }
 
         return (
-            <button className="btn btn-primary btn-sm btn-nordic padded-row" disabled= {!this.state.driverStore.connectedToDriver} onClick={this.buttonClicked}>
+            <button className="btn btn-primary btn-sm btn-nordic padded-row" disabled= {!this.state.driverStore.connectedToDriver || this.props.isConnecting} onClick={this.buttonClicked}>
             <span className={iconName} />
             {labelString}
             </button>

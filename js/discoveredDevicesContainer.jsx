@@ -115,7 +115,7 @@ var DiscoveredDevicesContainer = React.createClass({
                     </h4>
                 </div>
                 <div className="padded-row">
-                    <DiscoveryButton/>
+                    <DiscoveryButton scanInProgress={this.state.scanInProgress} isConnecting={this.state.isConnecting}/>
                     <button onClick={this._clearContainer} type="button" className="btn btn-primary btn-sm btn-nordic padded-row">
                         <span className="icon-trash" />Clear
                     </button>
