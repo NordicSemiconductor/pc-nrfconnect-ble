@@ -10,23 +10,18 @@ var bleNodeStore = reflux.createStore({
     listenables: [bleGraphActions],
     init: function(){
         this.idCounter = 0;
-        this.state = {graph: [
-          {id: 'central', ancestorOf: []}]};
+        this.graph = [{id: 'central', ancestorOf: []}];
     },
-
-
     getInitialState: function() {
-        return this.state;
+        return {graph: this.graph};
     },
     onAddNode: function(connectedDevice, newConnection) {
-
-      logger.silly("Adding node ", JSON.stringify(connectedDevice));
       var newNodeId = 'node' + this.idCounter++;
-
+      logger.debug("Adding node " + newNodeId);
       if(connectedDevice.peer_addr === undefined) return;
       if(connectedDevice.peer_addr.address === undefined) return;
       connectedDevice.connection = newConnection;
-      this.state.graph.push({id: newNodeId, deviceId: connectedDevice.peer_addr.address, device: connectedDevice});
+      this.graph.push({id: newNodeId, deviceId: connectedDevice.peer_addr.address, device: connectedDevice});
       var centralNode = this._findCentralNode();
 
       if(centralNode === undefined) {
@@ -35,37 +30,34 @@ var bleNodeStore = reflux.createStore({
       }
 
       centralNode.ancestorOf.push(newNodeId);
-      this.trigger(this.state.graph, {remove: false, nodeId: newNodeId, device: connectedDevice, connection: newConnection});
+      this.trigger({graph: this.graph});
     },
     onRemoveNode: function(deviceAddress) {
-        logger.silly('removing node');
-        var node = _.find(this.state.graph, function(node){
+        var node = _.find(this.graph, function(node){
             return node.deviceId === deviceAddress;
         });
-
+        logger.debug('removing node ' + node.id);
         if (node === undefined) {
             return;
         }
 
         node.connectionLost = true;
-        var that = this;
-        var timeout = setTimeout(function() {
-            var centralNode = that._findCentralNode();
-            centralNode.ancestorOf = _.reject(centralNode.ancestorOf, function(nodeId){
-                return nodeId === node.id;
-            });
+        var centralNode = this._findCentralNode();
+        centralNode.ancestorOf = _.reject(centralNode.ancestorOf, function(nodeId){
+            return nodeId === node.id;
+        });
 
-            that.state.graph = _.reject(that.state.graph, function(theNode){
-                return node.id === theNode.id;
-            });
-            that.trigger(that.state.graph, {remove: true, nodeId: node.id});
-        }, 5000);
+        this.graph = _.reject(this.graph, function(theNode){
+            return node.id === theNode.id;
+        });
+        //that.trigger(that.state.graph, {remove: true, nodeId: node.id})
+
         //TODO: clear timeout if node is found again
-        this.trigger(this.state.graph, {remove: undefined, nodeId: node.id});
+        this.trigger({graph: this.graph});
     },
 
     _findCentralNode: function() {
-      return _.find(this.state.graph, function(node) {
+      return _.find(this.graph, function(node) {
         return node.id === 'central';
       });
     }

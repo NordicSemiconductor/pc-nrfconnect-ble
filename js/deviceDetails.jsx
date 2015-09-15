@@ -143,55 +143,8 @@ var CharacteristicItem = React.createClass({
 });
 
 var DeviceDetailsContainer = React.createClass({
-    mixins: [Reflux.listenTo(nodeStore, "onGraphChanged"), Reflux.connect(connectionStore)],
-    componentWillMount: function() {
-        this.plumb = jsPlumb.getInstance();
-    },
-    componentDidMount: function() {
-        this.plumb.setContainer(React.findDOMNode(this));
-    },
-    getInitialState: function(){
-        return nodeStore.getInitialState();
-    },
-    onGraphChanged: function(newGraph, change) {
-        if (change.remove) {
-            this.plumb.remove(change.nodeId+'_details');
-            this.plumb.repaintEverything();
-        }
-/*        this.setState({graph: newGraph});
-        this.plumb.detachEveryConnection();
-        var central = this.state.graph.find(function(node){
-            return node.id ==='central';
-        });
-        for(var i = 0; i< central.ancestorOf.length; i++) {
-            var connectionParameters = {
-                source: 'central_details',
-                target: central.ancestorOf[i]+ "_details",
-                anchor: "Top",
-                endpoint:"Blank",
-                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0.5, alwaysRespectStubs: false }],
-            };
-            var connection = this.plumb.connect(connectionParameters);
-        }
-        this.plumb.repaintEverything();*/
-    },
-    _drawGraph: function() {
-        this.plumb.detachEveryConnection();
-        var central = this.state.graph.find(function(node){
-            return node.id === 'central';
-        });
-        for(var i = 0; i< central.ancestorOf.length; i++) {
-            var connectionParameters = {
-                source: 'central_details',
-                target: central.ancestorOf[i]+ "_details",
-                anchor: "Top",
-                endpoint:"Blank",
-                connector:[ "Flowchart", { stub: [10, 10], gap: 0, cornerRadius: 0.5, alwaysRespectStubs: false }],
-            };
-            var connection = this.plumb.connect(connectionParameters);
-        }
-        this.plumb.repaintEverything();
-    },
+    mixins: [Reflux.connect(nodeStore), Reflux.connect(connectionStore)],
+    
     render: function() {
         var margin = 5;
         var elemWidth = 250;
@@ -200,15 +153,12 @@ var DeviceDetailsContainer = React.createClass({
             var deviceAddress = this.state.graph[i].deviceId;
             var deviceServices = this.state.deviceAddressToServicesMap[deviceAddress];
             return <DeviceDetailsView services={deviceServices} plumb={this.plumb} node={node} device={node.device}
-                                    style={{margin: margin}} key={i}/>
+                                    containerHeight={this.props.style.height} style={{margin: margin}} key={i}/>
+
         });
         var perNode = (margin * 2) + elemWidth;
         var width = (perNode * detailNodes.length) + buffer;
         return (<div className="device-details-container" style={this.props.style}><div style={{width: width}}>{detailNodes}</div></div>);
-
-    },
-    componentDidUpdate: function() {
-        //this._drawGraph();
     }
 });
 

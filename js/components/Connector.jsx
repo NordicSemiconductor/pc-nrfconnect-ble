@@ -81,6 +81,9 @@ var Connector = React.createClass({
         var sourceElement = document.getElementById(this.props.sourceId);
         var targetElement = document.getElementById(this.props.targetId);
 
+        if(!sourceElement || !targetElement) {
+            return (<div/>);
+        }
         var sourceRect = sourceElement.getBoundingClientRect();
         var targetRect = targetElement.getBoundingClientRect();
 

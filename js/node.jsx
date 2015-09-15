@@ -11,14 +11,8 @@ var CentralDevice = require('./components/CentralDevice.jsx');
 
 
 var BleNodeContainer = React.createClass({
-    mixins: [Reflux.listenTo(nodeStore, "onGraphChanged"), Reflux.connect(driverStore)],
+    mixins: [Reflux.connect(nodeStore), Reflux.connect(driverStore)],
 
-    onGraphChanged: function(newGraph, change){
-        this.setState({graph: newGraph}); // Must be done before connection is made since connection target is created by render
-    },
-    getInitialState: function(){
-        return nodeStore.getInitialState();
-    },
     render: function(){
         
         var plumbNodes = [];
@@ -42,11 +36,10 @@ var BleNodeContainer = React.createClass({
                     nodePositions.push(nodePosition);
                     connectedDeviceCounter++;
                     
-                    plumbNodes.push(<ConnectedDevice id={node.id} sourceId='central' parentId='diagramContainer' key={i} node={node} device={this.state.graph[i].device} position={nodePosition}/>);
+                    plumbNodes.push(<ConnectedDevice id={node.id} sourceId='central' parentId='diagramContainer' key={i} node={node} drawConnector device={this.state.graph[i].device} position={nodePosition}/>);
                 }
             }
         }
-
         return (
             <div id="diagramContainer" style={this.props.style} >
                 {central}
