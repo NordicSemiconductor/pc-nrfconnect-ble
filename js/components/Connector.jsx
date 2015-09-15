@@ -18,6 +18,7 @@ var bs = require('react-bootstrap');
 var Popover = bs.Popover;
 var OverlayTrigger = bs.OverlayTrigger;
 import connectionActions from '../actions/connectionActions.js';
+import layoutStrategies from '../common/layoutStrategies.js';
 
 var ConnectionSetup = React.createClass({
     _disconnect: function() {
@@ -74,20 +75,13 @@ var ConnectionOverlay = React.createClass({
 });
 
 var Connector = React.createClass({
-    _calculateConnectorBox: function(sourceRect, targetRect) {
-        var strokeWidth = 3;
-        this.sourceRectMid = sourceRect.top - targetRect.top + sourceRect.height/2;
-        this.targetRectMid = (targetRect.height/2);
-
-        var top = -(strokeWidth + 1)/2 + (this.sourceRectMid < this.targetRectMid ? this.sourceRectMid : this.targetRectMid);
-        var height = 2*((strokeWidth + 1)/2) + Math.abs(this.sourceRectMid - this.targetRectMid);
-        var width = targetRect.left - (sourceRect.left + sourceRect.width);
-        return {
-            top: top,
-            left: -width,
-            width: width,
-            height: height
-        };
+    _generateLines: function(lineCoordinates) {
+        var result = [];
+        for(var i=0; i<lineCoordinates.length-1; i++) {
+            result.push(<line stroke="black" strokeWidth="3" strokeLinecap="square" key={i}
+                         x1={lineCoordinates[i].x} y1={lineCoordinates[i].y} x2={lineCoordinates[i+1].x} y2={lineCoordinates[i+1].y}/>);
+        }
+        return result;
     },
     render: function() {
         var sourceElement = document.getElementById(this.props.sourceId);
@@ -99,16 +93,13 @@ var Connector = React.createClass({
         var sourceRect = sourceElement.getBoundingClientRect();
         var targetRect = targetElement.getBoundingClientRect();
 
-        var connectorBox = this._calculateConnectorBox(sourceRect, targetRect);
-
-        var sourceYCoordinate = this.sourceRectMid < this.targetRectMid ? 2 : connectorBox.height - 2;
-        var targetYCoordinate = this.sourceRectMid < this.targetRectMid ? connectorBox.height - 2 : 2;
+        var layoutInfo = layoutStrategies['horizontal'](sourceRect, targetRect, 3);
+        var connectorBox = layoutInfo.boundingBox;
+        var lines = this._generateLines(layoutInfo.lineCoordinates);
 
         return (<div>
                     <svg style={{position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height}}>
-                        <line x1="0" y1={sourceYCoordinate} x2={connectorBox.width/2} y2={sourceYCoordinate} stroke="black" strokeWidth="3" strokeLinecap="square"/>
-                        <line x1={connectorBox.width/2} y1={sourceYCoordinate} x2={connectorBox.width/2} y2={targetYCoordinate} stroke="black" strokeWidth="3" strokeLinecap="square"/>
-                        <line x1={connectorBox.width/2} y1={targetYCoordinate}s x2={connectorBox.width} y2={targetYCoordinate} stroke="black" strokeWidth="3" strokeLinecap="square"/>
+                        {lines}
                     </svg>
                     <ConnectionOverlay style={{position: 'absolute', left: -connectorBox.width/4 - 12, top: targetRect.height/2 - 12}} device={this.props.device}/>
                 </div>);

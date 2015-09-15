@@ -90,8 +90,6 @@ var DiscoveredDevice = React.createClass({
     }
 });
 
-
-
 var DiscoveredDevicesContainer = React.createClass({
     mixins: [Reflux.connect(discoveryStore), Reflux.connect(connectionStore)],
     _clearContainer: function() {
