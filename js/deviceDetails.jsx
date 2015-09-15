@@ -6,13 +6,13 @@ var react = require('react');
 var Reflux = require('reflux');
 var connectionStore = require('./stores/connectionStore');
 var ConnectedDevice = require('./components/ConnectedDevice.jsx');
-var EditableField = require('./components/EditableField.jsx');
 
 var nodeStore = require('./stores/bleNodeStore');
 var driverStore = require('./stores/bleDriverStore');
 
 var bs = require('react-bootstrap');
 import CentralDevice from './components/CentralDevice.jsx';
+import HexOnlyEditableField from './components/HexOnlyEditableField.jsx';
 var Panel = bs.Panel;
 var PanelGroup = bs.PanelGroup;
 var Collapse = bs.Collapse;
@@ -95,7 +95,7 @@ var DescriptorItem = React.createClass({
                 <div className="content-wrap">
                     <div className="content">
                         <span>{this.props.descriptorData.name}</span>
-                        <EditableField value={this.props.descriptorData.value}/>
+                        <HexOnlyEditableField value={this.props.descriptorData.value}/>
                     </div>
                 </div>
             </div>
@@ -124,7 +124,7 @@ var CharacteristicItem = React.createClass({
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     <div className="content">
                         <span>{this.props.characteristicData.name}</span>
-                        <EditableField value={this.props.characteristicData.value}/>
+                        <HexOnlyEditableField value={this.props.characteristicData.value}/>
                     </div>
                 </div>
             </div>
