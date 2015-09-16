@@ -117,20 +117,18 @@ var CharacteristicItem = React.createClass({
 
 var DeviceDetailsContainer = React.createClass({
     mixins: [Reflux.connect(nodeStore), Reflux.connect(connectionStore)],
-    
+
     render: function() {
-        var margin = 5;
         var elemWidth = 250;
-        var buffer = 30;
         var detailNodes = this.state.graph.map((node, i) => {
             var deviceAddress = this.state.graph[i].deviceId;
             var deviceServices = this.state.deviceAddressToServicesMap[deviceAddress];
             return <DeviceDetailsView services={deviceServices} node={node} device={node.device} isEnumeratingServices = {this.state.isEnumeratingServices}
-                                      containerHeight={this.props.style.height} style={{margin: margin}} key={i}/>
+                                      containerHeight={this.props.style.height} key={i}/>
 
         });
-        var perNode = (margin * 2) + elemWidth;
-        var width = (perNode * detailNodes.length) + buffer;
+        var perNode = (20 + elemWidth);
+        var width = (perNode * detailNodes.length);
         return (<div className="device-details-container" style={this.props.style}><div style={{width: width}}>{detailNodes}</div></div>);
     }
 });
