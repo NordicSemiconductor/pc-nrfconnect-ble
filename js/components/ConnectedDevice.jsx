@@ -31,7 +31,7 @@ var ConnectedDevice = React.createClass({
             opacity: this.props.node.connectionLost ? 0.5 : 1.0
         };
         return (
-            <div ref="outerDiv" id={this.props.id} className="device standalone" style={style}>
+            <div id={this.props.id} className="device standalone" style={style}>
                 <div className="top-bar">
                 {
                  //   <i className={connected ? "icon-link" : "icon-link-broken" }></i>
@@ -56,7 +56,7 @@ var ConnectedDevice = React.createClass({
                         })}
                     </div>
                 </div>
-                <Connector sourceId={this.props.sourceId} targetId={this.props.id} parentId={this.props.parentId} device={this.props.device}/>
+                <Connector sourceId={this.props.sourceId} targetId={this.props.id} device={this.props.device}/>
             </div>
         );
     },

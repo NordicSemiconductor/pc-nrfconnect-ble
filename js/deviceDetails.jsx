@@ -12,56 +12,18 @@
 
 'use strict';
 
-import logger from './logging';
+import react from 'react';
+import Reflux from 'reflux';
 
-var react = require('react');
-var Reflux = require('reflux');
-var connectionStore = require('./stores/connectionStore');
-var ConnectedDevice = require('./components/ConnectedDevice.jsx');
+import {Collapse} from 'react-bootstrap';
 
-var nodeStore = require('./stores/bleNodeStore');
-var driverStore = require('./stores/bleDriverStore');
+import driverStore from './stores/bleDriverStore';
+import connectionStore from './stores/connectionStore';
+import nodeStore from './stores/bleNodeStore';
 
-var bs = require('react-bootstrap');
+import ConnectedDevice from './components/ConnectedDevice.jsx';
 import CentralDevice from './components/CentralDevice.jsx';
-var Panel = bs.Panel;
-var PanelGroup = bs.PanelGroup;
-var Collapse = bs.Collapse;
-
-var dummyData = [
-    {
-        "handle": 1,
-        "uuid": "0x1809",
-        "name": "Health Thermometer",
-        "value": '57%',
-        "characteristics": [
-        {
-            "name": "Temperature",
-            "uuid": "0x2A1D",
-            "value": "37,5C",
-            "descriptors": []
-        },
-        {
-            "name": "Measurement Interval",
-            "uuid": "0x2A1D",
-            "value": "300 sec",
-            "descriptors": [
-            {
-                "name": "Client Characteristic Configuration",
-                "uuid": "0x0028",
-                "value": "300 sec"
-            }]
-        }]
-    },
-    {
-        "handle": 2,
-        "uuid": "0x1800",
-        "name": "Generic Access",
-        "value": '56%',
-        characteristics: []
-
-    }
-];
+import logger from './logging';
 
 var ServiceItem = React.createClass({
     getInitialState: function() {

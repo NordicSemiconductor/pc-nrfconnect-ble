@@ -14,9 +14,7 @@
 
 import React from 'react';
 
-var bs = require('react-bootstrap');
-var Popover = bs.Popover;
-var OverlayTrigger = bs.OverlayTrigger;
+import {Popover, OverlayTrigger} from 'react-bootstrap';
 import connectionActions from '../actions/connectionActions.js';
 import layoutStrategies from '../common/layoutStrategies.js';
 
