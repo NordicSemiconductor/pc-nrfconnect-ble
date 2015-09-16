@@ -1,56 +1,30 @@
+/* Copyright (c) 2015 Nordic Semiconductor. All Rights Reserved.
+ *
+ * The information contained herein is property of Nordic Semiconductor ASA.
+ * Terms and conditions of usage are described in detail in NORDIC
+ * SEMICONDUCTOR STANDARD SOFTWARE LICENSE AGREEMENT.
+ *
+ * Licensees are granted free, non-transferable use of the information. NO
+ * WARRANTY of ANY KIND is provided. This heading must NOT be removed from
+ * the file.
+ *
+ */
+
 'use strict';
 
-import logger from './logging';
+import react from 'react';
+import Reflux from 'reflux';
 
-var react = require('react');
-var Reflux = require('reflux');
-var connectionStore = require('./stores/connectionStore');
-var ConnectedDevice = require('./components/ConnectedDevice.jsx');
+import {Collapse} from 'react-bootstrap';
 
-var nodeStore = require('./stores/bleNodeStore');
-var driverStore = require('./stores/bleDriverStore');
+import driverStore from './stores/bleDriverStore';
+import connectionStore from './stores/connectionStore';
+import nodeStore from './stores/bleNodeStore';
 
-var bs = require('react-bootstrap');
+import ConnectedDevice from './components/ConnectedDevice.jsx';
 import CentralDevice from './components/CentralDevice.jsx';
 import HexOnlyEditableField from './components/HexOnlyEditableField.jsx';
-var Panel = bs.Panel;
-var PanelGroup = bs.PanelGroup;
-var Collapse = bs.Collapse;
-
-var dummyData = [
-    {
-        "handle": 1,
-        "uuid": "0x1809",
-        "name": "Health Thermometer",
-        "value": '57%',
-        "characteristics": [
-        {
-            "name": "Temperature",
-            "uuid": "0x2A1D",
-            "value": "37,5C",
-            "descriptors": []
-        },
-        {
-            "name": "Measurement Interval",
-            "uuid": "0x2A1D",
-            "value": "300 sec",
-            "descriptors": [
-            {
-                "name": "Client Characteristic Configuration",
-                "uuid": "0x0028",
-                "value": "300 sec"
-            }]
-        }]
-    },
-    {
-        "handle": 2,
-        "uuid": "0x1800",
-        "name": "Generic Access",
-        "value": '56%',
-        characteristics: []
-
-    }
-];
+import logger from './logging';
 
 var ServiceItem = React.createClass({
     getInitialState: function() {
@@ -87,7 +61,7 @@ var ServiceItem = React.createClass({
 
 var DescriptorItem = React.createClass({
     render: function() {
-        return (
+         return (
             <div className="descriptor-item">
                 <div className="bar1"></div>
                 <div className="bar2"></div>
@@ -142,18 +116,16 @@ var DeviceDetailsContainer = React.createClass({
     mixins: [Reflux.connect(nodeStore), Reflux.connect(connectionStore)],
     
     render: function() {
-        var margin = 5;
         var elemWidth = 250;
-        var buffer = 30;
         var detailNodes = this.state.graph.map((node, i) => {
             var deviceAddress = this.state.graph[i].deviceId;
             var deviceServices = this.state.deviceAddressToServicesMap[deviceAddress];
-            return <DeviceDetailsView services={deviceServices} plumb={this.plumb} node={node} device={node.device}
-                                    containerHeight={this.props.style.height} style={{margin: margin}} key={i}/>
+            return <DeviceDetailsView services={deviceServices} node={node} device={node.device} isEnumeratingServices = {this.state.isEnumeratingServices}
+                                      containerHeight={this.props.style.height} key={i}/>
 
         });
-        var perNode = (margin * 2) + elemWidth;
-        var width = (perNode * detailNodes.length) + buffer;
+        var perNode = (20 + elemWidth);
+        var width = (perNode * detailNodes.length);
         return (<div className="device-details-container" style={this.props.style}><div style={{width: width}}>{detailNodes}</div></div>);
     }
 });
@@ -170,7 +142,7 @@ var DeviceDetailsView = React.createClass({
         if (this.props.services) {
             return (
                 <div className="device-details-view" id={this.props.node.id + '_details'} style={this.props.style}>
-                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={this.props.node.id+ '_details'} parentId="device_details"/>
+                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={this.props.node.id+ '_details'} layout="vertical"/>
                     <div className="service-items-wrap">
                         {this.props.services.map(function(service, i) {
                             return (<ServiceItem serviceData={service} key={i}>
@@ -192,7 +164,17 @@ var DeviceDetailsView = React.createClass({
             return (
                 <CentralDevice id="central_details" name={this.state.centralName} address={this.state.centralAddress.address} position={centralPosition}/>
             );
-        } else {return <div/>}
+        } else if (this.props.isEnumeratingServices) {
+            return (
+                <div className="device-details-view" id={this.props.node.id + '_details'} style={this.props.style}>
+                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId={'central_details'} id ={this.props.node.id + '_details'} layout="vertical"/>
+                    <div className="service-items-wrap device-body text-small">
+                        <div style={{textAlign:'center'}}>Enumerating services...</div>
+                        <img className="spinner center-block" src="resources/ajax-loader.gif" height="32" width="32"/>
+                    </div>
+                </div>
+            );
+        }else {return <div/>}
     }
 });
 module.exports = DeviceDetailsContainer;

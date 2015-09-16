@@ -259,7 +259,7 @@
   > .padded-row {
     border-bottom: 1px solid @device-details-light-border-color;
     padding-bottom: 5px;
-}
+  }
 }
 
 .btn-nordic {
@@ -289,7 +289,7 @@
 
     .discovered-device-address-line {
       height: 22px;
-  }
+    }
   }
   .flag-line {
     overflow: hidden;
@@ -319,11 +319,11 @@
       display: table;
       > div {
         display: table-cell;
-        vertical-align: top;
-      }
-      .icon-wrap {
-        font-size: 30px;
-        width: 42px;
+      vertical-align: top;
+    }
+    .icon-wrap {
+      font-size: 30px;
+      width: 42px;
         height: 85px;
         padding-top: 7px;
       }
@@ -334,6 +334,15 @@
 .dropdown {
   padding: 0px;
   border: 0px;
+  min-width: 143px;
+
+  > .dropdown-toggle {
+    min-width: 143px;
+
+    >:last-child {
+      float: right;
+    }
+  }
 
   > .dropdown-menu {
     background-color: @brand-primary;
@@ -372,9 +381,9 @@
   }
 
   >:last-child {
-      margin-right: 0px;
-    }
+    margin-right: 0px;
   }
+}
 
 .padded-row {
   .padded-row-list;
@@ -400,11 +409,9 @@
 }
 
 .device-details-container {
-  padding-top: 30px;
-  padding-left: 15px;
+  padding: 20px;
   overflow: auto;
   .main-device {
-    margin: 5px;
     box-shadow: @draggable-box-shadow;
   }
   > div {
@@ -510,6 +517,7 @@
 .device-details-view {
   background-color: white;
   width: 250px;
+  margin: 80px 0px 0px 20px;
   box-shadow: @draggable-box-shadow;
   .service-items-wrap {
     overflow: auto;
@@ -578,12 +586,16 @@
         width: 86%;
         font-size: 10px;
         background-color: rgb(238, 238, 238);
-      }
     }
+  }
   }
   .characteristic-item, .descriptor-item {
     font-size: 11px;
   }
+}
+
+.connection-info-button {
+  z-index: 1
 }
 .editable-field {
   .tooltip {

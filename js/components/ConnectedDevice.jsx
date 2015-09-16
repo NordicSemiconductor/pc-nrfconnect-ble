@@ -1,3 +1,15 @@
+/* Copyright (c) 2015 Nordic Semiconductor. All Rights Reserved.
+ *
+ * The information contained herein is property of Nordic Semiconductor ASA.
+ * Terms and conditions of usage are described in detail in NORDIC
+ * SEMICONDUCTOR STANDARD SOFTWARE LICENSE AGREEMENT.
+ *
+ * Licensees are granted free, non-transferable use of the information. NO
+ * WARRANTY of ANY KIND is provided. This heading must NOT be removed from
+ * the file.
+ *
+ */
+
 'use strict';
 import React from 'react';
 import Connector from './Connector.jsx';
@@ -19,7 +31,7 @@ var ConnectedDevice = React.createClass({
             opacity: this.props.node.connectionLost ? 0.5 : 1.0
         };
         return (
-            <div ref="outerDiv" id={this.props.id} className="device standalone" style={style}>
+            <div id={this.props.id} className="device standalone" style={style}>
                 <div className="top-bar">
                 {
                  //   <i className={connected ? "icon-link" : "icon-link-broken" }></i>
@@ -44,7 +56,7 @@ var ConnectedDevice = React.createClass({
                         })}
                     </div>
                 </div>
-                <Connector sourceId={this.props.sourceId} targetId={this.props.id} parentId={this.props.parentId} device={this.props.device}/>
+                <Connector sourceId={this.props.sourceId} targetId={this.props.id} device={this.props.device} layout={this.props.layout}/>
             </div>
         );
     },

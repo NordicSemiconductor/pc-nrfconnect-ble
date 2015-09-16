@@ -1,3 +1,15 @@
+/* Copyright (c) 2015 Nordic Semiconductor. All Rights Reserved.
+ *
+ * The information contained herein is property of Nordic Semiconductor ASA.
+ * Terms and conditions of usage are described in detail in NORDIC
+ * SEMICONDUCTOR STANDARD SOFTWARE LICENSE AGREEMENT.
+ *
+ * Licensees are granted free, non-transferable use of the information. NO
+ * WARRANTY of ANY KIND is provided. This heading must NOT be removed from
+ * the file.
+ *
+ */
+
 'use strict';
 
 import React from 'react';
@@ -78,8 +90,6 @@ var DiscoveredDevice = React.createClass({
     }
 });
 
-
-
 var DiscoveredDevicesContainer = React.createClass({
     mixins: [Reflux.connect(discoveryStore), Reflux.connect(connectionStore)],
     _clearContainer: function() {
@@ -115,7 +125,7 @@ var DiscoveredDevicesContainer = React.createClass({
                     </h4>
                 </div>
                 <div className="padded-row">
-                    <DiscoveryButton/>
+                    <DiscoveryButton scanInProgress={this.state.scanInProgress} isConnecting={this.state.isConnecting}/>
                     <button onClick={this._clearContainer} type="button" className="btn btn-primary btn-sm btn-nordic padded-row">
                         <span className="icon-trash" />Clear
                     </button>

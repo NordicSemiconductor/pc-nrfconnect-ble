@@ -1,21 +1,31 @@
+/* Copyright (c) 2015 Nordic Semiconductor. All Rights Reserved.
+ *
+ * The information contained herein is property of Nordic Semiconductor ASA.
+ * Terms and conditions of usage are described in detail in NORDIC
+ * SEMICONDUCTOR STANDARD SOFTWARE LICENSE AGREEMENT.
+ *
+ * Licensees are granted free, non-transferable use of the information. NO
+ * WARRANTY of ANY KIND is provided. This heading must NOT be removed from
+ * the file.
+ *
+ */
+
 'use strict';
 
-var React = require('react');
+import React from 'react';
 
-var Reflux = require('reflux');
-var nodeStore = require('./stores/bleNodeStore');
-var driverStore = require('./stores/bleDriverStore');
+import Reflux from 'reflux';
+import nodeStore from './stores/bleNodeStore';
+import driverStore from './stores/bleDriverStore';
 
-var ConnectedDevice = require('./components/ConnectedDevice.jsx');
-var CentralDevice = require('./components/CentralDevice.jsx');
-
+import ConnectedDevice from './components/ConnectedDevice.jsx';
+import CentralDevice from './components/CentralDevice.jsx';
 
 var BleNodeContainer = React.createClass({
     mixins: [Reflux.connect(nodeStore), Reflux.connect(driverStore)],
 
     render: function(){
-
-        var plumbNodes = [];
+        var connectedDevices = [];
         var central;
         if (this.state.connectedToDriver) {
             for (var i = 0; i < this.state.graph.length; i++) {
@@ -25,7 +35,7 @@ var BleNodeContainer = React.createClass({
                     central = (<CentralDevice id={node.id} name={this.state.centralName} address={this.state.centralAddress.address} />)
                 } else {
                     connectedDeviceCounter++;
-                    plumbNodes.push(<ConnectedDevice id={node.id} sourceId='central' parentId='diagramContainer' key={i} node={node} drawConnector device={this.state.graph[i].device} />);
+                    connectedDevices.push(<ConnectedDevice id={node.id} sourceId='central' key={i} node={node} device={node.device} layout="horizontal"/>);
                 }
             }
         }
@@ -33,7 +43,7 @@ var BleNodeContainer = React.createClass({
             <div id="diagramContainer" style={this.props.style} >
                 {central}
                 <div className="padded-column" style={{position: 'absolute', top: '20px', left: '400px'}}>
-                    {plumbNodes}
+                    {connectedDevices}
                 </div>
             </div>
         );

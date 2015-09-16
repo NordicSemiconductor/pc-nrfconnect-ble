@@ -1,3 +1,15 @@
+/* Copyright (c) 2015 Nordic Semiconductor. All Rights Reserved.
+ *
+ * The information contained herein is property of Nordic Semiconductor ASA.
+ * Terms and conditions of usage are described in detail in NORDIC
+ * SEMICONDUCTOR STANDARD SOFTWARE LICENSE AGREEMENT.
+ *
+ * Licensees are granted free, non-transferable use of the information. NO
+ * WARRANTY of ANY KIND is provided. This heading must NOT be removed from
+ * the file.
+ *
+ */
+
 'use strict';
 
 import reflux from 'reflux';
@@ -21,7 +33,8 @@ var connectionStore = reflux.createStore({
         this.state = {
             connections: [],
             deviceAddressToServicesMap: {},
-            isConnecting: false
+            isConnecting: false,
+            isEnumeratingServices: false
         };
         this.devicesAboutToBeConnected = {};
     },
@@ -85,6 +98,7 @@ var connectionStore = reflux.createStore({
     onDeviceConnected: function(eventPayload){
         logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(eventPayload))} connected.`);
         driverActions.getCharacteristics(eventPayload.conn_handle);
+        this.state.isEnumeratingServices = true;
         this.state.connections.push(eventPayload);
         this.trigger(this.state);
 
@@ -95,6 +109,7 @@ var connectionStore = reflux.createStore({
         this.trigger(this.state);
     },
     onDeviceDisconnected: function(eventPayload){
+        this.state.isEnumeratingServices = false; // In case we disconnect while enumerating services
         var connectionThatWasDisconnected = _.find(this.state.connections, function(connection){
             return (connection.conn_handle == eventPayload.conn_handle);
         });
@@ -108,7 +123,7 @@ var connectionStore = reflux.createStore({
     },
     onDisconnectFromDevice: function(deviceAddress) {
         var connectionHandle = this._findConnectionHandleFromDeviceAddress(deviceAddress);
-
+        this.state.isEnumeratingServices = false;
         if(connectionHandle === undefined) {
             logger.error(`Device ${deviceAddress} is not in connection database. Removing node from graph. TODO: this should not happen!`);
             return;
@@ -123,6 +138,7 @@ var connectionStore = reflux.createStore({
         });
     },
     onServicesDiscovered: function(gattDatabase) {
+        this.state.isEnumeratingServices = false;
         var connectionHandle = gattDatabase.connectionHandle;
         var connection = this.state.connections.find(function(conn) {
             return (conn.conn_handle === connectionHandle);
