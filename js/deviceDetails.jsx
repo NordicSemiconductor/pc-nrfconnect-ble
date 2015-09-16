@@ -87,7 +87,7 @@ var ServiceItem = React.createClass({
 
 var DescriptorItem = React.createClass({
     render: function() {
-         return (
+        return (
             <div className="descriptor-item">
                 <div className="bar1"></div>
                 <div className="bar2"></div>
@@ -95,7 +95,7 @@ var DescriptorItem = React.createClass({
                 <div className="content-wrap">
                     <div className="content">
                         <span>{this.props.descriptorData.name}</span>
-                        <HexOnlyEditableField value={this.props.descriptorData.value}/>
+                        <HexOnlyEditableField value={this.props.descriptorData.value} insideSelector=".device-details-view" />
                     </div>
                 </div>
             </div>
@@ -124,7 +124,7 @@ var CharacteristicItem = React.createClass({
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     <div className="content">
                         <span>{this.props.characteristicData.name}</span>
-                        <HexOnlyEditableField value={this.props.characteristicData.value}/>
+                        <HexOnlyEditableField value={this.props.characteristicData.value} insideSelector=".device-details-view" />
                     </div>
                 </div>
             </div>

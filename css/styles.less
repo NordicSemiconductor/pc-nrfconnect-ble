@@ -558,12 +558,17 @@
       width: 100%;
       .editable {
         cursor: text;
+        padding-top: 5px;
         &:hover span {
           background: @gray-lighter;
         }
+        > span {
+          width: 185px;
+          display: inline-block;
+        }
       }
       .btn {
-        padding: 1px 1px 0 1px;
+        padding: 0 1px 0 1px;
         margin-right: 5px;
         float: right;
         font-size: 12px;
@@ -571,11 +576,28 @@
       textarea {
         //border: 0;
         width: 86%;
+        font-size: 10px;
         background-color: rgb(238, 238, 238);
+      }
     }
-  }
   }
   .characteristic-item, .descriptor-item {
     font-size: 11px;
+  }
+}
+.editable-field {
+  .tooltip {
+    padding: 5px 10px;
+    opacity: 1;
+    .tooltip-arrow {
+      top: -6px;
+      border-bottom-color: @alert-danger-border;
+    }
+  }
+  .editable-field-editor-wrap {
+    font-size: 0;
+    > * {
+      font-size: 11px;
+    }
   }
 }

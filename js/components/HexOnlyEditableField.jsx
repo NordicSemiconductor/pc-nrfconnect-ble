@@ -15,8 +15,17 @@ var HexOnlyEditableField = React.createClass({
         }
         return chars.join("");
     },
+    _completeValidation(str) {
+        var isFullbytes = str.replace(/-/g, "").length % 2 === 0;
+        if (!isFullbytes) {
+            this.refs.editableField.setState({validationMessage: "Please enter full bytes (pairs of hexadecimals)"});
+        }
+        return isFullbytes;
+    },
     render() {
-        return <EditableField {...this.props} keyPressValidation={this._keyPressValidation} formatInput={this._formatInput} />;
+        return <EditableField {...this.props} 
+                    keyPressValidation={this._keyPressValidation} completeValidation={this._completeValidation} 
+                    formatInput={this._formatInput} ref="editableField"/>;
     }
 });
 
