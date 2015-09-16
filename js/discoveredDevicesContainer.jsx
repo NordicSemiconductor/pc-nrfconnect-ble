@@ -58,7 +58,7 @@ var DiscoveredDevice = React.createClass({
         if (this.props.isConnecting && this.myButtonIsConnecting) {
             button = (
                 <button onClick={this._onCancelConnect} className="btn btn-primary btn-xs btn-nordic">
-                    Cancel connect <i className="icon-link"></i>
+                    Cancel <i className="icon-link"></i>
                 </button>
             );
         }
