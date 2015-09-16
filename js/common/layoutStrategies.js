@@ -31,7 +31,7 @@ module.exports = {
         };
     },
     vertical: function(sourceRect, targetRect, strokeWidth) {
-        var sourceRectYEntry = sourceRect.top - targetRect.top + 20;
+        var sourceRectYEntry = sourceRect.top - targetRect.top + 20;
         var targetRectXEntry = targetRect.width / 2;
         function calculateBoundingBox() {
             return {

@@ -74,7 +74,7 @@ var DiscoveredDevice = React.createClass({
                 <div className="device-body text-small">
                     <div className="discovered-device-address-line">
                         {button}
-                        <div className="text-smaller subtle-text">
+                        <div className="address-text">
                             {device.address}
                         </div>
                     </div>

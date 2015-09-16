@@ -57,6 +57,7 @@
   font-weight: 300;
   src: url('../font/RobotoCondensed-Light.ttf') format('truetype');
 }
+
 @font-face {
   font-family: "Roboto";
   font-style: italic;
@@ -71,6 +72,7 @@
   font-weight: 400;
   src: url('../font/Roboto-Regular.ttf') format('truetype');
 }
+
 @font-face {
   font-family: "Roboto";
   font-style: italic;
@@ -85,6 +87,7 @@
   font-weight: 700;
   src: url('../font/Roboto-Bold.ttf') format('truetype');
 }
+
 @font-face {
   font-family: "Roboto";
   font-style: italic;
@@ -445,13 +448,20 @@
   display: inline-block;
   color: white;
 }
+
 .device-flag {
   background: @gray-lighter;
   color: black;
 }
+
 .role-flag {
-  background-color: @device-role-color;
+  background-color: @brand-info;
   padding: 3px 15px;
+}
+
+.address-text {
+  .subtle-text;
+  .text-smaller;
 }
 
 .log-wrap {

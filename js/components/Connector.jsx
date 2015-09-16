@@ -81,6 +81,30 @@ var Connector = React.createClass({
         }
         return result;
     },
+    _getConnectionOverlay: function(lineCoordinates) {
+        if (lineCoordinates.length < 2) {
+            return;
+        }
+
+        var pointA = lineCoordinates[lineCoordinates.length - 2];
+        var pointB = lineCoordinates[lineCoordinates.length - 1];
+
+        var posX = (pointA.x - pointB.x) / 2;
+        var posY = (pointA.y - pointB.y) / 2;
+
+        var targetElement = document.getElementById(this.props.targetId);
+        var targetRect = targetElement.getBoundingClientRect();
+
+        if (posX == 0) {
+            posX = targetRect.width / 2;
+        }
+
+        if (posY == 0) {
+            posY = targetRect.height / 2;
+        }
+
+        return (<ConnectionOverlay style={{position: 'absolute', left: posX - 12, top: posY - 12}} device={this.props.device}/>);
+    },
     render: function() {
         var sourceElement = document.getElementById(this.props.sourceId);
         var targetElement = document.getElementById(this.props.targetId);
@@ -94,12 +118,13 @@ var Connector = React.createClass({
         var layoutInfo = layoutStrategies[this.props.layout](sourceRect, targetRect, 3);
         var connectorBox = layoutInfo.boundingBox;
         var lines = this._generateLines(layoutInfo.lineCoordinates);
+        var connectionInfoOverlay = this._getConnectionOverlay(layoutInfo.lineCoordinates);
 
         return (<div>
                     <svg style={{position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height}}>
                         {lines}
                     </svg>
-                    <ConnectionOverlay style={{position: 'absolute', left: -connectorBox.width/4 - 12, top: targetRect.height/2 - 12}} device={this.props.device}/>
+                    {connectionInfoOverlay}
                 </div>);
     }
 });
