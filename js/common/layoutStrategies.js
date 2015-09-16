@@ -21,8 +21,8 @@ module.exports = {
         var sourceYCoordinate = sourceRectMid < targetRectMid ? 2 : connectorBox.height - 2;
         var targetYCoordinate = sourceRectMid < targetRectMid ? connectorBox.height - 2 : 2;
         var lineCoordinates = [
-            {x: 0, y: sourceYCoordinate}, 
-            {x: connectorBox.width/2, y: sourceYCoordinate}, 
+            {x: 0, y: sourceYCoordinate},
+            {x: connectorBox.width/2, y: sourceYCoordinate},
             {x: connectorBox.width/2, y: targetYCoordinate},
             {x: connectorBox.width,   y: targetYCoordinate}];
         return {
@@ -30,21 +30,22 @@ module.exports = {
             lineCoordinates: lineCoordinates
         };
     },
-    vertical: function(sourceRect, targetRect, strokeWidth) { 
-        var sourceRectYEntry = sourceRect.top - targetRect.top + 30;
-        var targetRectXEntry = targetRect.width / 2;
+    vertical: function(sourceRect, targetRect, strokeWidth) {
+        var sourceRectYEntry = sourceRect.top - targetRect.top + 20;
+        var targetRectXEntry = targetRect.width / 2;
         function calculateBoundingBox() {
             return {
                 top: -(strokeWidth + 1) / 2 + sourceRectYEntry,
+                left: -(targetRect.left - (sourceRect.left + sourceRect.width)),
                 width: (strokeWidth + 1) / 2 + (targetRect.left + targetRect.width / 2) - (sourceRect.left + sourceRect.width),
                 height: (strokeWidth + 1) / 2 + Math.abs(sourceRectYEntry)
             };
         }
         var boundingBox = calculateBoundingBox();
         var lineCoordinates = [
-            {x: 0, y: sourceRectYEntry},
-            {x: targetRectXEntry, y: sourceRectYEntry},
-            {x: targetRectXEntry, y: boundingBox.height - 2}
+            {x: 0, y: 2},
+            {x: boundingBox.width - 2, y: 2},
+            {x: boundingBox.width - 2, y: boundingBox.height}
         ];
         return {
             boundingBox: boundingBox,
