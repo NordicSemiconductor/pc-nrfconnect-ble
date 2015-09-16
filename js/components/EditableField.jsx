@@ -15,7 +15,8 @@ var EditableField = React.createClass({
             }
             this.setState({
                 value: this.props.value, //reset textarea value
-                editing: false
+                editing: false,
+                validationMessage: ""
             });
         }
     },
@@ -31,6 +32,9 @@ var EditableField = React.createClass({
             var elem = $(React.findDOMNode(this.refs.editableTextarea)).parents(this.props.insideSelector);
             this.insideParent = elem.length > 0 ? elem[0] : null; 
         }
+    },
+    componentWillUnmount: function() {
+        this.insideParent = null; //avoid leaking memory
     },
     _toggleEditing: function(e) {
         e.stopPropagation();
@@ -73,12 +77,14 @@ var EditableField = React.createClass({
                     <span>{this.state.value || nonBreakingSpace}</span>
                 </div>
                 <div className="editable-field-editor-wrap" style={{display: this.state.editing ? "block" : "none"}}>
+                    <div className="alert-wrap">
+                        <div className="alert alert-danger tooltip top" style={{display: this.state.validationMessage == '' ? 'none' : 'block' }}>
+                            <div className="tooltip-arrow"></div>
+                            {this.state.validationMessage}
+                        </div>
+                    </div>
                     <div className="btn btn-primary btn-xs btn-nordic" onClick={this._onOkButtonClick}><i className="icon-ok"></i></div>
                     <TextareaAutosize ref="editableTextarea" minRows="1" onKeyDown={this._onKeyDown} value={this.state.value} onChange={this._onChange} onClick={this._stopPropagation}></TextareaAutosize>
-                    <div className="alert alert-danger tooltip bottom" style={{display: this.state.validationMessage == '' ? 'none' : 'block' }}>
-                        <div className="tooltip-arrow"></div>
-                        {this.state.validationMessage}
-                    </div>
                 </div>
             </div>
         );
