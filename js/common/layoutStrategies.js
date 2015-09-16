@@ -29,7 +29,6 @@ module.exports = {
             boundingBox: connectorBox,
             lineCoordinates: lineCoordinates
         };
-
     },
     vertical: function(sourceRect, targetRect, strokeWidth) { 
         var sourceRectYEntry = sourceRect.top - targetRect.top + 30;

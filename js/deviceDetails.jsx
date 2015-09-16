@@ -125,8 +125,8 @@ var DeviceDetailsContainer = React.createClass({
         var detailNodes = this.state.graph.map((node, i) => {
             var deviceAddress = this.state.graph[i].deviceId;
             var deviceServices = this.state.deviceAddressToServicesMap[deviceAddress];
-            return <DeviceDetailsView services={deviceServices} plumb={this.plumb} node={node} device={node.device}
-                                    containerHeight={this.props.style.height} style={{margin: margin}} key={i}/>
+            return <DeviceDetailsView services={deviceServices} node={node} device={node.device} isEnumeratingServices = {this.state.isEnumeratingServices}
+                                      containerHeight={this.props.style.height} style={{margin: margin}} key={i}/>
 
         });
         var perNode = (margin * 2) + elemWidth;
@@ -169,7 +169,17 @@ var DeviceDetailsView = React.createClass({
             return (
                 <CentralDevice id="central_details" name={this.state.centralName} address={this.state.centralAddress.address} position={centralPosition}/>
             );
-        } else {return <div/>}
+        } else if (this.props.isEnumeratingServices) {
+            return (
+                <div className="device-details-view" id={this.props.node.id + '_details'} style={this.props.style}>
+                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId={'central_details'} id ={this.props.node.id + '_details'} layout="vertical"/>
+                    <div className="service-items-wrap device-body text-small">
+                        <div style={{textAlign:'center'}}>Enumerating services...</div>
+                        <img className="spinner center-block" src="resources/ajax-loader.gif" height="32" width="32"/>
+                    </div>
+                </div>
+            );
+        }else {return <div/>}
     }
 });
 module.exports = DeviceDetailsContainer;
