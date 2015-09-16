@@ -91,7 +91,7 @@ var Connector = React.createClass({
         var sourceRect = sourceElement.getBoundingClientRect();
         var targetRect = targetElement.getBoundingClientRect();
 
-        var layoutInfo = layoutStrategies['horizontal'](sourceRect, targetRect, 3);
+        var layoutInfo = layoutStrategies[this.props.layout](sourceRect, targetRect, 3);
         var connectorBox = layoutInfo.boundingBox;
         var lines = this._generateLines(layoutInfo.lineCoordinates);
 

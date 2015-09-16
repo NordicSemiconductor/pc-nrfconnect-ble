@@ -147,7 +147,7 @@ var DeviceDetailsView = React.createClass({
         if (this.props.services) {
             return (
                 <div className="device-details-view" id={this.props.node.id + '_details'} style={this.props.style}>
-                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={this.props.node.id+ '_details'} parentId="device_details"/>
+                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={this.props.node.id+ '_details'} layout="vertical"/>
                     <div className="service-items-wrap">
                         {this.props.services.map(function(service, i) {
                             return (<ServiceItem serviceData={service} key={i}>

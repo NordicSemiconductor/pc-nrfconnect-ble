@@ -35,7 +35,7 @@ var BleNodeContainer = React.createClass({
                     central = (<CentralDevice id={node.id} name={this.state.centralName} address={this.state.centralAddress.address} />)
                 } else {
                     connectedDeviceCounter++;
-                    connectedDevices.push(<ConnectedDevice id={node.id} sourceId='central' key={i} node={node} device={node.device} />);
+                    connectedDevices.push(<ConnectedDevice id={node.id} sourceId='central' key={i} node={node} device={node.device} layout="horizontal"/>);
                 }
             }
         }
