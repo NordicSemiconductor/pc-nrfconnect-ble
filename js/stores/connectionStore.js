@@ -90,10 +90,16 @@ var connectionStore = reflux.createStore({
                 logger.error(`Could not cancel connection to ${textual.peerAddressToTextual(device)}.`);
                 //TODO: what happens here? If driver fails to cancel connection can we just move on?
             }
-            logger.info('canceled connection');
+            logger.info('Canceled connection');
             self.state.isConnecting = false;
             self.trigger(self.state);
         });
+    },
+    onConnectTimedOut: function() {
+        var self = this;
+        logger.info("Connection timed out");
+        self.state.isConnecting = false;
+        self.trigger(self.state);
     },
     onDeviceConnected: function(eventPayload){
         logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(eventPayload))} connected.`);
