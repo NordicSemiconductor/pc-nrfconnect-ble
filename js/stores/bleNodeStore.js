@@ -34,7 +34,7 @@ var bleNodeStore = reflux.createStore({
       if(connectedDevice.peer_addr === undefined) return;
       if(connectedDevice.peer_addr.address === undefined) return;
 
-      let deviceId = connectedDevice.peer_addr.address + '-' + connectedDevice.conn_handle;
+      let deviceId = newConnection.peer_addr.address + '-' + newConnection.conn_handle;
 
       // If the device already exists in the node.connectionLost state we keep the existing node
       let oldNode = _.find(this.graph, function(node) {
