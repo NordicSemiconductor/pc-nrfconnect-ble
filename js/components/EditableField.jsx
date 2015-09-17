@@ -41,16 +41,19 @@ var EditableField = React.createClass({
         this.setState({editing: !this.state.editing});
     },
     _onChange: function(e) {
-        var caretPosition = this.caretPosition !== null ? this.caretPosition : e.target.selectionStart;
-        var valid = this.props.keyPressValidation ? this.props.keyPressValidation(e.target.value) : true;
+        var textarea = e.target;
+        var caretPosition = this.caretPosition !== null ? this.caretPosition : textarea.selectionStart;
+        var valid = this.props.keyPressValidation ? this.props.keyPressValidation(textarea.value) : true;
         if (valid) {
             var value = e.target.value;
             if (this.props.formatInput) {
                 ({ value, caretPosition } = this.props.formatInput(value, caretPosition));
             }
-            this.setState({value: value, validationMessage: ""}, () => {
-                React.findDOMNode(this.refs.editableTextarea).setSelectionRange(caretPosition, caretPosition);
-            });
+            this.setState({value: value, validationMessage: ""}, () => 
+                textarea.setSelectionRange(caretPosition, caretPosition));
+        } else {
+            this.setState({}, () => 
+                textarea.setSelectionRange(caretPosition-1, caretPosition-1));
         }
     },
     _onKeyDown: function(e) {
