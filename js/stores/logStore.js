@@ -32,7 +32,6 @@ var logStore = reflux.createStore({
     init: function() {
         this.state = {
             logEntries: [],
-            follow_state: false,
             last_log_entry_id: 0
         }
 
@@ -47,10 +46,6 @@ var logStore = reflux.createStore({
     },
     onSearch: function(filter) {
         var self = this;
-    },
-    onFollow: function(follow) {
-        var self = this;
-        self.state.follow_state = follow;
     },
     triggerUpdate: function(self) {
         // TODO: look into optimizing the transport of entries by sending
