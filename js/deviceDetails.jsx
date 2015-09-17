@@ -33,15 +33,24 @@ var ServiceItem = React.createClass({
             expanded: false
         };
     },
-    _toggleExpanded: function(){
+    _toggleExpanded: function() {
         this.setState({expanded: !this.state.expanded});
+    },
+    _blink: function() {
+        this.setState({ blink: true });
+        setTimeout((() => this.setState({ blink: false })).bind(this), 2000);
+    },
+    _childChanged: function() {
+        if (!this.state.expanded) {
+            this._blink();
+        }
     },
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        var iconStyle = React.Children.count(this.props.children) === 0 ? { display: 'none' } : {};
+        var iconStyle = this.props.characteristics.length === 0 ? { display: 'none' } : {};
         return (
             <div>
-                <div className="service-item">
+                <div className={"service-item" + (this.state.blink ? " blink" : "")}>
                     <div className="bar1"></div>
                     <div className="content-wrap" onClick={this._toggleExpanded}>
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
@@ -52,7 +61,10 @@ var ServiceItem = React.createClass({
                 </div>
                 <Collapse timeout={0} ref="coll" in={this.state.expanded}>
                     <div>
-                        {this.props.children}
+                        {this.props.characteristics.map((characteristic, j) =>
+                            <CharacteristicItem name={characteristic.name} value={characteristic.value} 
+                                descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} />
+                        )}
                     </div>
                 </Collapse>
             </div>
@@ -61,16 +73,28 @@ var ServiceItem = React.createClass({
 });
 
 var DescriptorItem = React.createClass({
+    getInitialState: function() {
+        return {};
+    },
+    componentWillReceiveProps: function(nextProps) {
+        if (this.props.value !== nextProps.value) {
+            if (this.props.onChange) {
+                this.props.onChange()
+            }
+            this.setState({ blink: true });
+            setTimeout((() => this.setState({ blink: false })).bind(this), 2000);
+        }
+    },
     render: function() {
          return (
-            <div className="descriptor-item">
+            <div className={"descriptor-item" + (this.state.blink ? " blink" : "")}>
                 <div className="bar1"></div>
                 <div className="bar2"></div>
                 <div className="bar3"></div>
                 <div className="content-wrap">
                     <div className="content">
-                        <span>{this.props.descriptorData.name}</span>
-                        <HexOnlyEditableField value={this.props.descriptorData.value} insideSelector=".device-details-view" />
+                        <span>{this.props.name}</span>
+                        <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
                     </div>
                 </div>
             </div>
@@ -84,28 +108,50 @@ var CharacteristicItem = React.createClass({
             expanded: false
         };
     },
+    componentWillReceiveProps: function(nextProps) {
+        if (this.props.value !== nextProps.value) {
+            if (this.props.onChange) {
+                this.props.onChange();
+            }
+            this._blink();
+        }
+    },
+    _blink: function() {
+        this.setState({ blink: true });
+        setTimeout((() => this.setState({ blink: false })).bind(this), 2000);
+    },
     _toggleExpanded: function() {
         this.setState({expanded: !this.state.expanded});
     },
+    _childChanged: function() {
+        if (this.props.onChange) {
+            this.props.onChange();
+        }
+        if (!this.state.expanded) {
+            this._blink();
+        }
+    },
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        var iconStyle = React.Children.count(this.props.children) === 0 ? { display: 'none' } : {};
+        var iconStyle = this.props.descriptors.length === 0 ? { display: 'none' } : {};
         return (
         <div>
-            <div className="characteristic-item">
+            <div className={"characteristic-item" + (this.state.blink ? " blink" : "")}>
                 <div className="bar1"></div>
                 <div className="bar2"></div>
                 <div className="content-wrap" onClick={this._toggleExpanded}>
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     <div className="content">
-                        <span>{this.props.characteristicData.name}</span>
-                        <HexOnlyEditableField value={this.props.characteristicData.value} insideSelector=".device-details-view" />
+                        <span>{this.props.name}</span>
+                        <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
                     </div>
                 </div>
             </div>
             <Collapse timeout={0} ref="coll" in={this.state.expanded}>
                 <div>
-                    {this.props.children}
+                    {this.props.descriptors.map((descriptor, k) =>
+                        <DescriptorItem name={descriptor.name} value={descriptor.value} key={k} onChange={this._childChanged}/>
+                    )}
                 </div>
             </Collapse>
         </div>
@@ -145,19 +191,9 @@ var DeviceDetailsView = React.createClass({
                 <div className="device-details-view" id={this.props.node.id + '_details'} style={this.props.style}>
                     <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={this.props.node.id+ '_details'} layout="vertical"/>
                     <div className="service-items-wrap">
-                        {this.props.services.map(function(service, i) {
-                            return (<ServiceItem serviceData={service} key={i}>
-                                {service.characteristics.map(function(characteristic, j) {
-                                    return (<CharacteristicItem characteristicData={characteristic} key={j}>
-                                        {characteristic.descriptors.map(function(descriptor, k) {
-                                            return (
-                                                <DescriptorItem descriptorData={descriptor} key={k}/>
-                                            )
-                                        })}
-                                    </CharacteristicItem>)
-                                })}
-                            </ServiceItem>)
-                        })}
+                        {this.props.services.map((service, i) =>
+                            <ServiceItem serviceData={service} key={i} characteristics={service.characteristics} />
+                        )}
                     </div>
                 </div>
             );
@@ -175,7 +211,7 @@ var DeviceDetailsView = React.createClass({
                     </div>
                 </div>
             );
-        }else {return <div/>}
+        } else {return <div/>}
     }
 });
 module.exports = DeviceDetailsContainer;

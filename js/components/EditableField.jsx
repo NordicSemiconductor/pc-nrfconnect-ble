@@ -11,6 +11,8 @@ var EditableField = React.createClass({
                     onBackspace={onBackspace} formatInput={formatInput} insideSelector=".some-selector" />
      />
     
+    If props
+
     Props:
     value (required): The value to make editable.
     keyPressValidation (optional): 
@@ -52,6 +54,11 @@ var EditableField = React.createClass({
             value: this.props.value,
             validationMessage: ""
         };
+    },
+    componentWillReceiveProps: function(nextProps) {
+        if (!this.state.editing && this.props.value !== nextProps.value) {
+            this.setState({ value: nextProps.value });
+        }
     },
     componentDidMount: function() {
         if (this.props.insideSelector) {
