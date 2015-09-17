@@ -39,6 +39,7 @@ var DiscoveredDevice = React.createClass({
         connectionActions.cancelConnect(this.props.device);
         this.myButtonIsConnecting = false;
         this.state.isConnecting = false;
+        discoveryActions.connectStateChange();
     },
     componentDidMount: function() {
         this.myButtonIsConnecting = false;

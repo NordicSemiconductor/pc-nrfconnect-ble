@@ -100,6 +100,9 @@ var discoveryStore = reflux.createStore({
             delete this.state.discoveredDevices[device_address];
             this.trigger(this.state);
         }
+    },
+    onConnectStateChange: function() {
+        this.trigger(this.state);
     }
 });
 
