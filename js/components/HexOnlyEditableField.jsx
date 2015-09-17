@@ -1,6 +1,12 @@
 import EditableField from './EditableField.jsx';
 
 var HexOnlyEditableField = React.createClass({
+    /*
+        A textarea that only accepts hexadecimal characters. 
+        It automatically formats the input into pairs of characters (bytes), like so: AB-D2-C1. 
+
+        There's a lot of complexity here related to keeping the caret in the right position. 
+    */
     _hexRegEx: /^[0-9a-f\-]*$/i,
     _keyPressValidation(str) {
         return this._hexRegEx.test(str);
@@ -19,6 +25,16 @@ var HexOnlyEditableField = React.createClass({
             caretPosition: caretPosition
         }
     },
+    _onBackspace(e) {
+        //when backspace will remove a dash, also remove the character before the dash
+        var str = e.target.value;
+        var caret = e.target.selectionStart;
+        if (str.substr(caret-1, 1) === "-") {
+            e.target.value = str.slice(0, caret-2) + str.slice(caret-1, str.length);
+            caret -= 1;
+        }
+        return caret - 1; //return next caret position
+    },
     _calcCaretPosition(origValue, caretPosition) {
         /*Replacing the textarea contents places the caret at the end.
         * We need to place the caret back where it should be.
@@ -36,13 +52,18 @@ var HexOnlyEditableField = React.createClass({
         * Before formatting: AA-AA-1AA, After: AA-AA-1A-A
         * caretPosition before: 7, caretPosition after: 7
         *
+        * Also have to handle backspace:
+        * Before formatting: AA-A-AA, After: AA-AA-A
+        * caretPosition before: 4, caretPosition after: 4
+        *
         * Find where the caret would be without the dashes, 
         * and map that position back to the dashed string
         */
         var dashesBeforeCaret = origValue.substr(0, caretPosition).match(/-/g)
         var numDashesBeforeCaret = dashesBeforeCaret === null ? 0 : dashesBeforeCaret.length
         var caretPositionWithoutDashes = caretPosition - numDashesBeforeCaret;
-        caretPosition = caretPositionWithoutDashes + Math.floor(caretPositionWithoutDashes/2);
+        var correctNumberOfDashes = Math.floor(caretPositionWithoutDashes/2);
+        caretPosition = caretPositionWithoutDashes + correctNumberOfDashes;
         return caretPosition;
     },
     _completeValidation(str) {
@@ -55,7 +76,7 @@ var HexOnlyEditableField = React.createClass({
     render() {
         return <EditableField {...this.props} 
                     keyPressValidation={this._keyPressValidation} completeValidation={this._completeValidation} 
-                    formatInput={this._formatInput} ref="editableField"/>;
+                    onBackspace={this._onBackspace} formatInput={this._formatInput} ref="editableField"/>;
     }
 });
 
