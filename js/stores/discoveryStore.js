@@ -28,7 +28,8 @@ var discoveryStore = reflux.createStore({
     init: function() {
         this.state = {
             discoveredDevices: {},
-            scanInProgress: false
+            scanInProgress: false,
+            isConnecting: false
         };
     },
     getInitialState: function() {

@@ -64,30 +64,27 @@ var connectionStore = reflux.createStore({
         var connectionParameters = {
             'min_conn_interval': 7.5, 'max_conn_interval': 7.5, 'slave_latency': 0, 'conn_sup_timeout': 4000
         };
+
         var self = this;
         bleDriver.gap_connect(device.peer_addr, scanParameters, connectionParameters, function(err) {
             if(err) {
                 logger.error(`Could not connect to ${textual.peerAddressToTextual(device)} due to error. ${err.message}`);
-                bleDriver.gap_cancel_connect(function(err) {
-                    if (err) {
-                        logger.error(`Could not cancel connection to ${textual.peerAddressToTextual(device)}.`);
-                        return;
-                    }
-                });
+                self.state.isConnecting = false;
             } else {
                 logger.debug(`Successfully sent connection request to driver (${textual.peerAddressToTextual(device)}).`);
                 discoveryActions.scanStopped();
                 self.devicesAboutToBeConnected[device.peer_addr.addr] = device;
                 self.state.isConnecting = true;
-                self.trigger(self.state);
             }
+
+            self.trigger(self.state);
         });
     },
     onCancelConnect: function() {
         var self = this;
         bleDriver.gap_cancel_connect(function(err) {
             if (err) {
-                logger.error(`Could not cancel connection to ${textual.peerAddressToTextual(device)} .`);
+                logger.error(`Could not cancel connection. ${err.message}.`);
                 //TODO: what happens here? If driver fails to cancel connection can we just move on?
             }
             logger.info('Canceled connection');

@@ -33,10 +33,12 @@ var DiscoveredDevice = React.createClass({
     _onConnect: function() {
         connectionActions.connectToDevice(this.props.device);
         this.myButtonIsConnecting = true;
+        this.state.isConnecting = true;
     },
     _onCancelConnect: function() {
-        connectionActions.cancelConnect();
+        connectionActions.cancelConnect(this.props.device);
         this.myButtonIsConnecting = false;
+        this.state.isConnecting = false;
     },
     componentDidMount: function() {
         this.myButtonIsConnecting = false;
@@ -55,7 +57,7 @@ var DiscoveredDevice = React.createClass({
                 Connect <i className="icon-link"></i>
             </button>
         );
-        if (this.props.isConnecting && this.myButtonIsConnecting) {
+        if (this.myButtonIsConnecting) {
             button = (
                 <button onClick={this._onCancelConnect} className="btn btn-primary btn-xs btn-nordic">
                     Cancel <i className="icon-link"></i>
@@ -97,18 +99,16 @@ var DiscoveredDevicesContainer = React.createClass({
     },
     render: function() {
         if (this.state.discoveredDevices) {
-            var devices = {};
-
-            //  Add devices from this.state.discoveredDevices that are NOT connected
-            for(var device in this.state.discoveredDevices) {
-                devices[this.state.discoveredDevices[device].peer_addr.address] = this.state.discoveredDevices[device];
-            }
 
             var progressMode = this.state.scanInProgress ? 'indeterminate' : 'determinate';
             var progressStyle = {
                 visibility: this.state.scanInProgress ? 'visible' : 'hidden',
             }
+
+            // The state
             var isConnecting = this.state.isConnecting;
+            var devices = this.state.discoveredDevices;
+
             return (
               <div id="discoveredDevicesContainer">
                 <div>
@@ -126,7 +126,7 @@ var DiscoveredDevicesContainer = React.createClass({
                 <div style={{paddingTop: '0px'}}>
                   {Object.keys(devices).map(function(device, index) {
                     return (
-                            <DiscoveredDevice key= {index}
+                            <DiscoveredDevice key={ 'dev-' + device + '-' + index}
                                 device={devices[device]}
                                 standalone={false}
                                 isConnecting={isConnecting}
