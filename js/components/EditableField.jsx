@@ -2,6 +2,32 @@ import TextareaAutosize from 'react-textarea-autosize';
 import $ from 'jquery';
 
 var EditableField = React.createClass({
+    /*
+    Produces some text that changes into a textarea when clicked. 
+
+    Usage:
+    <EditableField value={value}
+        keyPressValidation={keyPressValidation} completeValidation={completeValidation} 
+                    onBackspace={onBackspace} formatInput={formatInput} insideSelector=".some-selector" />
+     />
+    
+    Props:
+    value (required): The value to make editable.
+    keyPressValidation (optional): 
+        a function called for every keypress. If it return false, the keypress is rejected.
+    completeValidation (optional): 
+        a function called when the user presses the ok button. If it returns false the component will stay in edit mode.
+    onBackspace (optional): 
+        function called when backspace is detected _onKeyDown. It is passed the event object, and must return the next caret position.
+    formatInput (optional): 
+        function to format the textarea content, called onChange, after keyPressValidation. 
+        It must return an object with properties value and caretPosition.
+    insideSelector (optional): 
+        string with a css selector. The selector must match a parent of the textarea. 
+        Clicks on the document that do not hit this parent will close the editor. 
+        If no selector is given, the textarea itself will be used for the same purpose.
+
+    */
     mixins: [
         require('react-onclickoutside')
     ],

@@ -2,8 +2,18 @@ import EditableField from './EditableField.jsx';
 
 var HexOnlyEditableField = React.createClass({
     /*
-        A textarea that only accepts hexadecimal characters. 
-        It automatically formats the input into pairs of characters (bytes), like so: AB-D2-C1. 
+        Produces some text that changes into a textarea when clicked (like EditableField).
+        The textarea only accepts hexadecimal characters. 
+        The input is automatically formatted into pairs of characters (bytes), like so: AB-D2-C1. 
+
+        Usage:
+        <HexOnlyEditableField value={value} />
+
+        Where _value_ is the text that should turn editable. 
+        It also accepts all props that EditableField accepts, except
+        keyPressValidation, completeValidation, onBackspace and formatInput
+        
+        This component wraps EditableField, so see that component for info on how the dataflow etc works.
 
         There's a lot of complexity here related to keeping the caret in the right position. 
     */
@@ -74,7 +84,8 @@ var HexOnlyEditableField = React.createClass({
         return isFullbytes;
     },
     render() {
-        return <EditableField {...this.props} 
+        var {keyPressValidation, completeValidation, onBackspace, formatInput, ...props} = this.props;
+        return <EditableField {...props} 
                     keyPressValidation={this._keyPressValidation} completeValidation={this._completeValidation} 
                     onBackspace={this._onBackspace} formatInput={this._formatInput} ref="editableField"/>;
     }
