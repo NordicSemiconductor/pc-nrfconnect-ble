@@ -42,7 +42,7 @@ var discoveryStore = reflux.createStore({
             active: true,
             interval: 100,
             window: 31.25,
-            timeout: 120
+            timeout: 0
         };
 
         bleDriver.start_scan(scanParameters, function(err) {

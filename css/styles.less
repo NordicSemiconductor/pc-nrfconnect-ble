@@ -525,14 +525,22 @@
   }
 }
 
+.service-name {
+  font-size: 12px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 .device-details-view {
   background-color: white;
   width: 250px;
   margin: 80px 0px 0px 20px;
   box-shadow: @draggable-box-shadow;
   .service-items-wrap {
-    overflow: auto;
-    max-height: calc(~"100vh - 430px");
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(~"100vh - 475px");
   }
   .bar1, .bar2, .bar3 {
     width: 8px;

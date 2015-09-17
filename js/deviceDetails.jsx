@@ -44,7 +44,7 @@ var ServiceItem = React.createClass({
                     <div className="content-wrap" onClick={this._toggleExpanded}>
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                         <div className="content">
-                            <span>{this.props.serviceData.name}</span>
+                            <span className="service-name" >{this.props.serviceData.name}</span>
                         </div>
                     </div>
                 </div>
