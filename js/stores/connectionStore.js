@@ -87,7 +87,7 @@ var connectionStore = reflux.createStore({
         var self = this;
         bleDriver.gap_cancel_connect(function(err) {
             if (err) {
-                logger.error(`Could not cancel connection to ${textual.peerAddressToTextual(device)}.`);
+                logger.error(`Could not cancel connection to ${textual.peerAddressToTextual(device)} .`);
                 //TODO: what happens here? If driver fails to cancel connection can we just move on?
             }
             logger.info('Canceled connection');
@@ -102,7 +102,7 @@ var connectionStore = reflux.createStore({
         self.trigger(self.state);
     },
     onDeviceConnected: function(eventPayload){
-        logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(eventPayload))} connected.`);
+        logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(eventPayload))} (handle #${eventPayload.conn_handle}) connected.`);
         driverActions.getCharacteristics(eventPayload.conn_handle);
         this.state.isEnumeratingServices = true;
         this.state.connections.push(eventPayload);
@@ -112,6 +112,11 @@ var connectionStore = reflux.createStore({
         delete this.devicesAboutToBeConnected[eventPayload.peer_addr.addr];
         graphActions.addNode(device, eventPayload);
         this.state.isConnecting = false;
+
+        // Delete the device from the discovered devices store. This is a temporary solution until
+        // refactoring is done.
+        discoveryActions.removeDevice(eventPayload.peer_addr.address);
+
         this.trigger(this.state);
     },
     onDeviceDisconnected: function(eventPayload){
@@ -121,8 +126,10 @@ var connectionStore = reflux.createStore({
             return (connection.conn_handle == eventPayload.conn_handle);
         });
 
-        logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(connectionThatWasDisconnected))} disconnected. Disconnect reason is ${eventPayload.reason_name}.`);
-        graphActions.removeNode(connectionThatWasDisconnected.peer_addr.address);
+        var deviceId = connectionThatWasDisconnected.peer_addr.address + '-' + eventPayload.conn_handle;
+
+        logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(connectionThatWasDisconnected))} (handle #${eventPayload.conn_handle}) disconnected. Disconnect reason is ${eventPayload.reason_name}.`);
+        graphActions.removeNode(deviceId);
 
         this.state.connections = _.reject(this.state.connections, function(device) {
             return (device.conn_handle === eventPayload.conn_handle); // Prune all with invalid connectionHandle
@@ -145,7 +152,7 @@ var connectionStore = reflux.createStore({
 
         bleDriver.gap_disconnect(connectionHandle, bleDriver.BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION, function(err){
             if(err) {
-                logger.error(`Error disconnecting from ${textual.peerAddressToTextual(deviceAddress)}. Error is ${err.message}.`);
+                logger.error(`Error disconnecting from ${textual.peerAddressToTextual(deviceAddress)} (handle #${connectionHandle}). Error is ${err.message}.`);
                 return;
             }
             logger.silly(`call to disconnect from ${deviceAddress} ok.`);

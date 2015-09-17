@@ -94,9 +94,9 @@ var discoveryStore = reflux.createStore({
         this.state.discoveredDevices = {};
         this.trigger(this.state);
     },
-    onRemoveDevice: function(device) {
+    onRemoveDevice: function(device_address) {
         if(this.state.discoveredDevices != null) {
-            delete this.state.discoveredDevices[device];
+            delete this.state.discoveredDevices[device_address];
             this.trigger(this.state);
         }
     }

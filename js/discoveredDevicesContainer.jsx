@@ -91,26 +91,19 @@ var DiscoveredDevice = React.createClass({
 });
 
 var DiscoveredDevicesContainer = React.createClass({
-    mixins: [Reflux.connect(discoveryStore), Reflux.connect(connectionStore)],
+    mixins: [Reflux.connect(discoveryStore)],
     _clearContainer: function() {
         discoveryActions.clearItems();
     },
     render: function() {
         if (this.state.discoveredDevices) {
-            var connectedDevices = this.state.connections;
             var devices = {};
+
+            //  Add devices from this.state.discoveredDevices that are NOT connected
             for(var device in this.state.discoveredDevices) {
-                var isDeviceConnected = false;
-                for (var i = 0; i < connectedDevices.length; i++) {
-                    if (connectedDevices[i].peer_addr.address === this.state.discoveredDevices[device].peer_addr.address) {
-                        isDeviceConnected = true;
-                        break;
-                    }
-                }
-                if (!isDeviceConnected) {
-                    devices[this.state.discoveredDevices[device].peer_addr.address] = this.state.discoveredDevices[device];
-                }
+                devices[this.state.discoveredDevices[device].peer_addr.address] = this.state.discoveredDevices[device];
             }
+
             var progressMode = this.state.scanInProgress ? 'indeterminate' : 'determinate';
             var progressStyle = {
                 visibility: this.state.scanInProgress ? 'visible' : 'hidden',

@@ -18,6 +18,7 @@ import _ from 'underscore';
 import logger from '../logging';
 import bleGraphActions from '../actions/bleGraphActions';
 
+// The nodes in this store must have a combination of BLE address and handle id.
 var bleNodeStore = reflux.createStore({
     listenables: [bleGraphActions],
     init: function(){
@@ -33,9 +34,11 @@ var bleNodeStore = reflux.createStore({
       if(connectedDevice.peer_addr === undefined) return;
       if(connectedDevice.peer_addr.address === undefined) return;
 
+      let deviceId = connectedDevice.peer_addr.address + '-' + connectedDevice.conn_handle;
+
       // If the device already exists in the node.connectionLost state we keep the existing node
       let oldNode = _.find(this.graph, function(node) {
-          return node.deviceId === connectedDevice.peer_addr.address;
+          return node.deviceId === deviceId;
       });
 
       if(oldNode !== undefined) {
@@ -44,7 +47,7 @@ var bleNodeStore = reflux.createStore({
       } else {
           connectedDevice.connection = newConnection;
 
-          this.graph.push({id: newNodeId, deviceId: connectedDevice.peer_addr.address, device: connectedDevice});
+          this.graph.push({id: newNodeId, deviceId: deviceId, device: connectedDevice});
           var centralNode = this._findCentralNode();
 
           if(centralNode === undefined) {
@@ -57,9 +60,9 @@ var bleNodeStore = reflux.createStore({
 
       this.trigger({graph: this.graph});
     },
-    onRemoveNode: function(deviceAddress) {
+    onRemoveNode: function(deviceId) {
         var node = _.find(this.graph, function(node){
-            return node.deviceId === deviceAddress;
+            return node.deviceId === deviceId;
         });
 
         if (node === undefined) {
@@ -70,13 +73,13 @@ var bleNodeStore = reflux.createStore({
 
         node.connectionLost = true;
         var that = this;
-        var thatDeviceAddress = deviceAddress;
+        var thatDeviceId = deviceId;
 
         setTimeout(function() {
-            // Before we tro to delete this node we check if it has reconnected. If it
+            // Before we try to delete this node we check if it has reconnected. If it
             // has reconnected we keep it.
             let oldNode = _.find(that.graph, function(node) {
-                return node.deviceId === thatDeviceAddress;
+                return node.deviceId === thatDeviceId;
             });
 
             if(oldNode !== undefined && oldNode.connectionLost == false) {
