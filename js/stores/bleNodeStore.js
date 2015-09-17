@@ -32,30 +32,57 @@ var bleNodeStore = reflux.createStore({
       logger.debug("Adding node " + newNodeId);
       if(connectedDevice.peer_addr === undefined) return;
       if(connectedDevice.peer_addr.address === undefined) return;
-      connectedDevice.connection = newConnection;
-      this.graph.push({id: newNodeId, deviceId: connectedDevice.peer_addr.address, device: connectedDevice});
-      var centralNode = this._findCentralNode();
 
-      if(centralNode === undefined) {
-          logger.silly('Central node not found.');
-          return;
+      // If the device already exists in the node.connectionLost state we keep the existing node
+      let oldNode = _.find(this.graph, function(node) {
+          return node.deviceId === connectedDevice.peer_addr.address;
+      });
+
+      if(oldNode !== undefined) {
+          console.log('Old node found, reusing it');
+          oldNode.connectionLost = false;
+      } else {
+          connectedDevice.connection = newConnection;
+
+          this.graph.push({id: newNodeId, deviceId: connectedDevice.peer_addr.address, device: connectedDevice});
+          var centralNode = this._findCentralNode();
+
+          if(centralNode === undefined) {
+              logger.silly('Central node not found.');
+              return;
+          }
+
+          centralNode.ancestorOf.push(newNodeId);
       }
 
-      centralNode.ancestorOf.push(newNodeId);
       this.trigger({graph: this.graph});
     },
     onRemoveNode: function(deviceAddress) {
         var node = _.find(this.graph, function(node){
             return node.deviceId === deviceAddress;
         });
-        logger.debug('removing node ' + node.id);
+
         if (node === undefined) {
             return;
         }
 
+        logger.debug('removing node ' + node.id);
+
         node.connectionLost = true;
         var that = this;
-        setTimeout(function(){
+        var thatDeviceAddress = deviceAddress;
+
+        setTimeout(function() {
+            // Before we tro to delete this node we check if it has reconnected. If it
+            // has reconnected we keep it.
+            let oldNode = _.find(that.graph, function(node) {
+                return node.deviceId === thatDeviceAddress;
+            });
+
+            if(oldNode !== undefined && oldNode.connectionLost == false) {
+              return;
+            }
+
             var centralNode = that._findCentralNode();
             centralNode.ancestorOf = _.reject(centralNode.ancestorOf, function(nodeId){
                 return nodeId === node.id;
@@ -69,7 +96,6 @@ var bleNodeStore = reflux.createStore({
         }, 5000);
         this.trigger({graph: this.graph});
     },
-
     _findCentralNode: function() {
       return _.find(this.graph, function(node) {
         return node.id === 'central';
