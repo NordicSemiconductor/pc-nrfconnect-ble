@@ -530,14 +530,17 @@
     border-bottom: 1px solid white;
     margin-right: 1px;
   }
+  @bar1-color: rgb(179, 225, 245);
+  @bar2-color: rgb(102, 196, 235);
+  @bar3-color: rgb(0,   156, 222);
   .bar1 {
-    background-color: rgb(179, 225, 245);
+    background-color: @bar1-color;
   }
   .bar2 {
-    background-color: rgb(102, 196, 235);
+    background-color: @bar2-color;
   }
   .bar3 {
-    background-color: rgb(0, 156, 222);
+    background-color: @bar3-color;
   }
   .service-item, .characteristic-item, .descriptor-item {
     padding: 0;
@@ -545,13 +548,14 @@
     align-items: stretch;
     min-height: 40px;
   }
+  @icon-color: rgb(0, 129, 183);
   .icon-wrap {
     height: 40px;
     width: 8px;
     position: relative;
     line-height: 40px;
     padding-left: 3px;
-    color: rgb(0, 129, 183);
+    color: @icon-color;
   }
   .content-wrap {
     cursor: pointer;
@@ -591,6 +595,19 @@
   }
   .characteristic-item, .descriptor-item {
     font-size: 11px;
+  }
+
+  .add-new {
+    font-size: 11px;
+    color: @icon-color;
+    &:hover, &:hover .icon-wrap {
+      color: @bar2-color;
+    }
+    .icon-wrap {
+      margin: 0 1px;
+      height: 30px;
+      line-height: 30px;
+    }
   }
 }
 

@@ -23,6 +23,7 @@ import nodeStore from './stores/bleNodeStore';
 
 import ConnectedDevice from './components/ConnectedDevice.jsx';
 import CentralDevice from './components/CentralDevice.jsx';
+import AddNewItem from './components/AddNewItem.jsx';
 import HexOnlyEditableField from './components/HexOnlyEditableField.jsx';
 import logger from './logging';
 
