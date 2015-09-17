@@ -19,7 +19,7 @@ var CentralDevice = React.createClass({
         var style={
             position: 'relative',
             width: '250px',
-            height: '113px'
+            height: '110px'
         };
         return (
             <div id={this.props.id} className="device standalone main-device" style={style}>
@@ -29,7 +29,7 @@ var CentralDevice = React.createClass({
                         <div>
                             <strong>{this.props.name}</strong>
                         </div>
-                        <div>{this.props.address}</div>
+                        <div className="address-text">{this.props.address}</div>
                         <div className="role-flag">Central</div>
                     </div>
                 </div>

@@ -49,7 +49,7 @@ var ConnectedDevice = React.createClass({
                         <div className="role-flag pull-right">{role}</div>
                         <strong>{device.name}</strong>
                     </div>
-                    <div>{device.address}</div>
+                    <div className="address-text">{device.address}</div>
                     <div className="flag-line">
                         {device.services.map(function(service, index) {
                             return (<div key={index} className="device-flag">{service}</div>)

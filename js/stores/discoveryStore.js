@@ -93,6 +93,12 @@ var discoveryStore = reflux.createStore({
     onClearItems: function() {
         this.state.discoveredDevices = {};
         this.trigger(this.state);
+    },
+    onRemoveDevice: function(device) {
+        if(this.state.discoveredDevices != null) {
+            delete this.state.discoveredDevices[device];
+            this.trigger(this.state);
+        }
     }
 });
 

@@ -110,20 +110,28 @@ var connectionStore = reflux.createStore({
     },
     onDeviceDisconnected: function(eventPayload){
         this.state.isEnumeratingServices = false; // In case we disconnect while enumerating services
+
         var connectionThatWasDisconnected = _.find(this.state.connections, function(connection){
             return (connection.conn_handle == eventPayload.conn_handle);
         });
 
         logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(connectionThatWasDisconnected))} disconnected. Disconnect reason is ${eventPayload.reason_name}.`);
         graphActions.removeNode(connectionThatWasDisconnected.peer_addr.address);
+
         this.state.connections = _.reject(this.state.connections, function(device) {
             return (device.conn_handle === eventPayload.conn_handle); // Prune all with invalid connectionHandle
         });
+
+        // Delete the device from the discovered devices store. This is a temporary solution until
+        // refactoring is done.
+        discoveryActions.removeDevice(connectionThatWasDisconnected.peer_addr.address);
+
         this.trigger(this.state);
     },
     onDisconnectFromDevice: function(deviceAddress) {
         var connectionHandle = this._findConnectionHandleFromDeviceAddress(deviceAddress);
         this.state.isEnumeratingServices = false;
+
         if(connectionHandle === undefined) {
             logger.error(`Device ${deviceAddress} is not in connection database. Removing node from graph. TODO: this should not happen!`);
             return;
