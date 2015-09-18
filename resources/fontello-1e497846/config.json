@@ -151,6 +151,12 @@
       "css": "flash",
       "code": 59397,
       "src": "iconic"
+    },
+    {
+      "uid": "a3f13abf118d3c6abe3e99a6c296a9a5",
+      "css": "indent-right",
+      "code": 59415,
+      "src": "websymbols"
     }
   ]
 }
