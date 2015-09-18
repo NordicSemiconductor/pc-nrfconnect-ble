@@ -12,11 +12,10 @@
 
 'use strict';
 
-var React = require('react');
-var Reflux = require('reflux');
-var driverStore = require('./stores/bleDriverStore');
-var DiscoveryActions = require('./actions/discoveryActions');
-var discoveryStore = require('./stores/discoveryStore');
+import React from 'react';
+import Reflux from 'reflux';
+import driverStore from './stores/bleDriverStore';
+import DiscoveryActions from './actions/discoveryActions';
 
 var DiscoveryButton = React.createClass({
     mixins: [Reflux.connect(driverStore, "driverStore")],

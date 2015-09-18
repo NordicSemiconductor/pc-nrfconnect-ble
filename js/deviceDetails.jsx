@@ -44,7 +44,7 @@ var ServiceItem = React.createClass({
                     <div className="content-wrap" onClick={this._toggleExpanded}>
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                         <div className="content">
-                            <span>{this.props.serviceData.name}</span>
+                            <div className="service-name truncate-text" >{this.props.serviceData.name}</div>
                         </div>
                     </div>
                 </div>
@@ -67,7 +67,7 @@ var DescriptorItem = React.createClass({
                 <div className="bar3"></div>
                 <div className="content-wrap">
                     <div className="content">
-                        <span>{this.props.descriptorData.name}</span>
+                        <div className="truncate-text">{this.props.descriptorData.name}</div>
                         <div className="text-subtle">
                             <span>{this.props.descriptorData.value}</span>
                         </div>
@@ -98,7 +98,7 @@ var CharacteristicItem = React.createClass({
                 <div className="content-wrap" onClick={this._toggleExpanded}>
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     <div className="content">
-                        <span>{this.props.characteristicData.name}</span>
+                        <div className="truncate-text">{this.props.characteristicData.name}</div>
                         <div className="text-subtle">
                             <span>{this.props.characteristicData.value}</span>
                         </div>

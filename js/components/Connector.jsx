@@ -120,7 +120,7 @@ var Connector = React.createClass({
         var lines = this._generateLines(layoutInfo.lineCoordinates);
         var connectionInfoOverlay = this._getConnectionOverlay(layoutInfo.lineCoordinates);
 
-        return (<div>
+        return (<div className="connector">
                     <svg style={{position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height}}>
                         {lines}
                     </svg>

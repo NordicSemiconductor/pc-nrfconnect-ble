@@ -44,7 +44,7 @@ var LogContainer = React.createClass({
         return {
             isInfiniteLoading: false,
             elements: [],
-            follow: false
+            follow: true
         }
     },
     componentWillUpdate: function() {

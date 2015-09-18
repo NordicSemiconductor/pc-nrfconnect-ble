@@ -28,7 +28,8 @@ var discoveryStore = reflux.createStore({
     init: function() {
         this.state = {
             discoveredDevices: {},
-            scanInProgress: false
+            scanInProgress: false,
+            isConnecting: false
         };
     },
     getInitialState: function() {
@@ -42,7 +43,7 @@ var discoveryStore = reflux.createStore({
             active: true,
             interval: 100,
             window: 31.25,
-            timeout: 120
+            timeout: 0
         };
 
         bleDriver.start_scan(scanParameters, function(err) {
@@ -94,11 +95,15 @@ var discoveryStore = reflux.createStore({
         this.state.discoveredDevices = {};
         this.trigger(this.state);
     },
-    onRemoveDevice: function(device) {
+    onRemoveDevice: function(device_address) {
         if(this.state.discoveredDevices != null) {
-            delete this.state.discoveredDevices[device];
+            delete this.state.discoveredDevices[device_address];
             this.trigger(this.state);
         }
+    },
+    onConnectStateChange: function(isConnecting) {
+        this.state.isConnecting = isConnecting;
+        this.trigger(this.state);
     }
 });
 
