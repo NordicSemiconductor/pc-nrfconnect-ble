@@ -162,7 +162,9 @@ var connectionStore = reflux.createStore({
             return (conn.conn_handle === connectionHandle);
         });
 
-        this.state.deviceAddressToServicesMap[connection.peer_addr.address] = gattDatabase.services;
+        let deviceId = connection.peer_addr.address + '-' + connectionHandle;
+
+        this.state.deviceAddressToServicesMap[deviceId] = gattDatabase.services;
         this.trigger({deviceAddressToServicesMap: this.state.deviceAddressToServicesMap});
     }
 });
