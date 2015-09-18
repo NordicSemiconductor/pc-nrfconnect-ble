@@ -55,7 +55,7 @@ var ServiceItem = React.createClass({
                     <div className="content-wrap" onClick={this._toggleExpanded}>
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                         <div className="content">
-                            <span>{this.props.serviceData.name}</span>
+                            <div className="service-name truncate-text" >{this.props.serviceData.name}</div>
                         </div>
                     </div>
                 </div>
@@ -87,14 +87,14 @@ var DescriptorItem = React.createClass({
     },
     render: function() {
         var backgroundColor = `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
-        return (
+         return (
             <div className="descriptor-item" style={{ backgroundColor: backgroundColor }}>
                 <div className="bar1"></div>
                 <div className="bar2"></div>
                 <div className="bar3"></div>
                 <div className="content-wrap">
                     <div className="content">
-                        <span>{this.props.name}</span>
+                        <div className="truncate-text">{this.props.name}</div>
                         <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
                     </div>
                 </div>
@@ -141,11 +141,11 @@ var CharacteristicItem = React.createClass({
                 <div className="content-wrap" onClick={this._toggleExpanded}>
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     <div className="content">
-                        <span>{this.props.name}</span>
+                        <div className="truncate-text">{this.props.name}</div>
                         <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
+                        </div>
                     </div>
                 </div>
-            </div>
             <Collapse timeout={0} ref="coll" in={this.state.expanded}>
                 <div>
                     {this.props.descriptors.map((descriptor, k) =>
@@ -160,7 +160,7 @@ var CharacteristicItem = React.createClass({
 
 var DeviceDetailsContainer = React.createClass({
     mixins: [Reflux.connect(nodeStore), Reflux.connect(connectionStore)],
-    
+
     render: function() {
         var elemWidth = 250;
         var detailNodes = this.state.graph.map((node, i) => {

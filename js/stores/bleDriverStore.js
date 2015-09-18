@@ -140,6 +140,9 @@ var bleDriverStore = reflux.createStore({
                             discoveryActions.scanTimedOut(event);
                             logger.info('Scan timed out');
                             break;
+                        case bleDriver.BLE_GAP_TIMEOUT_SRC_CONN:
+                            connectionActions.connectTimedOut(event);
+                            break;
                         default:
                             logger.info(`GAP operation timed out: ${event.src_name} (${event.src}).`);
                     }

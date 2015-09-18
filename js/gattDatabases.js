@@ -100,7 +100,7 @@ class Descriptor {
     constructor(handle, uuid) {
         this.handle = handle;
         this.uuid = uuid;
-        this.name = uuidDefinitions[uuid];
+        this.name = uuidDefinitions[uuid] || uuid;
         this.value = [];
     }
 }
@@ -313,14 +313,14 @@ class GattDatabases {
 
     parseServiceData(service, data, length, readOffset) {
         service.serviceUuid = this.arrayToString(data);
-        service.name = uuidDefinitions[service.serviceUuid];
+        service.name = uuidDefinitions[service.serviceUuid] || service.serviceUuid;
     }
 
     parseCharacteristicData(characteristic, data, length, readOffset) {
         characteristic.properties = new Properties(data[0]);
         characteristic.valueHandle = this.arrayToInt(data.slice(1, 3));
         characteristic.characteristicUuid = this.arrayToString(data.slice(3));
-        characteristic.name = uuidDefinitions[characteristic.characteristicUuid];
+        characteristic.name = uuidDefinitions[characteristic.characteristicUuid] || characteristic.characteristicUuid;
     }
 
     parseDescriptorData(descriptor, data, length, readOffset) {

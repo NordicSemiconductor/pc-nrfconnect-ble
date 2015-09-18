@@ -24,7 +24,8 @@ var discoveryActions = Reflux.createActions(
     "scanStopped",
     "scanTimedOut",
     "clearItems",
-    "removeDevice"
+    "removeDevice",
+    "connectStateChange"
   ]);
 
 module.exports = discoveryActions;
