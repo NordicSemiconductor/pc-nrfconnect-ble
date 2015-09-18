@@ -70,11 +70,13 @@ var connectionStore = reflux.createStore({
             if(err) {
                 logger.error(`Could not connect to ${textual.peerAddressToTextual(device)} due to error. ${err.message}`);
                 self.state.isConnecting = false;
+                discoveryActions.connectStateChange(self.state.isConnecting);
             } else {
                 logger.debug(`Successfully sent connection request to driver (${textual.peerAddressToTextual(device)}).`);
                 discoveryActions.scanStopped();
                 self.devicesAboutToBeConnected[device.peer_addr.addr] = device;
                 self.state.isConnecting = true;
+                discoveryActions.connectStateChange(self.state.isConnecting);
             }
 
             self.trigger(self.state);
@@ -89,6 +91,7 @@ var connectionStore = reflux.createStore({
             }
             logger.info('Canceled connection');
             self.state.isConnecting = false;
+            discoveryActions.connectStateChange(self.state.isConnecting);
             self.trigger(self.state);
         });
     },
@@ -96,6 +99,7 @@ var connectionStore = reflux.createStore({
         var self = this;
         logger.info("Connection timed out");
         self.state.isConnecting = false;
+        discoveryActions.connectStateChange(self.state.isConnecting);
         self.trigger(self.state);
     },
     onDeviceConnected: function(eventPayload){
@@ -109,6 +113,7 @@ var connectionStore = reflux.createStore({
         delete this.devicesAboutToBeConnected[eventPayload.peer_addr.addr];
         graphActions.addNode(device, eventPayload);
         this.state.isConnecting = false;
+        discoveryActions.connectStateChange(this.state.isConnecting);
 
         // Delete the device from the discovered devices store. This is a temporary solution until
         // refactoring is done.

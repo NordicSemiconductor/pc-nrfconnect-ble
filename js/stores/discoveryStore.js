@@ -101,7 +101,8 @@ var discoveryStore = reflux.createStore({
             this.trigger(this.state);
         }
     },
-    onConnectStateChange: function() {
+    onConnectStateChange: function(isConnecting) {
+        this.state.isConnecting = isConnecting;
         this.trigger(this.state);
     }
 });
