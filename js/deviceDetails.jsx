@@ -55,7 +55,7 @@ var ServiceItem = React.createClass({
                     <div className="content-wrap" onClick={this._toggleExpanded}>
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                         <div className="content">
-                            <div className="service-name truncate-text" >{this.props.serviceData.name}</div>
+                            <div className="service-name truncate-text" >{this.props.name}</div>
                         </div>
                     </div>
                 </div>
@@ -191,7 +191,7 @@ var DeviceDetailsView = React.createClass({
                     <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={this.props.node.id+ '_details'} layout="vertical"/>
                     <div className="service-items-wrap">
                         {this.props.services.map((service, i) =>
-                            <ServiceItem serviceData={service} key={i} characteristics={service.characteristics} />
+                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} />
                         )}
                     </div>
                 </div>
@@ -213,4 +213,4 @@ var DeviceDetailsView = React.createClass({
         } else {return <div/>}
     }
 });
-module.exports = DeviceDetailsContainer;
+module.exports = { DeviceDetailsContainer, ServiceItem };

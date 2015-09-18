@@ -18,12 +18,13 @@ import Reflux from 'reflux';
 import hotkey from 'react-hotkey';
 
 import BleNodeContainer from './node.jsx';
-import DeviceDetails from './DeviceDetails.jsx';
+import { DeviceDetailsContainer } from './deviceDetails.jsx';
+import ServerSetup from './components/ServerSetup.jsx';
 
 import Log from './log.jsx';
 import logger from './logging';
 
-var DiscoveredDevicesContainer = require('./discoveredDevicesContainer.jsx').DiscoveredDevicesContainer;
+import { DiscoveredDevicesContainer } from './discoveredDevicesContainer.jsx';
 import DiscoveryActions from './actions/discoveryActions';
 
 import driverActions from './actions/bleDriverActions';
@@ -119,8 +120,9 @@ var MyView = React.createClass({
               <div className="main-layout" style={layoutStyle}>
                 <div>
                   <div>
-                    <BleNodeContainer style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
-                    <DeviceDetails    style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'DeviceDetails' ? 'block':  'none'}}/>
+                    <BleNodeContainer       style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
+                    <DeviceDetailsContainer style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'DeviceDetails' ? 'block': 'none'}}/>
+                    <ServerSetup            style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ServerSetup'   ? 'block': 'none'}}/>
                   </div>
                   <div>
                     <Log/>

@@ -166,6 +166,16 @@ var connectionStore = reflux.createStore({
 
         this.state.deviceAddressToServicesMap[deviceId] = gattDatabase.services;
         this.trigger({deviceAddressToServicesMap: this.state.deviceAddressToServicesMap});
+        window.hackorama = () => this.hackorama();
+    },
+
+    hackorama: function() {
+        var address = Object.keys(this.state.deviceAddressToServicesMap)[0];
+        var services = this.state.deviceAddressToServicesMap[address];
+        services[3].characteristics[0].value = "" + Math.floor(Math.random()*99);
+        //services[3].characteristics[0].descriptors[0].value = "" + Math.floor(Math.random()*99);
+        console.log("new values are: " + services[3].characteristics[0].value + " and " + services[3].characteristics[0].descriptors[0].value);
+        this.trigger({deviceAddressToServicesMap: this.state.deviceAddressToServicesMap});
     }
 });
 module.exports = connectionStore;
