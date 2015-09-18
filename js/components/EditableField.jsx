@@ -35,10 +35,14 @@ var EditableField = React.createClass({
     ],
     handleClickOutside: function(e) {
         if (this.state.editing) {
-            if (this.insideParent) {
+            if (this.props.insideSelector) {
                 //dont close if click was within a parent element that matches insideSelector
-                if (e.path.includes(this.insideParent)) {
-                    return;
+                var textarea = React.findDOMNode(this.refs.editableTextarea);
+                if (textarea) {
+                    var insideParent = $(textarea).parents(this.props.insideSelector)[0];
+                    if (e.path.includes(insideParent)) {
+                        return;
+                    }
                 }
             }
             this.setState({
@@ -59,15 +63,6 @@ var EditableField = React.createClass({
         if (!this.state.editing && this.props.value !== nextProps.value) {
             this.setState({ value: nextProps.value });
         }
-    },
-    componentDidMount: function() {
-        if (this.props.insideSelector) {
-            var elem = $(React.findDOMNode(this.refs.editableTextarea)).parents(this.props.insideSelector);
-            this.insideParent = elem.length > 0 ? elem[0] : null; 
-        }
-    },
-    componentWillUnmount: function() {
-        this.insideParent = null; //avoid leaking memory
     },
     _toggleEditing: function(e) {
         e.stopPropagation();
@@ -117,21 +112,28 @@ var EditableField = React.createClass({
     },
     render: function() {
         var nonBreakingSpace = "\u00A0";
+        //Delaying the creation of TextareaAutosize etc until they're needed gives a performance win.
+        //This matters when we get rapidly rerendered, e.g. during an animation.
+        var child;
+        if (this.state.editing) {
+            child = <div className="editable-field-editor-wrap">
+                        <div className="alert-wrap">
+                            <div className="alert alert-danger tooltip top" style={{display: this.state.validationMessage == '' ? 'none' : 'block' }}>
+                                <div className="tooltip-arrow"></div>
+                                {this.state.validationMessage}
+                            </div>
+                        </div>
+                        <div className="btn btn-primary btn-xs btn-nordic" onClick={this._onOkButtonClick}><i className="icon-ok"></i></div>
+                        <TextareaAutosize ref="editableTextarea" minRows="1" onKeyDown={this._onKeyDown} value={this.state.value} onChange={this._onChange} onClick={this._stopPropagation}></TextareaAutosize>
+                    </div>
+        } else {
+            child = <div className="subtle-text editable" onClick={this._toggleEditing}>
+                        <span>{this.state.value || nonBreakingSpace}</span>
+                    </div>
+        }
         return (
             <div className="editable-field">
-                <div className="subtle-text editable" onClick={this._toggleEditing}  style={{display: this.state.editing ? "none" : "block"}}>
-                    <span>{this.state.value || nonBreakingSpace}</span>
-                </div>
-                <div className="editable-field-editor-wrap" style={{display: this.state.editing ? "block" : "none"}}>
-                    <div className="alert-wrap">
-                        <div className="alert alert-danger tooltip top" style={{display: this.state.validationMessage == '' ? 'none' : 'block' }}>
-                            <div className="tooltip-arrow"></div>
-                            {this.state.validationMessage}
-                        </div>
-                    </div>
-                    <div className="btn btn-primary btn-xs btn-nordic" onClick={this._onOkButtonClick}><i className="icon-ok"></i></div>
-                    <TextareaAutosize ref="editableTextarea" minRows="1" onKeyDown={this._onKeyDown} value={this.state.value} onChange={this._onChange} onClick={this._stopPropagation}></TextareaAutosize>
-                </div>
+                {child}
             </div>
         );
     }
