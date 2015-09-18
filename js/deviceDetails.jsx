@@ -24,10 +24,13 @@ import nodeStore from './stores/bleNodeStore';
 import ConnectedDevice from './components/ConnectedDevice.jsx';
 import CentralDevice from './components/CentralDevice.jsx';
 import AddNewItem from './components/AddNewItem.jsx';
+
+import { BlueWhiteBlinkMixin } from './utils/Effects.jsx';
 import HexOnlyEditableField from './components/HexOnlyEditableField.jsx';
 import logger from './logging';
 
 var ServiceItem = React.createClass({
+    mixins: [BlueWhiteBlinkMixin],
     getInitialState: function() {
         return {
             expanded: false
@@ -36,21 +39,18 @@ var ServiceItem = React.createClass({
     _toggleExpanded: function() {
         this.setState({expanded: !this.state.expanded});
     },
-    _blink: function() {
-        this.setState({ blink: true });
-        setTimeout((() => this.setState({ blink: false })).bind(this), 2000);
-    },
     _childChanged: function() {
         if (!this.state.expanded) {
-            this._blink();
+            this.blink();
         }
     },
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
         var iconStyle = this.props.characteristics.length === 0 ? { display: 'none' } : {};
+        var backgroundColor = `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
         return (
             <div>
-                <div className={"service-item" + (this.state.blink ? " blink" : "")}>
+                <div className="service-item" style={{ backgroundColor: backgroundColor }}>
                     <div className="bar1"></div>
                     <div className="content-wrap" onClick={this._toggleExpanded}>
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
@@ -73,6 +73,7 @@ var ServiceItem = React.createClass({
 });
 
 var DescriptorItem = React.createClass({
+    mixins: [BlueWhiteBlinkMixin],
     getInitialState: function() {
         return {};
     },
@@ -81,13 +82,13 @@ var DescriptorItem = React.createClass({
             if (this.props.onChange) {
                 this.props.onChange()
             }
-            this.setState({ blink: true });
-            setTimeout((() => this.setState({ blink: false })).bind(this), 2000);
+            this.blink();
         }
     },
     render: function() {
-         return (
-            <div className={"descriptor-item" + (this.state.blink ? " blink" : "")}>
+        var backgroundColor = `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
+        return (
+            <div className="descriptor-item" style={{ backgroundColor: backgroundColor }}>
                 <div className="bar1"></div>
                 <div className="bar2"></div>
                 <div className="bar3"></div>
@@ -103,6 +104,7 @@ var DescriptorItem = React.createClass({
 });
 
 var CharacteristicItem = React.createClass({
+    mixins: [BlueWhiteBlinkMixin],
     getInitialState: function() {
         return {
             expanded: false
@@ -113,12 +115,8 @@ var CharacteristicItem = React.createClass({
             if (this.props.onChange) {
                 this.props.onChange();
             }
-            this._blink();
+            this.blink();
         }
-    },
-    _blink: function() {
-        this.setState({ blink: true });
-        setTimeout((() => this.setState({ blink: false })).bind(this), 2000);
     },
     _toggleExpanded: function() {
         this.setState({expanded: !this.state.expanded});
@@ -128,15 +126,16 @@ var CharacteristicItem = React.createClass({
             this.props.onChange();
         }
         if (!this.state.expanded) {
-            this._blink();
+            this.blink();
         }
     },
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
         var iconStyle = this.props.descriptors.length === 0 ? { display: 'none' } : {};
+        var backgroundColor = `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
         return (
         <div>
-            <div className={"characteristic-item" + (this.state.blink ? " blink" : "")}>
+            <div className="characteristic-item" style={{ backgroundColor: backgroundColor }} ref="item">
                 <div className="bar1"></div>
                 <div className="bar2"></div>
                 <div className="content-wrap" onClick={this._toggleExpanded}>
