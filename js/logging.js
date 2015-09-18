@@ -15,9 +15,16 @@ import util from 'util';
 import sqlite3 from'sqlite3';
 import fs from 'fs';
 
+var application_name = 'pc-yggdrasil';
+
+
 var default_log_file = 'log.txt';
-var default_trace_file = 'app_log.txt'
+var default_trace_file = 'app_log.txt';
 var default_db_file = 'logger.db';
+
+if (process.env.APPDATA) {
+    default_log_file = process.env.APPDATA + '\\' + application_name + '\\log.txt';
+}
 
 var convert_level = function(level) {
     /**
