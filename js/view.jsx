@@ -18,7 +18,7 @@ import Reflux from 'reflux';
 import hotkey from 'react-hotkey';
 
 import BleNodeContainer from './node.jsx';
-import DeviceDetails from './DeviceDetails.jsx';
+import DeviceDetails from './deviceDetails.jsx';
 
 import Log from './log.jsx';
 import logger from './logging';

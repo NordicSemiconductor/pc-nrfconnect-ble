@@ -10,7 +10,7 @@
  *
  */
 
-var app=require('app');
+var app = require('app');
 var BrowserWindow = require('browser-window');
 var crashReporter = require('crash-reporter');
 crashReporter.start();
@@ -41,6 +41,6 @@ app.on('ready', function() {
 //  console.log(app.getTitle());
     console.log('je');
     mainWindow.webContents.on('did-finish-load',function() {
-        mainWindow.setTitle(app.getName());
+        mainWindow.setTitle('Yggdrasil');
     });
 });
