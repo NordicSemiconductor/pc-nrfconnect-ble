@@ -4,9 +4,7 @@ Install NodeJS and Python 2.7 and run the following commands:
 
 ```
 npm install -g npm
-npm install -g bower
 npm install -g node-gyp
-bower install
 ```
 
 ## WIN32 specific procedure
