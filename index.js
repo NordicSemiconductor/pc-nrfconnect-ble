@@ -20,9 +20,9 @@ var mainWindow = null;
 global.logFileDir = app.getPath('userData');
 
 app.on('window-all-closed', function() {
-    if (process.platform !== 'darwin') {
+//    if (process.platform !== 'darwin') {
         app.quit();
-    }
+//    }
 });
 
 app.on('ready', function() {
