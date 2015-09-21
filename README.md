@@ -23,7 +23,7 @@ Start VS2013 x86 Native Tools Command Prompt
 Run the following commands:
 ```
 set npm_config_runtime=electron
-set npm_config_runtime_version=0.30.3
+set npm_config_target=0.30.3
 set npm_config_arch=ia32
 
 npm i --ignore-scripts sqlite3
@@ -52,7 +52,7 @@ export PC_BLE_DRIVER_DIR=(path to pc-ble-driver release folder, or pc-ble-driver
 Let the pc-ble-driver know that we are using electron and which version and architecture:
 ```
 export npm_config_runtime=electron
-export npm_config_runtime_version=0.30.3
+export npm_config_target=0.30.3
 export npm_config_arch=x64
 ```
 
@@ -79,7 +79,7 @@ export PC_BLE_DRIVER_DIR=(path to pc-ble-driver release folder, or pc-ble-driver
 Let the pc-ble-driver know that we are using electron and which version and architecture:
 ```
 export npm_config_runtime=electron
-export npm_config_runtime_version=0.30.3
+export npm_config_target=0.30.3
 export npm_config_arch=x64
 ```
 
