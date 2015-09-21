@@ -105,7 +105,7 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
 
     // Check if we have timestamp in meta data
     if(meta !== undefined) {
-        if(meta.timestamp !== null) {
+        if(meta.timestamp != null) {
             timestamp = meta.timestamp;
         }
 
