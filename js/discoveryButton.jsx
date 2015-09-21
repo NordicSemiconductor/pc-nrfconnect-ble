@@ -31,17 +31,20 @@ var DiscoveryButton = React.createClass({
     render: function() {
         var labelString;
         var iconName;
+        var hoverText;
 
         if (this.props.scanInProgress) {
             labelString = 'Stop scan';
-            iconName = 'icon-stop'
+            iconName = 'icon-stop';
+            hoverText = 'Stop scan (Alt+S)';
          } else {
             labelString = 'Start scan';
             iconName = 'icon-play';
+            hoverText = 'Start scan (Alt+S)';
         }
 
         return (
-            <button className="btn btn-primary btn-sm btn-nordic padded-row" disabled= {!this.state.driverStore.connectedToDriver || this.props.isConnecting} onClick={this.buttonClicked}>
+            <button title={hoverText} className="btn btn-primary btn-sm btn-nordic padded-row" disabled= {!this.state.driverStore.connectedToDriver || this.props.isConnecting} onClick={this.buttonClicked}>
             <span className={iconName} />
             {labelString}
             </button>

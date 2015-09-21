@@ -109,11 +109,11 @@ var NavBar = React.createClass({
                     </div>
                 </div>
                 <div className="nav-section bl padded-row">
-                    <button onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
+                    <button title="Connection map (Alt+1)" onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
                         <span className="icon-sitemap icon-rotate-270" />
                         <span>Connection map</span>
                     </button>
-                    <button onClick={this._onViewChange.bind(this, 'DeviceDetails')}  className={this._getClassForTabButton('DeviceDetails')}>
+                    <button title="Device details (Alt+2)" onClick={this._onViewChange.bind(this, 'DeviceDetails')}  className={this._getClassForTabButton('DeviceDetails')}>
                         <span className="icon-columns" />
                         <span>Device details</span>
                     </button>
