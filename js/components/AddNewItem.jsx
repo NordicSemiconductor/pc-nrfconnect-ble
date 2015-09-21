@@ -2,7 +2,7 @@ import _ from 'underscore';
 
 var AddNewItem = React.createClass({
     render: function() {
-        let bars = _.times(parseInt(this.props.bars), i => <div className={"bar" + (i+1)} key={i}></div>);
+        let bars = _.times(this.props.bars, i => <div className={"bar" + (i+1)} key={i}></div>);
         return (
             <div className="add-new content-wrap">
                 {bars}

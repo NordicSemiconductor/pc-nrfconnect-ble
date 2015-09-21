@@ -36,8 +36,9 @@ var ServiceItem = React.createClass({
             expanded: false
         };
     },
-    _toggleExpanded: function() {
+    _onClick: function() {
         this.setState({expanded: !this.state.expanded});
+        this.props.onSelected(this.props.handle);
     },
     _childChanged: function() {
         if (!this.state.expanded) {
@@ -47,12 +48,15 @@ var ServiceItem = React.createClass({
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
         var iconStyle = this.props.characteristics.length === 0 ? { display: 'none' } : {};
-        var backgroundColor = `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
+        var selected = this.props.handle === this.props.selectedHandle;
+        var backgroundColor = selected
+            ? 'rgb(179,225,245)'
+            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
         return (
             <div>
                 <div className="service-item" style={{ backgroundColor: backgroundColor }}>
                     <div className="bar1"></div>
-                    <div className="content-wrap" onClick={this._toggleExpanded}>
+                    <div className="content-wrap" onClick={this._onClick}>
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                         <div className="content">
                             <div className="service-name truncate-text" >{this.props.name}</div>
@@ -63,8 +67,10 @@ var ServiceItem = React.createClass({
                     <div>
                         {this.props.characteristics.map((characteristic, j) =>
                             <CharacteristicItem name={characteristic.name} value={characteristic.value} 
-                                descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} />
+                                handle={characteristic.handle} selectedHandle={this.props.selectedHandle} onSelected={this.props.onSelected}
+                                descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} addNew={this.props.addNew} />
                         )}
+                        {this.props.addNew ? <AddNewItem text="New characteristic" bars={2} /> : null}
                     </div>
                 </Collapse>
             </div>
@@ -85,10 +91,16 @@ var DescriptorItem = React.createClass({
             this.blink();
         }
     },
+    _onClick: function() {
+        this.props.onSelected(this.props.handle);
+    },
     render: function() {
-        var backgroundColor = `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
-         return (
-            <div className="descriptor-item" style={{ backgroundColor: backgroundColor }}>
+        var selected = this.props.handle === this.props.selectedHandle;
+        var backgroundColor = selected
+            ? 'rgb(179,225,245)'
+            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
+        return (
+            <div className={"descriptor-item" + (selected ? " selected" : "")} style={{ backgroundColor: backgroundColor }} onClick={this._onClick}>
                 <div className="bar1"></div>
                 <div className="bar2"></div>
                 <div className="bar3"></div>
@@ -118,8 +130,9 @@ var CharacteristicItem = React.createClass({
             this.blink();
         }
     },
-    _toggleExpanded: function() {
+    _onClick: function() {
         this.setState({expanded: !this.state.expanded});
+        this.props.onSelected(this.props.handle);
     },
     _childChanged: function() {
         if (this.props.onChange) {
@@ -132,25 +145,30 @@ var CharacteristicItem = React.createClass({
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
         var iconStyle = this.props.descriptors.length === 0 ? { display: 'none' } : {};
-        var backgroundColor = `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
+        var selected = this.props.handle === this.props.selectedHandle;
+        var backgroundColor = selected
+            ? 'rgb(179,225,245)'
+            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
         return (
         <div>
             <div className="characteristic-item" style={{ backgroundColor: backgroundColor }} ref="item">
                 <div className="bar1"></div>
                 <div className="bar2"></div>
-                <div className="content-wrap" onClick={this._toggleExpanded}>
+                <div className="content-wrap" onClick={this._onClick}>
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     <div className="content">
                         <div className="truncate-text">{this.props.name}</div>
                         <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
-                        </div>
                     </div>
                 </div>
+            </div>
             <Collapse timeout={0} ref="coll" in={this.state.expanded}>
                 <div>
                     {this.props.descriptors.map((descriptor, k) =>
-                        <DescriptorItem name={descriptor.name} value={descriptor.value} key={k} onChange={this._childChanged}/>
+                        <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged}
+                            handle={descriptor.handle} selectedHandle={this.props.selectedHandle} onSelected={this.props.onSelected} key={k} />
                     )}
+                    {this.props.addNew ? <AddNewItem text="New descriptor" bars={3} /> : null}
                 </div>
             </Collapse>
         </div>
@@ -191,7 +209,7 @@ var DeviceDetailsView = React.createClass({
                     <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={this.props.node.id+ '_details'} layout="vertical"/>
                     <div className="service-items-wrap">
                         {this.props.services.map((service, i) =>
-                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} />
+                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} handle={service.handle} />
                         )}
                     </div>
                 </div>
