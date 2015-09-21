@@ -541,14 +541,29 @@
   font-size: 12px;
 }
 
+.server-setup {
+  .device-details-view {
+    display: flex;
+    margin: 80px 20px 0px 20px;
+    max-width: 800px;
+
+    .item-editor {
+      border-left: 8px solid rgb(179, 225, 245);
+      height: calc(~"100vh - 444px");
+      padding: 20px;
+      flex: 1;
+    }
+  }
+}
+
 .device-details-view {
   background-color: white;
-  width: 250px;
   margin: 80px 0px 0px 20px;
   .service-items-wrap {
     overflow-y: auto;
     overflow-x: hidden;
     max-height: calc(~"100vh - 444px");
+    width: 250px;
   }
   .bar1, .bar2, .bar3 {
     width: 8px;
@@ -663,19 +678,7 @@
       font-size: 11px;
     }
   }
-
 }
-
-@keyframes blink {
-   0% {background: rgb(179, 225, 245);}
-   100% {background: none;}
-}
-
-.blink {
-   -webkit-animation: blink 2s ease-in 1;
-   animation: blink 2s ease-in 1;
-}
-
 
 .nordic-form-control {
   margin-top: 4px;
