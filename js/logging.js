@@ -14,19 +14,15 @@ import winston from 'winston';
 import util from 'util';
 import sqlite3 from'sqlite3';
 import fs from 'fs';
+import remote from 'remote';
 
-var application_name = 'pc-yggdrasil';
+var defaultLogFile = 'log.txt';
+var defaultDbFile = 'logger.db';
 
+// Need to retrieve logFileDir from index.js since we do not have access to app.getPath in this file
+defaultLogFile = remote.getGlobal('logFileDir') + '/' + defaultLogFile;
 
-var default_log_file = 'log.txt';
-var default_trace_file = 'app_log.txt';
-var default_db_file = 'logger.db';
-
-if (process.env.APPDATA) {
-    default_log_file = process.env.APPDATA + '\\' + application_name + '\\log.txt';
-}
-
-var convert_level = function(level) {
+var convertLevel = function(level) {
     /**
     * @brief Adds log entries to database and datastore
     * @details Adds log entries to database and datastore
@@ -60,14 +56,14 @@ var convert_level = function(level) {
     } else {
         return 3; // If level is not known, set it to info
     }
-}
+};
 
 var DbLogger = winston.transports.DbLogger = function(options) {
     this.name = 'db';
     this.level = options.level || 'info';
-    this.filename = options.filename || default_db_file;
+    this.filename = options.filename || defaultDbFile;
     this.db = null;
-    this.db_ready = false;
+    this.dbReady = false;
 
     var self = this;
 
@@ -80,17 +76,15 @@ var DbLogger = winston.transports.DbLogger = function(options) {
 
     this.db = new sqlite3.Database(this.filename);
 
-    var self = this;
-
     this.db.serialize(function() {
         self.db.run('CREATE TABLE IF NOT EXISTS log_entries(id INTEGER PRIMARY KEY, time TEXT, level INTEGER, message TEXT, meta TEXT)');
         self.db.run('CREATE INDEX IF NOT EXISTS log_entries_time on log_entries(time)');
         self.db.run('CREATE INDEX IF NOT EXISTS log_entries_id on log_entries(id)');
         self.db.run('CREATE INDEX IF NOT EXISTS log_entries_level on log_entries(level)', function() {
-            self.db_ready = true;
+            self.dbReady = true;
         });
     });
-}
+};
 
 util.inherits(DbLogger, winston.Transport);
 
@@ -101,7 +95,7 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
 
     var self = this;
 
-    if(!self.db_ready) {
+    if(!self.dbReady) {
         // Log to console.log because we may not have a valid logger if we get here.
         console.log("Database is not ready yet. Entry will not be stored.");
         return callback(null, true);
@@ -124,25 +118,25 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
 
     stmt.run(
         timestamp.toISOString(),
-        convert_level(level),
+        convertLevel(level),
         msg,
         meta,
         function(err) {
             if(err) {
                  // Log to console.log because we may not have a valid logger if we get here.
-                console.log(`Error storing log entry, ${err}`)
+                console.log(`Error storing log entry, ${err}`);
             }
 
             self.emit('logged');
             callback(null, this.lastID);
         }
     );
-}
+};
 
 DbLogger.prototype.query = function(options, callback) {
     var self = this;
 
-    if(!self.db_ready) {
+    if(!self.dbReady) {
         callback(null);
         return;
     }
@@ -164,17 +158,18 @@ DbLogger.prototype.query = function(options, callback) {
                 return;
             }
 
-            if(row == null) return;
+            if(row === null) {
+                return;
+            }
             entries.push(row);
-        }, function(err, row_count) {
+        }, function(err, rowCount) {
             callback(null, entries);
         }
     );
-}
+};
 
-var create_line = function(options) {
+var createLine = function(options) {
     var timestamp = options.timestamp();
-    var event_id = null;
 
     if(options.meta !== undefined) {
         if(options.meta.timestamp != null) {
@@ -183,39 +178,43 @@ var create_line = function(options) {
     }
 
     var level = options.level.toUpperCase();
-    var message = undefined !== options.message ? options.message : '';
+    var message = (options.message !== undefined ? options.message : '');
 
     return `${timestamp.toISOString()} ${level} ${message}`;
-}
+};
 
 // Delete the log file for now so that it easier to debug
 try {
-    fs.unlinkSync(default_log_file);
+    fs.unlinkSync(defaultLogFile);
 } catch(err) {
      // Log to console.log because we may not have a valid logger if we get here.
-    console.log(`Error removing file ${default_log_file}. Error is ${err}`);
+    console.log(`Error removing file ${defaultLogFile}. Error is ${err}`);
 }
 
 var logger = new (winston.Logger)({
     transports: [
         new (winston.transports.DbLogger)({
             name: 'db_logger',
-            filename: default_db_file,
+            filename: defaultDbFile,
             level: 'info'
         }),
         new (winston.transports.File)({
             name: 'file',
-            filename: default_log_file,
+            filename: defaultLogFile,
             level: 'debug',
             json: false,
-            timestamp: function() { return new Date(); },
-            formatter: create_line
+            timestamp: function() {
+                return new Date();
+            },
+            formatter: createLine
         }),
         new (winston.transports.Console)({
             name: 'console',
             level: 'silly',
-            timestamp: function() { return new Date(); },
-            formatter: create_line
+            timestamp: function() {
+                return new Date();
+            },
+            formatter: createLine
         })
     ]
 });

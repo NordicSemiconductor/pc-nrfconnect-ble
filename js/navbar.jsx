@@ -55,9 +55,11 @@ var ComPortSelector = React.createClass({
             return (<MenuItem className="btn-primary" eventKey={portName} onSelect={this.onMenuItemSelect} key={i}>{portName}</MenuItem>);
         }, this);
         return (
-            <DropdownButton className="btn-primary btn-nordic" title={dropdownTitle} ref="comPortDropdown">
-                {menuItems}
-            </DropdownButton>
+            <span title="Select com port (Alt+P)">
+                <DropdownButton className="btn-primary btn-nordic" title={dropdownTitle} ref="comPortDropdown">
+                    {menuItems}
+                </DropdownButton>
+            </span>
         );
     }
 });

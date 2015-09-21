@@ -4,9 +4,7 @@ Install NodeJS and Python 2.7 and run the following commands:
 
 ```
 npm install -g npm
-npm install -g bower
 npm install -g node-gyp
-bower install
 ```
 
 ## WIN32 specific procedure
@@ -23,15 +21,9 @@ Start VS2013 x86 Native Tools Command Prompt
 Run the following commands:
 ```
 set npm_config_runtime=electron
-set npm_config_runtime_version=0.30.3
+set npm_config_target=0.30.3
 set npm_config_arch=ia32
 
-npm i --ignore-scripts sqlite3
-cd node_modules\sqlite3
-npm run prepublish
-node-gyp configure --module_name=node_sqlite3 --module_path=..\lib\binding\node-v44-win32-ia32
-node-gyp rebuild --target=0.30.3 --arch=ia32 --dist-url=https://atom.io/download/atom-shell --module_name=node_sqlite3 --module_path=..\lib\binding\node-v44-win32-ia32
-cd ..\..
 npm install
 ```
 
@@ -52,21 +44,11 @@ export PC_BLE_DRIVER_DIR=(path to pc-ble-driver release folder, or pc-ble-driver
 Let the pc-ble-driver know that we are using electron and which version and architecture:
 ```
 export npm_config_runtime=electron
-export npm_config_runtime_version=0.30.3
+export npm_config_target=0.30.3
 export npm_config_arch=x64
 ```
 
 npm install
-
-Handle sqlite build issues:
-```
-npm i --ignore-scripts sqlite3
-cd node_modules/sqlite3
-npm run prepublish
-node-gyp configure --module_name=node_sqlite3 --module_path=../lib/binding/node-v43-linux-x64
-node-gyp rebuild --target=0.30.3 --arch=x64 --target_platform=linux --dist-url=https://atom.io/download/atom-shell --module_name=node_sqlite3 --module_path=../lib/binding/node-v43-linux-x64
-cd ../..
-```
 
 ## OS X specific procedure
 For OS X:
@@ -79,19 +61,11 @@ export PC_BLE_DRIVER_DIR=(path to pc-ble-driver release folder, or pc-ble-driver
 Let the pc-ble-driver know that we are using electron and which version and architecture:
 ```
 export npm_config_runtime=electron
-export npm_config_runtime_version=0.30.3
+export npm_config_target=0.30.3
 export npm_config_arch=x64
 ```
 
 npm install
-
-Handle sqlite build issues:
-```
-cd node_modules/sqlite3
-npm run prepublish
-node-gyp configure --module_name=node_sqlite3 --module_path=../lib/binding/node-v44-darwin-x64
-node-gyp rebuild --target=0.30.3 --arch=x64 --target_platform=darwin --dist-url=https://atom.io/download/atom-shell --module_name=node_sqlite3 --module_path=../lib/binding/node-v44-darwin-x64
-```
 
 # Run the Yggdrasil application
 ```
