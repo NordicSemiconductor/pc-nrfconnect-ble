@@ -11,7 +11,7 @@
  */
 
 
-var app=require('app');
+var app = require('app');
 var BrowserWindow = require('browser-window');
 var crashReporter = require('crash-reporter');
 crashReporter.start();
