@@ -28,8 +28,6 @@ import { DiscoveredDevicesContainer } from './discoveredDevicesContainer.jsx';
 import DiscoveryActions from './actions/discoveryActions';
 
 import driverActions from './actions/bleDriverActions';
-import bleTargetStore from './stores/bleTargetStore';
-import discoveryStore from './stores/discoveryStore';
 import logStore from './stores/logStore';
 
 import logActions from './actions/logActions';

@@ -31,19 +31,19 @@ var ConnectionSetup = React.createClass({
                     <div className="form-group">
                         <label className="col-sm-8 control-label" htmlFor="interval">Connection Interval</label>
                         <div className="col-sm-4">
-                            <input disabled className="form-control" type="number" id="interval" value = {connection.conn_params.max_conn_interval}/>
+                            <input disabled className="form-control nordic-form-control" type="number" id="interval" value = {connection.conn_params.max_conn_interval}/>
                         </div>
                     </div>
                     <div className="form-group">
                         <label className="col-sm-8 control-label" htmlFor="latency">Latency</label>
                         <div className="col-sm-4">
-                            <input disabled  className="form-control" type="number" id="latency" value={connection.conn_params.slave_latency}/>
+                            <input disabled  className="form-control nordic-form-control" type="number" id="latency" value={connection.conn_params.slave_latency}/>
                         </div>
                     </div>
                     <div className="form-group">
                         <label className="col-sm-8 control-label" htmlFor="timeout">Timeout</label>
                         <div className="col-sm-4">
-                            <input disabled  className="form-control" type="number" id="timeout" value={connection.conn_params.conn_sup_timeout}/>
+                            <input disabled  className="form-control nordic-form-control" type="number" id="timeout" value={connection.conn_params.conn_sup_timeout}/>
                         </div>
                     </div>
                 </form>
