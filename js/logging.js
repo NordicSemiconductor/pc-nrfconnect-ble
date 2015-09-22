@@ -21,6 +21,7 @@ var defaultDbFile = 'logger.db';
 
 // Need to retrieve logFileDir from index.js since we do not have access to app.getPath in this file
 defaultLogFile = remote.getGlobal('logFileDir') + '/' + defaultLogFile;
+defaultDbFile = remote.getGlobal('logFileDir') + '/' + defaultDbFile;
 
 var convertLevel = function(level) {
     /**
