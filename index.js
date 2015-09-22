@@ -13,6 +13,9 @@
 var app = require('app');
 var BrowserWindow = require('browser-window');
 var crashReporter = require('crash-reporter');
+var Menu = require('menu');
+var MenuItem = require('menu-item');
+var open = require('open');
 crashReporter.start();
 
 var mainWindow = null;
@@ -38,9 +41,68 @@ app.on('ready', function() {
         console.log("windows closed");
         mainWindow = null;
     });
-//  console.log(app.getTitle());
-    console.log('je');
+
     mainWindow.webContents.on('did-finish-load',function() {
         mainWindow.setTitle('Yggdrasil');
     });
+});
+
+// Create menu.
+app.once('ready', function() {
+    var template = [
+        {
+            label: '&File',
+            submenu: [{label: '&Log file...', click: function() {open('license.txt');}},
+                      {type: 'separator'},
+                      {label: '&Quit', accelerator: 'CmdOrCtrl+Q', click: function() {app.quit();}}]
+        },
+        {
+            label: '&View',
+            submenu: [
+                {
+                    label: '&Reload',
+                    accelerator: 'CmdOrCtrl+R',
+                    click: function(item, focusedWindow) {
+                        if (focusedWindow) {
+                            focusedWindow.reload();
+                        }
+                    }
+                },
+                {
+                    label: 'Toggle &Full Screen',
+                    accelerator: process.platform == 'darwin' ? 'Ctrl+Command+F' : 'F11',
+                    click: function(item, focusedWindow) {
+                        if (focusedWindow) {
+                            focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+                        }
+                    }
+                },
+                {
+                    label: 'Toggle &Developer Tools',
+                    accelerator: process.platform == 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+                    click: function(item, focusedWindow) {
+                        if (focusedWindow) {
+                            focusedWindow.toggleDevTools();
+                        }
+                    }
+                },
+            ]
+        }
+    ];
+
+    if (process.platform == 'darwin') {
+        template.unshift({
+            label: 'Electron',
+            submenu: [
+                {
+                    label: 'Quit',
+                    accelerator: 'Command+Q',
+                    click: function() { app.quit(); }
+                },
+            ]
+        });
+    }
+
+    var menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
 });
