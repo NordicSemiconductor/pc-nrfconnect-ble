@@ -24,7 +24,7 @@ function insertStyles(cssPath) {
 
 var stylesCssPath = 'resources/app/styles.css';
 
-if (process.platform === 'darwin') {
+if (process.platform === 'darwin' || process.platform === 'linux') {
     stylesCssPath = process.resourcesPath + '/app/css/styles.css';
 }
 
