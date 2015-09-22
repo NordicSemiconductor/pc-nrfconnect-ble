@@ -19,19 +19,17 @@ var CentralDevice = React.createClass({
         var style={
             position: 'relative',
             width: '250px',
-            height: '110px'
+            height: '102px'
         };
         return (
-            <div id={this.props.id} className="device standalone main-device" style={style}>
-                <div className="main-device-table">
-                    <div className="icon-wrap"><i className="icon-usb icon-rotate-90"></i></div>
-                    <div className="device-body text-small">
-                        <div>
-                            <strong>{this.props.name}</strong>
-                        </div>
-                        <div className="address-text">{this.props.address}</div>
-                        <div className="role-flag">Central</div>
+            <div id={this.props.id} className="device main-device standalone" style={style}>
+                <img className="center-block" src="resources/nordic_usb_icon.png" height="41" width="16"/>
+                <div className="device-body text-small">
+                    <div>
+                        <div className="role-flag pull-right">Central</div>
+                        <strong>{this.props.name}</strong>
                     </div>
+                    <div className="address-text">{this.props.address}</div>    
                 </div>
             </div>
         );
