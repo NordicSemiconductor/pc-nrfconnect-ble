@@ -37,8 +37,18 @@ var ServiceItem = React.createClass({
         };
     },
     _onClick: function() {
-        this.setState({expanded: !this.state.expanded});
+        //clicks are used for both expansion and selection.
+        //when this.props.selectedHandle is undefined, assume selection isn't supported.
+        //when items can be selected, dont collapse children unless the item is selected. 
+        //this seems like a good tradeoff between letting the user know something is there,
+        //and avoiding unwanted expansions/collapses when user wants to select.
+        var canBeSelected = typeof this.props.selectedHandle !== "undefined";
+        var isSelected = this.props.handle === this.props.selectedHandle;
+        var delayExpansion = canBeSelected && !isSelected && this.state.expanded;
         this.props.onSelected(this.props.handle);
+        if (!delayExpansion) {
+            this.setState({expanded: !this.state.expanded});
+        }
     },
     _childChanged: function() {
         if (!this.state.expanded) {
@@ -131,8 +141,18 @@ var CharacteristicItem = React.createClass({
         }
     },
     _onClick: function() {
-        this.setState({expanded: !this.state.expanded});
+        //clicks are used for both expansion and selection.
+        //when this.props.selectedHandle is undefined, assume selection isn't supported.
+        //when items can be selected, dont collapse children unless the item is selected. 
+        //this seems like a good tradeoff between letting the user know something is there,
+        //and avoiding unwanted expansions/collapses when user wants to select.
+        var canBeSelected = typeof this.props.selectedHandle !== "undefined";
+        var isSelected = this.props.handle === this.props.selectedHandle;
+        var delayExpansion = canBeSelected && !isSelected && this.state.expanded;
         this.props.onSelected(this.props.handle);
+        if (!delayExpansion) {
+            this.setState({expanded: !this.state.expanded});
+        }
     },
     _childChanged: function() {
         if (this.props.onChange) {
