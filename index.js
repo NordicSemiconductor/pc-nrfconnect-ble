@@ -52,7 +52,7 @@ app.once('ready', function() {
     var template = [
         {
             label: '&File',
-            submenu: [{label: '&Log file...', click: function() {open('license.txt');}},
+            submenu: [{label: '&Log file...', enabled: false, /*accelerator: 'CmdOrCtrl+L',*/ click: function() {open(global.logFileDir + '\\log.txt');}},
                       {type: 'separator'},
                       {label: '&Quit', accelerator: 'CmdOrCtrl+Q', click: function() {app.quit();}}]
         },
