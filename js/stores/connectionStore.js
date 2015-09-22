@@ -128,16 +128,17 @@ var connectionStore = reflux.createStore({
             slave_latency: event.conn_params.slave_latency,
             conn_sup_timeout: event.conn_params.conn_sup_timeout
         };
-        var that = this;
         bleDriver.gap_update_connection_parameters(event.conn_handle, newConnectionParameters, function(err){
             if (err) {
-                logger.info('Failed to update connection parameters: ', err);
+                logger.info('Failed to send gap_update_connection_parameters to driver: ', err);
             } else {
-                var connection = that._findConnectionFromConnectionHandle(event.conn_handle);
-                connection.conn_params = newConnectionParameters;
-                logger.info('Updated connection parameters');
+                logger.info('Successfully sent gap_update_connection_parameters to driver.');
             }
         });
+    },
+    onConnectionParametersUpdated: function(event) {
+        var connection = this._findConnectionFromConnectionHandle(event.conn_handle);
+        connection.conn_params = event.conn_params;
     },
     onDeviceDisconnected: function(eventPayload){
         this.state.isEnumeratingServices = false; // In case we disconnect while enumerating services

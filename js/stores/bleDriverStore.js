@@ -198,6 +198,11 @@ var bleDriverStore = reflux.createStore({
                     connectionActions.connectionParametersUpdateRequest(event);
                     break;
                 }
+                case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE:
+                {
+                    connectionActions.connectionParametersUpdated(event);
+                    break;
+                }
                 default:
                     logger.info(`Unsupported event received from SoftDevice: ${event.id} - ${event.name}`);
             }
