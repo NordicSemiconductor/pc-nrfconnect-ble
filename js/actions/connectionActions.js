@@ -23,7 +23,9 @@ var connectionActions = Reflux.createActions(
     "connectTimedOut",
     "deviceConnected",
     "deviceDisconnected",
-    "servicesDiscovered"
+    "servicesDiscovered",
+    "connectionParametersUpdateRequest",
+    "connectionParametersUpdated"
   ]);
 
 module.exports = connectionActions;

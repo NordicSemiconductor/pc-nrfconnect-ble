@@ -121,7 +121,7 @@ var DiscoveredDevicesContainer = React.createClass({
                 </div>
               </div>)
       } else {
-          logger.silly("No data!!!!!!!!!!!!!!!!!!!!!!!!!!");
+          logger.silly("No data!");
           return <div id="discoveredDevicesContainer"></div>;
       }
     }
