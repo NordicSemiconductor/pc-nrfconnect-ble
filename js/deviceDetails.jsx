@@ -45,9 +45,12 @@ var ServiceItem = React.createClass({
         var canBeSelected = typeof this.props.selectedHandle !== "undefined";
         var isSelected = this.props.handle === this.props.selectedHandle;
         var delayExpansion = canBeSelected && !isSelected && this.state.expanded;
-        this.props.onSelected(this.props.handle);
         if (!delayExpansion) {
             this.setState({expanded: !this.state.expanded});
+        }
+        
+        if (this.props.onSelected) {
+            this.props.onSelected(this.props.handle);
         }
     },
     _childChanged: function() {
@@ -102,7 +105,9 @@ var DescriptorItem = React.createClass({
         }
     },
     _onClick: function() {
-        this.props.onSelected(this.props.handle);
+        if (this.props.onSelected) {
+            this.props.onSelected(this.props.handle);
+        }
     },
     render: function() {
         var selected = this.props.handle === this.props.selectedHandle;
@@ -149,9 +154,12 @@ var CharacteristicItem = React.createClass({
         var canBeSelected = typeof this.props.selectedHandle !== "undefined";
         var isSelected = this.props.handle === this.props.selectedHandle;
         var delayExpansion = canBeSelected && !isSelected && this.state.expanded;
-        this.props.onSelected(this.props.handle);
         if (!delayExpansion) {
             this.setState({expanded: !this.state.expanded});
+        }
+
+        if (this.props.onSelected) {
+            this.props.onSelected(this.props.handle);
         }
     },
     _childChanged: function() {
