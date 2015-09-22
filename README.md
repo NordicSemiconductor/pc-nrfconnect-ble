@@ -1,4 +1,4 @@
-# Installation procedure
+# Installation procedure (building)
 
 Install NodeJS and Python 2.7 and run the following commands:
 
@@ -27,28 +27,38 @@ set npm_config_arch=ia32
 npm install
 ```
 
-## Linux specific procedure
-For Linux:
+## Ubuntu Linux specific procedure (building)
 
-Install node and npm:
+Install node (from 3rd party), cmake, git, g++ and boost (required by pc-ble-driver-js):
 ```
-curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
-sudo apt-get install nodejs
+sudo add-apt-repository ppa:chris-lea/node.js
+sudo apt-get update
+sudo apt-get install nodejs cmake git g++ libboost-thread1.54.0 libboost-chrono1.54.0
 ```
 
-Let CMake know where the ble driver is:
+Let CMake know where the ble driver is (this step is optional, precompiled version is included in pc-ble-driver-js)
 ```
 export PC_BLE_DRIVER_DIR=(path to pc-ble-driver release folder, or pc-ble-driver-js root folder)
 ```
 
-Let the pc-ble-driver know that we are using electron and which version and architecture:
+Let the build process know that we are using Electron of given version and architecture:
 ```
 export npm_config_runtime=electron
 export npm_config_target=0.30.3
 export npm_config_arch=x64
 ```
 
-npm install
+Install packages and run
+```
+npm i
+gulp run
+```
+
+
+If you want to package the Yggdrasil application it can be done with the following script. We recommend that you do this in a clean source directory so that dev dependencies are not included in the package.
+```
+./setup-linux-ubuntu.sh
+```
 
 ## OS X specific procedure
 For OS X:
