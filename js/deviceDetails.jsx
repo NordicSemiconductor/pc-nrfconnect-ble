@@ -140,7 +140,6 @@ var DeviceDetailsView = React.createClass({
             x: 0,
             y: 0
         };
-        logger.silly(this.props.services);
         var services = [];
         if (this.props.services) {
             return (
