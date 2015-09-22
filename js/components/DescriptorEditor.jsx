@@ -1,4 +1,14 @@
 var DescriptorEditor = React.createClass({
+	mixins: [React.addons.LinkedStateMixin],
+	getInitialState() {
+		return {
+			uuid: "",
+			serviceName: "",
+			initialValue: "",
+			maxLengthActive: false,
+			maxLength: null
+		}
+	},
 	render() { 
 		return (
 		<form className="form-horizontal">
@@ -6,32 +16,32 @@ var DescriptorEditor = React.createClass({
 		  <div className="form-group">
 		    <label for="service-name" className="col-md-3 control-label">Service name</label>
 		    <div className="col-md-9">
-		      <input type="text" className="form-control" name="service-name" />
+		      <input type="text" className="form-control" name="service-name" valueLink={this.linkState('serviceName')} />
 		    </div>
 		  </div>
 
 		  <div className="form-group">
 		    <label for="uuid" className="col-md-3 control-label">UUID</label>
 		    <div className="col-md-9">
-		      <input type="text" className="form-control" name="uuid" />
+		      <input type="text" className="form-control" name="uuid" valueLink={this.linkState('uuid')} />
 		    </div>
 		  </div>
 		  
 		  <div className="form-group">
 		    <label for="initial-value" className="col-md-3 control-label">Initial value</label>
 		    <div className="col-md-9">
-		      <input type="text" className="form-control" name="initial-value" />
+		      <input type="text" className="form-control" name="initial-value" valueLink={this.linkState('initialValue')} />
 		    </div>
 		  </div>
 
 		  <div className="form-group">
 		    <label className="col-md-3 control-label">Max length</label>
 		    <div className="col-md-9">
-		      <div className="checkbox"><label><input type="checkbox" /> Activate</label></div>
+		      <div className="checkbox"><label><input type="checkbox" checkedLink={this.linkState('maxLengthActive')}/> Activate</label></div>
 		    </div>
 
 		    <div className="col-md-offset-3 col-md-9">
-		      <input type="number" min="0" className="form-control" name="max-length" />
+		      <input type="number" min="0" disabled={!this.state.maxLengthActive} className="form-control" name="max-length" valueLink={this.linkState('maxLength')} />
 	        </div>
 		  </div>
 

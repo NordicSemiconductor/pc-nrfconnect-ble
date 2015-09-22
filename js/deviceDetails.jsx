@@ -47,7 +47,7 @@ var ServiceItem = React.createClass({
     },
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        var iconStyle = this.props.characteristics.length === 0 ? { display: 'none' } : {};
+        var iconStyle = this.props.characteristics.length === 0 && !this.props.addNew ? { display: 'none' } : {};
         var selected = this.props.handle === this.props.selectedHandle;
         var backgroundColor = selected
             ? 'rgb(179,225,245)'
@@ -144,7 +144,7 @@ var CharacteristicItem = React.createClass({
     },
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        var iconStyle = this.props.descriptors.length === 0 ? { display: 'none' } : {};
+        var iconStyle = this.props.descriptors.length === 0 && !this.props.addNew  ? { display: 'none' } : {};
         var selected = this.props.handle === this.props.selectedHandle;
         var backgroundColor = selected
             ? 'rgb(179,225,245)'
