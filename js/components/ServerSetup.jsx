@@ -11,13 +11,13 @@ var services = [{"handle":1,"uuid":"0x2800","name":"Generic Access","characteris
 
 var ServerSetup = React.createClass({
     getInitialState() {
-        return {};
+        return { selectedHandle: null };
     },
     _onSelected(selectedHandle) {
     	this.setState({ selectedHandle: selectedHandle });
     },
     _getSelected() {
-    	if (typeof this.state.selectedHandle === "undefined") return;
+    	if (this.state.selectedHandle === null) return;
     	for (var i = 0; i < services.length; i++) {
     		if (services[i].handle === this.state.selectedHandle) return services[i];
     		var characteristics = services[i].characteristics;
@@ -34,9 +34,9 @@ var ServerSetup = React.createClass({
 		var selected = this._getSelected();
 		var editor = 
 			!selected ? null 
-			: selected.characteristics ? <ServiceEditor />
-			: selected.descriptors ? <CharacteristicEditor />
-			: <DescriptorEditor />
+			: selected.characteristics ? <ServiceEditor service={selected} />
+			: selected.descriptors ? <CharacteristicEditor characteristic={selected} />
+			: <DescriptorEditor descriptor={selected} />
 		return (
 			<div className="server-setup" style={this.props.style}>
 				<div className="device-details-view">

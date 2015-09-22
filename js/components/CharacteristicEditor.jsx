@@ -1,22 +1,37 @@
+import _ from 'underscore';
+
 var CharacteristicEditor = React.createClass({
 	mixins: [React.addons.LinkedStateMixin],
 	getInitialState() {
 		return {
-			maxLengthActive: false,
 			broadcast: false,
 			read: false,
 			writeWithoutResponse: false,
 			write: false,
 			notify: false,
 			indicate: false,
-			authenticatedSignedWrite: false,
-			reliableWrite: false,
-			writeAuxiliary: false,
+			authenticatedSignedWrites: false,
+			reliableWrite: false,  //probably not mapped right
+			writeAuxiliary: false, //probably not mapped right
 			uuid: "",
-			serviceName: "",
-			initialValue: "",
-			maxLength: null
+			name: "",
+			value: "",
+			maxLengthActive: false,//probably not mapped right
+			maxLength: null		   //probably not mapped right
 		}
+	},
+	componentWillMount() {
+		this._setStateFromCharacteristic(this.props.characteristic);
+	},
+	componentWillReceiveProps(nextProps) {
+		if (this.props.characteristic.handle !== nextProps.characteristic.handle) {
+			this._setStateFromCharacteristic(nextProps.characteristic);
+		}
+	},
+	_setStateFromCharacteristic(characteristic) {
+		var state = _.pick(characteristic, "uuid", "name", "value", "maxLengthActive", "maxLength");
+		_.extend(state, _.pick(characteristic.properties, "authenticatedSignedWrites", "broadcast", "reliableWrite", "writeAuxiliary", "indicate", "notify", "read", "write", "writeWithoutResponse"));
+		this.setState(state);
 	},
 	render() { 
 		return (
@@ -25,7 +40,7 @@ var CharacteristicEditor = React.createClass({
 		  <div className="form-group">
 		    <label for="service-name" className="col-md-3 control-label">Service name</label>
 		    <div className="col-md-9">
-		      <input type="text" className="form-control" name="service-name" valueLink={this.linkState('serviceName')}/>
+		      <input type="text" className="form-control" name="service-name" valueLink={this.linkState('name')}/>
 		    </div>
 		  </div>
 
@@ -45,7 +60,7 @@ var CharacteristicEditor = React.createClass({
 		      <div className="checkbox"><label><input type="checkbox" checkedLink={this.linkState('write')}/> Write </label></div>
 		      <div className="checkbox"><label><input type="checkbox" checkedLink={this.linkState('notify')}/> Notify </label></div>
 		      <div className="checkbox"><label><input type="checkbox" checkedLink={this.linkState('indicate')}/> Indicate </label></div>
-		      <div className="checkbox"><label><input type="checkbox" checkedLink={this.linkState('authenticatedSignedWrite')}/> Authenticated signed write </label></div>
+		      <div className="checkbox"><label><input type="checkbox" checkedLink={this.linkState('authenticatedSignedWrites')}/> Authenticated signed write </label></div>
 		    </div>
 		  </div>
 
@@ -60,7 +75,7 @@ var CharacteristicEditor = React.createClass({
 		  <div className="form-group">
 		    <label for="initial-value" className="col-md-3 control-label">Initial value</label>
 		    <div className="col-md-9">
-		      <input type="text" className="form-control" name="initial-value" valueLink={this.linkState('initialValue')}/>
+		      <input type="text" className="form-control" name="initial-value" valueLink={this.linkState('value')}/>
 		    </div>
 		  </div>
 

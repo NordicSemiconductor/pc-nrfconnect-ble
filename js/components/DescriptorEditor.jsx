@@ -1,13 +1,27 @@
+import _ from 'underscore';
+
 var DescriptorEditor = React.createClass({
 	mixins: [React.addons.LinkedStateMixin],
 	getInitialState() {
 		return {
 			uuid: "",
-			serviceName: "",
-			initialValue: "",
+			name: "",
+			value: "",
 			maxLengthActive: false,
 			maxLength: null
 		}
+	},
+
+	componentWillMount() {
+		this._setStateFromDescriptor(this.props.descriptor);
+	},
+	componentWillReceiveProps(nextProps) {
+		if (this.props.descriptor.handle !== nextProps.descriptor.handle) {
+			this._setStateFromDescriptor(nextProps.descriptor);
+		}
+	},
+	_setStateFromDescriptor(descriptor) {
+		this.setState(_.pick(descriptor, "uuid", "name", "value", "maxLengthActive", "maxLength"));
 	},
 	render() { 
 		return (
@@ -16,7 +30,7 @@ var DescriptorEditor = React.createClass({
 		  <div className="form-group">
 		    <label for="service-name" className="col-md-3 control-label">Service name</label>
 		    <div className="col-md-9">
-		      <input type="text" className="form-control" name="service-name" valueLink={this.linkState('serviceName')} />
+		      <input type="text" className="form-control" name="service-name" valueLink={this.linkState('name')} />
 		    </div>
 		  </div>
 
@@ -30,7 +44,7 @@ var DescriptorEditor = React.createClass({
 		  <div className="form-group">
 		    <label for="initial-value" className="col-md-3 control-label">Initial value</label>
 		    <div className="col-md-9">
-		      <input type="text" className="form-control" name="initial-value" valueLink={this.linkState('initialValue')} />
+		      <input type="text" className="form-control" name="initial-value" valueLink={this.linkState('value')} />
 		    </div>
 		  </div>
 

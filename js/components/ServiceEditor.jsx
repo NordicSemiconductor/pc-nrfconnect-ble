@@ -3,8 +3,22 @@ var ServiceEditor = React.createClass({
 	getInitialState() {
 		return {
 			uuid: "",
-			serviceName: "",
+			name: ""
+		};
+	},
+	componentWillMount() {
+		this._setStateFromService(this.props.service);
+	},
+	componentWillReceiveProps(nextProps) {
+		if (this.props.service.handle !== nextProps.service.handle) {
+			this._setStateFromService(nextProps.service);
 		}
+	},
+	_setStateFromService(service) {
+		this.setState({
+			uuid: service.uuid,
+			name: service.name
+		});
 	},
 	render() { 
 		return (
@@ -12,7 +26,7 @@ var ServiceEditor = React.createClass({
 		  <div className="form-group">
 		    <label for="service-name" className="col-md-3 control-label">Service name</label>
 		    <div className="col-md-9">
-		      <input type="text" className="form-control" name="service-name" valueLink={this.linkState('serviceName')} />
+		      <input type="text" className="form-control" name="service-name" valueLink={this.linkState('name')} />
 		    </div>
 		  </div>
 
