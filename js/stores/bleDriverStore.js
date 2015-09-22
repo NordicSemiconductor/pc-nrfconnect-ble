@@ -52,7 +52,7 @@ var bleDriverStore = reflux.createStore({
             'parity': 'none',
             'flowControl': 'none',
             'logLevel': 'fatal',
-            'eventInterval': 10,
+            'eventInterval': 100,
             'logCallback': function(severity, message) {
                 // TODO: convert from the pc-ble-driver log levels to winston logger levels
                 logger.info(message);
@@ -193,6 +193,11 @@ var bleDriverStore = reflux.createStore({
                     }
 
                     break;
+                case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE_REQUEST:
+                {
+                    connectionActions.connectionParametersUpdateRequest(event);
+                    break;
+                }
                 default:
                     logger.info(`Unsupported event received from SoftDevice: ${event.id} - ${event.name}`);
             }

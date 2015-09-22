@@ -46,9 +46,9 @@ var connectionStore = reflux.createStore({
         }
         return undefined;
     },
-    _findDeviceFromDeviceAddress: function(deviceAddress) {
+    _findConnectionFromConnectionHandle: function(connectionHandle) {
         return this.state.connections.find(function(connection){
-            return connection.peer_addr.addr === deviceAddress;
+            return connection.conn_handle===connectionHandle;
         });
     },
     getInitialState: function() {
@@ -120,6 +120,24 @@ var connectionStore = reflux.createStore({
         discoveryActions.removeDevice(eventPayload.peer_addr.address);
 
         this.trigger(this.state);
+    },
+    onConnectionParametersUpdateRequest: function(event) {
+        var newConnectionParameters = {
+            min_conn_interval: event.conn_params.min_conn_interval,
+            max_conn_interval: event.conn_params.max_conn_interval,
+            slave_latency: event.conn_params.slave_latency,
+            conn_sup_timeout: event.conn_params.conn_sup_timeout
+        };
+        var that = this;
+        bleDriver.gap_update_connection_parameters(event.conn_handle, newConnectionParameters, function(err){
+            if (err) {
+                logger.info('Failed to update connection parameters: ', err);
+            } else {
+                var connection = that._findConnectionFromConnectionHandle(event.conn_handle);
+                connection.conn_params = newConnectionParameters;
+                logger.info('Updated connection parameters');
+            }
+        });
     },
     onDeviceDisconnected: function(eventPayload){
         this.state.isEnumeratingServices = false; // In case we disconnect while enumerating services
