@@ -33,7 +33,7 @@ var ServerSetup = React.createClass({
 	render() {
 		var selected = this._getSelected();
 		var editor = 
-			!selected ? null 
+			!selected ? <div className="nothing-selected" /> 
 			: selected.characteristics ? <ServiceEditor service={selected} />
 			: selected.descriptors ? <CharacteristicEditor characteristic={selected} />
 			: <DescriptorEditor descriptor={selected} />

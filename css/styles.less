@@ -546,11 +546,18 @@
     }
 
     .item-editor {
-      border-left: 8px solid rgb(179, 225, 245);
-      height: calc(~"100vh - 281px");
-      padding: 20px;
       flex: 1;
       overflow: auto;
+      > form, .nothing-selected {
+        height: calc(~"100vh - 281px");
+        padding: 20px;
+      }
+      > form {
+        border-left: 8px solid rgb(179, 225, 245);
+      }
+      .nothing-selected {
+        border-left: 1px solid @device-details-light-border-color;
+      }
     }
   }
 }
