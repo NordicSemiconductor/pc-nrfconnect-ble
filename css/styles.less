@@ -539,12 +539,15 @@
 .server-setup {
   .device-details-view {
     display: flex;
-    margin: 80px 20px 0px 20px;
+    margin:20px;
     max-width: 800px;
+    .service-items-wrap {
+      max-height: calc(~"100vh - 281px");
+    }
 
     .item-editor {
       border-left: 8px solid rgb(179, 225, 245);
-      height: calc(~"100vh - 444px");
+      height: calc(~"100vh - 281px");
       padding: 20px;
       flex: 1;
       overflow: auto;
