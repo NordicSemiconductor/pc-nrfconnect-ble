@@ -35,15 +35,16 @@ var HexOnlyEditableField = React.createClass({
             caretPosition: caretPosition
         }
     },
-    _onBackspace(e) {
+    _onBeforeBackspace(e) {
         //when backspace will remove a dash, also remove the character before the dash
         var str = e.target.value;
         var caret = e.target.selectionStart;
         if (str.substr(caret-1, 1) === "-") {
-            e.target.value = str.slice(0, caret-2) + str.slice(caret-1, str.length);
-            caret -= 1;
+            //remove the dash - this sets the caret at end of the text
+            e.target.value = str.slice(0, caret-1) + str.slice(caret, str.length);
+            //reset the caret back to before the dash, so the backspace event itself will remove the char before the dash
+            e.target.setSelectionRange(caret-1, caret-1); 
         }
-        return caret - 1; //return next caret position
     },
     _calcCaretPosition(origValue, caretPosition) {
         /*Replacing the textarea contents places the caret at the end.
@@ -92,7 +93,7 @@ var HexOnlyEditableField = React.createClass({
         var {keyPressValidation, completeValidation, onBackspace, formatInput, onChange, ...props} = this.props; //pass along all props except these
         return <EditableField {...props} 
                     keyPressValidation={this._keyPressValidation} completeValidation={this._completeValidation} 
-                    onBackspace={this._onBackspace} formatInput={this._formatInput} onChange={this._onChange} ref="editableField"/>;
+                    onBeforeBackspace={this._onBeforeBackspace} formatInput={this._formatInput} onChange={this._onChange} ref="editableField"/>;
     }
 });
 

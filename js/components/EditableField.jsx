@@ -9,7 +9,7 @@ var EditableField = React.createClass({
     Usage:
     <EditableField value={value}
         keyPressValidation={keyPressValidation} completeValidation={completeValidation} 
-                    onBackspace={onBackspace} formatInput={formatInput} insideSelector=".some-selector" />
+                    onBeforeBackspace={onBeforeBackspace} formatInput={formatInput} insideSelector=".some-selector" />
      />
     
     If props
@@ -20,8 +20,8 @@ var EditableField = React.createClass({
         a function called for every keypress. If it return false, the keypress is rejected.
     completeValidation (optional): 
         a function called when the user presses the ok button. If it returns false the component will stay in edit mode.
-    onBackspace (optional): 
-        function called when backspace is detected _onKeyDown. It is passed the event object, and must return the next caret position.
+    onBeforeBackspace (optional): 
+        function called when backspace is detected _onKeyDown. It is passed the event object.
     formatInput (optional): 
         function to format the textarea content, called onChange, after keyPressValidation. 
         It must return an object with properties value and caretPosition.
@@ -76,7 +76,7 @@ var EditableField = React.createClass({
     },
     _onChange: function(e) {
         var textarea = e.target;
-        var caretPosition = this.caretPosition !== null ? this.caretPosition : textarea.selectionStart;
+        var caretPosition = textarea.selectionStart;
         var valid = this.props.keyPressValidation ? this.props.keyPressValidation(textarea.value) : true;
         if (valid) {
             var value = e.target.value;
@@ -94,9 +94,8 @@ var EditableField = React.createClass({
         }
     },
     _onKeyDown: function(e) {
-        this.caretPosition = null;
-        if (e.key === "Backspace" && this.props.onBackspace) {
-            this.caretPosition = this.props.onBackspace(e);
+        if (e.key === "Backspace" && this.props.onBeforeBackspace) {
+            this.props.onBeforeBackspace(e);
         }
         if (e.key === "Enter") {
             this._saveChanges();
