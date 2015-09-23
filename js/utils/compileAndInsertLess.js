@@ -24,11 +24,9 @@ function insertStyles(cssPath) {
 
 var stylesCssPath = 'resources/app/styles.css';
 
-if (process.platform === 'darwin') {
-    stylesCssPath = 'Resources/app/styles.css';
+if (process.platform === 'darwin' || process.platform === 'linux') {
+    stylesCssPath = process.resourcesPath + '/app/css/styles.css';
 }
-
-var stylesCssStats;
 
 fs.stat(stylesCssPath, function(err, stats) {
     if (err) {
@@ -42,7 +40,7 @@ fs.stat(stylesCssPath, function(err, stats) {
             insertStyles('css/styles.css');
         });
     } else {
-        if (stylesCssStats.isFile()) {
+        if (stats.isFile()) {
             insertStyles(stylesCssPath);
         } else {
             console.error('Found css file but it is not a file')
