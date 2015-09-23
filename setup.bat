@@ -1,11 +1,9 @@
 call npm install -g npm
-call npm install -g bower
 call npm install -g node-gyp
 call npm install -g electron-packager
 call npm install -g flatten-packages
 call npm install -g less
 
-call bower install
 
 set VCTargetsPath=C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120
 
@@ -25,6 +23,8 @@ cp yggdrasil_installer.nsi ../deploy/
 cp Nordic_N_HI.ico ../deploy/
 
 cd ../deploy/
+
+copy ..\pc-yggdrasil\node_modules\pc-ble-driver-js\driver\lib\s130_nrf51_ble_driver.dll yggdrasil-win32-ia32
 
 call "c:\Program Files (x86)\NSIS\makensis.exe" yggdrasil_installer.nsi
 
