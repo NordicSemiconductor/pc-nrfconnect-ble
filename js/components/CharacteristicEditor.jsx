@@ -80,7 +80,6 @@ var CharacteristicEditor = React.createClass({
 		    <label htmlFor="initial-value" className="col-md-3 control-label">Initial value</label>
 		    <div className="col-md-9">
 		      <HexOnlyEditableField plain={true} className="form-control" name="initial-value" value={this.state.value} onChange={this._valueChanged}/>
-		      {/*<input type="text" className="form-control" name="initial-value" valueLink={this.linkState('value')}/>*/}
 		    </div>
 		  </div>
 

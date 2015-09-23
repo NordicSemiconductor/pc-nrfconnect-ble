@@ -58,6 +58,9 @@ var ServiceItem = React.createClass({
             this.blink();
         }
     },
+    _childNeedsVisibility: function() {
+        this.setState({ expanded: true });
+    },
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
         var iconStyle = this.props.characteristics.length === 0 && !this.props.addNew ? { display: 'none' } : {};
@@ -79,7 +82,7 @@ var ServiceItem = React.createClass({
                 <Collapse timeout={0} ref="coll" in={this.state.expanded}>
                     <div>
                         {this.props.characteristics.map((characteristic, j) =>
-                            <CharacteristicItem name={characteristic.name} value={characteristic.value} 
+                            <CharacteristicItem name={characteristic.name} value={characteristic.value} onRequestVisibility={this._childNeedsVisibility}
                                 handle={characteristic.handle} selectedHandle={this.props.selectedHandle} onSelected={this.props.onSelected}
                                 descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} addNew={this.props.addNew} />
                         )}
@@ -102,6 +105,10 @@ var DescriptorItem = React.createClass({
                 this.props.onChange()
             }
             this.blink();
+        }
+        //if we're selected through keyboard navigation, we need to make sure we're visible
+        if (this.props.selectedHandle !== nextProps.selectedHandle && nextProps.selectedHandle === this.props.handle) {
+            this.props.onRequestVisibility();
         }
     },
     _onClick: function() {
@@ -144,6 +151,14 @@ var CharacteristicItem = React.createClass({
             }
             this.blink();
         }
+        //if we're selected through keyboard navigation, we need to make sure we're visible
+        if (this.props.selectedHandle !== nextProps.selectedHandle && nextProps.selectedHandle === this.props.handle) {
+            this.props.onRequestVisibility();
+        }
+    },
+    _childNeedsVisibility: function() {
+        this.setState({ expanded: true });
+        this.props.onRequestVisibility();
     },
     _onClick: function() {
         //clicks are used for both expansion and selection.
@@ -193,7 +208,7 @@ var CharacteristicItem = React.createClass({
             <Collapse timeout={0} ref="coll" in={this.state.expanded}>
                 <div>
                     {this.props.descriptors.map((descriptor, k) =>
-                        <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged}
+                        <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged} onRequestVisibility={this._childNeedsVisibility}
                             handle={descriptor.handle} selectedHandle={this.props.selectedHandle} onSelected={this.props.onSelected} key={k} />
                     )}
                     {this.props.addNew ? <AddNewItem text="New descriptor" bars={3} /> : null}

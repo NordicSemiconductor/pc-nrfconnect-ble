@@ -3,6 +3,8 @@ import AddNewItem from './AddNewItem.jsx';
 import ServiceEditor from './ServiceEditor.jsx';
 import CharacteristicEditor from './CharacteristicEditor.jsx';
 import DescriptorEditor from './DescriptorEditor.jsx';
+import hotkey from 'react-hotkey';
+
 
 
 
@@ -10,6 +12,23 @@ var services = [{"handle":1,"uuid":"0x2800","name":"Generic Access","characteris
 
 
 var ServerSetup = React.createClass({
+    mixins: [hotkey.Mixin('handleHotkey')],
+    handleHotkey: function(e) {
+    	if (e.getModifierState('Alt')) {
+	    	switch(e.key) {
+	    		case "ArrowUp":
+	    			this.setState({ selectedHandle: this._getPrevious().handle });
+	    			e.preventDefault();
+	    			break;
+	    		case "ArrowDown":
+	    			this.setState({ selectedHandle: this._getNext().handle });
+	    			e.preventDefault();
+	    			break;
+	            default:
+	                break;
+	        }
+	    }
+    },
     getInitialState() {
         return { selectedHandle: null };
     },
@@ -29,6 +48,44 @@ var ServerSetup = React.createClass({
 		    	}
 	    	}
     	}
+    },
+    *_traverseItems() {
+    	for (var i = 0; i < services.length; i++) {
+    		yield services[i];
+	    	for (var j = 0; j < services[i].characteristics.length; j++) {
+    			yield services[i].characteristics[j];
+		    	for (var k = 0; k < services[i].characteristics[j].descriptors.length; k++) {
+    				yield services[i].characteristics[j].descriptors[k];
+		    	}
+	    	}
+    	}
+    },
+    *_traverseItemsBackwards() {
+    	for (var i = services.length - 1; i >= 0; i--) {
+	    	for (var j = services[i].characteristics.length - 1; j >= 0; j--) {
+		    	for (var k = services[i].characteristics[j].descriptors.length - 1; k >= 0; k--) {
+    				yield services[i].characteristics[j].descriptors[k];
+		    	}
+    			yield services[i].characteristics[j];
+	    	}
+    		yield services[i];
+    	}
+    },
+    _getNext() {
+    	var foundCurrent = this.state.selectedHandle === null;
+    	for (let item of this._traverseItems()) {
+    		if (foundCurrent) return item;
+    		if (item.handle === this.state.selectedHandle) foundCurrent = true;
+    	}
+    	return services[0];
+    },
+    _getPrevious() {
+    	var foundCurrent = this.state.selectedHandle === null;
+    	for (let item of this._traverseItemsBackwards()) {
+    		if (foundCurrent) return item;
+    		if (item.handle === this.state.selectedHandle) foundCurrent = true;
+    	}
+    	return this._traverseItemsBackwards().next().value;
     },
 	render() {
 		var selected = this._getSelected();

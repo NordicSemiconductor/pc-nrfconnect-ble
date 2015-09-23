@@ -52,6 +52,9 @@ var MyView = React.createClass({
                 case 50: // 2
                     this._onChangedMainView('DeviceDetails');
                     break;
+                case 51: // 3
+                    this._onChangedMainView('ServerSetup');
+                    break;
                 case 67: // C
                     DiscoveryActions.clearItems();
                     break;
