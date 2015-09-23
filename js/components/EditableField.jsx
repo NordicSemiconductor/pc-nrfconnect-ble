@@ -3,7 +3,8 @@ import $ from 'jquery';
 
 var EditableField = React.createClass({
     /*
-    Produces some text that changes into a textarea when clicked. 
+    Produces some text that changes into a textarea when clicked, OR if plain={true}, it simply produces a textarea. 
+    Exposes various events for validation and formatting.
 
     Usage:
     <EditableField value={value}
@@ -28,6 +29,11 @@ var EditableField = React.createClass({
         string with a css selector. The selector must match a parent of the textarea. 
         Clicks on the document that do not hit this parent will close the editor. 
         If no selector is given, the textarea itself will be used for the same purpose.
+    plain (optional):
+        If true, the component simply shows a textarea at all times. 
+        It does not change between edit and non-edit modes
+    onChange (optional):
+        function, fires if the value changed due to user input. First argument is the new value.
 
     */
     mixins: [
@@ -79,6 +85,9 @@ var EditableField = React.createClass({
             }
             this.setState({value: value, validationMessage: ""}, () => 
                 textarea.setSelectionRange(caretPosition, caretPosition));
+            if (this.props.onChange) {
+                this.props.onChange(value);
+            }
         } else {
             this.setState({}, () => 
                 textarea.setSelectionRange(caretPosition-1, caretPosition-1));
@@ -115,7 +124,9 @@ var EditableField = React.createClass({
         //Delaying the creation of TextareaAutosize etc until they're needed gives a performance win.
         //This matters when we get rapidly rerendered, e.g. during an animation.
         var child;
-        if (this.state.editing) {
+        if (this.props.plain) {
+            child = <TextareaAutosize {...this.props} ref="editableTextarea" minRows={1} onKeyDown={this._onKeyDown} value={this.state.value} onChange={this._onChange} onClick={this._stopPropagation}></TextareaAutosize>
+        } else if (this.state.editing) {
             child = <div className="editable-field-editor-wrap">
                         <div className="alert-wrap">
                             <div className="alert alert-danger tooltip top" style={{display: this.state.validationMessage == '' ? 'none' : 'block' }}>
@@ -124,7 +135,7 @@ var EditableField = React.createClass({
                             </div>
                         </div>
                         <div className="btn btn-primary btn-xs btn-nordic" onClick={this._onOkButtonClick}><i className="icon-ok"></i></div>
-                        <TextareaAutosize ref="editableTextarea" minRows="1" onKeyDown={this._onKeyDown} value={this.state.value} onChange={this._onChange} onClick={this._stopPropagation}></TextareaAutosize>
+                        <TextareaAutosize {...this.props} ref="editableTextarea" minRows={1} onKeyDown={this._onKeyDown} value={this.state.value} onChange={this._onChange} onClick={this._stopPropagation}></TextareaAutosize>
                     </div>
         } else {
             child = <div className="subtle-text editable" onClick={this._toggleEditing}>

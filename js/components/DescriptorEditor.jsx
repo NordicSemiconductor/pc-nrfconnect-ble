@@ -28,21 +28,21 @@ var DescriptorEditor = React.createClass({
 		<form className="form-horizontal">
 
 		  <div className="form-group">
-		    <label for="service-name" className="col-md-3 control-label">Service name</label>
+		    <label htmlFor="service-name" className="col-md-3 control-label">Service name</label>
 		    <div className="col-md-9">
 		      <input type="text" className="form-control" name="service-name" valueLink={this.linkState('name')} />
 		    </div>
 		  </div>
 
 		  <div className="form-group">
-		    <label for="uuid" className="col-md-3 control-label">UUID</label>
+		    <label htmlFor="uuid" className="col-md-3 control-label">UUID</label>
 		    <div className="col-md-9">
 		      <input type="text" className="form-control" name="uuid" valueLink={this.linkState('uuid')} />
 		    </div>
 		  </div>
 		  
 		  <div className="form-group">
-		    <label for="initial-value" className="col-md-3 control-label">Initial value</label>
+		    <label htmlFor="initial-value" className="col-md-3 control-label">Initial value</label>
 		    <div className="col-md-9">
 		      <input type="text" className="form-control" name="initial-value" valueLink={this.linkState('value')} />
 		    </div>

@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 
 var CharacteristicEditor = React.createClass({
 	mixins: [React.addons.LinkedStateMixin],
@@ -33,19 +34,22 @@ var CharacteristicEditor = React.createClass({
 		_.extend(state, _.pick(characteristic.properties, "authenticatedSignedWrites", "broadcast", "reliableWrite", "writeAuxiliary", "indicate", "notify", "read", "write", "writeWithoutResponse"));
 		this.setState(state);
 	},
+	_valueChanged(value) {
+		this.setState({ value: value });
+	},
 	render() { 
 		return (
 		<form className="form-horizontal">
 
 		  <div className="form-group">
-		    <label for="service-name" className="col-md-3 control-label">Service name</label>
+		    <label htmlFor="service-name" className="col-md-3 control-label">Service name</label>
 		    <div className="col-md-9">
 		      <input type="text" className="form-control" name="service-name" valueLink={this.linkState('name')}/>
 		    </div>
 		  </div>
 
 		  <div className="form-group">
-		    <label for="uuid" className="col-md-3 control-label">UUID</label>
+		    <label htmlFor="uuid" className="col-md-3 control-label">UUID</label>
 		    <div className="col-md-9">
 		      <input type="text" className="form-control" name="uuid" valueLink={this.linkState('uuid')}/>
 		    </div>
@@ -73,9 +77,10 @@ var CharacteristicEditor = React.createClass({
 		  </div>
 
 		  <div className="form-group">
-		    <label for="initial-value" className="col-md-3 control-label">Initial value</label>
+		    <label htmlFor="initial-value" className="col-md-3 control-label">Initial value</label>
 		    <div className="col-md-9">
-		      <input type="text" className="form-control" name="initial-value" valueLink={this.linkState('value')}/>
+		      <HexOnlyEditableField plain={true} className="form-control" name="initial-value" value={this.state.value} onChange={this._valueChanged}/>
+		      {/*<input type="text" className="form-control" name="initial-value" valueLink={this.linkState('value')}/>*/}
 		    </div>
 		  </div>
 

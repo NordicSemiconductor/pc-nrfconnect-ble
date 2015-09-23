@@ -76,6 +76,11 @@ var HexOnlyEditableField = React.createClass({
         caretPosition = caretPositionWithoutDashes + correctNumberOfDashes;
         return caretPosition;
     },
+    _onChange(value) {
+        if (this.props.onChange) {
+            this.props.onChange(value);
+        }
+    },
     _completeValidation(str) {
         var isFullbytes = str.replace(/-/g, "").length % 2 === 0;
         if (!isFullbytes) {
@@ -84,10 +89,10 @@ var HexOnlyEditableField = React.createClass({
         return isFullbytes;
     },
     render() {
-        var {keyPressValidation, completeValidation, onBackspace, formatInput, ...props} = this.props;
+        var {keyPressValidation, completeValidation, onBackspace, formatInput, onChange, ...props} = this.props; //pass along all props except these
         return <EditableField {...props} 
                     keyPressValidation={this._keyPressValidation} completeValidation={this._completeValidation} 
-                    onBackspace={this._onBackspace} formatInput={this._formatInput} ref="editableField"/>;
+                    onBackspace={this._onBackspace} formatInput={this._formatInput} onChange={this._onChange} ref="editableField"/>;
     }
 });
 
