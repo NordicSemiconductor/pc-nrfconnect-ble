@@ -22,11 +22,7 @@ function insertStyles(cssPath) {
     document.querySelector('head').appendChild(link);
 }
 
-var stylesCssPath = 'resources/app/styles.css';
-
-if (process.platform === 'darwin' || process.platform === 'linux') {
-    stylesCssPath = process.resourcesPath + '/app/css/styles.css';
-}
+var stylesCssPath = process.resourcesPath + '/app/css/styles.css';
 
 fs.stat(stylesCssPath, function(err, stats) {
     if (err) {
