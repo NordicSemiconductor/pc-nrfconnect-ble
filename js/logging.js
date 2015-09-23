@@ -192,32 +192,41 @@ try {
     console.log(`Error removing file ${defaultLogFile}. Error is ${err}`);
 }
 
+var transports = [
+    new (winston.transports.DbLogger)({
+        name: 'db_logger',
+        filename: defaultDbFile,
+        level: 'info'
+    }),
+    new (winston.transports.File)({
+        name: 'file',
+        filename: defaultLogFile,
+        level: 'debug',
+        json: false,
+        timestamp: function() {
+            return new Date();
+        },
+        formatter: createLine
+    })
+];
+
+try {
+    //Test to find out if the application is running without stdout console
+    process.stdout.write('');
+
+    transports.push(new (winston.transports.Console)({
+        name: 'console',
+        level: 'silly',
+        timestamp: function() {
+            return new Date();
+        },
+        formatter: createLine
+    }));
+
+} catch(exception) {}
+
 var logger = new (winston.Logger)({
-    transports: [
-        new (winston.transports.DbLogger)({
-            name: 'db_logger',
-            filename: defaultDbFile,
-            level: 'info'
-        }),
-        new (winston.transports.File)({
-            name: 'file',
-            filename: defaultLogFile,
-            level: 'debug',
-            json: false,
-            timestamp: function() {
-                return new Date();
-            },
-            formatter: createLine
-        }),
-        new (winston.transports.Console)({
-            name: 'console',
-            level: 'silly',
-            timestamp: function() {
-                return new Date();
-            },
-            formatter: createLine
-        })
-    ]
+    transports: transports
 });
 
 module.exports = logger;
