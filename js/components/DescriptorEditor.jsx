@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 
 var DescriptorEditor = React.createClass({
 	mixins: [React.addons.LinkedStateMixin],
@@ -23,6 +24,10 @@ var DescriptorEditor = React.createClass({
 	_setStateFromDescriptor(descriptor) {
 		this.setState(_.pick(descriptor, "uuid", "name", "value", "maxLengthActive", "maxLength"));
 	},
+	_valueChanged(value) {
+		console.log(value)
+		this.setState({ value: value });
+	},
 	render() { 
 		return (
 		<form className="form-horizontal">
@@ -44,7 +49,7 @@ var DescriptorEditor = React.createClass({
 		  <div className="form-group">
 		    <label htmlFor="initial-value" className="col-md-3 control-label">Initial value</label>
 		    <div className="col-md-9">
-		      <input type="text" className="form-control" name="initial-value" valueLink={this.linkState('value')} />
+		      <HexOnlyEditableField plain={true} className="form-control" name="initial-value" value={this.state.value} onChange={this._valueChanged}/>
 		    </div>
 		  </div>
 
