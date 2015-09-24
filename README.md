@@ -7,7 +7,7 @@ Copy the firmware to the device drive
 Run the yggdrasil executable
 
 
-## Ubuntu Linux specific instructoins:
+## Ubuntu Linux specific instructions:
 
 install boost thread and chrono libraries
 
