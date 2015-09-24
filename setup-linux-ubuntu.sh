@@ -8,7 +8,6 @@ export npm_config_runtime=electron
 export npm_config_target=0.30.3
 export npm_config_arch=x64
 
-
 export YGGDRASIL_VERSION=0.7.0
 export YGGDRASIL_NAME=Yggdrasil
 export DEPLOY_DIR=../yggdrasil-deploy
@@ -19,6 +18,5 @@ npm install --production
 
 flatten-packages
 lessc ./css/styles.less ./css/styles.css
-
-electron-packager . $YGGDRASIL_NAME --platform=linux --arch=$npm_config_arch --version=$npm_config_target --overwrite --out=$DEPLOY_DIR --icon=Nordic_N_HI.ico --app-version=$YGGDRASIL_VERSION --version-string.CompanyName = "Nordic Semiconductor" --version-string.LegalCopyright = "LegalCopyright" --version-string.FileDescription = "FileDescription" --version-string.OriginalFilename = "OriginalFilename" --version-string.FileVersion = "FileVersion" --version-string.ProductVersion = "$YGGDRASIL_VERSION" --version-string.ProductName = "$YGGDRASIL_NAME" --version-string.InternalName = "InternalName"
+electron-packager . $YGGDRASIL_NAME --platform=linux --arch=$npm_config_arch --version=$npm_config_target --overwrite --out=$DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName = "Nordic Semiconductor ASA" --version-string.LegalCopyright = "Nordic Semiconductor ASA" --version-string.FileDescription = "" --version-string.OriginalFilename = "" --version-string.FileVersion = "$YGGDRASIL_VERSION" --version-string.ProductVersion = "$YGGDRASIL_VERSION" --version-string.ProductName = "$YGGDRASIL_NAME" --version-string.InternalName = "$YGGDRASIL_NAME"
 
