@@ -29,12 +29,10 @@ copy node_modules\pc-ble-driver-js\driver\lib\s130_nrf51_ble_driver.dll %YGGDRAS
 
 cd ..\deploy
 
-"c:\Program Files (x86)\NSIS\makensis.exe" yggdrasil_installer.nsi
-
-echo "Need to change password and copy in nrfgo-studio_codesigningcertificate in manually"
-signtool.exe sign /v /ac MSCV-VSClass3.cer /f nrfgo-studio_codesigningcertificate.pfx /p PASSWORD /n %22Nordic Semiconductor ASA%22 /t $(timestampserver) /d %22Yggdrasil - 0.7.0 beta%22 ./yggdrasil-win32-ia32/yggdrasil.exe
+echo "Need to set SIGNTOOL_PATH and SIGNTOOL_PASSWORD environment variables for the next command to work"
+%SIGNTOOL_PATH%\signtool.exe sign /v /ac %SIGNTOOL_PATH%\MSCV-VSClass3.cer /f %SIGNTOOL_PATH%\nordic_code_signing_certificate.pfx /p %SIGNTOOL_PASSWORD% /n "Nordic Semiconductor ASA" /t http://timestamp.verisign.com/scripts/timstamp.dll /d "Yggdrasil - 0.7.0" ./yggdrasil-win32-ia32/yggdrasil.exe
 
 "c:\Program Files (x86)\NSIS\makensis.exe" yggdrasil_installer.nsi
 
-echo "Need to change password and copy in nrfgo-studio_codesigningcertificate in manually"
-signtool.exe sign /v /ac MSCV-VSClass3.cer /f nrfgo-studio_codesigningcertificate.pfx /p PASSWORD /n %22Nordic Semiconductor ASA%22 /t $(timestampserver) /d %22Yggdrasil installer - 0.7.0 beta%22 yggdrasil_v0.7.0.exe
+echo "Need to set SIGNTOOL_PATH and SIGNTOOL_PASSWORD environment variables for the next command to work"
+%SIGNTOOL_PATH%\signtool.exe sign /v /ac %SIGNTOOL_PATH%\MSCV-VSClass3.cer /f %SIGNTOOL_PATH%\nordic_code_signing_certificate.pfx /p %SIGNTOOL_PASSWORD% /n "Nordic Semiconductor ASA" /t http://timestamp.verisign.com/scripts/timstamp.dll /d "Yggdrasil installer - 0.7.0" yggdrasil-v0.7.0.exe
