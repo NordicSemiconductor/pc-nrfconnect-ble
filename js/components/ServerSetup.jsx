@@ -3,6 +3,7 @@ import AddNewItem from './AddNewItem.jsx';
 import ServiceEditor from './ServiceEditor.jsx';
 import CharacteristicEditor from './CharacteristicEditor.jsx';
 import DescriptorEditor from './DescriptorEditor.jsx';
+import KeyNavigation from '../common/TreeViewKeyNavigationMixin.jsx';
 import hotkey from 'react-hotkey';
 
 
@@ -12,83 +13,21 @@ var services = [{"handle":1,"uuid":"0x2800","name":"Generic Access","characteris
 
 
 var ServerSetup = React.createClass({
-    mixins: [hotkey.Mixin('handleHotkey')],
-    handleHotkey: function(e) {
-    	if (e.getModifierState('Alt')) {
-	    	switch(e.key) {
-	    		case "ArrowUp":
-	    			this.setState({ selectedHandle: this._getPrevious().handle });
-	    			e.preventDefault();
-	    			break;
-	    		case "ArrowDown":
-	    			this.setState({ selectedHandle: this._getNext().handle });
-	    			e.preventDefault();
-	    			break;
-	            default:
-	                break;
-	        }
-	    }
+	mixins: [KeyNavigation.mixin('services')],
+    getDefaultProps() {
+    	return { services: services }
     },
     getInitialState() {
-        return { selectedHandle: null };
+        return { selected: null };
     },
-    _onSelected(selectedHandle) {
-    	this.setState({ selectedHandle: selectedHandle });
+    _onSelected(selected) {
+    	this.setState({ selected: selected });
     },
-    _getSelected() {
-    	if (this.state.selectedHandle === null) return;
-    	for (var i = 0; i < services.length; i++) {
-    		if (services[i].handle === this.state.selectedHandle) return services[i];
-    		var characteristics = services[i].characteristics;
-	    	for (var j = 0; j < characteristics.length; j++) {
-    			if (characteristics[j].handle === this.state.selectedHandle) return characteristics[j];
-    			var descriptors = characteristics[j].descriptors;
-		    	for (var k = 0; k < descriptors.length; k++) {
-    				if (descriptors[k].handle === this.state.selectedHandle) return descriptors[k];
-		    	}
-	    	}
-    	}
-    },
-    *_traverseItems() {
-    	for (var i = 0; i < services.length; i++) {
-    		yield services[i];
-	    	for (var j = 0; j < services[i].characteristics.length; j++) {
-    			yield services[i].characteristics[j];
-		    	for (var k = 0; k < services[i].characteristics[j].descriptors.length; k++) {
-    				yield services[i].characteristics[j].descriptors[k];
-		    	}
-	    	}
-    	}
-    },
-    *_traverseItemsBackwards() {
-    	for (var i = services.length - 1; i >= 0; i--) {
-	    	for (var j = services[i].characteristics.length - 1; j >= 0; j--) {
-		    	for (var k = services[i].characteristics[j].descriptors.length - 1; k >= 0; k--) {
-    				yield services[i].characteristics[j].descriptors[k];
-		    	}
-    			yield services[i].characteristics[j];
-	    	}
-    		yield services[i];
-    	}
-    },
-    _getNext() {
-    	var foundCurrent = this.state.selectedHandle === null;
-    	for (let item of this._traverseItems()) {
-    		if (foundCurrent) return item;
-    		if (item.handle === this.state.selectedHandle) foundCurrent = true;
-    	}
-    	return services[0];
-    },
-    _getPrevious() {
-    	var foundCurrent = this.state.selectedHandle === null;
-    	for (let item of this._traverseItemsBackwards()) {
-    		if (foundCurrent) return item;
-    		if (item.handle === this.state.selectedHandle) foundCurrent = true;
-    	}
-    	return this._traverseItemsBackwards().next().value;
+    componentWillMount() {
+        this.services = services;
     },
 	render() {
-		var selected = this._getSelected();
+		var selected = this.state.selected;
 		var editor = 
 			!selected ? <div className="nothing-selected" /> 
 			: selected.characteristics ? <ServiceEditor service={selected} />
@@ -98,9 +37,9 @@ var ServerSetup = React.createClass({
 			<div className="server-setup" style={this.props.style}>
 				<div className="device-details-view">
 					<div className="service-items-wrap">
-						{services.map((service, i) =>
+						{this.services.map((service, i) =>
 							<ServiceItem name={service.name} key={i} characteristics={service.characteristics} addNew={true} 
-								handle={service.handle} selectedHandle={this.state.selectedHandle} onSelected={this._onSelected}/>
+								item={service} selected={this.state.selected} onSelected={this._onSelected} selectOnClick={true}/>
 						)}
                         <AddNewItem text="New service" bars={1} />
 					</div>
