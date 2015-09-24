@@ -51,19 +51,18 @@ var logStore = reflux.createStore({
         // TODO: look into optimizing the transport of entries by sending
         // TODO: the self.state.logEntries array as option to the query
         // TODO: and let the query implementation add directory to self.state.logEntries.
-        logger.query({start: self.state.last_log_entry_id + 1}, function(err, results) {
+        logger.query({start: self.state.last_log_entry_id + 1, transport: "db"}, function(err, results) {
             if(err) {
                 throw err;
             }
+            if(results === undefined || results.length == 0) return;
 
-            if(results.db === undefined || results.db.length == 0) return;
-
-            for(var i = 0; i < results.db.length; i++) {
-                self.state.logEntries.push(results.db[i]);
+            for(var i = 0; i < results.length; i++) {
+                self.state.logEntries.push(results[i]);
             }
 
             // Fetch the latest id received
-            self.state.last_log_entry_id = results.db[results.db.length-1].id;
+            self.state.last_log_entry_id = results[results.length-1].id;
             self.trigger(self.state);
         });
     }
