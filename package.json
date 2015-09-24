@@ -43,7 +43,7 @@
     "less": "^2.5.1",
     "moment": "^2.10.6",
     "open": "^0.0.5",
-    "pc-ble-driver-js": "git+https://af77a4a4f0a6a5cc47a3eeaf8d65c7ea8bfbd2a7:x-oauth-basic@github.com/NordicSemiconductor/pc-ble-driver-js.git",
+    "pc-ble-driver-js": "https://github.com/NordicSemiconductor/pc-ble-driver-js.git",
     "sqlite3": "kenr/node-sqlite3",
     "react": "^0.13.3",
     "react-bootstrap": "^0.25.0",
