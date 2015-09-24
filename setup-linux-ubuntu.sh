@@ -26,5 +26,5 @@ cp README.md $YGGDRASIL_APP_ROOT_DIR/README.txt
 mkdir $YGGDRASIL_APP_ROOT_DIR/hex
 cp node_modules/pc-ble-driver-js/driver/hex/connectivity_115k2_with_s130_1.0.0.hex $YGGDRASIL_APP_ROOT_DIR/hex/connectivity_115k2_with_s130_1.0.0.hex
 
-tar czf $DEPLOY_DIR/$YGGDRASIL_NAME-$YGGDRASIL_VERSION-darwin-$npm_config_arch.tar.gz $YGGDRASIL_APP_ROOT_DIR
+tar czf $DEPLOY_DIR/$YGGDRASIL_NAME-$YGGDRASIL_VERSION-linux-$npm_config_arch.tar.gz $YGGDRASIL_APP_ROOT_DIR
 
