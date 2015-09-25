@@ -115,15 +115,22 @@ var MyView = React.createClass({
           height: this.state.windowHeight - topBarHeight
         };
         var mainAreaHeight = layoutStyle.height - 189;
+        var active = this.state.currentlyShowing === 'ConnectionMap' ? <BleNodeContainer style={{height: mainAreaHeight}}/>
+                   : this.state.currentlyShowing === 'DeviceDetails' ? <DeviceDetailsContainer style={{height: mainAreaHeight}}/>
+                   : this.state.currentlyShowing === 'ServerSetup'   ? <ServerSetup style={{height: mainAreaHeight}}/>
+                   : null;
         return (
             <div id="main-area-wrapper">
               <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />
               <div className="main-layout" style={layoutStyle}>
                 <div>
                   <div>
+                    {active}
+                    {/*
                     <BleNodeContainer       style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
                     <DeviceDetailsContainer style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'DeviceDetails' ? 'block': 'none'}}/>
                     <ServerSetup            style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ServerSetup'   ? 'block': 'none'}}/>
+                    */}
                   </div>
                   <div>
                     <Log/>
