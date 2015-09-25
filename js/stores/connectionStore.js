@@ -34,7 +34,8 @@ var connectionStore = reflux.createStore({
             connections: [],
             deviceAddressToServicesMap: {},
             isConnecting: false,
-            isEnumeratingServices: false
+            isEnumeratingServices: false,
+            updateRequests: {}
         };
         this.devicesAboutToBeConnected = {};
     },
@@ -122,19 +123,32 @@ var connectionStore = reflux.createStore({
         this.trigger(this.state);
     },
     onConnectionParametersUpdateRequest: function(event) {
-        var newConnectionParameters = {
-            min_conn_interval: event.conn_params.min_conn_interval,
-            max_conn_interval: event.conn_params.max_conn_interval,
-            slave_latency: event.conn_params.slave_latency,
-            conn_sup_timeout: event.conn_params.conn_sup_timeout
-        };
+        var connectionToUpdate = this._findConnectionFromConnectionHandle(event.conn_handle);
+        event.conn_params.deviceAddress = connectionToUpdate.peer_addr.address;
+        var currentUpdateRequests = Object.assign(this.state.updateRequests, {[event.conn_handle]: event.conn_params});
+
+        this.trigger({updateRequests: currentUpdateRequests});
+        /*
         bleDriver.gap_update_connection_parameters(event.conn_handle, newConnectionParameters, function(err){
             if (err) {
                 logger.info('Failed to send gap_update_connection_parameters to driver: ', err);
             } else {
                 logger.info('Successfully sent gap_update_connection_parameters to driver.');
             }
+        });*/
+    },
+    onConnectionParametersUpdate: function(connectionHandle, connectionParameters) {
+        console.log(JSON.stringify(connectionParameters));
+        bleDriver.gap_update_connection_parameters(connectionHandle, connectionParameters, function(err){
+            if (err) {
+                logger.info('Failed to send gap_update_connection_parameters to driver: ', err);
+            } else {
+                logger.info('Successfully sent gap_update_connection_parameters to driver.');
+            }
         });
+        var updateRequests = Object.assign({}, this.state.updateRequests);
+        delete updateRequests[connectionHandle];
+        this.trigger({updateRequests: updateRequests});
     },
     onConnectionParametersUpdated: function(event) {
         var connection = this._findConnectionFromConnectionHandle(event.conn_handle);

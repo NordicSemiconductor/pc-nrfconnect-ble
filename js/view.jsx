@@ -19,17 +19,18 @@ import hotkey from 'react-hotkey';
 
 import BleNodeContainer from './node.jsx';
 import DeviceDetails from './deviceDetails.jsx';
-
+import ConnectionUpdateRequestModal from './components/ConnectionUpdateRequestModal.jsx';
 import Log from './log.jsx';
+
 import logger from './logging';
-
-var DiscoveredDevicesContainer = require('./discoveredDevicesContainer.jsx').DiscoveredDevicesContainer;
-import DiscoveryActions from './actions/discoveryActions';
-
-import driverActions from './actions/bleDriverActions';
 import logStore from './stores/logStore';
 
+import {DiscoveredDevicesContainer} from './discoveredDevicesContainer.jsx';
+
 import logActions from './actions/logActions';
+import DiscoveryActions from './actions/discoveryActions';
+import driverActions from './actions/bleDriverActions';
+
 
 import NavBar from './navbar.jsx';
 
@@ -127,6 +128,7 @@ var MyView = React.createClass({
                 <div>
                   <DiscoveredDevicesContainer />
                 </div>
+                <ConnectionUpdateRequestModal/>
               </div>
             </div>
         );

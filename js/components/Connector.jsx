@@ -13,10 +13,12 @@
 'use strict';
 
 import React from 'react';
+import Reflux from 'reflux';
 
-import {Popover, OverlayTrigger} from 'react-bootstrap';
+import {Popover, OverlayTrigger, Modal} from 'react-bootstrap';
 import connectionActions from '../actions/connectionActions.js';
 import layoutStrategies from '../common/layoutStrategies.js';
+
 
 var ConnectionSetup = React.createClass({
     _disconnect: function() {
@@ -55,14 +57,14 @@ var ConnectionSetup = React.createClass({
 });
 
 var ConnectionOverlay = React.createClass({
-    closeme: function() {
+    _closeme: function() {
         this.refs.overlayTrigger.hide();
     },
     render: function() {
         var overlayRef = this.refs.overlayTrigger;
         return (
             <div className="connection-info-button" style={this.props.style}>
-                <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']}  rootClose={true} placement='left' overlay={<Popover title='Connection Setup'><ConnectionSetup device ={this.props.device} closePopover = {this.closeme}/></Popover>}>
+                <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover title='Connection Setup'><ConnectionSetup device ={this.props.device} closePopover = {this._closeme}/></Popover>}>
                     <span style={{fontSize: '15px'}}>
                         <i className="icon-link icon-encircled"></i>
                     </span>
