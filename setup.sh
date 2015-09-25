@@ -22,7 +22,7 @@ case "$(uname -s)" in
     echo 'Detected platform is Linux'
     export YGGDRASIL_PLATFORM=linux
     export YGGDRASIL_ICON=nordic_logo.png
-    export YGGDARSIL_NAME=yggdrasil
+    export YGGDRASIL_NAME=yggdrasil
     ;;
   *)
     echo 'Not able to detect platform, quitting.'
