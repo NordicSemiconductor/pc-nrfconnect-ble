@@ -146,9 +146,9 @@ var connectionStore = reflux.createStore({
                 logger.info('Successfully sent gap_update_connection_parameters to driver.');
             }
         });
-        var updateRequests = Object.assign({}, this.state.updateRequests);
-        delete updateRequests[connectionHandle];
-        this.trigger({updateRequests: updateRequests});
+
+        delete this.state.updateRequests[connectionHandle];
+        this.trigger({updateRequests: this.state.updateRequests});
     },
     onConnectionParametersUpdated: function(event) {
         var connection = this._findConnectionFromConnectionHandle(event.conn_handle);

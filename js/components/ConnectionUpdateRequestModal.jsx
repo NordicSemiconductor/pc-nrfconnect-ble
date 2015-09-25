@@ -41,29 +41,49 @@ var ConnectionUpdateRequestModal = React.createClass({
     },
     _updateConnection: function(connectionHandle, connectionParameters) {
         delete connectionParameters.deviceAddress;
+        var editedConnectionParameters
         connectionActions.connectionParametersUpdate(connectionHandle, connectionParameters);
+    },
+    _handleChange: function(connectionHandle, inputIdentifier, event) {
+        var newUpdateRequests = Object.assign({}, this.state.updateRequests);
+
+        newUpdateRequests[connectionHandle][inputIdentifier] = parseInt(event.target.value, 10);
+        this.setState({
+            updateRequests: newUpdateRequests
+        });
+    },
+    _createConnectionIntervalControl: function(connectionRequest, connectionHandle) {
+        if (connectionRequest.min_conn_interval === connectionRequest.max_conn_interval) {
+            return (<input id={"interval_" + connectionHandle} className="form-control nordic-form-control" type="number"  readOnly value = {connectionRequest.max_conn_interval}/>);
+        } else {
+            return (<input id={"interval_" + connectionHandle} type="range" min={connectionRequest.min_conn_interval} max={connectionRequest.max_conn_interval} value={connectionRequest.min_conn_interval}/>);
+        }
     },
     render: function() {
         var requests = [];
         var key = 0;
         for (var connectionHandle in this.state.updateRequests) {
             var connectionRequest = this.state.updateRequests[connectionHandle];
+
             requests.push(
                 <div key={key}>
                     <p>The device at {connectionRequest.deviceAddress} has issued a connection update request</p>
                      <form className="form-horizontal">
                         <div className="form-group ">
-                            <label className=" control-label" htmlFor="interval">Connection Interval</label>
                             <div>
-                                <input className="form-control nordic-form-control" type="number" id="interval" value = {connectionRequest.max_conn_interval}/>
+                                <label className=" control-label" htmlFor={"interval_"+connectionHandle}>Connection Interval</label>
+                                {this._createConnectionIntervalControl(connectionRequest, connectionHandle)}&nbsp;ms
                             </div>
-                            <label className="control-label" htmlFor="latency">Latency</label>
-                            <div >
-                                <input className="form-control nordic-form-control" type="number" id="latency" value={connectionRequest.slave_latency}/>
-                            </div>
-                            <label className="control-label" htmlFor="timeout">Timeout</label>
                             <div>
-                                <input className="form-control nordic-form-control" type="number" id="timeout" value={connectionRequest.conn_sup_timeout}/>
+                                <label className="control-label" htmlFor={"latency_" + connectionHandle}>Latency</label>
+                                <input id={"latency_" + connectionHandle} className="form-control nordic-form-control" 
+                                       onChange={this._handleChange.bind(this, connectionHandle, 'slave_latency')} type="number" 
+                                       value={connectionRequest.slave_latency}/>&nbsp;ms
+                            </div>
+                            <div>
+                                <label className="control-label" htmlFor={"timeout_" + connectionHandle}>Timeout</label>                            
+                                <input id={"timeout_" + connectionHandle} className="form-control nordic-form-control" 
+                                       onChange={this.handleChange} type="number" value={connectionRequest.conn_sup_timeout}/>&nbsp;ms
                             </div>
                             <div>
                                 <button type="button" onClick={this._updateConnection.bind(this, parseInt(connectionHandle, 10), connectionRequest)} className="btn btn-primary btn-xs btn-nordic">
