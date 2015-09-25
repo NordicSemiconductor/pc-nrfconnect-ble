@@ -9,17 +9,20 @@ export npm_config_target=0.30.3
 export npm_config_arch=x64
 
 export YGGDRASIL_VERSION=0.7.0
-export YGGDRASIL_NAME=yggdrasil
 export DEPLOY_DIR=../yggdrasil-deploy
 
 case "$(uname -s)" in
   Darwin)
     echo 'Detected platform is OS X'
     export YGGDRASIL_PLATFORM=darwin
+    export YGGDRASIL_ICON=nordic_logo.icns
+    export YGGDRASIL_NAME=Yggdrasil
     ;;
   Linux)
     echo 'Detected platform is Linux'
     export YGGDRASIL_PLATFORM=linux
+    export YGGDRASIL_ICON=nordic_logo.png
+    export YGGDARSIL_NAME=yggdrasil
     ;;
   *)
     echo 'Not able to detect platform, quitting.'
@@ -36,7 +39,7 @@ npm install --production
 
 flatten-packages
 lessc ./css/styles.less ./css/styles.css
-electron-packager . $YGGDRASIL_NAME --platform=$YGGDRASIL_PLATFORM --arch=$npm_config_arch --version=$npm_config_target --overwrite --out=$DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName = "Nordic Semiconductor ASA" --version-string.LegalCopyright = "Nordic Semiconductor ASA" --version-string.FileDescription = "" --version-string.OriginalFilename = "" --version-string.FileVersion = "$YGGDRASIL_VERSION" --version-string.ProductVersion = "$YGGDRASIL_VERSION" --version-string.ProductName = "$YGGDRASIL_NAME" --version-string.InternalName = "$YGGDRASIL_NAME"
+electron-packager . $YGGDRASIL_NAME --platform=$YGGDRASIL_PLATFORM --arch=$npm_config_arch --logo=$YGGDRASIL_ICON --version=$npm_config_target --overwrite --out=$DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName = "Nordic Semiconductor ASA" --version-string.LegalCopyright = "Nordic Semiconductor ASA" --version-string.FileDescription = "" --version-string.OriginalFilename = "" --version-string.FileVersion = "$YGGDRASIL_VERSION" --version-string.ProductVersion = "$YGGDRASIL_VERSION" --version-string.ProductName = "$YGGDRASIL_NAME" --version-string.InternalName = "$YGGDRASIL_NAME"
 
 cp README.md $YGGDRASIL_APP_ROOT_DIR/README.txt
 cp LICENSE $YGGDRASIL_APP_ROOT_DIR/LICENSE
