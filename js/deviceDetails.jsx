@@ -63,6 +63,34 @@ var ServiceItem = React.createClass({
             this.setState({ expanded: true });
         }
     },
+    componentWillUpdate: function(nextProps, nextState) {
+        nextProps.item.expanded = nextState.expanded;
+    },
+    /*
+    This speeds things up 2x, but breaks notifications:
+    shouldComponentUpdate: function(nextProps, nextState) {
+        //on key navigation, props.selected changes on every keypress, but this only affects
+        //the selected node and whatever subtree contains props.selected.
+        //We should avoid redrawing unless affected.
+        for (var prop in nextProps) {
+            if (prop === "selected") {
+                //if selected is this.item, or is a child node of it, we need to update
+                //if this.item or a child was selected last time, we also need to update
+                var selected = nextProps[prop];
+                var prevSelected = this.props.selected;
+                if (this.props.item === selected  || this.props.item === prevSelected) return true;
+                for (var i = 0; i < this.props.characteristics.length; i++) {
+                    var characteristic = this.props.characteristics[i];
+                    if (characteristic === selected || characteristic === prevSelected) return true;
+                    if (characteristic.descriptors.includes(selected) || characteristic.descriptors.includes(prevSelected)) return true;
+                }
+            } else {
+                if (!_.isEqual(nextProps[prop], this.props[prop])) return true;
+            }
+        }
+        var changed = !_.isEqual(nextState, this.state);
+        return changed;
+    },*/
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
         var iconStyle = this.props.characteristics.length === 0 && !this.props.addNew ? { display: 'none' } : {};
@@ -163,6 +191,9 @@ var CharacteristicItem = React.createClass({
             this.setState({ expanded: true });
         }
         this.props.onRequestVisibility();
+    },
+    componentWillUpdate: function(nextProps, nextState) {
+        nextProps.item.expanded = nextState.expanded;
     },
     _onClick: function() {
         //if selectOnClick is true, clicks are used for both expansion and selection.

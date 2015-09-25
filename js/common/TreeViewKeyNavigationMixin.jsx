@@ -63,7 +63,7 @@ var TreeViewKeyNavigation = {
 		    _getNext() {
 		    	var foundCurrent = this.state.selected === null;
 		    	for (let item of this._traverseItems()) {
-		    		if (foundCurrent) return item;
+		    		if (foundCurrent && this._isVisible(item)) return item;
 		    		if (item === this.state.selected) foundCurrent = true;
 		    	}
 		    	return this[servicesProperty][0];
@@ -71,11 +71,19 @@ var TreeViewKeyNavigation = {
 		    _getPrevious() {
 		    	var foundCurrent = this.state.selected === null;
 		    	for (let item of this._traverseItemsBackwards()) {
-		    		if (foundCurrent) return item;
+		    		if (foundCurrent && this._isVisible(item)) return item;
 		    		if (item === this.state.selected) foundCurrent = true;
 		    	}
-		    	return this._traverseItemsBackwards().next().value;
+		    	//walked through the list, return first visible
+		    	for (let item of this._traverseItemsBackwards()) {
+		    		if (this._isVisible(item)) return item;
+		    	}
 		    },
+		    _isVisible(item) {
+		    	if (item.parent && !item.parent.expanded) return false;
+		    	if (item.parent && item.parent.parent && !item.parent.parent.expanded) return false;
+		    	return true;
+		    }
 		});
 	}
 };
