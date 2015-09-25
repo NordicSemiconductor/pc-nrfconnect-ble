@@ -113,7 +113,7 @@ var ServiceItem = React.createClass({
                             item={characteristic} selected={this.props.selected} onSelected={this.props.onSelected}
                             descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} addNew={this.props.addNew} selectOnClick={this.props.selectOnClick}/>
                     )}
-                    {this.props.addNew ? <AddNewItem text="New characteristic" bars={2} /> : null}
+                    {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.id} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} bars={2} /> : null}
                 </div>
             </div>
         );
@@ -239,7 +239,7 @@ var CharacteristicItem = React.createClass({
                     <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged} onRequestVisibility={this._childNeedsVisibility}
                         item={descriptor} selected={this.props.selected} onSelected={this.props.onSelected}  selectOnClick={this.props.selectOnClick} key={k} />
                 )}
-                {this.props.addNew ? <AddNewItem text="New descriptor" bars={3} /> : null}
+                {this.props.addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + this.props.item.id} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} bars={3} /> : null}
             </div>
         </div>
         );

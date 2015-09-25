@@ -14,7 +14,7 @@ Assumes:
 
 */
 var TreeViewKeyNavigation = {
-    mixin: function(servicesProperty) {
+    mixin: function(servicesProperty, addButtons) {
         return _.extend({}, hotkey.Mixin('handleHotkey'), {
             handleHotkey: function(e) {
                 if (!this[servicesProperty]) {
@@ -48,13 +48,31 @@ var TreeViewKeyNavigation = {
                         for (var k = 0; k < services[i].characteristics[j].descriptors.length; k++) {
                             yield services[i].characteristics[j].descriptors[k];
                         }
+                        if (addButtons) {
+                            yield { parent: services[i].characteristics[j], _addBtnId: "add-btn-" + services[i].characteristics[j].id }
+                        }
                     }
+                    if (addButtons) {
+                        yield { parent: services[i], _addBtnId: "add-btn-" + services[i].id }
+                    }
+                }
+                if (addButtons) {
+                    yield { _addBtnId: "add-btn-root" }
                 }
             },
             *_traverseItemsBackwards() {
                 var services = this[servicesProperty];
+                if (addButtons) {
+                    yield { _addBtnId: "add-btn-root" }
+                }
                 for (var i = services.length - 1; i >= 0; i--) {
+                    if (addButtons) {
+                        yield { parent: services[i], _addBtnId: "add-btn-" + services[i].id }
+                    }
                     for (var j = services[i].characteristics.length - 1; j >= 0; j--) {
+                        if (addButtons) {
+                            yield { parent: services[i].characteristics[j], _addBtnId: "add-btn-" + services[i].characteristics[j].id }
+                        }
                         for (var k = services[i].characteristics[j].descriptors.length - 1; k >= 0; k--) {
                             yield services[i].characteristics[j].descriptors[k];
                         }
@@ -71,7 +89,8 @@ var TreeViewKeyNavigation = {
                         next = item;
                         break;
                     }
-                    if (item === this.state.selected) foundCurrent = true;
+                    var isCurrent = this.state.selected && this.state.selected._addBtnId ? item._addBtnId === this.state.selected._addBtnId : item === this.state.selected;
+                    if (isCurrent) foundCurrent = true;
                 }
                 var isChild = next && ((next.parent && next.parent === this.state.selected) || (next.parent && next.parent.parent && next.parent.parent === this.state.selected));
                 return isChild ? next : null;
@@ -80,7 +99,8 @@ var TreeViewKeyNavigation = {
                 var foundCurrent = this.state.selected === null;
                 for (let item of this._traverseItems()) {
                     if (foundCurrent && this._isVisible(item)) return item;
-                    if (item === this.state.selected) foundCurrent = true;
+                    var isCurrent = this.state.selected && this.state.selected._addBtnId ? item._addBtnId === this.state.selected._addBtnId : item === this.state.selected;
+                    if (isCurrent) foundCurrent = true;
                 }
                 return this[servicesProperty][0];
             },
@@ -88,7 +108,8 @@ var TreeViewKeyNavigation = {
                 var foundCurrent = this.state.selected === null;
                 for (let item of this._traverseItemsBackwards()) {
                     if (foundCurrent && this._isVisible(item)) return item;
-                    if (item === this.state.selected) foundCurrent = true;
+                    var isCurrent = this.state.selected && this.state.selected._addBtnId ? item._addBtnId === this.state.selected._addBtnId : item === this.state.selected;
+                    if (isCurrent) foundCurrent = true;
                 }
                 //walked through the list, return first visible
                 for (let item of this._traverseItemsBackwards()) {
