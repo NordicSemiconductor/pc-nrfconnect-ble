@@ -23,11 +23,15 @@ var TreeViewKeyNavigation = {
 		    	if (e.getModifierState('Alt')) {
 			    	switch(e.key) {
 			    		case "ArrowUp":
-			    			this.setState({ selected: this._getPrevious() });
+			    			this.setState({ selected: this._getPreviousVisible() });
 			    			e.preventDefault();
 			    			break;
 			    		case "ArrowDown":
-			    			this.setState({ selected: this._getNext() });
+			    			this.setState({ selected: this._getNextVisible() });
+			    			e.preventDefault();
+			    			break;
+		    			case "ArrowRight":
+			    			this.setState({ selected: this._getNextChild() || this.state.selected });
 			    			e.preventDefault();
 			    			break;
 			            default:
@@ -36,7 +40,6 @@ var TreeViewKeyNavigation = {
 			    }
 		    },
 		    *_traverseItems() {
-		    	console.log("_traverseItems");
 		    	var services = this[servicesProperty];
 		    	for (var i = 0; i < services.length; i++) {
 		    		yield services[i];
@@ -60,7 +63,20 @@ var TreeViewKeyNavigation = {
 		    		yield services[i];
 		    	}
 		    },
-		    _getNext() {
+		    _getNextChild() {
+		    	var foundCurrent = this.state.selected === null;
+		    	var next;
+		    	for (let item of this._traverseItems()) {
+		    		if (foundCurrent) {
+		    			next = item;
+		    			break;
+		    		}
+		    		if (item === this.state.selected) foundCurrent = true;
+		    	}
+		    	var isChild = next && ((next.parent && next.parent === this.state.selected) || (next.parent && next.parent.parent && next.parent.parent === this.state.selected));
+		    	return isChild ? next : null;
+		    },
+		    _getNextVisible() {
 		    	var foundCurrent = this.state.selected === null;
 		    	for (let item of this._traverseItems()) {
 		    		if (foundCurrent && this._isVisible(item)) return item;
@@ -68,7 +84,7 @@ var TreeViewKeyNavigation = {
 		    	}
 		    	return this[servicesProperty][0];
 		    },
-		    _getPrevious() {
+		    _getPreviousVisible() {
 		    	var foundCurrent = this.state.selected === null;
 		    	for (let item of this._traverseItemsBackwards()) {
 		    		if (foundCurrent && this._isVisible(item)) return item;
