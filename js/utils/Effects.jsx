@@ -2,38 +2,38 @@
 import TWEEN from 'tween.js';
 
 var Effects = {
-	blink(reactElement, property, fromColor, toColor, options) {
-		this.ensureAnimationLoopStarted();
-		var options = options || {};
-		var duration = options.duration || 2000;
-		var easing = options.easing || TWEEN.Easing.Linear.None;
-		return new TWEEN.Tween(fromColor)
+    blink(reactElement, property, fromColor, toColor, options) {
+        this.ensureAnimationLoopStarted();
+        var options = options || {};
+        var duration = options.duration || 2000;
+        var easing = options.easing || TWEEN.Easing.Linear.None;
+        return new TWEEN.Tween(fromColor)
             .to(toColor, duration)
             .easing(easing)
             .onUpdate(() => {
                 reactElement.setState({ [property]: fromColor });
             })
             .start();
-	},
-	ensureAnimationLoopStarted: (function() {
-		//closure trickery to make it impossible to start animationLoop twice
-		var animationLoopStarted = false;
-		return function() {
-			if (!animationLoopStarted) {
-				animationLoopStarted = true;
+    },
+    ensureAnimationLoopStarted: (function() {
+        //closure trickery to make it impossible to start animationLoop twice
+        var animationLoopStarted = false;
+        return function() {
+            if (!animationLoopStarted) {
+                animationLoopStarted = true;
 
-				function animationLoop(time) {
-				    requestAnimationFrame(animationLoop);
-				    TWEEN.update(time);
-				}
-				animationLoop();
-			}
-		}
-	})()
+                function animationLoop(time) {
+                    requestAnimationFrame(animationLoop);
+                    TWEEN.update(time);
+                }
+                animationLoop();
+            }
+        }
+    })()
 }
 
 var BlueWhiteBlinkMixin = {
-	getInitialState: function() {
+    getInitialState: function() {
         return {
             backgroundColor: {r: 255, g: 255, b: 255}
         };
