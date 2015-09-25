@@ -155,6 +155,7 @@ var connectionStore = reflux.createStore({
         connection.conn_params = event.conn_params;
     },
     onDeviceDisconnected: function(eventPayload){
+        // This is called when a device actually has disconnected
         this.state.isEnumeratingServices = false; // In case we disconnect while enumerating services
 
         var connectionThatWasDisconnected = _.find(this.state.connections, function(connection){
@@ -170,6 +171,9 @@ var connectionStore = reflux.createStore({
             return (device.conn_handle === eventPayload.conn_handle); // Prune all with invalid connectionHandle
         });
 
+        // Discard potential update requests for the disconnected device
+        delete this.state.updateRequests[eventPayload.conn_handle];
+        
         // Delete the device from the discovered devices store. This is a temporary solution until
         // refactoring is done.
         discoveryActions.removeDevice(connectionThatWasDisconnected.peer_addr.address);
