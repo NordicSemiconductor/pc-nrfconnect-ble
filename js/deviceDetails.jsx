@@ -15,8 +15,6 @@
 import react from 'react';
 import Reflux from 'reflux';
 
-import {Collapse} from 'react-bootstrap';
-
 import driverStore from './stores/bleDriverStore';
 import connectionStore from './stores/connectionStore';
 import nodeStore from './stores/bleNodeStore';
@@ -109,16 +107,14 @@ var ServiceItem = React.createClass({
                         </div>
                     </div>
                 </div>
-                <Collapse timeout={0} ref="coll" in={this.state.expanded}>
-                    <div>
-                        {this.props.characteristics.map((characteristic, j) =>
-                            <CharacteristicItem name={characteristic.name} value={characteristic.value} onRequestVisibility={this._childNeedsVisibility}
-                                item={characteristic} selected={this.props.selected} onSelected={this.props.onSelected}
-                                descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} addNew={this.props.addNew} selectOnClick={this.props.selectOnClick}/>
-                        )}
-                        {this.props.addNew ? <AddNewItem text="New characteristic" bars={2} /> : null}
-                    </div>
-                </Collapse>
+                <div style={{display: this.state.expanded ? 'block' : 'none'}}>
+                    {this.props.characteristics.map((characteristic, j) =>
+                        <CharacteristicItem name={characteristic.name} value={characteristic.value} onRequestVisibility={this._childNeedsVisibility}
+                            item={characteristic} selected={this.props.selected} onSelected={this.props.onSelected}
+                            descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} addNew={this.props.addNew} selectOnClick={this.props.selectOnClick}/>
+                    )}
+                    {this.props.addNew ? <AddNewItem text="New characteristic" bars={2} /> : null}
+                </div>
             </div>
         );
     }
@@ -238,15 +234,13 @@ var CharacteristicItem = React.createClass({
                     </div>
                 </div>
             </div>
-            <Collapse timeout={0} ref="coll" in={this.state.expanded}>
-                <div>
-                    {this.props.descriptors.map((descriptor, k) =>
-                        <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged} onRequestVisibility={this._childNeedsVisibility}
-                            item={descriptor} selected={this.props.selected} onSelected={this.props.onSelected}  selectOnClick={this.props.selectOnClick} key={k} />
-                    )}
-                    {this.props.addNew ? <AddNewItem text="New descriptor" bars={3} /> : null}
-                </div>
-            </Collapse>
+            <div style={{display: this.state.expanded ? 'block' : 'none'}}>
+                {this.props.descriptors.map((descriptor, k) =>
+                    <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged} onRequestVisibility={this._childNeedsVisibility}
+                        item={descriptor} selected={this.props.selected} onSelected={this.props.onSelected}  selectOnClick={this.props.selectOnClick} key={k} />
+                )}
+                {this.props.addNew ? <AddNewItem text="New descriptor" bars={3} /> : null}
+            </div>
         </div>
         );
     }
