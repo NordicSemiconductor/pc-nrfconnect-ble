@@ -14,7 +14,7 @@
 
 require("babel/register");
 
-process.env.NODE_ENV = 'production';
+//process.env.NODE_ENV = 'production';
 
 var React = require('react/addons');
 
