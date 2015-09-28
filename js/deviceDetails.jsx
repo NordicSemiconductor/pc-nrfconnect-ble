@@ -65,7 +65,9 @@ var ServiceItem = React.createClass({
         nextProps.item.expanded = nextState.expanded;
     },
     _addCharacteristic: function() {
-        var characteristic = {"handle":2,"uuid":"","name":"New characteristic","descriptors":[],"properties":{"broadcast":0,"read":2,"writeWithoutResponse":0,"write":8,"notify":0,"indicate":0,"authenticatedSignedWrites":0,"extendedProperties":0},"valueHandle":3,"characteristicUuid":"","value":""};
+        var handle = Math.random(); //just need a unique value until a real handle is assigned by the driver
+        var characteristic = {"handle": handle,"uuid":"","name":"New characteristic","descriptors":[],"properties":{"broadcast":0,"read":2,"writeWithoutResponse":0,"write":8,"notify":0,"indicate":0,"authenticatedSignedWrites":0,"extendedProperties":0},"valueHandle":3,"characteristicUuid":"","value":""};
+        characteristic.parent = this.props.item;
         this.props.item.characteristics.push(characteristic);
         if (this.props.onSelected) {
             this.props.onSelected(characteristic);
@@ -122,7 +124,7 @@ var ServiceItem = React.createClass({
                             item={characteristic} selected={this.props.selected} onSelected={this.props.onSelected}
                             descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} addNew={this.props.addNew} selectOnClick={this.props.selectOnClick}/>
                     )}
-                    {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.id} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} onClick={this._addCharacteristic} bars={2} /> : null}
+                    {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} onClick={this._addCharacteristic} bars={2} /> : null}
                 </div>
             </div>
         );
@@ -224,7 +226,9 @@ var CharacteristicItem = React.createClass({
         }
     },
     _addDescriptor: function() {
-        var descriptor = {"handle":0,"uuid":"","name":"New descriptor","value":""};
+        var handle = Math.random(); //just need a unique value until a real handle is assigned by the driver
+        var descriptor = {"handle":handle,"uuid":"","name":"New descriptor","value":""};
+        descriptor.parent = this.props.item;
         this.props.item.descriptors.push(descriptor);
         if (this.props.onSelected) {
             this.props.onSelected(descriptor);
@@ -257,7 +261,7 @@ var CharacteristicItem = React.createClass({
                     <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged} onRequestVisibility={this._childNeedsVisibility}
                         item={descriptor} selected={this.props.selected} onSelected={this.props.onSelected}  selectOnClick={this.props.selectOnClick} key={k} />
                 )}
-                {this.props.addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + this.props.item.id} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} onClick={this._addDescriptor} bars={3} /> : null}
+                {this.props.addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} onClick={this._addDescriptor} bars={3} /> : null}
             </div>
         </div>
         );

@@ -49,11 +49,11 @@ var TreeViewKeyNavigation = {
                             yield services[i].characteristics[j].descriptors[k];
                         }
                         if (addButtons) {
-                            yield { parent: services[i].characteristics[j], _addBtnId: "add-btn-" + services[i].characteristics[j].id }
+                            yield { parent: services[i].characteristics[j], _addBtnId: "add-btn-" + services[i].characteristics[j].handle }
                         }
                     }
                     if (addButtons) {
-                        yield { parent: services[i], _addBtnId: "add-btn-" + services[i].id }
+                        yield { parent: services[i], _addBtnId: "add-btn-" + services[i].handle }
                     }
                 }
                 if (addButtons) {
@@ -67,11 +67,11 @@ var TreeViewKeyNavigation = {
                 }
                 for (var i = services.length - 1; i >= 0; i--) {
                     if (addButtons) {
-                        yield { parent: services[i], _addBtnId: "add-btn-" + services[i].id }
+                        yield { parent: services[i], _addBtnId: "add-btn-" + services[i].handle }
                     }
                     for (var j = services[i].characteristics.length - 1; j >= 0; j--) {
                         if (addButtons) {
-                            yield { parent: services[i].characteristics[j], _addBtnId: "add-btn-" + services[i].characteristics[j].id }
+                            yield { parent: services[i].characteristics[j], _addBtnId: "add-btn-" + services[i].characteristics[j].handle }
                         }
                         for (var k = services[i].characteristics[j].descriptors.length - 1; k >= 0; k--) {
                             yield services[i].characteristics[j].descriptors[k];
