@@ -64,6 +64,15 @@ var ServiceItem = React.createClass({
     componentWillUpdate: function(nextProps, nextState) {
         nextProps.item.expanded = nextState.expanded;
     },
+    _addCharacteristic: function() {
+        var characteristic = {"handle":2,"uuid":"","name":"New characteristic","descriptors":[],"properties":{"broadcast":0,"read":2,"writeWithoutResponse":0,"write":8,"notify":0,"indicate":0,"authenticatedSignedWrites":0,"extendedProperties":0},"valueHandle":3,"characteristicUuid":"","value":""};
+        this.props.item.characteristics.push(characteristic);
+        if (this.props.onSelected) {
+            this.props.onSelected(characteristic);
+        } else {
+            this.forceUpdate();
+        }
+    },
     /*
     This speeds things up 2x, but breaks notifications:
     shouldComponentUpdate: function(nextProps, nextState) {
@@ -113,7 +122,7 @@ var ServiceItem = React.createClass({
                             item={characteristic} selected={this.props.selected} onSelected={this.props.onSelected}
                             descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} addNew={this.props.addNew} selectOnClick={this.props.selectOnClick}/>
                     )}
-                    {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.id} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} bars={2} /> : null}
+                    {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.id} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} onClick={this._addCharacteristic} bars={2} /> : null}
                 </div>
             </div>
         );
@@ -214,6 +223,15 @@ var CharacteristicItem = React.createClass({
             this.blink();
         }
     },
+    _addDescriptor: function() {
+        var descriptor = {"handle":0,"uuid":"","name":"New descriptor","value":""};
+        this.props.item.descriptors.push(descriptor);
+        if (this.props.onSelected) {
+            this.props.onSelected(descriptor);
+        } else {
+            this.forceUpdate();
+        }
+    },
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
         var iconStyle = this.props.descriptors.length === 0 && !this.props.addNew  ? { display: 'none' } : {};
@@ -239,7 +257,7 @@ var CharacteristicItem = React.createClass({
                     <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged} onRequestVisibility={this._childNeedsVisibility}
                         item={descriptor} selected={this.props.selected} onSelected={this.props.onSelected}  selectOnClick={this.props.selectOnClick} key={k} />
                 )}
-                {this.props.addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + this.props.item.id} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} bars={3} /> : null}
+                {this.props.addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + this.props.item.id} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} onClick={this._addDescriptor} bars={3} /> : null}
             </div>
         </div>
         );
