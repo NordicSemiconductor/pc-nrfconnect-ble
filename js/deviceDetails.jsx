@@ -76,7 +76,7 @@ var ServiceItem = React.createClass({
         }
     },
     /*
-    This speeds things up 2x, but breaks notifications:
+    //This speeds things up 2x, but breaks notifications:
     shouldComponentUpdate: function(nextProps, nextState) {
         //on key navigation, props.selected changes on every keypress, but this only affects
         //the selected node and whatever subtree contains props.selected.
@@ -99,7 +99,7 @@ var ServiceItem = React.createClass({
         }
         var changed = !_.isEqual(nextState, this.state);
         return changed;
-    },*/
+    },/**/
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
         var iconStyle = this.props.characteristics.length === 0 && !this.props.addNew ? { display: 'none' } : {};
@@ -154,6 +154,10 @@ var DescriptorItem = React.createClass({
         }
     },
     render: function() {
+        var hidden = !this.props.item.parent.expanded && !this.props.item.parent.parent.expanded;
+        if (hidden) {
+            return null;
+        }
         var selected = this.props.item === this.props.selected;
         var backgroundColor = selected
             ? 'rgb(179,225,245)'
@@ -243,9 +247,11 @@ var CharacteristicItem = React.createClass({
         var backgroundColor = selected
             ? 'rgb(179,225,245)'
             : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
+
         return (
         <div>
-            <div className="characteristic-item" style={{ backgroundColor: backgroundColor }} ref="item">
+            {/*Conditionally render first div for performance. We always have to render DescriptorItems, for right-arrow-key expansion to work.*/}
+            {!this.props.item.parent.expanded ? null : <div className="characteristic-item" style={{ backgroundColor: backgroundColor }} ref="item">
                 <div className="bar1"></div>
                 <div className="bar2"></div>
                 <div className="content-wrap" onClick={this._onClick}>
@@ -255,7 +261,7 @@ var CharacteristicItem = React.createClass({
                         <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
                     </div>
                 </div>
-            </div>
+            </div>}
             <div style={{display: this.state.expanded ? 'block' : 'none'}}>
                 {this.props.descriptors.map((descriptor, k) =>
                     <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged} onRequestVisibility={this._childNeedsVisibility}
