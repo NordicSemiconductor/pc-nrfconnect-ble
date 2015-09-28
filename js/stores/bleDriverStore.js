@@ -17,6 +17,8 @@ import reflux from 'reflux';
 import bleDriver from 'pc-ble-driver-js';
 import logger from '../logging';
 import textual from '../ble_driver_textual';
+import remote from 'remote';
+import path from 'path';
 
 import bleDriverActions from '../actions/bleDriverActions';
 import discoveryActions from '../actions/discoveryActions';
@@ -69,6 +71,8 @@ var bleDriverStore = reflux.createStore({
             }
             else
             {
+                var logFilePath = remote.getGlobal('logFileDir') + path.sep + 'log.txt';
+                logger.info(`For a detailed log file see: ${logFilePath}`);
                 logger.info(`Finished opening serial port ${port}.`);
                 self.state.error = undefined;
                 self.state.connectedToDriver = true;

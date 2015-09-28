@@ -26,8 +26,8 @@ call electron-packager ./ yggdrasil --platform=win32 --arch=ia32 --version=0.30.
 copy yggdrasil_installer.nsi %YGGDRASIL_DEPLOY_DIR%
 copy nordic_logo.ico %YGGDRASIL_DEPLOY_DIR%
 copy node_modules\pc-ble-driver-js\driver\lib\s130_nrf51_ble_driver.dll %YGGDRASIL_DEPLOY_DIR%\yggdrasil-win32-ia32
-
-copy README.md %YGGDRASIL_DEPLOY_DIR%\yggdrasil-win32-ia32\README.md
+copy README.md %YGGDRASIL_DEPLOY_DIR%\yggdrasil-win32-ia32\README.txt
+copy LICENSE %YGGDRASIL_DEPLOY_DIR%\yggdrasil-win32-ia32\LICENSE
 mkdir %YGGDRASIL_DEPLOY_DIR%\yggdrasil-win32-ia32\hex
 copy node_modules\pc-ble-driver-js\driver\hex\connectivity_115k2_with_s130_1.0.0.hex %YGGDRASIL_DEPLOY_DIR%\yggdrasil-win32-ia32\hex\connectivity_115k2_with_s130_1.0.0.hex
 
