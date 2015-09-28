@@ -97,7 +97,7 @@ var MyView = React.createClass({
             that.setState({windowHeight: $(window).height()}); //document.documentElement.clientHeight;
         });
 
-        hotkey.activate();
+        hotkey.activate('keydown');
     },
     getInitialState: function() {
         return {

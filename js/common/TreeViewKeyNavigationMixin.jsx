@@ -1,7 +1,7 @@
 
 import hotkey from 'react-hotkey';
 import _ from 'underscore';
-hotkey.activate();
+hotkey.activate('keydown');
 
 /*
 TreeViewKeyNavigation.mixin(propName) produces a mixin that provides keyboard navigation 
