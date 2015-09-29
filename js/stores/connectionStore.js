@@ -135,7 +135,7 @@ var connectionStore = reflux.createStore({
         var that = this;
         bleDriver.gap_update_connection_parameters(connectionHandle, connectionParameters, function(err){
             if (err) {
-                logger.info('Failed to send gap_update_connection_parameters to driver: ', err);
+                logger.error(err.message);
                 that.trigger({
                     connectionBeingUpdated: undefined
                 });
