@@ -29,12 +29,19 @@ import KeyNavigation from './common/TreeViewKeyNavigationMixin.jsx';
 import logger from './logging';
 import _ from 'underscore';
 
+import GattDatabases from './GattDatabases';
+
 var ServiceItem = React.createClass({
     mixins: [BlueWhiteBlinkMixin],
     getInitialState: function() {
         return {
             expanded: false
         };
+    },
+    componentWillReceiveProps: function(nextProps) {
+        if (this.props.selected === nextProps.selected && nextProps.selected === this.props.item) {
+            this.setState({ expanded: nextProps.expanded })
+        }
     },
     _onClick: function() {
         //if selectOnClick is true, clicks are used for both expansion and selection.
@@ -66,7 +73,7 @@ var ServiceItem = React.createClass({
     },
     _addCharacteristic: function() {
         var handle = Math.random(); //just need a unique value until a real handle is assigned by the driver
-        var characteristic = {"handle": handle,"uuid":"","name":"New characteristic","descriptors":[],"properties":{"broadcast":0,"read":2,"writeWithoutResponse":0,"write":8,"notify":0,"indicate":0,"authenticatedSignedWrites":0,"extendedProperties":0},"valueHandle":3,"characteristicUuid":"","value":""};
+        var characteristic = {"handle": handle,"uuid":"","name":"New characteristic","descriptors":[],"properties":new GattDatabases.Properties(0x0A),"valueHandle":3,"characteristicUuid":"","value":""};
         characteristic.parent = this.props.item;
         this.props.item.characteristics.push(characteristic);
         if (this.props.onSelected) {
@@ -145,6 +152,11 @@ var CharacteristicItem = React.createClass({
             }
             this.blink();
         }
+
+        if (this.props.selected === nextProps.selected && nextProps.selected === this.props.item) {
+            this.setState({ expanded: nextProps.expanded })
+        }
+
         //if we're selected through keyboard navigation, we need to make sure we're visible
         if (this.props.selected !== nextProps.selected && nextProps.selected === this.props.item) {
             this.props.onRequestVisibility();

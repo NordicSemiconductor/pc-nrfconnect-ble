@@ -4,7 +4,7 @@ import _ from 'underscore';
 hotkey.activate('keydown');
 
 /*
-TreeViewKeyNavigation.mixin(propName) produces a mixin that provides keyboard navigation 
+TreeViewKeyNavigation.mixin(propName) produces a mixin that provides keyboard navigation
 up and down the tree located in this[propName].
 The currently selected item is stored in this.state.selected
 
@@ -34,6 +34,15 @@ var TreeViewKeyNavigation = {
                             this.setState({ selected: this._getNextChild() || this.state.selected });
                             e.preventDefault();
                             break;
+                        case "ArrowLeft":
+                            if (this.state.selected.expanded) {
+                                this.state.selected.expanded = false;
+                                this.setState({ selected: this.state.selected })
+                            }
+                            else {
+                                this.setState({ selected: this.state.selected.parent || this.state.selected });
+                            }
+
                         default:
                             break;
                     }

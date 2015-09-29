@@ -470,4 +470,4 @@ class GattDatabases {
     }
 }
 
-module.exports = GattDatabases;
+module.exports = {GattDatabases, Service, Characteristic, Descriptor, Properties};

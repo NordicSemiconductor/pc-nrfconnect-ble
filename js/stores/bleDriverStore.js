@@ -43,7 +43,7 @@ var bleDriverStore = reflux.createStore({
             centralAddress: {}
         };
         this.eventCount = 0;
-        this.gattDatabases = new GattDatabases();
+        this.gattDatabases = new GattDatabases.GattDatabases();
     },
     getInitialState: function() {
         return this.state;
