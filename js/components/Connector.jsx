@@ -46,7 +46,7 @@ var ConnectionSetup = React.createClass({
         var connection = this.props.device.connection;
         var isBeingUpdated = (this.state.connectionBeingUpdated === this.props.device.connection.conn_handle);
         var buttonOrSpinner = isBeingUpdated ? 
-            (<img className="spinner" src="resources/ajax-loader.gif" height="16" width="16" />) :
+            (<img className="spinner" src="resources/ajax-loader.gif" height="24" width="24" />) :
             (<button className="btn btn-sm btn-nordic btn-primary" onClick = {this._updateConnection}>Update</button>);
 
         return (
