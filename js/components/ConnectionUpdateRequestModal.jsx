@@ -40,8 +40,6 @@ var ConnectionUpdateRequestModal = React.createClass({
         this.setState({visible:false});
     },
     _updateConnection: function(connectionHandle, connectionParameters) {
-        delete connectionParameters.deviceAddress;
-        var editedConnectionParameters
         connectionActions.connectionParametersUpdate(connectionHandle, connectionParameters);
     },
     _handleChange: function(connectionHandle, inputIdentifier, event) {

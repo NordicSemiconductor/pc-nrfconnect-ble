@@ -15,42 +15,72 @@
 import React from 'react';
 import Reflux from 'reflux';
 
-import {Popover, OverlayTrigger, Modal} from 'react-bootstrap';
+import {Popover, OverlayTrigger} from 'react-bootstrap';
 import connectionActions from '../actions/connectionActions.js';
 import layoutStrategies from '../common/layoutStrategies.js';
-
+import connectionStore from '../stores/connectionStore.js';
 
 var ConnectionSetup = React.createClass({
+    mixins: [Reflux.connect(connectionStore)],
+    getInitialState: function() {
+        // Get initial state from properties. Antipattern, but necessary here to initialize connection parameters
+        return {
+            connectionInfo : this.props.device.connection.conn_params
+        };
+    },
     _disconnect: function() {
         connectionActions.disconnectFromDevice(this.props.device.peer_addr.address);
         this.props.closePopover();
     },
+    _handleChange: function(inputIdentifier, event) {
+        var newConnectionInfo = Object.assign({}, this.state.connectionInfo);
+        newConnectionInfo[inputIdentifier] = parseInt(event.target.value, 10);
+        this.setState({
+            connectionInfo: newConnectionInfo
+        });
+    },
+    _updateConnection: function() {
+        connectionActions.connectionParametersUpdate(this.props.device.connection.conn_handle, this.state.connectionInfo);
+    },
     render: function() {
         var connection = this.props.device.connection;
+        var isBeingUpdated = (this.state.connectionBeingUpdated === this.props.device.connection.conn_handle);
+        var buttonOrSpinner = isBeingUpdated ? 
+            (<img className="spinner" src="resources/ajax-loader.gif" height="16" width="16" />) :
+            (<button className="btn btn-sm btn-nordic btn-primary" onClick = {this._updateConnection}>Update</button>);
+
         return (
             <div>
                 <form className="form-horizontal">
                     <div className="form-group">
                         <label className="col-sm-8 control-label" htmlFor="interval">Connection Interval</label>
                         <div className="col-sm-4">
-                            <input disabled className="form-control nordic-form-control" type="number" id="interval" value = {connection.conn_params.max_conn_interval}/>
+                            <input className="form-control nordic-form-control" type="number" 
+                                   id="interval" onChange={this._handleChange.bind(this, 'max_conn_interval')} 
+                                   value={this.state.connectionInfo.max_conn_interval}/>
                         </div>
                     </div>
                     <div className="form-group">
                         <label className="col-sm-8 control-label" htmlFor="latency">Latency</label>
                         <div className="col-sm-4">
-                            <input disabled  className="form-control nordic-form-control" type="number" id="latency" value={connection.conn_params.slave_latency}/>
+                            <input className="form-control nordic-form-control" type="number"
+                                   value={this.state.connectionInfo.slave_latency}
+                                   id="latency" onChange={this._handleChange.bind(this, 'slave_latency')}/>
                         </div>
                     </div>
                     <div className="form-group">
                         <label className="col-sm-8 control-label" htmlFor="timeout">Timeout</label>
                         <div className="col-sm-4">
-                            <input disabled  className="form-control nordic-form-control" type="number" id="timeout" value={connection.conn_params.conn_sup_timeout}/>
+                            <input className="form-control nordic-form-control" type="number" 
+                                   value={this.state.connectionInfo.conn_sup_timeout}
+                                   id="timeout" onChange={this._handleChange.bind(this, 'conn_sup_timeout')}/>
                         </div>
                     </div>
                 </form>
                 <hr/>
-                <button onClick = {this._disconnect}>Disconnect</button>
+                {buttonOrSpinner}
+                <button disabled={isBeingUpdated} className="btn btn-sm btn-nordic btn-danger pull-right" onClick = {this._disconnect}>Disconnect</button>
+
             </div>
         );
     }

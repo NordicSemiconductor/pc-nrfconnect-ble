@@ -128,31 +128,37 @@ var connectionStore = reflux.createStore({
         var currentUpdateRequests = Object.assign(this.state.updateRequests, {[event.conn_handle]: event.conn_params});
 
         this.trigger({updateRequests: currentUpdateRequests});
-        /*
-        bleDriver.gap_update_connection_parameters(event.conn_handle, newConnectionParameters, function(err){
-            if (err) {
-                logger.info('Failed to send gap_update_connection_parameters to driver: ', err);
-            } else {
-                logger.info('Successfully sent gap_update_connection_parameters to driver.');
-            }
-        });*/
+        // Do autoreply here if set up to do so.
     },
     onConnectionParametersUpdate: function(connectionHandle, connectionParameters) {
         console.log(JSON.stringify(connectionParameters));
+        var that = this;
         bleDriver.gap_update_connection_parameters(connectionHandle, connectionParameters, function(err){
             if (err) {
                 logger.info('Failed to send gap_update_connection_parameters to driver: ', err);
+                that.trigger({
+                    connectionBeingUpdated: undefined
+                });
             } else {
                 logger.info('Successfully sent gap_update_connection_parameters to driver.');
             }
         });
 
         delete this.state.updateRequests[connectionHandle];
-        this.trigger({updateRequests: this.state.updateRequests});
+        this.trigger(
+            {
+                updateRequests: this.state.updateRequests,
+                connectionBeingUpdated : connectionHandle
+            }
+        );
     },
     onConnectionParametersUpdated: function(event) {
         var connection = this._findConnectionFromConnectionHandle(event.conn_handle);
         connection.conn_params = event.conn_params;
+        var theConnection = this._findConnectionFromConnectionHandle(event.conn_handle);
+        this.trigger({
+            connectionBeingUpdated: undefined
+        });
     },
     onDeviceDisconnected: function(eventPayload){
         // This is called when a device actually has disconnected
