@@ -38,7 +38,7 @@ var ServiceItem = React.createClass({
     },
     _onClick: function() {
         //if selectOnClick is true, clicks are used for both expansion and selection.
-        //in this case, dont collapse children unless the item is selected. 
+        //in this case, dont collapse children unless the item is selected.
         //this seems like a good tradeoff between letting the user know something is there,
         //and avoiding unwanted expansions/collapses when user wants to select.
         var isSelected = this.props.item === this.props.selected;
@@ -46,7 +46,7 @@ var ServiceItem = React.createClass({
         if (!delayExpansion) {
             this.setState({expanded: !this.state.expanded});
         }
-        
+
         if (this.props.onSelected) {
             this.props.onSelected(this.props.item);
         }
@@ -115,6 +115,9 @@ var ServiceItem = React.createClass({
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                         <div className="content">
                             <div className="service-name truncate-text" >{this.props.name}</div>
+                            <div className="flag-line">
+                                <div className="device-flag">Handle: {this.props.item.handle}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -125,53 +128,6 @@ var ServiceItem = React.createClass({
                             descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} addNew={this.props.addNew} selectOnClick={this.props.selectOnClick}/>
                     )}
                     {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} onClick={this._addCharacteristic} bars={2} /> : null}
-                </div>
-            </div>
-        );
-    }
-});
-
-var DescriptorItem = React.createClass({
-    mixins: [BlueWhiteBlinkMixin],
-    getInitialState: function() {
-        return {};
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (this.props.value !== nextProps.value) {
-            if (this.props.onChange) {
-                this.props.onChange()
-            }
-            this.blink();
-        }
-        //if we're selected through keyboard navigation, we need to make sure we're visible
-        if (this.props.selected !== nextProps.selected && nextProps.selected === this.props.item) {
-            this.props.onRequestVisibility();
-        }
-    },
-    _onClick: function() {
-        if (this.props.onSelected) {
-            this.props.onSelected(this.props.item);
-        }
-    },
-    render: function() {
-        var hidden = !this.props.item.parent.expanded && !this.props.item.parent.parent.expanded;
-        if (hidden) {
-            return null;
-        }
-        var selected = this.props.item === this.props.selected;
-        var backgroundColor = selected
-            ? 'rgb(179,225,245)'
-            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
-        return (
-            <div className={"descriptor-item" + (selected ? " selected" : "")} style={{ backgroundColor: backgroundColor }} onClick={this._onClick}>
-                <div className="bar1"></div>
-                <div className="bar2"></div>
-                <div className="bar3"></div>
-                <div className="content-wrap">
-                    <div className="content">
-                        <div className="truncate-text">{this.props.name}</div>
-                        <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
-                    </div>
                 </div>
             </div>
         );
@@ -208,7 +164,7 @@ var CharacteristicItem = React.createClass({
     },
     _onClick: function() {
         //if selectOnClick is true, clicks are used for both expansion and selection.
-        //in this case, dont collapse children unless the item is selected. 
+        //in this case, dont collapse children unless the item is selected.
         //this seems like a good tradeoff between letting the user know something is there,
         //and avoiding unwanted expansions/collapses when user wants to select.
         var isSelected = this.props.item === this.props.selected;
@@ -258,6 +214,12 @@ var CharacteristicItem = React.createClass({
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     <div className="content">
                         <div className="truncate-text">{this.props.name}</div>
+                        <div className="flag-line">
+                            <div className="device-flag" title={'Handle: ' + this.props.item.handle + ', Value handle: ' + this.props.item.valueHandle}>Handle: {this.props.item.handle}, {this.props.item.valueHandle}</div>
+                            {(this.props.item.properties.getProperties()).map(function(property, index) {
+                                return (<div key={index} className="device-flag">{property}</div>)
+                            })}
+                        </div>
                         <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
                     </div>
                 </div>
@@ -270,6 +232,56 @@ var CharacteristicItem = React.createClass({
                 {this.props.addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} onClick={this._addDescriptor} bars={3} /> : null}
             </div>
         </div>
+        );
+    }
+});
+
+var DescriptorItem = React.createClass({
+    mixins: [BlueWhiteBlinkMixin],
+    getInitialState: function() {
+        return {};
+    },
+    componentWillReceiveProps: function(nextProps) {
+        if (this.props.value !== nextProps.value) {
+            if (this.props.onChange) {
+                this.props.onChange()
+            }
+            this.blink();
+        }
+        //if we're selected through keyboard navigation, we need to make sure we're visible
+        if (this.props.selected !== nextProps.selected && nextProps.selected === this.props.item) {
+            this.props.onRequestVisibility();
+        }
+    },
+    _onClick: function() {
+        if (this.props.onSelected) {
+            this.props.onSelected(this.props.item);
+        }
+    },
+    render: function() {
+        var hidden = !this.props.item.parent.expanded && !this.props.item.parent.parent.expanded;
+        if (hidden) {
+            return null;
+        }
+        var selected = this.props.item === this.props.selected;
+        var backgroundColor = selected
+            ? 'rgb(179,225,245)'
+            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
+        return (
+            <div className={"descriptor-item" + (selected ? " selected" : "")} style={{ backgroundColor: backgroundColor }} onClick={this._onClick}>
+                <div className="bar1"></div>
+                <div className="bar2"></div>
+                <div className="bar3"></div>
+                <div className="content-wrap">
+                    <div className="content">
+                        <div className="truncate-text">{this.props.name}</div>
+                        <div className="flag-line">
+                            <div className="device-flag">Handle: {this.props.item.handle}</div>
+                        </div>
+                        <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
+                    </div>
+                </div>
+            </div>
         );
     }
 });

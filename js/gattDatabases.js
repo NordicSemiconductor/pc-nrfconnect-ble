@@ -32,7 +32,7 @@ class GattDatabase {
     }
 
     getPrettyGattDatabase() {
-        var prettyDatabase = JSON.parse(JSON.stringify(this));
+        var prettyDatabase = Object.assign({}, this);
 
         var findPredicate = function(characteristic, descriptor) {
             return descriptor.handle === characteristic.valueHandle;
@@ -120,6 +120,37 @@ class Properties {
         this.indicate = properties & 0x20;
         this.authenticatedSignedWrites = properties & 0x40;
         this.extendedProperties = properties & 0x80;
+    }
+
+    getProperties() {
+        var properties = [];
+
+        if (this.broadcast) {
+            properties.push('Broadcast');
+        }
+        if (this.read) {
+            properties.push('Read');
+        }
+        if (this.writeWithoutResponse) {
+            properties.push('Write w/o response');
+        }
+        if (this.write) {
+            properties.push('Write');
+        }
+        if (this.notify) {
+            properties.push('Notify');
+        }
+        if (this.indicate) {
+            properties.push('Indicate');
+        }
+        if (this.authenticatedSignedWrites) {
+            properties.push('Authenticated signed writes');
+        }
+        if (this.extendedProperties) {
+            properties.push('Extended properties');
+        }
+
+        return properties;
     }
 }
 
