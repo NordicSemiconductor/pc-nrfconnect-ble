@@ -40,7 +40,7 @@ var ServiceItem = React.createClass({
     },
     componentWillReceiveProps: function(nextProps) {
         if (this.props.selected === nextProps.selected && nextProps.selected === this.props.item) {
-            this.setState({ expanded: nextProps.expanded })
+            this.setState({ expanded: nextProps.selected.expanded })
         }
     },
     _onClick: function() {
@@ -61,11 +61,6 @@ var ServiceItem = React.createClass({
     _childChanged: function() {
         if (!this.state.expanded) {
             this.blink();
-        }
-    },
-    _childNeedsVisibility: function() {
-        if (!this.state.expanded) {
-            this.setState({ expanded: true });
         }
     },
     componentWillUpdate: function(nextProps, nextState) {
@@ -127,11 +122,11 @@ var ServiceItem = React.createClass({
                 </div>
                 <div style={{display: this.state.expanded ? 'block' : 'none'}}>
                     {this.props.characteristics.map((characteristic, j) =>
-                        <CharacteristicItem name={characteristic.name} value={characteristic.value} onRequestVisibility={this._childNeedsVisibility}
+                        <CharacteristicItem name={characteristic.name} value={characteristic.value}
                             item={characteristic} selected={this.props.selected} onSelected={this.props.onSelected}
                             descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} addNew={this.props.addNew} selectOnClick={this.props.selectOnClick}/>
                     )}
-                    {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} onClick={this._addCharacteristic} bars={2} /> : null}
+                    {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onClick={this._addCharacteristic} bars={2} /> : null}
                 </div>
             </div>
         );
@@ -154,19 +149,8 @@ var CharacteristicItem = React.createClass({
         }
 
         if (this.props.selected === nextProps.selected && nextProps.selected === this.props.item) {
-            this.setState({ expanded: nextProps.expanded })
+            this.setState({ expanded: nextProps.selected.expanded })
         }
-
-        //if we're selected through keyboard navigation, we need to make sure we're visible
-        if (this.props.selected !== nextProps.selected && nextProps.selected === this.props.item) {
-            this.props.onRequestVisibility();
-        }
-    },
-    _childNeedsVisibility: function() {
-        if (!this.state.expanded) {
-            this.setState({ expanded: true });
-        }
-        this.props.onRequestVisibility();
     },
     componentWillUpdate: function(nextProps, nextState) {
         nextProps.item.expanded = nextState.expanded;
@@ -234,10 +218,10 @@ var CharacteristicItem = React.createClass({
             </div>}
             <div style={{display: this.state.expanded ? 'block' : 'none'}}>
                 {this.props.descriptors.map((descriptor, k) =>
-                    <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged} onRequestVisibility={this._childNeedsVisibility}
+                    <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged}
                         item={descriptor} selected={this.props.selected} onSelected={this.props.onSelected}  selectOnClick={this.props.selectOnClick} key={k} />
                 )}
-                {this.props.addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} onClick={this._addDescriptor} bars={3} /> : null}
+                {this.props.addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onClick={this._addDescriptor} bars={3} /> : null}
             </div>
         </div>
         );
@@ -255,10 +239,6 @@ var DescriptorItem = React.createClass({
                 this.props.onChange()
             }
             this.blink();
-        }
-        //if we're selected through keyboard navigation, we need to make sure we're visible
-        if (this.props.selected !== nextProps.selected && nextProps.selected === this.props.item) {
-            this.props.onRequestVisibility();
         }
     },
     _onClick: function() {

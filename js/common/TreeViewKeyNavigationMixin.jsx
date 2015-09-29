@@ -31,18 +31,24 @@ var TreeViewKeyNavigation = {
                             e.preventDefault();
                             break;
                         case "ArrowRight":
-                            this.setState({ selected: this._getNextChild() || this.state.selected });
+                            if (this.state.selected.expanded) {
+                                this.setState({ selected: this._getNextChild() || this.state.selected });
+                            }
+                            else {
+                                this.state.selected.expanded = true;
+                                this.setState({ selected: this.state.selected });
+                            }
                             e.preventDefault();
                             break;
                         case "ArrowLeft":
                             if (this.state.selected.expanded) {
                                 this.state.selected.expanded = false;
-                                this.setState({ selected: this.state.selected })
+                                this.setState({ selected: this.state.selected });
                             }
                             else {
                                 this.setState({ selected: this.state.selected.parent || this.state.selected });
                             }
-
+                            break;
                         default:
                             break;
                     }
