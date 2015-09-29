@@ -34,7 +34,8 @@ var connectionStore = reflux.createStore({
             connections: [],
             deviceAddressToServicesMap: {},
             isConnecting: false,
-            isEnumeratingServices: false
+            isEnumeratingServices: false,
+            updateRequests: {}
         };
         this.devicesAboutToBeConnected = {};
     },
@@ -122,25 +123,45 @@ var connectionStore = reflux.createStore({
         this.trigger(this.state);
     },
     onConnectionParametersUpdateRequest: function(event) {
-        var newConnectionParameters = {
-            min_conn_interval: event.conn_params.min_conn_interval,
-            max_conn_interval: event.conn_params.max_conn_interval,
-            slave_latency: event.conn_params.slave_latency,
-            conn_sup_timeout: event.conn_params.conn_sup_timeout
-        };
-        bleDriver.gap_update_connection_parameters(event.conn_handle, newConnectionParameters, function(err){
+        var connectionToUpdate = this._findConnectionFromConnectionHandle(event.conn_handle);
+        event.conn_params.deviceAddress = connectionToUpdate.peer_addr.address;
+        var currentUpdateRequests = Object.assign(this.state.updateRequests, {[event.conn_handle]: event.conn_params});
+
+        this.trigger({updateRequests: currentUpdateRequests});
+        // Do autoreply here if set up to do so.
+    },
+    onConnectionParametersUpdate: function(connectionHandle, connectionParameters) {
+        console.log(JSON.stringify(connectionParameters));
+        var that = this;
+        bleDriver.gap_update_connection_parameters(connectionHandle, connectionParameters, function(err){
             if (err) {
                 logger.info('Failed to send gap_update_connection_parameters to driver: ', err);
+                that.trigger({
+                    connectionBeingUpdated: undefined
+                });
             } else {
                 logger.info('Successfully sent gap_update_connection_parameters to driver.');
             }
         });
+
+        delete this.state.updateRequests[connectionHandle];
+        this.trigger(
+            {
+                updateRequests: this.state.updateRequests,
+                connectionBeingUpdated : connectionHandle
+            }
+        );
     },
     onConnectionParametersUpdated: function(event) {
         var connection = this._findConnectionFromConnectionHandle(event.conn_handle);
         connection.conn_params = event.conn_params;
+        var theConnection = this._findConnectionFromConnectionHandle(event.conn_handle);
+        this.trigger({
+            connectionBeingUpdated: undefined
+        });
     },
     onDeviceDisconnected: function(eventPayload){
+        // This is called when a device actually has disconnected
         this.state.isEnumeratingServices = false; // In case we disconnect while enumerating services
 
         var connectionThatWasDisconnected = _.find(this.state.connections, function(connection){
@@ -156,6 +177,9 @@ var connectionStore = reflux.createStore({
             return (device.conn_handle === eventPayload.conn_handle); // Prune all with invalid connectionHandle
         });
 
+        // Discard potential update requests for the disconnected device
+        delete this.state.updateRequests[eventPayload.conn_handle];
+        
         // Delete the device from the discovered devices store. This is a temporary solution until
         // refactoring is done.
         discoveryActions.removeDevice(connectionThatWasDisconnected.peer_addr.address);
