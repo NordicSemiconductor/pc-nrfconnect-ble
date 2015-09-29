@@ -114,10 +114,7 @@ var ServiceItem = React.createClass({
                     <div className="content-wrap" onClick={this._onClick}>
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                         <div className="content">
-                            <div className="service-name truncate-text" >{this.props.name}</div>
-                            <div className="flag-line">
-                                <div className="device-flag">Handle: {this.props.item.handle}</div>
-                            </div>
+                            <div className="service-name truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
                         </div>
                     </div>
                 </div>
@@ -213,9 +210,8 @@ var CharacteristicItem = React.createClass({
                 <div className="content-wrap" onClick={this._onClick}>
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     <div className="content">
-                        <div className="truncate-text">{this.props.name}</div>
+                        <div className="truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
                         <div className="flag-line">
-                            <div className="device-flag" title={'Handle: ' + this.props.item.handle + ', Value handle: ' + this.props.item.valueHandle}>Handle: {this.props.item.handle}, {this.props.item.valueHandle}</div>
                             {(this.props.item.properties.getProperties()).map(function(property, index) {
                                 return (<div key={index} className="device-flag">{property}</div>)
                             })}
@@ -274,10 +270,7 @@ var DescriptorItem = React.createClass({
                 <div className="bar3"></div>
                 <div className="content-wrap">
                     <div className="content">
-                        <div className="truncate-text">{this.props.name}</div>
-                        <div className="flag-line">
-                            <div className="device-flag">Handle: {this.props.item.handle}</div>
-                        </div>
+                        <div className="truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
                         <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
                     </div>
                 </div>
