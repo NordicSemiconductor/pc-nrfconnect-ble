@@ -15,62 +15,162 @@
 import react from 'react';
 import Reflux from 'reflux';
 
-import {Collapse} from 'react-bootstrap';
-
 import driverStore from './stores/bleDriverStore';
 import connectionStore from './stores/connectionStore';
 import nodeStore from './stores/bleNodeStore';
 
 import ConnectedDevice from './components/ConnectedDevice.jsx';
 import CentralDevice from './components/CentralDevice.jsx';
+import AddNewItem from './components/AddNewItem.jsx';
+import HexOnlyEditableField from './components/HexOnlyEditableField.jsx';
+
+import { BlueWhiteBlinkMixin } from './utils/Effects.jsx';
+import KeyNavigation from './common/TreeViewKeyNavigationMixin.jsx';
 import logger from './logging';
+import _ from 'underscore';
 
 var ServiceItem = React.createClass({
+    mixins: [BlueWhiteBlinkMixin],
     getInitialState: function() {
         return {
             expanded: false
         };
     },
-    _toggleExpanded: function(){
-        this.setState({expanded: !this.state.expanded});
+    _onClick: function() {
+        //if selectOnClick is true, clicks are used for both expansion and selection.
+        //in this case, dont collapse children unless the item is selected. 
+        //this seems like a good tradeoff between letting the user know something is there,
+        //and avoiding unwanted expansions/collapses when user wants to select.
+        var isSelected = this.props.item === this.props.selected;
+        var delayExpansion = this.props.selectOnClick && !isSelected && this.state.expanded;
+        if (!delayExpansion) {
+            this.setState({expanded: !this.state.expanded});
+        }
+        
+        if (this.props.onSelected) {
+            this.props.onSelected(this.props.item);
+        }
     },
+    _childChanged: function() {
+        if (!this.state.expanded) {
+            this.blink();
+        }
+    },
+    _childNeedsVisibility: function() {
+        if (!this.state.expanded) {
+            this.setState({ expanded: true });
+        }
+    },
+    componentWillUpdate: function(nextProps, nextState) {
+        nextProps.item.expanded = nextState.expanded;
+    },
+    _addCharacteristic: function() {
+        var handle = Math.random(); //just need a unique value until a real handle is assigned by the driver
+        var characteristic = {"handle": handle,"uuid":"","name":"New characteristic","descriptors":[],"properties":{"broadcast":0,"read":2,"writeWithoutResponse":0,"write":8,"notify":0,"indicate":0,"authenticatedSignedWrites":0,"extendedProperties":0},"valueHandle":3,"characteristicUuid":"","value":""};
+        characteristic.parent = this.props.item;
+        this.props.item.characteristics.push(characteristic);
+        if (this.props.onSelected) {
+            this.props.onSelected(characteristic);
+        } else {
+            this.forceUpdate();
+        }
+    },
+    /*
+    //This speeds things up 2x, but breaks notifications:
+    shouldComponentUpdate: function(nextProps, nextState) {
+        //on key navigation, props.selected changes on every keypress, but this only affects
+        //the selected node and whatever subtree contains props.selected.
+        //We should avoid redrawing unless affected.
+        for (var prop in nextProps) {
+            if (prop === "selected") {
+                //if selected is this.item, or is a child node of it, we need to update
+                //if this.item or a child was selected last time, we also need to update
+                var selected = nextProps[prop];
+                var prevSelected = this.props.selected;
+                if (this.props.item === selected  || this.props.item === prevSelected) return true;
+                for (var i = 0; i < this.props.characteristics.length; i++) {
+                    var characteristic = this.props.characteristics[i];
+                    if (characteristic === selected || characteristic === prevSelected) return true;
+                    if (characteristic.descriptors.includes(selected) || characteristic.descriptors.includes(prevSelected)) return true;
+                }
+            } else {
+                if (!_.isEqual(nextProps[prop], this.props[prop])) return true;
+            }
+        }
+        var changed = !_.isEqual(nextState, this.state);
+        return changed;
+    },/**/
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        var iconStyle = React.Children.count(this.props.children) === 0 ? { display: 'none' } : {};
+        var iconStyle = this.props.characteristics.length === 0 && !this.props.addNew ? { display: 'none' } : {};
+        var selected = this.props.item === this.props.selected;
+        var backgroundColor = selected
+            ? 'rgb(179,225,245)'
+            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
         return (
             <div>
-                <div className="service-item">
+                <div className="service-item" style={{ backgroundColor: backgroundColor }}>
                     <div className="bar1"></div>
-                    <div className="content-wrap" onClick={this._toggleExpanded}>
+                    <div className="content-wrap" onClick={this._onClick}>
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                         <div className="content">
-                            <div className="service-name truncate-text" >{this.props.serviceData.name}</div>
+                            <div className="service-name truncate-text" >{this.props.name}</div>
                         </div>
                     </div>
                 </div>
-                <Collapse timeout={0} ref="coll" in={this.state.expanded}>
-                    <div>
-                        {this.props.children}
-                    </div>
-                </Collapse>
+                <div style={{display: this.state.expanded ? 'block' : 'none'}}>
+                    {this.props.characteristics.map((characteristic, j) =>
+                        <CharacteristicItem name={characteristic.name} value={characteristic.value} onRequestVisibility={this._childNeedsVisibility}
+                            item={characteristic} selected={this.props.selected} onSelected={this.props.onSelected}
+                            descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} addNew={this.props.addNew} selectOnClick={this.props.selectOnClick}/>
+                    )}
+                    {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} onClick={this._addCharacteristic} bars={2} /> : null}
+                </div>
             </div>
         );
     }
 });
 
 var DescriptorItem = React.createClass({
+    mixins: [BlueWhiteBlinkMixin],
+    getInitialState: function() {
+        return {};
+    },
+    componentWillReceiveProps: function(nextProps) {
+        if (this.props.value !== nextProps.value) {
+            if (this.props.onChange) {
+                this.props.onChange()
+            }
+            this.blink();
+        }
+        //if we're selected through keyboard navigation, we need to make sure we're visible
+        if (this.props.selected !== nextProps.selected && nextProps.selected === this.props.item) {
+            this.props.onRequestVisibility();
+        }
+    },
+    _onClick: function() {
+        if (this.props.onSelected) {
+            this.props.onSelected(this.props.item);
+        }
+    },
     render: function() {
-         return (
-            <div className="descriptor-item">
+        var hidden = !this.props.item.parent.expanded && !this.props.item.parent.parent.expanded;
+        if (hidden) {
+            return null;
+        }
+        var selected = this.props.item === this.props.selected;
+        var backgroundColor = selected
+            ? 'rgb(179,225,245)'
+            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
+        return (
+            <div className={"descriptor-item" + (selected ? " selected" : "")} style={{ backgroundColor: backgroundColor }} onClick={this._onClick}>
                 <div className="bar1"></div>
                 <div className="bar2"></div>
                 <div className="bar3"></div>
                 <div className="content-wrap">
                     <div className="content">
-                        <div className="truncate-text">{this.props.descriptorData.name}</div>
-                        <div className="text-subtle">
-                            <span>{this.props.descriptorData.value}</span>
-                        </div>
+                        <div className="truncate-text">{this.props.name}</div>
+                        <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
                     </div>
                 </div>
             </div>
@@ -79,52 +179,122 @@ var DescriptorItem = React.createClass({
 });
 
 var CharacteristicItem = React.createClass({
+    mixins: [BlueWhiteBlinkMixin],
     getInitialState: function() {
         return {
             expanded: false
         };
     },
-    _toggleExpanded: function() {
-        this.setState({expanded: !this.state.expanded});
+    componentWillReceiveProps: function(nextProps) {
+        if (this.props.value !== nextProps.value) {
+            if (this.props.onChange) {
+                this.props.onChange();
+            }
+            this.blink();
+        }
+        //if we're selected through keyboard navigation, we need to make sure we're visible
+        if (this.props.selected !== nextProps.selected && nextProps.selected === this.props.item) {
+            this.props.onRequestVisibility();
+        }
+    },
+    _childNeedsVisibility: function() {
+        if (!this.state.expanded) {
+            this.setState({ expanded: true });
+        }
+        this.props.onRequestVisibility();
+    },
+    componentWillUpdate: function(nextProps, nextState) {
+        nextProps.item.expanded = nextState.expanded;
+    },
+    _onClick: function() {
+        //if selectOnClick is true, clicks are used for both expansion and selection.
+        //in this case, dont collapse children unless the item is selected. 
+        //this seems like a good tradeoff between letting the user know something is there,
+        //and avoiding unwanted expansions/collapses when user wants to select.
+        var isSelected = this.props.item === this.props.selected;
+        var delayExpansion = this.props.selectOnClick && !isSelected && this.state.expanded;
+        if (!delayExpansion) {
+            this.setState({expanded: !this.state.expanded});
+        }
+
+        if (this.props.onSelected) {
+            this.props.onSelected(this.props.item);
+        }
+    },
+    _childChanged: function() {
+        if (this.props.onChange) {
+            this.props.onChange();
+        }
+        if (!this.state.expanded) {
+            this.blink();
+        }
+    },
+    _addDescriptor: function() {
+        var handle = Math.random(); //just need a unique value until a real handle is assigned by the driver
+        var descriptor = {"handle":handle,"uuid":"","name":"New descriptor","value":""};
+        descriptor.parent = this.props.item;
+        this.props.item.descriptors.push(descriptor);
+        if (this.props.onSelected) {
+            this.props.onSelected(descriptor);
+        } else {
+            this.forceUpdate();
+        }
     },
     render: function() {
         var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        var iconStyle = React.Children.count(this.props.children) === 0 ? { display: 'none' } : {};
+        var iconStyle = this.props.descriptors.length === 0 && !this.props.addNew  ? { display: 'none' } : {};
+        var selected = this.props.item === this.props.selected;
+        var backgroundColor = selected
+            ? 'rgb(179,225,245)'
+            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
+
         return (
         <div>
-            <div className="characteristic-item">
+            {/*Conditionally render first div for performance. We always have to render DescriptorItems, for right-arrow-key expansion to work.*/}
+            {!this.props.item.parent.expanded ? null : <div className="characteristic-item" style={{ backgroundColor: backgroundColor }} ref="item">
                 <div className="bar1"></div>
                 <div className="bar2"></div>
-                <div className="content-wrap" onClick={this._toggleExpanded}>
+                <div className="content-wrap" onClick={this._onClick}>
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     <div className="content">
-                        <div className="truncate-text">{this.props.characteristicData.name}</div>
-                        <div className="text-subtle">
-                            <span>{this.props.characteristicData.value}</span>
-                        </div>
+                        <div className="truncate-text">{this.props.name}</div>
+                        <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
                     </div>
                 </div>
+            </div>}
+            <div style={{display: this.state.expanded ? 'block' : 'none'}}>
+                {this.props.descriptors.map((descriptor, k) =>
+                    <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged} onRequestVisibility={this._childNeedsVisibility}
+                        item={descriptor} selected={this.props.selected} onSelected={this.props.onSelected}  selectOnClick={this.props.selectOnClick} key={k} />
+                )}
+                {this.props.addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onRequestVisibility={this._childNeedsVisibility} onClick={this._addDescriptor} bars={3} /> : null}
             </div>
-            <Collapse timeout={0} ref="coll" in={this.state.expanded}>
-                <div>
-                    {this.props.children}
-                </div>
-            </Collapse>
         </div>
         );
     }
 });
 
 var DeviceDetailsContainer = React.createClass({
-    mixins: [Reflux.connect(nodeStore), Reflux.connect(connectionStore)],
+    mixins: [Reflux.connect(nodeStore), Reflux.connect(connectionStore), KeyNavigation.mixin('allServices')],
+    componentWillMount: function() {
+        this.componentWillUpdate();
+    },
+    componentWillUpdate: function() {
+        this.allServices = [];
+        this.state.graph.map((node, i) => {
+            var deviceServices = this.state.deviceAddressToServicesMap[node.deviceId];
+            if (deviceServices) {
+                this.allServices.push(...deviceServices);
+            }
+        });
+    },
 
     render: function() {
         var elemWidth = 250;
         var detailNodes = this.state.graph.map((node, i) => {
-            var deviceAddress = this.state.graph[i].deviceId;
-            var deviceServices = this.state.deviceAddressToServicesMap[deviceAddress];
-            return <DeviceDetailsView services={deviceServices} node={node} device={node.device} isEnumeratingServices = {this.state.isEnumeratingServices}
-                                      containerHeight={this.props.style.height} key={i}/>
+            var deviceServices = this.state.deviceAddressToServicesMap[node.deviceId];
+            return <DeviceDetailsView services={deviceServices} selected={this.state.selected} node={node} device={node.device}
+                                       isEnumeratingServices={this.state.isEnumeratingServices} containerHeight={this.props.style.height} key={i}/>
 
         });
         var perNode = (20 + elemWidth);
@@ -146,19 +316,9 @@ var DeviceDetailsView = React.createClass({
                 <div className="device-details-view" id={this.props.node.id + '_details'} style={this.props.style}>
                     <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={this.props.node.id+ '_details'} layout="vertical"/>
                     <div className="service-items-wrap">
-                        {this.props.services.map(function(service, i) {
-                            return (<ServiceItem serviceData={service} key={i}>
-                                {service.characteristics.map(function(characteristic, j) {
-                                    return (<CharacteristicItem characteristicData={characteristic} key={j}>
-                                        {characteristic.descriptors.map(function(descriptor, k) {
-                                            return (
-                                                <DescriptorItem descriptorData={descriptor} key={k}/>
-                                            )
-                                        })}
-                                    </CharacteristicItem>)
-                                })}
-                            </ServiceItem>)
-                        })}
+                        {this.props.services.map((service, i) =>
+                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} item={service} selected={this.props.selected} selectOnClick={false}/>
+                        )}
                     </div>
                 </div>
             );
@@ -176,7 +336,7 @@ var DeviceDetailsView = React.createClass({
                     </div>
                 </div>
             );
-        }else {return <div/>}
+        } else {return <div/>}
     }
 });
-module.exports = DeviceDetailsContainer;
+module.exports = { DeviceDetailsContainer, ServiceItem };

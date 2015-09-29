@@ -20,8 +20,9 @@ import hotkey from 'react-hotkey';
 import BleNodeContainer from './node.jsx';
 import DeviceDetails from './deviceDetails.jsx';
 import ConnectionUpdateRequestModal from './components/ConnectionUpdateRequestModal.jsx';
-import Log from './log.jsx';
+import ServerSetup from './components/ServerSetup.jsx';
 
+import Log from './log.jsx';
 import logger from './logging';
 import logStore from './stores/logStore';
 
@@ -51,6 +52,9 @@ var MyView = React.createClass({
                     break;
                 case 50: // 2
                     this._onChangedMainView('DeviceDetails');
+                    break;
+                case 51: // 3
+                    this._onChangedMainView('ServerSetup');
                     break;
                 case 67: // C
                     DiscoveryActions.clearItems();
@@ -94,7 +98,7 @@ var MyView = React.createClass({
             that.setState({windowHeight: $(window).height()}); //document.documentElement.clientHeight;
         });
 
-        hotkey.activate();
+        hotkey.activate('keydown');
     },
     getInitialState: function() {
         return {
@@ -112,14 +116,22 @@ var MyView = React.createClass({
           height: this.state.windowHeight - topBarHeight
         };
         var mainAreaHeight = layoutStyle.height - 189;
+        var active = this.state.currentlyShowing === 'ConnectionMap' ? <BleNodeContainer style={{height: mainAreaHeight}}/>
+                   : this.state.currentlyShowing === 'DeviceDetails' ? <DeviceDetailsContainer style={{height: mainAreaHeight}}/>
+                   : this.state.currentlyShowing === 'ServerSetup'   ? <ServerSetup style={{height: mainAreaHeight}}/>
+                   : null;
         return (
             <div id="main-area-wrapper">
               <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />
               <div className="main-layout" style={layoutStyle}>
                 <div>
                   <div>
-                    <BleNodeContainer style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
-                    <DeviceDetails    style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'DeviceDetails' ? 'block':  'none'}}/>
+                    {active}
+                    {/*
+                    <BleNodeContainer       style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
+                    <DeviceDetailsContainer style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'DeviceDetails' ? 'block': 'none'}}/>
+                    <ServerSetup            style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ServerSetup'   ? 'block': 'none'}}/>
+                    */}
                   </div>
                   <div>
                     <Log/>

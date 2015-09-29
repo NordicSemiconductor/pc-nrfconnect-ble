@@ -55,10 +55,12 @@ class GattDatabase {
 
                 characteristic.value = this.valueToString(valueDescriptor.value);
                 characteristic.descriptors = descriptors;
+                characteristic.parent = services[serviceIndex];
 
                 for (var descriptorIndex = 0; descriptorIndex < descriptors.length; descriptorIndex++) {
                     var descriptor = descriptors[descriptorIndex];
                     descriptor.value = this.valueToString(descriptor.value);
+                    descriptor.parent = characteristic;
                 }
             }
         }
@@ -84,6 +86,7 @@ class Service {
         this.uuid = SERVICE_UUID;
         this.name = uuidDefinitions[SERVICE_UUID];
         this.characteristics = [];
+        this.expanded = false;
     }
 }
 
@@ -93,6 +96,7 @@ class Characteristic {
         this.uuid = CHARACTERISTIC_UUID;
         this.name = uuidDefinitions[CHARACTERISTIC_UUID];
         this.descriptors = [];
+        this.expanded = false;
     }
 }
 
@@ -102,6 +106,7 @@ class Descriptor {
         this.uuid = uuid;
         this.name = uuidDefinitions[uuid] || uuid;
         this.value = [];
+        this.expanded = false;
     }
 }
 

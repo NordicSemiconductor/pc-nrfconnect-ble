@@ -28,3 +28,12 @@ Font license info
    Homepage:  http://www.entypo.com
 
 
+## Web Symbols
+
+   Copyright (c) 2011 by Just Be Nice studio. All rights reserved.
+
+   Author:    Just Be Nice studio
+   License:   SIL (http://scripts.sil.org/OFL)
+   Homepage:  http://www.justbenicestudio.com/
+
+

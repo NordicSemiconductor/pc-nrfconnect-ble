@@ -119,6 +119,10 @@ var NavBar = React.createClass({
                         <span className="icon-columns" />
                         <span>Device details</span>
                     </button>
+                    <button onClick={this._onViewChange.bind(this, 'ServerSetup')}  className={this._getClassForTabButton('ServerSetup')}>
+                        <span className="icon-indent-right" />
+                        <span>Server setup</span>
+                    </button>
                 </div>
             </div>
         );

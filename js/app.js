@@ -16,7 +16,8 @@ require("babel/register");
 
 process.env.NODE_ENV = 'development';
 
-var React = require('react');
+
+var React = require('react/addons');
 
 var view = require('./js/view.jsx');
 
