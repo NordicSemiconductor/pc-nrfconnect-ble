@@ -15,7 +15,7 @@
 import React from 'react';
 import Reflux from 'reflux';
 
-import {Popover, OverlayTrigger} from 'react-bootstrap';
+import {Popover, OverlayTrigger, Overlay} from 'react-bootstrap';
 import connectionActions from '../actions/connectionActions.js';
 import layoutStrategies from '../common/layoutStrategies.js';
 import connectionStore from '../stores/connectionStore.js';
@@ -25,18 +25,46 @@ var ConnectionSetup = React.createClass({
     getInitialState: function() {
         // Get initial state from properties. Antipattern, but necessary here to initialize connection parameters
         return {
-            connectionInfo : this.props.device.connection.conn_params
+            connectionInfo : this.props.device.connection.conn_params,
+            connectionIntervalOutOfRange: false,
+            slaveLatencyOutOfRange: false,
+            timeOutOutOfRange: false,
+            timeOutRuleViolated: false
         };
+    },
+    _validateInput: function() {
+        //if (this.state.connectionInfo.max_conn_interval)
+    },
+    _isInputValid: function() {
+        return ! (this.state.connectionIntervalOutOfRange || 
+                  this.state.slaveLatencyOutOfRange ||
+                  this.state.timeOutOutOfRange ||
+                  this.state.timeOutRuleViolated);
     },
     _disconnect: function() {
         connectionActions.disconnectFromDevice(this.props.device.peer_addr.address);
         this.props.closePopover();
     },
     _handleChange: function(inputIdentifier, event) {
+        this._validateConnectionParameters();
+
         var newConnectionInfo = Object.assign({}, this.state.connectionInfo);
         newConnectionInfo[inputIdentifier] = parseInt(event.target.value, 10);
         this.setState({
             connectionInfo: newConnectionInfo
+        });
+    },
+    _isConnectionIntervalOutOfRange: function() {
+        return this.state.connectionInfo.min_conn_interval < 7.5 ||
+            this.state.connectionInfo.max_conn_interval > 4000 ||
+            this.state.connectionInfo.min_conn_interval > this.state.connectionInfo.max_conn_interval;
+    },
+    _validateConnectionParameters: function() {
+        this.setState({
+            connectionIntervalOutOfRange: this._isConnectionIntervalOutOfRange(),
+            slaveLatencyOutOfRange: this.state.connectionInfo.slave_latency < 0 || this.state.connectionInfo.slave_latency > 499,
+            timeOutOutOfRange: this.state.connectionInfo.conn_sup_timeout < 100 || this.state.connectionInfo.conn_sup_timeout > 32000,
+            timeOutRuleViolated: false
         });
     },
     _updateConnection: function() {
@@ -49,13 +77,16 @@ var ConnectionSetup = React.createClass({
             (<img className="spinner" src="resources/ajax-loader.gif" height="24" width="24" />) :
             (<button className="btn btn-sm btn-nordic btn-primary" onClick = {this._updateConnection}>Update</button>);
 
+        if (this.state.slaveLatencyOutOfRange) {
+            var latencyAlert = (<Overlay show={true} placement="right" container ={this} target={() =>React.findDOMNode(this.refs.slaveLatencyInput)}><div> Slave latency out of bounds</div></Overlay>);
+        } 
         return (
             <div>
                 <form className="form-horizontal">
                     <div className="form-group">
                         <label className="col-sm-8 control-label" htmlFor="interval">Connection Interval</label>
                         <div className="col-sm-4">
-                            <input className="form-control nordic-form-control" type="number" 
+                            <input className="form-control nordic-form-control" type="number" step="1.25"
                                    id="interval" onChange={this._handleChange.bind(this, 'max_conn_interval')} 
                                    value={this.state.connectionInfo.max_conn_interval}/>
                         </div>
@@ -63,17 +94,18 @@ var ConnectionSetup = React.createClass({
                     <div className="form-group">
                         <label className="col-sm-8 control-label" htmlFor="latency">Latency</label>
                         <div className="col-sm-4">
-                            <input className="form-control nordic-form-control" type="number"
-                                   value={this.state.connectionInfo.slave_latency}
+                            <input ref="slaveLatencyInput" className="form-control nordic-form-control" type="number" 
+                                   value={this.state.connectionInfo.slave_latency} step="0.5"
                                    id="latency" onChange={this._handleChange.bind(this, 'slave_latency')}/>
                         </div>
                     </div>
                     <div className="form-group">
                         <label className="col-sm-8 control-label" htmlFor="timeout">Timeout</label>
                         <div className="col-sm-4">
-                            <input className="form-control nordic-form-control" type="number" 
+                            <input className="form-control nordic-form-control" type="number" step="10"
                                    value={this.state.connectionInfo.conn_sup_timeout}
                                    id="timeout" onChange={this._handleChange.bind(this, 'conn_sup_timeout')}/>
+                            {latencyAlert}
                         </div>
                     </div>
                 </form>
