@@ -12,9 +12,9 @@
 
 'use strict';
 import React from 'react';
-import {Dropdown} from 'react-bootstrap';
+import {Dropdown, MenuItem} from 'react-bootstrap';
 import Connector from './Connector.jsx';
-
+import connectionActions from '../actions/connectionActions.js';
 import prepareDeviceData from '../common/deviceProcessing.js';
 
 var ConnectedDevice = React.createClass({
@@ -22,6 +22,14 @@ var ConnectedDevice = React.createClass({
         return {
             connectorCanBeDrawn: false
         };
+    },
+    _onSelect: function(event, eventKey) {
+        console.log(eventKey);
+        switch(eventKey) {
+            case "Disconnect":
+            connectionActions.disconnectFromDevice(this.props.device.peer_addr.address);
+            break;
+        }
     },
     render: function() {
         var device = prepareDeviceData(this.props.device);
@@ -48,10 +56,15 @@ var ConnectedDevice = React.createClass({
                 <div className="device-body text-small" >
                     <div>
                         <div className="pull-right">
-                            <Dropdown>
+                            <Dropdown onSelect={this._onSelect}>
                                 <Dropdown.Toggle noCaret>
                                     <span className="icon-cog" aria-hidden="true" />
                                 </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <MenuItem eventKey="Update">Update Connection</MenuItem>
+                                    <MenuItem eventKey="Bond">Bond</MenuItem>
+                                    <MenuItem eventKey="Disconnect">Disconnect</MenuItem>
+                                </Dropdown.Menu>
                             </Dropdown>
                         </div>
                         <div className="role-flag pull-right">{role}</div>

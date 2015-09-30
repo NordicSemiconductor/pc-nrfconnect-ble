@@ -322,12 +322,29 @@
 
       .dropdown {
         min-width: 0px;
+        .dropdown-menu {
+          li > a:focus {
+            outline: 1px solid black;
+          }
+          background-color: #FFFFFF;
+          li > a {
+            background-color: #FFFFFF;
+            color: rgb(51, 51, 51);
+          }
+          li > a:hover{
+            background-color: #E6E6E6;
+          }
+        }
       }
 
       .dropdown-toggle{
+        margin-left: 5px;
         min-width: 0px;
         padding: 0px;
         border: none;
+        .icon-cog{
+          font-size: 18px;
+        }
       }
     }
     .connector {
