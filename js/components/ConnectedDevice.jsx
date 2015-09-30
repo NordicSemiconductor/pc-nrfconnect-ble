@@ -12,6 +12,7 @@
 
 'use strict';
 import React from 'react';
+import {Dropdown} from 'react-bootstrap';
 import Connector from './Connector.jsx';
 
 import prepareDeviceData from '../common/deviceProcessing.js';
@@ -46,6 +47,13 @@ var ConnectedDevice = React.createClass({
                 </div>
                 <div className="device-body text-small" >
                     <div>
+                        <div className="pull-right">
+                            <Dropdown>
+                                <Dropdown.Toggle noCaret>
+                                    <span className="icon-cog" aria-hidden="true" />
+                                </Dropdown.Toggle>
+                            </Dropdown>
+                        </div>
                         <div className="role-flag pull-right">{role}</div>
                         <strong>{device.name}</strong>
                     </div>
