@@ -75,8 +75,8 @@ var ServerSetup = React.createClass({
                 <div className="device-details-view">
                     <div className="service-items-wrap">
                         {this.services.map((service, i) =>
-                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} addNew={true}
-                                item={service} selected={this.state.selected} onSelected={this._onSelected} selectOnClick={true}/>
+                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} item={service}
+                                selected={this.state.selected} onSelected={this._onSelected} selectOnClick={true} addNew={true}/>
                         )}
                         <AddNewItem text="New service" id="add-btn-root" bars={1} selected={this.state.selected} onClick={this._addService} />
                     </div>

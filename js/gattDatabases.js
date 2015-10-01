@@ -111,7 +111,7 @@ class Descriptor {
 }
 
 class Properties {
-    constructor(properties) {
+    constructor(properties, extendedProperties) {
         this.broadcast = properties & 0x01;
         this.read = properties & 0x02;
         this.writeWithoutResponse = properties & 0x04;
@@ -120,6 +120,11 @@ class Properties {
         this.indicate = properties & 0x20;
         this.authenticatedSignedWrites = properties & 0x40;
         this.extendedProperties = properties & 0x80;
+
+        if (extendedProperties && this.extendedProperties) {
+            this.reliableWrite = extendedProperties & 0x01;
+            this.writeAuxiliary = extendedProperties & 0x02;
+        }
     }
 
     getProperties() {
@@ -148,6 +153,14 @@ class Properties {
         }
         if (this.extendedProperties) {
             properties.push('Extended properties');
+        }
+
+        if (this.reliableWrite) {
+            properties.push('Reliable write');
+        }
+
+        if (this.writeAuxiliary) {
+            properties.push('Write auxiliary');
         }
 
         return properties;
