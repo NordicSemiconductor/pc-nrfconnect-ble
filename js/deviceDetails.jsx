@@ -21,258 +21,18 @@ import nodeStore from './stores/bleNodeStore';
 
 import ConnectedDevice from './components/ConnectedDevice.jsx';
 import CentralDevice from './components/CentralDevice.jsx';
-import AddNewItem from './components/AddNewItem.jsx';
-import HexOnlyEditableField from './components/HexOnlyEditableField.jsx';
 
-import { BlueWhiteBlinkMixin } from './utils/Effects.jsx';
 import KeyNavigation from './common/TreeViewKeyNavigationMixin.jsx';
 import logger from './logging';
-import _ from 'underscore';
 
-import GattDatabases from './GattDatabases';
+import ServiceItem from './components/ServiceItem';
 
-var ServiceItem = React.createClass({
-    mixins: [BlueWhiteBlinkMixin],
-    getInitialState: function() {
-        return {
-            expanded: false
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (this.props.selected === nextProps.selected && nextProps.selected === this.props.item) {
-            this.setState({ expanded: nextProps.selected.expanded })
-        }
-    },
-    _onClick: function() {
-        //if selectOnClick is true, clicks are used for both expansion and selection.
-        //in this case, dont collapse children unless the item is selected.
-        //this seems like a good tradeoff between letting the user know something is there,
-        //and avoiding unwanted expansions/collapses when user wants to select.
-        var isSelected = this.props.item === this.props.selected;
-        var delayExpansion = this.props.selectOnClick && !isSelected && this.state.expanded;
-        if (!delayExpansion) {
-            this.setState({expanded: !this.state.expanded});
-        }
-
-        if (this.props.onSelected) {
-            this.props.onSelected(this.props.item);
-        }
-    },
-    _childChanged: function() {
-        if (!this.state.expanded) {
-            this.blink();
-        }
-    },
-    componentWillUpdate: function(nextProps, nextState) {
-        nextProps.item.expanded = nextState.expanded;
-    },
-    _addCharacteristic: function() {
-        var handle = Math.random(); //just need a unique value until a real handle is assigned by the driver
-        var characteristic = {"handle": handle,"uuid":"","name":"New characteristic","descriptors":[],"properties":new GattDatabases.Properties(0x0A),"valueHandle":3,"characteristicUuid":"","value":""};
-        characteristic.parent = this.props.item;
-        this.props.item.characteristics.push(characteristic);
-        if (this.props.onSelected) {
-            this.props.onSelected(characteristic);
-        } else {
-            this.forceUpdate();
-        }
-    },
-    /*
-    //This speeds things up 2x, but breaks notifications:
-    shouldComponentUpdate: function(nextProps, nextState) {
-        //on key navigation, props.selected changes on every keypress, but this only affects
-        //the selected node and whatever subtree contains props.selected.
-        //We should avoid redrawing unless affected.
-        for (var prop in nextProps) {
-            if (prop === "selected") {
-                //if selected is this.item, or is a child node of it, we need to update
-                //if this.item or a child was selected last time, we also need to update
-                var selected = nextProps[prop];
-                var prevSelected = this.props.selected;
-                if (this.props.item === selected  || this.props.item === prevSelected) return true;
-                for (var i = 0; i < this.props.characteristics.length; i++) {
-                    var characteristic = this.props.characteristics[i];
-                    if (characteristic === selected || characteristic === prevSelected) return true;
-                    if (characteristic.descriptors.includes(selected) || characteristic.descriptors.includes(prevSelected)) return true;
-                }
-            } else {
-                if (!_.isEqual(nextProps[prop], this.props[prop])) return true;
-            }
-        }
-        var changed = !_.isEqual(nextState, this.state);
-        return changed;
-    },/**/
-    render: function() {
-        var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        var iconStyle = this.props.characteristics.length === 0 && !this.props.addNew ? { display: 'none' } : {};
-        var selected = this.props.item === this.props.selected;
-        var backgroundColor = selected
-            ? 'rgb(179,225,245)'
-            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
-        return (
-            <div>
-                <div className="service-item" style={{ backgroundColor: backgroundColor }}>
-                    <div className="bar1"></div>
-                    <div className="content-wrap" onClick={this._onClick}>
-                        <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
-                        <div className="content">
-                            <div className="service-name truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
-                        </div>
-                    </div>
-                </div>
-                <div style={{display: this.state.expanded ? 'block' : 'none'}}>
-                    {this.props.characteristics.map((characteristic, j) =>
-                        <CharacteristicItem name={characteristic.name} value={characteristic.value}
-                            item={characteristic} selected={this.props.selected} onSelected={this.props.onSelected}
-                            descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} addNew={this.props.addNew} selectOnClick={this.props.selectOnClick}/>
-                    )}
-                    {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onClick={this._addCharacteristic} bars={2} /> : null}
-                </div>
-            </div>
-        );
-    }
-});
-
-var CharacteristicItem = React.createClass({
-    mixins: [BlueWhiteBlinkMixin],
-    getInitialState: function() {
-        return {
-            expanded: false
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (this.props.value !== nextProps.value) {
-            if (this.props.onChange) {
-                this.props.onChange();
-            }
-            this.blink();
-        }
-
-        if (this.props.selected === nextProps.selected && nextProps.selected === this.props.item) {
-            this.setState({ expanded: nextProps.selected.expanded })
-        }
-    },
-    componentWillUpdate: function(nextProps, nextState) {
-        nextProps.item.expanded = nextState.expanded;
-    },
-    _onClick: function() {
-        //if selectOnClick is true, clicks are used for both expansion and selection.
-        //in this case, dont collapse children unless the item is selected.
-        //this seems like a good tradeoff between letting the user know something is there,
-        //and avoiding unwanted expansions/collapses when user wants to select.
-        var isSelected = this.props.item === this.props.selected;
-        var delayExpansion = this.props.selectOnClick && !isSelected && this.state.expanded;
-        if (!delayExpansion) {
-            this.setState({expanded: !this.state.expanded});
-        }
-
-        if (this.props.onSelected) {
-            this.props.onSelected(this.props.item);
-        }
-    },
-    _childChanged: function() {
-        if (this.props.onChange) {
-            this.props.onChange();
-        }
-        if (!this.state.expanded) {
-            this.blink();
-        }
-    },
-    _addDescriptor: function() {
-        var handle = Math.random(); //just need a unique value until a real handle is assigned by the driver
-        var descriptor = {"handle":handle,"uuid":"","name":"New descriptor","value":""};
-        descriptor.parent = this.props.item;
-        this.props.item.descriptors.push(descriptor);
-        if (this.props.onSelected) {
-            this.props.onSelected(descriptor);
-        } else {
-            this.forceUpdate();
-        }
-    },
-    render: function() {
-        var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        var iconStyle = this.props.descriptors.length === 0 && !this.props.addNew  ? { display: 'none' } : {};
-        var selected = this.props.item === this.props.selected;
-        var backgroundColor = selected
-            ? 'rgb(179,225,245)'
-            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
-
-        return (
-        <div>
-            {/*Conditionally render first div for performance. We always have to render DescriptorItems, for right-arrow-key expansion to work.*/}
-            {!this.props.item.parent.expanded ? null : <div className="characteristic-item" style={{ backgroundColor: backgroundColor }} ref="item">
-                <div className="bar1"></div>
-                <div className="bar2"></div>
-                <div className="content-wrap" onClick={this._onClick}>
-                    <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
-                    <div className="content">
-                        <div className="truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
-                        <div className="flag-line">
-                            {(this.props.item.properties.getProperties()).map(function(property, index) {
-                                return (<div key={index} className="device-flag">{property}</div>)
-                            })}
-                        </div>
-                        <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
-                    </div>
-                </div>
-            </div>}
-            <div style={{display: this.state.expanded ? 'block' : 'none'}}>
-                {this.props.descriptors.map((descriptor, k) =>
-                    <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged}
-                        item={descriptor} selected={this.props.selected} onSelected={this.props.onSelected}  selectOnClick={this.props.selectOnClick} key={k} />
-                )}
-                {this.props.addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onClick={this._addDescriptor} bars={3} /> : null}
-            </div>
-        </div>
-        );
-    }
-});
-
-var DescriptorItem = React.createClass({
-    mixins: [BlueWhiteBlinkMixin],
-    getInitialState: function() {
-        return {};
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (this.props.value !== nextProps.value) {
-            if (this.props.onChange) {
-                this.props.onChange()
-            }
-            this.blink();
-        }
-    },
-    _onClick: function() {
-        if (this.props.onSelected) {
-            this.props.onSelected(this.props.item);
-        }
-    },
-    render: function() {
-        var hidden = !this.props.item.parent.expanded && !this.props.item.parent.parent.expanded;
-        if (hidden) {
-            return null;
-        }
-        var selected = this.props.item === this.props.selected;
-        var backgroundColor = selected
-            ? 'rgb(179,225,245)'
-            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
-        return (
-            <div className={"descriptor-item" + (selected ? " selected" : "")} style={{ backgroundColor: backgroundColor }} onClick={this._onClick}>
-                <div className="bar1"></div>
-                <div className="bar2"></div>
-                <div className="bar3"></div>
-                <div className="content-wrap">
-                    <div className="content">
-                        <div className="truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
-                        <HexOnlyEditableField value={this.props.value} insideSelector=".device-details-view" />
-                    </div>
-                </div>
-            </div>
-        );
-    }
-});
 
 var DeviceDetailsContainer = React.createClass({
     mixins: [Reflux.connect(nodeStore), Reflux.connect(connectionStore), KeyNavigation.mixin('allServices')],
+    _onSelected(selected) {
+        this.setState({ selected: selected });
+    },
     componentWillMount: function() {
         this.componentWillUpdate();
     },
@@ -290,7 +50,7 @@ var DeviceDetailsContainer = React.createClass({
         var elemWidth = 250;
         var detailNodes = this.state.graph.map((node, i) => {
             var deviceServices = this.state.deviceAddressToServicesMap[node.deviceId];
-            return <DeviceDetailsView services={deviceServices} selected={this.state.selected} node={node} device={node.device}
+            return <DeviceDetailsView services={deviceServices} selected={this.state.selected} onSelected={this._onSelected} node={node} device={node.device}
                                        isEnumeratingServices={this.state.isEnumeratingServices} containerHeight={this.props.style.height} key={i}/>
 
         });
@@ -314,7 +74,7 @@ var DeviceDetailsView = React.createClass({
                     <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={this.props.node.id+ '_details'} layout="vertical"/>
                     <div className="service-items-wrap">
                         {this.props.services.map((service, i) =>
-                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} item={service} selected={this.props.selected} selectOnClick={false}/>
+                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} item={service} selected={this.props.selected} onSelected={this.props.onSelected} selectOnClick={true}/>
                         )}
                     </div>
                 </div>
@@ -336,4 +96,5 @@ var DeviceDetailsView = React.createClass({
         } else {return <div/>}
     }
 });
-module.exports = { DeviceDetailsContainer, ServiceItem };
+
+module.exports = DeviceDetailsContainer;

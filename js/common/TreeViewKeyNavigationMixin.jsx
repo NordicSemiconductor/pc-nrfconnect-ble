@@ -48,6 +48,7 @@ var TreeViewKeyNavigation = {
                             else {
                                 this.setState({ selected: this.state.selected.parent || this.state.selected });
                             }
+                            e.preventDefault();
                             break;
                         default:
                             break;
