@@ -44,7 +44,7 @@ var ServiceItem = React.createClass({
         }
     },
     _onExpandAreaClick(e) {
-        if (this.props.characteristics.length === 0) {
+        if (this.props.characteristics.length === 0 && !this.props.addNew) {
             return;
         }
 

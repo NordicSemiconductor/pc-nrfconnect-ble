@@ -54,7 +54,7 @@ var CharacteristicItem = React.createClass({
         }
     },
     _onExpandAreaClick(e) {
-        if (this.props.descriptors.length === 0) {
+        if (this.props.descriptors.length === 0 && !this.props.addNew) {
             return;
         }
 
