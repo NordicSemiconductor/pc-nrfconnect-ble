@@ -74,7 +74,7 @@ var DeviceDetailsView = React.createClass({
                     <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={this.props.node.id+ '_details'} layout="vertical"/>
                     <div className="service-items-wrap">
                         {this.props.services.map((service, i) =>
-                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} item={service} selected={this.props.selected} onSelected={this.props.onSelected} selectOnClick={true}/>
+                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} item={service} selected={this.props.selected} onSelected={this.props.onSelected} selectOnClick={true} connectionHandle={this.props.node.device.connection.conn_handle} />
                         )}
                     </div>
                 </div>

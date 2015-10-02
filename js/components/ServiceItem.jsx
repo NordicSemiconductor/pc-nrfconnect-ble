@@ -114,9 +114,10 @@ var ServiceItem = React.createClass({
                 </div>
                 <div style={{display: this.state.expanded ? 'block' : 'none'}}>
                     {this.props.characteristics.map((characteristic, j) =>
-                        <CharacteristicItem name={characteristic.name} value={characteristic.value}
-                            item={characteristic} selected={this.props.selected} onSelected={this.props.onSelected}
-                            descriptors={characteristic.descriptors} onChange={this._childChanged} key={j} addNew={this.props.addNew} selectOnClick={this.props.selectOnClick}/>
+                        <CharacteristicItem name={characteristic.name} value={characteristic.value} item={characteristic}
+                            selected={this.props.selected} onSelected={this.props.onSelected} descriptors={characteristic.descriptors}
+                            onChange={this._childChanged} key={j} addNew={this.props.addNew} selectOnClick={this.props.selectOnClick}
+                            connectionHandle={this.props.connectionHandle} />
                     )}
                     {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onClick={this._addCharacteristic} bars={2} /> : null}
                 </div>

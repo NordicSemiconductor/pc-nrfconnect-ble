@@ -18,6 +18,8 @@ import DescriptorItem from './DescriptorItem';
 import AddNewItem from './AddNewItem.jsx';
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 
+import bleDriverActions from '../actions/bleDriverActions';
+
 import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
 
 
@@ -87,7 +89,7 @@ var CharacteristicItem = React.createClass({
         }
     },
     _onWrite: function(value) {
-        console.log(value);
+        bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
     },
     render: function() {
         const expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
@@ -123,8 +125,9 @@ var CharacteristicItem = React.createClass({
             </div>}
             <div style={{display: this.state.expanded ? 'block' : 'none'}}>
                 {this.props.descriptors.map((descriptor, k) =>
-                    <DescriptorItem name={descriptor.name} value={descriptor.value} onChange={this._childChanged}
-                        item={descriptor} selected={this.props.selected} onSelected={this.props.onSelected}  selectOnClick={this.props.selectOnClick} key={k} />
+                    <DescriptorItem key={k} name={descriptor.name} value={descriptor.value} onChange={this._childChanged}
+                        item={descriptor} selected={this.props.selected} onSelected={this.props.onSelected}  selectOnClick={this.props.selectOnClick}
+                        connectionHandle={this.props.connectionHandle} />
                 )}
                 {this.props.addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onClick={this._addDescriptor} bars={3} /> : null}
             </div>
