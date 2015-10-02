@@ -14,4 +14,4 @@
 
 var Reflux = require('reflux');
 
-module.exports = Reflux.createActions(["connectToDriver", "disconnectFromDriver", "getCharacteristics"]);
+module.exports = Reflux.createActions(["connectToDriver", "disconnectFromDriver", "getCharacteristics", "writeRequest", "writeCommand"]);

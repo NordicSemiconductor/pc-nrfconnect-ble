@@ -60,7 +60,7 @@ var ServerSetup = React.createClass({
         var service = { "handle": handle, "uuid": "", "name": "New service", "characteristics": [], "serviceUuid": "" };
         this.props.services.push(service);
         this._onSelected(service);
-        this._assignIdsAndParents();
+        //this._assignIdsAndParents();
     },
     render() {
         var selected = this.state.selected;
@@ -76,7 +76,8 @@ var ServerSetup = React.createClass({
                     <div className="service-items-wrap">
                         {this.services.map((service, i) =>
                             <ServiceItem name={service.name} key={i} characteristics={service.characteristics} item={service}
-                                selected={this.state.selected} onSelected={this._onSelected} selectOnClick={true} addNew={true}/>
+                                selected={this.state.selected} onSelected={this._onSelected} selectOnClick={true} addNew={true}
+                                connectionHandle="-1" />
                         )}
                         <AddNewItem text="New service" id="add-btn-root" bars={1} selected={this.state.selected} onClick={this._addService} />
                     </div>

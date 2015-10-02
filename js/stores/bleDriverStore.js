@@ -126,6 +126,27 @@ var bleDriverStore = reflux.createStore({
             }
         });
     },
+    onWriteCommand: function(connectionHandle, handle, value) {
+        console.log(`onWriteCommand: ${value}`);
+    },
+    onWriteRequest: function(connectionHandle, handle, value) {
+        var writeOp = bleDriver.BLE_GATT_OP_WRITE_REQ;
+        var flags = 0;
+        var handle = handle;
+        var offset = 0;
+        var len = value.length;
+
+        var writeParams = {'write_op': writeOp, 'flags': flags, 'handle': handle, 'offset': offset, 'len': len, 'value': value};
+
+        console.log(`onWriteRequest: connectionHandle: ${connectionHandle} writeParams: ${writeParams}`);
+        /*
+        bleDriver.gattc_write(connectionHandle, writeParams, function(err) {
+            if (err) {
+                logger.error(`Error doing write request: ${err}`);
+            }
+        });
+        */
+    },
     _mainEventListener: function(eventArray){
         console.timeStamp('_mainEventListener');
         for (var i = 0; i < eventArray.length; i++) {
@@ -204,6 +225,9 @@ var bleDriverStore = reflux.createStore({
                     attribute.value = event.data.toJSON().data;
 
                     connectionActions.servicesDiscovered(gd.getPrettyGattDatabase());
+                    break;
+                case bleDriver.BLE_GATTC_EVT_WRITE_RSP:
+                    logger.info(`Write response event: ${event}`);
                     break;
                 case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE_REQUEST:
                 {
