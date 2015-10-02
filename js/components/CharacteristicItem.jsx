@@ -60,7 +60,7 @@ var CharacteristicItem = React.createClass({
             this.props.onSelected(this.props.item);
         }
     },
-    _onToggleNotify: function(e) {    
+    _onToggleNotify: function(e) {
         e.stopPropagation();
         this.setState({notifying: !this.state.notifying});
         if (this.props.item.properties.notify) {
@@ -119,7 +119,7 @@ var CharacteristicItem = React.createClass({
                                 })}
                             </div>
                         </div>
-                        <HexOnlyEditableField value={this.props.value} insideSelector=".characteristic-item" onSaveChanges={this._onWrite}/>
+                        <HexOnlyEditableField value={this.props.value} insideSelector=".characteristic-item" onSaveChanges={this._onWrite} showReadButton={selected}/>
                     </div>
                 </div>
             </div>}

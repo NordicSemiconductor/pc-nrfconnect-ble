@@ -59,7 +59,7 @@ var DescriptorItem = React.createClass({
                 <div className="content-wrap">
                     <div className="content">
                         <div className="truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
-                        <HexOnlyEditableField value={this.props.value} insideSelector=".descriptor-item" onSaveChanges={this._onWrite} />
+                        <HexOnlyEditableField value={this.props.value} insideSelector=".descriptor-item" onSaveChanges={this._onWrite} showReadButton={selected} />
                     </div>
                 </div>
             </div>

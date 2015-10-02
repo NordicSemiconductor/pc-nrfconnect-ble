@@ -158,12 +158,16 @@ let EditableField = React.createClass({
                         <div className="btn btn-primary btn-xs btn-nordic" onClick={this._onOkButtonClick}><i className="icon-ok"></i></div>
                         <TextareaAutosize {...this.props} ref="editableTextarea" minRows={1} onKeyDown={this._onKeyDown} value={this.state.value} onChange={this._onChange} onClick={this._stopPropagation}></TextareaAutosize>
                     </div>
-        } else {
+        } else if (this.props.showReadButton) {
             child = <div className="editable-field-editor-wrap">
                         <div className="btn btn-primary btn-xs btn-nordic" onClick={this._onReadButtonClick}><i className="icon-ccw"></i></div>
                         <div className="subtle-text editable" onClick={this._toggleEditing}>
                             <span>{this.state.value || nonBreakingSpace}</span>
                         </div>
+                    </div>
+        } else {
+            child = <div className="subtle-text editable" onClick={this._toggleEditing}>
+                        <span>{this.state.value || nonBreakingSpace}</span>
                     </div>
         }
         return (

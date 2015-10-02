@@ -664,8 +664,8 @@
           background: @gray-lighter;
         }
         > span {
-          min-width: 86%;
-          max-width: 86%;
+          min-width: 86%; // TODO: Should we do more precise math?
+          max-width: 86%; // Other elements will take more/less relative space with/out scrollbar
           display: inline-block;
         }
       }
