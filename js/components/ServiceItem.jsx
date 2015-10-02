@@ -33,22 +33,23 @@ var ServiceItem = React.createClass({
     },
     componentWillReceiveProps: function(nextProps) {
         if (this.props.selected === nextProps.selected && nextProps.selected === this.props.item) {
-            this.setState({ expanded: nextProps.selected.expanded })
+            this.setState({ expanded: nextProps.selected.expanded });
         }
     },
-    _onClick: function() {
-        //if selectOnClick is true, clicks are used for both expansion and selection.
-        //in this case, dont collapse children unless the item is selected.
-        //this seems like a good tradeoff between letting the user know something is there,
-        //and avoiding unwanted expansions/collapses when user wants to select.
-        var isSelected = this.props.item === this.props.selected;
-        var delayExpansion = this.props.selectOnClick && !isSelected;
-        if (!delayExpansion) {
-            this.setState({expanded: !this.state.expanded});
-        }
-        else if (this.props.onSelected) {
+    _onContentClick: function(e) {
+        e.stopPropagation();
+
+        if (this.props.onSelected) {
             this.props.onSelected(this.props.item);
         }
+    },
+    _onExpandAreaClick(e) {
+        if (this.props.characteristics.length === 0) {
+            return;
+        }
+
+        e.stopPropagation();
+        this.setState({expanded: !this.state.expanded});
     },
     _childChanged: function() {
         if (!this.state.expanded) {
@@ -103,10 +104,12 @@ var ServiceItem = React.createClass({
             : `rgb(${this.state.backgroundColor.r}, ${this.state.backgroundColor.g}, ${this.state.backgroundColor.b})`;
         return (
             <div>
-                <div className="service-item" style={{ backgroundColor: backgroundColor }}>
-                    <div className="bar1" />
-                    <div className="content-wrap" onClick={this._onClick}>
+                <div className="service-item" style={{ backgroundColor: backgroundColor }}  onClick={this._onContentClick}>
+                    <div className="expand-area" onClick={this._onExpandAreaClick}>
+                        <div className="bar1" />
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
+                    </div>
+                    <div className="content-wrap">
                         <div className="content">
                             <div className="service-name truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
                         </div>

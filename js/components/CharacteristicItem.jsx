@@ -46,19 +46,20 @@ var CharacteristicItem = React.createClass({
     componentWillUpdate: function(nextProps, nextState) {
         nextProps.item.expanded = nextState.expanded;
     },
-    _onClick: function() {
-        //if selectOnClick is true, clicks are used for both expansion and selection.
-        //in this case, dont collapse children unless the item is selected.
-        //this seems like a good tradeoff between letting the user know something is there,
-        //and avoiding unwanted expansions/collapses when user wants to select.
-        const isSelected = this.props.item === this.props.selected;
-        const delayExpansion = this.props.selectOnClick && !isSelected;
-        if (!delayExpansion) {
-            this.setState({expanded: !this.state.expanded});
-        }
-        else if (this.props.onSelected) {
+    _onClick: function(e) {
+        e.stopPropagation();
+
+        if (this.props.onSelected) {
             this.props.onSelected(this.props.item);
         }
+    },
+    _onExpandAreaClick(e) {
+        if (this.props.descriptors.length === 0) {
+            return;
+        }
+
+        e.stopPropagation();
+        this.setState({expanded: !this.state.expanded});
     },
     _onToggleNotify: function(e) {
         e.stopPropagation();
@@ -104,11 +105,13 @@ var CharacteristicItem = React.createClass({
         return (
         <div>
             {/*Conditionally render first div for performance. We always have to render DescriptorItems, for right-arrow-key expansion to work.*/}
-            {!this.props.item.parent.expanded ? null : <div className="characteristic-item" style={{ backgroundColor: backgroundColor }} ref="item">
-                <div className="bar1" />
-                <div className="bar2" />
-                <div className="content-wrap" onClick={this._onClick}>
+            {!this.props.item.parent.expanded ? null : <div className="characteristic-item" style={{ backgroundColor: backgroundColor }} onClick={this._onClick} ref="item">
+                <div className="expand-area" onClick={this._onExpandAreaClick}>
+                    <div className="bar1" />
+                    <div className="bar2" />
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
+                </div>
+                <div className="content-wrap">
                     <div className="content">
                         <div className="btn btn-primary btn-xs btn-nordic btn-notify" title="Toggle notifications" style={notifyIconStyle} onClick={this._onToggleNotify}><i className={notifyIcon}></i></div>
                         <div>
