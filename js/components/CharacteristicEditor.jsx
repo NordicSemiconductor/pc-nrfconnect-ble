@@ -18,7 +18,10 @@ var CharacteristicEditor = React.createClass({
             name: "",
             value: "",
             maxLengthActive: false,//probably not mapped right
-            maxLength: null        //probably not mapped right
+            maxLength: null,        //probably not mapped right
+            security: null,
+            readAuthorization: false,
+            writeAuthorization: false
         }
     },
     componentWillMount() {
@@ -91,6 +94,28 @@ var CharacteristicEditor = React.createClass({
 
             <div className="col-md-offset-3 col-md-9">
               <input type="number" min="0" disabled={!this.state.maxLengthActive} className="form-control" name="max-length" valueLink={this.linkState('maxLength')}/>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="col-md-3 control-label">Security</label>
+            <div className="col-md-9">
+              <select className="form-control" valueLink={this.linkState('security')}>
+                <option value="open">No security required</option>
+                <option value="enc_no_mitm">Encryption required, no MITM</option>
+                <option value="enc_with_mitm">Encryption and MITM required</option>
+                <option value="signed_no_mitm">Signing or encryption required, no MITM</option>
+                <option value="signed_with_mitm">Signing or encryption with MITM required</option>
+                <option value="no_access">No access rights specified (undefined)</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="col-md-3 control-label">Authorization</label>
+            <div className="col-md-9">
+              <div className="checkbox"><label><input type="checkbox" checkedLink={this.linkState('readAuthorization')}/> Read authorization required </label></div>
+              <div className="checkbox"><label><input type="checkbox" checkedLink={this.linkState('writeAuthorization')}/> Write authorization required </label></div>
             </div>
           </div>
 
