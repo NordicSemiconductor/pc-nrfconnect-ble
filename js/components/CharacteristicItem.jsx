@@ -25,7 +25,8 @@ var CharacteristicItem = React.createClass({
     mixins: [BlueWhiteBlinkMixin],
     getInitialState: function() {
         return {
-            expanded: false
+            expanded: false,
+            notifying: false
         };
     },
     componentWillReceiveProps: function(nextProps) {
@@ -48,13 +49,22 @@ var CharacteristicItem = React.createClass({
         //in this case, dont collapse children unless the item is selected.
         //this seems like a good tradeoff between letting the user know something is there,
         //and avoiding unwanted expansions/collapses when user wants to select.
-        var isSelected = this.props.item === this.props.selected;
-        var delayExpansion = this.props.selectOnClick && !isSelected;
+        const isSelected = this.props.item === this.props.selected;
+        const delayExpansion = this.props.selectOnClick && !isSelected;
         if (!delayExpansion) {
             this.setState({expanded: !this.state.expanded});
         }
         else if (this.props.onSelected) {
             this.props.onSelected(this.props.item);
+        }
+    },
+    _onToggleNotify: function(e) {    
+        e.stopPropagation();
+        this.setState({notifying: !this.state.notifying});
+        if (this.props.item.properties.notify) {
+            console.log('Toggle notify on handle ' + this.props.item.handle);
+        } else { //must have indicate property
+            console.log('Toggle indicate on handle ' + this.props.item.handle);
         }
     },
     _childChanged: function() {
@@ -66,8 +76,8 @@ var CharacteristicItem = React.createClass({
         }
     },
     _addDescriptor: function() {
-        var handle = Math.random(); //just need a unique value until a real handle is assigned by the driver
-        var descriptor = {"handle":handle,"uuid":"","name":"New descriptor","value":""};
+        const handle = Math.random(); //just need a unique value until a real handle is assigned by the driver
+        const descriptor = {"handle":handle,"uuid":"","name":"New descriptor","value":""};
         descriptor.parent = this.props.item;
         this.props.item.descriptors.push(descriptor);
         if (this.props.onSelected) {
@@ -80,10 +90,12 @@ var CharacteristicItem = React.createClass({
         console.log(value);
     },
     render: function() {
-        var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        var iconStyle = this.props.descriptors.length === 0 && !this.props.addNew  ? { display: 'none' } : {};
-        var selected = this.props.item === this.props.selected;
-        var backgroundColor = selected
+        const expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
+        const iconStyle = this.props.descriptors.length === 0 && !this.props.addNew  ? { display: 'none' } : {};
+        const notifyIcon = this.state.notifying ? 'icon-stop' : 'icon-play';
+        const notifyIconStyle = this.props.item.properties.notify || this.props.item.properties.indicate ? {} : {display: 'none'};
+        const selected = this.props.item === this.props.selected;
+        const backgroundColor = selected
             ? 'rgb(179,225,245)'
             : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
 
@@ -96,11 +108,14 @@ var CharacteristicItem = React.createClass({
                 <div className="content-wrap" onClick={this._onClick}>
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     <div className="content">
-                        <div className="truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
-                        <div className="flag-line">
-                            {(this.props.item.properties.getProperties()).map(function(property, index) {
-                                return (<div key={index} className="device-flag">{property}</div>)
-                            })}
+                        <div className="btn btn-primary btn-xs btn-nordic" title="Toggle notifications" style={notifyIconStyle} onClick={this._onToggleNotify}><i className={notifyIcon}></i></div>
+                        <div>
+                            <div className="truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
+                            <div className="flag-line">
+                                {(this.props.item.properties.getProperties()).map(function(property, index) {
+                                    return (<div key={index} className="device-flag">{property}</div>)
+                                })}
+                            </div>
                         </div>
                         <HexOnlyEditableField value={this.props.value} insideSelector=".characteristic-item" onSaveChanges={this._onWrite}/>
                     </div>
