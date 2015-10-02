@@ -89,9 +89,9 @@ let EditableField = React.createClass({
         this.setState({editing: !this.state.editing});
     },
     _onChange: function(e) {
-        const valid = this.props.keyPressValidation ? this.props.keyPressValidation(textarea.value) : true;
         let textarea = e.target;
         let caretPosition = textarea.selectionStart;
+        const valid = this.props.keyPressValidation ? this.props.keyPressValidation(textarea.value) : true;
 
         if (valid) {
             let value = e.target.value;
@@ -121,6 +121,10 @@ let EditableField = React.createClass({
         e.stopPropagation();
         this._saveChanges();
     },
+    _onReadButtonClick(e) {
+        e.stopPropagation()
+        this._read();
+    },
     _saveChanges: function() {
         const valid = this.props.completeValidation ? this.props.completeValidation(this.state.value) : true;
         if (valid) {
@@ -129,6 +133,9 @@ let EditableField = React.createClass({
                 this.props.onSaveChanges(this.props.getValueArray(this.state.value));
             }
         }
+    },
+    _read() {
+        console.log('read button pressed!');
     },
     _stopPropagation: function(e) {
         e.stopPropagation();
@@ -152,8 +159,11 @@ let EditableField = React.createClass({
                         <TextareaAutosize {...this.props} ref="editableTextarea" minRows={1} onKeyDown={this._onKeyDown} value={this.state.value} onChange={this._onChange} onClick={this._stopPropagation}></TextareaAutosize>
                     </div>
         } else {
-            child = <div className="subtle-text editable" onClick={this._toggleEditing}>
-                        <span>{this.state.value || nonBreakingSpace}</span>
+            child = <div className="editable-field-editor-wrap">
+                        <div className="btn btn-primary btn-xs btn-nordic" onClick={this._onReadButtonClick}><i className="icon-ccw"></i></div>
+                        <div className="subtle-text editable" onClick={this._toggleEditing}>
+                            <span>{this.state.value || nonBreakingSpace}</span>
+                        </div>
                     </div>
         }
         return (
