@@ -120,8 +120,9 @@ var CharacteristicEditor = React.createClass({
           </div>
 
           <div className="form-group">
-            <div className="col-md-offset-3 col-md-9">
-              <button type="submit" className="btn btn-primary">Save</button>
+            <div className="col-md-offset-3 col-md-9 padded-row">
+              <button type="button" className="btn btn-primary">Save</button>
+              <button type="button" className="btn btn-primary" onClick={() => {this.props.onDelete(this.props.characteristic)}}>Delete</button>
             </div>
           </div>
 

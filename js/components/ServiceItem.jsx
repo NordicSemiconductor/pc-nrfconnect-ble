@@ -17,7 +17,7 @@ import react from 'react';
 import CharacteristicItem from './CharacteristicItem';
 import AddNewItem from './AddNewItem.jsx';
 
-import {Properties} from '../GattDatabases';
+import {Properties} from '../gattDatabases';
 
 import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
 

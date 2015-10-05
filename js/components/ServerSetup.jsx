@@ -62,14 +62,43 @@ let ServerSetup = React.createClass({
         this._onSelected(service);
         //this._assignIdsAndParents();
     },
+    _deleteAttribute(attribute) {
+        console.log("Attempting to delete attribute ");
+        for (let i = 0; i < this.services.length; i++) {
+            if (this._deleteAttributeHelper(this.services, i, attribute)) {
+                return;
+            }
+            for (let charIndex = 0; charIndex < this.services[i].characteristics.length; charIndex++) {
+                if (this._deleteAttributeHelper(this.services[i].characteristics, charIndex, attribute)) {
+                    return;
+                }
+                for (let descIndex = 0; descIndex < this.services[i].characteristics[charIndex].descriptors.length; descIndex++) {
+                    if (this._deleteAttributeHelper(this.services[i].characteristics[charIndex].descriptors, descIndex, attribute)) {
+                        return;
+                    }
+                }
+            }
+        }
+        console.log("Handle not found, could not delete attribute");
+
+    },
+    _deleteAttributeHelper(attributes, index, attribute) {
+        if (attributes[index] === attribute) {
+            console.log("Found attribute, deleting");
+            attributes.splice(index, 1);
+            this.setState({ selected: null });
+            return true;
+        }
+        return false;
+    },
     render() {
         const selected = this.state.selected;
         const editor =
             !selected ? <div className="nothing-selected" />
-            : selected.characteristics ? <ServiceEditor service={selected} />
-            : selected.descriptors ? <CharacteristicEditor characteristic={selected} />
+            : selected.characteristics ? <ServiceEditor service={selected} onDelete={this._deleteAttribute}/>
+            : selected.descriptors ? <CharacteristicEditor characteristic={selected} onDelete={this._deleteAttribute} />
             : selected._addBtnId ? <form />
-            : <DescriptorEditor descriptor={selected} />
+            : <DescriptorEditor descriptor={selected} onDelete={this._deleteAttribute}/>
         return (
             <div className="server-setup" style={this.props.style}>
                 <div className="device-details-view">
