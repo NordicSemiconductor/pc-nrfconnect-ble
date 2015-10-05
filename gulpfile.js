@@ -13,8 +13,6 @@
 'use strict';
 
 var gulp = require('gulp');
-var babel = require('gulp-babel');
-var sourcemaps = require('gulp-sourcemaps');
 
 var run = require('gulp-run');
 var runSequence = require('run-sequence');
@@ -34,17 +32,6 @@ function swallowError (error) {
     console.log(error.toString());
     this.emit('end');
 }
-
-/* Not working
-gulp.task('build', function(){
-  return
-    gulp.src('js//**//*.js')
-    .pipe(babel())
-    .on('error', swallowError)
-    .pipe(gulp.dest('dist'));
-});
-
-*/
 
 gulp.task('copy-ble-driver', function() {
     gulp.src([ driver_root_location + "/interim/**/*"]).pipe(
