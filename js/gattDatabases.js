@@ -50,8 +50,8 @@ class GattDatabase {
             for (var characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
                 var characteristic = characteristics[characteristicIndex];
 
-                var valueDescriptor = characteristic.descriptors.find(findPredicate.bind(undefined, characteristic));
-                var descriptors = characteristic.descriptors.filter(rejectPredicate.bind(undefined, characteristic));
+                var valueDescriptor = characteristic.descriptors.find(descriptor => characteristic.valueHandle === descriptor.handle);
+                var descriptors = characteristic.descriptors.filter(descriptor => characteristic.valueHandle === descriptor.handle);
 
                 characteristic.value = this.valueToString(valueDescriptor.value);
                 characteristic.descriptors = descriptors;
@@ -78,35 +78,107 @@ class GattDatabase {
 
         return valueString.slice(0,-1).toUpperCase();
     }
+
+    findAttribute(handle) {
+        return this.services.reduce((previousValue, currentValue) => previousValue || currentValue.findAttribute(handle), undefined);
+    }
+
+    removeService(service) {
+        this.services = _.reject(this.services, element => element === service);
+    }
 }
 
-class Service {
-    constructor(handle) {
+class Attribute {
+    constructor(parent, handle) {
+        this.parent = parent;
         this.handle = handle;
+    }
+
+    findAttribute(handle) {
+        if (this.handle === handle) {
+            return this;
+        }
+
+        if (this._children) {
+            return this._children.reduce((previousValue, currentValue) => previousValue || currentValue.findAttribute(handle), undefined);
+        }
+    }
+
+    arrayToString(array) {
+        var string = '';
+
+        for (var i = array.length - 1; i >= 0; i--) {
+            var byteString = array[i].toString(16);
+            byteString = ('0' + byteString).slice(-2);
+            string += byteString;
+        }
+
+        string = '0x' + string.toUpperCase();
+
+        return string;
+    }
+
+    arrayToInt(array) {
+        var buffer = new Buffer(array);
+
+        return buffer.readUInt16LE();
+    }
+}
+
+class Service extends Attribute {
+    constructor(parent, handle) {
+        super(parent, handle);
         this.uuid = SERVICE_UUID;
         this.name = uuidDefinitions[SERVICE_UUID];
         this.characteristics = [];
+        this._children = this.characteristics;
         this.expanded = false;
+    }
+
+    parseData(data, length, readOffset) {
+        this.serviceUuid = this.arrayToString(data);
+        this.name = uuidDefinitions[this.serviceUuid] || this.serviceUuid;
+    }
+
+    removeCharacteristic(characteristic) {
+        this.characteristics = _.reject(this.characteristics, element => element === characteristic);
     }
 }
 
-class Characteristic {
-    constructor(handle) {
-        this.handle = handle;
+class Characteristic extends Attribute {
+    constructor(parent, handle) {
+        super(parent, handle);
         this.uuid = CHARACTERISTIC_UUID;
         this.name = uuidDefinitions[CHARACTERISTIC_UUID];
         this.descriptors = [];
+        this._children = this.descriptors;
         this.expanded = false;
+    }
+
+    parseData(data, length, readOffset) {
+        this.properties = new Properties(data[0]);
+        this.valueHandle = this.arrayToInt(data.slice(1, 3));
+        this.characteristicUuid = this.arrayToString(data.slice(3));
+        this.name = uuidDefinitions[this.characteristicUuid] || this.characteristicUuid;
+    }
+
+    removeDescriptor(descriptor) {
+        this.descriptors = _.reject(this.descriptors, element => element === descriptor);
     }
 }
 
-class Descriptor {
-    constructor(handle, uuid) {
-        this.handle = handle;
+class Descriptor extends Attribute {
+    constructor(parent, handle, uuid) {
+        super(parent, handle);
         this.uuid = uuid;
         this.name = uuidDefinitions[uuid] || uuid;
         this.value = [];
         this.expanded = false;
+    }
+
+    parseData(data, length, readOffset) {
+        var remainingData = this.value.slice(0, readOffset);
+        this.value = remainingData.concat(data);
     }
 }
 
@@ -217,17 +289,17 @@ class GattDatabases {
 
             if (uuid == SERVICE_UUID) {
                 var gattDatabase = this.getGattDatabase(connectionHandle);
-                var service = new Service(handle);
+                var service = new Service(gattDatabase, handle);
                 this.insertGattObjectInList(gattDatabase.services, service);
             }
             else if (uuid == CHARACTERISTIC_UUID) {
                 var parentService = this.findParentService(connectionHandle, handle);
-                var characteristic = new Characteristic(handle);
+                var characteristic = new Characteristic(parentService, handle);
                 this.insertGattObjectInList(parentService.characteristics, characteristic);
             }
             else {
                 var parentCharacteristic = this.findParentCharacteristic(connectionHandle, handle);
-                var descriptor = new Descriptor(handle, uuid);
+                var descriptor = new Descriptor(parentCharacteristic, handle, uuid);
                 this.insertGattObjectInList(parentCharacteristic.descriptors, descriptor);
             }
         }
@@ -246,23 +318,9 @@ class GattDatabases {
         var readOffset = event.offset;
 
         var gattDatabase = this.getGattDatabase(connectionHandle);
+        var attribute = gattDatabase.findAttribute(handle);
 
-        var attribute = this.findAttribute(gattDatabase, handle);
-
-        if (attribute instanceof Service) {
-            this.parseServiceData(attribute, data, length, readOffset);
-        }
-        else if (attribute instanceof Characteristic) {
-            this.parseCharacteristicData(attribute, data, length, readOffset);
-        }
-        else if (attribute instanceof Descriptor) {
-            this.parseDescriptorData(attribute, data, length, readOffset);
-        }
-        else {
-            return false;
-        }
-
-        return true;
+        attribute.parseData(data, length, readOffset);
     }
 
     getHandleList(connectionHandle) {
@@ -326,57 +384,6 @@ class GattDatabases {
         return previousCharacteristic;
     }
 
-    findAttribute(parent, handle) {
-        var attributeList;
-
-        if (parent instanceof GattDatabase) {
-            attributeList = parent.services;
-        }
-        else if (parent instanceof Service) {
-            attributeList = parent.characteristics;
-        }
-        else if (parent instanceof Characteristic) {
-            attributeList = parent.descriptors;
-        }
-        else {
-            return;
-        }
-
-        var previousAttribute;
-
-        for (var i = 0; i < attributeList.length; i++) {
-            var currentAttribute = attributeList[i];
-
-            if (currentAttribute.handle === handle) {
-                return currentAttribute;
-            }
-            else if (currentAttribute.handle > handle) {
-                return this.findAttribute(previousAttribute, handle);
-            }
-
-            previousAttribute = currentAttribute;
-        }
-
-        return this.findAttribute(previousAttribute, handle);
-    }
-
-    parseServiceData(service, data, length, readOffset) {
-        service.serviceUuid = this.arrayToString(data);
-        service.name = uuidDefinitions[service.serviceUuid] || service.serviceUuid;
-    }
-
-    parseCharacteristicData(characteristic, data, length, readOffset) {
-        characteristic.properties = new Properties(data[0]);
-        characteristic.valueHandle = this.arrayToInt(data.slice(1, 3));
-        characteristic.characteristicUuid = this.arrayToString(data.slice(3));
-        characteristic.name = uuidDefinitions[characteristic.characteristicUuid] || characteristic.characteristicUuid;
-    }
-
-    parseDescriptorData(descriptor, data, length, readOffset) {
-        var remainingData = descriptor.value.slice(0, readOffset);
-        descriptor.value = remainingData.concat(data);
-    }
-
     setCharacteristicValue(connectionHandle, valueHandle, value) {
         var parentCharacteristic = this.findParentCharacteristic(connectionHandle, valueHandle);
 
@@ -411,26 +418,6 @@ class GattDatabases {
         }
 
         return uuidString;
-    }
-
-    arrayToString(array) {
-        var string = '';
-
-        for (var i = array.length - 1; i >= 0; i--) {
-            var byteString = array[i].toString(16);
-            byteString = ('0' + byteString).slice(-2);
-            string += byteString;
-        }
-
-        string = '0x' + string.toUpperCase();
-
-        return string;
-    }
-
-    arrayToInt(array) {
-        var buffer = new Buffer(array);
-
-        return buffer.readUInt16LE();
     }
 
     insertGattObjectInList(list, gattObject) {
