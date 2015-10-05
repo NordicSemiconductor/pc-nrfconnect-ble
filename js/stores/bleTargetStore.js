@@ -13,9 +13,10 @@
 'use strict';
 
 import reflux from 'reflux';
-import serialPort from 'serialport-electron';
 import _ from 'underscore';
 import fs from 'fs';
+
+import bleDriver from 'pc-ble-driver-js';
 
 var bleTargetStore = reflux.createStore({
 
@@ -32,22 +33,22 @@ var bleTargetStore = reflux.createStore({
     _detectTargets: function() {
         var self = this;
         var portName = '';
-        serialPort.list(function(err, ports) {
-            var newlyDiscoveredTargets = ports.map(function(port){
-                portName = port.comName;
-                if (process.platform === 'darwin') {
-                    var modPortName = portName.replace('/dev/cu.', '/dev/tty.'); //workaround for wrong port location on darwin (OSX)
-                    if(fs.existsSync(modPortName)) {
-                        portName = modPortName;
-                    }
-                }
-                return portName; 
-            });
+
+        bleDriver.get_adapters(function(err, ports) {
+            var newlyDiscoveredTargets = null;
+            if(!err) {
+                newlyDiscoveredTargets = ports.map(function(port) {
+                    return port.comName;
+                });
+            }
+
             newlyDiscoveredTargets.unshift('None');
+
             if (!_.isEqual(newlyDiscoveredTargets, self.discoveredBleTargets)) {
                 self.trigger({discoveredBleTargets: newlyDiscoveredTargets});
             }
             self.discoveredBleTargets = newlyDiscoveredTargets;
+
         });
     }
 });
