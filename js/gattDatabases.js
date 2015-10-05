@@ -74,6 +74,10 @@ class GattDatabase {
         return this.services.reduce((previousValue, currentValue) => previousValue || currentValue.findAttribute(handle), undefined);
     }
 
+    addService(service) {
+        this.services.push(service);
+    }
+
     removeService(service) {
         this.services = _.reject(this.services, element => element === service);
     }
@@ -138,8 +142,16 @@ class Service extends Attribute {
         this.name = uuidDefinitions[this.serviceUuid] || this.serviceUuid;
     }
 
+    addCharacteristic(characteristic) {
+        this.characteristics.push(characteristic);
+    }
+
     removeCharacteristic(characteristic) {
         this.characteristics = _.reject(this.characteristics, element => element === characteristic);
+    }
+
+    removeFromParent() {
+        this.parent.removeService(this);
     }
 }
 
@@ -170,8 +182,16 @@ class Characteristic extends Attribute {
         this.name = uuidDefinitions[this.characteristicUuid] || this.characteristicUuid;
     }
 
+    addDescriptor(descriptor) {
+        this.descriptors.push(descriptor);
+    }
+
     removeDescriptor(descriptor) {
         this.descriptors = _.reject(this.descriptors, element => element === descriptor);
+    }
+
+    removeFromParent() {
+        this.parent.removeCharacteristic(this);
     }
 }
 
@@ -188,18 +208,24 @@ class Descriptor extends Attribute {
         const remainingData = this.value.slice(0, readOffset);
         this.value = remainingData.concat(data);
     }
+
+    removeFromParent() {
+        this.parent.removeDescriptor(this);
+    }
 }
 
 class Properties {
     constructor(properties, extendedProperties) {
-        this.broadcast = properties & 0x01;
-        this.read = properties & 0x02;
-        this.writeWithoutResponse = properties & 0x04;
-        this.write = properties & 0x08;
-        this.notify = properties & 0x10;
-        this.indicate = properties & 0x20;
-        this.authenticatedSignedWrites = properties & 0x40;
-        this.extendedProperties = properties & 0x80;
+        if (properties) {
+            this.broadcast = properties & 0x01;
+            this.read = properties & 0x02;
+            this.writeWithoutResponse = properties & 0x04;
+            this.write = properties & 0x08;
+            this.notify = properties & 0x10;
+            this.indicate = properties & 0x20;
+            this.authenticatedSignedWrites = properties & 0x40;
+            this.extendedProperties = properties & 0x80;
+        }
 
         if (extendedProperties && this.extendedProperties) {
             this.reliableWrite = extendedProperties & 0x01;

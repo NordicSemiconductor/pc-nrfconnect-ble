@@ -60,15 +60,7 @@ var ServiceItem = React.createClass({
         nextProps.item.expanded = nextState.expanded;
     },
     _addCharacteristic: function() {
-        var handle = Math.random(); //just need a unique value until a real handle is assigned by the driver
-        var characteristic = {"handle": handle,"uuid":"","name":"New characteristic","descriptors":[],"properties":new Properties(0x0A),"valueHandle":3,"characteristicUuid":"","value":""};
-        characteristic.parent = this.props.item;
-        this.props.item.characteristics.push(characteristic);
-        if (this.props.onSelected) {
-            this.props.onSelected(characteristic);
-        } else {
-            this.forceUpdate();
-        }
+        this.props.addCharacteristic(this.props.item);
     },
     /*
     //This speeds things up 2x, but breaks notifications:
@@ -119,7 +111,7 @@ var ServiceItem = React.createClass({
                     {this.props.characteristics.map((characteristic, j) =>
                         <CharacteristicItem name={characteristic.name} value={characteristic.value} item={characteristic}
                             selected={this.props.selected} onSelected={this.props.onSelected} descriptors={characteristic.descriptors}
-                            onChange={this._childChanged} key={j} addNew={this.props.addNew} selectOnClick={this.props.selectOnClick}
+                            onChange={this._childChanged} key={j} addNew={this.props.addNew} addDescriptor={this.props.addDescriptor} selectOnClick={this.props.selectOnClick}
                             connectionHandle={this.props.connectionHandle} />
                     )}
                     {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onClick={this._addCharacteristic} bars={2} /> : null}

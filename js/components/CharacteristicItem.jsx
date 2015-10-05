@@ -79,15 +79,7 @@ var CharacteristicItem = React.createClass({
         }
     },
     _addDescriptor: function() {
-        const handle = Math.random(); //just need a unique value until a real handle is assigned by the driver
-        const descriptor = {"handle":handle,"uuid":"","name":"New descriptor","value":""};
-        descriptor.parent = this.props.item;
-        this.props.item.descriptors.push(descriptor);
-        if (this.props.onSelected) {
-            this.props.onSelected(descriptor);
-        } else {
-            this.forceUpdate();
-        }
+        this.props.addDescriptor(this.props.item);
     },
     _onWrite: function(value) {
         bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
