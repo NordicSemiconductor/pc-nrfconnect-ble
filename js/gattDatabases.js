@@ -32,33 +32,24 @@ class GattDatabase {
     }
 
     getPrettyGattDatabase() {
-        var prettyDatabase = Object.assign({}, this);
+        const prettyDatabase = Object.assign({}, this);
+        const services = prettyDatabase.services;
 
-        var findPredicate = function(characteristic, descriptor) {
-            return descriptor.handle === characteristic.valueHandle;
-        };
+        for (let serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
+            const characteristics = services[serviceIndex].characteristics;
 
-        var rejectPredicate = function(characteristic, descriptor) {
-            return descriptor.handle !== characteristic.valueHandle;
-        };
+            for (let characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
+                const characteristic = characteristics[characteristicIndex];
 
-        var services = prettyDatabase.services;
-
-        for (var serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
-            var characteristics = services[serviceIndex].characteristics;
-
-            for (var characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
-                var characteristic = characteristics[characteristicIndex];
-
-                var valueDescriptor = characteristic.descriptors.find(descriptor => characteristic.valueHandle === descriptor.handle);
-                var descriptors = characteristic.descriptors.filter(descriptor => characteristic.valueHandle === descriptor.handle);
+                const valueDescriptor = characteristic.descriptors.find(descriptor => characteristic.valueHandle === descriptor.handle);
+                const descriptors = characteristic.descriptors.filter(descriptor => characteristic.valueHandle === descriptor.handle);
 
                 characteristic.value = this.valueToString(valueDescriptor.value);
                 characteristic.descriptors = descriptors;
                 characteristic.parent = services[serviceIndex];
 
-                for (var descriptorIndex = 0; descriptorIndex < descriptors.length; descriptorIndex++) {
-                    var descriptor = descriptors[descriptorIndex];
+                for (let descriptorIndex = 0; descriptorIndex < descriptors.length; descriptorIndex++) {
+                    const descriptor = descriptors[descriptorIndex];
                     descriptor.value = this.valueToString(descriptor.value);
                     descriptor.parent = characteristic;
                 }
@@ -69,10 +60,10 @@ class GattDatabase {
     }
 
     valueToString(value) {
-        var valueString = '';
+        let valueString = '';
 
-        for (var i = 0; i < value.length; i++) {
-            var byteString = '0' + value[i].toString(16);
+        for (let i = 0; i < value.length; i++) {
+            const byteString = '0' + value[i].toString(16);
             valueString += byteString.slice(-2) + '-';
         }
 
@@ -105,10 +96,10 @@ class Attribute {
     }
 
     arrayToString(array) {
-        var string = '';
+        let string = '';
 
-        for (var i = array.length - 1; i >= 0; i--) {
-            var byteString = array[i].toString(16);
+        for (let i = array.length - 1; i >= 0; i--) {
+            let byteString = array[i].toString(16);
             byteString = ('0' + byteString).slice(-2);
             string += byteString;
         }
@@ -119,17 +110,24 @@ class Attribute {
     }
 
     arrayToInt(array) {
-        var buffer = new Buffer(array);
+        const buffer = new Buffer(array);
 
         return buffer.readUInt16LE();
     }
 }
 
 class Service extends Attribute {
-    constructor(parent, handle) {
+    constructor(parent, handle, serviceUuid) {
         super(parent, handle);
         this.uuid = SERVICE_UUID;
-        this.name = uuidDefinitions[SERVICE_UUID];
+
+        if (serviceUuid) {
+            this.serviceUuid = serviceUuid;
+            this.name = uuidDefinitions[this.serviceUuid] || this.serviceUuid;
+        } else {
+            this.name = uuidDefinitions[SERVICE_UUID];
+        }
+
         this.characteristics = [];
         this._children = this.characteristics;
         this.expanded = false;
@@ -146,10 +144,20 @@ class Service extends Attribute {
 }
 
 class Characteristic extends Attribute {
-    constructor(parent, handle) {
+    constructor(parent, handle, characteristicUuid, valueHandle, properties) {
         super(parent, handle);
         this.uuid = CHARACTERISTIC_UUID;
-        this.name = uuidDefinitions[CHARACTERISTIC_UUID];
+
+        if (characteristicUuid) {
+            this.uuid = characteristicUuid;
+            this.name = uuidDefinitions[this.characteristicUuid] || this.characteristicUuid;
+        } else {
+            this.name = uuidDefinitions[CHARACTERISTIC_UUID];
+        }
+
+        this.valueHandle = valueHandle;
+        this.properties = properties;
+
         this.descriptors = [];
         this._children = this.descriptors;
         this.expanded = false;
@@ -168,16 +176,16 @@ class Characteristic extends Attribute {
 }
 
 class Descriptor extends Attribute {
-    constructor(parent, handle, uuid) {
+    constructor(parent, handle, uuid, value) {
         super(parent, handle);
         this.uuid = uuid;
         this.name = uuidDefinitions[uuid] || uuid;
-        this.value = [];
+        this.value = value || [];
         this.expanded = false;
     }
 
     parseData(data, length, readOffset) {
-        var remainingData = this.value.slice(0, readOffset);
+        const remainingData = this.value.slice(0, readOffset);
         this.value = remainingData.concat(data);
     }
 }
@@ -200,7 +208,7 @@ class Properties {
     }
 
     getProperties() {
-        var properties = [];
+        const properties = [];
 
         if (this.broadcast) {
             properties.push('Broadcast');
@@ -279,27 +287,27 @@ class GattDatabases {
             return;
         }
 
-        var connectionHandle = event.conn_handle;
+        const connectionHandle = event.conn_handle;
 
-        for (var i = 0; i < event.count; i++) {
-            var discoveredAttribute = event.descs[i];
-            var handle = discoveredAttribute.handle;
+        for (let i = 0; i < event.count; i++) {
+            const discoveredAttribute = event.descs[i];
+            const handle = discoveredAttribute.handle;
 
-            var uuid = this.uuidIntToUuidString(discoveredAttribute.uuid.uuid, discoveredAttribute.uuid.type);
+            const uuid = this.uuidIntToUuidString(discoveredAttribute.uuid.uuid, discoveredAttribute.uuid.type);
 
             if (uuid == SERVICE_UUID) {
-                var gattDatabase = this.getGattDatabase(connectionHandle);
-                var service = new Service(gattDatabase, handle);
+                const gattDatabase = this.getGattDatabase(connectionHandle);
+                const service = new Service(gattDatabase, handle);
                 this.insertGattObjectInList(gattDatabase.services, service);
             }
             else if (uuid == CHARACTERISTIC_UUID) {
-                var parentService = this.findParentService(connectionHandle, handle);
-                var characteristic = new Characteristic(parentService, handle);
+                const parentService = this.findParentService(connectionHandle, handle);
+                const characteristic = new Characteristic(parentService, handle);
                 this.insertGattObjectInList(parentService.characteristics, characteristic);
             }
             else {
-                var parentCharacteristic = this.findParentCharacteristic(connectionHandle, handle);
-                var descriptor = new Descriptor(parentCharacteristic, handle, uuid);
+                const parentCharacteristic = this.findParentCharacteristic(connectionHandle, handle);
+                const descriptor = new Descriptor(parentCharacteristic, handle, uuid);
                 this.insertGattObjectInList(parentCharacteristic.descriptors, descriptor);
             }
         }
@@ -311,35 +319,35 @@ class GattDatabases {
             return;
         }
 
-        var connectionHandle = event.conn_handle;
-        var handle = event.handle;
-        var data = event.data.toJSON().data;
-        var length = event.len;
-        var readOffset = event.offset;
+        const connectionHandle = event.conn_handle;
+        const handle = event.handle;
+        const data = event.data.toJSON().data;
+        const length = event.len;
+        const readOffset = event.offset;
 
-        var gattDatabase = this.getGattDatabase(connectionHandle);
-        var attribute = gattDatabase.findAttribute(handle);
+        const gattDatabase = this.getGattDatabase(connectionHandle);
+        const attribute = gattDatabase.findAttribute(handle);
 
         attribute.parseData(data, length, readOffset);
     }
 
     getHandleList(connectionHandle) {
-        var handleList = [];
-        var gattDatabase = this.getGattDatabase(connectionHandle);
-        var services = gattDatabase.services;
+        const handleList = [];
+        const gattDatabase = this.getGattDatabase(connectionHandle);
+        const services = gattDatabase.services;
 
-        for (var serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
-            var service = services[serviceIndex];
-            var characteristics = service.characteristics;
+        for (let serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
+            const service = services[serviceIndex];
+            const characteristics = service.characteristics;
             handleList.push(service.handle);
 
-            for (var characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
-                var characteristic = characteristics[characteristicIndex];
-                var descriptors = characteristic.descriptors;
+            for (let characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
+                const characteristic = characteristics[characteristicIndex];
+                const descriptors = characteristic.descriptors;
                 handleList.push(characteristic.handle);
 
-                for (var descriptorIndex = 0; descriptorIndex < descriptors.length; descriptorIndex++) {
-                    var descriptor = descriptors[descriptorIndex];
+                for (let descriptorIndex = 0; descriptorIndex < descriptors.length; descriptorIndex++) {
+                    const descriptor = descriptors[descriptorIndex];
                     handleList.push(descriptor.handle);
                 }
             }
@@ -349,12 +357,12 @@ class GattDatabases {
     }
 
     findParentService(connectionHandle, handle) {
-        var gattDatabase = this.getGattDatabase(connectionHandle);
-        var previousService;
+        const gattDatabase = this.getGattDatabase(connectionHandle);
+        let previousService;
 
-        for (var i = 0; i < gattDatabase.services.length; i++) {
-            var service = gattDatabase.services[i];
-            var serviceHandle = service.handle;
+        for (let i = 0; i < gattDatabase.services.length; i++) {
+            const service = gattDatabase.services[i];
+            const serviceHandle = service.handle;
 
             if (serviceHandle > handle) {
                 break;
@@ -367,12 +375,12 @@ class GattDatabases {
     }
 
     findParentCharacteristic(connectionHandle, handle) {
-        var parentService = this.findParentService(connectionHandle, handle);
-        var previousCharacteristic;
+        const parentService = this.findParentService(connectionHandle, handle);
+        let previousCharacteristic;
 
-        for (var i = 0; i < parentService.characteristics.length; i++) {
-            var characteristic = parentService.characteristics[i];
-            var characteristicHandle = characteristic.handle;
+        for (let i = 0; i < parentService.characteristics.length; i++) {
+            const characteristic = parentService.characteristics[i];
+            const characteristicHandle = characteristic.handle;
 
             if (characteristicHandle > handle) {
                 break;
@@ -384,19 +392,6 @@ class GattDatabases {
         return previousCharacteristic;
     }
 
-    setCharacteristicValue(connectionHandle, valueHandle, value) {
-        var parentCharacteristic = this.findParentCharacteristic(connectionHandle, valueHandle);
-
-        if (parentCharacteristic.valueHandle != valueHandle) {
-            return false;
-        }
-
-        parentCharacteristic.value = value;
-        return true;
-    }
-
-    // TODO: Parse characteristic properties? Or are they pre parsed from driver
-
     // TODO: What is done with 128 bit uuids?
     uuidToName(uuid) {
         if (uuid in uuidDefinitions) {
@@ -407,7 +402,7 @@ class GattDatabases {
     }
 
     uuidIntToUuidString(uuid, type) {
-        var uuidString = uuid.toString(16).toUpperCase();
+        let uuidString = uuid.toString(16).toUpperCase();
 
         uuidString = '000' + uuidString;
         uuidString =  uuidString.slice(-4);
@@ -421,9 +416,9 @@ class GattDatabases {
     }
 
     insertGattObjectInList(list, gattObject) {
-        var gattObjectHandle = gattObject.handle;
+        const gattObjectHandle = gattObject.handle;
 
-        for (var i = 0; i < list.length; i++) {
+        for (let i = 0; i < list.length; i++) {
             if (list[i].handle == gattObjectHandle) {
                 list[i] = gattObject;
                 return;
@@ -434,13 +429,13 @@ class GattDatabases {
     }
 
     getGattDatabase(connectionHandle) {
-        for (var i = 0; i < this.gattDatabases.length; i++) {
+        for (let i = 0; i < this.gattDatabases.length; i++) {
             if (this.gattDatabases[i].connectionHandle == connectionHandle) {
                 return this.gattDatabases[i];
             }
         }
 
-        var gattDatabase = new GattDatabase(connectionHandle);
+        const gattDatabase = new GattDatabase(connectionHandle);
 
         this.gattDatabases.push(gattDatabase);
 
@@ -448,7 +443,7 @@ class GattDatabases {
     }
 
     removeGattDatabase(connectionHandle) {
-        var indexOfItemToDelete = this.gattDatabases.findIndex(function(gattDatabase) {
+        const indexOfItemToDelete = this.gattDatabases.findIndex(function(gattDatabase) {
             return gattDatabase.connectionHandle === connectionHandle;
         });
 
@@ -459,10 +454,10 @@ class GattDatabases {
     }
 
     getPrettyGattDatabases() {
-        var prettyDatabases = JSON.parse(JSON.stringify(this));
-        var gattDatabases = prettyDatabases.gattDatabases;
+        const prettyDatabases = Object.assign({}, this);
+        const gattDatabases = prettyDatabases.gattDatabases;
 
-        for (var gattDatabaseIndex = 0; gattDatabaseIndex < gattDatabases.length; gattDatabaseIndex++) {
+        for (let gattDatabaseIndex = 0; gattDatabaseIndex < gattDatabases.length; gattDatabaseIndex++) {
             gattDatabases[gattDatabaseIndex] = gattDatabases.getPrettyGattDatabase();
         }
 
@@ -470,4 +465,4 @@ class GattDatabases {
     }
 }
 
-module.exports = {GattDatabases, Service, Characteristic, Descriptor, Properties};
+module.exports = {GattDatabases, GattDatabase, Service, Characteristic, Descriptor, Properties};
