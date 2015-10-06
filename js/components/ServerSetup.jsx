@@ -80,17 +80,9 @@ let ServerSetup = React.createClass({
     },
     _deleteAttribute(attribute) {
         attribute.removeFromParent();
-        this.setState({gattDatabase: this.state.gattDatabase});
+        this.setState({selected: null, gattDatabase: this.state.gattDatabase});
     },
-    _deleteAttributeHelper(attributes, index, attribute) {
-        if (attributes[index] === attribute) {
-            console.log("Found attribute, deleting");
-            attributes.splice(index, 1);
-            this.setState({ selected: null });
-            return true;
-        }
-        return false;
-    },
+
     render() {
         const selected = this.state.selected;
         const editor =
