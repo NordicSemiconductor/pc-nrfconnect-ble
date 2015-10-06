@@ -136,25 +136,30 @@ var connectionStore = reflux.createStore({
         this.trigger({eventsToShowUser: this.state.eventsToShowUser});
         // Do autoreply here if set up to do so.
     },
-    onConnectionParametersUpdate: function(connectionHandle, connectionParameters) {
+    onConnectionParametersUpdate: function(connectionHandle, connectionParameters, updateId) {
         console.log(JSON.stringify(connectionParameters));
         var that = this;
+        let updateEvent = this.state.eventsToShowUser.find(event => event.id===updateId);
         bleDriver.gap_update_connection_parameters(connectionHandle, connectionParameters, function(err){
             if (err) {
                 logger.error(err.message);
+                updateEvent.state = 'error';
                 that.trigger({
-                    connectionBeingUpdated: undefined
+                    eventsToShowUser: that.state.eventsToShowUser
                 });
             } else {
                 logger.info('Successfully sent gap_update_connection_parameters to driver.');
+                updateEvent.state = 'success';
+                that.trigger({
+                    eventsToShowUser: that.state.eventsToShowUser
+                });
             }
         });
 
-        delete this.state.updateRequests[connectionHandle];
+        updateEvent.state= 'indeterminate';
         this.trigger(
             {
-                updateRequests: this.state.updateRequests,
-                connectionBeingUpdated : connectionHandle
+                eventsToShowUser: this.state.eventsToShowUser
             }
         );
     },
@@ -183,8 +188,8 @@ var connectionStore = reflux.createStore({
             return (device.conn_handle === eventPayload.conn_handle); // Prune all with invalid connectionHandle
         });
 
-        // Discard potential update requests for the disconnected device
-        delete this.state.updateRequests[eventPayload.conn_handle];
+        // TODO: Discard potential events for the disconnected device
+        //delete this.state.updateRequests[eventPayload.conn_handle];
         
         // Delete the device from the discovered devices store. This is a temporary solution until
         // refactoring is done.

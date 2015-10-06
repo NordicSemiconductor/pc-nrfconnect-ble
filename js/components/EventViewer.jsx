@@ -14,7 +14,7 @@ import React from 'react';
 import Reflux from 'reflux';
 import {Modal} from 'react-bootstrap';
 import connectionStore from '../stores/connectionStore.js';
-import {eventTypes} from '../actions/connectionActions.js';
+import {eventTypes, connectionActions} from '../actions/connectionActions.js';
 import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
 
 const BleEvent = React.createClass({
@@ -57,11 +57,14 @@ const BleEvent = React.createClass({
 
 const ConnectionUpdateRequestEditor = React.createClass({
      getInitialState: function(){
-        return Object.assign({}, this.props.connectionUpdateRequest.payload.conn_params);
+        let initialConnectionParameters = Object.assign({}, this.props.connectionUpdateRequest.payload.conn_params);
+        return {
+            connectionParameters: initialConnectionParameters,
+        };
     },
     _generateHeaderMessage: function() {
         if (this.props.connectionUpdateRequest.eventType === eventTypes.userInitiatedConnectionUpdate) {
-            return 'Connection Parameter for device at ' + this.props.connectionUpdateRequest.deviceAddress;
+            return 'Connection Parameters for device at ' + this.props.connectionUpdateRequest.deviceAddress;
         } else {
             return 'The device at ' + this.props.connectionUpdateRequest.deviceAddress + ' has requested a connection parameter update.'
         }
@@ -74,7 +77,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
                            className="form-control nordic-form-control" 
                            type="number" 
                            readOnly 
-                           value={this.state.max_conn_interval}/>
+                           value={this.state.connectionParameters.max_conn_interval}/>
                 </div>
             );
         } else {
@@ -82,23 +85,23 @@ const ConnectionUpdateRequestEditor = React.createClass({
                 <div className="col-sm-6">
                     <input id={"interval_" + connectionHandle} 
                            type="range" 
-                           min={this.state.min_conn_interval} 
-                           max={this.state.max_conn_interval} 
-                           value={this.state.min_conn_interval}/>); 
+                           min={this.state.connectionParameters.min_conn_interval} 
+                           max={this.state.connectionParameters.max_conn_interval} 
+                           value={this.state.connectionParameters.min_conn_interval}/>); 
                 </div>
             );
         }
     },
     _handleChange: function(connectionHandle, inputIdentifier, event) {
-        var updateRequest = Object.assign({}, this.state.updateRequest);
+        const connectionParameters = Object.assign({}, this.state.connectionParameters);
 
-        updateRequest[inputIdentifier] = parseInt(event.target.value, 10);
+        connectionParameters[inputIdentifier] = parseInt(event.target.value, 10);
         this.setState({
-            updateRequest: updateRequests
+            connectionParameters: connectionParameters
         });
     },
-    _updateConnection: function() {
-
+    _updateConnection: function(connectionHandle) {
+        connectionActions.connectionParametersUpdate(connectionHandle, this.state.connectionParameters, this.props.connectionUpdateRequest.id);
     },
     render: function() {
         var connectionHandle = this.props.connectionUpdateRequest.payload.conn_handle;
@@ -120,7 +123,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
                         <div className="col-sm-6">
                             <input id={"latency_" + connectionHandle} className="form-control nordic-form-control" 
                                    onChange={this._handleChange.bind(this, connectionHandle, 'slave_latency')} type="number" 
-                                   value={this.state.slave_latency}/>
+                                   value={this.state.connectionParameters.slave_latency}/>
                         </div>
                     </div>
                     <div className="form-group">
@@ -128,11 +131,11 @@ const ConnectionUpdateRequestEditor = React.createClass({
                             <label className="control-label col-sm-6" htmlFor={"timeout_" + connectionHandle}>Timeout (ms)</label>
                             <div className="col-sm-6">
                                 <input id={"timeout_" + connectionHandle} className="form-control nordic-form-control" 
-                                       onChange={this.handleChange} type="number" value={this.state.conn_sup_timeout}/>
+                                       onChange={this.handleChange} type="number" value={this.state.connectionParameters.conn_sup_timeout}/>
                             </div>
                         </div>
                         <div>
-                            <button type="button" onClick={this._updateConnection.bind(this, parseInt(connectionHandle, 10), this.props.connectionUpdateRequest)} className="btn btn-primary btn-xs btn-nordic">
+                            <button type="button" onClick={this._updateConnection.bind(this, connectionHandle, this.props.connectionUpdateRequest)} className="btn btn-primary btn-xs btn-nordic">
                                 Update
                             </button>
                         </div>
@@ -161,7 +164,7 @@ const EventViewer = React.createClass({
         }
     },
     _close: function() {
-
+        this.setState({visible: false});
     },
     _onSelected: function(selected) {
         this.setState({selected: selected});
@@ -190,7 +193,7 @@ const EventViewer = React.createClass({
                     </div>
                 </div>
                 <Modal.Footer>
-                    <button className="btn btn-primary btn-nordic">Close</button>
+                    <button className="btn btn-primary btn-nordic" onClick={this._close}>Close</button>
                 </Modal.Footer>
             </Modal>
         );
