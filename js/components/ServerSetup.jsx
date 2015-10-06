@@ -42,7 +42,11 @@ gattDatabase.addService(genericAttributeService);
 let ServerSetup = React.createClass({
     mixins: [KeyNavigation.mixin('services', true)],
     getInitialState() {
-        return { selected: null, gattDatabase: gattDatabase };
+        return { 
+            selected: null, 
+            gattDatabase: gattDatabase,
+            showConfirmDialog: false
+        };
     },
     _onSelected(selected) {
         this.setState({ selected: selected });
@@ -78,8 +82,7 @@ let ServerSetup = React.createClass({
         this.setState({gattDatabase: this.state.gattDatabase});
         this._onSelected(descriptor);
     },
-    _deleteAttribute(attribute) {
-        attribute.removeFromParent();
+    _onAttributeDeleted() {
         this.setState({selected: null, gattDatabase: this.state.gattDatabase});
     },
 
@@ -87,10 +90,10 @@ let ServerSetup = React.createClass({
         const selected = this.state.selected;
         const editor =
             !selected ? <div className="nothing-selected" />
-            : selected.characteristics ? <ServiceEditor service={selected} onDelete={this._deleteAttribute}/>
-            : selected.descriptors ? <CharacteristicEditor characteristic={selected} onDelete={this._deleteAttribute} />
+            : selected.characteristics ? <ServiceEditor service={selected} onAttributeDeleted={this._onAttributeDeleted}/>
+            : selected.descriptors ? <CharacteristicEditor characteristic={selected} onAttributeDeleted={this._onAttributeDeleted} />
             : selected._addBtnId ? <form />
-            : <DescriptorEditor descriptor={selected} onDelete={this._deleteAttribute}/>
+            : <DescriptorEditor descriptor={selected} onAttributeDeleted={this._onAttributeDeleted}/>
         return (
             <div className="server-setup" style={this.props.style}>
                 <div className="device-details-view">

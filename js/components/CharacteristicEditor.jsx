@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
+import ConfirmationDialog from './ConfirmationDialog.jsx';
 
 var CharacteristicEditor = React.createClass({
     mixins: [React.addons.LinkedStateMixin],
@@ -21,7 +22,8 @@ var CharacteristicEditor = React.createClass({
             maxLength: null,        //probably not mapped right
             security: null,
             readAuthorization: false,
-            writeAuthorization: false
+            writeAuthorization: false,
+            showConfirmDialog: false
         }
     },
     componentWillMount() {
@@ -39,6 +41,17 @@ var CharacteristicEditor = React.createClass({
     },
     _valueChanged(value) {
         this.setState({ value: value });
+    },
+    _showDeleteConfirmation() {
+        this.setState({showConfirmDialog: true});
+    },
+    _onDeleteOk() {
+        this.setState({showConfirmDialog: false});
+        this.props.characteristic.removeFromParent();
+        this.props.onAttributeDeleted();
+    },
+    _onDeleteCancel() {
+        this.setState({showConfirmDialog: false});
     },
     render() { 
         return (
@@ -122,10 +135,10 @@ var CharacteristicEditor = React.createClass({
           <div className="form-group">
             <div className="col-md-offset-3 col-md-9 padded-row">
               <button type="button" className="btn btn-primary">Save</button>
-              <button type="button" className="btn btn-primary" onClick={() => {this.props.onDelete(this.props.characteristic)}}>Delete</button>
+              <button type="button" className="btn btn-primary" onClick={this._showDeleteConfirmation}>Delete</button>
+              <ConfirmationDialog show={this.state.showConfirmDialog} onOk={this._onDeleteOk} onCancel={this._onDeleteCancel} text="Do you want to delete?"/>
             </div>
           </div>
-
         </form>
         );
     }

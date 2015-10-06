@@ -1,3 +1,5 @@
+import ConfirmationDialog from './ConfirmationDialog.jsx';
+
 var ServiceEditor = React.createClass({ 
     mixins: [React.addons.LinkedStateMixin],
     getInitialState() {
@@ -20,6 +22,20 @@ var ServiceEditor = React.createClass({
             name: service.name
         });
     },
+    _showDeleteConfirmation() {
+        this._continueDelete = function() {
+            attribute.removeFromParent();
+        }
+        this.setState({showConfirmDialog: true});
+    },
+    _onDeleteOk() {
+        this.setState({showConfirmDialog: false});
+        this.props.service.removeFromParent();
+        this.props.onAttributeDeleted();
+    },
+    _onDeleteCancel() {
+        this.setState({showConfirmDialog: false});
+    },
     render() { 
         return (
         <form className="form-horizontal">
@@ -39,7 +55,8 @@ var ServiceEditor = React.createClass({
           <div className="form-group">
             <div className="col-md-offset-3 col-md-9 padded-row">
               <button type="button" className="btn btn-primary">Save</button>
-              <button type="button" className="btn btn-primary" onClick={() => {this.props.onDelete(this.props.service)}}>Delete</button>
+              <button type="button" className="btn btn-primary" onClick={this._showDeleteConfirmation}>Delete</button>
+              <ConfirmationDialog show={this.state.showConfirmDialog} onOk={this._onDeleteOk} onCancel={this._onDeleteCancel} text="Do you want to delete?"/>
             </div>
           </div>
         </form>
