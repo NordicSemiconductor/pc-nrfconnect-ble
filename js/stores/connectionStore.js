@@ -21,7 +21,7 @@ import bleDriver from 'pc-ble-driver-js';
 import textual from '../ble_driver_textual';
 import logger from '../logging';
 
-import connectionActions from'../actions/connectionActions';
+import {connectionActions} from'../actions/connectionActions';
 import graphActions from '../actions/bleGraphActions';
 import discoveryActions from '../actions/discoveryActions';
 import driverActions from '../actions/bleDriverActions';
@@ -35,9 +35,10 @@ var connectionStore = reflux.createStore({
             deviceAddressToServicesMap: {},
             isConnecting: false,
             isEnumeratingServices: false,
-            updateRequests: {}
+            eventsToShowUser: []
         };
         this.devicesAboutToBeConnected = {};
+        this.eventIdCounter = 0;
     },
     _findConnectionHandleFromDeviceAddress: function(deviceAddress) {
         for(var i = 0; i < this.state.connections.length; i++) {
@@ -122,12 +123,17 @@ var connectionStore = reflux.createStore({
 
         this.trigger(this.state);
     },
-    onConnectionParametersUpdateRequest: function(event) {
+    onConnectionParametersUpdateRequest: function(event, eventType) {
         var connectionToUpdate = this._findConnectionFromConnectionHandle(event.conn_handle);
-        event.conn_params.deviceAddress = connectionToUpdate.peer_addr.address;
-        var currentUpdateRequests = Object.assign(this.state.updateRequests, {[event.conn_handle]: event.conn_params});
+        const connectionUpdateEvent = {
+            eventType,
+            id: this.eventIdCounter++,
+            deviceAddress: connectionToUpdate.peer_addr.address,
+            payload: event
+        };
+        this.state.eventsToShowUser.push(connectionUpdateEvent);
 
-        this.trigger({updateRequests: currentUpdateRequests});
+        this.trigger({eventsToShowUser: this.state.eventsToShowUser});
         // Do autoreply here if set up to do so.
     },
     onConnectionParametersUpdate: function(connectionHandle, connectionParameters) {

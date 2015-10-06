@@ -22,7 +22,7 @@ import path from 'path';
 
 import bleDriverActions from '../actions/bleDriverActions';
 import discoveryActions from '../actions/discoveryActions';
-import connectionActions from '../actions/connectionActions';
+import {connectionActions} from '../actions/connectionActions';
 import deviceActions from '../actions/deviceActions';
 import logActions from '../actions/logActions';
 

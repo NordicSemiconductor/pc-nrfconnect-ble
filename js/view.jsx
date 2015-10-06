@@ -19,7 +19,8 @@ import hotkey from 'react-hotkey';
 
 import BleNodeContainer from './node.jsx';
 import DeviceDetailsContainer from './deviceDetails.jsx';
-import ConnectionUpdateRequestModal from './components/ConnectionUpdateRequestModal.jsx';
+//import ConnectionUpdateRequestModal from './components/ConnectionUpdateRequestModal.jsx';
+import EventViewer from './components/EventViewer.jsx';
 import ServerSetup from './components/ServerSetup.jsx';
 
 import Log from './log.jsx';
@@ -140,7 +141,7 @@ var MyView = React.createClass({
                 <div>
                   <DiscoveredDevicesContainer />
                 </div>
-                <ConnectionUpdateRequestModal/>
+                <EventViewer/>
               </div>
             </div>
         );

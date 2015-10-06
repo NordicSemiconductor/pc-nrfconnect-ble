@@ -19,7 +19,7 @@ import logger from './logging';
 
 import discoveryStore from './stores/discoveryStore';
 import discoveryActions from './actions/discoveryActions';
-import connectionActions from './actions/connectionActions';
+import {connectionActions} from './actions/connectionActions';
 import DiscoveryButton from './discoveryButton';
 import prepareDeviceData from './common/deviceProcessing.js';
 

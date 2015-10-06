@@ -14,7 +14,7 @@
 import React from 'react';
 import {Dropdown, MenuItem} from 'react-bootstrap';
 import Connector from './Connector.jsx';
-import connectionActions from '../actions/connectionActions.js';
+import {connectionActions, eventTypes} from '../actions/connectionActions.js';
 import prepareDeviceData from '../common/deviceProcessing.js';
 
 var ConnectedDevice = React.createClass({
@@ -27,8 +27,15 @@ var ConnectedDevice = React.createClass({
         console.log(eventKey);
         switch(eventKey) {
             case "Disconnect":
-            connectionActions.disconnectFromDevice(this.props.device.peer_addr.address);
-            break;
+                connectionActions.disconnectFromDevice(this.props.device.peer_addr.address);
+                break;
+            case "Update":
+                const event = {
+                    conn_handle : this.props.device.connection.conn_handle,
+                    conn_params : this.props.device.connection.conn_params
+                };
+                connectionActions.connectionParametersUpdateRequest(event, eventTypes.userInitiatedConnectionUpdate);
+                break;
         }
     },
     render: function() {
