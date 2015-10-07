@@ -192,15 +192,12 @@ var connectionStore = reflux.createStore({
             return (device.conn_handle === eventPayload.conn_handle); // Prune all with invalid connectionHandle
         });
 
-<<<<<<< 14a3edd4edc750bc594959b02b8b85cbafc1c3c9
         // TODO: Discard potential events for the disconnected device
         //delete this.state.updateRequests[eventPayload.conn_handle];
-        
-=======
+
         // Discard potential update requests for the disconnected device
         delete this.state.updateRequests[eventPayload.conn_handle];
 
->>>>>>> Fixed keynavigation after changing state variable from service array to gattdatabases in server setup.
         // Delete the device from the discovered devices store. This is a temporary solution until
         // refactoring is done.
         discoveryActions.removeDevice(connectionThatWasDisconnected.peer_addr.address);
