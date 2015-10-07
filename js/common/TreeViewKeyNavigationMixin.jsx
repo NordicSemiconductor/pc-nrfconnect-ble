@@ -1,6 +1,7 @@
 
 import hotkey from 'react-hotkey';
 import _ from 'underscore';
+import {Service} from '../gattDatabases';
 hotkey.activate('keydown');
 
 /*
@@ -14,10 +15,10 @@ Assumes:
 
 */
 var TreeViewKeyNavigation = {
-    mixin: function(servicesProperty, addButtons) {
+    mixin: function(gattDatabasesProperty, addButtons) {
         return _.extend({}, hotkey.Mixin('handleHotkey'), {
             handleHotkey: function(e) {
-                if (!this[servicesProperty]) {
+                if (!this[gattDatabasesProperty]) {
                     return;
                 }
                 if (e.getModifierState('Alt')) {
@@ -46,7 +47,9 @@ var TreeViewKeyNavigation = {
                                 this.setState({ selected: this.state.selected });
                             }
                             else {
-                                this.setState({ selected: this.state.selected.parent || this.state.selected });
+                                if (!(this.state.selected instanceof Service)) {
+                                    this.setState({ selected: this.state.selected.parent});
+                                }
                             }
                             e.preventDefault();
                             break;
@@ -56,45 +59,73 @@ var TreeViewKeyNavigation = {
                 }
             },
             *_traverseItems() {
-                var services = this[servicesProperty];
-                for (var i = 0; i < services.length; i++) {
-                    yield services[i];
-                    for (var j = 0; j < services[i].characteristics.length; j++) {
-                        yield services[i].characteristics[j];
-                        for (var k = 0; k < services[i].characteristics[j].descriptors.length; k++) {
-                            yield services[i].characteristics[j].descriptors[k];
+                const gattDatabases = this[gattDatabasesProperty].gattDatabases;
+
+                for (let i = 0; i < gattDatabases.length; i++) {
+                    //TODO: Yield gattDatabases[i] for selection of each seperate server.
+                    const services = gattDatabases[i].services;
+
+                    for (let j = 0; j < services.length; j++) {
+                        yield services[j];
+                        const characteristics = services[j].characteristics;
+
+                        for (let k = 0; k < characteristics.length; k++) {
+                            yield characteristics[k];
+                            const descriptors = characteristics[k].descriptors;
+
+                            for (let l = 0; l < descriptors.length; l++) {
+                                yield descriptors[l];
+                            }
+
+                            if (addButtons) {
+                                yield { parent: characteristics[k], _addBtnId: "add-btn-" + characteristics[k].handle }
+                            }
                         }
+
                         if (addButtons) {
-                            yield { parent: services[i].characteristics[j], _addBtnId: "add-btn-" + services[i].characteristics[j].handle }
+                            yield { parent: services[j], _addBtnId: "add-btn-" + services[j].handle }
                         }
                     }
+
                     if (addButtons) {
-                        yield { parent: services[i], _addBtnId: "add-btn-" + services[i].handle }
+                        yield { _addBtnId: "add-btn-root" }
                     }
-                }
-                if (addButtons) {
-                    yield { _addBtnId: "add-btn-root" }
                 }
             },
             *_traverseItemsBackwards() {
-                var services = this[servicesProperty];
-                if (addButtons) {
-                    yield { _addBtnId: "add-btn-root" }
-                }
-                for (var i = services.length - 1; i >= 0; i--) {
+                const gattDatabases = this[gattDatabasesProperty].gattDatabases;
+
+                for (let i = gattDatabases.length - 1; i >= 0; i--) {
+                    //TODO: Yield gattDatabases[i] for selection of each seperate server.
+                    const services = gattDatabases[i].services;
+
                     if (addButtons) {
-                        yield { parent: services[i], _addBtnId: "add-btn-" + services[i].handle }
+                        yield { _addBtnId: "add-btn-root" }
                     }
-                    for (var j = services[i].characteristics.length - 1; j >= 0; j--) {
+
+                    for (let j = services.length - 1; j >= 0; j--) {
+                        const characteristics = services[j].characteristics;
+
                         if (addButtons) {
-                            yield { parent: services[i].characteristics[j], _addBtnId: "add-btn-" + services[i].characteristics[j].handle }
+                            yield { parent: services[j], _addBtnId: "add-btn-" + services[j].handle }
                         }
-                        for (var k = services[i].characteristics[j].descriptors.length - 1; k >= 0; k--) {
-                            yield services[i].characteristics[j].descriptors[k];
+
+                        for (let k = characteristics.length - 1; k >= 0; k--) {
+                            const descriptors = characteristics[k].descriptors;
+
+                            if (addButtons) {
+                                yield { parent: characteristics[k], _addBtnId: "add-btn-" + characteristics[k].handle }
+                            }
+
+                            for (let l = descriptors.length - 1; l >= 0; l--) {
+                                yield descriptors[l];
+                            }
+
+                            yield characteristics[k];
                         }
-                        yield services[i].characteristics[j];
+
+                        yield services[j];
                     }
-                    yield services[i];
                 }
             },
             _getNextChild() {
@@ -118,7 +149,11 @@ var TreeViewKeyNavigation = {
                     var isCurrent = this.state.selected && this.state.selected._addBtnId ? item._addBtnId === this.state.selected._addBtnId : item === this.state.selected;
                     if (isCurrent) foundCurrent = true;
                 }
-                return this[servicesProperty][0];
+
+                //walked through the list, return first visible
+                for (let item of this._traverseItems()) {
+                    if (this._isVisible(item)) return item;
+                }
             },
             _getPreviousVisible() {
                 var foundCurrent = this.state.selected === null;
@@ -133,7 +168,9 @@ var TreeViewKeyNavigation = {
                 }
             },
             _isVisible(item) {
+                if (item instanceof Service) return true;
                 if (item.parent && !item.parent.expanded) return false;
+                if (item.parent instanceof Service) return true;
                 if (item.parent && item.parent.parent && !item.parent.parent.expanded) return false;
                 return true;
             }

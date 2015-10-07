@@ -13,11 +13,13 @@ var AddNewItem = React.createClass({
         let selectedId = this.props.selected && this.props.selected._addBtnId;
         let backgroundColor = this.props.id === selectedId ? 'rgb(179,225,245)' : 'rgb(255,255,255)';
         return (
-            <div className="add-new content-wrap" style={{backgroundColor: backgroundColor}} onClick={this.props.onClick}>
+            <div className="add-new" style={{backgroundColor: backgroundColor}} onClick={this.props.onClick}>
                 {bars}
-                <div className="icon-wrap"><i className="icon-slim icon-plus-circled"></i></div>
-                <div className="content">
-                    <span>{this.props.text}</span>
+                <div className="content-wrap">
+                    <div className="content padded-row">
+                        <span className="icon-wrap"><i className="icon-slim icon-plus-circled"></i></span>
+                        <span>{this.props.text}</span>
+                    </div>
                 </div>
             </div>
         );

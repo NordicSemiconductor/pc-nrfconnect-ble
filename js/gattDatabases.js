@@ -32,7 +32,7 @@ class GattDatabase {
     }
 
     getPrettyGattDatabase() {
-        const prettyDatabase = Object.assign({}, this);
+        const prettyDatabase = Object.assign(new GattDatabase(), this);
         const services = prettyDatabase.services;
 
         for (let serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
@@ -123,6 +123,7 @@ class Attribute {
 class Service extends Attribute {
     constructor(parent, handle, serviceUuid) {
         super(parent, handle);
+        this.parent.addService(this);
         this.uuid = SERVICE_UUID;
 
         if (serviceUuid) {
@@ -158,6 +159,7 @@ class Service extends Attribute {
 class Characteristic extends Attribute {
     constructor(parent, handle, characteristicUuid, valueHandle, properties) {
         super(parent, handle);
+        this.parent.addCharacteristic(this);
         this.uuid = CHARACTERISTIC_UUID;
 
         if (characteristicUuid) {
@@ -198,6 +200,7 @@ class Characteristic extends Attribute {
 class Descriptor extends Attribute {
     constructor(parent, handle, uuid, value) {
         super(parent, handle);
+        this.parent.addDescriptor(this);
         this.uuid = uuid;
         this.name = uuidDefinitions[uuid] || uuid;
         this.value = value || [];
@@ -480,11 +483,11 @@ class GattDatabases {
     }
 
     getPrettyGattDatabases() {
-        const prettyDatabases = Object.assign({}, this);
+        const prettyDatabases = Object.assign(new GattDatabases(), this);
         const gattDatabases = prettyDatabases.gattDatabases;
 
         for (let gattDatabaseIndex = 0; gattDatabaseIndex < gattDatabases.length; gattDatabaseIndex++) {
-            gattDatabases[gattDatabaseIndex] = gattDatabases.getPrettyGattDatabase();
+            gattDatabases[gattDatabaseIndex] = gattDatabases[gattDatabaseIndex].getPrettyGattDatabase();
         }
 
         return prettyDatabases;

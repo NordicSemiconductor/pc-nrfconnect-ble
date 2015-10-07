@@ -32,7 +32,7 @@ var connectionStore = reflux.createStore({
     init: function() {
         this.state = {
             connections: [],
-            deviceAddressToServicesMap: {},
+            gattDatabases: {},
             isConnecting: false,
             isEnumeratingServices: false,
             eventsToShowUser: []
@@ -104,7 +104,7 @@ var connectionStore = reflux.createStore({
         discoveryActions.connectStateChange(self.state.isConnecting);
         self.trigger(self.state);
     },
-    onDeviceConnected: function(eventPayload){
+    onDeviceConnected: function(eventPayload, gattDatabases) {
         logger.info(`${changeCase.ucFirst(textual.peerAddressToTextual(eventPayload))} (handle #${eventPayload.conn_handle}) connected.`);
         driverActions.getCharacteristics(eventPayload.conn_handle);
         this.state.isEnumeratingServices = true;
@@ -120,6 +120,10 @@ var connectionStore = reflux.createStore({
         // Delete the device from the discovered devices store. This is a temporary solution until
         // refactoring is done.
         discoveryActions.removeDevice(eventPayload.peer_addr.address);
+
+        // Parameter and this is temporary until a better fix
+        console.log(gattDatabases);
+        this.state.gattDatabases = gattDatabases;
 
         this.trigger(this.state);
     },
@@ -188,9 +192,15 @@ var connectionStore = reflux.createStore({
             return (device.conn_handle === eventPayload.conn_handle); // Prune all with invalid connectionHandle
         });
 
+<<<<<<< 14a3edd4edc750bc594959b02b8b85cbafc1c3c9
         // TODO: Discard potential events for the disconnected device
         //delete this.state.updateRequests[eventPayload.conn_handle];
         
+=======
+        // Discard potential update requests for the disconnected device
+        delete this.state.updateRequests[eventPayload.conn_handle];
+
+>>>>>>> Fixed keynavigation after changing state variable from service array to gattdatabases in server setup.
         // Delete the device from the discovered devices store. This is a temporary solution until
         // refactoring is done.
         discoveryActions.removeDevice(connectionThatWasDisconnected.peer_addr.address);
@@ -214,27 +224,20 @@ var connectionStore = reflux.createStore({
             logger.silly(`call to disconnect from ${deviceAddress} ok.`);
         });
     },
-    onServicesDiscovered: function(gattDatabase) {
+    onServicesDiscovered: function(gattDatabases) {
         this.state.isEnumeratingServices = false;
-        var connectionHandle = gattDatabase.connectionHandle;
-        var connection = this.state.connections.find(function(conn) {
-            return (conn.conn_handle === connectionHandle);
-        });
 
-        let deviceId = connection.peer_addr.address + '-' + connectionHandle;
-
-        this.state.deviceAddressToServicesMap[deviceId] = gattDatabase.services;
-        this.trigger({deviceAddressToServicesMap: this.state.deviceAddressToServicesMap});
+        this.state.gattDatabases = gattDatabases;
+        this.trigger(this.state);
         window.hackorama = () => this.hackorama();
     },
 
     hackorama: function() {
-        var address = Object.keys(this.state.deviceAddressToServicesMap)[0];
-        var services = this.state.deviceAddressToServicesMap[address];
+        var services = this.state.gattDatabases.gattDatabases[0].services;
         services[3].characteristics[0].value = "" + Math.floor(Math.random()*99);
         //services[3].characteristics[0].descriptors[0].value = "" + Math.floor(Math.random()*99);
-        console.log("new values are: " + services[3].characteristics[0].value + " and " + services[3].characteristics[0].descriptors[0].value);
-        this.trigger({deviceAddressToServicesMap: this.state.deviceAddressToServicesMap});
+        console.log("new value is: " + services[3].characteristics[0].value);
+        this.trigger({gattDatabases: this.state.gattDatabases});
     }
 });
 module.exports = connectionStore;

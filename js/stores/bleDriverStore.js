@@ -28,7 +28,7 @@ import logActions from '../actions/logActions';
 
 import dummyAttributeData from '../utils/dummyAttributeData';
 
-import GattDatabases from '../gattDatabases';
+import {GattDatabases} from '../gattDatabases';
 
 // No support for ecmascript6 classes in reflux
 // https://github.com/reflux/refluxjs/issues/225
@@ -43,7 +43,7 @@ var bleDriverStore = reflux.createStore({
             centralAddress: {}
         };
         this.eventCount = 0;
-        this.gattDatabases = new GattDatabases.GattDatabases();
+        this.gattDatabases = new GattDatabases();
     },
     getInitialState: function() {
         return this.state;
@@ -173,7 +173,7 @@ var bleDriverStore = reflux.createStore({
                     }
                     break;
                 case bleDriver.BLE_GAP_EVT_CONNECTED:
-                    connectionActions.deviceConnected(event);
+                    connectionActions.deviceConnected(event, this.gattDatabases.getPrettyGattDatabases());
                     logger.info(`Connected to ${textual.peerAddressToTextual(event)}.`);
                     break;
                 case bleDriver.BLE_GAP_EVT_DISCONNECTED:
@@ -206,8 +206,7 @@ var bleDriverStore = reflux.createStore({
                     var attributeHandleList = this.gattDatabases.getHandleList(event.conn_handle);
 
                     if (event.handle >= attributeHandleList[attributeHandleList.length - 1]) {
-                        var gd = this.gattDatabases.getGattDatabase(event.conn_handle);
-                        connectionActions.servicesDiscovered(gd.getPrettyGattDatabase());
+                        connectionActions.servicesDiscovered(this.gattDatabases.getPrettyGattDatabases());
                     } else {
                         var nextHandle = attributeHandleList[attributeHandleList.indexOf(event.handle) + 1];
                         bleDriver.gattc_read(event.conn_handle, nextHandle, 0, function(err) {
@@ -220,11 +219,10 @@ var bleDriverStore = reflux.createStore({
                     break;
                 case bleDriver.BLE_GATTC_EVT_HVX:
                     var gd = this.gattDatabases.getGattDatabase(event.conn_handle);
-
                     var attribute = this.gattDatabases.findAttribute(gd, event.handle);
                     attribute.value = event.data.toJSON().data;
 
-                    connectionActions.servicesDiscovered(gd.getPrettyGattDatabase());
+                    connectionActions.servicesDiscovered(this.gattDatabases.getPrettyGattDatabases());
                     break;
                 case bleDriver.BLE_GATTC_EVT_WRITE_RSP:
                     logger.info(`Write response event: ${event}`);

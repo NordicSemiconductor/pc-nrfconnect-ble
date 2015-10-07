@@ -21,7 +21,7 @@ import DescriptorEditor from './DescriptorEditor.jsx';
 import KeyNavigation from '../common/TreeViewKeyNavigationMixin.jsx';
 import hotkey from 'react-hotkey';
 
-import {GattDatabase, Service, Characteristic, Descriptor, Properties} from '../gattDatabases';
+import {GattDatabases, GattDatabase, Service, Characteristic, Descriptor, Properties} from '../gattDatabases';
 
 const readProperties = new Properties(0x02);
 const notifyProperties = new Properties(0x10);
@@ -31,16 +31,14 @@ const readWriteProperties = new Properties(0x0A);
 const readNotifyProperties = new Properties(0x12);
 
 let attributeHandle = 1;
-let gattDatabase = new GattDatabase('local');
+let gattDatabases = new GattDatabases();
+let gattDatabase = gattDatabases.getGattDatabase('local');
 
 let genericAccessService = new Service(gattDatabase, attributeHandle++, '0x1800');
 let genericAttributeService = new Service(gattDatabase, attributeHandle++, '0x1801');
 
-gattDatabase.addService(genericAccessService);
-gattDatabase.addService(genericAttributeService);
-
 let ServerSetup = React.createClass({
-    mixins: [KeyNavigation.mixin('services', true)],
+    mixins: [KeyNavigation.mixin('gattDatabases', true)],
     getInitialState() {
         return { 
             selected: null, 
@@ -52,11 +50,10 @@ let ServerSetup = React.createClass({
         this.setState({ selected: selected });
     },
     componentWillMount() {
-        this.gattDatabase = gattDatabase;
+        this.gattDatabases = gattDatabases;
     },
     _addService() {
         const service = new Service(gattDatabase, attributeHandle++);
-        this.state.gattDatabase.addService(service);
 
         this.setState({gattDatabase: this.state.gattDatabase});
         this._onSelected(service);
@@ -70,14 +67,12 @@ let ServerSetup = React.createClass({
         properties.write = true;
 
         const characteristic = new Characteristic(parent, handle, undefined, valueHandle, properties);
-        parent.addCharacteristic(characteristic);
 
         this.setState({gattDatabase: this.state.gattDatabase});
         this._onSelected(characteristic);
     },
     _addDescriptor(parent) {
         const descriptor = new Descriptor(parent, attributeHandle++);
-        parent.addDescriptor(descriptor);
 
         this.setState({gattDatabase: this.state.gattDatabase});
         this._onSelected(descriptor);

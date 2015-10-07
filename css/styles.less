@@ -636,6 +636,15 @@
     .expand-area {
       cursor: pointer;
       display: flex;
+      .icon-wrap {
+        border-bottom: 1px solid @device-details-light-border-color;
+        .icon-right-dir {
+          margin-left: 2px;
+        }
+        .icon-down-dir {
+          margin-left: 0px;
+        }
+      }
     }
   }
   @icon-color: rgb(0, 129, 183);
@@ -643,7 +652,6 @@
     width: 8px;
     flex: 1;
     line-height: 40px;
-    border-bottom: 1px solid @device-details-light-border-color;
     color: @icon-color;
   }
   .content-wrap {
@@ -691,15 +699,15 @@
   }
 
   .add-new {
+    display: flex;
     font-size: 11px;
     color: @icon-color;
     &:hover, &:hover .icon-wrap {
       color: @bar2-color;
-}
+    }
     .icon-wrap {
-      margin: 0 1px;
-      height: 30px;
-      line-height: 30px;
+      margin-right: 5px;
+      line-height: 10px;
     }
   }
 }
