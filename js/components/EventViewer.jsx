@@ -204,6 +204,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
     },
     _updateConnection: function(connectionHandle) {
         connectionActions.connectionParametersUpdate(connectionHandle, this.state.connectionParameters, this.props.connectionUpdateRequest.id);
+        this.props.onUpdate();
     },
     render: function() {
         var connectionHandle = this.props.connectionUpdateRequest.payload.conn_handle;
@@ -292,7 +293,7 @@ const EventViewer = React.createClass({
             case eventTypes.userInitiatedConnectionUpdate:
             // fall-through here!:
             case eventTypes.peripheralInitiadedConnectionUpdate:
-                return <ConnectionUpdateRequestEditor connectionUpdateRequest={this.state.eventsToShowUser[this.state.selectedIndex]}/>;
+                return <ConnectionUpdateRequestEditor connectionUpdateRequest={this.state.eventsToShowUser[this.state.selectedIndex]} onUpdate={this._handleEditorUpdate}/>;
             default:
                 throw "Unknown eventType in EventViewer: " + eventType;
         }
@@ -304,6 +305,11 @@ const EventViewer = React.createClass({
             }
         }
         return true;
+    },
+    _handleEditorUpdate: function() {
+        this.setState({
+            selectedIndex: null
+        });
     },
     render: function() {
         
