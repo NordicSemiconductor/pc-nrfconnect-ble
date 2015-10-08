@@ -135,8 +135,9 @@ var connectionStore = reflux.createStore({
             deviceAddress: connectionToUpdate.peer_addr.address,
             payload: event
         };
+        logger.info('Connection parameters update request from ' + event.conn_handle.deviceAddress + 
+            ': ' + JSON.stringify(event.conn_params));
         this.state.eventsToShowUser.push(connectionUpdateEvent);
-
         this.trigger({eventsToShowUser: this.state.eventsToShowUser});
         // Do autoreply here if set up to do so.
     },
@@ -171,6 +172,7 @@ var connectionStore = reflux.createStore({
         var connection = this._findConnectionFromConnectionHandle(event.conn_handle);
         connection.conn_params = event.conn_params;
         var theConnection = this._findConnectionFromConnectionHandle(event.conn_handle);
+        logger.info('Connection parameters were updated to: ' + JSON.stringify(event.conn_params));
         this.trigger({
             connectionBeingUpdated: undefined
         });
@@ -229,6 +231,12 @@ var connectionStore = reflux.createStore({
         window.hackorama = () => this.hackorama();
     },
 
+    onClearAllUserEvents: function() {
+        this.state.eventsToShowUser.length = 0;
+        this.trigger({
+            eventsToShowUser: this.state.eventsToShowUser
+        });
+    },
     hackorama: function() {
         var services = this.state.gattDatabases.gattDatabases[0].services;
         services[3].characteristics[0].value = "" + Math.floor(Math.random()*99);

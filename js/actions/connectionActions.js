@@ -16,7 +16,7 @@ var Reflux = require('reflux');
 
 exports.eventTypes = Object.freeze({
     userInitiatedConnectionUpdate: 'userInitiatedConnectionUpdate',
-    peripheralInitiadedConnectionUpdate: 'peripheralInitiadedConnectionUpdate'
+    peripheralInitiatedConnectionUpdate: 'peripheralInitiadedConnectionUpdate'
 });
 
 exports.connectionActions = Reflux.createActions(
@@ -30,5 +30,6 @@ exports.connectionActions = Reflux.createActions(
     "servicesDiscovered",
     "connectionParametersUpdateRequest",
     "connectionParametersUpdated",
-    "connectionParametersUpdate"
+    "connectionParametersUpdate",
+    "clearAllUserEvents"
   ]);

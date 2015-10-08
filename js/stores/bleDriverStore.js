@@ -22,7 +22,7 @@ import path from 'path';
 
 import bleDriverActions from '../actions/bleDriverActions';
 import discoveryActions from '../actions/discoveryActions';
-import {connectionActions} from '../actions/connectionActions';
+import {connectionActions, eventTypes} from '../actions/connectionActions';
 import deviceActions from '../actions/deviceActions';
 import logActions from '../actions/logActions';
 
@@ -229,7 +229,7 @@ var bleDriverStore = reflux.createStore({
                     break;
                 case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE_REQUEST:
                 {
-                    connectionActions.connectionParametersUpdateRequest(event);
+                    connectionActions.connectionParametersUpdateRequest(event, eventTypes.peripheralInitiadedConnectionUpdate);
                     break;
                 }
                 case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE:

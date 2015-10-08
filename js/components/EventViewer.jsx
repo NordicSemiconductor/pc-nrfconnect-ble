@@ -19,11 +19,13 @@ import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
 
 const BleEvent = React.createClass({
     mixins: [BlueWhiteBlinkMixin],
-    _getEventNameFromEvent: function(event) {
-        switch (event.eventType) {
+    _getEventName: function() {
+        switch (this.props.event.eventType) {
             case eventTypes.userInitiatedConnectionUpdate:
-                return 'User initiated connection update';
+                return 'Connection update request (user)';
                 break;
+            case eventTypes.peripheralInitiadedConnectionUpdate:
+                return 'Connection update request (peripheral)';
             default: 
                 return 'unknown event';
         }
@@ -31,23 +33,45 @@ const BleEvent = React.createClass({
     _onClick: function(e) {
         e.stopPropagation();
         if (this.props.onSelected) {
-            this.props.onSelected(this.props.event);
+            this.props.onSelected(this.props.index);
+        }
+    },
+    _getClass: function() {
+        if (!this.props.event.state) {
+            return '';
+        }
+        switch (this.props.event.state) {
+            case 'error':
+                return 'failed-item';
+            case 'indeterminate':
+                return '';
+            case 'success':
+                return 'success-item';
+            default:
+                throw 'error: unknown ble event state';
+        }
+    },
+    _getStyle: function() {
+        if (!this.props.event.state) {
+            return {
+                backgroundColor: this.props.selected
+                    ? 'rgb(179,225,245)'
+                    : `rgb(${this.state.backgroundColor.r}, ${this.state.backgroundColor.g}, ${this.state.backgroundColor.b})`
+            };    
+        } else {
+            return {};
         }
     },
     render: function() {
-        const eventName = this._getEventNameFromEvent(this.props.event);
-        let backgroundColor = this.props.selected
-            ? 'rgb(179,225,245)'
-            : `rgb(${this.state.backgroundColor.r}, ${this.state.backgroundColor.g}, ${this.state.backgroundColor.b})`;
         return (
-            <div className="service-item" style={{backgroundColor: backgroundColor}} onClick={this._onClick}>
+            <div className={'service-item ' + this._getClass()} style={this._getStyle()} onClick={this._onClick}>
                 <div className="expand-area" onClick={this._onExpandAreaClick}>
                     <div className="bar1" />
                     <div className="icon-wrap"></div>
                 </div>
                 <div className="content-wrap">
                     <div className="content">
-                        <div className="service-name truncate-text" title={'ddddd'}>{eventName}</div>
+                        <div className="service-name truncate-text" title={'ddddd'}>{this._getEventName()}</div>
                     </div>
                 </div>
             </div>
@@ -61,6 +85,13 @@ const ConnectionUpdateRequestEditor = React.createClass({
         return {
             connectionParameters: initialConnectionParameters,
         };
+    },
+    componentWillReceiveProps: function(newProps) {
+        if (newProps.connectionUpdateRequest) {
+            this.setState({
+                connectionParameters: newProps.connectionUpdateRequest.payload.conn_params
+            });
+        }
     },
     _generateHeaderMessage: function() {
         if (this.props.connectionUpdateRequest.eventType === eventTypes.userInitiatedConnectionUpdate) {
@@ -151,30 +182,52 @@ const EventViewer = React.createClass({
     mixins: [Reflux.listenTo(connectionStore, "onConnectionStoreChanged")],
 
     getInitialState: function(){
-        return Object.assign({}, connectionStore.getInitialState(), {visible: false, selected: null});
+        return Object.assign({}, connectionStore.getInitialState(), {visible: false, selectedIndex: null});
     },
 
     onConnectionStoreChanged: function (newState) {
         if (!this.state.visible) {
             if (newState.eventsToShowUser && (newState.eventsToShowUser.length > 0) ) {
-                this.setState(Object.assign({}, newState, {visible: true}));
+                this.setState(
+                    Object.assign({}, 
+                        newState, 
+                        {
+                            visible: true, 
+                            selectedIndex: this.state.eventsToShowUser.length -1
+                        }
+                    )
+                );
+
             } else {
                 this.setState(newState);
             }
+        } else {
+            this.setState(newState);
         }
     },
     _close: function() {
+        connectionActions.clearAllUserEvents();
         this.setState({visible: false});
     },
     _onSelected: function(selected) {
-        this.setState({selected: selected});
+        this.setState({selectedIndex: selected});
+    },
+    _getEditor: function() {
+        if ( (this.state.selectedIndex === null) || (this.state.eventsToShowUser.length=== 0)) {
+            return <div className="nothing-selected"/>;
+        }
+        const eventType = this.state.eventsToShowUser[this.state.selectedIndex].eventType;
+        switch (eventType) {
+            case eventTypes.userInitiatedConnectionUpdate:
+            // fall-through here!:
+            case eventTypes.peripheralInitiadedConnectionUpdate:
+                return <ConnectionUpdateRequestEditor connectionUpdateRequest={this.state.eventsToShowUser[this.state.selectedIndex]}/>;
+            default:
+                throw "Unknown eventType in EventViewer: " + eventType;
+        }
     },
     render: function() {
-        const selected = this.state.selected;
-        const editor = 
-            ! selected ? <div className="nothing-selected"/>
-            : selected.eventType === eventTypes.userInitiatedConnectionUpdate ? <ConnectionUpdateRequestEditor connectionUpdateRequest={selected}/>
-            : <ConnectionUpdateRequestEditor connectionUpdateRequest={selected}/>
+        
         return (
             <Modal className="events-modal" show={this.state.visible}>
                 <Modal.Header>
@@ -184,11 +237,11 @@ const EventViewer = React.createClass({
                     <div className="device-details-view">
                         <div className="service-items-wrap">
                             {this.state.eventsToShowUser.map((event, i) =>
-                                <BleEvent onSelected={this._onSelected} selected={this.state.selected===event} event={this.state.eventsToShowUser[i]}/> 
+                                <BleEvent onSelected={this._onSelected} selected={this.state.selectedIndex===i} event={this.state.eventsToShowUser[i]} index={i}/> 
                             )}
                         </div>
                         <div className="item-editor">
-                            {editor}
+                            {this._getEditor()}
                         </div>
                     </div>
                 </div>
