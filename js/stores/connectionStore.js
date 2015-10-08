@@ -234,6 +234,12 @@ var connectionStore = reflux.createStore({
             eventsToShowUser: this.state.eventsToShowUser
         });
     },
+    onEventTimedOut: function(event){
+        event.state = 'timedOut';
+        this.trigger({
+            eventsToShowUser: this.state.eventsToShowUser
+        });
+    },
     hackorama: function() {
         var services = this.state.gattDatabases.gattDatabases[0].services;
         services[3].characteristics[0].value = "" + Math.floor(Math.random()*99);

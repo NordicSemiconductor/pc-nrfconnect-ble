@@ -828,7 +828,16 @@ hr {
     margin-top: 0px;
     max-width: none;
     .service-items-wrap {
-      width: 300px;
+      width: 230px;
+      .content {
+        display: flex;
+        align-items: center;
+        margin-left: 0px;
+        [class^="icon-"]:before {
+          margin-right: 0px;
+          margin-left: 0px;
+        }
+      }
     }
     .item-editor {
       border-left: 1px solid #cfcfcf;
@@ -869,4 +878,11 @@ hr {
   color: @brand-danger;
   pointer-events: none;
 }
+.left-space {
+  margin-left: 5px;
+}
 
+.countdown-timer {
+  font-size: 1.6em;
+  margin-left: 30px;
+}

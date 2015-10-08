@@ -17,18 +17,78 @@ import connectionStore from '../stores/connectionStore.js';
 import {eventTypes, connectionActions} from '../actions/connectionActions.js';
 import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
 
+const CountdownTimer = React.createClass({
+    getInitialState: function() {
+        return {
+            secondsRemaining: 0
+        };
+    },
+    tick: function() {
+        this.setState({secondsRemaining: this.state.secondsRemaining - 1});
+        if (this.state.secondsRemaining <= 0) {
+            clearInterval(this.intervalId);
+            if (this.props.timeoutCallback) {
+                this.props.timeoutCallback();
+            }
+        }
+    },
+    componentDidMount: function() {
+        this.setState({secondsRemaining: this.props.secondsRemaining});
+        this.intervalId = setInterval(this.tick, 1000);
+    },
+    componentWillUnmount: function() {
+        clearInterval(this.interval);
+    },
+    render: function() {
+        const content = this.state.secondsRemaining ? this.state.secondsRemaining : '';
+        return (
+            <div className="countdown-timer"> {content} </div>
+        );
+    }
+});
+
 const BleEvent = React.createClass({
     mixins: [BlueWhiteBlinkMixin],
-    _getEventName: function() {
+    _getEventName: function () {
         switch (this.props.event.eventType) {
             case eventTypes.userInitiatedConnectionUpdate:
-                return 'Connection update request (user)';
+                return 'Update request';
                 break;
             case eventTypes.peripheralInitiadedConnectionUpdate:
-                return 'Connection update request (peripheral)';
+                return 'Update request';
             default: 
                 return 'unknown event';
         }
+    },
+    _getEventIcons: function() {
+        switch (this.props.event.eventType) {
+            case eventTypes.userInitiatedConnectionUpdate:
+                return (<span className="icon-link"><span className="icon-down"/></span>);
+            case eventTypes.peripheralInitiadedConnectionUpdate:
+                return (<span className="icon-link"><span className="icon-up"/></span>);
+            default: 
+                return 'unknown event';
+        }
+    },
+    _timedOut: function() {
+        connectionActions.eventTimedOut(this.props.event);
+    },
+    _getEventContent: function() {
+        const eventName = this._getEventName();
+        let eventTimer =(<div/>);
+        if (this.props.event.eventType === eventTypes.peripheralInitiadedConnectionUpdate) {
+            eventTimer = (<CountdownTimer secondsRemaining={5} timeoutCallback={this._timedOut}/>)
+        }
+        return (
+            <div className="content">
+                <span>{this._getEventIcons()}</span>
+                <span className="left-space">
+                    <div className="service-name truncate-text">{eventName}</div>
+                    <div className="address-text">{this.props.event.deviceAddress}</div>
+                </span>
+                {eventTimer}
+            </div>
+        );
     },
     _onClick: function(e) {
         e.stopPropagation();
@@ -40,8 +100,10 @@ const BleEvent = React.createClass({
         if (!this.props.event.state) {
             return '';
         }
+
         switch (this.props.event.state) {
             case 'error':
+            case 'timedOut':
                 return 'failed-item';
             case 'indeterminate':
                 return '';
@@ -70,9 +132,7 @@ const BleEvent = React.createClass({
                     <div className="icon-wrap"></div>
                 </div>
                 <div className="content-wrap">
-                    <div className="content">
-                        <div className="service-name truncate-text" title={'ddddd'}>{this._getEventName()}</div>
-                    </div>
+                    {this._getEventContent()}
                 </div>
             </div>
         );
@@ -237,6 +297,14 @@ const EventViewer = React.createClass({
                 throw "Unknown eventType in EventViewer: " + eventType;
         }
     },
+    _areAllEventsHandledOrTimedOut: function() {
+        for(let i = 0; i < this.state.eventsToShowUser.length; i++) {
+            if (!this.state.eventsToShowUser[i].state) {
+                return false;
+            }
+        }
+        return true;
+    },
     render: function() {
         
         return (
@@ -257,7 +325,7 @@ const EventViewer = React.createClass({
                     </div>
                 </div>
                 <Modal.Footer>
-                    <button className="btn btn-primary btn-nordic" onClick={this._close}>Close</button>
+                    <button disabled={!this._areAllEventsHandledOrTimedOut()} className="btn btn-primary btn-nordic" onClick={this._close}>Close</button>
                 </Modal.Footer>
             </Modal>
         );
