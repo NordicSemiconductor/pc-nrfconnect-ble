@@ -197,9 +197,6 @@ var connectionStore = reflux.createStore({
         // TODO: Discard potential events for the disconnected device
         //delete this.state.updateRequests[eventPayload.conn_handle];
 
-        // Discard potential update requests for the disconnected device
-        delete this.state.updateRequests[eventPayload.conn_handle];
-
         // Delete the device from the discovered devices store. This is a temporary solution until
         // refactoring is done.
         discoveryActions.removeDevice(connectionThatWasDisconnected.peer_addr.address);

@@ -104,7 +104,8 @@ const ConnectionUpdateRequestEditor = React.createClass({
         if (connectionUpdateRequest.min_conn_interval === connectionUpdateRequest.max_conn_interval) {
             return (
                 <div className="col-sm-6">
-                    <input id={"interval_" + connectionHandle} 
+                    <input id={"interval_" + connectionHandle}
+                           onChange={this._handleConnectionIntervalChange}
                            className="form-control nordic-form-control" 
                            type="number" 
                            readOnly 
@@ -115,6 +116,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
             return (
                 <div className="col-sm-6">
                     <input id={"interval_" + connectionHandle} 
+                           onChange={this._handleConnectionIntervalChange}
                            type="range" 
                            min={this.state.connectionParameters.min_conn_interval} 
                            max={this.state.connectionParameters.max_conn_interval} 
@@ -127,6 +129,15 @@ const ConnectionUpdateRequestEditor = React.createClass({
         const connectionParameters = Object.assign({}, this.state.connectionParameters);
 
         connectionParameters[inputIdentifier] = parseInt(event.target.value, 10);
+        this.setState({
+            connectionParameters: connectionParameters
+        });
+    },
+    _handleConnectionIntervalChange: function() {
+        const connectionParameters = Object.assign({}, this.state.connectionParameters);
+
+        connectionParameters.min_conn_interval = parseInt(event.target.value, 10);
+        connectionParameters.max_conn_interval = connectionParameters.min_conn_interval;
         this.setState({
             connectionParameters: connectionParameters
         });
@@ -162,7 +173,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
                             <label className="control-label col-sm-6" htmlFor={"timeout_" + connectionHandle}>Timeout (ms)</label>
                             <div className="col-sm-6">
                                 <input id={"timeout_" + connectionHandle} className="form-control nordic-form-control" 
-                                       onChange={this.handleChange} type="number" value={this.state.connectionParameters.conn_sup_timeout}/>
+                                       onChange={this._handleChange.bind(this, connectionHandle, 'conn_sup_timeout')} type="number" value={this.state.connectionParameters.conn_sup_timeout}/>
                             </div>
                         </div>
                         <div>
@@ -229,7 +240,7 @@ const EventViewer = React.createClass({
     render: function() {
         
         return (
-            <Modal className="events-modal" show={this.state.visible}>
+            <Modal className="events-modal" show={this.state.visible} backdrop="static" onHide={this._close} >
                 <Modal.Header>
                     <Modal.Title>Events</Modal.Title>
                 </Modal.Header>
@@ -237,7 +248,7 @@ const EventViewer = React.createClass({
                     <div className="device-details-view">
                         <div className="service-items-wrap">
                             {this.state.eventsToShowUser.map((event, i) =>
-                                <BleEvent onSelected={this._onSelected} selected={this.state.selectedIndex===i} event={this.state.eventsToShowUser[i]} index={i}/> 
+                                <BleEvent key={i} onSelected={this._onSelected} selected={this.state.selectedIndex===i} event={this.state.eventsToShowUser[i]} index={i}/> 
                             )}
                         </div>
                         <div className="item-editor">
