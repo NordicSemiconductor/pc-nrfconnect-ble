@@ -23,7 +23,7 @@ const CountdownTimer = React.createClass({
             secondsRemaining: 0
         };
     },
-    tick: function() {
+    _tick: function() {
         this.setState({secondsRemaining: this.state.secondsRemaining - 1});
         if (this.state.secondsRemaining <= 0) {
             clearInterval(this.intervalId);
@@ -32,9 +32,12 @@ const CountdownTimer = React.createClass({
             }
         }
     },
+    cancelTimer: function() {
+        clearInterval(this.intervalId);
+    },
     componentDidMount: function() {
         this.setState({secondsRemaining: this.props.secondsRemaining});
-        this.intervalId = setInterval(this.tick, 1000);
+        this.intervalId = setInterval(this._tick, 1000);
     },
     componentWillUnmount: function() {
         clearInterval(this.interval);
@@ -76,8 +79,8 @@ const BleEvent = React.createClass({
     _getEventContent: function() {
         const eventName = this._getEventName();
         let eventTimer =(<div/>);
-        if (this.props.event.eventType === eventTypes.peripheralInitiadedConnectionUpdate) {
-            eventTimer = (<CountdownTimer secondsRemaining={5} timeoutCallback={this._timedOut}/>)
+        if ((this.props.event.eventType === eventTypes.peripheralInitiadedConnectionUpdate)) {
+            eventTimer = (<CountdownTimer ref="counter" secondsRemaining={5} timeoutCallback={this._timedOut}/>)
         }
         return (
             <div className="content">
@@ -123,6 +126,10 @@ const BleEvent = React.createClass({
         } else {
             return {};
         }
+    },
+    stopCounter: function() {
+        // Used to let EventViewer tell Event to stop it's counter
+        this.refs.counter.cancelTimer();
     },
     render: function() {
         return (
@@ -285,7 +292,9 @@ const EventViewer = React.createClass({
         this.setState({selectedIndex: selected});
     },
     _getEditor: function() {
-        if ( (this.state.selectedIndex === null) || (this.state.eventsToShowUser.length=== 0)) {
+        if ( (this.state.selectedIndex === null) || 
+             (this.state.eventsToShowUser.length === 0) ||
+             (this.state.eventsToShowUser[this.state.selectedIndex].state==='timedOut')) {
             return <div className="nothing-selected"/>;
         }
         const eventType = this.state.eventsToShowUser[this.state.selectedIndex].eventType;
@@ -307,6 +316,7 @@ const EventViewer = React.createClass({
         return true;
     },
     _handleEditorUpdate: function() {
+        this.refs['event_' + this.state.selectedIndex].stopCounter();
         this.setState({
             selectedIndex: null
         });
@@ -322,7 +332,7 @@ const EventViewer = React.createClass({
                     <div className="device-details-view">
                         <div className="service-items-wrap">
                             {this.state.eventsToShowUser.map((event, i) =>
-                                <BleEvent key={i} onSelected={this._onSelected} selected={this.state.selectedIndex===i} event={this.state.eventsToShowUser[i]} index={i}/> 
+                                <BleEvent key={i} ref={'event_' + i} onSelected={this._onSelected} selected={this.state.selectedIndex===i} event={this.state.eventsToShowUser[i]} index={i}/> 
                             )}
                         </div>
                         <div className="item-editor">
