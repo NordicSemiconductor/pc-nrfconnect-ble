@@ -129,7 +129,9 @@ const BleEvent = React.createClass({
     },
     stopCounter: function() {
         // Used to let EventViewer tell Event to stop it's counter
-        this.refs.counter.cancelTimer();
+        if (this.refs.counter) {
+            this.refs.counter.cancelTimer();
+        }
     },
     render: function() {
         return (
@@ -151,6 +153,8 @@ const ConnectionUpdateRequestEditor = React.createClass({
         let initialConnectionParameters = Object.assign({}, this.props.connectionUpdateRequest.payload.conn_params);
         return {
             connectionParameters: initialConnectionParameters,
+            isSlaveLatencyValid: true,
+            isConnectionSupervisionTimeoutMultiplierValid: true,
         };
     },
     componentWillReceiveProps: function(newProps) {
@@ -192,12 +196,46 @@ const ConnectionUpdateRequestEditor = React.createClass({
             );
         }
     },
-    _handleChange: function(connectionHandle, inputIdentifier, event) {
+    _checkValidity: function(slaveLatency, connectionSupervisionTimeoutMultiplierValid) {
+        let isSlaveLatencyValid = true;
+        let isConnectionSupervisionTimeoutMultiplierValid = true;
+      
+        if ( (connectionSupervisionTimeoutMultiplierValid < 10) || (connectionSupervisionTimeoutMultiplierValid < 3200)) {
+            isConnectionSupervisionTimeoutMultiplierValid = false;
+        }
+        return {
+            isSlaveLatencyValid,
+            isConnectionSupervisionTimeoutMultiplierValid
+        };
+    },
+    _isSlaveLatencyValid: function(slaveLatency) {
+        return ( (slaveLatency >= 0) && (slaveLatency <= 1000) );
+    },
+    _isConnectionSupervisionTimeoutMultiplerValid: function(connectionSupervisionTimeoutMultiplier) {
+        return ( (connectionSupervisionTimeoutMultiplier >= 10) && (connectionSupervisionTimeoutMultiplier < 3200) );
+    },
+    _handleConnectionSupervisionTimeoutMultiplerChange: function(event) {
         const connectionParameters = Object.assign({}, this.state.connectionParameters);
 
-        connectionParameters[inputIdentifier] = parseInt(event.target.value, 10);
+        const connectionSupervisionTimeoutMultiplier = parseInt(event.target.value, 10);
+        connectionParameters.conn_sup_timeout = connectionSupervisionTimeoutMultiplier;
+
+        const isConnectionSupervisionTimeoutMultiplierValid = this._isConnectionSupervisionTimeoutMultiplerValid(connectionSupervisionTimeoutMultiplier);
         this.setState({
-            connectionParameters: connectionParameters
+            connectionParameters,
+            isConnectionSupervisionTimeoutMultiplierValid
+        });
+    },
+    _handleSlaveLatencyChange: function(event) {
+        const connectionParameters = Object.assign({}, this.state.connectionParameters);
+
+        const slaveLatency = parseInt(event.target.value, 10);
+        connectionParameters.slave_latency = slaveLatency;
+
+        const isSlaveLatencyValid = this._isSlaveLatencyValid(slaveLatency);
+        this.setState({
+            connectionParameters,
+            isSlaveLatencyValid
         });
     },
     _handleConnectionIntervalChange: function() {
@@ -213,9 +251,26 @@ const ConnectionUpdateRequestEditor = React.createClass({
         connectionActions.connectionParametersUpdate(connectionHandle, this.state.connectionParameters, this.props.connectionUpdateRequest.id);
         this.props.onUpdate();
     },
+    _getValidInputStyle: function() {
+        return {
+            boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6)',
+            borderColor: '#66afe9',
+        };
+    },
+    _getInvalidInputStyle: function() {
+        return {
+            boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 5px rgba(255, 0, 0, 1)',
+            borderColor: 'rgb(200, 10, 10)',
+        };
+    },
     render: function() {
-        var connectionHandle = this.props.connectionUpdateRequest.payload.conn_handle;
-        var conn_params = this.props.connectionUpdateRequest.payload.conn_params;
+        const connectionHandle = this.props.connectionUpdateRequest.payload.conn_handle;
+        const conn_params = this.props.connectionUpdateRequest.payload.conn_params;
+        const slaveLatencyStyle = this.state.isSlaveLatencyValid ? 
+            this._getValidInputStyle() : this._getInvalidInputStyle();
+        const connectionSupervisionTimeoutMultiplierInputStyle = this.state.isConnectionSupervisionTimeoutMultiplierValid ?
+            this._getValidInputStyle() : this._getInvalidInputStyle();
+
         return (
             <div>
                 <div className="event-header">
@@ -231,8 +286,11 @@ const ConnectionUpdateRequestEditor = React.createClass({
                     <div className="form-group">
                         <label className="control-label col-sm-6" htmlFor={"latency_" + connectionHandle}>Latency (ms)</label>
                         <div className="col-sm-6">
-                            <input id={"latency_" + connectionHandle} className="form-control nordic-form-control" 
-                                   onChange={this._handleChange.bind(this, connectionHandle, 'slave_latency')} type="number" 
+                            <input style={slaveLatencyStyle} 
+                                   id={"latency_" + connectionHandle} 
+                                   className="form-control nordic-form-control" 
+                                   onChange={this._handleSlaveLatencyChange} 
+                                   type="number" 
                                    value={this.state.connectionParameters.slave_latency}/>
                         </div>
                     </div>
@@ -240,12 +298,19 @@ const ConnectionUpdateRequestEditor = React.createClass({
                         <div>
                             <label className="control-label col-sm-6" htmlFor={"timeout_" + connectionHandle}>Timeout (ms)</label>
                             <div className="col-sm-6">
-                                <input id={"timeout_" + connectionHandle} className="form-control nordic-form-control" 
-                                       onChange={this._handleChange.bind(this, connectionHandle, 'conn_sup_timeout')} type="number" value={this.state.connectionParameters.conn_sup_timeout}/>
+                                <input style={connectionSupervisionTimeoutMultiplierInputStyle} 
+                                       id={"timeout_" + connectionHandle} 
+                                       className="form-control nordic-form-control" 
+                                       onChange={this._handleConnectionSupervisionTimeoutMultiplerChange} 
+                                       type="number" 
+                                       value={this.state.connectionParameters.conn_sup_timeout}/>
                             </div>
                         </div>
                         <div>
-                            <button type="button" onClick={this._updateConnection.bind(this, connectionHandle, this.props.connectionUpdateRequest)} className="btn btn-primary btn-xs btn-nordic">
+                            <button disabled={!this.state.isSlaveLatencyValid || !this.state.isConnectionSupervisionTimeoutMultiplierValid}
+                                    type="button" 
+                                    onClick={this._updateConnection.bind(this, connectionHandle, this.props.connectionUpdateRequest)} 
+                                    className="btn btn-primary btn-xs btn-nordic">
                                 Update
                             </button>
                         </div>
