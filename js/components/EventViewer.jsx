@@ -80,7 +80,7 @@ const BleEvent = React.createClass({
         const eventName = this._getEventName();
         let eventTimer =(<div/>);
         if ((this.props.event.eventType === eventTypes.peripheralInitiadedConnectionUpdate)) {
-            eventTimer = (<CountdownTimer ref="counter" secondsRemaining={5} timeoutCallback={this._timedOut}/>)
+            eventTimer = (<CountdownTimer ref="counter" secondsRemaining={20} timeoutCallback={this._timedOut}/>)
         }
         return (
             <div className="content">
@@ -149,10 +149,12 @@ const BleEvent = React.createClass({
 });
 
 const ConnectionUpdateRequestEditor = React.createClass({
-     getInitialState: function(){
-        let initialConnectionParameters = Object.assign({}, this.props.connectionUpdateRequest.payload.conn_params);
+    _getEvent: function() {
+        return this.props.events.find(event => this.props.eventId === event.id);
+    },
+    getInitialState: function(){
         return {
-            connectionParameters: initialConnectionParameters,
+            connectionParameters: this._getEvent().payload.conn_params,
             isSlaveLatencyValid: true,
             isConnectionSupervisionTimeoutMultiplierValid: true,
         };
@@ -165,10 +167,11 @@ const ConnectionUpdateRequestEditor = React.createClass({
         }
     },
     _generateHeaderMessage: function() {
-        if (this.props.connectionUpdateRequest.eventType === eventTypes.userInitiatedConnectionUpdate) {
-            return 'Connection Parameters for device at ' + this.props.connectionUpdateRequest.deviceAddress;
+        const theEvent = this._getEvent();
+        if (theEvent.eventType === eventTypes.userInitiatedConnectionUpdate) {
+            return 'Connection Parameters for device at ' + theEvent.deviceAddress;
         } else {
-            return 'The device at ' + this.props.connectionUpdateRequest.deviceAddress + ' has requested a connection parameter update.'
+            return 'The device at ' + theEvent.deviceAddress + ' has requested a connection parameter update.'
         }
     },
      _createConnectionIntervalControl: function(connectionUpdateRequest, connectionHandle) {
@@ -248,7 +251,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
         });
     },
     _updateConnection: function(connectionHandle) {
-        connectionActions.connectionParametersUpdate(connectionHandle, this.state.connectionParameters, this.props.connectionUpdateRequest.id);
+        connectionActions.connectionParametersUpdate(connectionHandle, this.state.connectionParameters, this.props.eventId);
         this.props.onUpdate();
     },
     _getValidInputStyle: function() {
@@ -264,8 +267,8 @@ const ConnectionUpdateRequestEditor = React.createClass({
         };
     },
     render: function() {
-        const connectionHandle = this.props.connectionUpdateRequest.payload.conn_handle;
-        const conn_params = this.props.connectionUpdateRequest.payload.conn_params;
+        const theEvent = this._getEvent();
+        const connectionHandle = theEvent.payload.conn_handle;
         const slaveLatencyStyle = this.state.isSlaveLatencyValid ? 
             this._getValidInputStyle() : this._getInvalidInputStyle();
         const connectionSupervisionTimeoutMultiplierInputStyle = this.state.isConnectionSupervisionTimeoutMultiplierValid ?
@@ -280,7 +283,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
                     <div className="form-group ">
                         <div>
                             <label className="control-label col-sm-6" htmlFor={"interval_"+connectionHandle}>Connection Interval (ms)</label>
-                            {this._createConnectionIntervalControl(this.props.connectionUpdateRequest, connectionHandle)}
+                            {this._createConnectionIntervalControl(this.state.connectionParameters, connectionHandle)}
                         </div>
                     </div>
                     <div className="form-group">
@@ -367,7 +370,7 @@ const EventViewer = React.createClass({
             case eventTypes.userInitiatedConnectionUpdate:
             // fall-through here!:
             case eventTypes.peripheralInitiadedConnectionUpdate:
-                return <ConnectionUpdateRequestEditor connectionUpdateRequest={this.state.eventsToShowUser[this.state.selectedIndex]} onUpdate={this._handleEditorUpdate}/>;
+                return <ConnectionUpdateRequestEditor eventId={this.state.eventsToShowUser[this.state.selectedIndex].id} events={this.state.eventsToShowUser} onUpdate={this._handleEditorUpdate}/>;
             default:
                 throw "Unknown eventType in EventViewer: " + eventType;
         }
