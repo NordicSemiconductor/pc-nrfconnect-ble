@@ -34,7 +34,7 @@
     "less": "2.5.1",
     "moment": "2.10.6",
     "open": "0.0.5",
-    "pc-ble-driver-js": "https://github.com/NordicSemiconductor/pc-ble-driver-js.git#nan-2-port",
+    "pc-ble-driver-js": "https://github.com/NordicSemiconductor/pc-ble-driver-js.git",
     "sqlite3": "kenr/node-sqlite3",
     "react": "0.13.3",
     "react-bootstrap": "0.25.0",
