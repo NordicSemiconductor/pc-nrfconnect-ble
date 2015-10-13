@@ -9,7 +9,7 @@ call npm install -g less
 set VCTargetsPath=C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120
 
 set npm_config_runtime=electron
-set npm_config_target=0.30.3
+set npm_config_target=0.33.7
 set npm_config_arch=ia32
 set npm_config_disturl=https://atom.io/download/atom-shell
 

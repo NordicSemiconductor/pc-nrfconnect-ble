@@ -5,7 +5,7 @@ sudo npm install -g flatten-packages
 sudo npm install -g less
 
 export npm_config_runtime=electron
-export npm_config_target=0.30.3
+export npm_config_target=0.33.7
 export npm_config_arch=x64
 export npm_config_disturl=https://atom.io/download/atom-shell
 
