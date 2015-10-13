@@ -80,7 +80,7 @@ const BleEvent = React.createClass({
         const eventName = this._getEventName();
         let eventTimer =(<div/>);
         if ((this.props.event.eventType === eventTypes.peripheralInitiadedConnectionUpdate)) {
-            eventTimer = (<CountdownTimer ref="counter" secondsRemaining={20} timeoutCallback={this._timedOut}/>)
+            eventTimer = (<CountdownTimer ref="counter" secondsRemaining={10} timeoutCallback={this._timedOut}/>)
         }
         return (
             <div className="content">
@@ -149,29 +149,27 @@ const BleEvent = React.createClass({
 });
 
 const ConnectionUpdateRequestEditor = React.createClass({
-    _getEvent: function() {
-        return this.props.events.find(event => this.props.eventId === event.id);
-    },
     getInitialState: function(){
+        console.log('get initial state for connection update request editor');
         return {
-            connectionParameters: this._getEvent().payload.conn_params,
+            connectionParameters: this.props.event.payload.conn_params,
             isSlaveLatencyValid: true,
             isConnectionSupervisionTimeoutMultiplierValid: true,
         };
     },
     componentWillReceiveProps: function(newProps) {
-        if (newProps.connectionUpdateRequest) {
+        if (newProps.event) {
             this.setState({
-                connectionParameters: newProps.connectionUpdateRequest.payload.conn_params
+                connectionParameters: newProps.event.payload.conn_params
             });
         }
     },
     _generateHeaderMessage: function() {
-        const theEvent = this._getEvent();
-        if (theEvent.eventType === eventTypes.userInitiatedConnectionUpdate) {
-            return 'Connection Parameters for device at ' + theEvent.deviceAddress;
+        
+        if (this.props.event.eventType === eventTypes.userInitiatedConnectionUpdate) {
+            return 'Connection Parameters for device at ' + this.props.event.deviceAddress;
         } else {
-            return 'The device at ' + theEvent.deviceAddress + ' has requested a connection parameter update.'
+            return 'The device at ' + this.props.event.deviceAddress + ' has requested a connection parameter update.'
         }
     },
      _createConnectionIntervalControl: function(connectionUpdateRequest, connectionHandle) {
@@ -251,7 +249,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
         });
     },
     _updateConnection: function(connectionHandle) {
-        connectionActions.connectionParametersUpdate(connectionHandle, this.state.connectionParameters, this.props.eventId);
+        connectionActions.connectionParametersUpdate(connectionHandle, this.state.connectionParameters, this.props.event.id);
         this.props.onUpdate();
     },
     _getValidInputStyle: function() {
@@ -267,7 +265,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
         };
     },
     render: function() {
-        const theEvent = this._getEvent();
+        const theEvent = this.props.event;
         const connectionHandle = theEvent.payload.conn_handle;
         const slaveLatencyStyle = this.state.isSlaveLatencyValid ? 
             this._getValidInputStyle() : this._getInvalidInputStyle();
@@ -359,22 +357,6 @@ const EventViewer = React.createClass({
     _onSelected: function(selected) {
         this.setState({selectedIndex: selected});
     },
-    _getEditor: function() {
-        if ( (this.state.selectedIndex === null) || 
-             (this.state.eventsToShowUser.length === 0) ||
-             (this.state.eventsToShowUser[this.state.selectedIndex].state==='timedOut')) {
-            return <div className="nothing-selected"/>;
-        }
-        const eventType = this.state.eventsToShowUser[this.state.selectedIndex].eventType;
-        switch (eventType) {
-            case eventTypes.userInitiatedConnectionUpdate:
-            // fall-through here!:
-            case eventTypes.peripheralInitiadedConnectionUpdate:
-                return <ConnectionUpdateRequestEditor eventId={this.state.eventsToShowUser[this.state.selectedIndex].id} events={this.state.eventsToShowUser} onUpdate={this._handleEditorUpdate}/>;
-            default:
-                throw "Unknown eventType in EventViewer: " + eventType;
-        }
-    },
     _areAllEventsHandledOrTimedOut: function() {
         for(let i = 0; i < this.state.eventsToShowUser.length; i++) {
             if (!this.state.eventsToShowUser[i].state) {
@@ -403,9 +385,19 @@ const EventViewer = React.createClass({
                                 <BleEvent key={i} ref={'event_' + i} onSelected={this._onSelected} selected={this.state.selectedIndex===i} event={this.state.eventsToShowUser[i]} index={i}/> 
                             )}
                         </div>
-                        <div className="item-editor">
-                            {this._getEditor()}
+                        {this.state.eventsToShowUser.map((event, i) =>
+                            <div className="item-editor" style={ ( (this.state.selectedIndex === i) && !(this.state.eventsToShowUser[this.state.selectedIndex].state === 'timedOut')) ? {} : {display: 'none'}}>
+                                <ConnectionUpdateRequestEditor 
+                                    key={i}
+                                    event={event} 
+                                    onUpdate={this._handleEditorUpdate}/>
+                            </div>
+                        )}
+                        <div className="item-editor"
+                             style={((this.state.selectedIndex === null) || (this.state.eventsToShowUser[this.state.selectedIndex].state === 'timedOut') ) ? {} : {display: 'none'}}>
+                            <div className="nothing-selected"/>
                         </div>
+
                     </div>
                 </div>
                 <Modal.Footer>
