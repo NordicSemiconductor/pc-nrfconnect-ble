@@ -16,7 +16,7 @@ var Reflux = require('reflux');
 
 exports.eventTypes = Object.freeze({
     userInitiatedConnectionUpdate: 'userInitiatedConnectionUpdate',
-    peripheralInitiatedConnectionUpdate: 'peripheralInitiadedConnectionUpdate'
+    peripheralInitiatedConnectionUpdate: 'peripheralInitiatedConnectionUpdate'
 });
 
 exports.connectionActions = Reflux.createActions(

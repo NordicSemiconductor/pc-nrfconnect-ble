@@ -174,7 +174,7 @@ var connectionStore = reflux.createStore({
             updateEvent.state = 'canceled';
         } else if (updateEvent.eventType === eventTypes.peripheralInitiatedConnectionUpdate) {
             updateEvent.state = 'rejected'; // TODO: working right here
-            bleDriver.gap_update_connection_parameters(connectionHandle, null);
+            bleDriver.gap_update_connection_parameters(connectionHandle, {}, function(){});
         } else {
             throw 'error: unknown update event type';
         }

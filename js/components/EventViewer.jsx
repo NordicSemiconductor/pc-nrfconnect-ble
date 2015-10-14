@@ -57,7 +57,7 @@ const BleEvent = React.createClass({
             case eventTypes.userInitiatedConnectionUpdate:
                 return 'Update request';
                 break;
-            case eventTypes.peripheralInitiadedConnectionUpdate:
+            case eventTypes.peripheralInitiatedConnectionUpdate:
                 return 'Update request';
             default: 
                 return 'unknown event';
@@ -67,7 +67,7 @@ const BleEvent = React.createClass({
         switch (this.props.event.eventType) {
             case eventTypes.userInitiatedConnectionUpdate:
                 return (<span className="icon-link"><span className="icon-down"/></span>);
-            case eventTypes.peripheralInitiadedConnectionUpdate:
+            case eventTypes.peripheralInitiatedConnectionUpdate:
                 return (<span className="icon-link"><span className="icon-up"/></span>);
             default: 
                 return 'unknown event';
@@ -322,7 +322,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
                             <button type="button" 
                                     onClick={this._cancel} 
                                     className="btn btn-default btn-xs btn-nordic">
-                                Cancel
+                                {(theEvent.eventType === eventTypes.userInitiatedConnectionUpdate) ? 'Cancel' : 'Reject'}
                             </button>
                         </div>
                     </div>

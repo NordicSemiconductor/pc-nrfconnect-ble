@@ -229,7 +229,7 @@ var bleDriverStore = reflux.createStore({
                     break;
                 case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE_REQUEST:
                 {
-                    connectionActions.connectionParametersUpdateRequest(event, eventTypes.peripheralInitiadedConnectionUpdate);
+                    connectionActions.connectionParametersUpdateRequest(event, eventTypes.peripheralInitiatedConnectionUpdate);
                     break;
                 }
                 case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE:
