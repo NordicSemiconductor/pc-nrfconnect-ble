@@ -21,7 +21,7 @@ import bleDriver from 'pc-ble-driver-js';
 import textual from '../ble_driver_textual';
 import logger from '../logging';
 
-import {connectionActions} from'../actions/connectionActions';
+import {connectionActions, eventTypes} from'../actions/connectionActions';
 import graphActions from '../actions/bleGraphActions';
 import discoveryActions from '../actions/discoveryActions';
 import driverActions from '../actions/bleDriverActions';
@@ -167,6 +167,20 @@ var connectionStore = reflux.createStore({
                 eventsToShowUser: this.state.eventsToShowUser
             }
         );
+    },
+    onRejectOrCancelParametersUpdate: function(connectionHandle, eventId) {
+        let updateEvent = this.state.eventsToShowUser.find(event => event.id === eventId);
+        if (updateEvent.eventType === eventTypes.userInitiatedConnectionUpdate) {
+            updateEvent.state = 'canceled';
+        } else if (updateEvent.eventType === eventTypes.peripheralInitiatedConnectionUpdate) {
+            updateEvent.state = 'rejected'; // TODO: working right here
+            bleDriver.gap_update_connection_parameters(connectionHandle, null);
+        } else {
+            throw 'error: unknown update event type';
+        }
+        this.trigger({
+            eventsToShowUser: this.state.eventsToShowUser
+        });
     },
     onConnectionParametersUpdated: function(event) {
         var connection = this._findConnectionFromConnectionHandle(event.conn_handle);

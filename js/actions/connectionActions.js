@@ -32,5 +32,6 @@ exports.connectionActions = Reflux.createActions(
     "connectionParametersUpdated",
     "connectionParametersUpdate",
     "clearAllUserEvents",
-    "eventTimedOut"
+    "eventTimedOut",
+    "rejectOrCancelParametersUpdate"
   ]);

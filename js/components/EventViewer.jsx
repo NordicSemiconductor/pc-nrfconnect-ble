@@ -107,6 +107,8 @@ const BleEvent = React.createClass({
         switch (this.props.event.state) {
             case 'error':
             case 'timedOut':
+            case 'rejected':
+            case 'canceled':
                 return 'failed-item';
             case 'indeterminate':
                 return '';
@@ -252,6 +254,9 @@ const ConnectionUpdateRequestEditor = React.createClass({
         connectionActions.connectionParametersUpdate(connectionHandle, this.state.connectionParameters, this.props.event.id);
         this.props.onUpdate();
     },
+    _cancel: function() {
+        connectionActions.rejectOrCancelParametersUpdate(this.props.event.payload.conn_handle, this.props.event.id);
+    },
     _getValidInputStyle: function() {
         return {
             boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6)',
@@ -314,6 +319,11 @@ const ConnectionUpdateRequestEditor = React.createClass({
                                     className="btn btn-primary btn-xs btn-nordic">
                                 Update
                             </button>
+                            <button type="button" 
+                                    onClick={this._cancel} 
+                                    className="btn btn-default btn-xs btn-nordic">
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -372,7 +382,6 @@ const EventViewer = React.createClass({
         });
     },
     render: function() {
-        
         return (
             <Modal className="events-modal" show={this.state.visible} backdrop="static" onHide={this._close} >
                 <Modal.Header>
@@ -386,7 +395,7 @@ const EventViewer = React.createClass({
                             )}
                         </div>
                         {this.state.eventsToShowUser.map((event, i) =>
-                            <div className="item-editor" style={ ( (this.state.selectedIndex === i) && !(this.state.eventsToShowUser[this.state.selectedIndex].state === 'timedOut')) ? {} : {display: 'none'}}>
+                            <div className="item-editor" style={ ( (this.state.selectedIndex === i) && !(this.state.eventsToShowUser[this.state.selectedIndex].state)) ? {} : {display: 'none'}}>
                                 <ConnectionUpdateRequestEditor 
                                     key={i}
                                     event={event} 
@@ -394,7 +403,9 @@ const EventViewer = React.createClass({
                             </div>
                         )}
                         <div className="item-editor"
-                             style={((this.state.selectedIndex === null) || (this.state.eventsToShowUser[this.state.selectedIndex].state === 'timedOut') ) ? {} : {display: 'none'}}>
+                             style={((this.state.selectedIndex === null) || 
+                                     (this.state.eventsToShowUser.length === 0) ||
+                                     (this.state.eventsToShowUser[this.state.selectedIndex].state) ) ? {} : {display: 'none'}}>
                             <div className="nothing-selected"/>
                         </div>
 
