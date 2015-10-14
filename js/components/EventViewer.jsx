@@ -79,8 +79,8 @@ const BleEvent = React.createClass({
     _getEventContent: function() {
         const eventName = this._getEventName();
         let eventTimer =(<div/>);
-        if ((this.props.event.eventType === eventTypes.peripheralInitiadedConnectionUpdate)) {
-            eventTimer = (<CountdownTimer ref="counter" secondsRemaining={10} timeoutCallback={this._timedOut}/>)
+        if ((this.props.event.eventType === eventTypes.peripheralInitiatedConnectionUpdate)) {
+            eventTimer = (<CountdownTimer ref="counter" secondsRemaining={30} timeoutCallback={this._timedOut}/>)
         }
         return (
             <div className="content">
@@ -157,12 +157,14 @@ const ConnectionUpdateRequestEditor = React.createClass({
             connectionParameters: this.props.event.payload.conn_params,
             isSlaveLatencyValid: true,
             isConnectionSupervisionTimeoutMultiplierValid: true,
+            currentConnectionInterval: this.props.event.payload.conn_params.min_conn_interval,
         };
     },
     componentWillReceiveProps: function(newProps) {
         if (newProps.event) {
             this.setState({
-                connectionParameters: newProps.event.payload.conn_params
+                connectionParameters: newProps.event.payload.conn_params,
+                currentConnectionInterval: this.props.event.payload.conn_params.min_conn_interval,
             });
         }
     },
@@ -177,24 +179,32 @@ const ConnectionUpdateRequestEditor = React.createClass({
      _createConnectionIntervalControl: function(connectionUpdateRequest, connectionHandle) {
         if (connectionUpdateRequest.min_conn_interval === connectionUpdateRequest.max_conn_interval) {
             return (
-                <div className="col-sm-6">
-                    <input id={"interval_" + connectionHandle}
-                           onChange={this._handleConnectionIntervalChange}
-                           className="form-control nordic-form-control" 
-                           type="number" 
-                           readOnly 
-                           value={this.state.connectionParameters.max_conn_interval}/>
+                <div>
+                    <label className="control-label col-sm-6" htmlFor={"interval_"+connectionHandle}>Connection Interval (ms)</label>
+                    <div className="col-sm-6">
+                        <input id={"interval_" + connectionHandle}
+                               onChange={this._handleConnectionIntervalChange}
+                               className="form-control nordic-form-control" 
+                               type="number" 
+                               readOnly 
+                               value={this.state.currentConnectionInterval}/>
+                    </div>
                 </div>
             );
         } else {
             return (
-                <div className="col-sm-6">
-                    <input id={"interval_" + connectionHandle} 
-                           onChange={this._handleConnectionIntervalChange}
-                           type="range" 
-                           min={this.state.connectionParameters.min_conn_interval} 
-                           max={this.state.connectionParameters.max_conn_interval} 
-                           value={this.state.connectionParameters.min_conn_interval}/>); 
+                <div>
+                    <label className="control-label col-sm-8" 
+                           htmlFor={"interval_"+connectionHandle}>Connection Interval ({connectionUpdateRequest.min_conn_interval}-{connectionUpdateRequest.max_conn_interval}ms)</label>
+                    <div className="col-sm-4">
+                        <input id={"interval_" + connectionHandle}
+                               className="form-control nordic-form-control" 
+                               onChange={this._handleConnectionIntervalChange}
+                               type="number"
+                               min={connectionUpdateRequest.min_conn_interval}
+                               max={connectionUpdateRequest.max_conn_interval}
+                               value={this.state.currentConnectionInterval}/> 
+                    </div>
                 </div>
             );
         }
@@ -242,20 +252,22 @@ const ConnectionUpdateRequestEditor = React.createClass({
         });
     },
     _handleConnectionIntervalChange: function() {
-        const connectionParameters = Object.assign({}, this.state.connectionParameters);
+        const currentConnectionInterval = parseInt(event.target.value, 10);
 
-        connectionParameters.min_conn_interval = parseInt(event.target.value, 10);
-        connectionParameters.max_conn_interval = connectionParameters.min_conn_interval;
         this.setState({
-            connectionParameters: connectionParameters
+            currentConnectionInterval,
         });
     },
     _updateConnection: function(connectionHandle) {
-        connectionActions.connectionParametersUpdate(connectionHandle, this.state.connectionParameters, this.props.event.id);
+        let newConnectionParameters = Object.assign({}, this.state.connectionParameters);
+        newConnectionParameters.max_conn_interval = this.state.currentConnectionInterval;
+
+        connectionActions.connectionParametersUpdate(connectionHandle, newConnectionParameters, this.props.event.id);
         this.props.onUpdate();
     },
     _cancel: function() {
         connectionActions.rejectOrCancelParametersUpdate(this.props.event.payload.conn_handle, this.props.event.id);
+        this.props.onUpdate();
     },
     _getValidInputStyle: function() {
         return {
@@ -284,10 +296,8 @@ const ConnectionUpdateRequestEditor = React.createClass({
                 </div>
                  <form className="form-horizontal">
                     <div className="form-group ">
-                        <div>
-                            <label className="control-label col-sm-6" htmlFor={"interval_"+connectionHandle}>Connection Interval (ms)</label>
-                            {this._createConnectionIntervalControl(this.state.connectionParameters, connectionHandle)}
-                        </div>
+                        {this._createConnectionIntervalControl(this.state.connectionParameters, connectionHandle)}
+                        
                     </div>
                     <div className="form-group">
                         <label className="control-label col-sm-6" htmlFor={"latency_" + connectionHandle}>Latency (ms)</label>
@@ -395,9 +405,9 @@ const EventViewer = React.createClass({
                             )}
                         </div>
                         {this.state.eventsToShowUser.map((event, i) =>
-                            <div className="item-editor" style={ ( (this.state.selectedIndex === i) && !(this.state.eventsToShowUser[this.state.selectedIndex].state)) ? {} : {display: 'none'}}>
+                            <div key={i} className="item-editor" style={ ( (this.state.selectedIndex === i) && !(this.state.eventsToShowUser[this.state.selectedIndex].state)) ? {} : {display: 'none'}}>
                                 <ConnectionUpdateRequestEditor 
-                                    key={i}
+                                    
                                     event={event} 
                                     onUpdate={this._handleEditorUpdate}/>
                             </div>
