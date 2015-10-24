@@ -16,7 +16,7 @@ import reflux from 'reflux';
 import _ from 'underscore';
 import fs from 'fs';
 
-import bleDriver from 'pc-ble-driver-js';
+var bleDriver = require('pc-ble-driver-js').driver;
 
 var bleTargetStore = reflux.createStore({
 

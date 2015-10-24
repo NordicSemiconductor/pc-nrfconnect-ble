@@ -19,7 +19,7 @@
 import _ from 'underscore';
 
 //import logger from './logging';
-import bleDriver from 'pc-ble-driver-js';
+var bleDriver = require('pc-ble-driver-js').driver;
 import uuidDefinitions from './utils/uuid_definitions';
 
 const SERVICE_UUID = "0x2800";
