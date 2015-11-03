@@ -29,7 +29,7 @@ var ComPortSelector = React.createClass({
 
     onMenuItemSelect: function(theEvent, port) {
         if (this.state.adapterState.connected && this.currentPort !== 'None') {
-            adpterActions.disconnect();
+            adapterActions.disconnect();
             this.currentPort = 'None';
         }
 

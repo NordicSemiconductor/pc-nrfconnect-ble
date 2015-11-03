@@ -26,6 +26,13 @@ var AdapterStore = reflux.createStore({
     listenables: [adapterActions],
 
     init: function() {
+        this.state = {
+            discoveredAdapters: [],
+            connected: false,
+            error: false,
+            adapterState: undefined,
+        };
+
         this.adapterFactoryInstance = new AdapterFactory(driver);
         this.adapterList = [];
         this._openedAdapter = undefined;
@@ -37,15 +44,10 @@ var AdapterStore = reflux.createStore({
 
         // TODO: Cannot find a way to clear this interval. No hook in reflux stores?
         this.detectInterval = setInterval(this._detectAdapters.bind(this), 5000);
+        this._detectAdapters();
     },
 
     getInitialState: function() {
-        this.state = {
-            discoveredAdapters: [],
-            connected: false,
-            error: false,
-            adapterState: undefined,
-        };
         return this.state;
     },
 
@@ -56,11 +58,13 @@ var AdapterStore = reflux.createStore({
     },
 
     adapterRemoved: function(removedAdapter) {
-        console.log('liksom remove');
+        this.adapterList = _.reject(this.adapterList, (adapter) => removedAdapter.instanceId === adapter.instanceId);
+        this.state.discoveredAdapters = this.adapterList.map((adapter) => adapter.adapterState.port);
+        this.trigger(this.state);
     },
 
     handleError: function(error) {
-        console.log('liskom handle error', error);
+        logger.error(error.message);
     },
 
     _detectAdapters: function() {
@@ -69,9 +73,11 @@ var AdapterStore = reflux.createStore({
 
         this.adapterFactoryInstance.getAdapters(function(err, adapterMap) {
             let newPortNames = null;
+            let unAvailableAdapters = _.filter(adapterMap, (adapter) => !adapter.adapterState.available);
             if (!err) {
-                newPortNames = _.map(adapterMap, ( (adapter, key) => adapter.adapterState.port));
+                newPortNames = _.map(unAvailableAdapters, ( (adapter) => adapter.adapterState.port));
             }
+
             newPortNames.unshift('None');
             if (!_.isEqual(newPortNames, oldPortNames)) {
                 _this.state.discoveredAdapters = newPortNames;
@@ -109,7 +115,19 @@ var AdapterStore = reflux.createStore({
     },
 
     onDisconnect: function(portName) {
-        console.log('liksom disconnect');
+        const _this = this;
+        this._openedAdapter.close( (error) => {
+            if (error) {
+                logger.error(`Failed to close adapter ${_this._openedAdapter.adapterState.port}`);
+                _this.state.error = true;
+            } else {
+                logger.info(`Closed adapter ${_this._openedAdapter.adapterState.port}`);
+                _this.state.connected = false;
+                _this.state.adapterState = undefined;
+                _this._openedAdapter = undefined;
+            }
+            _this.trigger(_this.state);
+        })
     }
 
 });
