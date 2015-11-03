@@ -15,6 +15,7 @@
 import reflux from 'reflux';
 import _ from 'underscore';
 
+import logger from '../logging';
 import {api, driver} from 'pc-ble-driver-js';
 import adapterActions from '../actions/adapterActions';
 
@@ -22,9 +23,14 @@ const AdapterFactory = api.AdapterFactory;
 
 var AdapterStore = reflux.createStore({
 
+    listenables: [adapterActions],
+
     init: function() {
         this.adapterFactoryInstance = new AdapterFactory(driver);
         this.adapterList = [];
+        this._openedAdapter = undefined;
+
+        // TODO: These should be removed as listeners somewhere
         this.adapterFactoryInstance.on('added', this.adapterAdded.bind(this));
         this.adapterFactoryInstance.on('removed', this.adapterRemoved.bind(this));
         this.adapterFactoryInstance.on('error', this.handleError.bind(this));
@@ -34,23 +40,25 @@ var AdapterStore = reflux.createStore({
     },
 
     getInitialState: function() {
-        return {
-            discoveredAdapters: this.adapterList,
+        this.state = {
+            discoveredAdapters: [],
             connected: false,
             error: false,
+            adapterState: undefined,
         };
+        return this.state;
     },
 
     adapterAdded: function(newAdapter) {
         this.adapterList.push(newAdapter);
-        this.trigger({discoveredAdapters: this.adapterList.map( (adapter) => {
-            console.log(adapter);
-            adapter.adapterState.port;
-        })});
+        this.state.discoveredAdapters = this.adapterList.map((adapter) => adapter.adapterState.port);
+        this.trigger(this.state);
     },
+
     adapterRemoved: function(removedAdapter) {
         console.log('liksom remove');
     },
+
     handleError: function(error) {
         console.log('liskom handle error', error);
     },
@@ -66,15 +74,38 @@ var AdapterStore = reflux.createStore({
             }
             newPortNames.unshift('None');
             if (!_.isEqual(newPortNames, oldPortNames)) {
-                _this.trigger({discoveredAdapters: newPortNames});
+                _this.state.discoveredAdapters = newPortNames;
+                _this.trigger(_this.state);
             }
 
             _this.adapterList = _.map(adapterMap, (adapter) => adapter);
         });
     },
     onConnect: function(portName) {
+        const options = {
+            baudRate: 115200,
+            parity: 'none',
+            flowControl: 'none',
+            eventInterval: 1,
+            logLevel: 'trace',
+        };
+
         const adapterToConnectTo = this.adapterList.find( (adapter) => (adapter.adapterState.port === portName));
-        console.log('Liksom connect to ', adapterToConnectTo.adapterState.port);
+        const _this = this;
+        adapterToConnectTo.open(options, (error) => {
+            if (error) {
+                logger.error(`Error occured opening serial port. ${error}`);
+                _this.state.error = true;
+                _this.state.connected = false;
+                _this.trigger(_this.state);
+            } else {
+                logger.info(`Finished opening serial port ${portName}.`);
+                _this.state.connected = true;
+                _this.state.adapterState = adapterToConnectTo.adapterState;
+                _this.trigger(_this.state);
+                _this._openedAdapter = adapterToConnectTo;
+            }
+        })
     },
 
     onDisconnect: function(portName) {

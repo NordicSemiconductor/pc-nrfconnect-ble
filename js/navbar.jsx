@@ -41,7 +41,7 @@ var ComPortSelector = React.createClass({
 
     _getTitle: function() {
         if (this.state.adapterState.connected && !this.state.adapterState.error) {
-            return this.state.adapterState.comPort;
+            return this.state.adapterState.adapterState.port;
         } else if (!this.state.adapterState.connected && this.state.adapterState.error) {
             return 'Error connecting';
         } else {
