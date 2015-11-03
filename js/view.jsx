@@ -125,23 +125,6 @@ var MyView = React.createClass({
             <div id="main-area-wrapper">
               <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />
               <div className="main-layout" style={layoutStyle}>
-                <div>
-                  <div>
-                    {active}
-                    {/*
-                    <BleNodeContainer       style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ConnectionMap' ? 'block': 'none'}}/>
-                    <DeviceDetailsContainer style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'DeviceDetails' ? 'block': 'none'}}/>
-                    <ServerSetup            style={{height: mainAreaHeight, display: this.state.currentlyShowing === 'ServerSetup'   ? 'block': 'none'}}/>
-                    */}
-                  </div>
-                  <div>
-                    <Log/>
-                  </div>
-                </div>
-                <div>
-                  <DiscoveredDevicesContainer />
-                </div>
-                <EventViewer/>
               </div>
             </div>
         );

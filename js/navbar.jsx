@@ -15,48 +15,54 @@
 import React from 'react';
 import Reflux from 'reflux';
 
-import bleTargetStore from './stores/bleTargetStore';
-import bleDriverStore from './stores/bleDriverStore';
+import AdapterStore from './stores/bleTargetStore';
+import adapterActions from './actions/adapterActions';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
-import driverActions from './actions/bleDriverActions.js';
+
 
 var ComPortSelector = React.createClass({
+    mixins: [Reflux.connect(AdapterStore, 'adapterState')],
+
     componentWillMount: function() {
         this.currentPort = 'None';
     },
+
     onMenuItemSelect: function(theEvent, port) {
-        if (this.state.driverState.connectedToDriver && this.currentPort !== 'None') {
-            driverActions.disconnectFromDriver();
+        if (this.state.adapterState.connected && this.currentPort !== 'None') {
+            adpterActions.disconnect();
             this.currentPort = 'None';
         }
+
         if (port !== 'None') {
-            driverActions.connectToDriver(port);
+            adapterActions.connect(port);
             this.currentPort = port;
         }
     },
+
     _getTitle: function() {
-        if (this.state.driverState.connectedToDriver && !this.state.driverState.error) {
-            return this.state.driverState.comPort;
-        } else if(!this.state.driverState.connectedToDriver && this.state.driverState.error) {
+        if (this.state.adapterState.connected && !this.state.adapterState.error) {
+            return this.state.adapterState.comPort;
+        } else if (!this.state.adapterState.connected && this.state.adapterState.error) {
             return 'Error connecting';
         } else {
-            return "Select com port";
+            return 'Select com port';
         }
     },
+
     focusOnComPorts: function() {
         var dropDown = React.findDOMNode(this.refs.comPortDropdown);
         dropDown.firstChild.click();
     },
-    mixins: [Reflux.connect(bleTargetStore), Reflux.connect(bleDriverStore, 'driverState')],
+
     render: function() {
 
         var dropdownTitle = this._getTitle();
-        var menuItems = this.state.discoveredBleTargets.map(function(portName, i){
-            return (<MenuItem className="btn-primary" eventKey={portName} onSelect={this.onMenuItemSelect} key={i}>{portName}</MenuItem>);
+        var menuItems = this.state.adapterState.discoveredAdapters.map(function(portName, i){
+            return (<MenuItem className='btn-primary' eventKey={portName} onSelect={this.onMenuItemSelect} key={i}>{portName}</MenuItem>);
         }, this);
         return (
-            <span title="Select com port (Alt+P)">
-                <DropdownButton id='navbar-dropdown' className="btn-primary btn-nordic" title={dropdownTitle} ref="comPortDropdown">
+            <span title='Select com port (Alt+P)'>
+                <DropdownButton id='navbar-dropdown' className='btn-primary btn-nordic' title={dropdownTitle} ref='comPortDropdown'>
                     {menuItems}
                 </DropdownButton>
             </span>
@@ -67,37 +73,45 @@ var ComPortSelector = React.createClass({
 
 
 var NavBar = React.createClass({
-    getInitialState: function(){
+
+    mixins: [Reflux.connect(AdapterStore, 'adapterState')],
+
+    getInitialState: function() {
         this.activeStyle = {
-            boxShadow: 'inset 0 5px 10px #133e40'
+            boxShadow: 'inset 0 5px 10px #133e40',
         };
         this.passiveStyle = {};
-        this.driverState = { connectedToDriver: false };
+        this.adapterState = { connected: false };
         /*return{
             activeTab: this.props.view
         }*/
     },
+
     _onViewChange: function(newView){
         this.props.onChangeMainView(newView);
         this.props.view = newView;
     },
+
     _getClassForTabButton: function(itemName) {
-        return "btn btn-primary btn-nordic padded-row" + (this.props.view === itemName ? " active" : "");
+        return 'btn btn-primary btn-nordic padded-row' + (this.props.view === itemName ? ' active' : '');
     },
+
     _getClassForIndicatorState: function() {
-        if (this.state.driverState.error) {
-            return "error";
-        }
-        if (this.state.driverState.connectedToDriver) {
-            return "on";
+        if (this.state.adapterState.error) {
+            return 'error';
         }
 
-        return "off";
+        if (this.state.adapterState.connected) {
+            return 'on';
+        }
+
+        return 'off';
     },
+
     focusOnComPorts: function() {
         this.refs.comPortSelector.focusOnComPorts();
     },
-    mixins: [Reflux.connect(bleDriverStore, 'driverState')],
+
     render: function() {
         return (
             <div className="nav-bar">

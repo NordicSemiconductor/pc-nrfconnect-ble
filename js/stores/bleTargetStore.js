@@ -14,43 +14,73 @@
 
 import reflux from 'reflux';
 import _ from 'underscore';
-import fs from 'fs';
 
-import bleDriver from 'pc-ble-driver-js';
+import {api, driver} from 'pc-ble-driver-js';
+import adapterActions from '../actions/adapterActions';
 
-var bleTargetStore = reflux.createStore({
+const AdapterFactory = api.AdapterFactory;
+
+var AdapterStore = reflux.createStore({
 
     init: function() {
-        this.discoveredBleTargets = [];
+        this.adapterFactoryInstance = new AdapterFactory(driver);
+        this.adapterList = [];
+        this.adapterFactoryInstance.on('added', this.adapterAdded.bind(this));
+        this.adapterFactoryInstance.on('removed', this.adapterRemoved.bind(this));
+        this.adapterFactoryInstance.on('error', this.handleError.bind(this));
+
         // TODO: Cannot find a way to clear this interval. No hook in reflux stores?
-        this.detectInterval = setInterval(this._detectTargets.bind(this), 5000);
+        this.detectInterval = setInterval(this._detectAdapters.bind(this), 5000);
     },
 
     getInitialState: function() {
-        this._detectTargets();
-        return {discoveredBleTargets: this.discoveredBleTargets};
+        return {
+            discoveredAdapters: this.adapterList,
+            connected: false,
+            error: false,
+        };
     },
-    _detectTargets: function() {
-        var self = this;
-        var portName = '';
 
-        bleDriver.get_adapters(function(err, ports) {
-            var newlyDiscoveredTargets = null;
-            if(!err) {
-                newlyDiscoveredTargets = ports.map(function(port) {
-                    return port.comName;
-                });
+    adapterAdded: function(newAdapter) {
+        this.adapterList.push(newAdapter);
+        this.trigger({discoveredAdapters: this.adapterList.map( (adapter) => {
+            console.log(adapter);
+            adapter.adapterState.port;
+        })});
+    },
+    adapterRemoved: function(removedAdapter) {
+        console.log('liksom remove');
+    },
+    handleError: function(error) {
+        console.log('liskom handle error', error);
+    },
+
+    _detectAdapters: function() {
+        const _this = this;
+        let oldPortNames = this.adapterList.map( (adapter) => adapter.adapterState.port);
+
+        this.adapterFactoryInstance.getAdapters(function(err, adapterMap) {
+            let newPortNames = null;
+            if (!err) {
+                newPortNames = _.map(adapterMap, ( (adapter, key) => adapter.adapterState.port));
+            }
+            newPortNames.unshift('None');
+            if (!_.isEqual(newPortNames, oldPortNames)) {
+                _this.trigger({discoveredAdapters: newPortNames});
             }
 
-            newlyDiscoveredTargets.unshift('None');
-
-            if (!_.isEqual(newlyDiscoveredTargets, self.discoveredBleTargets)) {
-                self.trigger({discoveredBleTargets: newlyDiscoveredTargets});
-            }
-            self.discoveredBleTargets = newlyDiscoveredTargets;
-
+            _this.adapterList = _.map(adapterMap, (adapter) => adapter);
         });
+    },
+    onConnect: function(portName) {
+        const adapterToConnectTo = this.adapterList.find( (adapter) => (adapter.adapterState.port === portName));
+        console.log('Liksom connect to ', adapterToConnectTo.adapterState.port);
+    },
+
+    onDisconnect: function(portName) {
+        console.log('liksom disconnect');
     }
+
 });
 
-module.exports = bleTargetStore;
+module.exports = AdapterStore;
