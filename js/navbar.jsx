@@ -15,13 +15,13 @@
 import React from 'react';
 import Reflux from 'reflux';
 
-import AdapterStore from './stores/bleTargetStore';
+import adapterStore from './stores/adapterStore';
 import adapterActions from './actions/adapterActions';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 
 
 var ComPortSelector = React.createClass({
-    mixins: [Reflux.connect(AdapterStore, 'adapterState')],
+    mixins: [Reflux.connect(adapterStore, 'adapterState')],
 
     componentWillMount: function() {
         this.currentPort = 'None';
@@ -74,7 +74,7 @@ var ComPortSelector = React.createClass({
 
 var NavBar = React.createClass({
 
-    mixins: [Reflux.connect(AdapterStore, 'adapterState')],
+    mixins: [Reflux.connect(adapterStore, 'adapterState')],
 
     getInitialState: function() {
         this.activeStyle = {

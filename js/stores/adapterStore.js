@@ -21,7 +21,7 @@ import adapterActions from '../actions/adapterActions';
 
 const AdapterFactory = api.AdapterFactory;
 
-var AdapterStore = reflux.createStore({
+var adapterStore = reflux.createStore({
 
     listenables: [adapterActions],
 
@@ -132,4 +132,4 @@ var AdapterStore = reflux.createStore({
 
 });
 
-module.exports = AdapterStore;
+module.exports = adapterStore;
