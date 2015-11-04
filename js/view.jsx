@@ -123,9 +123,21 @@ var MyView = React.createClass({
                    : null;
         return (
             <div id="main-area-wrapper">
-              <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />
-              <div className="main-layout" style={layoutStyle}>
-              </div>
+                <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />
+                <div className="main-layout" style={layoutStyle}>
+                    <div>
+                        <div>
+                            {active}
+                        </div>
+                        <div>
+                            <Log/>
+                        </div>
+                    </div>
+                    <div>
+                        <DiscoveredDevicesContainer />
+                    </div>
+                    <EventViewer/>
+                </div>
             </div>
         );
     }

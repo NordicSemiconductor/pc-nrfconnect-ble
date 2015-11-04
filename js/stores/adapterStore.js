@@ -31,11 +31,11 @@ var adapterStore = reflux.createStore({
             connected: false,
             error: false,
             adapterState: undefined,
+            openedAdapter: undefined,
         };
 
         this.adapterFactoryInstance = new AdapterFactory(driver);
         this.adapterList = [];
-        this._openedAdapter = undefined;
 
         // TODO: These should be removed as listeners somewhere
         this.adapterFactoryInstance.on('added', this.adapterAdded.bind(this));
@@ -69,13 +69,13 @@ var adapterStore = reflux.createStore({
 
     _detectAdapters: function() {
         const _this = this;
-        let oldPortNames = this.adapterList.map( (adapter) => adapter.adapterState.port);
+        let oldPortNames = this.adapterList.map((adapter) => adapter.adapterState.port);
 
         this.adapterFactoryInstance.getAdapters(function(err, adapterMap) {
             let newPortNames = null;
             let unAvailableAdapters = _.filter(adapterMap, (adapter) => !adapter.adapterState.available);
             if (!err) {
-                newPortNames = _.map(unAvailableAdapters, ( (adapter) => adapter.adapterState.port));
+                newPortNames = _.map(unAvailableAdapters, ((adapter) => adapter.adapterState.port));
             }
 
             newPortNames.unshift('None');
@@ -87,6 +87,7 @@ var adapterStore = reflux.createStore({
             _this.adapterList = _.map(adapterMap, (adapter) => adapter);
         });
     },
+
     onConnect: function(portName) {
         const options = {
             baudRate: 115200,
@@ -96,7 +97,7 @@ var adapterStore = reflux.createStore({
             logLevel: 'trace',
         };
 
-        const adapterToConnectTo = this.adapterList.find( (adapter) => (adapter.adapterState.port === portName));
+        const adapterToConnectTo = this.adapterList.find((adapter) => (adapter.adapterState.port === portName));
         const _this = this;
         adapterToConnectTo.open(options, (error) => {
             if (error) {
@@ -105,30 +106,31 @@ var adapterStore = reflux.createStore({
                 _this.state.connected = false;
                 _this.trigger(_this.state);
             } else {
-                logger.info(`Finished opening serial port ${portName}.`);
+                logger.info(`Opened adapter ${portName}.`);
                 _this.state.connected = true;
                 _this.state.adapterState = adapterToConnectTo.adapterState;
+                _this.state.openedAdapter = adapterToConnectTo;
                 _this.trigger(_this.state);
-                _this._openedAdapter = adapterToConnectTo;
             }
-        })
+        });
     },
 
     onDisconnect: function(portName) {
         const _this = this;
-        this._openedAdapter.close( (error) => {
+        this.state.openedAdapter.close((error) => {
             if (error) {
-                logger.error(`Failed to close adapter ${_this._openedAdapter.adapterState.port}`);
+                logger.error(`Failed to close adapter ${_this.state.openedAdapter.adapterState.port}`);
                 _this.state.error = true;
             } else {
-                logger.info(`Closed adapter ${_this._openedAdapter.adapterState.port}`);
+                logger.info(`Closed adapter ${_this.state.openedAdapter.adapterState.port}`);
                 _this.state.connected = false;
                 _this.state.adapterState = undefined;
-                _this._openedAdapter = undefined;
+                _this.state.openedAdapter = undefined;
             }
+
             _this.trigger(_this.state);
-        })
-    }
+        });
+    },
 
 });
 

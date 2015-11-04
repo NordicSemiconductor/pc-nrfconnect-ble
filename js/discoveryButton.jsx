@@ -13,12 +13,10 @@
 'use strict';
 
 import React from 'react';
-import Reflux from 'reflux';
-import driverStore from './stores/bleDriverStore';
 import DiscoveryActions from './actions/discoveryActions';
 
 var DiscoveryButton = React.createClass({
-    mixins: [Reflux.connect(driverStore, "driverStore")],
+
     buttonClicked: function(){
         if (this.props.scanInProgress) {
             DiscoveryActions.stopScan();
@@ -37,14 +35,14 @@ var DiscoveryButton = React.createClass({
             labelString = 'Stop scan';
             iconName = 'icon-stop';
             hoverText = 'Stop scan (Alt+S)';
-         } else {
+        } else {
             labelString = 'Start scan';
             iconName = 'icon-play';
             hoverText = 'Start scan (Alt+S)';
         }
 
         return (
-            <button title={hoverText} className="btn btn-primary btn-sm btn-nordic padded-row" disabled= {!this.state.driverStore.connectedToDriver || this.props.isConnecting} onClick={this.buttonClicked}>
+            <button title={hoverText} className="btn btn-primary btn-sm btn-nordic padded-row" disabled= {!this.props.isAdapterOpen || this.props.isConnecting} onClick={this.buttonClicked}>
             <span className={iconName} />
             {labelString}
             </button>

@@ -21,7 +21,6 @@ import discoveryStore from './stores/discoveryStore';
 import discoveryActions from './actions/discoveryActions';
 import {connectionActions} from './actions/connectionActions';
 import DiscoveryButton from './discoveryButton';
-import prepareDeviceData from './common/deviceProcessing.js';
 
 var DiscoveredDevice = React.createClass({
     mixins: [Reflux.connect(discoveryStore)],
@@ -42,8 +41,6 @@ var DiscoveredDevice = React.createClass({
                 );
         }
 
-        var device = prepareDeviceData(this.props.device);
-
         var connectingDeviceAddress = this.state.connectingDeviceAddress;
         var isThisDevice = false;
 
@@ -56,10 +53,10 @@ var DiscoveredDevice = React.createClass({
             <div className="device">
                 <div className="top-bar">
                     <div style={{float: 'right'}}>
-                        <span style={{width: device.rssi_level + 'px'}} className="icon-signal icon-foreground" />
+                        <span style={{width: this.props.device.rssi_level + 'px'}} className="icon-signal icon-foreground" />
                         <span className="icon-signal icon-background" />
                     </div>
-                    <div className="text-small truncate-text">{device.name}</div>
+                    <div className="text-small truncate-text">{this.props.device.name || '<Unkown name>'}</div>
                 </div>
                 <div className="device-body text-small">
                     <div className="discovered-device-address-line">
@@ -67,11 +64,11 @@ var DiscoveredDevice = React.createClass({
                             {isThisDevice && this.state.isConnecting ? 'Cancel' : 'Connect'} <i className="icon-link"></i>
                         </button>
                         <div className="address-text">
-                            {device.address}
+                            {this.props.device.address}
                         </div>
                     </div>
                     <div className="flag-line">
-                        {device.services.map(function(service, index) {
+                        {this.props.device.services.map(function(service, index) {
                             return (<div key={index} className="device-flag">{service}</div>)
                         })}
                     </div>
@@ -104,7 +101,7 @@ var DiscoveredDevicesContainer = React.createClass({
                     </h4>
                 </div>
                 <div className="padded-row">
-                    <DiscoveryButton scanInProgress={this.state.scanInProgress} isConnecting={this.state.isConnecting}/>
+                    <DiscoveryButton scanInProgress={this.state.scanInProgress} isConnecting={this.state.isConnecting} isAdapterOpen={this.state.isAdapterOpen}/>
                     <button title="Clear list (Alt+C)" onClick={this._clearContainer} type="button" className="btn btn-primary btn-sm btn-nordic padded-row">
                         <span className="icon-trash" />Clear
                     </button>
