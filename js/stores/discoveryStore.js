@@ -16,7 +16,7 @@ import Reflux from 'reflux';
 
 import logger from '../logging';
 import discoveryActions from '../actions/discoveryActions';
-import adapterStore from './adapterStore.js';
+import {api, driver} from 'pc-ble-driver-js';
 import _ from 'underscore';
 
 var discoveryStore = Reflux.createStore({
@@ -30,19 +30,21 @@ var discoveryStore = Reflux.createStore({
             isConnecting: false,
             isAdapterOpen: false,
         };
-        this.listenTo(adapterStore, this.onAdapterStoreChange);
+        const adapterFactory = api.AdapterFactory.getInstance(driver);
+        adapterFactory.on('adapterOpened', this.onAdapterOpened);
+        adapterFactory.on('adapterClosed', this.onAdapterClosed);
     },
 
-    onAdapterStoreChange: function(change) {
-        if (change.connected) {
-            this.adapter = change.openedAdapter;
-            this.state.isAdapterOpen = true;
-            this.trigger(this.state);
-        } else {
-            this.adapter = undefined;
-            this.state.isAdapterOpen = false;
-            this.trigger(this.state);
-        }
+    onAdapterOpened: function(adapter) {
+        this.adapter = adapter;
+        this.state.isAdapterOpen = true;
+        this.trigger(this.state);
+    },
+
+    onAdapterClosed: function() {
+        this.adapter = undefined;
+        this.state.isAdapterOpen = false;
+        this.trigger(this.state);
     },
 
     getInitialState: function() {
