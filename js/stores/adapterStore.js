@@ -34,7 +34,7 @@ var adapterStore = reflux.createStore({
             openedAdapter: undefined,
         };
 
-        this.adapterFactoryInstance = new AdapterFactory(driver);
+        this.adapterFactoryInstance = AdapterFactory.getInstance(driver);
         this.adapterList = [];
 
         // TODO: These should be removed as listeners somewhere

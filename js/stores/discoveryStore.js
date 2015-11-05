@@ -16,7 +16,6 @@ import Reflux from 'reflux';
 
 import logger from '../logging';
 import discoveryActions from '../actions/discoveryActions';
-import logActions from '../actions/logActions';
 import adapterStore from './adapterStore.js';
 import _ from 'underscore';
 
