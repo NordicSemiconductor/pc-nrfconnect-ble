@@ -15,6 +15,8 @@
 import TextareaAutosize from 'react-textarea-autosize';
 import $ from 'jquery';
 
+import React from 'react';
+
 let EditableField = React.createClass({
     /*
     Produces some text that changes into a textarea when clicked, OR if plain={true}, it simply produces a textarea.

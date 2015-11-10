@@ -1,7 +1,9 @@
+import React from 'react';
 import ConfirmationDialog from './ConfirmationDialog.jsx';
+import ReactLinkedStateMixin from 'react-addons-linked-state-mixin';
 
-var ServiceEditor = React.createClass({ 
-    mixins: [React.addons.LinkedStateMixin],
+var ServiceEditor = React.createClass({
+    mixins: [ReactLinkedStateMixin],
     getInitialState() {
         return {
             uuid: "",
@@ -36,7 +38,7 @@ var ServiceEditor = React.createClass({
     _onDeleteCancel() {
         this.setState({showConfirmDialog: false});
     },
-    render() { 
+    render() {
         return (
         <form className="form-horizontal">
           <div className="form-group">
@@ -60,7 +62,7 @@ var ServiceEditor = React.createClass({
             </div>
           </div>
         </form>
-        ); 
+        );
     }
 });
 module.exports = ServiceEditor;

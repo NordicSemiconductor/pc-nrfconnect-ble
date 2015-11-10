@@ -15,11 +15,11 @@
 import React from 'react';
 import Reflux from 'reflux';
 
-import logger from './logging';
+import logger from '../logging';
 
-import discoveryStore from './stores/discoveryStore';
-import discoveryActions from './actions/discoveryActions';
-import {connectionActions} from './actions/connectionActions';
+import discoveryStore from '../stores/discoveryStore';
+import discoveryActions from '../actions/discoveryActions';
+import {connectionActions} from '../actions/connectionActions';
 import DiscoveryButton from './discoveryButton';
 
 var DiscoveredDevice = React.createClass({

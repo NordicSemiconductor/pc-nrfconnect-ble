@@ -12,14 +12,15 @@
 
 'use strict';
 
+import React from 'react';
 
 import AddNewItem from './AddNewItem.jsx';
 import ServiceItem from './ServiceItem';
 import ServiceEditor from './ServiceEditor.jsx';
 import CharacteristicEditor from './CharacteristicEditor.jsx';
 import DescriptorEditor from './DescriptorEditor.jsx';
-import KeyNavigation from '../common/TreeViewKeyNavigationMixin.jsx';
-import hotkey from 'react-hotkey';
+// import KeyNavigation from '../common/TreeViewKeyNavigationMixin.jsx';
+//import hotkey from 'react-hotkey';
 
 import {GattDatabases, GattDatabase, Service, Characteristic, Descriptor, Properties} from '../gattDatabases';
 
@@ -38,10 +39,10 @@ let genericAccessService = new Service(gattDatabase, attributeHandle++, '0x1800'
 let genericAttributeService = new Service(gattDatabase, attributeHandle++, '0x1801');
 
 let ServerSetup = React.createClass({
-    mixins: [KeyNavigation.mixin('gattDatabases', true)],
+    //mixins: [KeyNavigation.mixin('gattDatabases', true)],
     getInitialState() {
-        return { 
-            selected: null, 
+        return {
+            selected: null,
             gattDatabase: gattDatabase,
             showConfirmDialog: false
         };

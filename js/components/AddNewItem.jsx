@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import React from 'react';
 
 var AddNewItem = React.createClass({
     componentWillReceiveProps: function(nextProps) {

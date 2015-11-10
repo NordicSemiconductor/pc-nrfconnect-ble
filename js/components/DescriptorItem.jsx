@@ -12,7 +12,7 @@
 
 'use strict';
 
-import react from 'react';
+import React from 'react';
 
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 

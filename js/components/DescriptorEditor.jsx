@@ -1,9 +1,12 @@
+import React from 'react';
+import ReactLinkedStateMixin from 'react-addons-linked-state-mixin';
+
 import _ from 'underscore';
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 import ConfirmationDialog from './ConfirmationDialog.jsx';
 
 var DescriptorEditor = React.createClass({
-    mixins: [React.addons.LinkedStateMixin],
+    mixins: [ReactLinkedStateMixin],
     getInitialState() {
         return {
             uuid: "",
@@ -39,7 +42,7 @@ var DescriptorEditor = React.createClass({
     _onDeleteCancel() {
         this.setState({showConfirmDialog: false});
     },
-    render() { 
+    render() {
         return (
         <form className="form-horizontal">
 
@@ -56,7 +59,7 @@ var DescriptorEditor = React.createClass({
               <input type="text" className="form-control" name="uuid" valueLink={this.linkState('uuid')} />
             </div>
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="initial-value" className="col-md-3 control-label">Initial value</label>
             <div className="col-md-9">

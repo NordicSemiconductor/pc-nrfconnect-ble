@@ -59,7 +59,7 @@ const BleEvent = React.createClass({
                 break;
             case eventTypes.peripheralInitiatedConnectionUpdate:
                 return 'Update request';
-            default: 
+            default:
                 return 'unknown event';
         }
     },
@@ -69,7 +69,7 @@ const BleEvent = React.createClass({
                 return (<span className="icon-link"><span className="icon-down"/></span>);
             case eventTypes.peripheralInitiatedConnectionUpdate:
                 return (<span className="icon-link"><span className="icon-up"/></span>);
-            default: 
+            default:
                 return 'unknown event';
         }
     },
@@ -124,7 +124,7 @@ const BleEvent = React.createClass({
                 backgroundColor: this.props.selected
                     ? 'rgb(179,225,245)'
                     : `rgb(${this.state.backgroundColor.r}, ${this.state.backgroundColor.g}, ${this.state.backgroundColor.b})`
-            };    
+            };
         } else {
             return {};
         }
@@ -169,7 +169,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
         }
     },
     _generateHeaderMessage: function() {
-        
+
         if (this.props.event.eventType === eventTypes.userInitiatedConnectionUpdate) {
             return 'Connection Parameters for device at ' + this.props.event.deviceAddress;
         } else {
@@ -184,9 +184,9 @@ const ConnectionUpdateRequestEditor = React.createClass({
                     <div className="col-sm-6">
                         <input id={"interval_" + connectionHandle}
                                onChange={this._handleConnectionIntervalChange}
-                               className="form-control nordic-form-control" 
-                               type="number" 
-                               readOnly 
+                               className="form-control nordic-form-control"
+                               type="number"
+                               readOnly
                                value={this.state.currentConnectionInterval}/>
                     </div>
                 </div>
@@ -194,16 +194,16 @@ const ConnectionUpdateRequestEditor = React.createClass({
         } else {
             return (
                 <div>
-                    <label className="control-label col-sm-8" 
+                    <label className="control-label col-sm-8"
                            htmlFor={"interval_"+connectionHandle}>Connection Interval ({connectionUpdateRequest.min_conn_interval}-{connectionUpdateRequest.max_conn_interval}ms)</label>
                     <div className="col-sm-4">
                         <input id={"interval_" + connectionHandle}
-                               className="form-control nordic-form-control" 
+                               className="form-control nordic-form-control"
                                onChange={this._handleConnectionIntervalChange}
                                type="number"
                                min={connectionUpdateRequest.min_conn_interval}
                                max={connectionUpdateRequest.max_conn_interval}
-                               value={this.state.currentConnectionInterval}/> 
+                               value={this.state.currentConnectionInterval}/>
                     </div>
                 </div>
             );
@@ -212,7 +212,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
     _checkValidity: function(slaveLatency, connectionSupervisionTimeoutMultiplierValid) {
         let isSlaveLatencyValid = true;
         let isConnectionSupervisionTimeoutMultiplierValid = true;
-      
+
         if ( (connectionSupervisionTimeoutMultiplierValid < 10) || (connectionSupervisionTimeoutMultiplierValid < 3200)) {
             isConnectionSupervisionTimeoutMultiplierValid = false;
         }
@@ -284,7 +284,7 @@ const ConnectionUpdateRequestEditor = React.createClass({
     render: function() {
         const theEvent = this.props.event;
         const connectionHandle = theEvent.payload.conn_handle;
-        const slaveLatencyStyle = this.state.isSlaveLatencyValid ? 
+        const slaveLatencyStyle = this.state.isSlaveLatencyValid ?
             this._getValidInputStyle() : this._getInvalidInputStyle();
         const connectionSupervisionTimeoutMultiplierInputStyle = this.state.isConnectionSupervisionTimeoutMultiplierValid ?
             this._getValidInputStyle() : this._getInvalidInputStyle();
@@ -297,16 +297,16 @@ const ConnectionUpdateRequestEditor = React.createClass({
                  <form className="form-horizontal">
                     <div className="form-group ">
                         {this._createConnectionIntervalControl(this.state.connectionParameters, connectionHandle)}
-                        
+
                     </div>
                     <div className="form-group">
                         <label className="control-label col-sm-6" htmlFor={"latency_" + connectionHandle}>Latency (ms)</label>
                         <div className="col-sm-6">
-                            <input style={slaveLatencyStyle} 
-                                   id={"latency_" + connectionHandle} 
-                                   className="form-control nordic-form-control" 
-                                   onChange={this._handleSlaveLatencyChange} 
-                                   type="number" 
+                            <input style={slaveLatencyStyle}
+                                   id={"latency_" + connectionHandle}
+                                   className="form-control nordic-form-control"
+                                   onChange={this._handleSlaveLatencyChange}
+                                   type="number"
                                    value={this.state.connectionParameters.slave_latency}/>
                         </div>
                     </div>
@@ -314,30 +314,30 @@ const ConnectionUpdateRequestEditor = React.createClass({
                         <div>
                             <label className="control-label col-sm-6" htmlFor={"timeout_" + connectionHandle}>Timeout (ms)</label>
                             <div className="col-sm-6">
-                                <input style={connectionSupervisionTimeoutMultiplierInputStyle} 
-                                       id={"timeout_" + connectionHandle} 
-                                       className="form-control nordic-form-control" 
-                                       onChange={this._handleConnectionSupervisionTimeoutMultiplerChange} 
-                                       type="number" 
+                                <input style={connectionSupervisionTimeoutMultiplierInputStyle}
+                                       id={"timeout_" + connectionHandle}
+                                       className="form-control nordic-form-control"
+                                       onChange={this._handleConnectionSupervisionTimeoutMultiplerChange}
+                                       type="number"
                                        value={this.state.connectionParameters.conn_sup_timeout}/>
                             </div>
                         </div>
                         <div>
                             <button disabled={!this.state.isSlaveLatencyValid || !this.state.isConnectionSupervisionTimeoutMultiplierValid}
-                                    type="button" 
-                                    onClick={this._updateConnection.bind(this, connectionHandle, this.props.connectionUpdateRequest)} 
+                                    type="button"
+                                    onClick={this._updateConnection.bind(this, connectionHandle, this.props.connectionUpdateRequest)}
                                     className="btn btn-primary btn-xs btn-nordic">
                                 Update
                             </button>
-                            <button type="button" 
-                                    onClick={this._cancel} 
+                            <button type="button"
+                                    onClick={this._cancel}
                                     className="btn btn-default btn-xs btn-nordic">
                                 {(theEvent.eventType === eventTypes.userInitiatedConnectionUpdate) ? 'Cancel' : 'Reject'}
                             </button>
                         </div>
                     </div>
                 </form>
-            
+
             </div>
         );
     }
@@ -354,10 +354,10 @@ const EventViewer = React.createClass({
         if (!this.state.visible) {
             if (newState.eventsToShowUser && (newState.eventsToShowUser.length > 0) ) {
                 this.setState(
-                    Object.assign({}, 
-                        newState, 
+                    Object.assign({},
+                        newState,
                         {
-                            visible: true, 
+                            visible: true,
                             selectedIndex: this.state.eventsToShowUser.length -1
                         }
                     )
@@ -401,19 +401,19 @@ const EventViewer = React.createClass({
                     <div className="device-details-view">
                         <div className="service-items-wrap">
                             {this.state.eventsToShowUser.map((event, i) =>
-                                <BleEvent key={i} ref={'event_' + i} onSelected={this._onSelected} selected={this.state.selectedIndex===i} event={this.state.eventsToShowUser[i]} index={i}/> 
+                                <BleEvent key={i} ref={'event_' + i} onSelected={this._onSelected} selected={this.state.selectedIndex===i} event={this.state.eventsToShowUser[i]} index={i}/>
                             )}
                         </div>
                         {this.state.eventsToShowUser.map((event, i) =>
                             <div key={i} className="item-editor" style={ ( (this.state.selectedIndex === i) && !(this.state.eventsToShowUser[this.state.selectedIndex].state)) ? {} : {display: 'none'}}>
-                                <ConnectionUpdateRequestEditor 
-                                    
-                                    event={event} 
+                                <ConnectionUpdateRequestEditor
+
+                                    event={event}
                                     onUpdate={this._handleEditorUpdate}/>
                             </div>
                         )}
                         <div className="item-editor"
-                             style={((this.state.selectedIndex === null) || 
+                             style={((this.state.selectedIndex === null) ||
                                      (this.state.eventsToShowUser.length === 0) ||
                                      (this.state.eventsToShowUser[this.state.selectedIndex].state) ) ? {} : {display: 'none'}}>
                             <div className="nothing-selected"/>

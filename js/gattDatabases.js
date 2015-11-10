@@ -18,7 +18,6 @@
 
 import _ from 'underscore';
 
-//import logger from './logging';
 import bleDriver from 'pc-ble-driver-js';
 import uuidDefinitions from './utils/uuid_definitions';
 

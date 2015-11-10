@@ -13,7 +13,7 @@
 'use strict';
 
 import React from 'react';
-import DiscoveryActions from './actions/discoveryActions';
+import DiscoveryActions from '../actions/discoveryActions';
 
 var DiscoveryButton = React.createClass({
 

@@ -14,7 +14,7 @@
 
 var React = require('react');
 var Reflux = require('reflux');
-var logStore = require('./stores/logStore.js');
+var logStore = require('../stores/logStore');
 var moment = require('moment');
 
 function entryClassName(entry) {

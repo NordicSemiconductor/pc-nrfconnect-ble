@@ -16,7 +16,7 @@ import reflux from 'reflux';
 import _ from 'underscore';
 import changeCase from 'change-case';
 
-import bleDriver from 'pc-ble-driver-js';
+import {api, driver} from 'pc-ble-driver-js';
 
 import textual from '../ble_driver_textual';
 import logger from '../logging';
@@ -68,7 +68,7 @@ var connectionStore = reflux.createStore({
         };
 
         var self = this;
-        bleDriver.gap_connect(device.peer_addr, scanParameters, connectionParameters, function(err) {
+        driver.gap_connect(device.peer_addr, scanParameters, connectionParameters, function(err) {
             if(err) {
                 logger.error(`Could not connect to ${textual.peerAddressToTextual(device)} due to error. ${err.message}`);
                 self.state.isConnecting = false;
@@ -135,7 +135,7 @@ var connectionStore = reflux.createStore({
             deviceAddress: connectionToUpdate.peer_addr.address,
             payload: event
         };
-        logger.info('Connection parameters update request from ' + event.conn_handle.deviceAddress + 
+        logger.info('Connection parameters update request from ' + event.conn_handle.deviceAddress +
             ': ' + JSON.stringify(event.conn_params));
         this.state.eventsToShowUser.push(connectionUpdateEvent);
         this.trigger({eventsToShowUser: this.state.eventsToShowUser});

@@ -1,8 +1,8 @@
 
-import hotkey from 'react-hotkey';
+//import hotkey from 'react-hotkey';
 import _ from 'underscore';
 import {Service} from '../gattDatabases';
-hotkey.activate('keydown');
+//hotkey.activate('keydown');
 
 /*
 TreeViewKeyNavigation.mixin(propName) produces a mixin that provides keyboard navigation
@@ -14,6 +14,10 @@ Assumes:
     this[propName] is an array of services
 
 */
+
+// TODO: evaluate if it is hard to change this code ...
+
+/*
 var TreeViewKeyNavigation = {
     mixin: function(gattDatabasesProperty, addButtons) {
         return _.extend({}, hotkey.Mixin('handleHotkey'), {
@@ -179,3 +183,4 @@ var TreeViewKeyNavigation = {
 };
 
 module.exports = TreeViewKeyNavigation;
+*/

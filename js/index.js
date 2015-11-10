@@ -16,10 +16,12 @@ require("babel/register");
 
 process.env.NODE_ENV = 'development';
 
+//var React = require('react/addons');
+var ReactDOM = require('react-dom');
+var React = require('react');
 
-var React = require('react/addons');
+var view = require('./js/containers/App.js');
 
-var view = require('./js/view.jsx');
+const target = document.getElementById('app');
 
-React.render(React.createElement(view), document.getElementById('app')); 
-
+ReactDOM.render(React.createElement(view), target);

@@ -15,30 +15,37 @@
 import $ from 'jquery';
 import React from 'react';
 import Reflux from 'reflux';
-import hotkey from 'react-hotkey';
+// import hotkey from 'react-hotkey';
 
-import BleNodeContainer from './node.jsx';
-import DeviceDetailsContainer from './deviceDetails.jsx';
+import BleNodeContainer from './../components/node.jsx';
+import DeviceDetailsContainer from './../components/deviceDetails.jsx';
 //import ConnectionUpdateRequestModal from './components/ConnectionUpdateRequestModal.jsx';
-import EventViewer from './components/EventViewer.jsx';
-import ServerSetup from './components/ServerSetup.jsx';
+import EventViewer from './../components/EventViewer.jsx';
+import ServerSetup from './../components/ServerSetup.jsx';
 
-import Log from './log.jsx';
-import logger from './logging';
-import logStore from './stores/logStore';
+import Log from './../components/log.jsx';
+import logger from './../logging';
+import logStore from './../stores/logStore';
 
-import {DiscoveredDevicesContainer} from './discoveredDevicesContainer.jsx';
+import { DiscoveredDevicesContainer } from './../components/discoveredDevicesContainer.jsx';
 
-import logActions from './actions/logActions';
-import DiscoveryActions from './actions/discoveryActions';
-import driverActions from './actions/bleDriverActions';
+import logActions from './../actions/logActions';
+import DiscoveryActions from './../actions/discoveryActions';
+import driverActions from './../actions/bleDriverActions';
 
+import NavBar from './../components/navbar.jsx';
 
-import NavBar from './navbar.jsx';
+import DevTools from './../containers/DevTools';
+import configureStore from './../store/configureStore';
+import { Provider } from 'react-redux';
 
+const initialState = window.__INITIAL_STATE__ || {};
+const store = configureStore(initialState);
+
+import { findAdapters } from './../actions/adapterActions';
 
 var MyView = React.createClass({
-    mixins: [hotkey.Mixin('handleHotkey')],
+/*    mixins: [hotkey.Mixin('handleHotkey')],
     handleHotkey: function(e) {
         if(e.getModifierState('Control')) {
             switch(e.keyCode) {
@@ -71,7 +78,7 @@ var MyView = React.createClass({
                     break;
             }
         }
-    },
+    },*/
     componentWillMount: function(){
         var that = this;
         (function() {
@@ -99,7 +106,12 @@ var MyView = React.createClass({
             that.setState({windowHeight: $(window).height()}); //document.documentElement.clientHeight;
         });
 
-        hotkey.activate('keydown');
+        // hotkey.activate('keydown');
+
+    },
+    componentDidMount: function() {
+        // Trigger things off by starting to get adapters
+        store.dispatch(findAdapters());
     },
     getInitialState: function() {
         return {
@@ -122,26 +134,28 @@ var MyView = React.createClass({
                    : this.state.currentlyShowing === 'ServerSetup'   ? <ServerSetup style={{height: mainAreaHeight}}/>
                    : null;
         return (
-            <div id="main-area-wrapper">
-                <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />
-                <div className="main-layout" style={layoutStyle}>
-                    <div>
+            <Provider store={store}>
+                <div id="main-area-wrapper">
+                    <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />
+                    <div className="main-layout" style={layoutStyle}>
                         <div>
-                            {active}
+                            <div>
+                                {active}
+                            </div>
+                            <div>
+                                <Log/>
+                            </div>
                         </div>
                         <div>
-                            <Log/>
+                            <DiscoveredDevicesContainer />
                         </div>
+                        <EventViewer/>
                     </div>
-                    <div>
-                        <DiscoveredDevicesContainer />
-                    </div>
-                    <EventViewer/>
+                    <DevTools />
                 </div>
-            </div>
+            </Provider>
         );
     }
 });
-
 
 module.exports = MyView;

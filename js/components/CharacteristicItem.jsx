@@ -12,7 +12,7 @@
 
 'use strict';
 
-import react from 'react';
+import React from 'react';
 
 import DescriptorItem from './DescriptorItem';
 import AddNewItem from './AddNewItem.jsx';

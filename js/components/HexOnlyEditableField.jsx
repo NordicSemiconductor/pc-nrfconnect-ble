@@ -13,6 +13,7 @@
 'use strict';
 
 import EditableField from './EditableField.jsx';
+import React from 'react';
 
 let HexOnlyEditableField = React.createClass({
     /*

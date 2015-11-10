@@ -12,25 +12,25 @@
 
 'use strict';
 
-import react from 'react';
+import React from 'react';
 import Reflux from 'reflux';
 
-import driverStore from './stores/bleDriverStore';
-import connectionStore from './stores/connectionStore';
-import nodeStore from './stores/bleNodeStore';
+import driverStore from '../stores/bleDriverStore';
+import connectionStore from '../stores/connectionStore';
+import nodeStore from '../stores/bleNodeStore';
 
-import ConnectedDevice from './components/ConnectedDevice.jsx';
-import CentralDevice from './components/CentralDevice.jsx';
+import ConnectedDevice from './ConnectedDevice.jsx';
+import CentralDevice from './CentralDevice.jsx';
 
-import KeyNavigation from './common/TreeViewKeyNavigationMixin.jsx';
-import logger from './logging';
+// import KeyNavigation from './common/TreeViewKeyNavigationMixin.jsx';
+import logger from '../logging';
 
-import ServiceItem from './components/ServiceItem';
-import {GattDatabases} from './gattDatabases';
+import ServiceItem from './ServiceItem';
+import {GattDatabases} from './../gattDatabases';
 
 
 var DeviceDetailsContainer = React.createClass({
-    mixins: [Reflux.connect(nodeStore), Reflux.connect(connectionStore), KeyNavigation.mixin('gattDatabases')],
+    mixins: [Reflux.connect(nodeStore), Reflux.connect(connectionStore) /*, KeyNavigation.mixin('gattDatabases') */],
     _onSelected(selected) {
         this.setState({ selected: selected });
     },
