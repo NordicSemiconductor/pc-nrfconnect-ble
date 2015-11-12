@@ -13,7 +13,8 @@
 'use strict';
 
 import $ from 'jquery';
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
+import Component from 'react-pure-render/component';
 
 import Reflux from 'reflux';
 
@@ -37,11 +38,6 @@ import driverActions from '../actions/bleDriverActions';
 import NavBar from '../components/navbar.jsx';
 
 import DevTools from '../containers/DevTools';
-import configureStore from '../store/configureStore';
-import { Provider } from 'react-redux';
-
-const initialState = window.__INITIAL_STATE__ || {};
-const store = configureStore(initialState);
 
 import { findAdapters } from '../actions/adapterActions';
 
@@ -107,26 +103,23 @@ export default class App extends Component {
                    : this.state.currentlyShowing === 'ServerSetup'   ? <ServerSetup style={{height: mainAreaHeight}}/>
                    : null;
         return (
-            <Provider store={store}>
-                <div id="main-area-wrapper">
-                    <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />
-                    <div className="main-layout" style={layoutStyle}>
+            <div id="main-area-wrapper">
+                <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />
+                <div className="main-layout" style={layoutStyle}>
+                    <div>
                         <div>
-                            <div>
-                                {active}
-                            </div>
-                            <div>
-                                <Log/>
-                            </div>
+                            {active}
                         </div>
                         <div>
-                            <DiscoveredDevices/>
+                            <Log/>
                         </div>
-                        <EventViewer/>
                     </div>
-                    <DevTools />
+                    <div>
+                        <DiscoveredDevices/>
+                    </div>
+                    <EventViewer/>
                 </div>
-            </Provider>
+            </div>
         );
     }
 }

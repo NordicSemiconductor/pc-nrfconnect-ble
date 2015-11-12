@@ -14,13 +14,18 @@
 
 require("babel/register");
 
+//process.env.NODE_ENV = 'production';
 process.env.NODE_ENV = 'development';
 
 var ReactDOM = require('react-dom');
 var React = require('react');
 
-var app = require('./js/containers/App.js');
+var root = require('./js/containers/Root.js');
+
+var configureStore = require('./js/store/configureStore');
+var initialState = window.__INITIAL_STATE__ || {};
+var store = configureStore(initialState);
 
 const target = document.getElementById('app');
 
-ReactDOM.render(React.createElement(app), target);
+ReactDOM.render(React.createElement(root, {store: store}), target);

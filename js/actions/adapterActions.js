@@ -63,7 +63,7 @@ function _openAdapter(dispatch, getState, adapter) {
             baudRate: 115200,
             parity: 'none',
             flowControl: 'none',
-            eventInterval: 1,
+            eventInterval: 100,
             logLevel: 'trace',
         };
 
