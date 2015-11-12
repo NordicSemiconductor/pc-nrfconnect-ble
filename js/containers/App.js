@@ -13,73 +13,49 @@
 'use strict';
 
 import $ from 'jquery';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+
 import Reflux from 'reflux';
+
 // import hotkey from 'react-hotkey';
 
-import BleNodeContainer from './../components/node.jsx';
-import DeviceDetailsContainer from './../components/deviceDetails.jsx';
+import BleNodeContainer from '../components/node';
+import DeviceDetailsContainer from '../components/deviceDetails';
 //import ConnectionUpdateRequestModal from './components/ConnectionUpdateRequestModal.jsx';
-import EventViewer from './../components/EventViewer.jsx';
-import ServerSetup from './../components/ServerSetup.jsx';
+import EventViewer from '../components/EventViewer';
+import ServerSetup from '../components/ServerSetup';
 
-import Log from './../components/log.jsx';
-import logger from './../logging';
-import logStore from './../stores/logStore';
+import Log from '../components/log';
+import logger from '../logging';
 
-import { DiscoveredDevicesContainer } from './../components/discoveredDevicesContainer.jsx';
+import DiscoveredDevices from './DiscoveredDevices';
 
-import logActions from './../actions/logActions';
-import DiscoveryActions from './../actions/discoveryActions';
-import driverActions from './../actions/bleDriverActions';
+import logActions from '../actions/logActions';
+import DiscoveryActions from '../actions/discoveryActions';
+import driverActions from '../actions/bleDriverActions';
 
-import NavBar from './../components/navbar.jsx';
+import NavBar from '../components/navbar.jsx';
 
-import DevTools from './../containers/DevTools';
-import configureStore from './../store/configureStore';
+import DevTools from '../containers/DevTools';
+import configureStore from '../store/configureStore';
 import { Provider } from 'react-redux';
 
 const initialState = window.__INITIAL_STATE__ || {};
 const store = configureStore(initialState);
 
-import { findAdapters } from './../actions/adapterActions';
+import { findAdapters } from '../actions/adapterActions';
 
-var MyView = React.createClass({
-/*    mixins: [hotkey.Mixin('handleHotkey')],
-    handleHotkey: function(e) {
-        if(e.getModifierState('Control')) {
-            switch(e.keyCode) {
-                default:
-                    logger.silly(`Ctrl pressed, keycode ${e.keyCode}.`);
-                    break;
-            }
-        } else if (e.getModifierState('Alt')) {
-            switch(e.keyCode) {
-                case 49: // 1
-                    this._onChangedMainView('ConnectionMap');
-                    break;
-                case 50: // 2
-                    this._onChangedMainView('DeviceDetails');
-                    break;
-                case 51: // 3
-                    this._onChangedMainView('ServerSetup');
-                    break;
-                case 67: // C
-                    DiscoveryActions.clearItems();
-                    break;
-                case 83: // S
-                    DiscoveryActions.toggleScan();
-                    break;
-                case 80: // P
-                    this.refs.navBar.focusOnComPorts();
-                    break;
-                default:
-                    logger.silly(`Alt pressed, keycode ${e.keyCode}.`);
-                    break;
-            }
-        }
-    },*/
-    componentWillMount: function(){
+export default class App extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            currentlyShowing: "ConnectionMap",
+            windowHeight: window.innerHeight,
+        };
+    }
+
+    componentWillMount() {
         var that = this;
         (function() {
             var throttle = function(type, name, obj) {
@@ -96,39 +72,36 @@ var MyView = React.createClass({
                 obj.addEventListener(type, func);
             };
 
-
             throttle("resize", "optimizedResize");
         })();
 
         // handle event
 
-        window.addEventListener("optimizedResize", function() {
-            that.setState({windowHeight: $(window).height()}); //document.documentElement.clientHeight;
+        window.addEventListener("optimizedResize", () => {
+            this.setState({windowHeight: window.innerHeight}); //document.documentElement.clientHeight;
         });
 
         // hotkey.activate('keydown');
 
-    },
-    componentDidMount: function() {
+    }
+
+    componentDidMount() {
         // Trigger things off by starting to get adapters
         store.dispatch(findAdapters());
-    },
-    getInitialState: function() {
-        return {
-            currentlyShowing: "ConnectionMap",
-            windowHeight: $(window).height()
-        };
-    },
-    _onChangedMainView: function(viewToShow) {
+    }
+
+    _onChangedMainView(viewToShow) {
         logger.silly(`changed view to ${viewToShow}`);
         this.setState({currentlyShowing: viewToShow});
-    },
-    render: function() {
+    }
+
+    render() {
         var topBarHeight = 55;
         var layoutStyle = {
           height: this.state.windowHeight - topBarHeight
         };
         var mainAreaHeight = layoutStyle.height - 189;
+
         var active = this.state.currentlyShowing === 'ConnectionMap' ? <BleNodeContainer style={{height: mainAreaHeight}}/>
                    : this.state.currentlyShowing === 'DeviceDetails' ? <DeviceDetailsContainer style={{height: mainAreaHeight}}/>
                    : this.state.currentlyShowing === 'ServerSetup'   ? <ServerSetup style={{height: mainAreaHeight}}/>
@@ -147,7 +120,7 @@ var MyView = React.createClass({
                             </div>
                         </div>
                         <div>
-                            <DiscoveredDevicesContainer />
+                            <DiscoveredDevices/>
                         </div>
                         <EventViewer/>
                     </div>
@@ -156,6 +129,4 @@ var MyView = React.createClass({
             </Provider>
         );
     }
-});
-
-module.exports = MyView;
+}

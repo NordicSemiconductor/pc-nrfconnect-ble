@@ -36,22 +36,8 @@ export default class NavBar extends Component {
         return 'btn btn-primary btn-nordic padded-row' + (this.props.view === itemName ? ' active' : '');
     }
 
-    _getClassForIndicatorState() {
-        // TODO: fix this and use the reflux state instead
-        /*
-        if (this.state.adapterState.error) {
-            return 'error';
-        }
-
-        if (this.state.adapterState.connected) {
-            return 'on';
-        }*/
-
-        return 'off';
-    }
-
     focusOnComPorts() {
-        this.refs.comPortSelector.focusOnComPorts();
+        this.refs.adapterSelector.focusOnComPorts();
     }
 
     render() {
@@ -62,7 +48,7 @@ export default class NavBar extends Component {
                 </div>
                 <div className="nav-section">
                     <div className="padded-row">
-                        <AdapterSelector ref="comPortSelector"/>
+                        <AdapterSelector ref="adapterSelector"/>
                     </div>
                 </div>
                 <div className="nav-section bl padded-row">

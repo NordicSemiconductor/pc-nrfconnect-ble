@@ -9,7 +9,6 @@ import * as AdapterActions from '../actions/adapterActions';
 class AdapterSelector extends Component {
     constructor(props) {
         super(props);
-        props.currentPort = 'None';
     }
 
     focusOnComPorts() {
@@ -21,16 +20,18 @@ class AdapterSelector extends Component {
         const {
             adapters,
             adapterStatus,
-            adapterIndicator
+            adapterIndicator,
         } = this.props.adapter;
 
         const {
-            openAdapter
+            openAdapter,
         } = this.props;
 
         const menuItems = adapters.map((adapter, i) => {
-            return <MenuItem className='btn-primary' eventKey={adapter.instanceId} onSelect={() => openAdapter(adapter.instanceId)} key={i}>{adapter.instanceId}</MenuItem>;
+            return <MenuItem className='btn-primary' eventKey={adapter.port} onSelect={() => openAdapter(adapter.port)} key={i}>{adapter.port}</MenuItem>;
         }, this);
+
+        //console.log(JSON.stringify(menuItems));
 
         return (
             <span title='Select com port (Alt+P)'>
@@ -47,10 +48,8 @@ class AdapterSelector extends Component {
 
 function mapStateToProps(state) {
     const { adapter } = state;
+    return { adapter: adapter, adapterStatus: adapter.adapterStatus, adapterIndicator: adapter.adapterIndicator, adapters: adapter.adapters };
 
-    return {
-        adapter,
-    };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -63,7 +62,7 @@ export default connect(
 )(AdapterSelector);
 
 AdapterSelector.propTypes = {
-    adapter: PropTypes.object.isRequired,
+    adapters: PropTypes.array.isRequired,
+    adapterStatus: PropTypes.string.isRequired,
     openAdapter: PropTypes.func.isRequired,
-    selectedAdapter: PropTypes.object
 };

@@ -16,13 +16,12 @@ import React from 'react';
 
 import Reflux from 'reflux';
 import nodeStore from '../stores/bleNodeStore';
-import driverStore from '../stores/bleDriverStore';
 
 import ConnectedDevice from './ConnectedDevice';
 import CentralDevice from './CentralDevice';
 
 var BleNodeContainer = React.createClass({
-    mixins: [Reflux.connect(nodeStore), Reflux.connect(driverStore)],
+    mixins: [Reflux.connect(nodeStore)],
 
     render: function(){
         var connectedDevices = [];

@@ -18,6 +18,7 @@ export const ADAPTER_CLOSED = 'ADAPTER_CLOSED';
 export const ADAPTER_ADDED = 'ADAPTER_ADDED';
 export const ADAPTER_REMOVED = 'ADAPTER_REMOVED';
 export const ADAPTER_ERROR = 'ADAPTER_ERROR';
+export const ADAPTER_STATE_CHANGED = 'ADAPTER_STATE_CHANGED';
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
 import _ from 'underscore';
@@ -38,21 +39,21 @@ function _getAdapters(dispatch) {
     }).then(adapters => {
         // Register listeners for adapters added/removed
         _adapterFactory.on('added', adapter => {
-            dispatch(adapterAdded(adapter));
+            dispatch(adapterAddedAction(adapter));
         });
         _adapterFactory.on('removed', adapter => {
-            dispatch(adapterRemoved(adapter));
+            dispatch(adapterRemovedAction(adapter));
         });
         _adapterFactory.on('error', (error) => {
-            dispatch(errorOccured(error));
+            dispatch(errorOccuredAction(error));
         });
 
         // Add the adapters to the store
         _.map(adapters, (adapter) => {
-            dispatch(adapterAdded(adapter));
+            dispatch(adapterAddedAction(adapter));
         });
     }).catch(error => {
-        dispatch(errorOccured(error));
+        dispatch(errorOccuredAction(error));
     });
 }
 
@@ -67,15 +68,26 @@ function _openAdapter(dispatch, getState, adapter) {
         };
 
         // Check if we already have an adapter open
-        if(getState().adapter.selectedAdapter !== null) {
-            _closeAdapter(dispatch, getState().adapter.selectedAdapter);
+        if(getState().adapter.api.selectedAdapter !== null) {
+            _closeAdapter(dispatch, getState().adapter.api.selectedAdapter);
         }
 
-        let adapterToUse = _.find(getState().adapter.adapters, x => { return x.instanceId === adapter; });
-        // Listen to errors from this adapter since we are opening it now
-        adapterToUse.on('error', error => { dispatch(adapterError(adapterToUse, error)); });
+        let adapterToUse = _.find(getState().adapter.api.adapters, x => { return x.adapterState.port === adapter; });
 
-        dispatch(adapterOpen(adapterToUse));
+        if(adapterToUse === null) {
+            reject({adapter: null, error: `Not able to find ${adapter}.`});
+        }
+        // Listen to errors from this adapter since we are opening it now
+        adapterToUse.on('error', error => {
+            dispatch(adapterErrorAction(adapterToUse, error));
+        });
+
+        // Listen to adapter changes
+        adapterToUse.on('adapterStateChanged', adapterState => {
+            dispatch(adapterStateChangedAction(adapterToUse, adapterState));
+        });
+
+        dispatch(adapterOpenAction(adapterToUse));
 
         adapterToUse.open(options, error => {
             if(error) {
@@ -85,9 +97,9 @@ function _openAdapter(dispatch, getState, adapter) {
             }
         });
     }).then(adapter => {
-        dispatch(adapterOpened(adapter));
+        dispatch(adapterOpenedAction(adapter));
     }).catch(errorData => {
-        dispatch(adapterError(errorData.adapter, errorData.error));
+        dispatch(adapterErrorAction(errorData.adapter, errorData.error));
     });
 }
 
@@ -101,13 +113,13 @@ function _closeAdapter(dispatch, adapter) {
             }
         });
     }).then(adapter => {
-        dispatch(adapterClosed(adapter));
+        dispatch(adapterClosedAction(adapter));
     }).catch(errorData => {
-        dispatch(adapterError(errorData.adapter, errorData.error));
+        dispatch(adapterErrorAction(errorData.adapter, errorData.error));
     });
 }
 
-function adapterOpened(adapter)
+function adapterOpenedAction(adapter)
 {
     return {
         type: ADAPTER_OPENED,
@@ -115,7 +127,7 @@ function adapterOpened(adapter)
     };
 }
 
-function adapterOpen(adapter)
+function adapterOpenAction(adapter)
 {
     return {
         type: ADAPTER_OPEN,
@@ -123,28 +135,28 @@ function adapterOpen(adapter)
     };
 }
 
-function adapterClosed(adapter) {
+function adapterClosedAction(adapter) {
     return {
         type: ADAPTER_CLOSED,
         adapter
     };
 }
 
-function adapterRemoved(adapter) {
+function adapterRemovedAction(adapter) {
     return {
         type: ADAPTER_REMOVED,
         adapter
     };
 }
 
-function adapterAdded(adapter) {
+function adapterAddedAction(adapter) {
     return {
         type: ADAPTER_ADDED,
         adapter
     };
 }
 
-function adapterError(adapter, error) {
+function adapterErrorAction(adapter, error) {
     return {
         type: ADAPTER_ERROR,
         adapter,
@@ -152,7 +164,15 @@ function adapterError(adapter, error) {
     };
 }
 
-function errorOccured(error) {
+function adapterStateChangedAction(adapter, adapterState) {
+    return {
+        type: ADAPTER_STATE_CHANGED,
+        adapter,
+        adapterState
+    };
+}
+
+function errorOccuredAction(error) {
     return {
         type: ERROR_OCCURED,
         error
@@ -161,8 +181,6 @@ function errorOccured(error) {
 
 export function findAdapters() {
     return dispatch => {
-        // Return a promise to wait for.
-        // During processing of this promise actions has been dispatched.
         return _getAdapters(dispatch);
     };
 }

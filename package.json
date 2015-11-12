@@ -30,9 +30,10 @@
     "yargs": "3.26.0"
   },
   "dependencies": {
-    "babel": "5.8.23",
+    "babel": "5.8.29",
     "bootstrap": "3.3.5",
     "change-case": "2.3.0",
+    "immutable": "3.7.5",
     "jquery": "2.1.4",
     "less": "2.5.1",
     "moment": "2.10.6",

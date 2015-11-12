@@ -1,10 +1,13 @@
 'use strict';
 
 import { combineReducers } from 'redux';
-import adapter from './adapters';
+
+import adapter from './adapter';
+import discovery from './discovery';
 
 const rootReducer = combineReducers({
-    adapter
+    adapter,
+    discovery
 });
 
 export default rootReducer;

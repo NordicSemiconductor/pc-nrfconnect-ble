@@ -12,26 +12,26 @@
 
 'use strict';
 
-import React from 'react';
-import DiscoveryActions from '../actions/discoveryActions';
+import React, { Component, PropTypes } from 'react';
 
-var DiscoveryButton = React.createClass({
+export default class DiscoveryButton extends Component {
+    constructor(props) {
+        super(props);
+    }
 
-    buttonClicked: function(){
-        if (this.props.scanInProgress) {
-            DiscoveryActions.stopScan();
-        } else {
-            DiscoveryActions.startScan();
-        }
+    render() {
+        const {
+            isAdapterAvailable,
+            isConnecting,
+            scanInProgress,
+            onScanClicked
+        } = this.props;
 
-    },
+        let labelString;
+        let iconName;
+        let hoverText;
 
-    render: function() {
-        var labelString;
-        var iconName;
-        var hoverText;
-
-        if (this.props.scanInProgress) {
+        if (scanInProgress) {
             labelString = 'Stop scan';
             iconName = 'icon-stop';
             hoverText = 'Stop scan (Alt+S)';
@@ -42,12 +42,17 @@ var DiscoveryButton = React.createClass({
         }
 
         return (
-            <button title={hoverText} className="btn btn-primary btn-sm btn-nordic padded-row" disabled= {!this.props.isAdapterOpen || this.props.isConnecting} onClick={this.buttonClicked}>
-            <span className={iconName} />
-            {labelString}
+            <button title={hoverText} className="btn btn-primary btn-sm btn-nordic padded-row" disabled= {!isAdapterAvailable || isConnecting} onClick={() => onScanClicked()}>
+                <span className={iconName} />
+                {labelString}
             </button>
         );
     }
-});
+}
 
-module.exports = DiscoveryButton;
+DiscoveryButton.propTypes = {
+    isAdapterAvailable: PropTypes.bool.isRequired,
+    isConnecting: PropTypes.bool.isRequired,
+    scanInProgress: PropTypes.bool.isRequired,
+    onScanClicked: PropTypes.func.isRequired
+};

@@ -15,7 +15,6 @@
 import React from 'react';
 import Reflux from 'reflux';
 
-import driverStore from '../stores/bleDriverStore';
 import connectionStore from '../stores/connectionStore';
 import nodeStore from '../stores/bleNodeStore';
 
@@ -62,7 +61,6 @@ var DeviceDetailsContainer = React.createClass({
 });
 
 var DeviceDetailsView = React.createClass({
-    mixins: [Reflux.connect(driverStore)],
     render: function() {
         var centralPosition = {
             x: 0,
