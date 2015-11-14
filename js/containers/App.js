@@ -26,8 +26,8 @@ import DeviceDetailsContainer from '../components/deviceDetails';
 import EventViewer from '../components/EventViewer';
 import ServerSetup from '../components/ServerSetup';
 
-import Log from '../components/log';
-import logger from '../logging';
+import LogViewer from '../containers/LogViewer';
+import { logger } from '../logging';
 
 import DiscoveredDevices from './DiscoveredDevices';
 
@@ -111,7 +111,7 @@ export default class App extends Component {
                             {active}
                         </div>
                         <div>
-                            <Log/>
+                            <LogViewer/>
                         </div>
                     </div>
                     <div>

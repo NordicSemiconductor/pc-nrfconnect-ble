@@ -2,12 +2,14 @@
 
 import { combineReducers } from 'redux';
 
-import adapter from './adapter';
-import discovery from './discovery';
+import adapter from './adapterReducer';
+import discovery from './discoveryReducer';
+import log from './logReducer';
 
 const rootReducer = combineReducers({
     adapter,
-    discovery
+    discovery,
+    log
 });
 
 export default rootReducer;

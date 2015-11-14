@@ -10,6 +10,8 @@
  *
  */
 
+'use strict';
+
 import winston from 'winston';
 import util from 'util';
 import sqlite3 from'sqlite3';
@@ -22,6 +24,8 @@ var defaultDbFile = 'logger.db';
 // Need to retrieve logFileDir from index.js since we do not have access to app.getPath in this file
 defaultLogFile = remote.getGlobal('logFileDir') + '/' + defaultLogFile;
 defaultDbFile = remote.getGlobal('logFileDir') + '/' + defaultDbFile;
+
+let id = 0; // ID is used as primary key in database
 
 var convertLevel = function(level) {
     /**
@@ -66,8 +70,6 @@ var DbLogger = winston.transports.DbLogger = function(options) {
     this.db = null;
     this.dbReady = false;
 
-    var self = this;
-
     try {
         fs.unlinkSync(this.filename);
     } catch(err) {
@@ -77,12 +79,12 @@ var DbLogger = winston.transports.DbLogger = function(options) {
 
     this.db = new sqlite3.Database(this.filename);
 
-    this.db.serialize(function() {
-        self.db.run('CREATE TABLE IF NOT EXISTS log_entries(id INTEGER PRIMARY KEY, time TEXT, level INTEGER, message TEXT, meta TEXT)');
-        self.db.run('CREATE INDEX IF NOT EXISTS log_entries_time on log_entries(time)');
-        self.db.run('CREATE INDEX IF NOT EXISTS log_entries_id on log_entries(id)');
-        self.db.run('CREATE INDEX IF NOT EXISTS log_entries_level on log_entries(level)', function() {
-            self.dbReady = true;
+    this.db.serialize(() => {
+        this.db.run('CREATE TABLE IF NOT EXISTS log_entries(id INTEGER PRIMARY KEY, time TEXT, level INTEGER, message TEXT, meta TEXT)');
+        this.db.run('CREATE INDEX IF NOT EXISTS log_entries_time on log_entries(time)');
+        this.db.run('CREATE INDEX IF NOT EXISTS log_entries_id on log_entries(id)');
+        this.db.run('CREATE INDEX IF NOT EXISTS log_entries_level on log_entries(level)', () => {
+            this.dbReady = true;
         });
     });
 };
@@ -94,19 +96,17 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
         return callback(null, true);
     }
 
-    var self = this;
-
-    if(!self.dbReady) {
+    if(!this.dbReady) {
         // Log to console.log because we may not have a valid logger if we get here.
         console.log("Database is not ready yet. Entry will not be stored.");
         return callback(null, true);
     }
 
-    var timestamp = new Date();
+    let timestamp = new Date();
 
     // Check if we have timestamp in meta data
     if(meta !== undefined) {
-        if(meta.timestamp != null) {
+        if(meta.timestamp !== undefined) {
             timestamp = meta.timestamp;
         }
 
@@ -115,29 +115,30 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
 
     // TODO: We have to figure out if this is an array of events from the ble driver.
     // TODO: Postpone this to later.
-    var stmt = this.db.prepare("INSERT INTO log_entries(time, level, message, meta) VALUES(?,?,?,?)");
+    var stmt = this.db.prepare("INSERT INTO log_entries(id, time, level, message, meta) VALUES(?,?,?,?,?)");
 
     stmt.run(
+        id,
         timestamp.toISOString(),
         convertLevel(level),
         msg,
         meta,
-        function(err) {
+        (err) => {
             if(err) {
                  // Log to console.log because we may not have a valid logger if we get here.
                 console.log(`Error storing log entry, ${err}`);
             }
 
-            self.emit('logged');
+            this.emit('logged');
             callback(null, this.lastID);
         }
     );
+
+    id++;
 };
 
 DbLogger.prototype.query = function(options, callback) {
-    var self = this;
-
-    if(!self.dbReady) {
+    if(!this.dbReady) {
         callback(null);
         return;
     }
@@ -148,12 +149,11 @@ DbLogger.prototype.query = function(options, callback) {
         sort: {id: options.order === 'desc' ? 'DESC' : 'ASC'}
     };
 
-    var sql = `SELECT * FROM log_entries WHERE id >= ${opt.start} ORDER BY id ${opt.sort.id}`;
+    const sql = `SELECT * FROM log_entries WHERE id >= ${opt.start} ORDER BY id ${opt.sort.id}`;
+    const entries = [];
 
-    var entries = [];
-
-    self.db.each(sql,
-        function(err, row) {
+    this.db.each(sql,
+        (err, row) => {
             if(err) {
                 callback(err);
                 return;
@@ -170,16 +170,14 @@ DbLogger.prototype.query = function(options, callback) {
 };
 
 var createLine = function(options) {
-    var timestamp = options.timestamp();
+    let timestamp = options.timestamp();
 
-    if(options.meta !== undefined) {
-        if(options.meta.timestamp != null) {
-            timestamp = options.meta.timestamp;
-        }
+    if(options.meta !== undefined && options.meta.timestamp !== undefined) {
+        timestamp = options.meta.timestamp;
     }
 
-    var level = options.level.toUpperCase();
-    var message = (options.message !== undefined ? options.message : '');
+    const level = options.level.toUpperCase();
+    const message = (options.message !== undefined ? options.message : '');
 
     return `${timestamp.toISOString()} ${level} ${message}`;
 };
@@ -192,7 +190,7 @@ try {
     console.log(`Error removing file ${defaultLogFile}. Error is ${err}`);
 }
 
-var transports = [
+const transports = [
     new (winston.transports.DbLogger)({
         name: 'db_logger',
         filename: defaultDbFile,
@@ -225,7 +223,7 @@ try {
 
 } catch(exception) {}
 
-var logger = new (winston.Logger)({
+const logger = new (winston.Logger)({
     transports: transports
 });
 

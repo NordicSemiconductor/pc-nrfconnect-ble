@@ -18,7 +18,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as DiscoveryActions from '../actions/discoveryActions';
-import * as DeviceActions from '../actions/deviceActions';
+import * as AdapterActions from '../actions/adapterActions';
 
 import DiscoveryButton from '../components/discoveryButton';
 import DiscoveredDevice from '../components/discoveredDevice';
@@ -32,7 +32,7 @@ class DiscoveredDevices extends Component {
         const {
             discoveredDevices,
             isScanning,
-            isConnecting,
+            adapterIsConnecting,
             isAdapterAvailable,
             clearDevicesList,
             toggleScan,
@@ -54,7 +54,7 @@ class DiscoveredDevices extends Component {
                 </div>
 
                 <div className="padded-row">
-                    <DiscoveryButton scanInProgress={isScanning} isConnecting={isConnecting} isAdapterAvailable={isAdapterAvailable} onScanClicked={() => toggleScan()} />
+                    <DiscoveryButton scanInProgress={isScanning} adapterIsConnecting={adapterIsConnecting} isAdapterAvailable={isAdapterAvailable} onScanClicked={() => toggleScan()} />
                     <button title="Clear list (Alt+C)" onClick={() => clearDevicesList()} type="button" className="btn btn-primary btn-sm btn-nordic padded-row">
                         <span className="icon-trash" />Clear
                     </button>
@@ -66,7 +66,8 @@ class DiscoveredDevices extends Component {
                                 <DiscoveredDevice key={ 'dev-' + address }
                                     device={device}
                                     standalone={false}
-                                    isConnecting={isConnecting}
+                                    adapterIsConnecting={adapterIsConnecting}
+                                    isConnecting={device.isConnecting}
                                     onConnect={(device) => connectToDevice(device)}
                                     onCancelConnect={() => cancelConnect()} />
                             );
@@ -82,7 +83,7 @@ function mapStateToProps(state) {
     const { discovery, adapter } = state;
 
     let selectedAdapter = null;
-    let connecting = false;
+    let adapterIsConnecting = false;
     let scanning = false;
     let adapterAvailable = false;
 
@@ -90,7 +91,7 @@ function mapStateToProps(state) {
         selectedAdapter = adapter.adapters[adapter.selectedAdapter];
 
         if (selectedAdapter && selectedAdapter.state) {
-            connecting = selectedAdapter.state.connecting || false;
+            adapterIsConnecting = selectedAdapter.state.connecting || false;
             scanning = selectedAdapter.state.scanning || false;
             adapterAvailable = selectedAdapter.state.available || false;
         }
@@ -98,7 +99,7 @@ function mapStateToProps(state) {
 
     return {
         discoveredDevices: discovery.devices,
-        isConnecting: connecting,
+        adapterIsConnecting: adapterIsConnecting,
         isScanning: scanning,
         isAdapterAvailable: adapterAvailable
     };
@@ -108,7 +109,7 @@ function mapDispatchToProps(dispatch) {
     let retval = Object.assign(
             {},
             bindActionCreators(DiscoveryActions, dispatch),
-            bindActionCreators(DeviceActions, dispatch)
+            bindActionCreators(AdapterActions, dispatch)
         );
 
     return retval;
@@ -123,7 +124,7 @@ DiscoveredDevices.propTypes = {
     discoveredDevices: PropTypes.object.isRequired,
     isAdapterAvailable: PropTypes.bool.isRequired,
     isScanning: PropTypes.bool.isRequired,
-    isConnecting: PropTypes.bool.isRequired,
+    adapterIsConnecting: PropTypes.bool.isRequired,
     clearDevicesList: PropTypes.func.isRequired,
     toggleScan: PropTypes.func.isRequired,
     connectToDevice: PropTypes.func.isRequired,

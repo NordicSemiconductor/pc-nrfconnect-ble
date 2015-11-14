@@ -19,6 +19,14 @@ export const ADAPTER_ADDED = 'ADAPTER_ADDED';
 export const ADAPTER_REMOVED = 'ADAPTER_REMOVED';
 export const ADAPTER_ERROR = 'ADAPTER_ERROR';
 export const ADAPTER_STATE_CHANGED = 'ADAPTER_STATE_CHANGED';
+
+export const DEVICE_CONNECT = 'DEVICE_CONNECT';
+export const DEVICE_CONNECTED = 'DEVICE_CONNECTED';
+export const DEVICE_DISCONNECT = 'DEVICE_DISCONNECT';
+export const DEVICE_DISCONNECTED = 'DEVICE_DISCONNECTED';
+export const DEVICE_CANCEL_CONNECT = 'DEVICE_CANCEL_CONNECT';
+export const DEVICE_CANCELLED_CONNECT = 'DEVICE_CANCELLED_CONNECT';
+
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
 import _ from 'underscore';
@@ -172,6 +180,121 @@ function adapterStateChangedAction(adapter, adapterState) {
     };
 }
 
+function _connectToDevice(dispatch, getState, device) {
+    return new Promise((resolve, reject) => {
+        const connectionParameters = {
+            min_conn_interval: 7.5,
+            max_conn_interval: 7.5,
+            slave_latency: 0,
+            conn_sup_timeout: 4000,
+        };
+
+        const scanParameters = {
+            active: true,
+            interval: 100,
+            window: 50,
+            timeout: 20,
+        };
+
+        const options = {
+            scanParams: scanParameters,
+            connParams: connectionParameters
+        };
+
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        if(adapterToUse === null) {
+            reject({adapter: null, error: `No adapter selected`});
+        }
+
+        dispatch(deviceConnectAction(device));
+
+        adapterToUse.once('deviceConnected', (device) => {
+            resolve(device);
+        });
+
+        adapterToUse.connect(
+            {address: device.address, type: 'BLE_GAP_ADDR_TYPE_RANDOM_STATIC'},
+            options,
+            (error) => {
+            if(error) {
+                reject({adapter: adapterToUse, device: device, error: error});
+            }
+        });
+    }).then(device => {
+        dispatch(deviceConnectedAction(device));
+    }).catch(errorData => {
+        dispatch(errorOccuredAction(errorData.adapter, errorData.error));
+    });
+}
+
+function _disconnectFromDevice(dispatch, getState, device) {
+}
+
+function _cancelConnect(dispatch, getState) {
+    return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        if(adapterToUse === null) {
+            reject({adapter: null, error: `No adapter selected`});
+        }
+
+        dispatch(deviceCancelConnectAction());
+
+/*
+        adapterToUse.once('deviceConnected', (device) => {
+            resolve(device);
+        });*/
+
+        adapterToUse.cancelConnect(
+            (error) => {
+            if(error) {
+                reject({error: error});
+            }
+
+            resolve();
+        });
+    }).then(device => {
+        dispatch(deviceCancelledConnectAction());
+    }).catch(errorData => {
+        dispatch(errorOccuredAction(errorData.error));
+    });
+}
+
+function deviceConnectAction(device) {
+    return {
+        type: DEVICE_CONNECT,
+        device
+    };
+}
+
+function deviceConnectedAction(device) {
+    return {
+        type: DEVICE_CONNECTED,
+        device
+    };
+}
+
+function deviceDisconnectedAction(device) {
+    return {
+        type: DEVICE_DISCONNECTED,
+        device
+    };
+}
+
+function deviceCancelledConnectAction() {
+    return {
+        type: DEVICE_CANCELLED_CONNECT,
+    };
+}
+
+function deviceCancelConnectAction() {
+    return {
+        type: DEVICE_CANCEL_CONNECT,
+    };
+}
+
+
 function errorOccuredAction(error) {
     return {
         type: ERROR_OCCURED,
@@ -194,5 +317,23 @@ export function openAdapter(adapter) {
 export function closeAdapter(adapter) {
     return dispatch => {
         return _closeAdapter(dispatch, adapter);
+    };
+}
+
+export function connectToDevice(device) {
+    return (dispatch, getState) => {
+        return _connectToDevice(dispatch, getState, device);
+    };
+}
+
+export function disconnectFromDevice(device) {
+    return (dispatch, getState) => {
+        return _disconnectFromDevice(dispatch, getState, device);
+    };
+}
+
+export function cancelConnect() {
+    return (dispatch, getState) => {
+        return _cancelConnect(dispatch, getState);
     };
 }

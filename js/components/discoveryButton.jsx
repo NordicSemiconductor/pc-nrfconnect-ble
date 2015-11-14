@@ -23,7 +23,7 @@ export default class DiscoveryButton extends Component {
     render() {
         const {
             isAdapterAvailable,
-            isConnecting,
+            adapterIsConnecting,
             scanInProgress,
             onScanClicked
         } = this.props;
@@ -43,7 +43,7 @@ export default class DiscoveryButton extends Component {
         }
 
         return (
-            <button title={hoverText} className="btn btn-primary btn-sm btn-nordic padded-row" disabled= {!isAdapterAvailable || isConnecting} onClick={() => onScanClicked()}>
+            <button title={hoverText} className="btn btn-primary btn-sm btn-nordic padded-row" disabled= {!isAdapterAvailable || adapterIsConnecting} onClick={() => onScanClicked()}>
                 <span className={iconName} />
                 {labelString}
             </button>
@@ -53,7 +53,7 @@ export default class DiscoveryButton extends Component {
 
 DiscoveryButton.propTypes = {
     isAdapterAvailable: PropTypes.bool.isRequired,
-    isConnecting: PropTypes.bool.isRequired,
+    adapterIsConnecting: PropTypes.bool.isRequired,
     scanInProgress: PropTypes.bool.isRequired,
     onScanClicked: PropTypes.func.isRequired
 };

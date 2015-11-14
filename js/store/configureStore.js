@@ -5,6 +5,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 
 import createLogger from 'redux-logger';
 import DevTools from '../containers/DevTools';
+import Immutable from 'immutable';
 
 import rootReducer from '../reducers';
 
@@ -14,6 +15,21 @@ function stateToJS(state) {
     return {...acc, [key]: state[key].toJS()};
   }, {});
 } */
+
+
+function immutableStateToJs(state) {
+    var newState = {};
+
+    for (var i of Object.keys(state)) {
+        if (Immutable.Iterable.isIterable(state[i])) {
+        newState[i] = state[i].toJS();
+        } else {
+        newState[i] = state[i];
+        }
+    }
+
+    return newState;
+}
 
 export default function configureStore(initialState) {
     const middleware = [
@@ -28,7 +44,8 @@ export default function configureStore(initialState) {
         finalCreateStore = applyMiddleware(...middleware)(createStore);
     } else {
         const logger = createLogger({
-            collapsed: true
+            collapsed: true,
+            transformer: immutableStateToJs
         });
 
         // Logger must be the last middleware in chain.

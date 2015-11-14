@@ -1,3 +1,5 @@
+'use strict';
+
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 
@@ -6,20 +8,10 @@ export default class DiscoveredDevice extends Component {
         super(props);
     }
 
-/*
-    _onConnect() {
-        connectionActions.connectToDevice(this.props.device);
-        this.state.connectingDeviceAddress = this.props.device.peer_addr.address;
-        this.state.isConnecting = true;
-    }
-
-    _onCancelConnect() {
-        connectionActions.cancelConnect(this.props.device);
-    }*/
-
     render() {
         const {
             device,
+            adapterIsConnecting,
             isConnecting,
             onConnect,
             onCancelConnect
@@ -46,8 +38,8 @@ export default class DiscoveredDevice extends Component {
                 </div>
                 <div className="device-body text-small">
                     <div className="discovered-device-address-line">
-                        <button onClick={isConnecting ? () => { onCancelConnect(device) } : () => { onConnect(device) }} className="btn btn-primary btn-xs btn-nordic" disabled={!isThisDevice && isConnecting}>
-                            {isThisDevice && isConnecting ? 'Cancel' : 'Connect'} <i className="icon-link"></i>
+                        <button onClick={adapterIsConnecting ? () => { onCancelConnect(device) } : () => { onConnect(device) }} className="btn btn-primary btn-xs btn-nordic" disabled={!isConnecting && adapterIsConnecting}>
+                            {isConnecting && adapterIsConnecting ? 'Cancel' : 'Connect'} <i className="icon-link"></i>
                         </button>
                         <div className="address-text">
                             {device.address}
@@ -68,7 +60,8 @@ export default class DiscoveredDevice extends Component {
 
 DiscoveredDevice.propTypes = {
     device: PropTypes.object.isRequired,
-    isConnecting: PropTypes.bool.isRequired,
+    adapterIsConnecting: PropTypes.bool.isRequired, // If adapter is currently connecting to a device
+    isConnecting: PropTypes.bool.isRequired, // If adapter is currently connecting to this device
     onConnect: PropTypes.func.isRequired,
     onCancelConnect: PropTypes.func.isRequired
 };

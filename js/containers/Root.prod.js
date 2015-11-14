@@ -1,3 +1,5 @@
+'use strict';
+
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 import { Provider } from 'react-redux';

@@ -99,6 +99,16 @@ function adapterError(state, adapter, error) {
     return retval;
 }
 
+function deviceConnect(state, device) {
+    let retval = Object.assign({}, state);
+    return retval;
+}
+
+function deviceConnected(state, device) {
+    let retval = Object.assign({}, state);
+    return retval;
+}
+
 function addError(state, error) {
     let retval = Object.assign({}, state);
     retval.errors.push(error);
@@ -134,6 +144,10 @@ export default function adapter(state =
             return adapterStateChanged(state, action.adapter, action.adapterState);
         case AdapterAction.ERROR_OCCURED:
             return addError(state, action.error);
+        case AdapterAction.DEVICE_CONNECT:
+            return deviceConnect(state, action.device);
+        case AdapterAction.DEVICE_CONNECTED:
+            return deviceConnected(state, action.device);
         default:
             return state;
     }
