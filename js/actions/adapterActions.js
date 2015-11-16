@@ -32,14 +32,27 @@ export const ERROR_OCCURED = 'ERROR_OCCURED';
 import _ from 'underscore';
 
 import { driver, api } from 'pc-ble-driver-js';
+
 const _adapterFactory = api.AdapterFactory.getInstance(driver);
 
 // Internal functions
+
+// This function shall only be used by Promise.reject calls.
+function makeError(data) {
+    let {adapter, device, error} = data;
+
+    return {
+        adapter: adapter,
+        device: device,
+        error: error
+    };
+}
+
 function _getAdapters(dispatch) {
     return new Promise((resolve, reject) => {
         _adapterFactory.getAdapters((error, adapters) => {
             if(error) {
-                reject(error);
+                reject(makeError({error:error}));
             } else {
                 resolve(adapters);
             }
@@ -52,8 +65,8 @@ function _getAdapters(dispatch) {
         _adapterFactory.on('removed', adapter => {
             dispatch(adapterRemovedAction(adapter));
         });
-        _adapterFactory.on('error', (error) => {
-            dispatch(errorOccuredAction(error));
+        _adapterFactory.on('error', error => {
+            dispatch(errorOccuredAction(undefined, error));
         });
 
         // Add the adapters to the store
@@ -61,7 +74,7 @@ function _getAdapters(dispatch) {
             dispatch(adapterAddedAction(adapter));
         });
     }).catch(error => {
-        dispatch(errorOccuredAction(error));
+        dispatch(errorOccuredAction(undefined, error));
     });
 }
 
@@ -80,13 +93,17 @@ function _openAdapter(dispatch, getState, adapter) {
             _closeAdapter(dispatch, getState().adapter.api.selectedAdapter);
         }
 
-        let adapterToUse = _.find(getState().adapter.api.adapters, x => { return x.adapterState.port === adapter; });
+        const adapterToUse = _.find(getState().adapter.api.adapters, x => { return x.adapterState.port === adapter; });
 
         if(adapterToUse === null) {
-            reject({adapter: null, error: `Not able to find ${adapter}.`});
+            reject(makeError({error: `Not able to find ${adapter}.`}));
         }
         // Listen to errors from this adapter since we are opening it now
         adapterToUse.on('error', error => {
+            // TODO: separate between what is an noen recoverable adapter error
+            // TODO: and a recoverable error.
+            // TODO: adapterErrorAction should only be used if it is an unrecoverable errors.
+            // TODO: errorOccuredAction should be used for recoverable errors.
             dispatch(adapterErrorAction(adapterToUse, error));
         });
 
@@ -99,7 +116,7 @@ function _openAdapter(dispatch, getState, adapter) {
 
         adapterToUse.open(options, error => {
             if(error) {
-                reject({adapter: adapterToUse, error: error});
+                reject(makeError({adapter: adapterToUse, error: error}));
             } else {
                 resolve(adapterToUse);
             }
@@ -115,7 +132,7 @@ function _closeAdapter(dispatch, adapter) {
     return new Promise((resolve, reject) => {
         adapter.close(error => {
             if(error) {
-                reject({ adapter: adapter, error: error});
+                reject(makeError({ adapter: adapter, error: error}));
             } else {
                 resolve(adapter);
             }
@@ -203,24 +220,25 @@ function _connectToDevice(dispatch, getState, device) {
 
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
-        if(adapterToUse === null) {
-            reject({adapter: null, error: `No adapter selected`});
+        if (adapterToUse === null) {
+            reject(makeError({adapter: null, error: `No adapter selected`}));
         }
 
         dispatch(deviceConnectAction(device));
 
-        adapterToUse.once('deviceConnected', (device) => {
+        adapterToUse.once('deviceConnected', device => {
             resolve(device);
         });
 
         adapterToUse.connect(
-            {address: device.address, type: 'BLE_GAP_ADDR_TYPE_RANDOM_STATIC'},
+            { address: device.address, type: 'BLE_GAP_ADDR_TYPE_RANDOM_STATIC' },
             options,
-            (error) => {
-            if(error) {
-                reject({adapter: adapterToUse, device: device, error: error});
+            error => {
+                if (error) {
+                    reject(makeError({adapter: adapterToUse, device: device, error: error}));
+                }
             }
-        });
+        );
     }).then(device => {
         dispatch(deviceConnectedAction(device));
     }).catch(errorData => {
@@ -236,28 +254,23 @@ function _cancelConnect(dispatch, getState) {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if(adapterToUse === null) {
-            reject({adapter: null, error: `No adapter selected`});
+            reject(makeError({error: `No adapter selected`}));
         }
 
         dispatch(deviceCancelConnectAction());
 
-/*
-        adapterToUse.once('deviceConnected', (device) => {
-            resolve(device);
-        });*/
-
         adapterToUse.cancelConnect(
             (error) => {
             if(error) {
-                reject({error: error});
+                reject(makeError({adapter: adapterToUse, error: error}));
             }
 
             resolve();
         });
     }).then(device => {
         dispatch(deviceCancelledConnectAction());
-    }).catch(errorData => {
-        dispatch(errorOccuredAction(errorData.error));
+    }).catch(error => {
+        dispatch(errorOccuredAction(error.adapter, error.error));
     });
 }
 
@@ -295,9 +308,10 @@ function deviceCancelConnectAction() {
 }
 
 
-function errorOccuredAction(error) {
+function errorOccuredAction(adapter, error) {
     return {
         type: ERROR_OCCURED,
+        adapter,
         error
     };
 }

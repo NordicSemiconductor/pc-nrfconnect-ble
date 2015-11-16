@@ -223,8 +223,8 @@ try {
 
 } catch(exception) {}
 
-const logger = new (winston.Logger)({
+export const logger = new (winston.Logger)({
     transports: transports
 });
 
-module.exports = logger;
+logger.info(`For a detailed log file see: ${defaultLogFile}`);

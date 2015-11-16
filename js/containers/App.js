@@ -16,8 +16,6 @@ import $ from 'jquery';
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 
-import Reflux from 'reflux';
-
 // import hotkey from 'react-hotkey';
 
 import BleNodeContainer from '../components/node';

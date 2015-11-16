@@ -1,7 +1,7 @@
 'use strict';
 
 import EventEmitter from 'events';
-import logger from './logging';
+var logger = require('./logger').logger;
 
 const LOG_UPDATE_INTERVAL = 400;
 
@@ -9,7 +9,7 @@ class LogReader extends EventEmitter {
     constructor(updateInterval = LOG_UPDATE_INTERVAL) {
         super();
         this.updateInterval = updateInterval;
-        this.lastLogEntryId = 0;
+        this.lastLogEntryId = -1;
     }
 
     start() {

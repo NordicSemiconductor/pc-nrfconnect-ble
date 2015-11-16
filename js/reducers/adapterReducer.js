@@ -4,6 +4,7 @@
 const DEFAULT_ADAPTER_STATUS = 'Select com port';
 
 import * as AdapterAction from '../actions/adapterActions';
+import { logger } from '../logging';
 
 function maintainNoneField(state) {
     return;
@@ -44,13 +45,15 @@ function removeAdapter(state, adapter) {
 
         maintainNoneField(retval);
     } else {
-        console.log(`You removed an adapter I did not know about: ${adapter.adapterStatus.port}.`);
+        logger.error(`You removed an adapter I did not know about: ${adapter.adapterStatus.port}.`);
     }
 
     return retval;
 }
 
 function openAdapter(state, adapter) {
+    logger.info(`Opening adapter ${adapter.adapterState.port}`);
+
     let retval = Object.assign({}, state);
     retval.adapterStatus = adapter.adapterState.port;
     return retval;
@@ -58,6 +61,8 @@ function openAdapter(state, adapter) {
 
 function adapterOpened(state, adapter) {
     let retval = Object.assign({}, state);
+
+    logger.info(`Adapter ${adapter.adapterState.port} opened`);
 
     // Since we maintain retval.api.adapters and retval.adapters simultaniously
     // we use adapter index from retval.api.adapters to access the "same" adapter
@@ -90,6 +95,9 @@ function closeAdapter(state, adapter) {
 }
 
 function adapterError(state, adapter, error) {
+    logger.error(`Error on adapter ${adapter.adapterState.port}: ${error.message}`);
+    logger.debug(error.description);
+
     let retval = Object.assign({}, state);
     retval.adapterStatus = 'Error connecting';
     retval.adapterIndicator = 'error';
@@ -110,8 +118,9 @@ function deviceConnected(state, device) {
 }
 
 function addError(state, error) {
+    logger.error(error);
     let retval = Object.assign({}, state);
-    retval.errors.push(error);
+    retval.errors.push(error.message);
     return retval;
 }
 
