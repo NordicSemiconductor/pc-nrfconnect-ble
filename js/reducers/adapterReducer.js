@@ -24,8 +24,8 @@ function addAdapter(state, adapter) {
     retval.api.adapters.push(adapter);
 
     retval.adapters.push({
-        port: adapter.adapterState.port,
-        state: adapter.adapterState
+        port: adapter.state.port,
+        state: adapter.state
     });
 
     maintainNoneField(retval);
@@ -52,17 +52,17 @@ function removeAdapter(state, adapter) {
 }
 
 function openAdapter(state, adapter) {
-    logger.info(`Opening adapter ${adapter.adapterState.port}`);
+    logger.info(`Opening adapter ${adapter.state.port}`);
 
     let retval = Object.assign({}, state);
-    retval.adapterStatus = adapter.adapterState.port;
+    retval.adapterStatus = adapter.state.port;
     return retval;
 }
 
 function adapterOpened(state, adapter) {
     let retval = Object.assign({}, state);
 
-    logger.info(`Adapter ${adapter.adapterState.port} opened`);
+    logger.info(`Adapter ${adapter.state.port} opened`);
 
     // Since we maintain retval.api.adapters and retval.adapters simultaniously
     // we use adapter index from retval.api.adapters to access the "same" adapter
@@ -71,7 +71,7 @@ function adapterOpened(state, adapter) {
 
     retval.api.selectedAdapter = adapter;
     retval.selectedAdapter = adapterIndex;
-    retval.adapterStatus = adapter.adapterState.port;
+    retval.adapterStatus = adapter.state.port;
     retval.adapterIndicator = 'on';
     return retval;
 }
@@ -95,7 +95,7 @@ function closeAdapter(state, adapter) {
 }
 
 function adapterError(state, adapter, error) {
-    logger.error(`Error on adapter ${adapter.adapterState.port}: ${error.message}`);
+    logger.error(`Error on adapter ${adapter.state.port}: ${error.message}`);
     logger.debug(error.description);
 
     let retval = Object.assign({}, state);

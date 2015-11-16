@@ -93,7 +93,7 @@ function _openAdapter(dispatch, getState, adapter) {
             _closeAdapter(dispatch, getState().adapter.api.selectedAdapter);
         }
 
-        const adapterToUse = _.find(getState().adapter.api.adapters, x => { return x.adapterState.port === adapter; });
+        const adapterToUse = _.find(getState().adapter.api.adapters, x => { return x.state.port === adapter; });
 
         if(adapterToUse === null) {
             reject(makeError({error: `Not able to find ${adapter}.`}));
@@ -108,8 +108,8 @@ function _openAdapter(dispatch, getState, adapter) {
         });
 
         // Listen to adapter changes
-        adapterToUse.on('adapterStateChanged', adapterState => {
-            dispatch(adapterStateChangedAction(adapterToUse, adapterState));
+        adapterToUse.on('stateChanged', state => {
+            dispatch(adapterStateChangedAction(adapterToUse, state));
         });
 
         dispatch(adapterOpenAction(adapterToUse));
