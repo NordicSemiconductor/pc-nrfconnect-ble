@@ -104,7 +104,7 @@ function _openAdapter(dispatch, getState, adapter) {
             // TODO: and a recoverable error.
             // TODO: adapterErrorAction should only be used if it is an unrecoverable errors.
             // TODO: errorOccuredAction should be used for recoverable errors.
-            dispatch(adapterErrorAction(adapterToUse, error));
+            dispatch(errorOccuredAction(adapterToUse, error));
         });
 
         // Listen to adapter changes
@@ -189,11 +189,11 @@ function adapterErrorAction(adapter, error) {
     };
 }
 
-function adapterStateChangedAction(adapter, adapterState) {
+function adapterStateChangedAction(adapter, state) {
     return {
         type: ADAPTER_STATE_CHANGED,
         adapter,
-        adapterState
+        state
     };
 }
 
@@ -235,7 +235,7 @@ function _connectToDevice(dispatch, getState, device) {
             options,
             error => {
                 if (error) {
-                    reject(makeError({adapter: adapterToUse, device: device, error: error}));
+                    reject(makeError({ adapter: adapterToUse, device: device, error: { message: error } }));
                 }
             }
         );

@@ -118,7 +118,17 @@ function deviceConnected(state, device) {
 }
 
 function addError(state, error) {
-    logger.error(error);
+    if(error.message === undefined) {
+        console.log(`Error does not contain a message! Something is wrong!`);
+        return;
+    }
+
+    logger.error(error.message);
+
+    if(error.description) {
+        logger.debug(error.description);
+    }
+
     let retval = Object.assign({}, state);
     retval.errors.push(error.message);
     return retval;
@@ -150,7 +160,7 @@ export default function adapter(state =
         case AdapterAction.ADAPTER_ERROR:
             return adapterError(state, action.adapter, action.error);
         case AdapterAction.ADAPTER_STATE_CHANGED:
-            return adapterStateChanged(state, action.adapter, action.adapterState);
+            return adapterStateChanged(state, action.adapter, action.state);
         case AdapterAction.ERROR_OCCURED:
             return addError(state, action.error);
         case AdapterAction.DEVICE_CONNECT:
