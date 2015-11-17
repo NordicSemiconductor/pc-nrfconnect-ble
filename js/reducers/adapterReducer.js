@@ -26,7 +26,7 @@ function addAdapter(state, adapter) {
     retval.adapters.push({
         port: adapter.state.port,
         state: adapter.state,
-        graph: [],
+        graph: [{ id: 'central', ancestorOf: [] }],
     });
 
     maintainNoneField(retval);
