@@ -38,9 +38,9 @@ class ConnectionMap extends Component {
         let connectedDevices = [];
 
         if (adapter !== null && adapter.state.available && graph !== null) {
-            for (let i = 0; i < graph.length; i++) {
+            for (let i = 0; i < graph.size; i++) {
                 let connectedDeviceCounter = 0;
-                const node = graph[i];
+                const node = graph.get(i);
 
                 if (node.id === 'central') {
                     central = (<CentralDevice id={node.id} name={adapter.state.name} address={adapter.state.address.address} />);
@@ -95,6 +95,6 @@ export default connect(
 )(ConnectionMap);
 
 ConnectionMap.propTypes = {
-    graph: PropTypes.array,
+    graph: PropTypes.object,
     adapter: PropTypes.object,
 }

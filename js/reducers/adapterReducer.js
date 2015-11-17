@@ -3,8 +3,25 @@
 // const NONE_TEXT = 'None';
 const DEFAULT_ADAPTER_STATUS = 'Select com port';
 
+import Immutable, { Record, List } from 'immutable';
+
 import * as AdapterAction from '../actions/adapterActions';
 import { logger } from '../logging';
+
+function getSelectedAdapter(state) {
+    return {
+        adapter: state.adapters[state.selectedAdapter],
+        index: state.selectedAdapter
+    };
+}
+
+function findGraphNode(state, nodeId) {
+    const { adapter } = getSelectedAdapter(state);
+
+    return adapter.graph.find(function(node) {
+        return node.id === nodeId;
+    });
+}
 
 function maintainNoneField(state) {
     return;
@@ -18,16 +35,30 @@ function maintainNoneField(state) {
     } */
 }
 
+// State records
+const AdapterInitialState = Record({
+    port: null,
+    state: null,
+    graph: List(),
+    graphIdCounter: 0
+});
+
 function addAdapter(state, adapter) {
     let retval = Object.assign({}, state);
 
     retval.api.adapters.push(adapter);
 
-    retval.adapters.push({
+    let newAdapter = new AdapterInitialState();
+    let newGraph = Immutable.List.of({ id: 'central', ancestorOf: [] });
+
+    newAdapter = newAdapter.merge({
         port: adapter.state.port,
         state: adapter.state,
-        graph: [{ id: 'central', ancestorOf: [] }],
+        graph: newGraph,
+        graphIdCounter: 0,
     });
+
+    retval.adapters.push(newAdapter);
 
     maintainNoneField(retval);
     return retval;
@@ -71,6 +102,7 @@ function adapterOpened(state, adapter) {
     const adapterIndex = retval.api.adapters.indexOf(adapter);
 
     retval.api.selectedAdapter = adapter;
+
     retval.selectedAdapter = adapterIndex;
     retval.adapterStatus = adapter.state.port;
     retval.adapterIndicator = 'on';
@@ -79,12 +111,11 @@ function adapterOpened(state, adapter) {
 }
 
 function adapterStateChanged(state, adapter, adapterState) {
-    const retval = Object.assign({}, state);
+    const adapterIndex = state.api.adapters.indexOf(adapter);
 
-    const adapterIndex = retval.api.adapters.indexOf(adapter);
-    retval.adapters[adapterIndex].state = adapterState;
-
-    return retval;
+    let _adapter = state.adapters[adapterIndex];
+    state.adapters[adapterIndex] = _adapter.update('state', state => adapterState);
+    return state;
 }
 
 function closeAdapter(state, adapter) {
@@ -94,7 +125,7 @@ function closeAdapter(state, adapter) {
     retval.api.selectedAdapter = null;
     retval.selectedAdapter = null;
     retval.adapterStatus = DEFAULT_ADAPTER_STATUS;
-    retval.graph = [];
+    retval.graphIdCounter = 0;
 
     return retval;
 }
@@ -120,7 +151,48 @@ function deviceConnect(state, device) {
 }
 
 function deviceConnected(state, device) {
+    if (device.address === undefined) {
+        return state;
+    }
+
+    // TODO: Shallow copy my friend; we need to look into how to make children immutable.
     const retval = Object.assign({}, state);
+    const { adapter, index } = getSelectedAdapter(retval);
+
+    const oldNode = adapter.graph.find(function(node) {
+        if (node.device !== undefined) {
+            return node.device.instanceId === device.instanceId;
+        } else {
+            return false;
+        }
+    });
+
+    // Only add a new node if does not exist in the graph
+    if (oldNode !== undefined) {
+        oldNode.device.connected = true;
+    } else {
+        const graphIdCounter = adapter.get('graphIdCounter');
+        const newNodeId = 'node' + graphIdCounter;
+
+        retval.adapters[index] =
+            retval.adapters[index]
+                .update('graph', graph => graph.push({
+                    id: newNodeId,
+                    device: device }));
+
+        retval.adapters[index] =
+            retval.adapters[index]
+                .update('graphIdCounter', graphIdCounter => ++graphIdCounter);
+
+        const centralNode = findGraphNode(retval, 'central');
+
+        if(centralNode === undefined) {
+            logger.silly('Central node not found.');
+            return retval;
+        }
+
+        centralNode.ancestorOf.push(newNodeId);
+    }
 
     return retval;
 }

@@ -33,12 +33,12 @@ export default class CentralDevice extends Component {
         };
 
         return (
-            <div id={this.props.id} className="device main-device standalone" style={style}>
+            <div id={id} className="device main-device standalone" style={style}>
                 <img className="center-block" src="resources/nordic_usb_icon.png" height="41" width="16"/>
                 <div className="device-body text-small">
                     <div>
                         <div className="role-flag pull-right">Central</div>
-                        <strong>{this.props.name}</strong>
+                        <strong>{name}</strong>
                     </div>
                     <div className="address-text">{address}</div>
                 </div>
@@ -48,7 +48,7 @@ export default class CentralDevice extends Component {
 }
 
 CentralDevice.propTypes = {
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
 }

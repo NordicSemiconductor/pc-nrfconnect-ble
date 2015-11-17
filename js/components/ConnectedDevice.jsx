@@ -15,8 +15,8 @@
 import React, { Component } from 'react';
 import {Dropdown, MenuItem} from 'react-bootstrap';
 
-import Connector from './Connector.jsx';
-import prepareDeviceData from '../common/deviceProcessing.js';
+import Connector from './Connector';
+import { prepareDeviceData } from '../common/deviceProcessing';
 //import {connectionActions, eventTypes} from '../actions/connectionActions.js';
 
 export default class ConnectedDevice extends Component {

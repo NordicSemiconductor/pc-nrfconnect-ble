@@ -12,8 +12,8 @@
 
 'use strict';
 
-var MIN_RSSI = -100;
-var MAX_RSSI = -45;
+const MIN_RSSI = -100;
+const MAX_RSSI = -45;
 
 function mapRange(n, fromMin, fromMax, toMin, toMax) {
     //scale number n from the range [fromMin, fromMax] to [toMin, toMax]
@@ -25,12 +25,10 @@ function mapRange(n, fromMin, fromMax, toMin, toMax) {
 export function prepareDeviceData(device) {
     return {
         time: new Date(device.time),
-        name: (device.data
-            ? (device.data.BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME || device.data.BLE_GAP_AD_TYPE_SHORT_LOCAL_NAME || "<Unkown name>")
-            : "<Unknown name>"),
-        flags: device.processed ? device.processed.flags : [],
-        services: device.processed && device.processed.services ? device.processed.services : [],
-        address: device.peer_addr.address,
+        name: device.name !== undefined ? device.name : '<Unknown name>',
+        flags: device.flags,
+        services: device.services,
+        address: device.address,
         rssi: device.rssi,
         rssi_level: mapRange(device.rssi, MIN_RSSI, MAX_RSSI, 4, 20)
     };

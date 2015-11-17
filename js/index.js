@@ -12,7 +12,7 @@
 
 'use strict';
 
-require("babel/register");
+require('babel/register');
 
 //process.env.NODE_ENV = 'production';
 process.env.NODE_ENV = 'development';
@@ -20,7 +20,7 @@ process.env.NODE_ENV = 'development';
 var ReactDOM = require('react-dom');
 var React = require('react');
 
-var root = require('./js/containers/Root.js');
+var root = require('./js/containers/Root');
 
 var configureStore = require('./js/store/configureStore');
 var initialState = window.__INITIAL_STATE__ || {};

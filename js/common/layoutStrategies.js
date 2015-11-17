@@ -1,12 +1,12 @@
 'use strict';
 
 export function horizontal(sourceRect, targetRect, strokeWidth) {
-    const sourceRectMid = sourceRect.top - targetRect.top + sourceRect.height/2;
-    const targetRectMid = (targetRect.height/2);
+    const sourceRectMid = sourceRect.top - targetRect.top + sourceRect.height / 2;
+    const targetRectMid = (targetRect.height / 2);
 
     function calculateBoundingBox(){
-        const top = -(strokeWidth + 1)/2 + (sourceRectMid < targetRectMid ? sourceRectMid : targetRectMid);
-        const height = 2*((strokeWidth + 1)/2) + Math.abs(sourceRectMid - targetRectMid);
+        const top = -(strokeWidth + 1) / 2 + (sourceRectMid < targetRectMid ? sourceRectMid : targetRectMid);
+        const height = 2*((strokeWidth + 1) / 2) + Math.abs(sourceRectMid - targetRectMid);
         const width = targetRect.left - (sourceRect.left + sourceRect.width);
 
         return {
@@ -23,8 +23,8 @@ export function horizontal(sourceRect, targetRect, strokeWidth) {
 
     const lineCoordinates = [
         {x: 0, y: sourceYCoordinate},
-        {x: connectorBox.width/2, y: sourceYCoordinate},
-        {x: connectorBox.width/2, y: targetYCoordinate},
+        {x: connectorBox.width / 2, y: sourceYCoordinate},
+        {x: connectorBox.width / 2, y: targetYCoordinate},
         {x: connectorBox.width,   y: targetYCoordinate}];
 
     return {
