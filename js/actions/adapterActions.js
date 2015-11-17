@@ -118,13 +118,25 @@ function _openAdapter(dispatch, getState, adapter) {
             if(error) {
                 reject(makeError({adapter: adapterToUse, error: error}));
             } else {
-                resolve(adapterToUse);
+                adapterToUse.getState((error, state) => {
+                    if(error) {
+                        reject(makeError({ adapter: adapterToUse, error: error }));
+                    } else {
+                        resolve(adapterToUse);
+                    }
+                });
             }
         });
     }).then(adapter => {
         dispatch(adapterOpenedAction(adapter));
     }).catch(errorData => {
-        dispatch(adapterErrorAction(errorData.adapter, errorData.error));
+        // Check if the error is message is of our "standard" type made by makeError
+        if (errorData.error === undefined && errorData.adapter === undefined) {
+            dispatch(errorOccuredAction(undefined, errorData));
+        } else {
+            dispatch(adapterErrorAction(errorData.adapter, errorData.error));
+        }
+
     });
 }
 

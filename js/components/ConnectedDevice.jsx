@@ -11,19 +11,21 @@
  */
 
 'use strict';
-import React from 'react';
-import {Dropdown, MenuItem} from 'react-bootstrap';
-import Connector from './Connector.jsx';
-import {connectionActions, eventTypes} from '../actions/connectionActions.js';
-import prepareDeviceData from '../common/deviceProcessing.js';
 
-var ConnectedDevice = React.createClass({
-    getInitialState: function() {
-        return {
-            connectorCanBeDrawn: false
-        };
-    },
-    _onSelect: function(event, eventKey) {
+import React, { Component } from 'react';
+import {Dropdown, MenuItem} from 'react-bootstrap';
+
+import Connector from './Connector.jsx';
+import prepareDeviceData from '../common/deviceProcessing.js';
+//import {connectionActions, eventTypes} from '../actions/connectionActions.js';
+
+export default class ConnectedDevice extends Component {
+    constructor(props) {
+        super(props);
+        this.connectorCanBeDrawn = false;
+    }
+
+    _onSelect(event, eventKey) {
         console.log(eventKey);
         switch(eventKey) {
             case "Disconnect":
@@ -37,17 +39,28 @@ var ConnectedDevice = React.createClass({
                 connectionActions.connectionParametersUpdateRequest(event, eventTypes.userInitiatedConnectionUpdate);
                 break;
         }
-    },
-    render: function() {
-        var device = prepareDeviceData(this.props.device);
-        var role = this.props.node.id === "central" ? "Central" : "Peripheral";
-        var connected = !this.props.node.connectionLost;
-        var style={
+    }
+
+    render() {
+        const {
+            node,
+            device,
+            id,
+            sourceId,
+            layout
+        } = this.props;
+
+        const _device = prepareDeviceData(device);
+        const role = node.id === "central" ? "Central" : "Peripheral";
+        const connected = !node.connectionLost;
+
+        const style={
             width: '250px',
-            opacity: this.props.node.connectionLost ? 0.5 : 1.0
+            opacity: node.connectionLost ? 0.5 : 1.0
         };
+
         return (
-            <div id={this.props.id} className="device standalone" style={style}>
+            <div id={id} className="device standalone" style={style}>
                 <div className="top-bar">
                 {
                  //   <i className={connected ? "icon-link" : "icon-link-broken" }></i>
@@ -60,6 +73,7 @@ var ConnectedDevice = React.createClass({
                  //   </div>
                 }
                 </div>
+
                 <div className="device-body text-small" >
                     <div>
                         <div className="pull-right">
@@ -77,19 +91,15 @@ var ConnectedDevice = React.createClass({
                         <div className="role-flag pull-right">{role}</div>
                         <strong>{device.name}</strong>
                     </div>
-                    <div className="address-text">{device.address}</div>
+                    <div className="address-text">{_device.address}</div>
                     <div className="flag-line">
-                        {device.services.map(function(service, index) {
+                        {_device.services.map(function(service, index) {
                             return (<div key={index} className="device-flag">{service}</div>)
                         })}
                     </div>
                 </div>
-                <Connector sourceId={this.props.sourceId} targetId={this.props.id} device={this.props.device} layout={this.props.layout}/>
+                <Connector sourceId={sourceId} targetId={id} device={_device} layout={layout}/>
             </div>
         );
-    },
-    componentDidMount: function() {
-        this.setState({connectorCanBeDrawn: true});
     }
-});
-module.exports = ConnectedDevice;
+}

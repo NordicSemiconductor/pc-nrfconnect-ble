@@ -25,7 +25,8 @@ function addAdapter(state, adapter) {
 
     retval.adapters.push({
         port: adapter.state.port,
-        state: adapter.state
+        state: adapter.state,
+        graph: [],
     });
 
     maintainNoneField(retval);
@@ -60,7 +61,7 @@ function openAdapter(state, adapter) {
 }
 
 function adapterOpened(state, adapter) {
-    let retval = Object.assign({}, state);
+    const retval = Object.assign({}, state);
 
     logger.info(`Adapter ${adapter.state.port} opened`);
 
@@ -73,11 +74,12 @@ function adapterOpened(state, adapter) {
     retval.selectedAdapter = adapterIndex;
     retval.adapterStatus = adapter.state.port;
     retval.adapterIndicator = 'on';
+
     return retval;
 }
 
 function adapterStateChanged(state, adapter, adapterState) {
-    let retval = Object.assign({}, state);
+    const retval = Object.assign({}, state);
 
     const adapterIndex = retval.api.adapters.indexOf(adapter);
     retval.adapters[adapterIndex].state = adapterState;
@@ -86,11 +88,14 @@ function adapterStateChanged(state, adapter, adapterState) {
 }
 
 function closeAdapter(state, adapter) {
-    let retval = Object.assign({}, state);
+    const retval = Object.assign({}, state);
+
     retval.adapterIndicator = 'off';
     retval.api.selectedAdapter = null;
     retval.selectedAdapter = null;
     retval.adapterStatus = DEFAULT_ADAPTER_STATUS;
+    retval.graph = [];
+
     return retval;
 }
 
@@ -98,22 +103,25 @@ function adapterError(state, adapter, error) {
     logger.error(`Error on adapter ${adapter.state.port}: ${error.message}`);
     logger.debug(error.description);
 
-    let retval = Object.assign({}, state);
+    const retval = Object.assign({}, state);
     retval.adapterStatus = 'Error connecting';
     retval.adapterIndicator = 'error';
     retval.api.selectedAdapter = null;
     retval.selectedAdapter = null;
     retval.errors.push(error.message);
+
     return retval;
 }
 
 function deviceConnect(state, device) {
-    let retval = Object.assign({}, state);
+    const retval = Object.assign({}, state);
+
     return retval;
 }
 
 function deviceConnected(state, device) {
-    let retval = Object.assign({}, state);
+    const retval = Object.assign({}, state);
+
     return retval;
 }
 
@@ -129,7 +137,7 @@ function addError(state, error) {
         logger.debug(error.description);
     }
 
-    let retval = Object.assign({}, state);
+    const retval = Object.assign({}, state);
     retval.errors.push(error.message);
     return retval;
 }
@@ -143,7 +151,7 @@ export default function adapter(state =
         adapters: [],
         adapterStatus: DEFAULT_ADAPTER_STATUS,
         adapterIndicator: 'off',
-        selectedAdapter: null,
+        selectedAdapter: null, // index of selected adapter in .adapters (not api.adapters)
         errors: [],
     }, action) {
     switch (action.type) {

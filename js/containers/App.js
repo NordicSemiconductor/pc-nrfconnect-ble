@@ -12,30 +12,24 @@
 
 'use strict';
 
-import $ from 'jquery';
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 
 // import hotkey from 'react-hotkey';
 
-import BleNodeContainer from '../components/node';
-import DeviceDetailsContainer from '../components/deviceDetails';
+// import ConnectionMap from './ConnectionMap';
+
+//import DeviceDetailsContainer from '../components/deviceDetails';
 //import ConnectionUpdateRequestModal from './components/ConnectionUpdateRequestModal.jsx';
 import EventViewer from '../components/EventViewer';
-import ServerSetup from '../components/ServerSetup';
+// import ServerSetup from '../components/ServerSetup';
 
-import LogViewer from '../containers/LogViewer';
 import { logger } from '../logging';
 
-import DiscoveredDevices from './DiscoveredDevices';
-
-import logActions from '../actions/logActions';
-import DiscoveryActions from '../actions/discoveryActions';
-import driverActions from '../actions/bleDriverActions';
-
 import NavBar from '../components/navbar.jsx';
-
-import DevTools from '../containers/DevTools';
+import LogViewer from './LogViewer';
+import DiscoveredDevices from './DiscoveredDevices';
+import ConnectionMap from './ConnectionMap';
 
 import { findAdapters } from '../actions/adapterActions';
 
@@ -70,7 +64,6 @@ export default class App extends Component {
         })();
 
         // handle event
-
         window.addEventListener("optimizedResize", () => {
             this.setState({windowHeight: window.innerHeight}); //document.documentElement.clientHeight;
         });
@@ -95,11 +88,15 @@ export default class App extends Component {
           height: this.state.windowHeight - topBarHeight
         };
         var mainAreaHeight = layoutStyle.height - 189;
-
+/*
         var active = this.state.currentlyShowing === 'ConnectionMap' ? <BleNodeContainer style={{height: mainAreaHeight}}/>
                    : this.state.currentlyShowing === 'DeviceDetails' ? <DeviceDetailsContainer style={{height: mainAreaHeight}}/>
                    : this.state.currentlyShowing === 'ServerSetup'   ? <ServerSetup style={{height: mainAreaHeight}}/>
-                   : null;
+                   : null; */
+
+        var active = <ConnectionMap style={{height: mainAreaHeight}}/>;
+        //let active = null;
+
         return (
             <div id="main-area-wrapper">
                 <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />

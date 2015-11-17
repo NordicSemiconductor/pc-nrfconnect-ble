@@ -12,15 +12,26 @@
 
 'use strict';
 
-import React from 'react';
+import React, { PropTypes, Component } from 'react';
 
-var CentralDevice = React.createClass({
-    render: function() {
-        var style={
+export default class CentralDevice extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        const {
+            id,
+            name,
+            address
+        } = this.props;
+
+        const style={
             position: 'relative',
             width: '250px',
             height: '102px'
         };
+
         return (
             <div id={this.props.id} className="device main-device standalone" style={style}>
                 <img className="center-block" src="resources/nordic_usb_icon.png" height="41" width="16"/>
@@ -29,11 +40,15 @@ var CentralDevice = React.createClass({
                         <div className="role-flag pull-right">Central</div>
                         <strong>{this.props.name}</strong>
                     </div>
-                    <div className="address-text">{this.props.address}</div>    
+                    <div className="address-text">{address}</div>
                 </div>
             </div>
         );
     }
-});
+}
 
-module.exports = CentralDevice;
+CentralDevice.propTypes = {
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+}

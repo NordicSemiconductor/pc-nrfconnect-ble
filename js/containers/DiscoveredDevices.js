@@ -106,7 +106,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    let retval = Object.assign(
+    const retval = Object.assign(
             {},
             bindActionCreators(DiscoveryActions, dispatch),
             bindActionCreators(AdapterActions, dispatch)

@@ -36,9 +36,7 @@ function deviceConnect(state, device) {
 }
 
 function deviceConnected(state, device) {
-    const newDevice = state.devices.get(device.address);
-    newDevice.isConnecting = false;
-    return state.update('devices', devices => devices.set(device.address, newDevice));
+    return state.update('devices', devices => devices.delete(device.address));
 }
 
 function deviceCancelConnect(state) {
