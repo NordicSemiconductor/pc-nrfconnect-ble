@@ -15,13 +15,20 @@
 import React, { Component, PropTypes } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
-import Connector from './Connector';
+import { Connector } from './Connector';
 import { prepareDeviceData } from '../common/deviceProcessing';
 
 export default class ConnectedDevice extends Component {
     constructor(props) {
         super(props);
+
+        // I guess this is a hack to try to redraw the line, since it when beeing created for the first time the id has not been rendered in the DOM tree
         this.connectorCanBeDrawn = false;
+    }
+
+    componentDidMount() {
+        // See hack comment above
+        this.connectorCanBeDrawn = true;
     }
 
     _onSelect(event, eventKey) {
@@ -76,7 +83,7 @@ export default class ConnectedDevice extends Component {
                 <div className="device-body text-small" >
                     <div>
                         <div className="pull-right">
-                            <Dropdown onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
+                            <Dropdown id="connectionDropDown" onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
                                 <Dropdown.Toggle noCaret>
                                     <span className="icon-cog" aria-hidden="true" />
                                 </Dropdown.Toggle>
@@ -97,6 +104,7 @@ export default class ConnectedDevice extends Component {
                         })}
                     </div>
                 </div>
+                <Connector sourceId={sourceId} targetId={id} device={_device} layout={layout} />
             </div>
         );
     }

@@ -86,7 +86,7 @@ export class Connector extends Component {
     _generateLines(lineCoordinates) {
         var result = [];
 
-        for (let i=0; i < lineCoordinates.length-1; i++) {
+        for (let i = 0; i < lineCoordinates.length-1; i++) {
             result.push(<line stroke="black" strokeWidth="3" strokeLinecap="square" key={i} x1={lineCoordinates[i].x} y1={lineCoordinates[i].y} x2={lineCoordinates[i+1].x} y2={lineCoordinates[i+1].y}/>);
         }
 
@@ -150,9 +150,10 @@ export class Connector extends Component {
     }
 }
 
+
 Connector.propTypes = {
     device: PropTypes.object.isRequired,
-    sourceId: PropTypes.object.isRequired,
-    targetId:PropTypes.object.isRequired,
-    layout:  PropTypes.string.isRequired,
+    sourceId: PropTypes.string.isRequired,
+    targetId: PropTypes.string.isRequired,
+    layout: PropTypes.string.isRequired,
 };
