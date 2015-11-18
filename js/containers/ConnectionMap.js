@@ -32,6 +32,9 @@ class ConnectionMap extends Component {
         const {
             graph,
             adapter,
+            disconnectFromDevice,
+            bondWithDevice,
+            updateDeviceConnectionParameters,
         } = this.props;
 
         let central;
@@ -46,7 +49,7 @@ class ConnectionMap extends Component {
                     central = (<CentralDevice id={node.id} name={adapter.state.name} address={adapter.state.address.address} />);
                 } else {
                     connectedDeviceCounter++;
-                    connectedDevices.push(<ConnectedDevice id={node.id} sourceId='central' key={i} node={node} device={node.device} layout="horizontal"/>);
+                    connectedDevices.push(<ConnectedDevice id={node.id} sourceId="central" key={i} node={node} layout="horizontal" onDisconnect={() => disconnectFromDevice(node.device)} />);
                 }
             }
         }
@@ -76,7 +79,7 @@ function mapStateToProps(state) {
         return {
             adapter: selectedAdapter,
             graph: selectedAdapter.graph,
-        }
+        };
     }
 }
 
@@ -97,4 +100,7 @@ export default connect(
 ConnectionMap.propTypes = {
     graph: PropTypes.object,
     adapter: PropTypes.object,
-}
+    disconnectFromDevice: PropTypes.func.isRequired,
+    bondWithDevice: PropTypes.func.isRequired,
+    updateDeviceConnectionParameters: PropTypes.func.isRequired,
+};

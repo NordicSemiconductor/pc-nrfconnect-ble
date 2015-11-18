@@ -10,14 +10,14 @@
  *
  */
 
-'use strict';
+ /*jslint browser:true */
+
+ 'use strict';
 
 import React, { Component, PropTypes } from 'react';
 
 import { Popover, OverlayTrigger } from 'react-bootstrap';
-// import connectionActions from '../actions/connectionActions.js';
-import layoutStrategies from '../common/layoutStrategies.js';
-// import connectionStore from '../stores/connectionStore.js';
+import { layoutStrategies } from '../common/layoutStrategies';
 
 export class ConnectionSetup extends Component {
     constructor(props) {
@@ -32,11 +32,11 @@ export class ConnectionSetup extends Component {
         return (
             <div className="connection-parameters">
                 <span className="col-sm-8 connection-parameter-label">Connection Interval</span>
-                <span className="col-sm-4 connection-parameter-value">{device.connection.conn_params.max_conn_interval} ms</span>
+                <span className="col-sm-4 connection-parameter-value">{device.maxConnectionInterval} ms</span>
                 <span className="col-sm-8 connection-parameter-label">Slave latency</span>
-                <span className="col-sm-4 connection-parameter-value">{device.connection.conn_params.slave_latency} ms</span>
+                <span className="col-sm-4 connection-parameter-value">{device.slaveLatency} ms</span>
                 <span className="col-sm-8 connection-parameter-label">Timeout</span>
-                <span className="col-sm-4 connection-parameter-value">{device.connection.conn_params.conn_sup_timeout} ms</span>
+                <span className="col-sm-4 connection-parameter-value">{device.connectionSupervisionTimeout} ms</span>
             </div>
         );
     }
@@ -44,8 +44,7 @@ export class ConnectionSetup extends Component {
 
 ConnectionSetup.propTypes = {
     device: PropTypes.object.isRequired,
-}
-
+};
 
 export class ConnectionOverlay extends Component {
     constructor(props) {
@@ -62,8 +61,6 @@ export class ConnectionOverlay extends Component {
             device,
         } = this.props;
 
-        const overlayRef = this.refs.overlayTrigger;
-
         return (
             <div className="connection-info-button" style={style}>
                 <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover title='Connection Parameters'><ConnectionSetup device ={device} closePopover = {this._closeme}/></Popover>}>
@@ -72,15 +69,14 @@ export class ConnectionOverlay extends Component {
                     </span>
                 </OverlayTrigger>
             </div>
-            );
+        );
     }
 }
 
 ConnectionOverlay.propTypes = {
     style: PropTypes.string.isRequired,
     device: PropTypes.object.isRequired,
-}
-
+};
 
 export class Connector extends Component {
     constructor(props) {
@@ -111,11 +107,11 @@ export class Connector extends Component {
         const targetElement = document.getElementById(this.props.targetId);
         const targetRect = targetElement.getBoundingClientRect();
 
-        if (posX == 0) {
+        if (posX === 0) {
             posX = targetRect.width / 2;
         }
 
-        if (posY == 0) {
+        if (posY === 0) {
             posY = targetRect.height / 2;
         }
 
@@ -159,4 +155,4 @@ Connector.propTypes = {
     sourceId: PropTypes.object.isRequired,
     targetId:PropTypes.object.isRequired,
     layout:  PropTypes.string.isRequired,
-}
+};

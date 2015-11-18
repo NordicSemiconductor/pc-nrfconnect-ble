@@ -22,10 +22,10 @@ export function horizontal(sourceRect, targetRect, strokeWidth) {
     const targetYCoordinate = sourceRectMid < targetRectMid ? connectorBox.height - 2 : 2;
 
     const lineCoordinates = [
-        {x: 0, y: sourceYCoordinate},
-        {x: connectorBox.width / 2, y: sourceYCoordinate},
-        {x: connectorBox.width / 2, y: targetYCoordinate},
-        {x: connectorBox.width,   y: targetYCoordinate}];
+        { x: 0, y: sourceYCoordinate },
+        { x: connectorBox.width / 2, y: sourceYCoordinate },
+        { x: connectorBox.width / 2, y: targetYCoordinate },
+        { x: connectorBox.width,   y: targetYCoordinate }];
 
     return {
         boundingBox: connectorBox,
@@ -35,7 +35,7 @@ export function horizontal(sourceRect, targetRect, strokeWidth) {
 
 export function vertical(sourceRect, targetRect, strokeWidth) {
     const sourceRectYEntry = sourceRect.top - targetRect.top + 20;
-    const targetRectXEntry = targetRect.width / 2;
+    // const targetRectXEntry = targetRect.width / 2;
 
     function calculateBoundingBox() {
         return {
@@ -48,9 +48,9 @@ export function vertical(sourceRect, targetRect, strokeWidth) {
 
     const boundingBox = calculateBoundingBox();
     const lineCoordinates = [
-        {x: 0, y: 2},
-        {x: boundingBox.width - 2, y: 2},
-        {x: boundingBox.width - 2, y: boundingBox.height}
+        { x: 0, y: 2 },
+        { x: boundingBox.width - 2, y: 2 },
+        { x: boundingBox.width - 2, y: boundingBox.height }
     ];
 
     return {

@@ -11,7 +11,7 @@ import { logger } from '../logging';
 function getSelectedAdapter(state) {
     return {
         adapter: state.adapters[state.selectedAdapter],
-        index: state.selectedAdapter
+        index: state.selectedAdapter,
     };
 }
 
@@ -40,7 +40,7 @@ const AdapterInitialState = Record({
     port: null,
     state: null,
     graph: List(),
-    graphIdCounter: 0
+    graphIdCounter: 0,
 });
 
 function addAdapter(state, adapter) {
@@ -68,7 +68,7 @@ function removeAdapter(state, adapter) {
     let retval = Object.assign({}, state);
     const adapterIndex = retval.api.adapters.indexOf(adapter);
 
-    if(adapterIndex !== -1) {
+    if (adapterIndex !== -1) {
         retval.api.adapters.splice(adapterIndex, 1);
         retval.adapters.splice(adapterIndex, 1);
         retval.adapterIndicator = 'off';
@@ -155,7 +155,6 @@ function deviceConnected(state, device) {
         return state;
     }
 
-    // TODO: Shallow copy my friend; we need to look into how to make children immutable.
     const retval = Object.assign({}, state);
     const { adapter, index } = getSelectedAdapter(retval);
 
@@ -178,7 +177,7 @@ function deviceConnected(state, device) {
             retval.adapters[index]
                 .update('graph', graph => graph.push({
                     id: newNodeId,
-                    device: device }));
+                    device: device, }));
 
         retval.adapters[index] =
             retval.adapters[index]
@@ -186,7 +185,7 @@ function deviceConnected(state, device) {
 
         const centralNode = findGraphNode(retval, 'central');
 
-        if(centralNode === undefined) {
+        if (centralNode === undefined) {
             logger.silly('Central node not found.');
             return retval;
         }
@@ -197,15 +196,34 @@ function deviceConnected(state, device) {
     return retval;
 }
 
+function deviceDisconnected(state, device) {
+    const retval = Object.assign({}, state);
+
+    const { adapter, index } = getSelectedAdapter(retval);
+
+    const nodeIndex = adapter.graph.findIndex(function(node) {
+        if (node.device !== undefined) {
+            return node.device.instanceId === device.instanceId;
+        } else {
+            return false;
+        }
+    });
+
+    retval.adapters[index] = retval.adapters[index].update(
+        'graph', graph => graph.delete(nodeIndex));
+
+    return retval;
+}
+
 function addError(state, error) {
-    if(error.message === undefined) {
+    if (error.message === undefined) {
         console.log(`Error does not contain a message! Something is wrong!`);
         return;
     }
 
     logger.error(error.message);
 
-    if(error.description) {
+    if (error.description) {
         logger.debug(error.description);
     }
 
@@ -247,6 +265,8 @@ export default function adapter(state =
             return deviceConnect(state, action.device);
         case AdapterAction.DEVICE_CONNECTED:
             return deviceConnected(state, action.device);
+        case AdapterAction.DEVICE_DISCONNECTED:
+            return deviceDisconnected(state, action.device);
         default:
             return state;
     }

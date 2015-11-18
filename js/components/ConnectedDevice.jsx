@@ -12,12 +12,11 @@
 
 'use strict';
 
-import React, { Component } from 'react';
-import {Dropdown, MenuItem} from 'react-bootstrap';
+import React, { Component, PropTypes } from 'react';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import Connector from './Connector';
 import { prepareDeviceData } from '../common/deviceProcessing';
-//import {connectionActions, eventTypes} from '../actions/connectionActions.js';
 
 export default class ConnectedDevice extends Component {
     constructor(props) {
@@ -26,58 +25,58 @@ export default class ConnectedDevice extends Component {
     }
 
     _onSelect(event, eventKey) {
-        console.log(eventKey);
-        switch(eventKey) {
-            case "Disconnect":
-                connectionActions.disconnectFromDevice(this.props.device.peer_addr.address);
+        const {
+            onDisconnect,
+            onBond,
+            onConnectionUpdate
+        } = this.props;
+
+        switch (eventKey) {
+            case 'Disconnect':
+                onDisconnect();
                 break;
-            case "Update":
-                const event = {
-                    conn_handle : this.props.device.connection.conn_handle,
-                    conn_params : this.props.device.connection.conn_params
-                };
-                connectionActions.connectionParametersUpdateRequest(event, eventTypes.userInitiatedConnectionUpdate);
+            case 'Update':
+                onConnectionUpdate();
+                console.log('Connect');
+                // connectionActions.connectionParametersUpdateRequest(event, eventTypes.userInitiatedConnectionUpdate);
                 break;
+            case 'Bond':
+                console.log('Ohh, yes, lets do that bonding.');
+                onBond();
+                break;
+            default:
+                console.log('Unknown eventKey received: ' + eventKey);
         }
     }
 
     render() {
         const {
             node,
-            device,
             id,
             sourceId,
-            layout
+            layout,
+            onDisconnect,
+            onBond,
+            onConnectionUpdate,
         } = this.props;
 
-        const _device = prepareDeviceData(device);
-        const role = node.id === "central" ? "Central" : "Peripheral";
-        const connected = !node.connectionLost;
+        const _device = prepareDeviceData(node.device);
+        const role = node.id === 'central' ? 'Central' : 'Peripheral';
 
-        const style={
+        const style = {
             width: '250px',
-            opacity: node.connectionLost ? 0.5 : 1.0
+            opacity: node.connectionLost ? 0.5 : 1.0,
         };
 
         return (
             <div id={id} className="device standalone" style={style}>
                 <div className="top-bar">
-                {
-                 //   <i className={connected ? "icon-link" : "icon-link-broken" }></i>
-                 //   <span className="subtle-text">{connected ? 'Connected' : 'Disconnected'}</span>
-                 //   <span className="subtle-text pull-right" style={{marginTop: '2px'}}>{device.rssi}</span>
-                 //
-                 //    <div style={{float: 'right'}}>
-                 //       <span style={{width: device.rssi_level + 'px'}} className="icon-signal icon-foreground"></span>
-                 //       <span className="icon-signal icon-background"></span>
-                 //   </div>
-                }
                 </div>
 
                 <div className="device-body text-small" >
                     <div>
                         <div className="pull-right">
-                            <Dropdown onSelect={this._onSelect}>
+                            <Dropdown onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
                                 <Dropdown.Toggle noCaret>
                                     <span className="icon-cog" aria-hidden="true" />
                                 </Dropdown.Toggle>
@@ -89,17 +88,27 @@ export default class ConnectedDevice extends Component {
                             </Dropdown>
                         </div>
                         <div className="role-flag pull-right">{role}</div>
-                        <strong>{device.name}</strong>
+                        <strong>{_device.name}</strong>
                     </div>
                     <div className="address-text">{_device.address}</div>
                     <div className="flag-line">
-                        {_device.services.map(function(service, index) {
-                            return (<div key={index} className="device-flag">{service}</div>)
+                        {_device.services.map((service, index) => {
+                            return (<div key={index} className="device-flag">{service}</div>);
                         })}
                     </div>
                 </div>
-                <Connector sourceId={sourceId} targetId={id} device={_device} layout={layout}/>
             </div>
         );
     }
 }
+
+
+ConnectedDevice.propTypes = {
+    id: PropTypes.string.isRequired,
+    node: PropTypes.object.isRequired,
+    sourceId: PropTypes.string.isRequired,
+    layout: PropTypes.string.isRequired,
+    onDisconnect: PropTypes.func.isRequired,
+    onBond: PropTypes.func.isRequired,
+    onConnectionUpdate: PropTypes.func.isRequired,
+};

@@ -14,12 +14,12 @@ export default class DiscoveredDevice extends Component {
             adapterIsConnecting,
             isConnecting,
             onConnect,
-            onCancelConnect
+            onCancelConnect,
         } = this.props;
 
         let isThisDevice = true;
 
-        if(!device) {
+        if (!device) {
             return (
                 <div>
                     <h3 style={{textAlign: 'center'}}>Local dongle</h3>
@@ -38,7 +38,7 @@ export default class DiscoveredDevice extends Component {
                 </div>
                 <div className="device-body text-small">
                     <div className="discovered-device-address-line">
-                        <button onClick={adapterIsConnecting ? () => { onCancelConnect(device) } : () => { onConnect(device) }} className="btn btn-primary btn-xs btn-nordic" disabled={!isConnecting && adapterIsConnecting}>
+                        <button onClick={adapterIsConnecting ? () => { onCancelConnect(device); } : () => { onConnect(device); }} className="btn btn-primary btn-xs btn-nordic" disabled={!isConnecting && adapterIsConnecting}>
                             {isConnecting && adapterIsConnecting ? 'Cancel' : 'Connect'} <i className="icon-link"></i>
                         </button>
                         <div className="address-text">
@@ -63,5 +63,5 @@ DiscoveredDevice.propTypes = {
     adapterIsConnecting: PropTypes.bool.isRequired, // If adapter is currently connecting to a device
     isConnecting: PropTypes.bool.isRequired, // If adapter is currently connecting to this device
     onConnect: PropTypes.func.isRequired,
-    onCancelConnect: PropTypes.func.isRequired
+    onCancelConnect: PropTypes.func.isRequired,
 };

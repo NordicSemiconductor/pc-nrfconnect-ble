@@ -24,12 +24,11 @@ function mapRange(n, fromMin, fromMax, toMin, toMax) {
 
 export function prepareDeviceData(device) {
     return {
-        time: new Date(device.time),
-        name: device.name !== undefined ? device.name : '<Unknown name>',
+        name: device.name ? device.name : '<Unknown name>',
         flags: device.flags,
         services: device.services,
         address: device.address,
         rssi: device.rssi,
-        rssi_level: mapRange(device.rssi, MIN_RSSI, MAX_RSSI, 4, 20)
+        rssi_level: mapRange(device.rssi, MIN_RSSI, MAX_RSSI, 4, 20),
     };
 }
