@@ -23,21 +23,16 @@ export default class NavBar extends Component {
         this.state = {
             activeStyle: { boxShadow: 'inset 0 5px 10px #133e40' },
             passiveStyle: {},
-            adapterState: { connected: false }
+            adapterState: { connected: false },
         };
     }
 
     _onViewChange(newView) {
         this.props.onChangeMainView(newView);
-        this.props.view = newView;
     }
 
     _getClassForTabButton(itemName) {
         return 'btn btn-primary btn-nordic padded-row' + (this.props.view === itemName ? ' active' : '');
-    }
-
-    focusOnComPorts() {
-        this.refs.adapterSelector.focusOnComPorts();
     }
 
     render() {
@@ -60,7 +55,7 @@ export default class NavBar extends Component {
                         <span className="icon-columns" />
                         <span>Device details</span>
                     </button>
-                    <button onClick={this._onViewChange.bind(this, 'ServerSetup')}  className={this._getClassForTabButton('ServerSetup')}>
+                    <button title="Server Setup (Alt+3)" onClick={this._onViewChange.bind(this, 'ServerSetup')}  className={this._getClassForTabButton('ServerSetup')}>
                         <span className="icon-indent-right" />
                         <span>Server setup</span>
                     </button>

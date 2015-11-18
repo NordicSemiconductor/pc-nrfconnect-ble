@@ -13,63 +13,69 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
+
 import Component from 'react-pure-render/component';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+import * as AppActions from '../actions/appActions';
 
 // import hotkey from 'react-hotkey';
 
-// import ConnectionMap from './ConnectionMap';
-
 //import DeviceDetailsContainer from '../components/deviceDetails';
 //import ConnectionUpdateRequestModal from './components/ConnectionUpdateRequestModal.jsx';
-import EventViewer from '../components/EventViewer';
 // import ServerSetup from '../components/ServerSetup';
 
 import { logger } from '../logging';
 
 import NavBar from '../components/navbar.jsx';
+import EventViewer from '../components/EventViewer';
+
 import LogViewer from './LogViewer';
 import DiscoveredDevices from './DiscoveredDevices';
 import ConnectionMap from './ConnectionMap';
 
 import { findAdapters } from '../actions/adapterActions';
 
-export default class App extends Component {
+class AppContainer extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            currentlyShowing: "ConnectionMap",
+            currentlyShowing: 'ConnectionMap',
             windowHeight: window.innerHeight,
         };
     }
 
     componentWillMount() {
-        var that = this;
         (function() {
-            var throttle = function(type, name, obj) {
-                var obj = obj || window;
-                var running = false;
-                var func = function() {
-                    if (running) { return; }
+            const throttle = function(type, name, obj) {
+                let running = false;
+                const object = obj || window;
+                const func = () => {
+                    if (running) {
+                        return;
+                    }
+
                     running = true;
                     requestAnimationFrame(function() {
-                        obj.dispatchEvent(new CustomEvent(name));
+                        object.dispatchEvent(new CustomEvent(name));
                         running = false;
                     });
                 };
-                obj.addEventListener(type, func);
+
+                object.addEventListener(type, func);
             };
 
-            throttle("resize", "optimizedResize");
+            throttle('resize', 'optimizedResize');
         })();
 
         // handle event
-        window.addEventListener("optimizedResize", () => {
+        window.addEventListener('optimizedResize', () => {
             this.setState({windowHeight: window.innerHeight}); //document.documentElement.clientHeight;
         });
 
         // hotkey.activate('keydown');
-
     }
 
     componentDidMount() {
@@ -77,29 +83,25 @@ export default class App extends Component {
         store.dispatch(findAdapters());
     }
 
-    _onChangedMainView(viewToShow) {
-        logger.silly(`changed view to ${viewToShow}`);
-        this.setState({currentlyShowing: viewToShow});
-    }
-
     render() {
-        var topBarHeight = 55;
-        var layoutStyle = {
-          height: this.state.windowHeight - topBarHeight
+        const {
+            selectedMainView,
+            selectMainView,
+        } = this.props;
+        const topBarHeight = 55;
+        const layoutStyle = {
+            height: this.state.windowHeight - topBarHeight,
         };
-        var mainAreaHeight = layoutStyle.height - 189;
-/*
-        var active = this.state.currentlyShowing === 'ConnectionMap' ? <BleNodeContainer style={{height: mainAreaHeight}}/>
-                   : this.state.currentlyShowing === 'DeviceDetails' ? <DeviceDetailsContainer style={{height: mainAreaHeight}}/>
-                   : this.state.currentlyShowing === 'ServerSetup'   ? <ServerSetup style={{height: mainAreaHeight}}/>
-                   : null; */
+        const mainAreaHeight = layoutStyle.height - 189;
 
-        var active = <ConnectionMap style={{height: mainAreaHeight}}/>;
-        //let active = null;
+        const active = selectedMainView === 'ConnectionMap' ? <ConnectionMap style={{height: mainAreaHeight}}/>
+                     : selectedMainView === 'DeviceDetails' ? <DeviceDetailsContainer style={{height: mainAreaHeight}}/>
+                     : selectedMainView === 'ServerSetup'   ? <ServerSetup style={{height: mainAreaHeight}}/>
+                     : null;
 
         return (
             <div id="main-area-wrapper">
-                <NavBar onChangeMainView={this._onChangedMainView} view={this.state.currentlyShowing} ref="navBar" />
+                <NavBar onChangeMainView={(view) => selectMainView(view)} view={this.state.currentlyShowing} ref="navBar" />
                 <div className="main-layout" style={layoutStyle}>
                     <div>
                         <div>
@@ -118,3 +120,30 @@ export default class App extends Component {
         );
     }
 }
+
+function mapStateToProps(state) {
+    const { app } = state;
+
+    return {
+        selectedMainView: app.selectedMainView,
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    let retval = Object.assign(
+            {},
+            bindActionCreators(AppActions, dispatch),
+        );
+
+    return retval;
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AppContainer);
+
+AppContainer.propTypes = {
+    selectedMainView: PropTypes.string.isRequired,
+    selectMainView: PropTypes.func.isRequired,
+};
