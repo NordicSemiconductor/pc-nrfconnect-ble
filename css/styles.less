@@ -887,3 +887,41 @@ hr {
   font-size: 1.6em;
   margin-left: 30px;
 }
+
+.adv-setup {
+  .adv-col {
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+  }
+  .adv-row {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+  }
+  .adv-pkt, .scan-rsp-pkt {
+    flex: 1;
+    margin: 10px;
+  }
+  .adv-drop-container, .adv-value-container {
+    display: inline-block;
+    vertical-align: top;
+    margin: 10px;
+  }
+  table {
+    width: 100%;
+  }
+  .btn-add {
+    margin: 20px;
+    align-self: center;
+  }
+  .adv-header {
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  .adv-table-container {
+    //background: rgba(205, 205, 205, 0.21);
+    padding: 10px;
+    border: 1px solid lightgray;
+  }
+}
