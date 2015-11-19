@@ -17,7 +17,7 @@
 import React, { Component, PropTypes } from 'react';
 
 import { Popover, OverlayTrigger } from 'react-bootstrap';
-import { layoutStrategies } from '../common/layoutStrategies';
+import layoutStrategies from '../common/layoutStrategies';
 
 export class ConnectionSetup extends Component {
     constructor(props) {
@@ -136,7 +136,7 @@ export class Connector extends Component {
         const sourceRect = sourceElement.getBoundingClientRect();
         const targetRect = targetElement.getBoundingClientRect();
 
-        const layoutInfo = layoutStrategies[layout](sourceRect, targetRect, 3);
+        const layoutInfo = layoutStrategies(layout)(sourceRect, targetRect, 3);
         const connectorBox = layoutInfo.boundingBox;
         const lines = this._generateLines(layoutInfo.lineCoordinates);
         const connectionInfoOverlay = this._getConnectionOverlay(device, layoutInfo.lineCoordinates);

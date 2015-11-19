@@ -1,6 +1,6 @@
 'use strict';
 
-export function horizontal(sourceRect, targetRect, strokeWidth) {
+function horizontal(sourceRect, targetRect, strokeWidth) {
     const sourceRectMid = sourceRect.top - targetRect.top + sourceRect.height / 2;
     const targetRectMid = (targetRect.height / 2);
 
@@ -33,7 +33,7 @@ export function horizontal(sourceRect, targetRect, strokeWidth) {
     };
 }
 
-export function vertical(sourceRect, targetRect, strokeWidth) {
+function vertical(sourceRect, targetRect, strokeWidth) {
     const sourceRectYEntry = sourceRect.top - targetRect.top + 20;
     // const targetRectXEntry = targetRect.width / 2;
 
@@ -57,4 +57,15 @@ export function vertical(sourceRect, targetRect, strokeWidth) {
         boundingBox: boundingBox,
         lineCoordinates: lineCoordinates
     };
+}
+
+export default function(strategy) {
+    if(strategy === 'vertical') {
+        return vertical;
+    } else if(strategy === 'horizontal') {
+        return horizontal;
+    } else {
+        // Do something funny.
+        return undefined;
+    }
 }

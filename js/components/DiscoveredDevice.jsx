@@ -17,8 +17,6 @@ export default class DiscoveredDevice extends Component {
             onCancelConnect,
         } = this.props;
 
-        let isThisDevice = true;
-
         if (!device) {
             return (
                 <div>

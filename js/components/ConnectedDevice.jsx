@@ -16,19 +16,17 @@ import React, { Component, PropTypes } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import { Connector } from './Connector';
-import { prepareDeviceData } from '../common/deviceProcessing';
 
 export default class ConnectedDevice extends Component {
     constructor(props) {
         super(props);
-
-        // I guess this is a hack to try to redraw the line, since it when beeing created for the first time the id has not been rendered in the DOM tree
-        this.connectorCanBeDrawn = false;
     }
 
     componentDidMount() {
-        // See hack comment above
-        this.connectorCanBeDrawn = true;
+        // To be able to draw the line between two component they have be in the browser DOM
+        // At first render they are not rendered, therefore we have to do an additional rendering
+        // after the componenets are in the brower DOM.
+        this.forceUpdate();
     }
 
     _onSelect(event, eventKey) {
@@ -62,12 +60,9 @@ export default class ConnectedDevice extends Component {
             id,
             sourceId,
             layout,
-            onDisconnect,
-            onBond,
-            onConnectionUpdate,
         } = this.props;
 
-        const _device = prepareDeviceData(node.device);
+        const device = node.device;
         const role = node.id === 'central' ? 'Central' : 'Peripheral';
 
         const style = {
@@ -95,21 +90,20 @@ export default class ConnectedDevice extends Component {
                             </Dropdown>
                         </div>
                         <div className="role-flag pull-right">{role}</div>
-                        <strong>{_device.name}</strong>
+                        <strong>{device.name ? device.name : '<Unknown>'}</strong>
                     </div>
-                    <div className="address-text">{_device.address}</div>
+                    <div className="address-text">{device.address}</div>
                     <div className="flag-line">
-                        {_device.services.map((service, index) => {
+                        {device.services.map((service, index) => {
                             return (<div key={index} className="device-flag">{service}</div>);
                         })}
                     </div>
                 </div>
-                <Connector sourceId={sourceId} targetId={id} device={_device} layout={layout} />
+                <Connector sourceId={sourceId} targetId={id} device={device} layout={layout} />
             </div>
         );
     }
 }
-
 
 ConnectedDevice.propTypes = {
     id: PropTypes.string.isRequired,
