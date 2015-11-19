@@ -9,27 +9,6 @@ import Immutable from 'immutable';
 
 import rootReducer from '../reducers';
 
-/*
-function stateToJS(state) {
-  return Object.keys(state).reduce((acc, key) => {
-    return {...acc, [key]: state[key].toJS()};
-  }, {});
-} */
-
-
-function immutableStateToJs(state) {
-    var newState = {};
-
-    for (var i of Object.keys(state)) {
-        if (Immutable.Iterable.isIterable(state[i])) {
-        newState[i] = state[i].toJS();
-        } else {
-        newState[i] = state[i];
-        }
-    }
-
-    return newState;
-}
 
 export default function configureStore(initialState) {
     const middleware = [
@@ -45,7 +24,19 @@ export default function configureStore(initialState) {
     } else {
         const logger = createLogger({
             collapsed: true,
-            transformer: immutableStateToJs
+            transformer: (state) => {
+                var newState = {};
+
+                for (var i of Object.keys(state)) {
+                    if (Immutable.Iterable.isIterable(state[i])) {
+                        newState[i] = state[i].toJS();
+                    } else {
+                        newState[i] = state[i];
+                    }
+                }
+
+                return newState;
+            }
         });
 
         // Logger must be the last middleware in chain.
