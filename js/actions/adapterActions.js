@@ -22,6 +22,7 @@ export const ADAPTER_STATE_CHANGED = 'ADAPTER_STATE_CHANGED';
 
 export const DEVICE_CONNECT = 'DEVICE_CONNECT';
 export const DEVICE_CONNECTED = 'DEVICE_CONNECTED';
+export const DEVICE_CONNECT_TIMEOUT = 'DEVICE_CONNECT_TIMEOUT';
 export const DEVICE_DISCONNECT = 'DEVICE_DISCONNECT';
 export const DEVICE_DISCONNECTED = 'DEVICE_DISCONNECTED';
 export const DEVICE_CANCEL_CONNECT = 'DEVICE_CANCEL_CONNECT';
@@ -44,14 +45,14 @@ function makeError(data) {
     return {
         adapter: adapter,
         device: device,
-        error: error
+        error: error,
     };
 }
 
 function _getAdapters(dispatch) {
     return new Promise((resolve, reject) => {
         _adapterFactory.getAdapters((error, adapters) => {
-            if(error) {
+            if (error) {
                 reject(makeError({error:error}));
             } else {
                 resolve(adapters);
@@ -70,7 +71,7 @@ function _getAdapters(dispatch) {
         });
 
         // Add the adapters to the store
-        _.map(adapters, (adapter) => {
+        _.map(adapters, adapter => {
             dispatch(adapterAddedAction(adapter));
         });
     }).catch(error => {
@@ -89,13 +90,13 @@ function _openAdapter(dispatch, getState, adapter) {
         };
 
         // Check if we already have an adapter open
-        if(getState().adapter.api.selectedAdapter !== null) {
+        if (getState().adapter.api.selectedAdapter !== null) {
             _closeAdapter(dispatch, getState().adapter.api.selectedAdapter);
         }
 
         const adapterToUse = _.find(getState().adapter.api.adapters, x => { return x.state.port === adapter; });
 
-        if(adapterToUse === null) {
+        if (adapterToUse === null) {
             reject(makeError({error: `Not able to find ${adapter}.`}));
         }
         // Listen to errors from this adapter since we are opening it now
@@ -115,11 +116,11 @@ function _openAdapter(dispatch, getState, adapter) {
         dispatch(adapterOpenAction(adapterToUse));
 
         adapterToUse.open(options, error => {
-            if(error) {
+            if (error) {
                 reject(makeError({adapter: adapterToUse, error: error}));
             } else {
                 adapterToUse.getState((error, state) => {
-                    if(error) {
+                    if (error) {
                         reject(makeError({ adapter: adapterToUse, error: error }));
                     } else {
                         resolve(adapterToUse);
@@ -143,7 +144,7 @@ function _openAdapter(dispatch, getState, adapter) {
 function _closeAdapter(dispatch, adapter) {
     return new Promise((resolve, reject) => {
         adapter.close(error => {
-            if(error) {
+            if (error) {
                 reject(makeError({ adapter: adapter, error: error}));
             } else {
                 resolve(adapter);
@@ -160,7 +161,7 @@ function adapterOpenedAction(adapter)
 {
     return {
         type: ADAPTER_OPENED,
-        adapter
+        adapter,
     };
 }
 
@@ -168,28 +169,28 @@ function adapterOpenAction(adapter)
 {
     return {
         type: ADAPTER_OPEN,
-        adapter
+        adapter,
     };
 }
 
 function adapterClosedAction(adapter) {
     return {
         type: ADAPTER_CLOSED,
-        adapter
+        adapter,
     };
 }
 
 function adapterRemovedAction(adapter) {
     return {
         type: ADAPTER_REMOVED,
-        adapter
+        adapter,
     };
 }
 
 function adapterAddedAction(adapter) {
     return {
         type: ADAPTER_ADDED,
-        adapter
+        adapter,
     };
 }
 
@@ -197,7 +198,7 @@ function adapterErrorAction(adapter, error) {
     return {
         type: ADAPTER_ERROR,
         adapter,
-        error
+        error,
     };
 }
 
@@ -205,7 +206,7 @@ function adapterStateChangedAction(adapter, state) {
     return {
         type: ADAPTER_STATE_CHANGED,
         adapter,
-        state
+        state,
     };
 }
 
@@ -272,7 +273,7 @@ function _connectToDevice(dispatch, getState, device) {
 
         const options = {
             scanParams: scanParameters,
-            connParams: connectionParameters
+            connParams: connectionParameters,
         };
 
         const adapterToUse = getState().adapter.api.selectedAdapter;
@@ -284,11 +285,15 @@ function _connectToDevice(dispatch, getState, device) {
         dispatch(deviceConnectAction(device));
 
         adapterToUse.once('deviceConnected', device => {
-            resolve(device);
+            resolve({device: device, action: 'connected'});
 
             // Start service discovery asynchronously
             _getAllCharacteristicsForAllServices(device);
 
+        });
+
+        adapterToUse.once('connectTimedOut', deviceAddress => {
+            resolve({device: deviceAddress, action: 'timeout'});
         });
 
         adapterToUse.connect(
@@ -300,8 +305,15 @@ function _connectToDevice(dispatch, getState, device) {
                 }
             }
         );
-    }).then(device => {
-        dispatch(deviceConnectedAction(device));
+    }).then(result => {
+        const action = result.action;
+        if (action === 'connected') {
+            const device = result.device;
+            dispatch(deviceConnectedAction(device));
+        } else if (action === 'timeout') {
+            const deviceAddress = result.device;
+            dispatch(deviceConnectTimeoutAction(deviceAddress));
+        }
     }).catch(errorData => {
         dispatch(errorOccuredAction(errorData.adapter, errorData.error));
     });
@@ -334,20 +346,20 @@ function _cancelConnect(dispatch, getState) {
     return new Promise((resolve, reject) => {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
-        if(adapterToUse === null) {
+        if (adapterToUse === null) {
             reject(makeError({error: `No adapter selected`}));
         }
 
         dispatch(deviceCancelConnectAction());
 
         adapterToUse.cancelConnect(
-            (error) => {
-            if(error) {
-                reject(makeError({adapter: adapterToUse, error: error}));
-            }
+            error => {
+                if (error) {
+                    reject(makeError({adapter: adapterToUse, error: error}));
+                }
 
-            resolve();
-        });
+                resolve();
+            });
     }).then(device => {
         dispatch(deviceCancelledConnectAction());
     }).catch(error => {
@@ -358,21 +370,28 @@ function _cancelConnect(dispatch, getState) {
 function deviceConnectAction(device) {
     return {
         type: DEVICE_CONNECT,
-        device
+        device,
     };
 }
 
 function deviceConnectedAction(device) {
     return {
         type: DEVICE_CONNECTED,
-        device
+        device,
+    };
+}
+
+function deviceConnectTimeoutAction(deviceAddress) {
+    return {
+        type: DEVICE_CONNECT_TIMEOUT,
+        deviceAddress,
     };
 }
 
 function deviceDisconnectedAction(device) {
     return {
         type: DEVICE_DISCONNECTED,
-        device
+        device,
     };
 }
 
@@ -388,12 +407,11 @@ function deviceCancelConnectAction() {
     };
 }
 
-
 function errorOccuredAction(adapter, error) {
     return {
         type: ERROR_OCCURED,
         adapter,
-        error
+        error,
     };
 }
 

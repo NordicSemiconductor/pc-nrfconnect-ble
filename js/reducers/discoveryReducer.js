@@ -6,7 +6,7 @@ import * as AdapterAction from '../actions/adapterActions';
 
 const InitialState = Record({
     devices: Map(),
-    errors: List()
+    errors: List(),
 });
 
 const initialState = new InitialState();
@@ -39,6 +39,12 @@ function deviceConnected(state, device) {
     return state.update('devices', devices => devices.delete(device.address));
 }
 
+function deviceConnectTimeout(state, deviceAddress) {
+    const newDevice = state.devices.get(deviceAddress.address);
+    newDevice.isConnecting = false;
+    return state.update('devices', devices => devices.set(deviceAddress.address, newDevice));
+}
+
 function deviceCancelConnect(state) {
     state.devices.map((device, key) => {
         device.isConnecting = false;
@@ -59,6 +65,8 @@ export default function discovery(state = initialState, action) {
             return deviceConnect(state, action.device);
         case AdapterAction.DEVICE_CONNECTED:
             return deviceConnected(state, action.device);
+        case AdapterAction.DEVICE_CONNECT_TIMEOUT:
+            return deviceConnectTimeout(state, action.deviceAddress);
         case AdapterAction.DEVICE_CANCEL_CONNECT:
             return deviceCancelConnect(state);
         default:

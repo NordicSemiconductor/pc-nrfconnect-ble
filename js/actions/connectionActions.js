@@ -16,22 +16,22 @@ var Reflux = require('reflux');
 
 exports.eventTypes = Object.freeze({
     userInitiatedConnectionUpdate: 'userInitiatedConnectionUpdate',
-    peripheralInitiatedConnectionUpdate: 'peripheralInitiatedConnectionUpdate'
+    peripheralInitiatedConnectionUpdate: 'peripheralInitiatedConnectionUpdate',
 });
 
 exports.connectionActions = Reflux.createActions(
     [
-    "connectToDevice",
-    "disconnectFromDevice",
-    "cancelConnect",
-    "connectTimedOut",
-    "deviceConnected",
-    "deviceDisconnected",
-    "servicesDiscovered",
-    "connectionParametersUpdateRequest",
-    "connectionParametersUpdated",
-    "connectionParametersUpdate",
-    "clearAllUserEvents",
-    "eventTimedOut",
-    "rejectOrCancelParametersUpdate"
+    'connectToDevice',
+    'disconnectFromDevice',
+    'cancelConnect',
+    'connectTimedOut',
+    'deviceConnected',
+    'deviceDisconnected',
+    'servicesDiscovered',
+    'connectionParametersUpdateRequest',
+    'connectionParametersUpdated',
+    'connectionParametersUpdate',
+    'clearAllUserEvents',
+    'eventTimedOut',
+    'rejectOrCancelParametersUpdate',
   ]);
