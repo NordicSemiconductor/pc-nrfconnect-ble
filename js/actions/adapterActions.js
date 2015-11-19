@@ -213,12 +213,12 @@ function adapterStateChangedAction(adapter, state) {
 function _getServices(adapter, deviceInstanceId) {
     return new Promise((resolve, reject) => {
         adapter.getServices(deviceInstanceId, (error, services) => {
-             if (error) {
-                 reject('Failed to get services: ', error);
-             } else {
-                 resolve(services);
-             }
-         });
+            if (error) {
+                reject('Failed to get services: ', error);
+            } else {
+                resolve(services);
+            }
+        });
     });
 }
 
@@ -230,28 +230,28 @@ function _getCharacteristics(adapter, serviceInstanceId) {
             } else {
                 resolve(characteristics);
             }
-       });
+        });
     });
 }
 
 function _getAllCharacteristicsForAllServices(adapter, deviceInstanceId) {
     return _getServices(deviceInstanceId).then(services => {
-              let allCharacteristics = [];
-              let characteristicsPromise = new Promise((resolve, reject) => {
-                  resolve([]);
-              });
+        let allCharacteristics = [];
+        let characteristicsPromise = new Promise((resolve, reject) => {
+            resolve([]);
+        });
 
-              for (let i = 0; i < services.length; i++) {
-                  characteristicsPromise = characteristicsPromise.then(characteristics => {
-                      allCharacteristics.push.apply(allCharacteristics, characteristics);
-                      return _getCharacteristics(services[i].instanceId);
-                  });
-              }
+        for (let i = 0; i < services.length; i++) {
+            characteristicsPromise = characteristicsPromise.then(characteristics => {
+                allCharacteristics.push.apply(allCharacteristics, characteristics);
+                return _getCharacteristics(services[i].instanceId);
+            });
+        }
 
-              return characteristicsPromise.then(characteristics => {
-                  allCharacteristics.push.apply(allCharacteristics, characteristics);
-                  return allCharacteristics;
-              });
+        return characteristicsPromise.then(characteristics => {
+            allCharacteristics.push.apply(allCharacteristics, characteristics);
+            return allCharacteristics;
+        });
     });
 }
 
@@ -323,16 +323,16 @@ function _disconnectFromDevice(dispatch, getState, device) {
     return new Promise((resolve, reject) => {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
-        if(adapterToUse === null) {
+        if (adapterToUse === null) {
             reject(makeError({error: 'No adapter selected'}));
         }
 
         adapterToUse.disconnect(device.instanceId, (error, device) => {
-                if(error) {
-                    reject(makeError({adapter: adapterToUse, error, device}));
-                } else {
-                    resolve(device);
-                }
+            if (error) {
+                reject(makeError({adapter: adapterToUse, error, device}));
+            } else {
+                resolve(device);
+            }
         });
     }).then(device => {
         // OK, nothing to do... ?
