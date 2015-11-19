@@ -5,7 +5,7 @@ import Component from 'react-pure-render/component';
 
 import {Button} from 'react-bootstrap';
 
-import AdvListEntry from './AdvListEntry';
+import AdvertisingListEntry from './AdvertisingListEntry';
 
 export default class AdvertisingList extends Component {
     constructor(props) {
@@ -33,7 +33,7 @@ export default class AdvertisingList extends Component {
                     </thead>
                     <tbody>
                         {advEntries.map(entry => 
-                            <AdvListEntry {...{entry}} key={entry.id} 
+                            <AdvertisingListEntry {...{entry}} key={entry.id} 
                                 onDelete={onDelete} 
                                 onClear={onClear} />)}
                     </tbody>
