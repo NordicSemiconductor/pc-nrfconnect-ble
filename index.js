@@ -36,7 +36,7 @@ app.on('ready', function() {
         'min-height': 280,
         frame: true
     });
-    mainWindow.loadUrl('file://' + __dirname + '/index.html');
+    mainWindow.loadURL('file://' + __dirname + '/index.html');
     mainWindow.on('closed', function() {
         console.log("windows closed");
         mainWindow = null;
