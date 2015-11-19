@@ -16,17 +16,23 @@ import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 
 import {Modal} from 'react-bootstrap';
-import {Button} from 'react-bootstrap';
 import {DropdownButton} from 'react-bootstrap';
 import {MenuItem} from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
+
+import AdvertisingList from './AdvertisingList';
 
 export default class AdvertisingSetup extends Component {
     constructor(props) {
         super(props);
     }
 
-    delete() {
+    onDelete(id) {
         console.log('DELETE');
+    }
+
+    onClear() {
+        console.log('CLEAR');
     }
 
     addToAdvData() {
@@ -42,6 +48,10 @@ export default class AdvertisingSetup extends Component {
             show,
             onCancel,
             } = this.props;
+
+        const advDataEntries = [{id:1, type:'Complete local name', value:'Wayland'},
+                                {id: 2, type: 'TX power', value: '-20'},];
+        const scanResponseEntries = [{id: 10, type: 'UUID 16 bit more available', value: '0x1234, 0x4343'}];
 
         console.log('Rendering AdvertisingSetup');
         return (
@@ -73,52 +83,19 @@ export default class AdvertisingSetup extends Component {
                             <div className="adv-row">
                                 <div className="adv-col adv-pkt">
                                     <Button className="btn-add">Add to adv. data</Button>
-                                    <div className="adv-table-container">
-                                        <div className="adv-header">Advertising data</div>
-                                        <table className="table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>AD type</th>
-                                                    <th>Value</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>Complete local name</td>
-                                                    <td>My device name</td>
-                                                    <td><Button bsSize="small" onClick={this.delete}>Delete</Button></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <AdvertisingList 
+                                        title="Advertising data" 
+                                        onDelete={this.onDelete} 
+                                        onClear={this.onClear} 
+                                        advEntries={advDataEntries}/>
                                 </div>
                                 <div className="adv-col scan-rsp-pkt">
                                     <Button className="btn-add">Add to scan response</Button>
-                                    <div className="adv-table-container">
-                                        <div className="adv-header">Scan response data</div>
-                                        <table className="table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>AD type</th>
-                                                    <th>Value</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>UUID 16 bit complete list</td>
-                                                    <td>0x180d, 0x2305, 0x3453, 0x2342</td>
-                                                    <td><Button bsSize="small" onClick={this.delete}>Delete</Button></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>TX power level</td>
-                                                    <td>20</td>
-                                                    <td><Button bsSize="small" onClick={this.delete}>Delete</Button></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <AdvertisingList
+                                        title="Scan response data"
+                                        onDelete={this.onDelete}
+                                        onClear={this.onClear}
+                                        advEntries={scanResponseEntries}/>
                                 </div>
                             </div>
                         </div>
