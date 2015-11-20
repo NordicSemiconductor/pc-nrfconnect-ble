@@ -14,7 +14,7 @@
 
 import { Record } from 'immutable';
 
-import * as AppAction from '../actions/appActions';
+import * as AppActions from '../actions/appActions';
 
 const InitialState = Record({
     selectedMainView: 'ConnectionMap',
@@ -24,7 +24,7 @@ const initialState = new InitialState();
 
 export default function app(state = initialState, action) {
     switch (action.type) {
-        case AppAction.SELECT_MAIN_VIEW:
+        case AppActions.SELECT_MAIN_VIEW:
             return state.update('selectedMainView', selectedMainView => action.view);
         default:
             return state;

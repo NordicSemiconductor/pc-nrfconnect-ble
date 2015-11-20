@@ -34,6 +34,8 @@ import _ from 'underscore';
 
 import { driver, api } from 'pc-ble-driver-js';
 
+import { discoverServices } from './deviceDetailsActions';
+
 const _adapterFactory = api.AdapterFactory.getInstance(driver);
 
 // Internal functions
@@ -286,10 +288,6 @@ function _connectToDevice(dispatch, getState, device) {
 
         adapterToUse.once('deviceConnected', device => {
             resolve({device: device, action: 'connected'});
-
-            // Start service discovery asynchronously
-            _getAllCharacteristicsForAllServices(device);
-
         });
 
         adapterToUse.once('connectTimedOut', deviceAddress => {
@@ -310,6 +308,7 @@ function _connectToDevice(dispatch, getState, device) {
         if (action === 'connected') {
             const device = result.device;
             dispatch(deviceConnectedAction(device));
+            return dispatch(discoverServices(device));
         } else if (action === 'timeout') {
             const deviceAddress = result.device;
             dispatch(deviceConnectTimeoutAction(deviceAddress));

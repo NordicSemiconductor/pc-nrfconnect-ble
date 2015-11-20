@@ -22,7 +22,7 @@ import * as AppActions from '../actions/appActions';
 
 // import hotkey from 'react-hotkey';
 
-//import DeviceDetailsContainer from '../components/deviceDetails';
+import DeviceDetailsContainer from './DeviceDetails';
 //import ConnectionUpdateRequestModal from './components/ConnectionUpdateRequestModal.jsx';
 // import ServerSetup from '../components/ServerSetup';
 
@@ -42,7 +42,6 @@ class AppContainer extends Component {
         super(props);
 
         this.state = {
-            currentlyShowing: 'ConnectionMap',
             windowHeight: window.innerHeight,
         };
     }
@@ -101,7 +100,7 @@ class AppContainer extends Component {
 
         return (
             <div id="main-area-wrapper">
-                <NavBar onChangeMainView={(view) => selectMainView(view)} view={this.state.currentlyShowing} ref="navBar" />
+                <NavBar onChangeMainView={(view) => selectMainView(view)} view={selectedMainView} ref="navBar" />
                 <div className="main-layout" style={layoutStyle}>
                     <div>
                         <div>
