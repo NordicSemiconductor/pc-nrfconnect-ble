@@ -26,10 +26,8 @@ import DeviceDetailsContainer from './DeviceDetails';
 //import ConnectionUpdateRequestModal from './components/ConnectionUpdateRequestModal.jsx';
 // import ServerSetup from '../components/ServerSetup';
 
-import { logger } from '../logging';
-
 import NavBar from '../components/navbar.jsx';
-import EventViewer from '../components/EventViewer';
+// import BLEEventViewer from '../containers/BLEEventViewer';
 
 import LogViewer from './LogViewer';
 import DiscoveredDevices from './DiscoveredDevices';
@@ -113,7 +111,6 @@ class AppContainer extends Component {
                     <div>
                         <DiscoveredDevices/>
                     </div>
-                    <EventViewer/>
                 </div>
             </div>
         );
@@ -131,8 +128,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     let retval = Object.assign(
             {},
-            bindActionCreators(AppActions, dispatch),
-        );
+            bindActionCreators(AppActions, dispatch)
+    );
 
     return retval;
 }

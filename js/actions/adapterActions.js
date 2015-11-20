@@ -27,6 +27,7 @@ export const DEVICE_DISCONNECT = 'DEVICE_DISCONNECT';
 export const DEVICE_DISCONNECTED = 'DEVICE_DISCONNECTED';
 export const DEVICE_CANCEL_CONNECT = 'DEVICE_CANCEL_CONNECT';
 export const DEVICE_CANCELLED_CONNECT = 'DEVICE_CANCELLED_CONNECT';
+export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
 
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
@@ -113,6 +114,11 @@ function _openAdapter(dispatch, getState, adapter) {
         // Listen to adapter changes
         adapterToUse.on('stateChanged', state => {
             dispatch(adapterStateChangedAction(adapterToUse, state));
+        });
+
+        // Listen to connection parameter update requests
+        adapterToUse.on('connParamUpdateRequest', params => {
+            dispatch(connectionParamUpdateRequestAction(adapterToUse, params));
         });
 
         dispatch(adapterOpenAction(adapterToUse));
@@ -411,6 +417,14 @@ function errorOccuredAction(adapter, error) {
         type: ERROR_OCCURED,
         adapter,
         error,
+    };
+}
+
+function connectionParamUpdateRequestAction(adapter, connParam) {
+    return {
+        type: DEVICE_CONNECTION_PARAM_UPDATE_REQUEST,
+        adapter,
+        connParam,
     };
 }
 
