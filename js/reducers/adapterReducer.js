@@ -142,7 +142,7 @@ function deviceConnected(state, device) {
 
     const retval = Object.assign({}, state);
 
-    const _device = getImmutableDevice(device);
+    const _device = asImmutable(device);
     const { adapter, index } = getSelectedAdapter(retval);
 
     retval.adapters[index] = adapter.setIn(['connectedDevices', _device.instanceId], _device);

@@ -25,13 +25,13 @@ export default class CentralDevice extends Component {
         const {
             id,
             name,
-            address
+            address,
         } = this.props;
 
-        const style={
+        const style = {
             position: 'relative',
             width: '250px',
-            height: '102px'
+            height: '102px',
         };
 
         return (
@@ -39,7 +39,7 @@ export default class CentralDevice extends Component {
                 <img className="center-block" src="resources/nordic_usb_icon.png" height="41" width="16"/>
                 <div className="device-body text-small">
                     <div>
-                        <div className="role-flag pull-right">Central</div>
+                        <div className="role-flag pull-right">Adapter</div>
                         <strong>{name}</strong>
                     </div>
                     <div className="address-text">{address}</div>

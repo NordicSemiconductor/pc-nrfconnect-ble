@@ -105,9 +105,10 @@ function mapStateToProps(state) {
     const selectedAdapter = adapter.adapters[adapter.selectedAdapter];
 
     return {
-        adapterState: selectedAdapter.get('state'),
+        adapterState: selectedAdapter.state,
         selectedComponent: deviceDetails.selectedComponent,
-        devices: deviceDetails.deviceServers,
+        connectedDevices: selectedAdapter.connectedDevices,
+        deviceServers: deviceDetails.deviceServers,
     };
 };
 
@@ -128,6 +129,7 @@ export default connect(
 DeviceDetailsContainer.propTypes = {
     adapterState: PropTypes.object,
     selectedComponent: PropTypes.object,
-    devices: PropTypes.object,
+    connectedDevices: PropTypes.object,
+    deviceServers: PropTypes.object,
     selectComponent: PropTypes.func.isRequired,
 };

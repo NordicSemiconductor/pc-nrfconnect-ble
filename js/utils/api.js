@@ -16,32 +16,88 @@ import { Map, Record } from 'immutable';
 import { api } from 'pc-ble-driver-js';
 
 const ImmutableAdapterState = Record({
+    instanceId: null,
     port: null,
-    state: null,
-    connectedDevices: Map(),
-    deviceServers: Map(),
+    available: false,
+    scanning: false,
+    advertising: false,
+    connecting: false,
+    address: null,
+    name: null,
+    firmwareVerison: null,
 });
 
 const ImmutableAdapter = Record({
     port: null,
-    state: null,
+    state: new ImmutableAdapterState(),
     connectedDevices: Map(),
-    deviceServices: Map()
+    deviceServers: Map(),
+});
+
+const ImmutableDevice = Record({
+    instanceId: null,
+    connected: false,
+    address: null,
+    name: null,
+    role: null,
+    discoveringChildren: false,
+    children: Map(),
+});
+
+const ImmutableProperties = Record({
+    broadcast: false,
+    read: false,
+    write_wo_resp: false,
+    write: false,
+    notify: false,
+    indicate: false,
+    auth_signed_wr: false,
+    reliable_wr: false,
+    wr_aux: false,
+});
+
+const ImmutableService = Record({
+    instanceId: null,
+    deviceInstanceId: null,
+    uuid: null,
+    name: null,
+    discoveringChildren: false,
+    children: Map(),
+});
+
+const ImmutableCharacteristic = Record({
+    instanceId: null,
+    serviceInstanceId: null,
+    uuid: null,
+    name: null,
+    properties: new ImmutableProperties(),
+    value: [],
+    discoveringChildren: false,
+    children: Map(),
+});
+
+const ImmutableDescriptor = Record({
+    instanceId: null,
+    characteristicInstanceId: null,
+    uuid: null,
+    name: null,
+    value: null,
 });
 
 export default function asImmutable(mutableObject) {
-    if(mutableObject instanceof api.Adapter) {
-        return getImmutableAdapter(mutableObject);
-    } else if(mutableObject instanceof api.AdapterState) {
+    // NOTE: No idea why instanceof does not work for some types
+    if (mutableObject.constructor.name === 'AdapterState') {
         return getImmutableAdapterState(mutableObject);
-    } else if(mutableObject instanceof api.Device) {
+    } else if (mutableObject instanceof api.Adapter) {
+        return getImmutableAdapter(mutableObject);
+    } else if (mutableObject instanceof api.Device) {
         return getImmutableDevice(mutableObject);
-    } else if(mutableObject instanceof api.Service) {
+    } else if (mutableObject instanceof api.Service) {
         return getImmutableService(mutableObject);
-    } else if(mutableObject instanceof api.Descriptor) {
-        return getImmutableDescriptor(mutableObject);
-    } else if(mutableObject instanceof api.Characteristic) {
+    } else if (mutableObject instanceof api.Characteristic) {
         return getImmutableCharacteristic(mutableObject);
+    } else if (mutableObject instanceof api.Descriptor) {
+        return getImmutableDescriptor(mutableObject);
     } else {
         throw 'Explode!';
     }
@@ -75,33 +131,8 @@ export function getInstanceIds(attribute) {
     return instanceIds;
 }
 
-export function getImmutableService(service) {
-    return Map({
-        instanceId: service.instanceId,
-        deviceInstanceId: service.deviceInstanceId,
-        name: service.name,
-        uuid: service.uuid,
-        discoveringChildren: false,
-        children: null,
-    });
-}
-
-export function getImmutableDevice(device) {
-    return Map({
-        instanceId: device.instanceId,
-        role: device.role,
-        address: device.address,
-        name: device.name,
-        connected: device.connected,
-    });
-}
-
 export function getImmutableAdapterState(adapterState) {
-    return Map({
-        name: adapterState.name,
-        address: adapterState.address,
-        available: adapterState.available,
-    });
+    return new ImmutableAdapterState(adapterState);
 }
 
 export function getImmutableAdapter(adapter) {
@@ -111,12 +142,25 @@ export function getImmutableAdapter(adapter) {
     });
 }
 
+export function getImmutableDevice(device) {
+    return new ImmutableDevice(device);
+}
+
+export function getImmutableProperties(properties) {
+    return new ImmutableProperties(properties);
+}
+
+export function getImmutableService(service) {
+    return new ImmutableService(service);
+}
+
 export function getImmutableCharacteristic(characteristic) {
-    // TODO: Parse characteristic and create immutable characteristic.
+    const immutableCharacteristic = new ImmutableCharacteristic(characteristic);
+    return immutableCharacteristic.set('properties', new ImmutableProperties(characteristic.properties));
 }
 
 export function getImmutableDescriptor(descriptor) {
-    // TODO: Parse descriptor and create immutable descriptor.
+    return new ImmutableDescriptor(descriptor);
 }
 
 export function getNodeStatePath(node) {

@@ -101,7 +101,7 @@ function mapStateToProps(state) {
         discoveredDevices: discovery.devices,
         adapterIsConnecting: adapterIsConnecting,
         isScanning: scanning,
-        isAdapterAvailable: adapterAvailable
+        isAdapterAvailable: adapterAvailable,
     };
 }
 

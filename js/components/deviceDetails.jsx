@@ -27,21 +27,28 @@ import {GattDatabases} from './../gattDatabases';
 
 export default class DeviceDetailsView extends Component {
     render() {
+        const {
+            instanceId,
+            name,
+            address,
+            role,
+        } = this.props.node;
+
         var centralPosition = {
             x: 0,
             y: 0,
         };
         var services = [];
 
-        if (this.props.node.id === 'central' && this.state.connectedToDriver) {
+        if (this.props.node && role === undefined) {
             /*TODO: Add local server*/
             return (
-                <CentralDevice id="central_details" name={this.state.centralName} address={this.state.centralAddress.address} position={centralPosition}/>
+                <CentralDevice id="adapter-details" name={name} address={address.address} position={centralPosition}/>
             );
         } else if (this.props.isEnumeratingServices) {
             return (
-                <div className="device-details-view" id={this.props.node.id + '_details'} style={this.props.style}>
-                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId={'central_details'} id ={this.props.node.id + '_details'} layout="vertical"/>
+                <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
+                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId={'central_details'} id ={instanceId + '_details'} layout="vertical"/>
                     <div className="service-items-wrap device-body text-small">
                         <div style={{textAlign:'center'}}>Enumerating services...</div>
                         <img className="spinner center-block" src="resources/ajax-loader.gif" height="32" width="32"/>
@@ -50,11 +57,11 @@ export default class DeviceDetailsView extends Component {
             );
         } else if (this.props.gattDatabase) {
             return (
-                <div className="device-details-view" id={this.props.node.id + '_details'} style={this.props.style}>
-                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={this.props.node.id + '_details'} layout="vertical"/>
+                <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
+                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={instanceId + '_details'} layout="vertical"/>
                     <div className="service-items-wrap">
                         {this.props.gattDatabase.services.map((service, i) =>
-                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} item={service} selected={this.props.selected} onSelectedAttribute={this.props.onSelectedComponent} selectOnClick={true} connectionHandle={this.props.node.device.connection.conn_handle} />
+                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} item={service} selected={this.props.selected} onSelectedAttribute={this.props.onSelectedComponent} selectOnClick={true} connectionHandle={this.props.device.connection.conn_handle} />
                         )}
                     </div>
                 </div>

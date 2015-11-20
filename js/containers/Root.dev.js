@@ -4,6 +4,8 @@ import { Provider } from 'react-redux';
 import DevTools from './DevTools';
 import App from './App';
 
+// NOTE: Add <DevTools /> as sibling to <App /> to timetravel.
+
 export default class Root extends Component {
     render() {
         const { store } = this.props;
@@ -11,7 +13,6 @@ export default class Root extends Component {
             <Provider store={store}>
                 <div>
                     <App />
-                    <DevTools />
                 </div>
             </Provider>
         );
