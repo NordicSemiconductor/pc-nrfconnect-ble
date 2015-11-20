@@ -5,7 +5,7 @@ import Component from 'react-pure-render/component';
 
 import {Button} from 'react-bootstrap';
 
-export default class LogEntry extends Component {
+export default class AdvertisingListEntry extends Component {
     constructor(props) {
         super(props);
     }
@@ -26,7 +26,7 @@ export default class LogEntry extends Component {
     }
 }
 
-LogEntry.propTypes = {
+AdvertisingListEntry.propTypes = {
     entry: PropTypes.object.isRequired,
     onDelete: PropTypes.func.isRequired,
 };

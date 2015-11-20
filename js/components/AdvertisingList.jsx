@@ -17,7 +17,6 @@ export default class AdvertisingList extends Component {
             title,
             advEntries,
             onDelete,
-            onClear,
         } = this.props;
 
         return (
@@ -32,10 +31,9 @@ export default class AdvertisingList extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {advEntries.map(entry => 
-                            <AdvertisingListEntry {...{entry}} key={entry.id} 
-                                onDelete={onDelete} 
-                                onClear={onClear} />)}
+                        {advEntries.map(entry =>
+                            <AdvertisingListEntry {...{entry}} key={entry.id}
+                                onDelete={onDelete} />)}
                     </tbody>
                 </table>
             </div>
@@ -45,7 +43,6 @@ export default class AdvertisingList extends Component {
 
 AdvertisingList.propTypes = {
     title: PropTypes.string.isRequired,
-    advEntries: PropTypes.array.isRequired,
+    advEntries: PropTypes.object.isRequired,
     onDelete: PropTypes.func.isRequired,
-    onClear: PropTypes.func.isRequired,
-}
+};

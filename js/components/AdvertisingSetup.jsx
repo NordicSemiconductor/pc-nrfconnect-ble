@@ -9,100 +9,101 @@
  * the file.
  *
  */
-
 'use strict';
 
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-import {Modal} from 'react-bootstrap';
-import {DropdownButton} from 'react-bootstrap';
-import {MenuItem} from 'react-bootstrap';
-import {Button} from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 import AdvertisingList from './AdvertisingList';
+import AdvertisingData from './AdvertisingData';
 
-export default class AdvertisingSetup extends Component {
+import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
+
+class AdvertisingSetup extends Component {
     constructor(props) {
         super(props);
+        this.id = 0;
     }
 
-    onDelete(id) {
-        console.log('DELETE');
+    handleDeleteFromAdvData(id) {
+        console.log('DELETE id: ' + id);
     }
 
-    onClear() {
-        console.log('CLEAR');
+    handleDeleteFromScanRsp(id) {
+        console.log('DELETE id: ' + id);
     }
 
     addToAdvData() {
-        console.log('ADD TO ADV DATA');
+        this.id++;
+        this.typeValue.id = this.id;
+        const newValue = Object.assign({}, this.typeValue);
+        this.props.addAdvEntry(newValue);
+        console.log('ADV DATA UPDATED');
     }
 
     addToScanResponse() {
+        this.id++;
+        this.typeValue.id = this.id;
+        const newValue = Object.assign({}, this.typeValue);
+        this.props.addScanRsp(newValue);
         console.log('ADD TO SCAN RESPONSE');
+    }
+
+    handleValueChange(typeValue) {
+        console.log('VALUE CHANGE');
+        this.typeValue = typeValue;
     }
 
     render() {
         const {
+            advDataEntries,
+            scanResponseEntries,
             show,
-            onCancel,
-            } = this.props;
+            addAdvEntry,
+            deleteAdvData,
+            addScanRsp,
+            deleteScanRsp,
+            showDialog,
+            hideDialog,
+        } = this.props;
 
-        const advDataEntries = [{id:1, type:'Complete local name', value:'Wayland'},
-                                {id: 2, type: 'TX power', value: '-20'},];
-        const scanResponseEntries = [{id: 10, type: 'UUID 16 bit more available', value: '0x1234, 0x4343'}];
-
-        console.log('Rendering AdvertisingSetup');
         return (
             <div>
-                <Modal show={show} onHide={onCancel} bsSize="large">
+                <Modal show={show} onHide={() => {}} bsSize="large">
                     <Modal.Header>
                         <Modal.Title>Advertising setup</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className="adv-setup">
-                        <div>
-                            <div className="adv-drop-container">
-                                <DropdownButton title="Advertising data type" id="dropdown-ad">
-                                    <MenuItem eventKey="1">Complete local name</MenuItem>
-                                    <MenuItem eventKey="2">Shortened local name</MenuItem>
-                                    <MenuItem eventKey="3">UUID 16 bit complete list</MenuItem>
-                                    <MenuItem eventKey="4">UUID 16 bit more available</MenuItem>
-                                    <MenuItem eventKey="5">UUID 128 bit complete list</MenuItem>
-                                    <MenuItem eventKey="6">UUID 128 bit more available</MenuItem>
-                                    <MenuItem eventKey="7">TX power level</MenuItem>
-                                    <MenuItem eventKey="8">Custom AD type</MenuItem>
-                                </DropdownButton>
+                        <AdvertisingData onValueChange={value => this.handleValueChange(value)}/>
+                        <div className="adv-row">
+                            <div className="adv-col adv-pkt">
+                                <Button
+                                    className="btn-add"
+                                    onClick={id => this.addToAdvData()}>Add to adv. data</Button>
+                                <AdvertisingList
+                                    title="Advertising data"
+                                    onDelete={deleteAdvData}
+                                    advEntries={advDataEntries}/>
                             </div>
-                            <div className="adv-value-container">
-                                <div>Name (string)</div>
-                                <div>
-                                    <input type="text" id="value" className="" />
-                                </div>
-                            </div>
-                            <div className="adv-row">
-                                <div className="adv-col adv-pkt">
-                                    <Button className="btn-add">Add to adv. data</Button>
-                                    <AdvertisingList 
-                                        title="Advertising data" 
-                                        onDelete={this.onDelete} 
-                                        onClear={this.onClear} 
-                                        advEntries={advDataEntries}/>
-                                </div>
-                                <div className="adv-col scan-rsp-pkt">
-                                    <Button className="btn-add">Add to scan response</Button>
-                                    <AdvertisingList
-                                        title="Scan response data"
-                                        onDelete={this.onDelete}
-                                        onClear={this.onClear}
-                                        advEntries={scanResponseEntries}/>
-                                </div>
+                            <div className="adv-col scan-rsp-pkt">
+                                <Button
+                                    className="btn-add"
+                                    onClick={() => this.addToScanResponse()}>Add to scan response</Button>
+                                <AdvertisingList
+                                    title="Scan response data"
+                                    onDelete={deleteScanRsp}
+                                    advEntries={scanResponseEntries}/>
                             </div>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={this.props.onApply}>Apply</Button>
-                        <Button onClick={this.props.onCancel}>Cancel</Button>
+                        <Button onClick={() => {}}>Apply</Button>
+                        <Button onClick={hideDialog}>Cancel</Button>
                     </Modal.Footer>
                 </Modal>
             </div>
@@ -110,8 +111,40 @@ export default class AdvertisingSetup extends Component {
     }
 }
 
+function mapStateToProps(state) {
+    const {advertisingSetup} = state;
+
+    return {
+        advDataEntries: advertisingSetup.advDataEntries,
+        scanResponseEntries: advertisingSetup.scanResponseEntries,
+        show: advertisingSetup.show,
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    let retval = Object.assign(
+        {},
+        bindActionCreators(AdvertisingSetupActions, dispatch),
+    );
+
+    return retval;
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AdvertisingSetup);
+
 AdvertisingSetup.propTypes = {
+    advDataEntries: PropTypes.object.isRequired,
+    scanResponseEntries: PropTypes.object.isRequired,
     show: PropTypes.bool.isRequired,
-    onApply: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
+    addAdvEntry: PropTypes.func.isRequired,
+    deleteAdvData: PropTypes.func.isRequired,
+    addScanRsp: PropTypes.func.isRequired,
+    deleteScanRsp: PropTypes.func.isRequired,
+    showDialog: PropTypes.func.isRequired,
+    hideDialog: PropTypes.func.isRequired,
+    //onApply: PropTypes.func.isRequired,
+    //onCancel: PropTypes.func.isRequired,
 };
