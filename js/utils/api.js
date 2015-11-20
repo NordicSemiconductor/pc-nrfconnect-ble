@@ -12,7 +12,40 @@
 
 'use strict';
 
-import { Map } from 'immutable';
+import { Map, Record } from 'immutable';
+import { api } from 'pc-ble-driver-js';
+
+const ImmutableAdapterState = Record({
+    port: null,
+    state: null,
+    connectedDevices: Map(),
+    deviceServers: Map(),
+});
+
+const ImmutableAdapter = Record({
+    port: null,
+    state: null,
+    connectedDevices: Map(),
+    deviceServices: Map()
+});
+
+export default function asImmutable(mutableObject) {
+    if(mutableObject instanceof api.Adapter) {
+        return getImmutableAdapter(mutableObject);
+    } else if(mutableObject instanceof api.AdapterState) {
+        return getImmutableAdapterState(mutableObject);
+    } else if(mutableObject instanceof api.Device) {
+        return getImmutableDevice(mutableObject);
+    } else if(mutableObject instanceof api.Service) {
+        return getImmutableService(mutableObject);
+    } else if(mutableObject instanceof api.Descriptor) {
+        return getImmutableDescriptor(mutableObject);
+    } else if(mutableObject instanceof api.Characteristic) {
+        return getImmutableCharacteristic(mutableObject);
+    } else {
+        throw 'Explode!';
+    }
+}
 
 export function getInstanceIds(attribute) {
     const idArray = attribute.instanceId.split('.');
@@ -50,6 +83,31 @@ export function getImmutableService(service) {
         uuid: service.uuid,
         discoveringChildren: false,
         children: null,
+    });
+}
+
+export function getImmutableDevice(device) {
+    return Map({
+        instanceId: device.instanceId,
+        role: device.role,
+        address: device.address,
+        name: device.name,
+        connected: device.connected,
+    });
+}
+
+export function getImmutableAdapterState(adapterState) {
+    return Map({
+        name: adapterState.name,
+        address: adapterState.address,
+        available: adapterState.available,
+    });
+}
+
+export function getImmutableAdapter(adapter) {
+    return new ImmutableAdapter({
+        port: adapter.state.port,
+        state: getImmutableAdapterState(adapter.state),
     });
 }
 

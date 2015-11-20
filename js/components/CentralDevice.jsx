@@ -10,6 +10,8 @@
  *
  */
 
+ /*jslint browser:true */
+
 'use strict';
 
 import React, { PropTypes, Component } from 'react';
@@ -51,4 +53,4 @@ CentralDevice.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
-}
+};

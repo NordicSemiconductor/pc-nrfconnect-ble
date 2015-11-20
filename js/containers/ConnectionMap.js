@@ -30,28 +30,25 @@ class ConnectionMap extends Component {
 
     render() {
         const {
-            graph,
             adapter,
+            connectedDevices,
             disconnectFromDevice,
             bondWithDevice,
             updateDeviceConnectionParameters,
         } = this.props;
 
         let central;
-        let connectedDevices = [];
+        let deviceNodes = [];
 
-        if (adapter !== null && adapter.state.available && graph !== null) {
-            for (let i = 0; i < graph.size; i++) {
-                let connectedDeviceCounter = 0;
-                const node = graph.get(i);
+        if (adapter !== null && adapter.get('state').available && connectedDevices !== null) {
+            const name = adapter.getIn(['state', 'name']);
+            const address = adapter.getIn(['state','address']);
 
-                if (node.id === 'central') {
-                    central = (<CentralDevice id={node.id} name={adapter.state.name} address={adapter.state.address.address} />);
-                } else {
-                    connectedDeviceCounter++;
-                    connectedDevices.push(<ConnectedDevice id={node.id} sourceId="central" key={i} node={node} layout="horizontal" onDisconnect={() => disconnectFromDevice(node.device)} />);
-                }
-            }
+            central = (<CentralDevice id={adapter.instanceId + '_cmap'} name={name} address={address} />);
+
+            connectedDevices.forEach((device, instanceId) => {
+                deviceNodes.push(<ConnectedDevice id={instanceId + '_cmap'} sourceId={adapter.instanceId + '_cmap'} key={instanceId} device={device} layout="horizontal" onDisconnect={() => disconnectFromDevice(device)} />);
+            });
         }
 
         return (
@@ -73,12 +70,12 @@ function mapStateToProps(state) {
     if (selectedAdapter === undefined) {
         return {
             adapter: null,
-            graph: null,
+            connectedDevices: null,
         };
     } else {
         return {
             adapter: selectedAdapter,
-            graph: selectedAdapter.graph,
+            connectedDevices: selectedAdapter.connectedDevices,
         };
     }
 }
@@ -98,7 +95,7 @@ export default connect(
 )(ConnectionMap);
 
 ConnectionMap.propTypes = {
-    graph: PropTypes.object,
+    connectedDevices: PropTypes.object,
     adapter: PropTypes.object,
     disconnectFromDevice: PropTypes.func.isRequired,
     bondWithDevice: PropTypes.func.isRequired,

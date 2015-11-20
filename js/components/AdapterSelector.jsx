@@ -42,17 +42,18 @@ class AdapterSelector extends Component {
             openAdapter,
         } = this.props;
 
-        const menuItems = adapters.map((adapter, i) => {
-            return <MenuItem className='btn-primary' eventKey={adapter.port} onSelect={() => openAdapter(adapter.port)} key={i}>{adapter.port}</MenuItem>;
-        }, this);
+        const adapterNodes = [];
 
-        //console.log(JSON.stringify(menuItems));
+        const menuItems = adapters.forEach((adapter, i) => {
+            const port = adapter.get('port');
+            adapterNodes.push(<MenuItem className='btn-primary' eventKey={port} onSelect={() => openAdapter(port)} key={i}>{port}</MenuItem>);
+        });
 
         return (
             <span title='Select com port (Alt+P)'>
                 <div className="padded-row">
                     <DropdownButton id='navbar-dropdown' className='btn-primary btn-nordic' title={adapterStatus} ref='comPortDropdown'>
-                        {menuItems}
+                        {adapterNodes}
                     </DropdownButton>
                     <div className={"indicator " + adapterIndicator}></div>
                 </div>

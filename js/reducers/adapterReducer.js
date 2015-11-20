@@ -3,7 +3,9 @@
 // const NONE_TEXT = 'None';
 const DEFAULT_ADAPTER_STATUS = 'Select com port';
 
-import Immutable, { Record, List } from 'immutable';
+import Immutable, { Record, List, Map } from 'immutable';
+
+import asImmutable from '../utils/api';
 
 import * as AdapterAction from '../actions/adapterActions';
 import { logger } from '../logging';
@@ -15,11 +17,11 @@ function getSelectedAdapter(state) {
     };
 }
 
-function findGraphNode(state, nodeId) {
+function findDevice(state, deviceInstanceId) {
     const { adapter } = getSelectedAdapter(state);
 
-    return adapter.graph.find(function(node) {
-        return node.id === nodeId;
+    return adapter.devices.find(function(device) {
+        return device.instanceId.id === deviceInstanceId;
     });
 }
 
@@ -35,30 +37,12 @@ function maintainNoneField(state) {
     } */
 }
 
-// State records
-const AdapterInitialState = Record({
-    port: null,
-    state: null,
-    graph: List(),
-    graphIdCounter: 0,
-});
-
 function addAdapter(state, adapter) {
     let retval = Object.assign({}, state);
 
     retval.api.adapters.push(adapter);
 
-    let newAdapter = new AdapterInitialState();
-    let newGraph = Immutable.List.of({ id: 'central', ancestorOf: [] });
-
-    newAdapter = newAdapter.merge({
-        port: adapter.state.port,
-        state: adapter.state,
-        graph: newGraph,
-        graphIdCounter: 0,
-    });
-
-    retval.adapters.push(newAdapter);
+    retval.adapters.push(asImmutable(adapter));
 
     maintainNoneField(retval);
     return retval;
@@ -114,7 +98,9 @@ function adapterStateChanged(state, adapter, adapterState) {
     const adapterIndex = state.api.adapters.indexOf(adapter);
 
     let _adapter = state.adapters[adapterIndex];
-    state.adapters[adapterIndex] = _adapter.update('state', state => adapterState);
+    //adapterState = apiHelper.getAsImmutable(adapterState);
+    state.adapters[adapterIndex] = _adapter.set('state', asImmutable(adapterState));
+
     return state;
 }
 
@@ -125,7 +111,6 @@ function closeAdapter(state, adapter) {
     retval.api.selectedAdapter = null;
     retval.selectedAdapter = null;
     retval.adapterStatus = DEFAULT_ADAPTER_STATUS;
-    retval.graphIdCounter = 0;
 
     return retval;
 }
@@ -156,43 +141,11 @@ function deviceConnected(state, device) {
     }
 
     const retval = Object.assign({}, state);
+
+    const _device = getImmutableDevice(device);
     const { adapter, index } = getSelectedAdapter(retval);
 
-    const oldNode = adapter.graph.find(function(node) {
-        if (node.device !== undefined) {
-            return node.device.instanceId === device.instanceId;
-        } else {
-            return false;
-        }
-    });
-
-    // Only add a new node if does not exist in the graph
-    if (oldNode !== undefined) {
-        oldNode.device.connected = true;
-    } else {
-        const graphIdCounter = adapter.get('graphIdCounter');
-        const newNodeId = 'node' + graphIdCounter;
-
-        retval.adapters[index] =
-            retval.adapters[index]
-                .update('graph', graph => graph.push({
-                    id: newNodeId,
-                    device: device, }));
-
-        retval.adapters[index] =
-            retval.adapters[index]
-                .update('graphIdCounter', graphIdCounter => ++graphIdCounter);
-
-        const centralNode = findGraphNode(retval, 'central');
-
-        if (centralNode === undefined) {
-            logger.silly('Central node not found.');
-            return retval;
-        }
-
-        centralNode.ancestorOf.push(newNodeId);
-    }
-
+    retval.adapters[index] = adapter.setIn(['connectedDevices', _device.instanceId], _device);
     return retval;
 }
 
@@ -200,19 +153,14 @@ function deviceDisconnected(state, device) {
     const retval = Object.assign({}, state);
 
     const { adapter, index } = getSelectedAdapter(retval);
-
-    const nodeIndex = adapter.graph.findIndex(function(node) {
-        if (node.device !== undefined) {
-            return node.device.instanceId === device.instanceId;
-        } else {
-            return false;
-        }
-    });
-
-    retval.adapters[index] = retval.adapters[index].update(
-        'graph', graph => graph.delete(nodeIndex));
+    retval.adapters[index] = adapter.deleteIn(['connectedDevices', device.instanceId]);
 
     return retval;
+}
+
+function deviceConnectionParamUpdateRequest(state, adapter, connParam) {
+    console.log(JSON.stringify(connParam));
+    return state;
 }
 
 function addError(state, error) {
@@ -267,6 +215,8 @@ export default function adapter(state =
             return deviceConnected(state, action.device);
         case AdapterAction.DEVICE_DISCONNECTED:
             return deviceDisconnected(state, action.device);
+        case AdapterAction.DEVICE_CONNECTION_PARAM_UPDATE_REQUEST:
+            return deviceConnectionParamUpdateRequest(state, action.adapter, action.connParam);
         default:
             return state;
     }

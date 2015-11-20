@@ -56,18 +56,17 @@ export default class ConnectedDevice extends Component {
 
     render() {
         const {
-            node,
+            device,
             id,
             sourceId,
             layout,
         } = this.props;
 
-        const device = node.device;
-        const role = node.id === 'central' ? 'Central' : 'Peripheral';
+        const role = device.role === 'central' ? 'Central' : 'Peripheral';
 
         const style = {
             width: '250px',
-            opacity: node.connectionLost ? 0.5 : 1.0,
+            opacity: device.connected ? 0.5 : 1.0,
         };
 
         return (
@@ -93,15 +92,20 @@ export default class ConnectedDevice extends Component {
                         <strong>{device.name ? device.name : '<Unknown>'}</strong>
                     </div>
                     <div className="address-text">{device.address}</div>
-                    <div className="flag-line">
-                        {device.services.map((service, index) => {
-                            return (<div key={index} className="device-flag">{service}</div>);
-                        })}
-                    </div>
                 </div>
                 <Connector sourceId={sourceId} targetId={id} device={device} layout={layout} />
             </div>
         );
+
+        // TODO: later on, we must implement a transition of data from device discovery flags
+        // TODO: to connected devices.
+        //
+        // <div className="flag-line">
+        //     {device.services.map((service, index) => {
+        //         return (<div key={index} className="device-flag">{service}</div>);
+        //     })}
+        // </div>
+
     }
 }
 
