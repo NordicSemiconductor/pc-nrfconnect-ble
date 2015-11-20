@@ -18,8 +18,6 @@ import DescriptorItem from './DescriptorItem';
 import AddNewItem from './AddNewItem.jsx';
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 
-import bleDriverActions from '../actions/bleDriverActions';
-
 import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
 
 
@@ -82,7 +80,7 @@ var CharacteristicItem = React.createClass({
         this.props.addDescriptor(this.props.item);
     },
     _onWrite: function(value) {
-        bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
+        // bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
     },
     render: function() {
         const expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';

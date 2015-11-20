@@ -15,9 +15,6 @@
 import React from 'react';
 
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
-
-import bleDriverActions from '../actions/bleDriverActions';
-
 import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
 
 
@@ -40,7 +37,7 @@ var DescriptorItem = React.createClass({
         }
     },
     _onWrite: function(value) {
-        bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
+        // bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
     },
     render: function() {
         var hidden = !this.props.item.parent.expanded && !this.props.item.parent.parent.expanded;
