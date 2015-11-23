@@ -17,14 +17,33 @@ import { Record, Map } from 'immutable';
 import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
 import * as AdapterActions from '../actions/adapterActions';
 
-import { getInstanceIds, getImmutableService, getImmutableCharacteristic, getImmutableDescriptor, getNodeStatePath } from '../utils/api';
+import { getInstanceIds, getImmutableService, getImmutableCharacteristic, getImmutableDescriptor } from '../utils/api';
 
 const InitialState = Record({
     selectedComponent: null,
     devices: Map(),
 });
 
-const initialState = new InitialState();
+const initialState = new InitialState({selectComponent: null, devices: Map()});
+
+function getNodeStatePath(node) {
+    const nodeInstanceIds = getInstanceIds(node);
+    const nodeStatePath = ['devices', nodeInstanceIds.device];
+
+    if (nodeInstanceIds.service) {
+        nodeStatePath.push('children', nodeInstanceIds.service);
+    }
+
+    if (nodeInstanceIds.characteristic) {
+        nodeStatePath.push('children', nodeInstanceIds.characteristic);
+    }
+
+    if (nodeInstanceIds.descriptor) {
+        nodeStatePath.push('children', nodeInstanceIds.descriptor);
+    }
+
+    return nodeStatePath;
+}
 
 function discoveringAttributes(state, parent) {
     const parentStatePath = getNodeStatePath(parent);

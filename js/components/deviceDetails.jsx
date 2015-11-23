@@ -32,6 +32,8 @@ export default class DeviceDetailsView extends Component {
             name,
             address,
             role,
+            discoveringChildren,
+            children,
         } = this.props.node;
 
         var centralPosition = {
@@ -43,26 +45,37 @@ export default class DeviceDetailsView extends Component {
         if (this.props.node && role === undefined) {
             /*TODO: Add local server*/
             return (
-                <CentralDevice id="adapter-details" name={name} address={address.address} position={centralPosition}/>
+                <CentralDevice id="adapter-details" name={name} address={address} position={centralPosition}/>
             );
-        } else if (this.props.isEnumeratingServices) {
+        }
+
+        if (discoveringChildren) {
             return (
                 <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
-                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId={'central_details'} id ={instanceId + '_details'} layout="vertical"/>
+                    <ConnectedDevice device={this.props.node} sourceId={instanceId + '_details'} id ={instanceId + '_details'} layout="vertical"/>
                     <div className="service-items-wrap device-body text-small">
                         <div style={{textAlign:'center'}}>Enumerating services...</div>
                         <img className="spinner center-block" src="resources/ajax-loader.gif" height="32" width="32"/>
                     </div>
                 </div>
             );
-        } else if (this.props.gattDatabase) {
+        } else if (children) {
+            const childrenList = [];
+            children.forEach(service => {
+                childrenList.push(<ServiceItem key={i}
+                                               name={service.name}
+                                               item={service}
+                                               selected={this.props.selected}
+                                               onSelectedAttribute={this.props.onSelectedComponent}
+                                               selectOnClick={true}
+                                               />
+                );
+            });
             return (
                 <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
-                    <ConnectedDevice device={this.props.device} node={this.props.node} sourceId="central_details" id={instanceId + '_details'} layout="vertical"/>
+                    <ConnectedDevice device={this.props.node} sourceId={instanceId + '_details'} id={instanceId + '_details'} layout="vertical"/>
                     <div className="service-items-wrap">
-                        {this.props.gattDatabase.services.map((service, i) =>
-                            <ServiceItem name={service.name} key={i} characteristics={service.characteristics} item={service} selected={this.props.selected} onSelectedAttribute={this.props.onSelectedComponent} selectOnClick={true} connectionHandle={this.props.device.connection.conn_handle} />
-                        )}
+                        {childrenList}
                     </div>
                 </div>
             );

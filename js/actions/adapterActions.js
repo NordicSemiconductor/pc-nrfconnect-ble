@@ -34,6 +34,8 @@ import _ from 'underscore';
 
 import { driver, api } from 'pc-ble-driver-js';
 
+import { discoverServices } from './deviceDetailsActions';
+
 const _adapterFactory = api.AdapterFactory.getInstance(driver);
 
 // Internal functions
@@ -237,6 +239,7 @@ function _getCharacteristics(adapter, serviceInstanceId) {
 function _connectToDevice(dispatch, getState, device) {
     function onDeviceConnected(dispatch, device) {
         dispatch(deviceConnectedAction(device));
+        dispatch(discoverServices(device));
     }
 
     function onConnectTimedOut(dispatch, deviceAddress) {

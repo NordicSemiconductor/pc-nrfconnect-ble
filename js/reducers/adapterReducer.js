@@ -3,7 +3,11 @@
 // const NONE_TEXT = 'None';
 const DEFAULT_ADAPTER_STATUS = 'Select com port';
 
+import { combineReducers } from 'redux';
+
 import * as apiHelper from '../utils/api';
+
+import deviceDetails from './deviceDetailsReducer';
 
 import * as AdapterAction from '../actions/adapterActions';
 import { logger } from '../logging';
@@ -36,8 +40,6 @@ function maintainNoneField(state) {
 }
 
 function addAdapter(state, adapter) {
-    let retval = Object.assign({}, state);
-
     retval.api.adapters.push(adapter);
     retval.adapters.push(apiHelper.getImmutableAdapter(adapter));
 
@@ -46,7 +48,6 @@ function addAdapter(state, adapter) {
 }
 
 function removeAdapter(state, adapter) {
-    let retval = Object.assign({}, state);
     const adapterIndex = retval.api.adapters.indexOf(adapter);
 
     if (adapterIndex !== -1) {
@@ -67,14 +68,11 @@ function removeAdapter(state, adapter) {
 function openAdapter(state, adapter) {
     logger.info(`Opening adapter ${adapter.state.port}`);
 
-    let retval = Object.assign({}, state);
     retval.adapterStatus = adapter.state.port;
     return retval;
 }
 
 function adapterOpened(state, adapter) {
-    const retval = Object.assign({}, state);
-
     logger.info(`Adapter ${adapter.state.port} opened`);
 
     // Since we maintain retval.api.adapters and retval.adapters simultaniously
@@ -92,7 +90,6 @@ function adapterOpened(state, adapter) {
 }
 
 function adapterStateChanged(state, adapter, adapterState) {
-    const _state = Object.assign({}, state);
     const adapterIndex = _state.api.adapters.indexOf(adapter);
 
     const _adapter = _state.adapters[adapterIndex];
@@ -104,8 +101,6 @@ function adapterStateChanged(state, adapter, adapterState) {
 }
 
 function closeAdapter(state, adapter) {
-    const retval = Object.assign({}, state);
-
     retval.adapterIndicator = 'off';
     retval.api.selectedAdapter = null;
     retval.selectedAdapter = null;
@@ -118,7 +113,6 @@ function adapterError(state, adapter, error) {
     logger.error(`Error on adapter ${adapter.state.port}: ${error.message}`);
     logger.debug(error.description);
 
-    const retval = Object.assign({}, state);
     retval.adapterStatus = 'Error connecting';
     retval.adapterIndicator = 'error';
     retval.api.selectedAdapter = null;
@@ -129,8 +123,6 @@ function adapterError(state, adapter, error) {
 }
 
 function deviceConnect(state, device) {
-    const retval = Object.assign({}, state);
-
     return retval;
 }
 
@@ -138,8 +130,6 @@ function deviceConnected(state, device) {
     if (device.address === undefined) {
         return state;
     }
-
-    const retval = Object.assign({}, state);
 
     const _device = apiHelper.getImmutableDevice(device);
     const { adapter, index } = getSelectedAdapter(retval);
@@ -149,8 +139,6 @@ function deviceConnected(state, device) {
 }
 
 function deviceDisconnected(state, device) {
-    const retval = Object.assign({}, state);
-
     const { adapter, index } = getSelectedAdapter(retval);
     retval.adapters[index] = adapter.deleteIn(['connectedDevices', device.instanceId]);
 
@@ -174,7 +162,6 @@ function addError(state, error) {
         logger.debug(error.description);
     }
 
-    const retval = Object.assign({}, state);
     retval.errors.push(error.message);
     return retval;
 }
@@ -191,6 +178,18 @@ export default function adapter(state =
         selectedAdapter: null, // index of selected adapter in .adapters (not api.adapters)
         errors: [],
     }, action) {
+    state = Object.assign({}, state);
+
+    const adapterSubReducers = combineReducers({
+        deviceDetails,
+    });
+    const selectedAdapter = state.adapters[state.selectedAdapter];
+
+    if (selectedAdapter) {
+        const newSubReducerStates = adapterSubReducers({deviceDetails: selectedAdapter.deviceDetails}, action);
+        state.adapters[state.selectedAdapter] = selectedAdapter.merge(newSubReducerStates);
+    }
+
     switch (action.type) {
         case AdapterAction.ADAPTER_OPEN:
             return openAdapter(state, action.adapter);

@@ -14,7 +14,6 @@ const rootReducer = combineReducers({
     discovery,
     log,
     app,
-    deviceDetails,
     advertisingSetup,
 });
 

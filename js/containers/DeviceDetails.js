@@ -34,57 +34,36 @@ class DeviceDetailsContainer extends Component {
 
     render() {
         const {
-            selectedComponent,
-            devices,
             adapterState,
+            selectedComponent,
+            connectedDevices,
+            deviceServers,
             selectComponent,
         } = this.props;
         const elemWidth = 250;
         const detailNodes = [];
 
-        console.log(adapterState);
-
         if (!adapterState) {
             return;
         }
 
-        detailNodes.push(<DeviceDetailsView key={0}
-                                            selectedComponent={this.props.selectedComponent}
+        detailNodes.push(<DeviceDetailsView key={adapterState.instanceId}
+                                            selectedComponent={selectedComponent}
                                             onSelectedComponent={this._onSelectedComponent}
                                             node={adapterState}
                                             containerHeight={this.props.style.height}
                                             />
         );
 
-        devices.forEach((value, key) => {
-            console.log(value);
-            console.log(key);
+        connectedDevices.forEach(device => {
+            detailNodes.push(<DeviceDetailsView key={device.instanceId}
+                                                selectedComponent={selectedComponent}
+                                                onSelectedComponent={this._onSelectedComponent}
+                                                node={device}
+                                                containerHeight={this.props.style.height}
+                                                />
+            );
         });
-            /*
-            if (node.id === 'central') {
-                return <DeviceDetailsView key={i}
-                                          selectedComponent={this.props.selectedComponent}
-                                          onSelectedComponent={this._onSelectedComponent}
-                                          node={node}
-                                          device={node.device}
-                                          containerHeight={this.props.style.height}
-                                          />;
-            } else {
-                //TODO: check if there is some database present?
-                if (true) {
-                    var deviceGattDatabase = this.state.gattDatabases.getGattDatabase(node.device.connection.conn_handle);
-                    return <DeviceDetailsView key={i}
-                                              selectedComponent={this.props.selectedComponent}
-                                              onSelectedComponent={this._onSelectedComponent}
-                                              node={node}
-                                              device={node.device}
-                                              containerHeight={this.props.style.height}
-                                              isEnumeratingServices={this.state.isEnumeratingServices}
-                                              gattDatabase={deviceGattDatabase}
-                                              />;
-                }
-            }
-            */
 
         var perNode = (20 + elemWidth);
         var width = (perNode * detailNodes.length);
@@ -97,18 +76,13 @@ class DeviceDetailsContainer extends Component {
 }
 
 function mapStateToProps(state) {
-    const {
-        deviceDetails,
-        adapter,
-    } = state;
-
-    const selectedAdapter = adapter.adapters[adapter.selectedAdapter];
+    const selectedAdapter = state.adapter.adapters[state.adapter.selectedAdapter];
 
     return {
         adapterState: selectedAdapter.state,
-        selectedComponent: deviceDetails.selectedComponent,
+        selectedComponent: selectedAdapter.deviceDetails.selectedComponent,
         connectedDevices: selectedAdapter.connectedDevices,
-        deviceServers: deviceDetails.deviceServers,
+        deviceServers: selectedAdapter.deviceDetails.deviceServers,
     };
 };
 

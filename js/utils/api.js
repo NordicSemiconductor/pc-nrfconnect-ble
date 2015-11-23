@@ -31,7 +31,8 @@ const ImmutableAdapter = Record({
     port: null,
     state: new ImmutableAdapterState(),
     connectedDevices: Map(),
-    deviceServers: Map(),
+    /*Adapter sub-reducers*/
+    deviceDetails: undefined,
 });
 
 const ImmutableDevice = Record({
@@ -45,8 +46,7 @@ const ImmutableDevice = Record({
     slaveLatency: null,
     connectionSupervisionTimeout: null,
     discoveringChildren: false,
-    services: List(),
-    children: Map(),
+    children: null,
 });
 
 const ImmutableProperties = Record({
@@ -67,7 +67,7 @@ const ImmutableService = Record({
     uuid: null,
     name: null,
     discoveringChildren: false,
-    children: Map(),
+    children: null,
 });
 
 const ImmutableCharacteristic = Record({
@@ -78,7 +78,7 @@ const ImmutableCharacteristic = Record({
     properties: new ImmutableProperties(),
     value: List(),
     discoveringChildren: false,
-    children: Map(),
+    children: null,
 });
 
 const ImmutableDescriptor = Record({
@@ -154,6 +154,9 @@ export function getImmutableAdapter(adapter) {
     return new ImmutableAdapter({
         port: adapter.state.port,
         state: getImmutableAdapterState(adapter.state),
+        connectedDevices: Map(),
+        /*Adapter sub-reducers*/
+        deviceDetails: undefined,
     });
 }
 
@@ -212,23 +215,4 @@ export function getImmutableDescriptor(descriptor) {
         name: descriptor.name,
         value: List(descriptor.value),
     });
-}
-
-export function getNodeStatePath(node) {
-    const nodeInstanceIds = getInstanceIds(node);
-    const nodeStatePath = ['devices', nodeInstanceIds.device];
-
-    if (nodeInstanceIds.service) {
-        nodeStatePath.push('children', nodeInstanceIds.service);
-    }
-
-    if (nodeInstanceIds.characteristic) {
-        nodeStatePath.push('children', nodeInstanceIds.characteristic);
-    }
-
-    if (nodeInstanceIds.descriptor) {
-        nodeStatePath.push('children', nodeInstanceIds.descriptor);
-    }
-
-    return nodeStatePath;
 }

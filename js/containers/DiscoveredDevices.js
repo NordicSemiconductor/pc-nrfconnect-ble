@@ -63,7 +63,7 @@ class DiscoveredDevices extends Component {
                 <div style={{paddingTop: '0px'}}>
                     {   discoveredDevices.map((device, address) => {
                             return (
-                                <DiscoveredDevice key={ 'dev-' + address }
+                                <DiscoveredDevice key={address}
                                     device={device}
                                     standalone={false}
                                     adapterIsConnecting={adapterIsConnecting}
