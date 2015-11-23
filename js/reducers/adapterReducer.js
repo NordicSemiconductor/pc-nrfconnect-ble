@@ -3,8 +3,6 @@
 // const NONE_TEXT = 'None';
 const DEFAULT_ADAPTER_STATUS = 'Select com port';
 
-import Immutable, { Record, List, Map } from 'immutable';
-
 import * as apiHelper from '../utils/api';
 
 import * as AdapterAction from '../actions/adapterActions';

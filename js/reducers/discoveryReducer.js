@@ -3,6 +3,7 @@
 import Immutable, { Record, Map, List } from 'immutable';
 import * as DiscoveryAction from '../actions/discoveryActions';
 import * as AdapterAction from '../actions/adapterActions';
+import * as apiHelper from '../utils/api';
 
 const InitialState = Record({
     devices: Map(),
@@ -12,13 +13,8 @@ const InitialState = Record({
 const initialState = new InitialState();
 
 function deviceFound(state, device) {
-    const newDevice = Immutable.fromJS(device);
-    newDevice.isConnecting = false;
-
-    return state.update(
-        'devices',
-        devices => devices.set(device.address, newDevice)
-    );
+    const newDevice = apiHelper.getImmutableDevice(device);
+    return state.setIn(['devices', device.address], newDevice);
 }
 
 function addError(state, error) {
@@ -30,27 +26,26 @@ function clearList(state) {
 }
 
 function deviceConnect(state, device) {
-    const newDevice = state.devices.get(device.address);
-    newDevice.isConnecting = true;
-    return state.update('devices', devices => devices.set(device.address, newDevice));
+    return state.setIn(['devices', device.address, 'isConnecting'], true);
 }
 
 function deviceConnected(state, device) {
-    return state.update('devices', devices => devices.delete(device.address));
+    return state.deleteIn(['devices', device.address]);
 }
 
 function deviceConnectTimeout(state, deviceAddress) {
-    const newDevice = state.devices.get(deviceAddress.address);
-    newDevice.isConnecting = false;
-    return state.update('devices', devices => devices.set(deviceAddress.address, newDevice));
+    return state.setIn(['devices', deviceAddress.address, 'isConnecting'], false);
 }
 
 function deviceCancelConnect(state) {
-    state.devices.map((device, key) => {
-        device.isConnecting = false;
+    const _devices = state.devices;
+    let newDevices = Immutable.Map();
+
+    _devices.forEach((device, address) => {
+        newDevices = newDevices.set(address, device.set('isConnecting', false));
     });
 
-    return state;
+    return state.set('devices', newDevices);
 }
 
 export default function discovery(state = initialState, action) {

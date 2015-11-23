@@ -36,6 +36,7 @@ const ImmutableAdapter = Record({
 
 const ImmutableDevice = Record({
     instanceId: null,
+    isConnecting: false, // Used by UI to determine visualize we are connecting
     connected: false,
     address: null,
     name: null,
@@ -44,7 +45,7 @@ const ImmutableDevice = Record({
     slaveLatency: null,
     connectionSupervisionTimeout: null,
     discoveringChildren: false,
-
+    services: List(),
     children: Map(),
 });
 
