@@ -66,7 +66,7 @@ export default class ConnectedDevice extends Component {
 
         const style = {
             width: '250px',
-            opacity: device.connected ? 0.5 : 1.0,
+            opacity: device.connected ? 1.0 : 0.5,
         };
 
         return (
