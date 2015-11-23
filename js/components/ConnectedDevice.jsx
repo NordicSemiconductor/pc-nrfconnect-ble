@@ -68,29 +68,29 @@ export default class ConnectedDevice extends Component {
         };
 
         return (
-            <div id={id} className="device standalone" style={style}>
-                <div className="top-bar">
-                    <div className="flag-line"></div>
+            <div id={id} className='device standalone' style={style}>
+                <div className='top-bar'>
+                    <div className='flag-line'></div>
                 </div>
 
-                <div className="device-body text-small" >
+                <div className='device-body text-small' >
                     <div>
-                        <div className="pull-right">
-                            <Dropdown id="connectionDropDown" onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
+                        <div className='pull-right'>
+                            <Dropdown id='connectionDropDown' onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
                                 <Dropdown.Toggle noCaret>
-                                    <span className="icon-cog" aria-hidden="true" />
+                                    <span className='icon-cog' aria-hidden='true' />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <MenuItem eventKey="Update">Update Connection</MenuItem>
-                                    <MenuItem eventKey="Bond">Bond</MenuItem>
-                                    <MenuItem eventKey="Disconnect">Disconnect</MenuItem>
+                                    <MenuItem eventKey='Update'>Update Connection</MenuItem>
+                                    <MenuItem eventKey='Bond'>Bond</MenuItem>
+                                    <MenuItem eventKey='Disconnect'>Disconnect</MenuItem>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
-                        <div className="role-flag pull-right">{role}</div>
+                        <div className='role-flag pull-right'>{role}</div>
                         <strong>{device.name ? device.name : '<Unknown>'}</strong>
                     </div>
-                    <div className="address-text">{device.address}</div>
+                    <div className='address-text'>{device.address}</div>
                 </div>
                 <Connector sourceId={sourceId} targetId={id} device={device} layout={layout} />
             </div>
@@ -99,9 +99,9 @@ export default class ConnectedDevice extends Component {
         // TODO: later on, we must implement a transition of data from device discovery flags
         // TODO: to connected devices.
         //
-        // <div className="flag-line">
+        // <div className='flag-line'>
         //     {device.services.map((service, index) => {
-        //         return (<div key={index} className="device-flag">{service}</div>);
+        //         return (<div key={index} className='device-flag'>{service}</div>);
         //     })}
         // </div>
 
