@@ -12,6 +12,8 @@ export default class AdvertisingData extends Component {
     constructor(props) {
         super(props);
         this.value = '';
+        this.type = null;
+        this.typeApi = null;
         this.typeKey = null;
         this.title = 'Advertising data type';
     }
@@ -67,6 +69,7 @@ export default class AdvertisingData extends Component {
         this.forceUpdate();
 
         this.type = this.keyToAdvertisingType(this.typeKey);
+        this.typeApi = this.keyToApiAdvType(this.typeKey);
         this.emitValueChange();
     }
 
@@ -80,6 +83,7 @@ export default class AdvertisingData extends Component {
         const typeValue = {
             typeKey: this.typeKey,
             type: this.type,
+            typeApi: this.typeApi,
             value: this.value,
         };
         this.props.onValueChange(typeValue);

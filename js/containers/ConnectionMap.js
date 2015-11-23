@@ -22,19 +22,27 @@ import ConnectedDevice from '../components/ConnectedDevice';
 import CentralDevice from '../components/CentralDevice';
 
 import * as AdapterActions from '../actions/adapterActions';
+import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
 
 class ConnectionMap extends Component {
     constructor(props) {
         super(props);
     }
 
+    handleToggleAdvertising() {
+        console.log('handleToggleAdvertising');
+        this.props.toggleAdvertising(this.props.advertisingSetup);
+    }
+
     render() {
         const {
             adapter,
             connectedDevices,
+            advertising,
             disconnectFromDevice,
             bondWithDevice,
             updateDeviceConnectionParameters,
+            showDialog,
         } = this.props;
 
         let central;
@@ -42,9 +50,12 @@ class ConnectionMap extends Component {
 
         if (adapter !== null && adapter.get('state').available && connectedDevices !== null) {
             const name = adapter.getIn(['state', 'name']);
-            const address = adapter.getIn(['state','address']);
+            const address = adapter.getIn(['state', 'address']);
 
-            central = (<CentralDevice id={adapter.instanceId + '_cmap'} name={name} address={address} />);
+            central = (<CentralDevice id={adapter.instanceId + '_cmap'} name={name}
+                address={address} advertising={adapter.state.advertising}
+                onShowDialog={showDialog}
+                onToggleAdvertising={() => {this.handleToggleAdvertising()}} />);
 
             connectedDevices.forEach((device, instanceId) => {
                 deviceNodes.push(<ConnectedDevice id={instanceId + '_cmap'}
@@ -70,7 +81,10 @@ class ConnectionMap extends Component {
 }
 
 function mapStateToProps(state) {
-    const { adapter } = state;
+    const {
+        adapter,
+        advertisingSetup,
+    } = state;
 
     const selectedAdapter = adapter.adapters[adapter.selectedAdapter];
 
@@ -78,11 +92,15 @@ function mapStateToProps(state) {
         return {
             adapter: null,
             connectedDevices: null,
+            advertising: false,
+            advertisingSetup: advertisingSetup,
         };
     } else {
         return {
             adapter: selectedAdapter,
             connectedDevices: selectedAdapter.connectedDevices,
+            advertising: selectedAdapter.state.advertising,
+            advertisingSetup: advertisingSetup,
         };
     }
 }
@@ -90,7 +108,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     const retval = Object.assign(
         {},
-        bindActionCreators(AdapterActions, dispatch)
+        bindActionCreators(AdapterActions, dispatch),
+        bindActionCreators(AdvertisingSetupActions, dispatch),
     );
 
     return retval;
@@ -104,7 +123,10 @@ export default connect(
 ConnectionMap.propTypes = {
     connectedDevices: PropTypes.object,
     adapter: PropTypes.object,
+    advertisingSetup: PropTypes.object.isRequired,
     disconnectFromDevice: PropTypes.func.isRequired,
     bondWithDevice: PropTypes.func.isRequired,
     updateDeviceConnectionParameters: PropTypes.func.isRequired,
+    showDialog: PropTypes.func.isRequired,
+    toggleAdvertising: PropTypes.func.isRequired,
 };
