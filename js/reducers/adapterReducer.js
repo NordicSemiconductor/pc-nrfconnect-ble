@@ -5,7 +5,7 @@ const DEFAULT_ADAPTER_STATUS = 'Select com port';
 
 import Immutable, { Record, List, Map } from 'immutable';
 
-import asImmutable from '../utils/api';
+import asImmutable, { getImmutableAdapterState } from '../utils/api';
 
 import * as AdapterAction from '../actions/adapterActions';
 import { logger } from '../logging';
@@ -95,13 +95,15 @@ function adapterOpened(state, adapter) {
 }
 
 function adapterStateChanged(state, adapter, adapterState) {
-    const adapterIndex = state.api.adapters.indexOf(adapter);
+    const _state = Object.assign({}, state);
+    const adapterIndex = _state.api.adapters.indexOf(adapter);
 
-    let _adapter = state.adapters[adapterIndex];
-    //adapterState = apiHelper.getAsImmutable(adapterState);
-    state.adapters[adapterIndex] = _adapter.set('state', asImmutable(adapterState));
+    const _adapter = _state.adapters[adapterIndex];
+    const immutableState = getImmutableAdapterState(adapterState);
 
-    return state;
+    _state.adapters[adapterIndex] = _adapter.set('state', immutableState);
+
+    return _state;
 }
 
 function closeAdapter(state, adapter) {
