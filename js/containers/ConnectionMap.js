@@ -41,8 +41,16 @@ class ConnectionMap extends Component {
         let deviceNodes = [];
 
         if (adapter !== null && adapter.get('state').available && connectedDevices !== null) {
-            const name = adapter.getIn(['state', 'name']);
-            const address = adapter.getIn(['state','address']);
+            let name = adapter.getIn(['state', 'name']);
+            let address = adapter.getIn(['state', 'address']);
+
+            if (!name) {
+                name = '<Unkown name>';
+            }
+
+            if (!address) {
+                address = '<Unkown address>';
+            }
 
             central = (<CentralDevice id={adapter.instanceId + '_cmap'} name={name} address={address} />);
 

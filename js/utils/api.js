@@ -12,7 +12,7 @@
 
 'use strict';
 
-import { Map, Record } from 'immutable';
+import { List, Map, Record } from 'immutable';
 import { api } from 'pc-ble-driver-js';
 
 const ImmutableAdapterState = Record({
@@ -71,7 +71,7 @@ const ImmutableCharacteristic = Record({
     uuid: null,
     name: null,
     properties: new ImmutableProperties(),
-    value: [],
+    value: List(),
     discoveringChildren: false,
     children: Map(),
 });
@@ -81,7 +81,7 @@ const ImmutableDescriptor = Record({
     characteristicInstanceId: null,
     uuid: null,
     name: null,
-    value: null,
+    value: List(),
 });
 
 export default function asImmutable(mutableObject) {
@@ -132,7 +132,17 @@ export function getInstanceIds(attribute) {
 }
 
 export function getImmutableAdapterState(adapterState) {
-    return new ImmutableAdapterState(adapterState);
+    return new ImmutableAdapterState({
+        instanceId: adapterState.instanceId,
+        port: adapterState.port,
+        available: adapterState.available,
+        scanning: adapterState.scanning,
+        advertising: adapterState.advertising,
+        connecting: adapterState.connecting,
+        address: adapterState.address,
+        name: adapterState.name,
+        firmwareVerison: adapterState.firmwareVerison,
+    });
 }
 
 export function getImmutableAdapter(adapter) {
@@ -143,24 +153,57 @@ export function getImmutableAdapter(adapter) {
 }
 
 export function getImmutableDevice(device) {
-    return new ImmutableDevice(device);
+    return new ImmutableDevice({
+        instanceId: device.instanceId,
+        connected: device.connected,
+        address: device.address,
+        name: device.name,
+        role: device.role,
+    });
 }
 
 export function getImmutableProperties(properties) {
-    return new ImmutableProperties(properties);
+    return new ImmutableProperties({
+        broadcast: properties.broadcast,
+        read: properties.read,
+        write_wo_resp: properties.write_wo_resp,
+        write: properties.write,
+        notify: properties.notify,
+        indicate: properties.indicate,
+        auth_signed_wr: properties.auth_signed_wr,
+        reliable_wr: properties.reliable_wr,
+        wr_aux: properties.wr_aux,
+    });
 }
 
 export function getImmutableService(service) {
-    return new ImmutableService(service);
+    return new ImmutableService({
+        instanceId: service.instanceId,
+        deviceInstanceId: service.deviceInstanceId,
+        uuid: service.uuid,
+        name: service.name,
+    });
 }
 
 export function getImmutableCharacteristic(characteristic) {
-    const immutableCharacteristic = new ImmutableCharacteristic(characteristic);
-    return immutableCharacteristic.set('properties', new ImmutableProperties(characteristic.properties));
+    return new ImmutableCharacteristic({
+        instanceId: characteristic.instanceId,
+        serviceInstanceId: characteristic.serviceInstanceId,
+        uuid: characteristic.uuid,
+        name: characteristic.name,
+        properties: getImmutableProperties(characteristic.properties),
+        value: List(characteristic.value),
+    });
 }
 
 export function getImmutableDescriptor(descriptor) {
-    return new ImmutableDescriptor(descriptor);
+    return new ImmutableDescriptor({
+        instanceId: descriptor.instanceId,
+        characteristicInstanceId: descriptor.characteristicInstanceId,
+        uuid: descriptor.uuid,
+        name: descriptor.name,
+        value: List(descriptor.value),
+    });
 }
 
 export function getNodeStatePath(node) {
