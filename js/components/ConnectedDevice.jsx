@@ -33,7 +33,7 @@ export default class ConnectedDevice extends Component {
         const {
             onDisconnect,
             onBond,
-            onConnectionUpdate
+            onConnectionParamsUpdate
         } = this.props;
 
         switch (eventKey) {
@@ -41,7 +41,7 @@ export default class ConnectedDevice extends Component {
                 onDisconnect();
                 break;
             case 'Update':
-                onConnectionUpdate();
+                onConnectionParamsUpdate();
                 console.log('Connect');
                 // connectionActions.connectionParametersUpdateRequest(event, eventTypes.userInitiatedConnectionUpdate);
                 break;
@@ -72,6 +72,7 @@ export default class ConnectedDevice extends Component {
         return (
             <div id={id} className="device standalone" style={style}>
                 <div className="top-bar">
+                    <div className="flag-line"></div>
                 </div>
 
                 <div className="device-body text-small" >
@@ -111,10 +112,10 @@ export default class ConnectedDevice extends Component {
 
 ConnectedDevice.propTypes = {
     id: PropTypes.string.isRequired,
-    node: PropTypes.object.isRequired,
+    device: PropTypes.object.isRequired,
     sourceId: PropTypes.string.isRequired,
     layout: PropTypes.string.isRequired,
     onDisconnect: PropTypes.func.isRequired,
     onBond: PropTypes.func.isRequired,
-    onConnectionUpdate: PropTypes.func.isRequired,
+    onConnectionParamsUpdate: PropTypes.func.isRequired,
 };

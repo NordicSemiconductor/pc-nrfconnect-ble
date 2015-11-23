@@ -27,15 +27,12 @@ export const DEVICE_DISCONNECT = 'DEVICE_DISCONNECT';
 export const DEVICE_DISCONNECTED = 'DEVICE_DISCONNECTED';
 export const DEVICE_CANCEL_CONNECT = 'DEVICE_CANCEL_CONNECT';
 export const DEVICE_CANCELLED_CONNECT = 'DEVICE_CANCELLED_CONNECT';
-export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
 
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
 import _ from 'underscore';
 
 import { driver, api } from 'pc-ble-driver-js';
-
-import { discoverServices } from './deviceDetailsActions';
 
 const _adapterFactory = api.AdapterFactory.getInstance(driver);
 
@@ -114,11 +111,6 @@ function _openAdapter(dispatch, getState, adapter) {
         // Listen to adapter changes
         adapterToUse.on('stateChanged', state => {
             dispatch(adapterStateChangedAction(adapterToUse, state));
-        });
-
-        // Listen to connection parameter update requests
-        adapterToUse.on('connParamUpdateRequest', params => {
-            dispatch(connectionParamUpdateRequestAction(adapterToUse, params));
         });
 
         dispatch(adapterOpenAction(adapterToUse));
@@ -294,6 +286,10 @@ function _connectToDevice(dispatch, getState, device) {
 
         adapterToUse.once('deviceConnected', device => {
             resolve({device: device, action: 'connected'});
+
+            // Start service discovery asynchronously
+            _getAllCharacteristicsForAllServices(device);
+
         });
 
         adapterToUse.once('connectTimedOut', deviceAddress => {
@@ -314,7 +310,6 @@ function _connectToDevice(dispatch, getState, device) {
         if (action === 'connected') {
             const device = result.device;
             dispatch(deviceConnectedAction(device));
-            return dispatch(discoverServices(device));
         } else if (action === 'timeout') {
             const deviceAddress = result.device;
             dispatch(deviceConnectTimeoutAction(deviceAddress));
@@ -420,14 +415,6 @@ function errorOccuredAction(adapter, error) {
     };
 }
 
-function connectionParamUpdateRequestAction(adapter, connParam) {
-    return {
-        type: DEVICE_CONNECTION_PARAM_UPDATE_REQUEST,
-        adapter,
-        connParam,
-    };
-}
-
 export function findAdapters() {
     return dispatch => {
         return _getAdapters(dispatch);
@@ -455,6 +442,18 @@ export function connectToDevice(device) {
 export function disconnectFromDevice(device) {
     return (dispatch, getState) => {
         return _disconnectFromDevice(dispatch, getState, device);
+    };
+}
+
+export function bondWithDevice(device) {
+    return (dispatch, getState) => {
+        console.log('Please implement bondWithDevice!');
+    };
+}
+
+export function updateDeviceConnectionParameters(device) {
+    return (dispatch, getState) => {
+        console.log('Please implement updateDeviceConnectionParameters!');
     };
 }
 

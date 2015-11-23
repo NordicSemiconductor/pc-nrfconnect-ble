@@ -5,7 +5,7 @@ const DEFAULT_ADAPTER_STATUS = 'Select com port';
 
 import Immutable, { Record, List, Map } from 'immutable';
 
-import asImmutable, { getImmutableAdapterState } from '../utils/api';
+import * as apiHelper from '../utils/api';
 
 import * as AdapterAction from '../actions/adapterActions';
 import { logger } from '../logging';
@@ -41,8 +41,7 @@ function addAdapter(state, adapter) {
     let retval = Object.assign({}, state);
 
     retval.api.adapters.push(adapter);
-
-    retval.adapters.push(asImmutable(adapter));
+    retval.adapters.push(apiHelper.getImmutableAdapter(adapter));
 
     maintainNoneField(retval);
     return retval;
@@ -99,7 +98,7 @@ function adapterStateChanged(state, adapter, adapterState) {
     const adapterIndex = _state.api.adapters.indexOf(adapter);
 
     const _adapter = _state.adapters[adapterIndex];
-    const immutableState = getImmutableAdapterState(adapterState);
+    const immutableState = apiHelper.getImmutableAdapterState(adapterState);
 
     _state.adapters[adapterIndex] = _adapter.set('state', immutableState);
 
@@ -144,7 +143,7 @@ function deviceConnected(state, device) {
 
     const retval = Object.assign({}, state);
 
-    const _device = asImmutable(device);
+    const _device = apiHelper.getImmutableDevice(device);
     const { adapter, index } = getSelectedAdapter(retval);
 
     retval.adapters[index] = adapter.setIn(['connectedDevices', _device.instanceId], _device);

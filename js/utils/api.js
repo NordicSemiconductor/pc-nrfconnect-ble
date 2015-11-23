@@ -40,7 +40,11 @@ const ImmutableDevice = Record({
     address: null,
     name: null,
     role: null,
+    maxConnectionInterval: null,
+    slaveLatency: null,
+    connectionSupervisionTimeout: null,
     discoveringChildren: false,
+
     children: Map(),
 });
 
@@ -159,6 +163,9 @@ export function getImmutableDevice(device) {
         address: device.address,
         name: device.name,
         role: device.role,
+        maxConnectionInterval: device.maxConnectionInterval,
+        slaveLatency: device.slaveLatency,
+        connectionSupervisionTimeout: device.connectionSupervisionTimeout,
     });
 }
 

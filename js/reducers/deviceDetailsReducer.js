@@ -35,7 +35,7 @@ function discoveredAttributes(state, parent, attributes) {
     const parentStatePath = getNodeStatePath(parent);
     state = state.setIn(parentStatePath.concat('discoveringChildren'), false);
 
-    for (attribute of attributes) {
+    for (var attribute of attributes) {
         const attributeInstanceIds = getInstanceIds(attribute);
         const attributeStatePath = getNodeStatePath(attribute);
         let immutableAttribute = null;

@@ -44,7 +44,7 @@ class AdapterSelector extends Component {
 
         const adapterNodes = [];
 
-        const menuItems = adapters.forEach((adapter, i) => {
+        adapters.forEach((adapter, i) => {
             const port = adapter.get('port');
             adapterNodes.push(<MenuItem className='btn-primary' eventKey={port} onSelect={() => openAdapter(port)} key={i}>{port}</MenuItem>);
         });
@@ -74,8 +74,7 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps,
-)(AdapterSelector);
+    mapDispatchToProps)(AdapterSelector);
 
 AdapterSelector.propTypes = {
     adapters: PropTypes.array.isRequired,

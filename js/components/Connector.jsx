@@ -63,7 +63,7 @@ export class ConnectionOverlay extends Component {
 
         return (
             <div className="connection-info-button" style={style}>
-                <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover title='Connection Parameters'><ConnectionSetup device ={device} closePopover = {this._closeme}/></Popover>}>
+                <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover id="pover" title='Connection Parameters'><ConnectionSetup device ={device} closePopover = {this._closeme}/></Popover>}>
                     <span style={{fontSize: '15px'}}>
                         <i className="icon-link icon-encircled"></i>
                     </span>
@@ -74,7 +74,7 @@ export class ConnectionOverlay extends Component {
 }
 
 ConnectionOverlay.propTypes = {
-    style: PropTypes.string.isRequired,
+    style: PropTypes.object.isRequired,
     device: PropTypes.object.isRequired,
 };
 

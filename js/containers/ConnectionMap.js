@@ -41,21 +41,20 @@ class ConnectionMap extends Component {
         let deviceNodes = [];
 
         if (adapter !== null && adapter.get('state').available && connectedDevices !== null) {
-            let name = adapter.getIn(['state', 'name']);
-            let address = adapter.getIn(['state', 'address']);
-
-            if (!name) {
-                name = '<Unkown name>';
-            }
-
-            if (!address) {
-                address = '<Unkown address>';
-            }
+            const name = adapter.getIn(['state', 'name']);
+            const address = adapter.getIn(['state','address']);
 
             central = (<CentralDevice id={adapter.instanceId + '_cmap'} name={name} address={address} />);
 
             connectedDevices.forEach((device, instanceId) => {
-                deviceNodes.push(<ConnectedDevice id={instanceId + '_cmap'} sourceId={adapter.instanceId + '_cmap'} key={instanceId} device={device} layout="horizontal" onDisconnect={() => disconnectFromDevice(device)} />);
+                deviceNodes.push(<ConnectedDevice id={instanceId + '_cmap'}
+                    sourceId={adapter.instanceId + '_cmap'}
+                    key={instanceId}
+                    device={device}
+                    layout="horizontal"
+                    onDisconnect={() => disconnectFromDevice(device)}
+                    onBond={() => bondWithDevice(device)}
+                    onConnectionParamsUpdate={() => updateDeviceConnectionParameters(device)}/>);
             });
         }
 
@@ -63,7 +62,7 @@ class ConnectionMap extends Component {
             <div id="diagramContainer" style={this.props.style} >
                 {central}
                 <div className="padded-column" style={{position: 'absolute', top: '20px', left: '400px'}}>
-                    {connectedDevices}
+                    {deviceNodes}
                 </div>
             </div>
         );
