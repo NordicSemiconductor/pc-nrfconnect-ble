@@ -234,28 +234,21 @@ function _getCharacteristics(adapter, serviceInstanceId) {
     });
 }
 
-function _getAllCharacteristicsForAllServices(adapter, deviceInstanceId) {
-    return _getServices(deviceInstanceId).then(services => {
-        let allCharacteristics = [];
-        let characteristicsPromise = new Promise((resolve, reject) => {
-            resolve([]);
-        });
-
-        for (let i = 0; i < services.length; i++) {
-            characteristicsPromise = characteristicsPromise.then(characteristics => {
-                allCharacteristics.push.apply(allCharacteristics, characteristics);
-                return _getCharacteristics(services[i].instanceId);
-            });
-        }
-
-        return characteristicsPromise.then(characteristics => {
-            allCharacteristics.push.apply(allCharacteristics, characteristics);
-            return allCharacteristics;
-        });
-    });
-}
-
 function _connectToDevice(dispatch, getState, device) {
+    function onDeviceConnected(dispatch, device) {
+        dispatch(deviceConnectedAction(device));
+    }
+
+    function onConnectTimedOut(dispatch, deviceAddress) {
+        dispatch(deviceConnectTimeoutAction(deviceAddress));
+    }
+
+    function onDeviceDisconnected(dispatch, device) {
+        dispatch(deviceDisconnectedAction(device));
+    }
+
+    const adapterToUse = getState().adapter.api.selectedAdapter;
+
     return new Promise((resolve, reject) => {
         const connectionParameters = {
             min_conn_interval: 7.5,
@@ -276,25 +269,15 @@ function _connectToDevice(dispatch, getState, device) {
             connParams: connectionParameters,
         };
 
-        const adapterToUse = getState().adapter.api.selectedAdapter;
-
         if (adapterToUse === null) {
             reject(makeError({adapter: null, error: `No adapter selected`}));
         }
 
         dispatch(deviceConnectAction(device));
 
-        adapterToUse.once('deviceConnected', device => {
-            resolve({device: device, action: 'connected'});
-
-            // Start service discovery asynchronously
-            _getAllCharacteristicsForAllServices(device);
-
-        });
-
-        adapterToUse.once('connectTimedOut', deviceAddress => {
-            resolve({device: deviceAddress, action: 'timeout'});
-        });
+        adapterToUse.once('deviceConnected', onDeviceConnected.bind(this, dispatch));
+        adapterToUse.once('deviceDisconnected', onDeviceDisconnected.bind(this, dispatch));
+        adapterToUse.once('connectTimedOut', onConnectTimedOut.bind(this, dispatch));
 
         adapterToUse.connect(
             { address: device.address, type: 'BLE_GAP_ADDR_TYPE_RANDOM_STATIC' },
@@ -305,17 +288,12 @@ function _connectToDevice(dispatch, getState, device) {
                 }
             }
         );
-    }).then(result => {
-        const action = result.action;
-        if (action === 'connected') {
-            const device = result.device;
-            dispatch(deviceConnectedAction(device));
-        } else if (action === 'timeout') {
-            const deviceAddress = result.device;
-            dispatch(deviceConnectTimeoutAction(deviceAddress));
-        }
     }).catch(errorData => {
         dispatch(errorOccuredAction(errorData.adapter, errorData.error));
+    }).then(() => {
+        adapterToUse.removeListener(onDeviceConnected);
+        adapterToUse.removeListener(onDeviceDisconnected);
+        adapterToUse.removeListener(onConnectTimedOut);
     });
 }
 
