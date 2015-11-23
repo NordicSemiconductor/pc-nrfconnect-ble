@@ -26,12 +26,12 @@ function _startScan(dispatch, getState) {
             active: true,
             interval: 100,
             window: 50,
-            timeout: 20
+            timeout: 20,
         };
 
         const adapter = getState().adapter.api.selectedAdapter;
 
-        if(adapter === null || adapter === undefined) {
+        if (adapter === null || adapter === undefined) {
             reject('No adapter is selected.');
         }
 
@@ -40,7 +40,7 @@ function _startScan(dispatch, getState) {
         });
 
         adapter.startScan(scanParameters, error => {
-            if(error) {
+            if (error) {
                 reject(error);
             } else {
                 resolve();
@@ -55,12 +55,12 @@ function _stopScan(dispatch, getState) {
     return new Promise((resolve, reject) => {
         const adapter = getState().adapter.api.selectedAdapter;
 
-        if(adapter === null) {
+        if (adapter === null) {
             reject('No adapter is selected.');
         }
 
         adapter.stopScan(error => {
-            if(error) {
+            if (error) {
                 reject(error);
             } else {
                 resolve();
@@ -71,19 +71,18 @@ function _stopScan(dispatch, getState) {
     });
 }
 
-
 // Action object functions
 function deviceFoundAction(device) {
     return {
         type: DISCOVERY_DEVICE_FOUND,
-        device
+        device,
     };
 }
 
 function scanErrorAction(error) {
     return {
         type: ERROR_OCCURED,
-        error
+        error,
     };
 }
 
@@ -116,10 +115,10 @@ export function toggleScan() {
     return (dispatch, getState) => {
         const selectedAdapter = getSelectedAdapter(getState());
 
-        if(selectedAdapter.state) {
-            if(selectedAdapter.state.scanning && selectedAdapter.state.available) {
+        if (selectedAdapter.state) {
+            if (selectedAdapter.state.scanning && selectedAdapter.state.available) {
                 return _stopScan(dispatch, getState);
-            } else if(!selectedAdapter.state.scanning && selectedAdapter.state.available)  {
+            } else if (!selectedAdapter.state.scanning && selectedAdapter.state.available)  {
                 return _startScan(dispatch, getState);
             } else {
                 return Promise.reject('scanInProgress and adapterIsOpen is in a combination that makes it impossible to toggle scanning.');
