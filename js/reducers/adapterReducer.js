@@ -40,90 +40,90 @@ function maintainNoneField(state) {
 }
 
 function addAdapter(state, adapter) {
-    retval.api.adapters.push(adapter);
-    retval.adapters.push(apiHelper.getImmutableAdapter(adapter));
+    state.api.adapters.push(adapter);
+    state.adapters.push(apiHelper.getImmutableAdapter(adapter));
 
-    maintainNoneField(retval);
-    return retval;
+    maintainNoneField(state);
+    return state;
 }
 
 function removeAdapter(state, adapter) {
-    const adapterIndex = retval.api.adapters.indexOf(adapter);
+    const adapterIndex = state.api.adapters.indexOf(adapter);
 
     if (adapterIndex !== -1) {
-        retval.api.adapters.splice(adapterIndex, 1);
-        retval.adapters.splice(adapterIndex, 1);
-        retval.adapterIndicator = 'off';
-        retval.selectedAdapter = null;
-        retval.adapterStatus = DEFAULT_ADAPTER_STATUS;
+        state.api.adapters.splice(adapterIndex, 1);
+        state.adapters.splice(adapterIndex, 1);
+        state.adapterIndicator = 'off';
+        state.selectedAdapter = null;
+        state.adapterStatus = DEFAULT_ADAPTER_STATUS;
 
-        maintainNoneField(retval);
+        maintainNoneField(state);
     } else {
         logger.error(`You removed an adapter I did not know about: ${adapter.adapterStatus.port}.`);
     }
 
-    return retval;
+    return state;
 }
 
 function openAdapter(state, adapter) {
     logger.info(`Opening adapter ${adapter.state.port}`);
 
-    retval.adapterStatus = adapter.state.port;
-    return retval;
+    state.adapterStatus = adapter.state.port;
+    return state;
 }
 
 function adapterOpened(state, adapter) {
     logger.info(`Adapter ${adapter.state.port} opened`);
 
-    // Since we maintain retval.api.adapters and retval.adapters simultaniously
-    // we use adapter index from retval.api.adapters to access the "same" adapter
-    // in retval.adapters
-    const adapterIndex = retval.api.adapters.indexOf(adapter);
+    // Since we maintain state.api.adapters and state.adapters simultaniously
+    // we use adapter index from state.api.adapters to access the "same" adapter
+    // in state.adapters
+    const adapterIndex = state.api.adapters.indexOf(adapter);
 
-    retval.api.selectedAdapter = adapter;
+    state.api.selectedAdapter = adapter;
 
-    retval.selectedAdapter = adapterIndex;
-    retval.adapterStatus = adapter.state.port;
-    retval.adapterIndicator = 'on';
+    state.selectedAdapter = adapterIndex;
+    state.adapterStatus = adapter.state.port;
+    state.adapterIndicator = 'on';
 
-    return retval;
+    return state;
 }
 
 function adapterStateChanged(state, adapter, adapterState) {
-    const adapterIndex = _state.api.adapters.indexOf(adapter);
+    const adapterIndex = state.api.adapters.indexOf(adapter);
 
-    const _adapter = _state.adapters[adapterIndex];
+    const _adapter = state.adapters[adapterIndex];
     const immutableState = apiHelper.getImmutableAdapterState(adapterState);
 
-    _state.adapters[adapterIndex] = _adapter.set('state', immutableState);
+    state.adapters[adapterIndex] = _adapter.set('state', immutableState);
 
-    return _state;
+    return state;
 }
 
 function closeAdapter(state, adapter) {
-    retval.adapterIndicator = 'off';
-    retval.api.selectedAdapter = null;
-    retval.selectedAdapter = null;
-    retval.adapterStatus = DEFAULT_ADAPTER_STATUS;
+    state.adapterIndicator = 'off';
+    state.api.selectedAdapter = null;
+    state.selectedAdapter = null;
+    state.adapterStatus = DEFAULT_ADAPTER_STATUS;
 
-    return retval;
+    return state;
 }
 
 function adapterError(state, adapter, error) {
     logger.error(`Error on adapter ${adapter.state.port}: ${error.message}`);
     logger.debug(error.description);
 
-    retval.adapterStatus = 'Error connecting';
-    retval.adapterIndicator = 'error';
-    retval.api.selectedAdapter = null;
-    retval.selectedAdapter = null;
-    retval.errors.push(error.message);
+    state.adapterStatus = 'Error connecting';
+    state.adapterIndicator = 'error';
+    state.api.selectedAdapter = null;
+    state.selectedAdapter = null;
+    state.errors.push(error.message);
 
-    return retval;
+    return state;
 }
 
 function deviceConnect(state, device) {
-    return retval;
+    return state;
 }
 
 function deviceConnected(state, device) {
@@ -132,17 +132,17 @@ function deviceConnected(state, device) {
     }
 
     const _device = apiHelper.getImmutableDevice(device);
-    const { adapter, index } = getSelectedAdapter(retval);
+    const { adapter, index } = getSelectedAdapter(state);
 
-    retval.adapters[index] = adapter.setIn(['connectedDevices', _device.instanceId], _device);
-    return retval;
+    state.adapters[index] = adapter.setIn(['connectedDevices', _device.instanceId], _device);
+    return state;
 }
 
 function deviceDisconnected(state, device) {
-    const { adapter, index } = getSelectedAdapter(retval);
-    retval.adapters[index] = adapter.deleteIn(['connectedDevices', device.instanceId]);
+    const { adapter, index } = getSelectedAdapter(state);
+    state.adapters[index] = adapter.deleteIn(['connectedDevices', device.instanceId]);
 
-    return retval;
+    return state;
 }
 
 function deviceConnectionParamUpdateRequest(state, adapter, connParam) {
@@ -162,8 +162,8 @@ function addError(state, error) {
         logger.debug(error.description);
     }
 
-    retval.errors.push(error.message);
-    return retval;
+    state.errors.push(error.message);
+    return state;
 }
 
 export default function adapter(state =
