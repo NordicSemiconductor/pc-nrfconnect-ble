@@ -17,6 +17,8 @@
 import React, { PropTypes, Component } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
+import AdvertisingSetup from '../components/advertisingSetup';
+
 export default class CentralDevice extends Component {
     constructor(props) {
         super(props);
@@ -79,6 +81,7 @@ export default class CentralDevice extends Component {
                         <strong>{name}</strong>
                     </div>
                     <div className="address-text">{address}</div>
+                    <AdvertisingSetup />
                 </div>
             </div>
         );
