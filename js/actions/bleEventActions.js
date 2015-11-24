@@ -12,25 +12,57 @@
 
 'use strict';
 
+export const EventType = {
+    USER_INITIATED_CONNECTION_UPDATE: 0,
+    PERIPHERAL_INITIATED_CONNECTION_UPDATE: 1,
+};
+
 export const BLE_EVENT_CONN_PARAM_UPDATE_REQUEST = 'BLE_EVENT_CONN_PARAM_UPDATE_REQUEST';
-export const BLE_EVENT_VIEWER_VISIBLE = 'BLE_EVENT_VIEWER_VISIBLE';
-export const BLE_EVENT_CLEAR_ALL_USER_EVENTS = 'BLE_EVENT_CLEAR_ALL_USER_EVENTS';
+export const BLE_EVENT_SHOW_DIALOG = 'BLE_EVENT_SHOW_DIALOG';
+export const BLE_EVENT_CLEAR_ALL_EVENTS = 'BLE_EVENT_CLEAR_ALL_EVENTS';
+export const BLE_EVENT_SELECT_EVENT_INDEX = 'BLE_EVENT_SELECT_EVENT_INDEX';
+export const BLE_EVENT_TIMED_OUT = 'BLE_EVENT_TIMED_OUT';
 
-function connectionParamUpdateRequestAction(adapter, connParam) {
+function showDialogAction(visible) {
     return {
-        type: BLE_EVENT_CONN_PARAM_UPDATE_REQUEST,
-        adapter,
-        connParam,
-    };
-}
-
-function showEventViewerAction(visible) {
-    return {
-        type: BLE_EVENT_VIEWER_VISIBLE,
+        type: BLE_EVENT_SHOW_DIALOG,
         visible
     };
 }
 
-export function showEventViewer(visible) {
-    return showEventViewerAction(visible);
+function selectEventAction(selectedIndex) {
+    return {
+        type: BLE_EVENT_SELECT_EVENT_INDEX,
+        selectedIndex,
+    };
+}
+
+function clearAllEventsAction() {
+    return {
+        type: BLE_EVENT_CLEAR_ALL_EVENTS,
+    };
+}
+
+function eventTimedOutAction(event) {
+    return {
+        type: BLE_EVENT_TIMED_OUT,
+        event,
+    };
+}
+
+// Exported action creators
+export function clearAllEvents() {
+    return clearAllEventsAction();
+}
+
+export function selectEvent(eventIndex) {
+    return selectEventAction(eventIndex);
+}
+
+export function showDialog(visible) {
+    return showDialogAction(visible);
+}
+
+export function eventTimedOut(event) {
+    return eventTimedOutAction(event);
 }

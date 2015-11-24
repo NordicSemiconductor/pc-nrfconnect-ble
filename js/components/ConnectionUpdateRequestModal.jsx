@@ -12,20 +12,14 @@
 
 'use strict';
 
-import React from 'react';
-import Reflux from 'reflux';
-
-import connectionStore from '../stores/connectionStore.js';
-import connectionActions from '../actions/connectionActions.js';
+import React, { PropTypes } from 'react';
+import Component from 'react-pure-render/component';
 
 import {Modal} from 'react-bootstrap';
 
-var ConnectionUpdateRequestModal = React.createClass({
-    mixins: [Reflux.listenTo(connectionStore, "onConnectionsChanged")],
-    getInitialState: function(){
-        return Object.assign({}, connectionStore.getInitialState(), {visible: false});
-    },
-    onConnectionsChanged: function(newState) {
+export class ConnectionUpdateRequestDialog extends Component {
+    // mixins: [Reflux.listenTo(connectionStore, "onConnectionsChanged")],
+    onConnectionsChanged(newState) {
         // Show modal only if there are updaterequests, and keep showing it until user presses 'close' button
         // regardless of updateRequest state. (This is why listenTo is used and not connect)
         if (!this.state.visible) {
@@ -35,33 +29,44 @@ var ConnectionUpdateRequestModal = React.createClass({
         } else {
             this.setState(newState);
         }
-    },
-    _close: function(){
+    }
+
+    _close(){
         this.setState({visible:false});
-    },
-    _updateConnection: function(connectionHandle, connectionParameters) {
+    }
+
+    _updateConnection(connectionHandle, connectionParameters) {
         connectionActions.connectionParametersUpdate(connectionHandle, connectionParameters);
-    },
-    _handleChange: function(connectionHandle, inputIdentifier, event) {
+    }
+
+    _handleChange(connectionHandle, inputIdentifier, event) {
         var newUpdateRequests = Object.assign({}, this.state.updateRequests);
 
         newUpdateRequests[connectionHandle][inputIdentifier] = parseInt(event.target.value, 10);
         this.setState({
             updateRequests: newUpdateRequests
         });
-    },
+    }
+
     _createConnectionIntervalControl: function(connectionRequest, connectionHandle) {
         if (connectionRequest.min_conn_interval === connectionRequest.max_conn_interval) {
             return (<input id={"interval_" + connectionHandle} className="form-control nordic-form-control" type="number"  readOnly value = {connectionRequest.max_conn_interval}/>);
         } else {
             return (<input id={"interval_" + connectionHandle} type="range" min={connectionRequest.min_conn_interval} max={connectionRequest.max_conn_interval} value={connectionRequest.min_conn_interval}/>);
         }
-    },
-    render: function() {
+    }
+
+    render() {
+        const {
+            visible,
+            updateRequests,
+        } = this.props;
+
         var requests = [];
         var key = 0;
-        for (var connectionHandle in this.state.updateRequests) {
-            var connectionRequest = this.state.updateRequests[connectionHandle];
+
+        for (var connectionHandle in updateRequests) {
+            var connectionRequest = updateRequests[connectionHandle];
 
             requests.push(
                 <div key={key}>
@@ -74,13 +79,13 @@ var ConnectionUpdateRequestModal = React.createClass({
                             </div>
                             <div>
                                 <label className="control-label" htmlFor={"latency_" + connectionHandle}>Latency</label>
-                                <input id={"latency_" + connectionHandle} className="form-control nordic-form-control" 
-                                       onChange={this._handleChange.bind(this, connectionHandle, 'slave_latency')} type="number" 
+                                <input id={"latency_" + connectionHandle} className="form-control nordic-form-control"
+                                       onChange={this._handleChange.bind(this, connectionHandle, 'slave_latency')} type="number"
                                        value={connectionRequest.slave_latency}/>&nbsp;ms
                             </div>
                             <div>
-                                <label className="control-label" htmlFor={"timeout_" + connectionHandle}>Timeout</label>                            
-                                <input id={"timeout_" + connectionHandle} className="form-control nordic-form-control" 
+                                <label className="control-label" htmlFor={"timeout_" + connectionHandle}>Timeout</label>
+                                <input id={"timeout_" + connectionHandle} className="form-control nordic-form-control"
                                        onChange={this.handleChange} type="number" value={connectionRequest.conn_sup_timeout}/>&nbsp;ms
                             </div>
                             <div>
@@ -90,13 +95,14 @@ var ConnectionUpdateRequestModal = React.createClass({
                             </div>
                         </div>
                     </form>
-                
+
                 </div>
             );
             key++;
         }
 
-        var isDisabled = (Object.keys(this.state.updateRequests).length > 0);
+        var isDisabled = (Object.keys(updateRequests).length > 0);
+
         return (
             <Modal dialogClassName="connection-request-modal" show={this.state.visible} onHide={this._close}>
                 <Modal.Header closeButton>
@@ -111,5 +117,4 @@ var ConnectionUpdateRequestModal = React.createClass({
             </Modal>
         );
     }
-});
-module.exports = ConnectionUpdateRequestModal;
+}

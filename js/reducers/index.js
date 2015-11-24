@@ -8,6 +8,7 @@ import log from './logReducer';
 import app from './appReducer';
 import deviceDetails from './deviceDetailsReducer';
 import advertisingSetup from './advertisingSetupReducer';
+import bleEvent from './bleEventReducer';
 
 const rootReducer = combineReducers({
     adapter,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
     log,
     app,
     advertisingSetup,
+    bleEvent,
 });
 
 export default rootReducer;

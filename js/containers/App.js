@@ -27,7 +27,7 @@ import DeviceDetailsContainer from './DeviceDetails';
 // import ServerSetup from '../components/ServerSetup';
 
 import NavBar from '../components/navbar.jsx';
-// import BLEEventViewer from '../containers/BLEEventViewer';
+import BLEEventDialog from '../containers/BLEEventDialog';
 
 import LogViewer from './LogViewer';
 import DiscoveredDevices from './DiscoveredDevices';
@@ -112,6 +112,7 @@ class AppContainer extends Component {
                         <DiscoveredDevices/>
                     </div>
                 </div>
+                <BLEEventDialog/>
             </div>
         );
     }
