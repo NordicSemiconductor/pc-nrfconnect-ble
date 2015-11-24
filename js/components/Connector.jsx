@@ -86,7 +86,7 @@ export class Connector extends Component {
     _generateLines(lineCoordinates) {
         var result = [];
 
-        for (let i = 0; i < lineCoordinates.length-1; i++) {
+        for (let i = 0; i < lineCoordinates.length - 1; i++) {
             result.push(<line stroke="black" strokeWidth="3" strokeLinecap="square" key={i} x1={lineCoordinates[i].x} y1={lineCoordinates[i].y} x2={lineCoordinates[i+1].x} y2={lineCoordinates[i+1].y}/>);
         }
 
@@ -129,7 +129,7 @@ export class Connector extends Component {
         const sourceElement = document.getElementById(sourceId);
         const targetElement = document.getElementById(targetId);
 
-        if(!sourceElement || !targetElement) {
+        if (!sourceElement || !targetElement) {
             return (<div/>);
         }
 

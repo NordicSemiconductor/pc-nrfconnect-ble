@@ -14,6 +14,7 @@
 
 export const BLE_EVENT_CONN_PARAM_UPDATE_REQUEST = 'BLE_EVENT_CONN_PARAM_UPDATE_REQUEST';
 export const BLE_EVENT_VIEWER_VISIBLE = 'BLE_EVENT_VIEWER_VISIBLE';
+export const BLE_EVENT_CLEAR_ALL_USER_EVENTS = 'BLE_EVENT_CLEAR_ALL_USER_EVENTS';
 
 function connectionParamUpdateRequestAction(adapter, connParam) {
     return {

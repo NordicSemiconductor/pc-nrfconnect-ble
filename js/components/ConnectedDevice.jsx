@@ -33,7 +33,7 @@ export default class ConnectedDevice extends Component {
         const {
             onDisconnect,
             onBond,
-            onConnectionParamsUpdate
+            onConnectionParamsUpdate,
         } = this.props;
 
         switch (eventKey) {
@@ -42,11 +42,9 @@ export default class ConnectedDevice extends Component {
                 break;
             case 'Update':
                 onConnectionParamsUpdate();
-                console.log('Connect');
                 // connectionActions.connectionParametersUpdateRequest(event, eventTypes.userInitiatedConnectionUpdate);
                 break;
             case 'Bond':
-                console.log('Ohh, yes, lets do that bonding.');
                 onBond();
                 break;
             default:
