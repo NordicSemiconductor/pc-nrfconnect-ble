@@ -5,7 +5,13 @@ import { Record, List } from 'immutable';
 import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
 
 const InitialState = Record({
-    advDataEntries: List(),
+    advDataEntries: List([{ // Default advertising data
+        type: 'Complete local name',
+        typeKey: 0,
+        typeApi: 'completeLocalName',
+        value: 'nRF Connect',
+        id: 10000, // Random high id to avoid conflict with autoincremented ids
+    }]),
     scanResponseEntries: List(),
     show: false,
 });

@@ -28,7 +28,7 @@ function _startAdvertising(advertisingSetup, dispatch, getState) {
         const advData = {};
         const scanResp = {};
         const options = {
-            interval: 500,
+            interval: 25,
             timeout: 0,
         };
 
