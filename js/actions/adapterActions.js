@@ -29,6 +29,9 @@ export const DEVICE_CANCEL_CONNECT = 'DEVICE_CANCEL_CONNECT';
 export const DEVICE_CANCELLED_CONNECT = 'DEVICE_CANCELLED_CONNECT';
 export const DEVICE_INITIATE_PAIRING = 'DEVICE_INITIATE_PAIRING';
 
+export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
+
+
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
 import _ from 'underscore';
@@ -73,6 +76,7 @@ function _getAdapters(dispatch) {
             dispatch(errorOccuredAction(undefined, error));
         });
 
+        // TODO: try to remove the underscore library
         // Add the adapters to the store
         _.map(adapters, adapter => {
             dispatch(adapterAddedAction(adapter));
@@ -97,10 +101,12 @@ function _openAdapter(dispatch, getState, adapter) {
             _closeAdapter(dispatch, getState().adapter.api.selectedAdapter);
         }
 
+        // TODO: try to remove the underscore library
         const adapterToUse = _.find(getState().adapter.api.adapters, x => { return x.state.port === adapter; });
 
         if (adapterToUse === null) {
             reject(makeError({error: `Not able to find ${adapter}.`}));
+            return;
         }
         // Listen to errors from this adapter since we are opening it now
         adapterToUse.on('error', error => {
@@ -110,6 +116,8 @@ function _openAdapter(dispatch, getState, adapter) {
             // TODO: errorOccuredAction should be used for recoverable errors.
             dispatch(errorOccuredAction(adapterToUse, error));
         });
+
+        // TODO: remove listeners when closing adapter so that we do not leak memory
 
         // Listen to adapter changes
         adapterToUse.on('stateChanged', state => {
@@ -123,6 +131,14 @@ function _openAdapter(dispatch, getState, adapter) {
 
         adapterToUse.on('deviceDisconnected', device => {
             dispatch(deviceDisconnectedAction(device));
+        });
+
+        adapterToUse.on('connectTimedOut', deviceAddress => {
+            dispatch(deviceConnectTimeoutAction(deviceAddress));
+        });
+
+        adapterToUse.on('connParamUpdate', device => {
+            dispatch(deviceConnParamUpdateRequestAction(device));
         });
 
         dispatch(adapterOpenAction(adapterToUse));
@@ -168,6 +184,48 @@ function _closeAdapter(dispatch, adapter) {
         dispatch(adapterErrorAction(errorData.adapter, errorData.error));
     });
 }
+
+function _updateDeviceConnectionParams(dispatch, getState, device, connectionParams) {
+    return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        adapterToUse.updateConnectionParams(device.instanceId, connectionParams, error => {
+            if(error) {
+                reject(makeError({ adapter: adapterToUse, error: error }));
+            } else {
+                resolve();
+            }
+        });
+    }).then(() => {
+        // Do we need to tell anyone this went OK ?
+    }).catch(errorData => {
+        dispatch(errorOccuredAction(errorData.adapter, errorData.error));
+    });
+}
+
+function _rejectConnectionParams(dispatch, getState, device) {
+    return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        if (adapterToUse === null) {
+            reject(makeError({ error: 'No adapter selected!' }));
+            return;
+        }
+
+        adapterToUse.rejectConnParams(device.instanceId, error => {
+            if(error) {
+                reject(makeError({ adapter: adapterToUse, error: error }));
+            } else {
+                resolve();
+            }
+        });
+    }).then(() => {
+        // Do we need to tell anyone this went OK ?
+    }).catch(errorData => {
+        dispatch(errorOccuredAction(errorData.adapter, errorData.error));
+    });
+}
+
 
 function adapterOpenedAction(adapter)
 {
@@ -222,30 +280,6 @@ function adapterStateChangedAction(adapter, state) {
     };
 }
 
-function _getServices(adapter, deviceInstanceId) {
-    return new Promise((resolve, reject) => {
-        adapter.getServices(deviceInstanceId, (error, services) => {
-            if (error) {
-                reject('Failed to get services: ', error);
-            } else {
-                resolve(services);
-            }
-        });
-    });
-}
-
-function _getCharacteristics(adapter, serviceInstanceId) {
-    return new Promise((resolve, reject) => {
-        adapter.getCharacteristics(serviceInstanceId, (error, characteristics) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(characteristics);
-            }
-        });
-    });
-}
-
 function _pairWithDevice(dispatch, getState, device) {
     function onSecurityChanged(resolve, event) {
         resolve(event);
@@ -279,11 +313,17 @@ function _pairWithDevice(dispatch, getState, device) {
 }
 
 function _connectToDevice(dispatch, getState, device) {
-    function onCompleted(resolve, device) {
-        resolve();
+    function onCompleted(resolve, adapter) {
+        resolve(adapter);
     }
 
     return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        if (adapterToUse === null) {
+            reject(makeError({adapter: null, error: `No adapter selected`}));
+        }
+
         const connectionParameters = {
             min_conn_interval: 7.5,
             max_conn_interval: 7.5,
@@ -303,16 +343,13 @@ function _connectToDevice(dispatch, getState, device) {
             connParams: connectionParameters,
         };
 
-        const adapterToUse = getState().adapter.api.selectedAdapter;
-
-        if (adapterToUse === null) {
-            reject(makeError({adapter: null, error: `No adapter selected`}));
-        }
-
         dispatch(deviceConnectAction(device));
 
-        adapterToUse.once('deviceConnected', onCompleted.bind(this, resolve));
-        adapterToUse.once('connectTimedOut', onCompleted.bind(this, resolve));
+        // We add these two so that we are able to resolve this promise if
+        // the device connects or the connection attempt times out. If we do
+        // not resolve the promise we may get a memory leak.
+        adapterToUse.once('deviceConnected', onCompleted.bind(this, resolve, adapterToUse));
+        adapterToUse.once('connectTimedOut', onCompleted.bind(this, resolve, adapterToUse));
 
         adapterToUse.connect(
             { address: device.address, type: 'BLE_GAP_ADDR_TYPE_RANDOM_STATIC' },
@@ -325,8 +362,7 @@ function _connectToDevice(dispatch, getState, device) {
         );
     }).catch(errorData => {
         dispatch(errorOccuredAction(errorData.adapter, errorData.error));
-    }).then(() => {
-        const adapterToUse = getState().adapter.api.selectedAdapter;
+    }).then(adapterToUse => {
         adapterToUse.removeListener(onCompleted);
     });
 }
@@ -337,6 +373,7 @@ function _disconnectFromDevice(dispatch, getState, device) {
 
         if (adapterToUse === null) {
             reject(makeError({error: 'No adapter selected'}));
+            return;
         }
 
         adapterToUse.disconnect(device.instanceId, (error, device) => {
@@ -419,6 +456,13 @@ function deviceCancelConnectAction() {
     };
 }
 
+function deviceConnParamUpdateRequestAction(device) {
+    return {
+        type: DEVICE_CONNECTION_PARAM_UPDATE_REQUEST,
+        device,
+    };
+}
+
 function errorOccuredAction(adapter, error) {
     return {
         type: ERROR_OCCURED,
@@ -470,14 +514,20 @@ export function pairWithDevice(device) {
     };
 }
 
-export function updateDeviceConnectionParameters(device) {
-    return (dispatch, getState) => {
-        console.log('Please implement updateDeviceConnectionParameters!');
-    };
-}
-
 export function cancelConnect() {
     return (dispatch, getState) => {
         return _cancelConnect(dispatch, getState);
+    };
+}
+
+export function updateDeviceConnectionParams(device, connectionParams) {
+    return (dispatch, getState) => {
+        return _updateDeviceConnectionParams(dispatch, getState, device, connectionParams);
+    };
+}
+
+export function rejectConnectionParams(device) {
+    return (dispatch, getState) => {
+        return _rejectConnectionParams(dispatch, getState, device);
     };
 }

@@ -41,7 +41,7 @@ class ConnectionMap extends Component {
             advertising,
             disconnectFromDevice,
             pairWithDevice,
-            updateDeviceConnectionParameters,
+            updateDeviceConnectionParams,
             showDialog,
         } = this.props;
 
@@ -55,7 +55,7 @@ class ConnectionMap extends Component {
             central = (<CentralDevice id={adapter.instanceId + '_cmap'} name={name}
                 address={address} advertising={adapter.state.advertising}
                 onShowDialog={showDialog}
-                onToggleAdvertising={() => {this.handleToggleAdvertising()}} />);
+                onToggleAdvertising={() => {this.handleToggleAdvertising();}} />);
 
             connectedDevices.forEach((device, instanceId) => {
                 deviceNodes.push(<ConnectedDevice id={instanceId + '_cmap'}
@@ -65,7 +65,7 @@ class ConnectionMap extends Component {
                     layout="horizontal"
                     onDisconnect={() => disconnectFromDevice(device)}
                     onPair={() => pairWithDevice(device)}
-                    onConnectionParamsUpdate={() => updateDeviceConnectionParameters(device)}/>);
+                    onConnectionParamsUpdate={() => updateDeviceConnectionParams(device)}/>);
             });
         }
 
@@ -109,7 +109,7 @@ function mapDispatchToProps(dispatch) {
     const retval = Object.assign(
         {},
         bindActionCreators(AdapterActions, dispatch),
-        bindActionCreators(AdvertisingSetupActions, dispatch),
+        bindActionCreators(AdvertisingSetupActions, dispatch)
     );
 
     return retval;
@@ -126,7 +126,7 @@ ConnectionMap.propTypes = {
     advertisingSetup: PropTypes.object.isRequired,
     disconnectFromDevice: PropTypes.func.isRequired,
     pairWithDevice: PropTypes.func.isRequired,
-    updateDeviceConnectionParameters: PropTypes.func.isRequired,
+    updateDeviceConnectionParams: PropTypes.func.isRequired,
     showDialog: PropTypes.func.isRequired,
     toggleAdvertising: PropTypes.func.isRequired,
 };
