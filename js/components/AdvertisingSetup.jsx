@@ -102,8 +102,7 @@ class AdvertisingSetup extends Component {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={() => {}}>Apply</Button>
-                        <Button onClick={hideDialog}>Cancel</Button>
+                        <Button onClick={hideDialog}>Close</Button>
                     </Modal.Footer>
                 </Modal>
             </div>

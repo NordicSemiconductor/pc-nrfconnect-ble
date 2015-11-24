@@ -59,6 +59,10 @@ export default class CentralDevice extends Component {
             height: '102px',
         };
 
+        const progressStyle = {
+            visibility: advertising ? 'visible' : 'hidden',
+        };
+
         const advertisingText = advertising ? 'Stop advertising' : 'Start advertising';
 
         return (
@@ -81,6 +85,7 @@ export default class CentralDevice extends Component {
                         <strong>{name}</strong>
                     </div>
                     <div className="address-text">{address}</div>
+                    <span className="icon-wifi" aria-hidden="true" style={progressStyle} title="Advertising" />
                     <AdvertisingSetup />
                 </div>
             </div>
