@@ -115,6 +115,15 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(adapterStateChangedAction(adapterToUse, state));
         });
 
+        adapterToUse.on('deviceConnected', device => {
+            dispatch(deviceConnectedAction(device));
+            dispatch(discoverServices(device));
+        });
+
+        adapterToUse.on('deviceDisconnected', device => {
+            dispatch(deviceDisconnectedAction(device));
+        });
+
         dispatch(adapterOpenAction(adapterToUse));
 
         adapterToUse.open(options, error => {
@@ -237,17 +246,8 @@ function _getCharacteristics(adapter, serviceInstanceId) {
 }
 
 function _connectToDevice(dispatch, getState, device) {
-    function onDeviceConnected(dispatch, device) {
-        dispatch(deviceConnectedAction(device));
-        dispatch(discoverServices(device));
-    }
-
-    function onConnectTimedOut(dispatch, deviceAddress) {
-        dispatch(deviceConnectTimeoutAction(deviceAddress));
-    }
-
-    function onDeviceDisconnected(dispatch, device) {
-        dispatch(deviceDisconnectedAction(device));
+    function onCompleted(resolve, device) {
+        resolve();
     }
 
     const adapterToUse = getState().adapter.api.selectedAdapter;
@@ -278,9 +278,8 @@ function _connectToDevice(dispatch, getState, device) {
 
         dispatch(deviceConnectAction(device));
 
-        adapterToUse.once('deviceConnected', onDeviceConnected.bind(this, dispatch));
-        adapterToUse.once('deviceDisconnected', onDeviceDisconnected.bind(this, dispatch));
-        adapterToUse.once('connectTimedOut', onConnectTimedOut.bind(this, dispatch));
+        adapterToUse.once('deviceConnected', onCompleted.bind(this, resolve));
+        adapterToUse.once('connectTimedOut', onCompleted.bind(this, resolve));
 
         adapterToUse.connect(
             { address: device.address, type: 'BLE_GAP_ADDR_TYPE_RANDOM_STATIC' },
@@ -294,9 +293,7 @@ function _connectToDevice(dispatch, getState, device) {
     }).catch(errorData => {
         dispatch(errorOccuredAction(errorData.adapter, errorData.error));
     }).then(() => {
-        adapterToUse.removeListener(onDeviceConnected);
-        adapterToUse.removeListener(onDeviceDisconnected);
-        adapterToUse.removeListener(onConnectTimedOut);
+        adapterToUse.removeListener(onCompleted);
     });
 }
 

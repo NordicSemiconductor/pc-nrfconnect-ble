@@ -13,6 +13,8 @@
 'use strict';
 
 import { getSelectedAdapter } from './util/common';
+import { discoverServices } from './deviceDetailsActions';
+import { connectedToDevice } from './adapterActions';
 
 export const ADD_ADVDATA_ENTRY = 'ADVSETUP_ADD_ADVDATA_ENTRY';
 export const ADD_SCANRSP_ENTRY = 'ADVSETUP_ADD_SCANRSP_ENTRY';
@@ -24,6 +26,8 @@ export const ERROR_OCCURED = 'ADVSETUP_ERROR_OCCURED';
 
 // Internal functions
 function _startAdvertising(advertisingSetup, dispatch, getState) {
+    const adapter = getState().adapter.api.selectedAdapter;
+
     return new Promise((resolve, reject) => {
         const advData = {};
         const scanResp = {};
@@ -31,8 +35,6 @@ function _startAdvertising(advertisingSetup, dispatch, getState) {
             interval: 25,
             timeout: 0,
         };
-
-        const adapter = getState().adapter.api.selectedAdapter;
 
         if (adapter === null || adapter === undefined) {
             reject('No adapter is selected.');
@@ -91,7 +93,7 @@ function _stopAdvertising(dispatch, getState) {
 function advertisingErrorAction(error) {
     return {
         type: ERROR_OCCURED,
-        error
+        error,
     };
 }
 

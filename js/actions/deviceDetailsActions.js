@@ -24,6 +24,17 @@ function selectComponentAction(component) {
     };
 }
 
+// This function shall only be used by Promise.reject calls.
+function makeError(data) {
+    let {adapter, device, error} = data;
+
+    return {
+        adapter: adapter,
+        device: device,
+        error: error,
+    };
+}
+
 function _discoverServices(dispatch, getState, device) {
     return new Promise((resolve, reject) => {
         const adapterToUse = getState().adapter.api.selectedAdapter;
