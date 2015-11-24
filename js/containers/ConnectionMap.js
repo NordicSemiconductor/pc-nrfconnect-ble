@@ -40,7 +40,7 @@ class ConnectionMap extends Component {
             connectedDevices,
             advertising,
             disconnectFromDevice,
-            bondWithDevice,
+            pairWithDevice,
             updateDeviceConnectionParameters,
             showDialog,
         } = this.props;
@@ -64,7 +64,7 @@ class ConnectionMap extends Component {
                     device={device}
                     layout="horizontal"
                     onDisconnect={() => disconnectFromDevice(device)}
-                    onBond={() => bondWithDevice(device)}
+                    onPair={() => pairWithDevice(device)}
                     onConnectionParamsUpdate={() => updateDeviceConnectionParameters(device)}/>);
             });
         }
@@ -125,7 +125,7 @@ ConnectionMap.propTypes = {
     adapter: PropTypes.object,
     advertisingSetup: PropTypes.object.isRequired,
     disconnectFromDevice: PropTypes.func.isRequired,
-    bondWithDevice: PropTypes.func.isRequired,
+    pairWithDevice: PropTypes.func.isRequired,
     updateDeviceConnectionParameters: PropTypes.func.isRequired,
     showDialog: PropTypes.func.isRequired,
     toggleAdvertising: PropTypes.func.isRequired,

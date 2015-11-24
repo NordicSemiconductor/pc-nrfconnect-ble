@@ -32,7 +32,7 @@ export default class ConnectedDevice extends Component {
     _onSelect(event, eventKey) {
         const {
             onDisconnect,
-            onBond,
+            onPair,
             onConnectionParamsUpdate,
         } = this.props;
 
@@ -44,8 +44,8 @@ export default class ConnectedDevice extends Component {
                 onConnectionParamsUpdate();
                 // connectionActions.connectionParametersUpdateRequest(event, eventTypes.userInitiatedConnectionUpdate);
                 break;
-            case 'Bond':
-                onBond();
+            case 'Pair':
+                onPair();
                 break;
             default:
                 console.log('Unknown eventKey received: ' + eventKey);
@@ -81,9 +81,9 @@ export default class ConnectedDevice extends Component {
                                     <span className='icon-cog' aria-hidden='true' />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <MenuItem eventKey='Update'>Update Connection</MenuItem>
-                                    <MenuItem eventKey='Bond'>Bond</MenuItem>
                                     <MenuItem eventKey='Disconnect'>Disconnect</MenuItem>
+                                    <MenuItem eventKey='Update'>Update connection parameters</MenuItem>
+                                    <MenuItem eventKey='Pair'>Initiate pairing</MenuItem>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
@@ -114,6 +114,6 @@ ConnectedDevice.propTypes = {
     sourceId: PropTypes.string.isRequired,
     layout: PropTypes.string.isRequired,
     onDisconnect: PropTypes.func.isRequired,
-    onBond: PropTypes.func.isRequired,
+    onPair: PropTypes.func.isRequired,
     onConnectionParamsUpdate: PropTypes.func.isRequired,
 };

@@ -150,6 +150,10 @@ function deviceConnectionParamUpdateRequest(state, adapter, connParam) {
     return state;
 }
 
+function deviceInitiatePairing(state, device) {
+    return state;
+}
+
 function addError(state, error) {
     if (error.message === undefined) {
         console.log(`Error does not contain a message! Something is wrong!`);
@@ -215,6 +219,8 @@ export default function adapter(state =
             return deviceDisconnected(state, action.device);
         case AdapterAction.DEVICE_CONNECTION_PARAM_UPDATE_REQUEST:
             return deviceConnectionParamUpdateRequest(state, action.adapter, action.connParam);
+        case AdapterAction.DEVICE_INITIATE_PAIRING:
+            return deviceInitiatePairing(state, action.device);
         default:
             return state;
     }

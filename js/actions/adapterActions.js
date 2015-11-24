@@ -27,6 +27,7 @@ export const DEVICE_DISCONNECT = 'DEVICE_DISCONNECT';
 export const DEVICE_DISCONNECTED = 'DEVICE_DISCONNECTED';
 export const DEVICE_CANCEL_CONNECT = 'DEVICE_CANCEL_CONNECT';
 export const DEVICE_CANCELLED_CONNECT = 'DEVICE_CANCELLED_CONNECT';
+export const DEVICE_INITIATE_PAIRING = 'DEVICE_INITIATE_PAIRING';
 
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
@@ -245,12 +246,42 @@ function _getCharacteristics(adapter, serviceInstanceId) {
     });
 }
 
+function _pairWithDevice(dispatch, getState, device) {
+    function onSecurityChanged(resolve, event) {
+        resolve(event);
+    }
+
+    function onError(reject, error) {
+        reject(makeError({adapter: null, error, device: null}));
+    }
+
+    const adapterToUse = getState().adapter.api.selectedAdapter;
+
+    return new Promise((resolve, reject) => {
+
+        if (adapterToUse === null) {
+            reject(makeError({error: 'No adapter selected'}));
+        }
+
+        adapterToUse.once('securityChanged', event => onSecurityChanged(resolve, event));
+        adapterToUse.once('error', error => onError(reject, error));
+
+        adapterToUse.pair(device.instanceId, false, error => {
+            if (error) {
+                reject(makeError({adapter: adapterToUse, error, device}));
+            }
+        });
+    }).catch(errorData => {
+        dispatch(errorOccuredAction(errorData.adapter, errorData.error));
+    }).then(() => {
+        adapterToUse.removeListener(onSecurityChanged);
+    });
+}
+
 function _connectToDevice(dispatch, getState, device) {
     function onCompleted(resolve, device) {
         resolve();
     }
-
-    const adapterToUse = getState().adapter.api.selectedAdapter;
 
     return new Promise((resolve, reject) => {
         const connectionParameters = {
@@ -271,6 +302,8 @@ function _connectToDevice(dispatch, getState, device) {
             scanParams: scanParameters,
             connParams: connectionParameters,
         };
+
+        const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if (adapterToUse === null) {
             reject(makeError({adapter: null, error: `No adapter selected`}));
@@ -293,6 +326,7 @@ function _connectToDevice(dispatch, getState, device) {
     }).catch(errorData => {
         dispatch(errorOccuredAction(errorData.adapter, errorData.error));
     }).then(() => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
         adapterToUse.removeListener(onCompleted);
     });
 }
@@ -393,6 +427,13 @@ function errorOccuredAction(adapter, error) {
     };
 }
 
+function pairWithDeviceAction(device) {
+    return {
+        type: DEVICE_INITIATE_PAIRING,
+        device
+    };
+}
+
 export function findAdapters() {
     return dispatch => {
         return _getAdapters(dispatch);
@@ -423,9 +464,9 @@ export function disconnectFromDevice(device) {
     };
 }
 
-export function bondWithDevice(device) {
+export function pairWithDevice(device) {
     return (dispatch, getState) => {
-        console.log('Please implement bondWithDevice!');
+        return _pairWithDevice(dispatch, getState, device);
     };
 }
 
