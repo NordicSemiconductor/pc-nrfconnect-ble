@@ -14,7 +14,13 @@ const initialState = new InitialState();
 
 function deviceFound(state, device) {
     const newDevice = apiHelper.getImmutableDevice(device);
+    const existingDevice = state.devices.get(device.address);
+    if (existingDevice && existingDevice.name !== '' && device.name === '') {
+        return state;
+    }
+
     return state.setIn(['devices', device.address], newDevice);
+
 }
 
 function addError(state, error) {

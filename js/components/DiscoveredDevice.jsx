@@ -3,9 +3,33 @@
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 
+const RSSI_WIDTH_MAX = 20;
+const RSSI_WIDTH_HIGH = Math.round(RSSI_WIDTH_MAX * 0.8);
+const RSSI_WIDTH_MID = Math.round(RSSI_WIDTH_MAX * 0.6);
+const RSSI_WIDTH_LOW = Math.round(RSSI_WIDTH_MAX * 0.4);
+const RSSI_WIDTH_MIN = Math.round(RSSI_WIDTH_MAX * 0.2);
+
 export default class DiscoveredDevice extends Component {
     constructor(props) {
         super(props);
+    }
+
+    getRssiWidth(rssi) {
+        let rssiWidth;
+        if (rssi < -100) {
+            rssiWidth = RSSI_WIDTH_MIN;
+        } else if (rssi < -80) {
+            rssiWidth = RSSI_WIDTH_LOW;
+        } else if (rssi < -60) {
+            rssiWidth = RSSI_WIDTH_MID;
+        } else if (rssi < -45) {
+            rssiWidth = RSSI_WIDTH_HIGH;
+        } else {
+            rssiWidth = RSSI_WIDTH_MAX;
+        }
+
+        console.log('WIDTH ' + rssiWidth);
+        return rssiWidth;
     }
 
     render() {
@@ -29,7 +53,7 @@ export default class DiscoveredDevice extends Component {
             <div className="device">
                 <div className="top-bar">
                     <div style={{float: 'right'}}>
-                        <span style={{width: device.rssi_level + 'px'}} className="icon-signal icon-foreground" />
+                        <span style={{width: this.getRssiWidth(device.rssi) + 'px'}} className="icon-signal icon-foreground" />
                         <span className="icon-signal icon-background" />
                     </div>
                     <div className="text-small truncate-text">{device.name || '<Unknown name>'}</div>
