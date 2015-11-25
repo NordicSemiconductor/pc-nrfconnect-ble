@@ -46,8 +46,6 @@ const ImmutableDevice = Record({
     slaveLatency: null,
     connectionSupervisionTimeout: null,
     services: List(),
-    discoveringChildren: false,
-    children: null,
 });
 
 const ImmutableProperties = Record({
