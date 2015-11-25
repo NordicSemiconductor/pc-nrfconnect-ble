@@ -28,7 +28,6 @@ export default class DiscoveredDevice extends Component {
             rssiWidth = RSSI_WIDTH_MAX;
         }
 
-        console.log('WIDTH ' + rssiWidth);
         return rssiWidth;
     }
 

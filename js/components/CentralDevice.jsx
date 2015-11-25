@@ -51,6 +51,7 @@ export default class CentralDevice extends Component {
             name,
             address,
             advertising,
+            onToggleAdvertising,
         } = this.props;
 
         const style = {
@@ -63,7 +64,9 @@ export default class CentralDevice extends Component {
             visibility: advertising ? 'visible' : 'hidden',
         };
 
-        const advertisingText = advertising ? 'Stop advertising' : 'Start advertising';
+        const iconOpacity = advertising ? '' : 'icon-background';
+        const advMenuText = advertising ? 'Stop advertising' : 'Start advertising';
+        const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
 
         return (
             <div id={id} className="device main-device standalone" style={style}>
@@ -75,7 +78,7 @@ export default class CentralDevice extends Component {
                                 <span className="icon-cog" aria-hidden="true" />
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <MenuItem eventKey="ToggleAdvertising">{advertisingText}</MenuItem>
+                                <MenuItem eventKey="ToggleAdvertising">{advMenuText}</MenuItem>
                                 <MenuItem eventKey="AdvertisingSetup">Advertising setup...</MenuItem>
                             </Dropdown.Menu>
                         </Dropdown>
@@ -85,7 +88,7 @@ export default class CentralDevice extends Component {
                         <strong>{name}</strong>
                     </div>
                     <div className="address-text">{address}</div>
-                    <span className="icon-wifi" aria-hidden="true" style={progressStyle} title="Advertising" />
+                    <div className={'icon-wifi ' + iconOpacity} aria-hidden="true" title={advIconTitle} />
                     <AdvertisingSetup />
                 </div>
             </div>
