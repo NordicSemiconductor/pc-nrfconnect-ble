@@ -48,6 +48,8 @@ const ImmutableDevice = Record({
     services: List(),
     discoveringChildren: false,
     children: null,
+    rssi: null,
+    scanResponse: false,
 });
 
 const ImmutableProperties = Record({
@@ -171,6 +173,8 @@ export function getImmutableDevice(device) {
         maxConnectionInterval: device.maxConnectionInterval,
         slaveLatency: device.slaveLatency,
         connectionSupervisionTimeout: device.connectionSupervisionTimeout,
+        rssi: device.rssi,
+        scanResponse: device.scanResponse,
     });
 }
 
