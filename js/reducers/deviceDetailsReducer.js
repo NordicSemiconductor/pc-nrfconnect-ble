@@ -24,7 +24,12 @@ const InitialState = Record({
     devices: Map(),
 });
 
-const initialState = new InitialState({selectComponent: null, devices: Map()});
+const DeviceDetail = Record({
+    discoveringChildren: false,
+    children: null,
+});
+
+const initialState = new InitialState({selectedComponent: null, devices: Map()});
 
 function getNodeStatePath(node) {
     const nodeInstanceIds = getInstanceIds(node);
@@ -55,7 +60,7 @@ function discoveredAttributes(state, parent, attributes) {
     state = state.setIn(parentStatePath.concat('discoveringChildren'), false);
 
     if (!attributes) {
-        return;
+        return state;
     }
 
     for (var attribute of attributes) {
@@ -85,6 +90,8 @@ export default function deviceDetails(state = initialState, action) {
             return discoveringAttributes(state, action.parent);
         case DeviceDetailsActions.DISCOVERED_ATTRIBUTES:
             return discoveredAttributes(state, action.parent, action.attributes);
+        case AdapterActions.DEVICE_CONNECTED:
+            return state.setIn(['devices', action.device.instanceId], new DeviceDetail());
         default:
             return state;
     }
