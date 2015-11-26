@@ -145,11 +145,6 @@ function deviceDisconnected(state, device) {
     return state;
 }
 
-function deviceConnectionParamUpdateRequest(state, adapter, connParam) {
-    console.log(JSON.stringify(connParam));
-    return state;
-}
-
 function deviceInitiatePairing(state, device) {
     return state;
 }
@@ -217,8 +212,6 @@ export default function adapter(state =
             return deviceConnected(state, action.device);
         case AdapterAction.DEVICE_DISCONNECTED:
             return deviceDisconnected(state, action.device);
-        case AdapterAction.DEVICE_CONNECTION_PARAM_UPDATE_REQUEST:
-            return deviceConnectionParamUpdateRequest(state, action.adapter, action.connParam);
         case AdapterAction.DEVICE_INITIATE_PAIRING:
             return deviceInitiatePairing(state, action.device);
         default:

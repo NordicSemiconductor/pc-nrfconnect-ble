@@ -19,45 +19,18 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { Modal } from 'react-bootstrap';
-
-// import { ConnectionUpdateRequestEditor } from '../components/ConnectionUpdateRequestEditor';
+import { BLEEventState } from '../actions/common';
 
 import { BLEEvent } from '../components/BLEEvent';
 import { ConnectionUpdateRequestEditor } from '../components/ConnectionUpdateRequestEditor';
 
 import * as BLEEventActions from '../actions/bleEventActions';
+import * as AdapterActions from '../actions/adapterActions';
 
 export class BLEEventDialog extends Component {
-//    mixins: [Reflux.listenTo(connectionStore, "onConnectionStoreChanged")],
     constructor(props) {
         super(props);
     }
-
-/*    getInitialState(){
-        return Object.assign({}, connectionStore.getInitialState(), {visible: false, selectedIndex: null});
-    } */
-
-/*
-    onConnectionStoreChanged(newState) {
-        if (!this.state.visible) {
-            if (newState.events && (newState.events.length > 0) ) {
-                this.setState(
-                    Object.assign({},
-                        newState,
-                        {
-                            visible: true,
-                            selectedIndex: this.state.events.length -1
-                        }
-                    )
-                );
-
-            } else {
-                this.setState(newState);
-            }
-        } else {
-            this.setState(newState);
-        }
-    } */
 
     _close() {
         const { clearAllEvents, showDialog } = this.props;
@@ -66,12 +39,15 @@ export class BLEEventDialog extends Component {
         showDialog(false);
     }
 
-    _onSelected(selected) {
-        this.setState({selectedIndex: selected});
+    _onSelected(selectedEventId) {
+        const { selectEventId } = this.props;
+        selectEventId(selectedEventId);
     }
 
     _areAllEventsHandledOrTimedOut() {
-        this.props.events.forEach((event, index) => {
+        const { events } = this.props;
+
+        events.forEach((event, id) => {
             if (!event.state) {
                 return false;
             }
@@ -80,20 +56,23 @@ export class BLEEventDialog extends Component {
         return true;
     }
 
-    _handleEditorUpdate(selectedIndex) {
-        this.refs['event_' + this.props.selectedIndex].stopCounter();
+/*
+    _handleEditorUpdate(selectedEventId) {
+        this.refs['event_' + this.props.selectedEventId].stopCounter();
         this.setState({
-            selectedIndex: null
+            selectedEventId: null
         });
-    }
+    } */
 
     render() {
         const {
             visible,
             events,
-            selectedIndex,
+            selectedEventId,
             showDialog,
             clearAllEvents,
+            rejectDeviceConnectionParams,
+            updateDeviceConnectionParams,
         } = this.props;
 
         return (
@@ -105,36 +84,40 @@ export class BLEEventDialog extends Component {
                 <Modal.Header>
                     <Modal.Title>Events</Modal.Title>
                 </Modal.Header>
+
                 <div className="server-setup">
                     <div className="device-details-view">
                         <div className="service-items-wrap">
-                            {events.map((event, i) =>
+                            {events.map(event =>
                                 <BLEEvent
-                                    key={i}
-                                    ref={'event_' + i}
-                                    onSelected={this._onSelected}
-                                    selected={selectedIndex===i}
-                                    event={events[i]}
-                                    index={i}
+                                    key={event.id}
+                                    ref={'event_' + event.id}
+                                    onSelected={(eventId) => this._onSelected(eventId)}
+                                    selected={selectedEventId === event.id}
+                                    event={event}
                                     onTimedOut={() => { console.log('Event timed out!'); }}
                                 />
                             )}
                         </div>
-                        {events.map((event, i) =>
-                            <div key={i} className="item-editor" style={ ( (selectedIndex === i) && !(events[selectedIndex].state)) ? {} : {display: 'none'}}>
+
+                        {events.map(event =>
+                            <div key={event.id} className="item-editor" style={ ( (selectedEventId === event.id) && (events.get(selectedEventId).state === BLEEventState.INDETERMINATE)) ? {} : {display: 'none'}}>
                                 <ConnectionUpdateRequestEditor
                                     event={event}
-                                    onUpdate={this._handleEditorUpdate}/>
+                                    onUpdate={this._handleEditorUpdate}
+                                    onRejectConnectionParams={(device) => rejectDeviceConnectionParams(event.id, device)}
+                                    onUpdateConnectionParams={(device, connectionParams) => updateDeviceConnectionParams(event.id, device, connectionParams)}
+                                    />
                             </div>
                         )}
+
                         <div className="item-editor"
-                             style={((selectedIndex === null) ||
-                                     (events.size === 0) ||
-                                     (events[selectedIndex].state) ) ? {} : {display: 'none'}}>
+                             style={((selectedEventId === -1) && (events.size > 0)) ? {} : {display: 'none'}}>
                             <div className="nothing-selected"/>
                         </div>
                     </div>
                 </div>
+
                 <Modal.Footer>
                     <button disabled={!this._areAllEventsHandledOrTimedOut()} className="btn btn-primary btn-nordic" onClick={() => this._close()}>Close</button>
                 </Modal.Footer>
@@ -146,10 +129,12 @@ export class BLEEventDialog extends Component {
 BLEEventDialog.propTypes = {
     visible: PropTypes.bool.isRequired,
     events: PropTypes.object.isRequired,
-    selectedIndex: PropTypes.number.isRequired,
+    selectedEventId: PropTypes.number.isRequired,
     clearAllEvents: PropTypes.func.isRequired,
     showDialog: PropTypes.func.isRequired,
-    selectEvent: PropTypes.func.isRequired,
+    selectEventId: PropTypes.func.isRequired,
+    rejectDeviceConnectionParams: PropTypes.func.isRequired,
+    updateDeviceConnectionParams: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -160,13 +145,13 @@ function mapStateToProps(state) {
     return {
         visible: bleEvent.visible,
         events: bleEvent.events,
-        selectedIndex: bleEvent.selectedIndex,
+        selectedEventId: bleEvent.selectedEventId,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     const retval = Object.assign(
-        {},
+        bindActionCreators(AdapterActions, dispatch),
         bindActionCreators(BLEEventActions, dispatch)
     );
 

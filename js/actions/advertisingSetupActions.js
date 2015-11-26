@@ -12,7 +12,7 @@
 
 'use strict';
 
-import { getSelectedAdapter } from './util/common';
+import { getSelectedAdapter } from './common';
 import { discoverServices } from './deviceDetailsActions';
 import { connectedToDevice } from './adapterActions';
 

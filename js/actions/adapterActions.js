@@ -30,7 +30,7 @@ export const DEVICE_CANCELLED_CONNECT = 'DEVICE_CANCELLED_CONNECT';
 export const DEVICE_INITIATE_PAIRING = 'DEVICE_INITIATE_PAIRING';
 
 export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
-
+export const DEVICE_CONNECTION_PARAM_UPDATE_STATUS = 'DEVICE_CONNECTION_PARAM_UPDATE_STATUS';
 
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
@@ -39,6 +39,7 @@ import _ from 'underscore';
 import { driver, api } from 'pc-ble-driver-js';
 
 import { discoverServices } from './deviceDetailsActions';
+import { BLEEventState } from './common';
 
 const _adapterFactory = api.AdapterFactory.getInstance(driver);
 
@@ -92,8 +93,8 @@ function _openAdapter(dispatch, getState, adapter) {
             baudRate: 115200,
             parity: 'none',
             flowControl: 'none',
-            eventInterval: 100,
-            logLevel: 'trace',
+            eventInterval: 10,
+            logLevel: 'info',
         };
 
         // Check if we already have an adapter open
@@ -137,8 +138,8 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(deviceConnectTimeoutAction(deviceAddress));
         });
 
-        adapterToUse.on('connParamUpdate', device => {
-            dispatch(deviceConnParamUpdateRequestAction(device));
+        adapterToUse.on('connParamUpdateRequest', (device, requestedConnectionParams) => {
+            dispatch(deviceConnParamUpdateRequestAction(device, requestedConnectionParams));
         });
 
         dispatch(adapterOpenAction(adapterToUse));
@@ -185,11 +186,11 @@ function _closeAdapter(dispatch, adapter) {
     });
 }
 
-function _updateDeviceConnectionParams(dispatch, getState, device, connectionParams) {
+function _updateDeviceConnectionParams(dispatch, getState, id, device, connectionParams) {
     return new Promise((resolve, reject) => {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
-        adapterToUse.updateConnectionParams(device.instanceId, connectionParams, error => {
+        adapterToUse.updateConnectionParameters(device.instanceId, connectionParams, error => {
             if(error) {
                 reject(makeError({ adapter: adapterToUse, error: error }));
             } else {
@@ -197,13 +198,14 @@ function _updateDeviceConnectionParams(dispatch, getState, device, connectionPar
             }
         });
     }).then(() => {
-        // Do we need to tell anyone this went OK ?
+        dispatch(connectionParamUpdateStatusAction(id, device, BLEEventState.SUCCESS));
     }).catch(errorData => {
+        dispatch(connectionParamUpdateStatusAction(id, device, BLEEventState.ERROR));
         dispatch(errorOccuredAction(errorData.adapter, errorData.error));
     });
 }
 
-function _rejectConnectionParams(dispatch, getState, device) {
+function _rejectConnectionParams(dispatch, getState, id, device) {
     return new Promise((resolve, reject) => {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
@@ -220,8 +222,10 @@ function _rejectConnectionParams(dispatch, getState, device) {
             }
         });
     }).then(() => {
+        dispatch(connectionParamUpdateStatusAction(id, device, 'success'));
         // Do we need to tell anyone this went OK ?
     }).catch(errorData => {
+        dispatch(connectionParamUpdateStatusAction(id, device, 'error'));
         dispatch(errorOccuredAction(errorData.adapter, errorData.error));
     });
 }
@@ -277,6 +281,15 @@ function adapterStateChangedAction(adapter, state) {
         type: ADAPTER_STATE_CHANGED,
         adapter,
         state,
+    };
+}
+
+function connectionParamUpdateStatusAction(id, device, status) {
+    return {
+        type: DEVICE_CONNECTION_PARAM_UPDATE_STATUS,
+        id: id,
+        device: device,
+        status: status,
     };
 }
 
@@ -456,10 +469,11 @@ function deviceCancelConnectAction() {
     };
 }
 
-function deviceConnParamUpdateRequestAction(device) {
+function deviceConnParamUpdateRequestAction(device, requestedConnectionParams) {
     return {
         type: DEVICE_CONNECTION_PARAM_UPDATE_REQUEST,
         device,
+        requestedConnectionParams,
     };
 }
 
@@ -520,14 +534,14 @@ export function cancelConnect() {
     };
 }
 
-export function updateDeviceConnectionParams(device, connectionParams) {
+export function updateDeviceConnectionParams(id, device, connectionParams) {
     return (dispatch, getState) => {
-        return _updateDeviceConnectionParams(dispatch, getState, device, connectionParams);
+        return _updateDeviceConnectionParams(dispatch, getState, id, device, connectionParams);
     };
 }
 
-export function rejectConnectionParams(device) {
+export function rejectDeviceConnectionParams(id, device) {
     return (dispatch, getState) => {
-        return _rejectConnectionParams(dispatch, getState, device);
+        return _rejectConnectionParams(dispatch, getState, id, device);
     };
 }

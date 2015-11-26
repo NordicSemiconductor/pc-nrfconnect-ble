@@ -101,7 +101,7 @@ function mapStateToProps(state) {
         connectedDevices: selectedAdapter.connectedDevices,
         deviceDetails: selectedAdapter.deviceDetails,
     };
-};
+}
 
 function mapDispatchToProps(dispatch) {
     let retval = Object.assign(
@@ -109,6 +109,7 @@ function mapDispatchToProps(dispatch) {
             bindActionCreators(DeviceDetailsActions, dispatch),
             bindActionCreators(AdvertisingSetupActions, dispatch),
             bindActionCreators(AdapterActions, dispatch),
+            bindActionCreators(DeviceDetailsActions, dispatch)
         );
 
     return retval;

@@ -4,12 +4,11 @@ import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 
 import { CountdownTimer } from '../components/CountdownTimer';
-import * as BLEEventActions from '../actions/bleEventActions';
+import { BLEEventState, BLEEventType } from './../actions/common';
 
-const EVENT_TIMEOUT_SECONDS = 30;
+const EVENT_TIMEOUT_SECONDS = 10; // Used to be 30 secs
 
 export class BLEEvent extends Component {
-   // mixins: [BlueWhiteBlinkMixin], // HUH ?
    constructor(props) {
        super(props);
    }
@@ -18,12 +17,12 @@ export class BLEEvent extends Component {
        const eventType = this.props.event.type;
 
        switch (eventType) {
-           case BLEEventActions.EventType.USER_INITIATED_CONNECTION_UPDATE:
+           case BLEEventType.USER_INITIATED_CONNECTION_UPDATE:
                 return {
                     name: 'Update request',
                     icon: (<span className="icon-link"><span className="icon-down"/></span>)
                 };
-           case BLEEventActions.EventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE:
+           case BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE:
                 return {
                     name: 'Update request',
                     icon: (<span className="icon-link"><span className="icon-up"/></span>)
@@ -42,7 +41,7 @@ export class BLEEvent extends Component {
 
        let eventTimer =(<div/>);
 
-       if (event.eventType === BLEEventActions.EventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
+       if (event.eventType === BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
            eventTimer = (<CountdownTimer ref="counter" seconds={EVENT_TIMEOUT_SECONDS} onTimeout={() => onTimedOut()}/>);
        }
 
@@ -51,7 +50,7 @@ export class BLEEvent extends Component {
                <span>{icon}</span>
                <span className="left-space">
                    <div className="service-name truncate-text">{name}</div>
-                   <div className="address-text">{event.deviceAddress}</div>
+                   <div className="address-text">{event.device.address}</div>
                </span>
                {eventTimer}
            </div>
@@ -61,8 +60,13 @@ export class BLEEvent extends Component {
    _onClick(e) {
        e.stopPropagation();
 
-       if (this.props.onSelected) {
-           this.props.onSelected(this.props.index);
+       const {
+           onSelected,
+           event,
+       } = this.props;
+
+       if (onSelected) {
+           onSelected(event.id);
        }
    }
 
@@ -74,14 +78,14 @@ export class BLEEvent extends Component {
        }
 
        switch (event.state) {
-           case 'error':
-           case 'timedOut':
-           case 'rejected':
-           case 'canceled':
+           case BLEEventState.ERROR:
+           case BLEEventState.TIMED_OUT:
+           case BLEEventState.REJECTED:
+           case BLEEventState.CANCELED:
                return 'failed-item';
-           case 'indeterminate':
+           case BLEEventState.INDETERMINATE:
                return '';
-           case 'success':
+          case BLEEventState.SUCCESS:
                return 'success-item';
            default:
                throw 'error: unknown ble event state';
@@ -89,16 +93,20 @@ export class BLEEvent extends Component {
    }
 
    _getStyle() {
-       const { event } = this.props;
+       const { event, selected } = this.props;
 
        if (!event.state) {
            return {
-               backgroundColor: this.props.selected ? 'rgb(179,225,245)'
+               backgroundColor: selected ? 'rgb(179,225,245)'
                    : `rgb(${this.state.backgroundColor.r}, ${this.state.backgroundColor.g}, ${this.state.backgroundColor.b})`
            };
        } else {
            return {};
        }
+   }
+
+   _onExpandAreaClick() {
+       console.log('TODO: implement me! I did not exist earlier either...');
    }
 
    stopCounter() {
@@ -115,8 +123,8 @@ export class BLEEvent extends Component {
        } = this.props;
 
        return (
-           <div className={'service-item ' + this._getClass()} style={this._getStyle()} onClick={this._onClick}>
-               <div className="expand-area" onClick={this._onExpandAreaClick}>
+           <div className={'service-item ' + this._getClass()} style={this._getStyle()} onClick={(_event) => this._onClick(_event)}>
+               <div className="expand-area" onClick={() => this._onExpandAreaClick()}>
                    <div className="bar1" />
                    <div className="icon-wrap"></div>
                </div>

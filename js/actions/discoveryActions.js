@@ -12,7 +12,7 @@
 
 'use strict';
 
-import { getSelectedAdapter } from './util/common';
+import { getSelectedAdapter } from './common';
 
 export const DISCOVERY_DEVICE_FOUND = 'DISCOVERY_DEVICE_FOUND';
 export const DISCOVERY_CLEAR_LIST = 'DISCOVERY_CLEAR_LIST';

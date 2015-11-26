@@ -3,66 +3,60 @@
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 
-import * as BLEEventActions from '../actions/bleEventActions';
+import { Input } from 'react-bootstrap';
 
+import { BLEEventType } from '../actions/common';
+
+// This component views an editor for connection update parameters
+// One concept is essential:
+//  If the user sets an connectionInterval we force that value to the SoftDevice
+//  by setting both maxConnectionInterval and minConnection interval to that value.
 export class ConnectionUpdateRequestEditor extends Component {
     constructor(props) {
         super(props);
 
-        this.connectionInterval = this.props.event.minConnectionInterval;
-        this.isSlaveLatencyValid = true;
+        const requestedConnectionParams = props.event.requestedConnectionParams;
+
+        // Use minConnection interval as start value for selected connection interval
+        this.connectionInterval = requestedConnectionParams.minConnectionInterval;
+
+        this.maxConnectionInterval = requestedConnectionParams.maxConnectionInterval;
+        this.minConnectionInterval = requestedConnectionParams.minConnectionInterval;
+        this.connectionSupervisionTimeout = requestedConnectionParams.connectionSupervisionTimeout;
+        this.slaveLatency = requestedConnectionParams.slaveLatency;
     }
 
-/*
-    getInitialState(){
-        console.log('get initial state for connection update request editor');
-        return {
-            connectionParameters: this.props.event.payload.conn_params,
-            isSlaveLatencyValid: true,
-            isConnectionSupervisionTimeoutMultiplierValid: true,
-            connectionInterval: this.props.event.payload.conn_params.min_conn_interval,
-        };
-    } */
-
-/*
-    componentWillReceiveProps(newProps) {
-        if (newProps.event) {
-            this.setState({
-                connectionParameters: newProps.event.payload.conn_params,
-                connectionInterval: this.props.event.payload.conn_params.min_conn_interval,
-            });
-        }
-    } */
-
     _generateHeaderMessage() {
-        const { eventType, deviceAddress } = this.props;
+        const { event } = this.props;
+        const address = event.device.address;
 
-        if (eventType === BLEEventActions.EventType.USER_INITIATED_CONNECTION_UPDATE) {
-            return 'Connection Parameters for device at ' + deviceAddress;
+        if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) {
+            return `Connection Parameters for device at ${address}`;
         } else {
-            return 'The device at ' + deviceAddress + ' has requested a connection parameter update.';
+            return `The device at ${address} has requested a connection parameter update. (ID#${event.id})`;
         }
     }
 
     _createConnectionIntervalControl() {
         const {
-            connectionUpdateRequest,
-            deviceAddress,
-            onConnectionIntervalChange,
-            connectionInterval
+            event,
         } = this.props;
 
-        if (connectionUpdateRequest.minConnectionInterval === connectionUpdateRequest.maxConnectionInterval) {
+        const device = event.device;
+        const address = device.address;
+
+        if (device.minConnectionInterval === device.maxConnectionInterval) {
             return (
                 <div>
-                    <label className="control-label col-sm-6" htmlFor={"interval_" + deviceAddress}>Connection Interval (ms)</label>
+                    <label className="control-label col-sm-6" htmlFor={"interval_" + address}>Connection Interval (ms)</label>
                     <div className="col-sm-6">
-                        <input id={"interval_" + deviceAddress}
-                               onChange={event => onConnectionIntervalChange(parseInt(event.target.value, 10))}
+                        <Input id={"interval_" + address}
+                               type="text"
+                               onChange={_event => this._handleConnectionIntervalChange(_event)}
                                className="form-control nordic-form-control"
                                type="number"
                                readOnly
-                               value={connectionInterval}/>
+                               value={this.connectionInterval}/>
                     </div>
                 </div>
             );
@@ -70,85 +64,75 @@ export class ConnectionUpdateRequestEditor extends Component {
             return (
                 <div>
                     <label className="control-label col-sm-8"
-                           htmlFor={"interval_"+ deviceAddress}>Connection Interval ({connectionUpdateRequest.minConnectionInterval}-{connectionUpdateRequest.maxConnectionInterval}ms)</label>
+                           htmlFor={"interval_"+ address}>Connection Interval ({device.minConnectionInterval}-{device.maxConnectionInterval}ms)</label>
                     <div className="col-sm-4">
-                        <input id={"interval_" + deviceAddress}
-                               className="form-control nordic-form-control"
-                               onChange={(event) => { onConnectionIntervalChange(parseInt(event.target.value, 10)); }}
-                               type="number"
-                               min={connectionUpdateRequest.minConnectionInterval}
-                               max={connectionUpdateRequest.maxConnectionInterval}
-                               value={this.connectionInterval}/>
+                        <Input id={"interval_" + address}
+                           className="form-control nordic-form-control"
+                           onChange={_event => this._handleConnectionIntervalChange(_event) }
+                           type="number"
+                           min={device.minConnectionInterval}
+                           max={device.maxConnectionInterval}
+                           value={this.connectionInterval}/>
                     </div>
                 </div>
             );
         }
     }
 
-    _checkValidity(slaveLatency, connectionSupervisionTimeoutMultiplierValid) {
-        let isSlaveLatencyValid = true;
-        let isConnectionSupervisionTimeoutMultiplierValid = true;
-
-        if ( (connectionSupervisionTimeoutMultiplierValid < 10) || (connectionSupervisionTimeoutMultiplierValid < 3200)) {
-            isConnectionSupervisionTimeoutMultiplierValid = false;
-        }
-        return {
-            isSlaveLatencyValid,
-            isConnectionSupervisionTimeoutMultiplierValid
-        };
-    }
-
     _isSlaveLatencyValid(slaveLatency) {
         return ( (slaveLatency >= 0) && (slaveLatency <= 1000) );
     }
 
-    _isConnectionSupervisionTimeoutMultiplerValid(connectionSupervisionTimeoutMultiplier) {
-        return ( (connectionSupervisionTimeoutMultiplier >= 10) && (connectionSupervisionTimeoutMultiplier < 3200) );
+    _isConnectionSupervisionTimeoutValid(connectionSupervisionTimeout) {
+        return ( (connectionSupervisionTimeout >= 10) && (connectionSupervisionTimeout < 3200) );
     }
 
-    _handleConnectionSupervisionTimeoutMultiplerChange(event) {
-        this.connectionSupervisionTimeoutMultiplier = parseInt(event.target.value, 10);
-        this.isConnectionSupervisionTimeoutMultiplierValid = this._isConnectionSupervisionTimeoutMultiplerValid(this.connectionSupervisionTimeoutMultiplier);
+    _handleConnectionSupervisionTimeoutChange(event) {
+        this.connectionSupervisionTimeout = parseInt(event.target.value, 10);
+        this.isConnectionSupervisionTimeoutValid = this._isConnectionSupervisionTimeoutValid(this.connectionSupervisionTimeout);
+        this.forceUpdate();
     }
 
     _handleSlaveLatencyChange(event) {
         this.slaveLatency = parseInt(event.target.value, 10);
         this.isSlaveLatencyValid = this._isSlaveLatencyValid(this.slaveLatency);
+        this.forceUpdate();
     }
 
-    _handleConnectionIntervalChange() {
+    _handleConnectionIntervalChange(event) {
         this.connectionInterval = parseInt(event.target.value, 10);
+        this.forceUpdate();
     }
 
-    _getCopyOfConnectionParameters(connectionParameters) {
-        return {
-            minConnectionInterval : connectionParameters.minConnectionInterval,
-            maxConnectionInterval : this.connectionInterval,
-            slaveLatency : connectionParameters.slaveLatency,
-            connectionSupervisionTimeout : connectionParameters.connectionSupervisionTimeout,
-        };
-    }
-
-    _updateConnection() {
+    _handleUpdateConnection() {
         const {
-            deviceInstanceId,
-            connectionParameters,
+            event,
+            onUpdateConnectionParams,
         } = this.props;
 
-        const copyOfConnectionParameters = this._getCopyOfConnectionParameters(connectionParameters);
-        copyOfConnectionParameters.connectionSupervisionTimeout = this.connectionSupervisionTimeout;
-        BLEEventActions.updateConnectionParameters(deviceInstanceId, copyOfConnectionParameters);
+        // Set minConnectionInterval and maxConnectionInterval to connectionInterval
+        // that way we force the connectionInterval on SoftDevice.
+        this.minConnectionInterval = this.connectionInterval;
+        this.maxConnectionInterval = this.connectionInterval;
 
-        // this.props.onUpdate();
+        onUpdateConnectionParams(
+            event.device,
+            {
+                minConnectionInterval: this.minConnectionInterval,
+                maxConnectionInterval: this.maxConnectionInterval,
+                slaveLatency: this.slaveLatency,
+                connectionSupervisionTimeout: this.connectionSupervisionTimeout,
+            }
+        );
     }
 
-    _cancel() {
+    _handleRejectConnectionParams() {
         const {
-            deviceInstanceId
+            event,
+            onRejectConnectionParams
         } = this.props;
 
-        BLEEventActions.rejectConnectionParameters(deviceInstanceId);
-        // this.props.onUpdate();
+        onRejectConnectionParams(event.device);
     }
 
     _getValidInputStyle() {
@@ -167,25 +151,15 @@ export class ConnectionUpdateRequestEditor extends Component {
 
     render() {
         const {
-            eventType,
-            deviceAddress,
-            deviceInstanceId,
-            /* deviceInstanceId, use deviceAddress instead */
-            isSlaveLatencyValid,
-            isConnectionSupervisionTimeoutMultiplierValid,
-            connectionInterval,
-            connectionParameters,
-            onConnectionIntervalChange,
-
-/*            minConnectionInterval,
-            maxConnectionInterval,
-            slaveLatency,
-            connectionSupervisionTimeout  -> use connectionParamters instead <- */
+            event,
         } = this.props;
 
-        const slaveLatencyStyle = isSlaveLatencyValid ?
+        const device = event.device;
+        const address = device.address;
+
+        const slaveLatencyStyle = this.isSlaveLatencyValid ?
             this._getValidInputStyle() : this._getInvalidInputStyle();
-        const connectionSupervisionTimeoutMultiplierInputStyle = isConnectionSupervisionTimeoutMultiplierValid ?
+        const connectionSupervisionTimeoutInputStyle = this.isConnectionSupervisionTimeoutValid ?
             this._getValidInputStyle() : this._getInvalidInputStyle();
 
         return (
@@ -198,39 +172,39 @@ export class ConnectionUpdateRequestEditor extends Component {
                         {this._createConnectionIntervalControl()}
                     </div>
                     <div className="form-group">
-                        <label className="control-label col-sm-6" htmlFor={"latency_" + connectionHandle}>Latency (ms)</label>
+                        <label className="control-label col-sm-6" htmlFor={"latency_" + address}>Latency (ms)</label>
                         <div className="col-sm-6">
-                            <input style={slaveLatencyStyle}
-                                   id={"latency_" + connectionHandle}
+                            <Input style={slaveLatencyStyle}
+                                   id={"latency_" + address}
                                    className="form-control nordic-form-control"
-                                   onChange={this._handleSlaveLatencyChange}
+                                   onChange={_event => this._handleSlaveLatencyChange(_event)}
                                    type="number"
-                                   value={connectionParameters.slave_latency}/>
+                                   value={this.slaveLatency}/>
                         </div>
                     </div>
                     <div className="form-group">
                         <div>
-                            <label className="control-label col-sm-6" htmlFor={"timeout_" + connectionHandle}>Timeout (ms)</label>
+                            <label className="control-label col-sm-6" htmlFor={"timeout_" + address}>Timeout (ms)</label>
                             <div className="col-sm-6">
-                                <input style={connectionSupervisionTimeoutMultiplierInputStyle}
-                                       id={"timeout_" + connectionHandle}
+                                <Input style={connectionSupervisionTimeoutInputStyle}
+                                       id={"timeout_" + address}
                                        className="form-control nordic-form-control"
-                                       onChange={this._handleConnectionSupervisionTimeoutMultiplerChange}
+                                       onChange={_event => this._handleConnectionSupervisionTimeoutChange(_event)}
                                        type="number"
-                                       value={connectionParameters.connectionSupervisionTimeout}/>
+                                       value={this.connectionSupervisionTimeout}/>
                             </div>
                         </div>
                         <div>
-                            <button disabled={!isSlaveLatencyValid || !isConnectionSupervisionTimeoutMultiplierValid}
+                            <button disabled={!this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid}
                                     type="button"
-                                    onClick={this._updateConnection}
+                                    onClick={() => this._handleUpdateConnection()}
                                     className="btn btn-primary btn-xs btn-nordic">
                                 Update
                             </button>
                             <button type="button"
-                                    onClick={this._cancel}
+                                    onClick={() => this._handleRejectConnectionParams()}
                                     className="btn btn-default btn-xs btn-nordic">
-                                {(eventType === BLEEventActions.EventType.USER_INITIATED_CONNECTION_UPDATE) ? 'Cancel' : 'Reject'}
+                                {(event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) ? 'Cancel' : 'Reject'}
                             </button>
                         </div>
                     </div>
@@ -239,3 +213,9 @@ export class ConnectionUpdateRequestEditor extends Component {
         );
     }
 }
+
+ConnectionUpdateRequestEditor.propTypes = {
+    event: PropTypes.object.isRequired,
+    onRejectConnectionParams: PropTypes.func.isRequired,
+    onUpdateConnectionParams: PropTypes.func.isRequired,
+};

@@ -18,3 +18,20 @@ export function getSelectedAdapter(state) {
         }
     }
 }
+
+// TODO: get clarity regarding what these states actually means...
+export const BLEEventState = {
+    UNKNOWN: 0,
+    ERROR: 1,
+    TIMED_OUT: 2,
+    REJECTED: 3,
+    CANCELED: 4,
+    INDETERMINATE: 5,
+    SUCCESS: 6,
+};
+
+
+export const BLEEventType = {
+    USER_INITIATED_CONNECTION_UPDATE: 0,
+    PERIPHERAL_INITIATED_CONNECTION_UPDATE: 1,
+};

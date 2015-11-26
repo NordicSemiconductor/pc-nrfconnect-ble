@@ -12,15 +12,10 @@
 
 'use strict';
 
-export const EventType = {
-    USER_INITIATED_CONNECTION_UPDATE: 0,
-    PERIPHERAL_INITIATED_CONNECTION_UPDATE: 1,
-};
-
 export const BLE_EVENT_CONN_PARAM_UPDATE_REQUEST = 'BLE_EVENT_CONN_PARAM_UPDATE_REQUEST';
 export const BLE_EVENT_SHOW_DIALOG = 'BLE_EVENT_SHOW_DIALOG';
 export const BLE_EVENT_CLEAR_ALL_EVENTS = 'BLE_EVENT_CLEAR_ALL_EVENTS';
-export const BLE_EVENT_SELECT_EVENT_INDEX = 'BLE_EVENT_SELECT_EVENT_INDEX';
+export const BLE_EVENT_SELECT_EVENT_ID = 'BLE_EVENT_SELECT_EVENT_ID';
 export const BLE_EVENT_TIMED_OUT = 'BLE_EVENT_TIMED_OUT';
 
 function showDialogAction(visible) {
@@ -30,10 +25,10 @@ function showDialogAction(visible) {
     };
 }
 
-function selectEventAction(selectedIndex) {
+function selectEventIdAction(selectedEventId) {
     return {
-        type: BLE_EVENT_SELECT_EVENT_INDEX,
-        selectedIndex,
+        type: BLE_EVENT_SELECT_EVENT_ID,
+        selectedEventId,
     };
 }
 
@@ -55,8 +50,8 @@ export function clearAllEvents() {
     return clearAllEventsAction();
 }
 
-export function selectEvent(eventIndex) {
-    return selectEventAction(eventIndex);
+export function selectEventId(eventId) {
+    return selectEventIdAction(eventId);
 }
 
 export function showDialog(visible) {
