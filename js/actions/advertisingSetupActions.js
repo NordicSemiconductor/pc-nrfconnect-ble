@@ -25,16 +25,12 @@ export const HIDE_DIALOG = 'ADVSETUP_HIDE_DIALOG';
 export const ERROR_OCCURED = 'ADVSETUP_ERROR_OCCURED';
 
 // Internal functions
-function _startAdvertising(advertisingSetup, dispatch, getState) {
+function _setAdvertisingData(advertisingSetup, dispatch, getState) {
     const adapter = getState().adapter.api.selectedAdapter;
 
     return new Promise((resolve, reject) => {
         const advData = {};
         const scanResp = {};
-        const options = {
-            interval: 25,
-            timeout: 0,
-        };
 
         if (adapter === null || adapter === undefined) {
             reject('No adapter is selected.');
@@ -57,7 +53,34 @@ function _startAdvertising(advertisingSetup, dispatch, getState) {
             }
         });
 
-        adapter.startAdvertising(advData, scanResp, options, error => {
+        adapter.setAdvertisingData(advData, scanResp, error => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        });
+    }).catch(error => {
+        dispatch(advertisingErrorAction(error));
+    });
+}
+
+function _startAdvertising(dispatch, getState) {
+    const adapter = getState().adapter.api.selectedAdapter;
+
+    return new Promise((resolve, reject) => {
+        const advData = {};
+        const scanResp = {};
+        const options = {
+            interval: 25,
+            timeout: 0,
+        };
+
+        if (adapter === null || adapter === undefined) {
+            reject('No adapter is selected.');
+        }
+
+        adapter.startAdvertising(options, error => {
             if (error) {
                 reject(error);
             } else {
@@ -162,7 +185,23 @@ export function hideDialog() {
     return hideDialogAction();
 }
 
-export function toggleAdvertising(advertisingSetup) {
+export function setAdvertisingData(advertisingSetup) {
+    return (dispatch, getState) => {
+        const selectedAdapter = getSelectedAdapter(getState());
+
+        if (selectedAdapter.state) {
+            if (selectedAdapter.state.available) {
+                return _setAdvertisingData(advertisingSetup, dispatch, getState);
+            } else {
+                return Promise.reject('adapter is not available, cannot set advertising data');
+            }
+        } else {
+            return Promise.reject('No adapter selected, or adapter is missing state. Failing.');
+        }
+    };
+}
+
+export function toggleAdvertising() {
     return (dispatch, getState) => {
         const selectedAdapter = getSelectedAdapter(getState());
 
@@ -170,12 +209,13 @@ export function toggleAdvertising(advertisingSetup) {
             if (selectedAdapter.state.advertising && selectedAdapter.state.available) {
                 return _stopAdvertising(dispatch, getState);
             } else if (!selectedAdapter.state.advertising && selectedAdapter.state.available) {
-                return _startAdvertising(advertisingSetup, dispatch, getState);
+                return _startAdvertising(dispatch, getState);
             } else {
                 return Promise.reject('advertisingInProgress and adapterIsOpen is in a combination that makes it impossible to toggle advertising.');
             }
         } else {
-            return Promise.reject('No adapter selected or adapter is missing state. Failing.');
+            return Promise.reject('No adapter selected, or adapter is missing state. Failing.');
         }
     };
 }
+

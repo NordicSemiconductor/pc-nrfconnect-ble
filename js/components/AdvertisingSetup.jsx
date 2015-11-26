@@ -59,6 +59,16 @@ class AdvertisingSetup extends Component {
         this.typeValue = typeValue;
     }
 
+    handleApply() {
+        const {
+            setAdvertisingData,
+            advertisingSetup,
+            hideDialog,
+        } = this.props;
+
+        setAdvertisingData(advertisingSetup);
+    }
+
     render() {
         const {
             advDataEntries,
@@ -102,6 +112,7 @@ class AdvertisingSetup extends Component {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
+                        <Button onClick={() => this.handleApply()}>Apply</Button>
                         <Button onClick={hideDialog}>Close</Button>
                     </Modal.Footer>
                 </Modal>
@@ -114,6 +125,7 @@ function mapStateToProps(state) {
     const {advertisingSetup} = state;
 
     return {
+        advertisingSetup: advertisingSetup,
         advDataEntries: advertisingSetup.advDataEntries,
         scanResponseEntries: advertisingSetup.scanResponseEntries,
         show: advertisingSetup.show,
@@ -139,11 +151,11 @@ AdvertisingSetup.propTypes = {
     scanResponseEntries: PropTypes.object.isRequired,
     show: PropTypes.bool.isRequired,
     addAdvEntry: PropTypes.func.isRequired,
+    setAdvertisingData: PropTypes.func.isRequired,
+    advertisingSetup: PropTypes.object.isRequired,
     deleteAdvData: PropTypes.func.isRequired,
     addScanRsp: PropTypes.func.isRequired,
     deleteScanRsp: PropTypes.func.isRequired,
     showDialog: PropTypes.func.isRequired,
     hideDialog: PropTypes.func.isRequired,
-    //onApply: PropTypes.func.isRequired,
-    //onCancel: PropTypes.func.isRequired,
 };

@@ -30,8 +30,8 @@ class ConnectionMap extends Component {
     }
 
     handleToggleAdvertising() {
-        console.log('handleToggleAdvertising');
-        this.props.toggleAdvertising(this.props.advertisingSetup);
+        this.props.setAdvertisingData(this.props.advertisingSetup);
+        this.props.toggleAdvertising();
     }
 
     render() {
@@ -129,4 +129,5 @@ ConnectionMap.propTypes = {
     updateDeviceConnectionParams: PropTypes.func.isRequired,
     showDialog: PropTypes.func.isRequired,
     toggleAdvertising: PropTypes.func.isRequired,
+    setAdvertisingData: PropTypes.func.isRequired,
 };
