@@ -17,6 +17,10 @@ export const SELECT_COMPONENT = 'DEVICE_DETAILS_SELECT_COMPONENT';
 export const DISCOVERING_ATTRIBUTES = 'DISCOVERING_ATTRIBUTES';
 export const DISCOVERED_ATTRIBUTES = 'DISCOVERED_ATTRIBUTES';
 
+export const TOGGLED_ATTRIBUTE_EXPANDED = 'TOGGLED_ATTRIBUTE_EXPANDED';
+
+import { getInstanceIds } from '../utils/api';
+
 function selectComponentAction(component) {
     return {
         type: SELECT_COMPONENT,
@@ -79,6 +83,7 @@ function _discoverCharacteristics(dispatch, getState, service) {
             service.instanceId,
             (error, characteristics) => {
                 if (error) {
+                    dispatch(discoveredAttributes(service));
                     reject(makeError({adapter: adapterToUse, service: service, error: error}));
                 }
 
@@ -88,7 +93,7 @@ function _discoverCharacteristics(dispatch, getState, service) {
     }).then(characteristics => {
         dispatch(discoveredAttributes(service, characteristics));
     }).catch(error => {
-        dispatch(discoveredAttributes(service));
+        console.log(error);
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
 }
@@ -98,7 +103,7 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if (adapterToUse === null) {
-            dispatch(makeError({error: `No adapter selected`}));
+            reject(makeError({error: `No adapter selected`}));
             return;
         }
 
@@ -108,6 +113,7 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
             characteristic.instanceId,
             (error, descriptors) => {
                 if (error) {
+                    dispatch(discoveredAttributes(characteristic));
                     reject(makeError({adapter: adapterToUse, characteristic: characteristic, error: error}));
                 }
 
@@ -117,9 +123,38 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
     }).then(descriptors => {
         dispatch(discoveredAttributes(characteristic, descriptors));
     }).catch(error => {
-        dispatch(discoveredAttributes(characteristic));
+        console.log(error);
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
+}
+
+function _toggleAttributeExpanded(dispatch, getState, attribute) {
+    const state = getState();
+    const adapterToUse = state.adapter.api.selectedAdapter;
+
+    console.log('toggleAttributeExpanded');
+
+    if (adapterToUse === null) {
+        dispatch(errorOccuredAction(undefined, 'No adapter selected'));
+        return;
+    }
+
+    const instaceIds = getInstanceIds(attribute);
+    const deviceDetails = state.adapter.adapters[state.adapter.selectedAdapter].deviceDetails;
+    const service = deviceDetails.devices.get(instaceIds.device).children.get(instaceIds.service);
+
+    if (instaceIds.characteristic) {
+        const characteristic = service.children.get(instaceIds.characteristic);
+        if (characteristic.children === null && !characteristic.expanded && !characteristic.discoveringChildren) {
+            dispatch(discoverDescriptors(characteristic));
+        }
+    } else {
+        if (service.children === null && !service.expanded && !service.discoveringChildren) {
+            dispatch(discoverCharacteristics(service));
+        }
+    }
+
+    dispatch(toggledAttributeExpanded(attribute));
 }
 
 function discoveringAttributes(parent) {
@@ -134,6 +169,13 @@ function discoveredAttributes(parent, attributes) {
         type: DISCOVERED_ATTRIBUTES,
         parent,
         attributes,
+    };
+}
+
+function toggledAttributeExpanded(attribute) {
+    return {
+        type: TOGGLED_ATTRIBUTE_EXPANDED,
+        attribute,
     };
 }
 
@@ -156,5 +198,11 @@ export function discoverCharacteristics(service) {
 export function discoverDescriptors(characteristic) {
     return (dispatch, getState) => {
         return _discoverDescriptors(dispatch, getState, characteristic);
+    };
+}
+
+export function toggleAttributeExpanded(attribute) {
+    return (dispatch, getState) => {
+        return _toggleAttributeExpanded(dispatch, getState, attribute);
     };
 }

@@ -14,54 +14,45 @@
 
 import React from 'react';
 
+import Component from 'react-pure-render/component';
+
 import CharacteristicItem from './CharacteristicItem';
 import AddNewItem from './AddNewItem.jsx';
-
-import {Properties} from '../gattDatabases';
 
 import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
 
 //import _ from 'underscore';
 
+export default class ServiceItem extends Component {
+    //mixins: [BlueWhiteBlinkMixin],
+    constructor(props) {
+        super(props);
+    }
 
-var ServiceItem = React.createClass({
-    mixins: [BlueWhiteBlinkMixin],
-    getInitialState: function() {
-        return {
-            expanded: false
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (this.props.selected === nextProps.selected && nextProps.selected === this.props.item) {
-            this.setState({ expanded: nextProps.selected.expanded });
-        }
-    },
-    _onContentClick: function(e) {
+    _onContentClick(e) {
         e.stopPropagation();
-
-        if (this.props.onSelected) {
-            this.props.onSelected(this.props.item);
+        if (this.props.onSelectAttribute) {
+            this.props.onSelectAttribute(this.props.item);
         }
-    },
+    }
+
     _onExpandAreaClick(e) {
-        if (this.props.characteristics.length === 0 && !this.props.addNew) {
-            return;
-        }
-
         e.stopPropagation();
-        this.setState({expanded: !this.state.expanded});
-    },
-    _childChanged: function() {
-        if (!this.state.expanded) {
-            this.blink();
+        this.props.onToggleAttributeExpanded(this.props.item);
+    }
+
+    _childChanged() {
+        if (!this.props.item.expanded) {
+            console.log('Service BLINKED!');
+            //this.blink();
         }
-    },
-    componentWillUpdate: function(nextProps, nextState) {
-        nextProps.item.expanded = nextState.expanded;
-    },
-    _addCharacteristic: function() {
-        this.props.addCharacteristic(this.props.item);
-    },
+    }
+
+    _addCharacteristic() {
+        // TODO: Add characteristic
+        //this.props.onAddCharacteristic(this.props.item);
+    }
+
     /*
     //This speeds things up 2x, but breaks notifications:
     shouldComponentUpdate: function(nextProps, nextState) {
@@ -87,38 +78,64 @@ var ServiceItem = React.createClass({
         var changed = !_.isEqual(nextState, this.state);
         return changed;
     },/**/
-    render: function() {
-        var expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        var iconStyle = this.props.characteristics.length === 0 && !this.props.addNew ? { display: 'none' } : {};
-        var selected = this.props.item === this.props.selected;
-        var backgroundColor = selected
+    render() {
+        const {
+            item,
+            selected,
+            addNew,
+            selectOnClick,
+        } = this.props;
+        const {
+            instanceId,
+            handle,
+            name,
+            expanded,
+            discoveringChildren,
+            children,
+        } = item;
+
+        const childrenList = [];
+
+        // TODO: Add addDescriptor action
+        // addDescriptor={this.props.addDescriptor}
+        if (children) {
+            children.forEach(characteristic => {
+                childrenList.push(<CharacteristicItem key={characteristic.instanceId}
+                                                      item={characteristic}
+                                                      selectOnClick={selectOnClick}
+                                                      selected={selected}
+                                                      onSelectAttribute={this.props.onSelectAttribute}
+                                                      onToggleAttributeExpanded={this.props.onToggleAttributeExpanded}
+                                                      onChange={this._childChanged}
+                                                      addNew={addNew} />
+                );
+            });
+        }
+
+        const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
+        const iconStyle = children && children.size === 0 && !addNew ? { display: 'none' } : {};
+        const itemIsSelected = item === selected;
+        const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)'
-            : `rgb(${this.state.backgroundColor.r}, ${this.state.backgroundColor.g}, ${this.state.backgroundColor.b})`;
+            : 'white';
         return (
             <div>
-                <div className="service-item" style={{ backgroundColor: backgroundColor }}  onClick={this._onContentClick}>
-                    <div className="expand-area" onClick={this._onExpandAreaClick}>
+                <div className="service-item" style={{ backgroundColor: backgroundColor }}  onClick={this._onContentClick.bind(this)}>
+                    <div className="expand-area" onClick={this._onExpandAreaClick.bind(this)}>
                         <div className="bar1" />
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     </div>
                     <div className="content-wrap">
                         <div className="content">
-                            <div className="service-name truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
+                            <div className="service-name truncate-text" title={'[' + handle + '] ' + name}>{name}</div>
                         </div>
                     </div>
                 </div>
-                <div style={{display: this.state.expanded ? 'block' : 'none'}}>
-                    {this.props.characteristics.map((characteristic, j) =>
-                        <CharacteristicItem name={characteristic.name} value={characteristic.value} item={characteristic}
-                            selected={this.props.selected} onSelected={this.props.onSelected} descriptors={characteristic.descriptors}
-                            onChange={this._childChanged} key={j} addNew={this.props.addNew} addDescriptor={this.props.addDescriptor} selectOnClick={this.props.selectOnClick}
-                            connectionHandle={this.props.connectionHandle} />
-                    )}
-                    {this.props.addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onClick={this._addCharacteristic} bars={2} /> : null}
+                <div style={{display: expanded ? 'block' : 'none'}}>
+                    {childrenList}
+                    {addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + instanceId} selected={selected} onClick={this._addCharacteristic} bars={2} /> : null}
                 </div>
             </div>
         );
     }
-});
-
-module.exports = ServiceItem;
+}

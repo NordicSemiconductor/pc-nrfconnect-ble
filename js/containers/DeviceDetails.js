@@ -19,6 +19,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
+import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
+import * as AdapterActions from '../actions/adapterActions';
 
 import DeviceDetailsView from '../components/deviceDetails';
 
@@ -27,49 +29,60 @@ class DeviceDetailsContainer extends Component {
         super(props);
     }
 
-    _onSelectedComponent(selectedComponent) {
-        const {selectComponent} = this.props;
-        selectComponent(selectedComponent);
-    }
-
     render() {
         const {
             adapterState,
             selectedComponent,
             connectedDevices,
-            deviceServers,
+            deviceDetails,
             selectComponent,
+            toggleAttributeExpanded,
+            showDialog,
+            toggleAdvertising,
+            disconnectFromDevice,
+            pairWithDevice,
+            updateDeviceConnectionParams,
         } = this.props;
         const elemWidth = 250;
-        const detailNodes = [];
+        const detailDevices = [];
 
         if (!adapterState) {
-            return;
+            return <div className="device-details-container" style={this.props.style} />;
         }
 
-        detailNodes.push(<DeviceDetailsView key={adapterState.instanceId}
-                                            selectedComponent={selectedComponent}
-                                            onSelectedComponent={this._onSelectedComponent}
-                                            node={adapterState}
-                                            containerHeight={this.props.style.height}
-                                            />
+        // Adapter device
+        detailDevices.push(<DeviceDetailsView key={adapterState.instanceId}
+                                              device={adapterState}
+                                              selected={selectedComponent}
+                                              onSelectComponent={selectComponent}
+                                              onToggleAttributeExpanded={toggleAttributeExpanded}
+                                              onShowAdvertisingSetupDialog={showDialog}
+                                              onToggleAdvertising={toggleAdvertising}
+                                              containerHeight={this.props.style.height}
+                                              />
         );
 
         connectedDevices.forEach(device => {
-            detailNodes.push(<DeviceDetailsView key={device.instanceId}
-                                                selectedComponent={selectedComponent}
-                                                onSelectedComponent={this._onSelectedComponent}
-                                                node={device}
-                                                containerHeight={this.props.style.height}
-                                                />
+            detailDevices.push(<DeviceDetailsView key={device.instanceId}
+                                                  adapter = {adapterState}
+                                                  device={device}
+                                                  selected={selectedComponent}
+                                                  deviceDetails={deviceDetails}
+                                                  onSelectComponent={selectComponent}
+                                                  onToggleAttributeExpanded={toggleAttributeExpanded}
+                                                  onDisconnectFromDevice={disconnectFromDevice}
+                                                  onPairWithDevice={pairWithDevice}
+                                                  onUpdateDeviceConnectionParams={updateDeviceConnectionParams}
+                                                  containerHeight={this.props.style.height}
+                                                  />
             );
         });
 
-        var perNode = (20 + elemWidth);
-        var width = (perNode * detailNodes.length);
+        const perDevice = (20 + elemWidth);
+        const width = (perDevice * detailDevices.length);
         return (<div className="device-details-container" style={this.props.style}>
                     <div style={{width: width}}>
-                        {detailNodes}
+                        {detailDevices}
                     </div>
                 </div>);
     }
@@ -78,11 +91,15 @@ class DeviceDetailsContainer extends Component {
 function mapStateToProps(state) {
     const selectedAdapter = state.adapter.adapters[state.adapter.selectedAdapter];
 
+    if (!selectedAdapter) {
+        return {};
+    }
+
     return {
         adapterState: selectedAdapter.state,
         selectedComponent: selectedAdapter.deviceDetails.selectedComponent,
         connectedDevices: selectedAdapter.connectedDevices,
-        deviceServers: selectedAdapter.deviceDetails.deviceServers,
+        deviceDetails: selectedAdapter.deviceDetails,
     };
 };
 
@@ -90,6 +107,8 @@ function mapDispatchToProps(dispatch) {
     let retval = Object.assign(
             {},
             bindActionCreators(DeviceDetailsActions, dispatch),
+            bindActionCreators(AdvertisingSetupActions, dispatch),
+            bindActionCreators(AdapterActions, dispatch),
         );
 
     return retval;

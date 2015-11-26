@@ -63,7 +63,9 @@ function discoveredAttributes(state, parent, attributes) {
         return state;
     }
 
-    for (var attribute of attributes) {
+    state = state.setIn(parentStatePath.concat('children'), Map());
+
+    for (let attribute of attributes) {
         const attributeInstanceIds = getInstanceIds(attribute);
         const attributeStatePath = getNodeStatePath(attribute);
         let immutableAttribute = null;
@@ -82,6 +84,12 @@ function discoveredAttributes(state, parent, attributes) {
     return state;
 }
 
+function toggledAttributeExpanded(state, attribute) {
+    const attributeStatePath = getNodeStatePath(attribute);
+    const previouslyExpanded = state.getIn(attributeStatePath.concat('expanded'));
+    return state.setIn(attributeStatePath.concat('expanded'), !previouslyExpanded);
+}
+
 export default function deviceDetails(state = initialState, action) {
     switch (action.type) {
         case DeviceDetailsActions.SELECT_COMPONENT:
@@ -89,7 +97,11 @@ export default function deviceDetails(state = initialState, action) {
         case DeviceDetailsActions.DISCOVERING_ATTRIBUTES:
             return discoveringAttributes(state, action.parent);
         case DeviceDetailsActions.DISCOVERED_ATTRIBUTES:
+            console.log('discovered attributes');
+            console.log(action);
             return discoveredAttributes(state, action.parent, action.attributes);
+        case DeviceDetailsActions.TOGGLED_ATTRIBUTE_EXPANDED:
+            return toggledAttributeExpanded(state, action.attribute);
         case AdapterActions.DEVICE_CONNECTED:
             return state.setIn(['devices', action.device.instanceId], new DeviceDetail());
         default:

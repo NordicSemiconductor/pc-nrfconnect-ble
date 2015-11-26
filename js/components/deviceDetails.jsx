@@ -28,57 +28,100 @@ import {GattDatabases} from './../gattDatabases';
 export default class DeviceDetailsView extends Component {
     render() {
         const {
+            adapter,
+            device,
+            selected,
+        } = this.props;
+        const {
             instanceId,
             name,
             address,
             role,
-            discoveringChildren,
-            children,
-        } = this.props.node;
+        } = device;
 
-        var centralPosition = {
+        const centralPosition = {
             x: 0,
             y: 0,
         };
-        var services = [];
 
-        if (this.props.node && role === undefined) {
+        if (device && role === undefined) {
+            const {
+                device: {
+                    advertising,
+                },
+                onSelectComponent,
+                onShowAdvertisingSetupDialog,
+                onToggleAdvertising,
+            } = this.props;
             /*TODO: Add local server*/
             return (
-                <CentralDevice id="adapter-details" name={name} address={address} position={centralPosition}/>
+                <CentralDevice id={instanceId + '_details'}
+                               position={centralPosition}
+                               name={name}
+                               address={address}
+                               advertising={advertising}
+                               selected={selected}
+                               onShowDialog={onShowAdvertisingSetupDialog}
+                               onToggleAdvertising={onToggleAdvertising} />
             );
         }
 
-        if (discoveringChildren) {
+        const {
+            onSelectComponent,
+            onToggleAttributeExpanded,
+            onDisconnectFromDevice,
+            onPairWithDevice,
+            onUpdateDeviceConnectionParams,
+        } = this.props;
+
+        const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
+
+        const connectedDevice = <ConnectedDevice id={instanceId + 'details'}
+                                                 sourceId={adapter.instanceId + 'details'}
+                                                 key={instanceId}
+                                                 device={device}
+                                                 selected={selected}
+                                                 layout="vertical"
+                                                 onSelectComponent={onSelectComponent}
+                                                 onDisconnect={() => onDisconnectFromDevice(device)}
+                                                 onPair={() => onPairWithDevice(device)}
+                                                 onConnectionParamsUpdate={() => onUpdateDeviceConnectionParams(device)}/>;
+
+        if (deviceDetail.discoveringChildren) {
             return (
                 <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
-                    <ConnectedDevice device={this.props.node} sourceId={instanceId + '_details'} id ={instanceId + '_details'} layout="vertical"/>
+                    {connectedDevice}
                     <div className="service-items-wrap device-body text-small">
                         <div style={{textAlign:'center'}}>Enumerating services...</div>
                         <img className="spinner center-block" src="resources/ajax-loader.gif" height="32" width="32"/>
                     </div>
                 </div>
             );
-        } else if (children) {
+        } else {
+            const children = deviceDetail.get('children');
             const childrenList = [];
-            children.forEach(service => {
-                childrenList.push(<ServiceItem key={i}
-                                               name={service.name}
-                                               item={service}
-                                               selected={this.props.selected}
-                                               onSelectedAttribute={this.props.onSelectedComponent}
-                                               selectOnClick={true}
-                                               />
-                );
-            });
+
+            if (children) {
+                children.forEach(service => {
+                    childrenList.push(<ServiceItem key={service.instanceId}
+                                                   item={service}
+                                                   selectOnClick={true}
+                                                   selected={selected}
+                                                   onSelectAttribute={onSelectComponent}
+                                                   onToggleAttributeExpanded={onToggleAttributeExpanded}
+                                                   />
+                    );
+                });
+            }
+
             return (
                 <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
-                    <ConnectedDevice device={this.props.node} sourceId={instanceId + '_details'} id={instanceId + '_details'} layout="vertical"/>
+                    {connectedDevice}
                     <div className="service-items-wrap">
                         {childrenList}
                     </div>
                 </div>
             );
-        } else {return <div/>;}
+        }
     }
 }

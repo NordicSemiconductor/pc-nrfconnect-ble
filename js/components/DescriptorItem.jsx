@@ -14,54 +14,58 @@
 
 import React from 'react';
 
+import Component from 'react-pure-render/component';
+
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
 
+export default class DescriptorItem extends Component {
+    //mixins: [BlueWhiteBlinkMixin],
+    constructor(props) {
+        super(props);
+    }
 
-var DescriptorItem = React.createClass({
-    mixins: [BlueWhiteBlinkMixin],
-    getInitialState: function() {
-        return {};
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (this.props.value !== nextProps.value) {
-            if (this.props.onChange) {
-                this.props.onChange()
-            }
-            this.blink();
+    _onContentClick(e) {
+        e.stopPropagation();
+        if (this.props.onSelectAttribute) {
+            this.props.onSelectAttribute(this.props.item);
         }
-    },
-    _onClick: function() {
-        if (this.props.onSelected) {
-            this.props.onSelected(this.props.item);
-        }
-    },
-    _onWrite: function(value) {
+    }
+
+    _onWrite(value) {
         // bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
-    },
-    render: function() {
-        var hidden = !this.props.item.parent.expanded && !this.props.item.parent.parent.expanded;
-        if (hidden) {
-            return null;
-        }
-        var selected = this.props.item === this.props.selected;
-        var backgroundColor = selected
+    }
+
+    render() {
+        const {
+            item,
+            selected,
+            addNew,
+            selectOnClick,
+        } = this.props;
+        const {
+            instanceId,
+            handle,
+            name,
+            value,
+        } = item;
+
+        const itemIsSelected = item === selected;
+        const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)'
-            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
+            : 'white';
         return (
-            <div className="descriptor-item" style={{ backgroundColor: backgroundColor }} onClick={this._onClick}>
+            <div className="descriptor-item" style={{ backgroundColor: backgroundColor }} onClick={this._onContentClick.bind(this)}>
                 <div className="bar1" />
                 <div className="bar2" />
                 <div className="bar3" />
                 <div className="content-wrap">
                     <div className="content">
-                        <div className="truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
-                        <HexOnlyEditableField value={this.props.value} insideSelector=".descriptor-item" onSaveChanges={this._onWrite} showReadButton={selected} />
+                        <div className="truncate-text" title={'[' + handle + '] ' + name}>{name}</div>
+                        <HexOnlyEditableField value={value} insideSelector=".descriptor-item" onSaveChanges={this._onWrite} showReadButton={itemIsSelected} />
                     </div>
                 </div>
             </div>
         );
     }
-});
-
-module.exports = DescriptorItem;
+}

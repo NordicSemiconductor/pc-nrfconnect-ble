@@ -67,6 +67,7 @@ const ImmutableService = Record({
     deviceInstanceId: null,
     uuid: null,
     name: null,
+    expanded: false,
     discoveringChildren: false,
     children: null,
 });
@@ -77,7 +78,11 @@ const ImmutableCharacteristic = Record({
     uuid: null,
     name: null,
     properties: new ImmutableProperties(),
+    declarationHandle: null,
+    valueHandle: null,
     value: List(),
+    expanded: false,
+    notifying: false,
     discoveringChildren: false,
     children: null,
 });
@@ -196,6 +201,7 @@ export function getImmutableService(service) {
         deviceInstanceId: service.deviceInstanceId,
         uuid: service.uuid,
         name: service.name,
+        handle: service.startHandle,
     });
 }
 
@@ -206,6 +212,8 @@ export function getImmutableCharacteristic(characteristic) {
         uuid: characteristic.uuid,
         name: characteristic.name,
         properties: getImmutableProperties(characteristic.properties),
+        declarationHandle: characteristic.declarationHandle,
+        valueHandle: characteristic.valueHandle,
         value: List(characteristic.value),
     });
 }
@@ -216,6 +224,7 @@ export function getImmutableDescriptor(descriptor) {
         characteristicInstanceId: descriptor.characteristicInstanceId,
         uuid: descriptor.uuid,
         name: descriptor.name,
+        handle: descriptor.handle,
         value: List(descriptor.value),
     });
 }
