@@ -616,6 +616,14 @@
     max-height: calc(~"100vh - 444px");
     width: 250px;
   }
+  .enumerating-items-wrap {
+    display: flex;
+    .enumerating-content {
+      width:100%;
+      padding: 4px 0px;
+      border-bottom: 1px solid @device-details-light-border-color;
+    }
+  }
   .bar1, .bar2, .bar3 {
     width: 8px;
     border-bottom: 1px solid white;
@@ -818,7 +826,7 @@ hr {
 }
 .events-modal {
   .modal-dialog {
-    width: 60%;  
+    width: 60%;
   }
   .modal-title {
     border-bottom: none;

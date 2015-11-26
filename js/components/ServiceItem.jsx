@@ -16,6 +16,7 @@ import React from 'react';
 
 import Component from 'react-pure-render/component';
 
+import EnumeratingAttributes from './EnumeratingAttributes.jsx';
 import CharacteristicItem from './CharacteristicItem';
 import AddNewItem from './AddNewItem.jsx';
 
@@ -98,7 +99,9 @@ export default class ServiceItem extends Component {
 
         // TODO: Add addDescriptor action
         // addDescriptor={this.props.addDescriptor}
-        if (children) {
+        if (discoveringChildren) {
+            childrenList.push(<EnumeratingAttributes bars={2} />);
+        } else if (children) {
             children.forEach(characteristic => {
                 childrenList.push(<CharacteristicItem key={characteristic.instanceId}
                                                       item={characteristic}

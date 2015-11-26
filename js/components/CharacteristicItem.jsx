@@ -16,6 +16,7 @@ import React from 'react';
 
 import Component from 'react-pure-render/component';
 
+import EnumeratingAttributes from './EnumeratingAttributes.jsx';
 import DescriptorItem from './DescriptorItem';
 import AddNewItem from './AddNewItem.jsx';
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
@@ -95,7 +96,9 @@ export default class CharacteristicItem extends Component {
 
         const childrenList = [];
 
-        if (children) {
+        if (discoveringChildren) {
+            childrenList.push(<EnumeratingAttributes bars={3} />);
+        } else if (children) {
             children.forEach(descriptor => {
                 childrenList.push(<DescriptorItem key={descriptor.instanceId}
                                                   item={descriptor}

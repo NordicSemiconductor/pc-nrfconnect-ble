@@ -18,6 +18,7 @@ import Component from 'react-pure-render/component';
 
 import ConnectedDevice from './ConnectedDevice.jsx';
 import CentralDevice from './CentralDevice.jsx';
+import EnumeratingAttributes from './EnumeratingAttributes.jsx';
 
 // import KeyNavigation from './common/TreeViewKeyNavigationMixin.jsx';
 import logger from '../logging';
@@ -91,10 +92,7 @@ export default class DeviceDetailsView extends Component {
             return (
                 <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
                     {connectedDevice}
-                    <div className="service-items-wrap device-body text-small">
-                        <div style={{textAlign:'center'}}>Enumerating services...</div>
-                        <img className="spinner center-block" src="resources/ajax-loader.gif" height="32" width="32"/>
-                    </div>
+                    <EnumeratingAttributes bars={1} />
                 </div>
             );
         } else {
