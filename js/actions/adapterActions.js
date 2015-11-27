@@ -222,10 +222,10 @@ function _rejectConnectionParams(dispatch, getState, id, device) {
             }
         });
     }).then(() => {
-        dispatch(connectionParamUpdateStatusAction(id, device, 'success'));
+        dispatch(connectionParamUpdateStatusAction(id, device, BLEEventState.REJECTED));
         // Do we need to tell anyone this went OK ?
     }).catch(errorData => {
-        dispatch(connectionParamUpdateStatusAction(id, device, 'error'));
+        dispatch(connectionParamUpdateStatusAction(id, device, BLEEventState.ERROR));
         dispatch(errorOccuredAction(errorData.adapter, errorData.error));
     });
 }
