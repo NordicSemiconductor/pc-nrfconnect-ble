@@ -97,7 +97,7 @@ function mapStateToProps(state) {
 
     return {
         adapterState: selectedAdapter.state,
-        selectedComponent: selectedAdapter.deviceDetails.selectedComponent,
+        selectedComponent: selectedAdapter.deviceDetails && selectedAdapter.deviceDetails.selectedComponent,
         connectedDevices: selectedAdapter.connectedDevices,
         deviceDetails: selectedAdapter.deviceDetails,
     };
