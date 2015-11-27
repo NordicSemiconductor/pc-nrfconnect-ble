@@ -22,8 +22,9 @@ export class ConnectionUpdateRequestEditor extends Component {
 
         this.maxConnectionInterval = requestedConnectionParams.maxConnectionInterval;
         this.minConnectionInterval = requestedConnectionParams.minConnectionInterval;
-        this.connectionSupervisionTimeout = requestedConnectionParams.connectionSupervisionTimeout;
-        this.slaveLatency = requestedConnectionParams.slaveLatency;
+
+        this._setAndValidateSlaveLatency(requestedConnectionParams.slaveLatency);
+        this._setAndValidateConnectionSupervisionTimeout(requestedConnectionParams.connectionSupervisionTimeout);    
     }
 
     _generateHeaderMessage() {
@@ -44,6 +45,7 @@ export class ConnectionUpdateRequestEditor extends Component {
 
         const device = event.device;
         const address = device.address;
+        const requestedConnectionParams = event.requestedConnectionParams;
 
         if (device.minConnectionInterval === device.maxConnectionInterval) {
             return (
@@ -51,10 +53,9 @@ export class ConnectionUpdateRequestEditor extends Component {
                     <label className="control-label col-sm-6" htmlFor={"interval_" + address}>Connection Interval (ms)</label>
                     <div className="col-sm-6">
                         <Input id={"interval_" + address}
-                               type="text"
+                               type="number"
                                onChange={_event => this._handleConnectionIntervalChange(_event)}
                                className="form-control nordic-form-control"
-                               type="number"
                                readOnly
                                value={this.connectionInterval}/>
                     </div>
@@ -64,14 +65,14 @@ export class ConnectionUpdateRequestEditor extends Component {
             return (
                 <div>
                     <label className="control-label col-sm-8"
-                           htmlFor={"interval_"+ address}>Connection Interval ({device.minConnectionInterval}-{device.maxConnectionInterval}ms)</label>
+                           htmlFor={"interval_"+ address}>Connection Interval ({requestedConnectionParams.minConnectionInterval}-{requestedConnectionParams.maxConnectionInterval} ms)</label>
                     <div className="col-sm-4">
                         <Input id={"interval_" + address}
+                           type="number"
                            className="form-control nordic-form-control"
                            onChange={_event => this._handleConnectionIntervalChange(_event) }
-                           type="number"
-                           min={device.minConnectionInterval}
-                           max={device.maxConnectionInterval}
+                           min={requestedConnectionParams.minConnectionInterval}
+                           max={requestedConnectionParams.maxConnectionInterval}
                            value={this.connectionInterval}/>
                     </div>
                 </div>
@@ -84,18 +85,26 @@ export class ConnectionUpdateRequestEditor extends Component {
     }
 
     _isConnectionSupervisionTimeoutValid(connectionSupervisionTimeout) {
-        return ( (connectionSupervisionTimeout >= 10) && (connectionSupervisionTimeout < 3200) );
+        return ( (connectionSupervisionTimeout >= 10) && (connectionSupervisionTimeout < 32000) );
+    }
+
+    _setAndValidateConnectionSupervisionTimeout(value) {
+        this.connectionSupervisionTimeout = value;
+        this.isConnectionSupervisionTimeoutValid = this._isConnectionSupervisionTimeoutValid(this.connectionSupervisionTimeout);
     }
 
     _handleConnectionSupervisionTimeoutChange(event) {
-        this.connectionSupervisionTimeout = parseInt(event.target.value, 10);
-        this.isConnectionSupervisionTimeoutValid = this._isConnectionSupervisionTimeoutValid(this.connectionSupervisionTimeout);
+        this._setAndValidateConnectionSupervisionTimeout(parseInt(event.target.value, 10));
         this.forceUpdate();
     }
 
+    _setAndValidateSlaveLatency(value) {
+        this.slaveLatency = value;
+        this.isSlaveLatencyValid = this._isSlaveLatencyValid(value);
+    }
+
     _handleSlaveLatencyChange(event) {
-        this.slaveLatency = parseInt(event.target.value, 10);
-        this.isSlaveLatencyValid = this._isSlaveLatencyValid(this.slaveLatency);
+        this._setAndValidateSlaveLatency(parseInt(event.target.value, 10));
         this.forceUpdate();
     }
 
