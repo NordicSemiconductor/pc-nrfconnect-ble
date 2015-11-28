@@ -84,28 +84,28 @@ class AdvertisingSetup extends Component {
 
         return (
             <div>
-                <Modal show={show} onHide={() => {}} bsSize="large">
+                <Modal show={show} onHide={() => {}} bsSize='large'>
                     <Modal.Header>
                         <Modal.Title>Advertising setup</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body className="adv-setup">
+                    <Modal.Body className='adv-setup'>
                         <AdvertisingData onValueChange={value => this.handleValueChange(value)}/>
-                        <div className="adv-row">
-                            <div className="adv-col adv-pkt">
+                        <div className='adv-row'>
+                            <div className='adv-col adv-pkt'>
                                 <Button
-                                    className="btn-add"
+                                    className='btn-add'
                                     onClick={id => this.addToAdvData()}>Add to adv. data</Button>
                                 <AdvertisingList
-                                    title="Advertising data"
+                                    title='Advertising data'
                                     onDelete={deleteAdvData}
                                     advEntries={advDataEntries}/>
                             </div>
-                            <div className="adv-col scan-rsp-pkt">
+                            <div className='adv-col scan-rsp-pkt'>
                                 <Button
-                                    className="btn-add"
+                                    className='btn-add'
                                     onClick={() => this.addToScanResponse()}>Add to scan response</Button>
                                 <AdvertisingList
-                                    title="Scan response data"
+                                    title='Scan response data'
                                     onDelete={deleteScanRsp}
                                     advEntries={scanResponseEntries}/>
                             </div>

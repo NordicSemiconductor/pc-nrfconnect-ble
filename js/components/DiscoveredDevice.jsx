@@ -49,27 +49,27 @@ export default class DiscoveredDevice extends Component {
         }
 
         return (
-            <div className="device">
-                <div className="top-bar">
+            <div className='device'>
+                <div className='top-bar'>
                     <div style={{float: 'right'}}>
-                        <span style={{width: this.getRssiWidth(device.rssi) + 'px'}} className="icon-signal icon-foreground" />
-                        <span className="icon-signal icon-background" />
+                        <span style={{width: this.getRssiWidth(device.rssi) + 'px'}} className='icon-signal icon-foreground' />
+                        <span className='icon-signal icon-background' />
                     </div>
-                    <div className="text-small truncate-text">{device.name || '<Unknown name>'}</div>
+                    <div className='text-small truncate-text'>{device.name || '<Unknown name>'}</div>
                 </div>
-                <div className="device-body text-small">
-                    <div className="discovered-device-address-line">
-                        <button onClick={adapterIsConnecting ? () => { onCancelConnect(device); } : () => { onConnect(device); }} className="btn btn-primary btn-xs btn-nordic" disabled={!isConnecting && adapterIsConnecting}>
-                            {isConnecting ? 'Cancel' : 'Connect'} <i className="icon-link"></i>
+                <div className='device-body text-small'>
+                    <div className='discovered-device-address-line'>
+                        <button onClick={adapterIsConnecting ? () => { onCancelConnect(device); } : () => { onConnect(device); }} className='btn btn-primary btn-xs btn-nordic' disabled={!isConnecting && adapterIsConnecting}>
+                            {isConnecting ? 'Cancel' : 'Connect'} <i className='icon-link'></i>
                         </button>
-                        <div className="address-text">
+                        <div className='address-text'>
                             {device.address}
                         </div>
                     </div>
-                    <div className="flag-line">
+                    <div className='flag-line'>
                         {
                             device.services.map(function(service, index) {
-                                return (<div key={index} className="device-flag">{service}</div>);
+                                return (<div key={index} className='device-flag'>{service}</div>);
                             })
                         }
                     </div>

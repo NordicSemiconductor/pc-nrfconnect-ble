@@ -138,6 +138,6 @@ export default class HexOnlyEditableField extends Component{
         const {keyPressValidation, completeValidation, onBackspace, formatInput, onChange, ...props} = this.props; //pass along all props except these
         return <EditableField {...props}
                     keyPressValidation={this._keyPressValidation} completeValidation={this._completeValidation}
-                    onBeforeBackspace={this._onBeforeBackspace} formatInput={this._formatInput} onChange={this._onChange} getValueArray={this._getValueArray} ref="editableField" />;
+                    onBeforeBackspace={this._onBeforeBackspace} formatInput={this._formatInput} onChange={this._onChange} getValueArray={this._getValueArray} ref='editableField' />;
     }
 }

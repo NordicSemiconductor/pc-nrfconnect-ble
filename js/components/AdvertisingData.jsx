@@ -91,8 +91,11 @@ export default class AdvertisingData extends Component {
 
     validationState() {
         const length = this.value.length;
-        if (length > 23) return 'error';
-        else if (length > 0) return 'success';
+        if (length > 23) {
+            return 'error';
+        } else if (length > 0) {
+            return 'success';
+        }
     }
 
     render() {
@@ -102,25 +105,25 @@ export default class AdvertisingData extends Component {
 
         return (
             <div>
-                <div className="adv-drop-container">
-                    <DropdownButton className="adv-dropdown" title={this.title} id="dropdown-adv"
+                <div className='adv-drop-container'>
+                    <DropdownButton className='adv-dropdown' title={this.title} id='dropdown-adv'
                             onSelect={(event, eventKey) => this.handleSelect(event, eventKey)}>
-                        <MenuItem eventKey="0">{this.keyToAdvertisingType('0')}</MenuItem>
-                        <MenuItem eventKey="1">{this.keyToAdvertisingType('1')}</MenuItem>
-                        <MenuItem eventKey="2">{this.keyToAdvertisingType('2')}</MenuItem>
-                        <MenuItem eventKey="3">{this.keyToAdvertisingType('3')}</MenuItem>
-                        <MenuItem eventKey="4">{this.keyToAdvertisingType('4')}</MenuItem>
-                        <MenuItem eventKey="5">{this.keyToAdvertisingType('5')}</MenuItem>
-                        <MenuItem eventKey="6">{this.keyToAdvertisingType('6')}</MenuItem>
-                        <MenuItem eventKey="7">{this.keyToAdvertisingType('7')}</MenuItem>
+                        <MenuItem eventKey='0'>{this.keyToAdvertisingType('0')}</MenuItem>
+                        <MenuItem eventKey='1'>{this.keyToAdvertisingType('1')}</MenuItem>
+                        <MenuItem eventKey='2'>{this.keyToAdvertisingType('2')}</MenuItem>
+                        <MenuItem eventKey='3'>{this.keyToAdvertisingType('3')}</MenuItem>
+                        <MenuItem eventKey='4'>{this.keyToAdvertisingType('4')}</MenuItem>
+                        <MenuItem eventKey='5'>{this.keyToAdvertisingType('5')}</MenuItem>
+                        <MenuItem eventKey='6'>{this.keyToAdvertisingType('6')}</MenuItem>
+                        <MenuItem eventKey='7'>{this.keyToAdvertisingType('7')}</MenuItem>
                     </DropdownButton>
                 </div>
-                <div className="adv-value-container">
+                <div className='adv-value-container'>
                     <span>Value: </span>
                     <Input
-                        type="text"
-                        id="value"
-                        placeholder="Enter value"
+                        type='text'
+                        id='value'
+                        placeholder='Enter value'
                         bsStyle={this.validationState()}
                         onChange={event => this.handleChange(event)} />
                     <span> (string)</span>

@@ -47,7 +47,7 @@ class DeviceDetailsContainer extends Component {
         const detailDevices = [];
 
         if (!adapterState) {
-            return <div className="device-details-container" style={this.props.style} />;
+            return <div className='device-details-container' style={this.props.style} />;
         }
 
         // Adapter device
@@ -80,7 +80,7 @@ class DeviceDetailsContainer extends Component {
 
         const perDevice = (20 + elemWidth);
         const width = (perDevice * detailDevices.length);
-        return (<div className="device-details-container" style={this.props.style}>
+        return (<div className='device-details-container' style={this.props.style}>
                     <div style={{width: width}}>
                         {detailDevices}
                     </div>

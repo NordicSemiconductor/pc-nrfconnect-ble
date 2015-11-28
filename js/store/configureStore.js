@@ -9,22 +9,21 @@ import Immutable from 'immutable';
 
 import rootReducer from '../reducers';
 
-
 export default function configureStore(initialState) {
     const middleware = [
-        thunkMiddleware
+        thunkMiddleware,
     ];
 
     const isProduction = process.env.NODE_ENV === 'production';
 
     let finalCreateStore;
 
-    if(isProduction) {
+    if (isProduction) {
         finalCreateStore = applyMiddleware(...middleware)(createStore);
     } else {
         const logger = createLogger({
             collapsed: true,
-            transformer: (state) => {
+            transformer: state => {
                 var newState = {};
 
                 for (var i of Object.keys(state)) {
@@ -36,7 +35,7 @@ export default function configureStore(initialState) {
                 }
 
                 return newState;
-            }
+            },
         });
 
         // Logger must be the last middleware in chain.

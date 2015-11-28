@@ -77,49 +77,57 @@ export class BLEEventDialog extends Component {
 
         return (
             <Modal
-                className="events-modal"
+                className='events-modal'
                 show={visible}
-                backdrop="static"
-                onHide={() => { clearAllEvents(); showDialog(false); }} >
+                backdrop='static'
+                onHide={() => {
+                    clearAllEvents();
+                    showDialog(false);
+                }} >
                 <Modal.Header>
                     <Modal.Title>Events</Modal.Title>
                 </Modal.Header>
 
-                <div className="server-setup">
-                    <div className="device-details-view">
-                        <div className="service-items-wrap">
-                            {events.map(event =>
+                <div className='server-setup'>
+                    <div className='device-details-view'>
+                        <div className='service-items-wrap'>
+                            {
+                                events.map(event =>
                                 <BLEEvent
                                     key={event.id}
                                     ref={'event_' + event.id}
-                                    onSelected={(eventId) => this._onSelected(eventId)}
+                                    onSelected={eventId => this._onSelected(eventId)}
                                     selected={selectedEventId === event.id}
                                     event={event}
-                                    onTimedOut={() => { console.log('Event timed out!'); }}
+                                    onTimedOut={
+                                        () => {
+                                            console.log('Event timed out!');
+                                        }
+                                    }
                                 />
                             )}
                         </div>
 
                         {events.map(event =>
-                            <div key={event.id} className="item-editor" style={ ( (selectedEventId === event.id) && (events.get(selectedEventId).state === BLEEventState.INDETERMINATE)) ? {} : {display: 'none'}}>
+                            <div key={event.id} className='item-editor' style={ ((selectedEventId === event.id) && (events.get(selectedEventId).state === BLEEventState.INDETERMINATE)) ? {} : {display: 'none'}}>
                                 <ConnectionUpdateRequestEditor
                                     event={event}
                                     onUpdate={this._handleEditorUpdate}
-                                    onRejectConnectionParams={(device) => rejectDeviceConnectionParams(event.id, device)}
+                                    onRejectConnectionParams={device => rejectDeviceConnectionParams(event.id, device)}
                                     onUpdateConnectionParams={(device, connectionParams) => updateDeviceConnectionParams(event.id, device, connectionParams)}
                                     />
                             </div>
                         )}
 
-                        <div className="item-editor"
+                        <div className='item-editor'
                              style={((selectedEventId === -1) && (events.size > 0)) ? {} : {display: 'none'}}>
-                            <div className="nothing-selected"/>
+                            <div className='nothing-selected'/>
                         </div>
                     </div>
                 </div>
 
                 <Modal.Footer>
-                    <button disabled={!this._areAllEventsHandledOrTimedOut()} className="btn btn-primary btn-nordic" onClick={() => this._close()}>Close</button>
+                    <button disabled={!this._areAllEventsHandledOrTimedOut()} className='btn btn-primary btn-nordic' onClick={() => this._close()}>Close</button>
                 </Modal.Footer>
             </Modal>
         );
@@ -139,7 +147,7 @@ BLEEventDialog.propTypes = {
 
 function mapStateToProps(state) {
     const {
-        bleEvent
+        bleEvent,
     } = state;
 
     return {

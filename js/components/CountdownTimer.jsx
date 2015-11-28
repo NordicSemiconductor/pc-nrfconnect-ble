@@ -36,7 +36,7 @@ export class CountdownTimer extends Component {
     render() {
         const content = this.secondsRemaining ? this.secondsRemaining : '';
         return (
-            <div className="countdown-timer"> {content} </div>
+            <div className='countdown-timer'> {content} </div>
         );
     }
 }

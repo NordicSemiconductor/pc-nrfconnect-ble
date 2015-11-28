@@ -61,7 +61,7 @@ export default class ServiceItem extends Component {
         //the selected node and whatever subtree contains props.selected.
         //We should avoid redrawing unless affected.
         for (var prop in nextProps) {
-            if (prop === "selected") {
+            if (prop === 'selected') {
                 //if selected is this.item, or is a child node of it, we need to update
                 //if this.item or a child was selected last time, we also need to update
                 var selected = nextProps[prop];
@@ -123,20 +123,20 @@ export default class ServiceItem extends Component {
             : 'white';
         return (
             <div>
-                <div className="service-item" style={{ backgroundColor: backgroundColor }}  onClick={this._onContentClick.bind(this)}>
-                    <div className="expand-area" onClick={this._onExpandAreaClick.bind(this)}>
-                        <div className="bar1" />
-                        <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
+                <div className='service-item' style={{ backgroundColor: backgroundColor }}  onClick={this._onContentClick.bind(this)}>
+                    <div className='expand-area' onClick={this._onExpandAreaClick.bind(this)}>
+                        <div className='bar1' />
+                        <div className='icon-wrap'><i className={'icon-slim ' + expandIcon} style={iconStyle}></i></div>
                     </div>
-                    <div className="content-wrap">
-                        <div className="content">
-                            <div className="service-name truncate-text" title={'[' + handle + '] ' + name}>{name}</div>
+                    <div className='content-wrap'>
+                        <div className='content'>
+                            <div className='service-name truncate-text' title={'[' + handle + '] ' + name}>{name}</div>
                         </div>
                     </div>
                 </div>
                 <div style={{display: expanded ? 'block' : 'none'}}>
                     {childrenList}
-                    {addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + instanceId} selected={selected} onClick={this._addCharacteristic} bars={2} /> : null}
+                    {addNew ? <AddNewItem text='New characteristic' id={'add-btn-' + instanceId} selected={selected} onClick={this._addCharacteristic} bars={2} /> : null}
                 </div>
             </div>
         );

@@ -10,6 +10,8 @@
  *
  */
 
+ 'use strict';
+
 var app = require('app');
 var BrowserWindow = require('browser-window');
 var crashReporter = require('crash-reporter');
@@ -23,9 +25,9 @@ var mainWindow = null;
 global.logFileDir = app.getPath('userData');
 
 app.on('window-all-closed', function() {
-//    if (process.platform !== 'darwin') {
-        app.quit();
-//    }
+    //    if (process.platform !== 'darwin') {
+    app.quit();
+    //    }
 });
 
 app.on('ready', function() {
@@ -34,15 +36,15 @@ app.on('ready', function() {
         height: 800,
         'min-width': 480,
         'min-height': 280,
-        frame: true
+        frame: true,
     });
     mainWindow.loadURL('file://' + __dirname + '/index.html');
     mainWindow.on('closed', function() {
-        console.log("windows closed");
+        console.log('windows closed');
         mainWindow = null;
     });
 
-    mainWindow.webContents.on('did-finish-load',function() {
+    mainWindow.webContents.on('did-finish-load', function() {
         mainWindow.setTitle('Yggdrasil');
     });
 });
@@ -52,9 +54,19 @@ app.once('ready', function() {
     var template = [
         {
             label: '&File',
-            submenu: [{label: '&Log file...', enabled: false, /*accelerator: 'CmdOrCtrl+L',*/ click: function() {open(global.logFileDir + '\\log.txt');}},
-                      {type: 'separator'},
-                      {label: '&Quit', accelerator: 'CmdOrCtrl+Q', click: function() {app.quit();}}]
+            submenu: [
+                {
+                        label: '&Log file...',
+                        enabled: false,
+                        /*accelerator: 'CmdOrCtrl+L',*/
+                        click: function() {
+                            open(global.logFileDir + '\\log.txt');
+                        },
+                    },
+                    {type: 'separator'},
+                    {label: '&Quit', accelerator: 'CmdOrCtrl+Q', click: function() {app.quit();},
+                },
+            ],
         },
         {
             label: '&View',
@@ -66,7 +78,7 @@ app.once('ready', function() {
                         if (focusedWindow) {
                             focusedWindow.reload();
                         }
-                    }
+                    },
                 },
                 {
                     label: 'Toggle &Full Screen',
@@ -75,7 +87,7 @@ app.once('ready', function() {
                         if (focusedWindow) {
                             focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
                         }
-                    }
+                    },
                 },
                 {
                     label: 'Toggle &Developer Tools',
@@ -84,10 +96,10 @@ app.once('ready', function() {
                         if (focusedWindow) {
                             focusedWindow.toggleDevTools();
                         }
-                    }
+                    },
                 },
-            ]
-        }
+            ],
+        },
     ];
 
     if (process.platform == 'darwin') {
@@ -97,9 +109,11 @@ app.once('ready', function() {
                 {
                     label: 'Quit',
                     accelerator: 'Command+Q',
-                    click: function() { app.quit(); }
+                    click: function() {
+                        app.quit();
+                    },
                 },
-            ]
+            ],
         });
     }
 

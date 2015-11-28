@@ -30,7 +30,6 @@ export const BLEEventState = {
     SUCCESS: 6,
 };
 
-
 export const BLEEventType = {
     USER_INITIATED_CONNECTION_UPDATE: 0,
     PERIPHERAL_INITIATED_CONNECTION_UPDATE: 1,

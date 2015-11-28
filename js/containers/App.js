@@ -97,9 +97,9 @@ class AppContainer extends Component {
                      : null;
 
         return (
-            <div id="main-area-wrapper">
-                <NavBar onChangeMainView={(view) => selectMainView(view)} view={selectedMainView} ref="navBar" />
-                <div className="main-layout" style={layoutStyle}>
+            <div id='main-area-wrapper'>
+                <NavBar onChangeMainView={view => selectMainView(view)} view={selectedMainView} ref='navBar' />
+                <div className='main-layout' style={layoutStyle}>
                     <div>
                         <div>
                             {active}

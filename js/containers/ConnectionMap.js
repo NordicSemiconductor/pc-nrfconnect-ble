@@ -62,7 +62,7 @@ class ConnectionMap extends Component {
                     sourceId={adapter.instanceId + '_cmap'}
                     key={instanceId}
                     device={device}
-                    layout="horizontal"
+                    layout='horizontal'
                     onDisconnect={() => disconnectFromDevice(device)}
                     onPair={() => pairWithDevice(device)}
                     onConnectionParamsUpdate={() => updateDeviceConnectionParams(device)}/>);
@@ -70,9 +70,9 @@ class ConnectionMap extends Component {
         }
 
         return (
-            <div id="diagramContainer" style={this.props.style} >
+            <div id='diagramContainer' style={this.props.style} >
                 {central}
-                <div className="padded-column" style={{position: 'absolute', top: '20px', left: '400px'}}>
+                <div className='padded-column' style={{position: 'absolute', top: '20px', left: '400px'}}>
                     {deviceNodes}
                 </div>
             </div>

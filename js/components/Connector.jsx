@@ -30,13 +30,13 @@ export class ConnectionSetup extends Component {
         } = this.props;
 
         return (
-            <div className="connection-parameters">
-                <span className="col-sm-8 connection-parameter-label">Connection Interval</span>
-                <span className="col-sm-4 connection-parameter-value">{device.maxConnectionInterval} ms</span>
-                <span className="col-sm-8 connection-parameter-label">Slave latency</span>
-                <span className="col-sm-4 connection-parameter-value">{device.slaveLatency} ms</span>
-                <span className="col-sm-8 connection-parameter-label">Timeout</span>
-                <span className="col-sm-4 connection-parameter-value">{device.connectionSupervisionTimeout} ms</span>
+            <div className='connection-parameters'>
+                <span className='col-sm-8 connection-parameter-label'>Connection Interval</span>
+                <span className='col-sm-4 connection-parameter-value'>{device.maxConnectionInterval} ms</span>
+                <span className='col-sm-8 connection-parameter-label'>Slave latency</span>
+                <span className='col-sm-4 connection-parameter-value'>{device.slaveLatency} ms</span>
+                <span className='col-sm-8 connection-parameter-label'>Timeout</span>
+                <span className='col-sm-4 connection-parameter-value'>{device.connectionSupervisionTimeout} ms</span>
             </div>
         );
     }
@@ -62,10 +62,10 @@ export class ConnectionOverlay extends Component {
         } = this.props;
 
         return (
-            <div className="connection-info-button" style={style}>
-                <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover id="pover" title='Connection Parameters'><ConnectionSetup device ={device} closePopover = {this._closeme}/></Popover>}>
+            <div className='connection-info-button' style={style}>
+                <OverlayTrigger ref='overlayTrigger' trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover id='pover' title='Connection Parameters'><ConnectionSetup device ={device} closePopover = {this._closeme}/></Popover>}>
                     <span style={{fontSize: '15px'}}>
-                        <i className="icon-link icon-encircled"></i>
+                        <i className='icon-link icon-encircled'></i>
                     </span>
                 </OverlayTrigger>
             </div>
@@ -87,7 +87,7 @@ export class Connector extends Component {
         var result = [];
 
         for (let i = 0; i < lineCoordinates.length - 1; i++) {
-            result.push(<line stroke="black" strokeWidth="3" strokeLinecap="square" key={i} x1={lineCoordinates[i].x} y1={lineCoordinates[i].y} x2={lineCoordinates[i+1].x} y2={lineCoordinates[i+1].y}/>);
+            result.push(<line stroke='black' strokeWidth='3' strokeLinecap='square' key={i} x1={lineCoordinates[i].x} y1={lineCoordinates[i].y} x2={lineCoordinates[i + 1].x} y2={lineCoordinates[i + 1].y}/>);
         }
 
         return result;
@@ -141,7 +141,7 @@ export class Connector extends Component {
         const lines = this._generateLines(layoutInfo.lineCoordinates);
         const connectionInfoOverlay = this._getConnectionOverlay(device, layoutInfo.lineCoordinates);
 
-        return (<div className="connector">
+        return (<div className='connector'>
                     <svg style={{position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height}}>
                         {lines}
                     </svg>
@@ -149,7 +149,6 @@ export class Connector extends Component {
                 </div>);
     }
 }
-
 
 Connector.propTypes = {
     device: PropTypes.object.isRequired,

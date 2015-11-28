@@ -122,28 +122,28 @@ export default class CharacteristicItem extends Component {
 
         return (
         <div>
-            <div className="characteristic-item" style={{backgroundColor: backgroundColor}} onClick={this._onContentClick.bind(this)} ref="item">
-                <div className="expand-area" onClick={hasPossibleChildren ? this._onExpandAreaClick.bind(this) : null}>
-                    <div className="bar1" />
-                    <div className="bar2" />
-                    <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={expandIconStyle}></i></div>
+            <div className='characteristic-item' style={{backgroundColor: backgroundColor}} onClick={this._onContentClick.bind(this)} ref='item'>
+                <div className='expand-area' onClick={hasPossibleChildren ? this._onExpandAreaClick.bind(this) : null}>
+                    <div className='bar1' />
+                    <div className='bar2' />
+                    <div className='icon-wrap'><i className={'icon-slim ' + expandIcon} style={expandIconStyle}></i></div>
                 </div>
-                <div className="content-wrap">
-                    <div className="content">
-                        <div className="btn btn-primary btn-xs btn-nordic btn-notify" title="Toggle notifications" style={notifyIconStyle} onClick={this._onToggleNotify.bind(this)}><i className={notifyIcon}></i></div>
+                <div className='content-wrap'>
+                    <div className='content'>
+                        <div className='btn btn-primary btn-xs btn-nordic btn-notify' title='Toggle notifications' style={notifyIconStyle} onClick={this._onToggleNotify.bind(this)}><i className={notifyIcon}></i></div>
                         <div>
-                            <div className="truncate-text" title={'[' + item.declarationHandle + '] ' + name}>{name}</div>
-                            <div className="flag-line">
+                            <div className='truncate-text' title={'[' + item.declarationHandle + '] ' + name}>{name}</div>
+                            <div className='flag-line'>
                                 {propertyList}
                             </div>
                         </div>
-                        <HexOnlyEditableField value={value} insideSelector=".characteristic-item" onSaveChanges={this._onWrite.bind(this)} showReadButton={itemIsSelected}/>
+                        <HexOnlyEditableField value={value} insideSelector='.characteristic-item' onSaveChanges={this._onWrite.bind(this)} showReadButton={itemIsSelected}/>
                     </div>
                 </div>
             </div>
             <div style={{display: expanded ? 'block' : 'none'}}>
                 {childrenList}
-                {addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + instanceId} selected={selected} onClick={this._addDescriptor} bars={3} /> : null}
+                {addNew ? <AddNewItem text='New descriptor' id={'add-btn-' + instanceId} selected={selected} onClick={this._addDescriptor} bars={3} /> : null}
             </div>
         </div>
         );

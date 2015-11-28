@@ -10,6 +10,8 @@
  *
  */
 
+'use strict';
+
 module.exports = {
     attributeVersionInformation: 23,
     attributeHandlesChanged: 24,
@@ -97,7 +99,7 @@ module.exports = {
     softwareRevisionString: 10792,
     manufacturerNameString: 10793,
     iEEECertificationData: 10794,
-//    CurrentTime: 10795,
+    //CurrentTime: 10795,
     elevation: 10796,
     latitude: 10797,
     longitude: 10798,
@@ -141,5 +143,5 @@ module.exports = {
     aNCS: 1.6086750182065695e+38,
     aNCSNotificationSource: 2.123393461737613e+38,
     aNCSControlPoint: 1.4065852987539464e+38,
-    aNCSDataSource: 4.641278371024821e+37
+    aNCSDataSource: 4.641278371024821e+37,
 };

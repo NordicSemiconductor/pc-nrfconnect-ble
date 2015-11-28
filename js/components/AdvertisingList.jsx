@@ -20,9 +20,9 @@ export default class AdvertisingList extends Component {
         } = this.props;
 
         return (
-            <div className="adv-table-container">
-                <div className="adv-header">{title}</div>
-                <table className="table-striped">
+            <div className='adv-table-container'>
+                <div className='adv-header'>{title}</div>
+                <table className='table-striped'>
                     <thead>
                         <tr>
                             <th>AD type</th>

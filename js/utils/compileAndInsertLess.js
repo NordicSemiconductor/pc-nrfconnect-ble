@@ -10,6 +10,8 @@
  *
  */
 
+ 'use strict';
+
 var fs = require('fs');
 var compileLess = require('./js/utils/compileLess.js');
 
@@ -39,8 +41,7 @@ fs.stat(stylesCssPath, function(err, stats) {
         if (stats.isFile()) {
             insertStyles(stylesCssPath);
         } else {
-            console.error('Found css file but it is not a file')
+            console.error('Found css file but it is not a file');
         }
     }
 });
-

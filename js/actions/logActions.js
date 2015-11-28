@@ -26,7 +26,7 @@ function _startLogReader(dispatch) {
         dispatch(logAddEntryAction(entry));
     };
 
-    if(logReader === undefined) {
+    if (logReader === undefined) {
         logReader = new LogReader();
         logReader.on('entry', entryCallback);
     }
@@ -35,7 +35,7 @@ function _startLogReader(dispatch) {
 }
 
 function _stopLogReader(dispatch) {
-    if(entryCallback !== undefined && logReader !== undefined) {
+    if (entryCallback !== undefined && logReader !== undefined) {
         logReader.removeListener(entryCallback);
         logReader.stop();
     }
@@ -44,7 +44,7 @@ function _stopLogReader(dispatch) {
 function logAddEntryAction(entry) {
     return {
         type: ADD_ENTRY,
-        entry
+        entry,
     };
 }
 
@@ -60,7 +60,6 @@ function toggleAutoScrollAction() {
     };
 }
 
-
 export function toggleAutoScroll() {
     return toggleAutoScrollAction();
 }
@@ -70,13 +69,13 @@ export function clear() {
 }
 
 export function startReading() {
-    return (dispatch) => {
+    return dispatch => {
         return _startLogReader(dispatch);
     };
 }
 
 export function stopReading() {
-    return (dispatch) => {
+    return dispatch => {
         return _stopLogReader(dispatch);
     };
 }

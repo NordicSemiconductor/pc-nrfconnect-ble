@@ -24,7 +24,7 @@ export class ConnectionUpdateRequestEditor extends Component {
         this.minConnectionInterval = requestedConnectionParams.minConnectionInterval;
 
         this._setAndValidateSlaveLatency(requestedConnectionParams.slaveLatency);
-        this._setAndValidateConnectionSupervisionTimeout(requestedConnectionParams.connectionSupervisionTimeout);    
+        this._setAndValidateConnectionSupervisionTimeout(requestedConnectionParams.connectionSupervisionTimeout);
     }
 
     _generateHeaderMessage() {
@@ -50,12 +50,12 @@ export class ConnectionUpdateRequestEditor extends Component {
         if (device.minConnectionInterval === device.maxConnectionInterval) {
             return (
                 <div>
-                    <label className="control-label col-sm-6" htmlFor={"interval_" + address}>Connection Interval (ms)</label>
-                    <div className="col-sm-6">
-                        <Input id={"interval_" + address}
-                               type="number"
+                    <label className='control-label col-sm-6' htmlFor={'interval_' + address}>Connection Interval (ms)</label>
+                    <div className='col-sm-6'>
+                        <Input id={'interval_' + address}
+                               type='number'
                                onChange={_event => this._handleConnectionIntervalChange(_event)}
-                               className="form-control nordic-form-control"
+                               className='form-control nordic-form-control'
                                readOnly
                                value={this.connectionInterval}/>
                     </div>
@@ -64,12 +64,12 @@ export class ConnectionUpdateRequestEditor extends Component {
         } else {
             return (
                 <div>
-                    <label className="control-label col-sm-8"
-                           htmlFor={"interval_"+ address}>Connection Interval ({requestedConnectionParams.minConnectionInterval}-{requestedConnectionParams.maxConnectionInterval} ms)</label>
-                    <div className="col-sm-4">
-                        <Input id={"interval_" + address}
-                           type="number"
-                           className="form-control nordic-form-control"
+                    <label className='control-label col-sm-8'
+                           htmlFor={'interval_' + address}>Connection Interval ({requestedConnectionParams.minConnectionInterval}-{requestedConnectionParams.maxConnectionInterval} ms)</label>
+                    <div className='col-sm-4'>
+                        <Input id={'interval_' + address}
+                           type='number'
+                           className='form-control nordic-form-control'
                            onChange={_event => this._handleConnectionIntervalChange(_event) }
                            min={requestedConnectionParams.minConnectionInterval}
                            max={requestedConnectionParams.maxConnectionInterval}
@@ -81,11 +81,11 @@ export class ConnectionUpdateRequestEditor extends Component {
     }
 
     _isSlaveLatencyValid(slaveLatency) {
-        return ( (slaveLatency >= 0) && (slaveLatency <= 1000) );
+        return ((slaveLatency >= 0) && (slaveLatency <= 1000));
     }
 
     _isConnectionSupervisionTimeoutValid(connectionSupervisionTimeout) {
-        return ( (connectionSupervisionTimeout >= 10) && (connectionSupervisionTimeout < 32000) );
+        return ((connectionSupervisionTimeout >= 10) && (connectionSupervisionTimeout < 32000));
     }
 
     _setAndValidateConnectionSupervisionTimeout(value) {
@@ -138,7 +138,7 @@ export class ConnectionUpdateRequestEditor extends Component {
     _handleRejectConnectionParams() {
         const {
             event,
-            onRejectConnectionParams
+            onRejectConnectionParams,
         } = this.props;
 
         onRejectConnectionParams(event.device);
@@ -173,46 +173,46 @@ export class ConnectionUpdateRequestEditor extends Component {
 
         return (
             <div>
-                <div className="event-header">
+                <div className='event-header'>
                     <p>{this._generateHeaderMessage()}</p>
                 </div>
-                 <form className="form-horizontal">
-                    <div className="form-group ">
+                 <form className='form-horizontal'>
+                    <div className='form-group '>
                         {this._createConnectionIntervalControl()}
                     </div>
-                    <div className="form-group">
-                        <label className="control-label col-sm-6" htmlFor={"latency_" + address}>Latency (ms)</label>
-                        <div className="col-sm-6">
+                    <div className='form-group'>
+                        <label className='control-label col-sm-6' htmlFor={'latency_' + address}>Latency (ms)</label>
+                        <div className='col-sm-6'>
                             <Input style={slaveLatencyStyle}
-                                   id={"latency_" + address}
-                                   className="form-control nordic-form-control"
+                                   id={'latency_' + address}
+                                   className='form-control nordic-form-control'
                                    onChange={_event => this._handleSlaveLatencyChange(_event)}
-                                   type="number"
+                                   type='number'
                                    value={this.slaveLatency}/>
                         </div>
                     </div>
-                    <div className="form-group">
+                    <div className='form-group'>
                         <div>
-                            <label className="control-label col-sm-6" htmlFor={"timeout_" + address}>Timeout (ms)</label>
-                            <div className="col-sm-6">
+                            <label className='control-label col-sm-6' htmlFor={'timeout_' + address}>Timeout (ms)</label>
+                            <div className='col-sm-6'>
                                 <Input style={connectionSupervisionTimeoutInputStyle}
-                                       id={"timeout_" + address}
-                                       className="form-control nordic-form-control"
+                                       id={'timeout_' + address}
+                                       className='form-control nordic-form-control'
                                        onChange={_event => this._handleConnectionSupervisionTimeoutChange(_event)}
-                                       type="number"
+                                       type='number'
                                        value={this.connectionSupervisionTimeout}/>
                             </div>
                         </div>
                         <div>
                             <button disabled={!this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid}
-                                    type="button"
+                                    type='button'
                                     onClick={() => this._handleUpdateConnection()}
-                                    className="btn btn-primary btn-xs btn-nordic">
+                                    className='btn btn-primary btn-xs btn-nordic'>
                                 Update
                             </button>
-                            <button type="button"
+                            <button type='button'
                                     onClick={() => this._handleRejectConnectionParams()}
-                                    className="btn btn-default btn-xs btn-nordic">
+                                    className='btn btn-default btn-xs btn-nordic'>
                                 {(event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) ? 'Cancel' : 'Reject'}
                             </button>
                         </div>

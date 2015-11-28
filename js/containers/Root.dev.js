@@ -1,3 +1,5 @@
+'use strict';
+
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 import { Provider } from 'react-redux';
@@ -20,5 +22,5 @@ export default class Root extends Component {
 }
 
 Root.propTypes = {
-    store: PropTypes.object.isRequired
+    store: PropTypes.object.isRequired,
 };

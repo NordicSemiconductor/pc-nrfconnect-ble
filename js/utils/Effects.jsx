@@ -1,3 +1,4 @@
+'use strict';
 
 import TWEEN from 'tween.js';
 
@@ -15,6 +16,7 @@ var Effects = {
             })
             .start();
     },
+
     ensureAnimationLoopStarted: (function() {
         //closure trickery to make it impossible to start animationLoop twice
         var animationLoopStarted = false;
@@ -26,26 +28,29 @@ var Effects = {
                     requestAnimationFrame(animationLoop);
                     TWEEN.update(time);
                 }
+
                 animationLoop();
             }
-        }
+        };
     })()
-}
+};
 
 var BlueWhiteBlinkMixin = {
     getInitialState: function() {
         return {
-            backgroundColor: {r: 255, g: 255, b: 255}
+            backgroundColor: {r: 255, g: 255, b: 255},
         };
     },
+
     blink: function() {
         if (this.animation) {
             this.animation.stop();
         }
+
         var blue  = {r: 179, g: 225, b: 245};
         var white = {r: 255, g: 255, b: 255};
         this.animation = Effects.blink(this, 'backgroundColor', blue, white);
-    }
-}
+    },
+};
 
 module.exports = {Effects, BlueWhiteBlinkMixin};

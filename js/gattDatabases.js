@@ -10,7 +10,7 @@
  *
  */
 
-"use strict";
+'use strict';
 
 /*
  *  We assume that parent is always found before its children.
@@ -21,8 +21,8 @@ import _ from 'underscore';
 import bleDriver from 'pc-ble-driver-js';
 import uuidDefinitions from './utils/uuid_definitions';
 
-const SERVICE_UUID = "0x2800";
-const CHARACTERISTIC_UUID = "0x2803";
+const SERVICE_UUID = '0x2800';
+const CHARACTERISTIC_UUID = '0x2803';
 
 class GattDatabase {
     constructor(connectionHandle) {
@@ -66,7 +66,7 @@ class GattDatabase {
             valueString += byteString.slice(-2) + '-';
         }
 
-        return valueString.slice(0,-1).toUpperCase();
+        return valueString.slice(0, -1).toUpperCase();
     }
 
     findAttribute(handle) {
@@ -241,24 +241,31 @@ class Properties {
         if (this.broadcast) {
             properties.push('Broadcast');
         }
+
         if (this.read) {
             properties.push('Read');
         }
+
         if (this.writeWithoutResponse) {
             properties.push('Write w/o response');
         }
+
         if (this.write) {
             properties.push('Write');
         }
+
         if (this.notify) {
             properties.push('Notify');
         }
+
         if (this.indicate) {
             properties.push('Indicate');
         }
+
         if (this.authenticatedSignedWrites) {
             properties.push('Authenticated signed writes');
         }
+
         if (this.extendedProperties) {
             properties.push('Extended properties');
         }
@@ -286,23 +293,23 @@ class GattDatabases {
     connectionHandle: 1,
     services:[{
         handle: 1,
-        name: "Health Thermometer",
-        uuid: "0x1809",
+        name: 'Health Thermometer',
+        uuid: '0x1809',
         characteristics: [{
             handle: 2,
             valueHandle: 3,
-            name: "Temperature",
-            uuid: "0x2A1D",
-            value: "37,5C" // must be manually read
+            name: 'Temperature',
+            uuid: '0x2A1D',
+            value: '37,5C' // must be manually read
         },
         {
-            name: "Measurement Interval",
-            uuid: "0x2A1D",
-            value: "300 sec", // must be manually read
+            name: 'Measurement Interval',
+            uuid: '0x2A1D',
+            value: '300 sec', // must be manually read
             descriptors: [{
-                name: "Client Characteristic Configuration",
-                uuid: "0x0028",
-                value: "0x00" // must be manually read
+                name: 'Client Characteristic Configuration',
+                uuid: '0x0028',
+                value: '0x00' // must be manually read
             }]
         }]
     }]
@@ -327,13 +334,11 @@ class GattDatabases {
                 const gattDatabase = this.getGattDatabase(connectionHandle);
                 const service = new Service(gattDatabase, handle);
                 this.insertGattObjectInList(gattDatabase.services, service);
-            }
-            else if (uuid == CHARACTERISTIC_UUID) {
+            } else if (uuid == CHARACTERISTIC_UUID) {
                 const parentService = this.findParentService(connectionHandle, handle);
                 const characteristic = new Characteristic(parentService, handle);
                 this.insertGattObjectInList(parentService.characteristics, characteristic);
-            }
-            else {
+            } else {
                 const parentCharacteristic = this.findParentCharacteristic(connectionHandle, handle);
                 const descriptor = new Descriptor(parentCharacteristic, handle, uuid);
                 this.insertGattObjectInList(parentCharacteristic.descriptors, descriptor);
@@ -475,7 +480,7 @@ class GattDatabases {
             return gattDatabase.connectionHandle === connectionHandle;
         });
 
-        if(indexOfItemToDelete !== -1) {
+        if (indexOfItemToDelete !== -1) {
             this.gattDatabases.splice(indexOfItemToDelete, 1);
         }
 

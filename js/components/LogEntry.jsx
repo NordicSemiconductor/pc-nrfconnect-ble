@@ -18,7 +18,7 @@ import Component from 'react-pure-render/component';
 import moment from 'moment';
 
 function entryClassName(entry) {
-    switch(entry.level) {
+    switch (entry.level) {
         case 0:
             return 'log-trace';
         case 1:
@@ -44,16 +44,16 @@ export default class LogEntry extends Component {
     render() {
         const {
             entry,
-            key
+            key,
         } = this.props;
 
-        var className = "log-entry " + entryClassName(entry);
+        var className = 'log-entry ' + entryClassName(entry);
         var time = moment(new Date(entry.time)).format('HH:mm:ss.SSSS');
 
         return (
             <div className={className} key={key}>
-                <div className="time">{time}</div>
-                <div className="message">{entry.message}</div>
+                <div className='time'>{time}</div>
+                <div className='message'>{entry.message}</div>
             </div>
         );
     }
