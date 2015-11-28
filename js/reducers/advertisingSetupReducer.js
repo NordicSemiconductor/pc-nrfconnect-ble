@@ -14,6 +14,7 @@ const InitialState = Record({
     }]),
     scanResponseEntries: List(),
     show: false,
+    setAdvdataStatus: '',
 });
 
 const initialState = new InitialState();
@@ -37,6 +38,9 @@ export default function advertisingSetup(state = initialState, action) {
 
         case AdvertisingSetupActions.HIDE_DIALOG:
             return state.update('show', show => false);
+
+        case AdvertisingSetupActions.SET_ADVDATA_COMPLETED:
+            return state.update('setAdvdataStatus', setAdvdataStatus => action.status);
 
         default:
             return state;

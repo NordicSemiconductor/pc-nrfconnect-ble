@@ -18,6 +18,7 @@ import { connect } from 'react-redux';
 
 import { Modal } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
+import { Label } from 'react-bootstrap';
 
 import AdvertisingList from './AdvertisingList';
 import AdvertisingData from './AdvertisingData';
@@ -80,6 +81,7 @@ class AdvertisingSetup extends Component {
             addAdvEntry,
             deleteAdvData,
             addScanRsp,
+            setAdvdataStatus,
             deleteScanRsp,
             showDialog,
             hideDialog,
@@ -87,11 +89,11 @@ class AdvertisingSetup extends Component {
 
         return (
             <div>
-                <Modal show={show} onHide={() => {}} bsSize="large">
+                <Modal className="adv-setup" show={show} onHide={() => {}} bsSize="large">
                     <Modal.Header>
                         <Modal.Title>Advertising setup</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body className="adv-setup">
+                    <Modal.Body>
                         <AdvertisingData onValueChange={value => this.handleValueChange(value)}/>
                         <div className="adv-row">
                             <div className="adv-col adv-pkt">
@@ -115,6 +117,7 @@ class AdvertisingSetup extends Component {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
+                        <Label className="error-label" bsStyle="danger">{setAdvdataStatus}</Label>
                         <Button className="btn-primary btn-nordic" onClick={() => this.handleApply()}>Apply</Button>
                         <Button className="btn-primary btn-nordic" onClick={hideDialog}>Close</Button>
                     </Modal.Footer>
@@ -132,6 +135,7 @@ function mapStateToProps(state) {
         advDataEntries: advertisingSetup.advDataEntries,
         scanResponseEntries: advertisingSetup.scanResponseEntries,
         show: advertisingSetup.show,
+        setAdvdataStatus: advertisingSetup.setAdvdataStatus,
     };
 }
 
@@ -156,6 +160,7 @@ AdvertisingSetup.propTypes = {
     addAdvEntry: PropTypes.func.isRequired,
     setAdvertisingData: PropTypes.func.isRequired,
     advertisingSetup: PropTypes.object.isRequired,
+    setAdvdataStatus: PropTypes.object,
     deleteAdvData: PropTypes.func.isRequired,
     addScanRsp: PropTypes.func.isRequired,
     deleteScanRsp: PropTypes.func.isRequired,
