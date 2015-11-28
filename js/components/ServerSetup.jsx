@@ -44,21 +44,25 @@ let ServerSetup = React.createClass({
         return {
             selected: null,
             gattDatabase: gattDatabase,
-            showConfirmDialog: false
+            showConfirmDialog: false,
         };
     },
+
     _onSelected(selected) {
         this.setState({ selected: selected });
     },
+
     componentWillMount() {
         this.gattDatabases = gattDatabases;
     },
+
     _addService() {
         const service = new Service(gattDatabase, attributeHandle++);
 
         this.setState({gattDatabase: this.state.gattDatabase});
         this._onSelected(service);
     },
+
     _addCharacteristic(parent) {
         const handle = attributeHandle++;
         const valueHandle = attributeHandle++;
@@ -72,12 +76,14 @@ let ServerSetup = React.createClass({
         this.setState({gattDatabase: this.state.gattDatabase});
         this._onSelected(characteristic);
     },
+
     _addDescriptor(parent) {
         const descriptor = new Descriptor(parent, attributeHandle++);
 
         this.setState({gattDatabase: this.state.gattDatabase});
         this._onSelected(descriptor);
     },
+
     _onAttributeDeleted() {
         this.setState({selected: null, gattDatabase: this.state.gattDatabase});
     },
@@ -85,29 +91,29 @@ let ServerSetup = React.createClass({
     render() {
         const selected = this.state.selected;
         const editor =
-            !selected ? <div className="nothing-selected" />
+            !selected ? <div className='nothing-selected' />
             : selected.characteristics ? <ServiceEditor service={selected} onAttributeDeleted={this._onAttributeDeleted}/>
             : selected.descriptors ? <CharacteristicEditor characteristic={selected} onAttributeDeleted={this._onAttributeDeleted} />
             : selected._addBtnId ? <form />
-            : <DescriptorEditor descriptor={selected} onAttributeDeleted={this._onAttributeDeleted}/>
+            : <DescriptorEditor descriptor={selected} onAttributeDeleted={this._onAttributeDeleted}/>;
         return (
-            <div className="server-setup" style={this.props.style}>
-                <div className="device-details-view">
-                    <div className="service-items-wrap">
+            <div className='server-setup' style={this.props.style}>
+                <div className='device-details-view'>
+                    <div className='service-items-wrap'>
                         {this.state.gattDatabase.services.map((service, i) =>
                             <ServiceItem name={service.name} key={i} characteristics={service.characteristics} item={service}
                                 selected={this.state.selected} onSelected={this._onSelected} selectOnClick={true} addNew={true}
-                                addCharacteristic={this._addCharacteristic} addDescriptor={this._addDescriptor} connectionHandle="-1" />
+                                addCharacteristic={this._addCharacteristic} addDescriptor={this._addDescriptor} connectionHandle='-1' />
                         )}
-                        <AddNewItem text="New service" id="add-btn-root" bars={1} selected={this.state.selected} onClick={this._addService} />
+                        <AddNewItem text='New service' id='add-btn-root' bars={1} selected={this.state.selected} onClick={this._addService} />
                     </div>
-                    <div className="item-editor">
+                    <div className='item-editor'>
                         {editor}
                     </div>
                 </div>
             </div>
         );
-    }
+    },
 });
 
 module.exports = ServerSetup;
