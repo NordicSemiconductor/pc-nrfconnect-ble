@@ -40,6 +40,8 @@ function _setAdvertisingData(advertisingSetup, dispatch, getState) {
         advertisingSetup.advDataEntries.forEach(entry => {
             if (entry.typeApi.toLowerCase().indexOf('uuid') > -1) {
                 advData[entry.typeApi] = entry.value.replace(' ', '').split(',');
+            } else if (entry.typeApi.toLowerCase().indexOf('power') > -1) {
+                advData[entry.typeApi] = parseInt(entry.value);
             } else {
                 advData[entry.typeApi] = entry.value;
             }
@@ -48,6 +50,8 @@ function _setAdvertisingData(advertisingSetup, dispatch, getState) {
         advertisingSetup.scanResponseEntries.forEach(entry => {
             if (entry.typeApi.toLowerCase().indexOf('uuid') > -1) {
                 scanResp[entry.typeApi] = entry.value.replace(' ', '').split(',');
+            } else if (entry.typeApi.toLowerCase().indexOf('power') > -1) {
+                scanResp[entry.typeApi] = parseInt(entry.value);
             } else {
                 scanResp[entry.typeApi] = entry.value;
             }

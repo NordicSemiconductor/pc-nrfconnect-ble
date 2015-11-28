@@ -30,32 +30,35 @@ class AdvertisingSetup extends Component {
         this.id = 0;
     }
 
-    handleDeleteFromAdvData(id) {
-        console.log('DELETE id: ' + id);
-    }
+    _prepareValue() {
+        if (!this.typeValue) return;
 
-    handleDeleteFromScanRsp(id) {
-        console.log('DELETE id: ' + id);
+        this.id++;
+        this.typeValue.id = this.id;
+        return Object.assign({}, this.typeValue);
     }
 
     addToAdvData() {
-        this.id++;
-        this.typeValue.id = this.id;
-        const newValue = Object.assign({}, this.typeValue);
+        const newValue = this._prepareValue();
+
+        if (!newValue || newValue.value === '') {
+            return;
+        }
+
         this.props.addAdvEntry(newValue);
-        console.log('ADV DATA UPDATED');
     }
 
     addToScanResponse() {
-        this.id++;
-        this.typeValue.id = this.id;
-        const newValue = Object.assign({}, this.typeValue);
+        const newValue = this._prepareValue();
+
+        if (!newValue || newValue.value === '') {
+            return;
+        }
+
         this.props.addScanRsp(newValue);
-        console.log('ADD TO SCAN RESPONSE');
     }
 
     handleValueChange(typeValue) {
-        console.log('VALUE CHANGE');
         this.typeValue = typeValue;
     }
 
@@ -84,36 +87,36 @@ class AdvertisingSetup extends Component {
 
         return (
             <div>
-                <Modal show={show} onHide={() => {}} bsSize='large'>
+                <Modal show={show} onHide={() => {}} bsSize="large">
                     <Modal.Header>
                         <Modal.Title>Advertising setup</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body className='adv-setup'>
+                    <Modal.Body className="adv-setup">
                         <AdvertisingData onValueChange={value => this.handleValueChange(value)}/>
-                        <div className='adv-row'>
-                            <div className='adv-col adv-pkt'>
+                        <div className="adv-row">
+                            <div className="adv-col adv-pkt">
                                 <Button
-                                    className='btn-add'
-                                    onClick={id => this.addToAdvData()}>Add to adv. data</Button>
+                                    className="btn-add btn-primary btn-nordic"
+                                    onClick={() => this.addToAdvData()}>Add</Button>
                                 <AdvertisingList
-                                    title='Advertising data'
+                                    title="Advertising data"
                                     onDelete={deleteAdvData}
                                     advEntries={advDataEntries}/>
                             </div>
-                            <div className='adv-col scan-rsp-pkt'>
+                            <div className="adv-col scan-rsp-pkt">
                                 <Button
-                                    className='btn-add'
-                                    onClick={() => this.addToScanResponse()}>Add to scan response</Button>
+                                    className="btn-add btn-primary btn-nordic"
+                                    onClick={() => this.addToScanResponse()}>Add</Button>
                                 <AdvertisingList
-                                    title='Scan response data'
+                                    title="Scan response data"
                                     onDelete={deleteScanRsp}
                                     advEntries={scanResponseEntries}/>
                             </div>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={() => this.handleApply()}>Apply</Button>
-                        <Button onClick={hideDialog}>Close</Button>
+                        <Button className="btn-primary btn-nordic" onClick={() => this.handleApply()}>Apply</Button>
+                        <Button className="btn-primary btn-nordic" onClick={hideDialog}>Close</Button>
                     </Modal.Footer>
                 </Modal>
             </div>

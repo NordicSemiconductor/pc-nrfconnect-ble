@@ -916,16 +916,26 @@ hr {
     flex: 1;
     margin: 10px;
   }
+  .type-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
   .adv-drop-container, .adv-value-container {
     display: inline-block;
     vertical-align: top;
     margin: 10px;
   }
+  .adv-value-container {
+    width: 300px;
+  }
+  .adv-value {
+    width: 100%;
+  }
   table {
     width: 100%;
   }
   .btn-add {
-    margin: 20px;
+    margin-bottom: 20px;
     align-self: center;
   }
   .adv-header {
@@ -943,12 +953,18 @@ hr {
   .adv-dropdown {
     min-width: 220px;
     text-align: left;
-    > .dropdown-menu li a {
-      color: black;
-      background: white;
-    }
-    > .dropdown-menu {
-      background: white;
+    .dropdown-menu {
+      li > a:focus {
+        outline: 1px solid black;
+      }
+      background-color: #FFFFFF;
+      li > a {
+        background-color: #FFFFFF;
+        color: rgb(51, 51, 51);
+      }
+      li > a:hover{
+        background-color: #E6E6E6;
+      }
     }
   }
 }
