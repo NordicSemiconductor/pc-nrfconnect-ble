@@ -62,7 +62,7 @@ export default class DescriptorItem extends Component {
                 <div className="content-wrap">
                     <div className="content">
                         <div className="truncate-text" title={'[' + handle + '] ' + name}>{name}</div>
-                        <HexOnlyEditableField value={value.toArray()} insideSelector=".descriptor-item" onSaveChanges={this._onWrite} showReadButton={itemIsSelected} />
+                        <HexOnlyEditableField value={value.toArray()} onSaveChanges={this._onWrite} showReadButton={itemIsSelected} />
                     </div>
                 </div>
             </div>

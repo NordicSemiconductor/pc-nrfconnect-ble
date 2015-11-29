@@ -137,7 +137,7 @@ export default class CharacteristicItem extends Component {
                                 {propertyList}
                             </div>
                         </div>
-                        <HexOnlyEditableField value={value.toArray()} insideSelector=".characteristic-item" onSaveChanges={value => this._onWrite(value)} showReadButton={itemIsSelected}/>
+                        <HexOnlyEditableField value={value.toArray()} onSaveChanges={value => this._onWrite(value)} showReadButton={itemIsSelected}/>
                     </div>
                 </div>
             </div>
