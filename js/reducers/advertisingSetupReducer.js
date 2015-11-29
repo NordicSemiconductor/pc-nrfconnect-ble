@@ -10,10 +10,12 @@ const InitialState = Record({
         typeKey: 0,
         typeApi: 'completeLocalName',
         value: 'nRF Connect',
+        formattedValue: 'nRF Connect',
         id: 10000, // Random high id to avoid conflict with autoincremented ids
     }]),
     scanResponseEntries: List(),
     show: false,
+    setAdvdataStatus: '',
 });
 
 const initialState = new InitialState();
@@ -37,6 +39,9 @@ export default function advertisingSetup(state = initialState, action) {
 
         case AdvertisingSetupActions.HIDE_DIALOG:
             return state.update('show', show => false);
+
+        case AdvertisingSetupActions.SET_ADVDATA_COMPLETED:
+            return state.update('setAdvdataStatus', setAdvdataStatus => action.status);
 
         default:
             return state;

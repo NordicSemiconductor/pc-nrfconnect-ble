@@ -160,7 +160,7 @@ function _openAdapter(dispatch, getState, adapter) {
     }).then(adapter => {
         dispatch(adapterOpenedAction(adapter));
     }).catch(errorData => {
-        // Check if the error is message is of our "standard" type made by makeError
+        // Check if the error is message is of our 'standard' type made by makeError
         if (errorData.error === undefined && errorData.adapter === undefined) {
             dispatch(errorOccuredAction(undefined, errorData));
         } else {
@@ -191,7 +191,7 @@ function _updateDeviceConnectionParams(dispatch, getState, id, device, connectio
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
         adapterToUse.updateConnectionParameters(device.instanceId, connectionParams, error => {
-            if(error) {
+            if (error) {
                 reject(makeError({ adapter: adapterToUse, error: error }));
             } else {
                 resolve();
@@ -215,21 +215,20 @@ function _rejectConnectionParams(dispatch, getState, id, device) {
         }
 
         adapterToUse.rejectConnParams(device.instanceId, error => {
-            if(error) {
+            if (error) {
                 reject(makeError({ adapter: adapterToUse, error: error }));
             } else {
                 resolve();
             }
         });
     }).then(() => {
-        dispatch(connectionParamUpdateStatusAction(id, device, 'success'));
+        dispatch(connectionParamUpdateStatusAction(id, device, BLEEventState.REJECTED));
         // Do we need to tell anyone this went OK ?
     }).catch(errorData => {
-        dispatch(connectionParamUpdateStatusAction(id, device, 'error'));
+        dispatch(connectionParamUpdateStatusAction(id, device, BLEEventState.ERROR));
         dispatch(errorOccuredAction(errorData.adapter, errorData.error));
     });
 }
-
 
 function adapterOpenedAction(adapter)
 {
@@ -488,7 +487,7 @@ function errorOccuredAction(adapter, error) {
 function pairWithDeviceAction(device) {
     return {
         type: DEVICE_INITIATE_PAIRING,
-        device
+        device,
     };
 }
 

@@ -45,30 +45,31 @@ class DiscoveredDevices extends Component {
         };
 
         return (
-            <div id="discoveredDevicesContainer">
+            <div id='discoveredDevicesContainer'>
                 <div>
                     <h4>
                         Discovered devices
-                        <img className="spinner" src="resources/ajax-loader.gif" height="16" width="16" style={progressStyle} />
+                        <img className='spinner' src='resources/ajax-loader.gif' height='16' width='16' style={progressStyle} />
                     </h4>
                 </div>
 
-                <div className="padded-row">
+                <div className='padded-row'>
                     <DiscoveryButton scanInProgress={isScanning} adapterIsConnecting={adapterIsConnecting} isAdapterAvailable={isAdapterAvailable} onScanClicked={() => toggleScan()} />
-                    <button title="Clear list (Alt+C)" onClick={() => clearDevicesList()} type="button" className="btn btn-primary btn-sm btn-nordic padded-row">
-                        <span className="icon-trash" />Clear
+                    <button title='Clear list (Alt+C)' onClick={() => clearDevicesList()} type='button' className='btn btn-primary btn-sm btn-nordic padded-row'>
+                        <span className='icon-trash' />Clear
                     </button>
                 </div>
 
                 <div style={{paddingTop: '0px'}}>
-                    {   discoveredDevices.map((device, address) => {
+                    {   discoveredDevices.map((device, address) =>
+                        {
                             return (
                                 <DiscoveredDevice key={address}
                                     device={device}
                                     standalone={false}
                                     adapterIsConnecting={adapterIsConnecting}
                                     isConnecting={device.isConnecting}
-                                    onConnect={(device) => connectToDevice(device)}
+                                    onConnect={device => connectToDevice(device)}
                                     onCancelConnect={() => cancelConnect()} />
                             );
                         })

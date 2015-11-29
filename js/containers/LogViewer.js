@@ -41,10 +41,10 @@ class LogContainer extends Component {
     }
 
     createElement(entry, i) {
-        var className = "log-entry " + entryClassName(entry);
+        var className = 'log-entry ' + entryClassName(entry);
         return <div className={className} key={entry.id}>
-            <div className="time">{moment(new Date(entry.time)).format('HH:mm:ss.SSSS')}</div>
-            <div className="message">{entry.message}</div>
+            <div className='time'>{moment(new Date(entry.time)).format('HH:mm:ss.SSSS')}</div>
+            <div className='message'>{entry.message}</div>
         </div>
     } */
 /*
@@ -62,15 +62,15 @@ class LogContainer extends Component {
             toggleAutoScroll,
         } = this.props;
 
-        return (<div className="log-wrap">
-            <div className="log-header">
-                <div className="log-header-text">Log</div>
-                <div className="padded-row log-header-buttons">
-                    <button type="button" title="Clear log" className="btn btn-primary btn-xs btn-nordic" onClick={() => clear()}>
-                        <span className="icon-trash" aria-hidden="true" />
+        return (<div className='log-wrap'>
+            <div className='log-header'>
+                <div className='log-header-text'>Log</div>
+                <div className='padded-row log-header-buttons'>
+                    <button type='button' title='Clear log' className='btn btn-primary btn-xs btn-nordic' onClick={() => clear()}>
+                        <span className='icon-trash' aria-hidden='true' />
                     </button>
-                    <button type="button" title="Scroll automatically" className={"btn btn-primary btn-xs btn-nordic " + (autoScroll ? "active" : "")} onClick={() => toggleAutoScroll()}>
-                        <span className="icon-down" aria-hidden="true" />
+                    <button type='button' title='Scroll automatically' className={'btn btn-primary btn-xs btn-nordic ' + (autoScroll ? 'active' : '')} onClick={() => toggleAutoScroll()}>
+                        <span className='icon-down' aria-hidden='true' />
                     </button>
                 </div>
             </div>
@@ -78,7 +78,7 @@ class LogContainer extends Component {
             <Infinite elementHeight={20}
                              containerHeight={155}
                              infiniteLoadBeginEdgeOffset={135}
-                             className="infinite-log"
+                             className='infinite-log'
                              autoScroll={autoScroll}
                              >
                  {logEntries.map(entry => <LogEntry {...{entry}} key={entry.id} />)}
@@ -93,7 +93,7 @@ function mapStateToProps(state) {
     return {
         logEntries: log.entries,
         autoScroll: log.autoScroll,
-    }
+    };
 }
 
 function mapDispatchToProps(dispatch) {

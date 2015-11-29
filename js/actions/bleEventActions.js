@@ -21,7 +21,7 @@ export const BLE_EVENT_TIMED_OUT = 'BLE_EVENT_TIMED_OUT';
 function showDialogAction(visible) {
     return {
         type: BLE_EVENT_SHOW_DIALOG,
-        visible
+        visible,
     };
 }
 

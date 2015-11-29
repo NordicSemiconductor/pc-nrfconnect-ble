@@ -46,17 +46,17 @@ var convertLevel = function(level) {
     */
 
     // Convert log level
-    if(level === 'trace') {
+    if (level === 'trace') {
         return 0;
-    } else if(level === 'debug') {
+    } else if (level === 'debug') {
         return 1;
-    } else if(level === 'verbose') {
+    } else if (level === 'verbose') {
         return 2;
-    } else if(level === 'info') {
+    } else if (level === 'info') {
         return 3;
-    } else if(level === 'warn') {
+    } else if (level === 'warn') {
         return 4;
-    } else if(level === 'error') {
+    } else if (level === 'error') {
         return 5;
     } else {
         return 3; // If level is not known, set it to info
@@ -72,8 +72,8 @@ var DbLogger = winston.transports.DbLogger = function(options) {
 
     try {
         fs.unlinkSync(this.filename);
-    } catch(err) {
-         // Log to console.log because we may not have a valid logger if we get here.
+    } catch (err) {
+        // Log to console.log because we may not have a valid logger if we get here.
         console.log(`Error removing file ${this.filename}. Error is ${err}`);
     }
 
@@ -92,21 +92,21 @@ var DbLogger = winston.transports.DbLogger = function(options) {
 util.inherits(DbLogger, winston.Transport);
 
 DbLogger.prototype.log = function(level, msg, meta, callback) {
-    if(this.silent) {
+    if (this.silent) {
         return callback(null, true);
     }
 
-    if(!this.dbReady) {
+    if (!this.dbReady) {
         // Log to console.log because we may not have a valid logger if we get here.
-        console.log("Database is not ready yet. Entry will not be stored.");
+        console.log('Database is not ready yet. Entry will not be stored.');
         return callback(null, true);
     }
 
     let timestamp = new Date();
 
     // Check if we have timestamp in meta data
-    if(meta !== undefined) {
-        if(meta.timestamp !== undefined) {
+    if (meta !== undefined) {
+        if (meta.timestamp !== undefined) {
             timestamp = meta.timestamp;
         }
 
@@ -115,7 +115,7 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
 
     // TODO: We have to figure out if this is an array of events from the ble driver.
     // TODO: Postpone this to later.
-    var stmt = this.db.prepare("INSERT INTO log_entries(id, time, level, message, meta) VALUES(?,?,?,?,?)");
+    var stmt = this.db.prepare('INSERT INTO log_entries(id, time, level, message, meta) VALUES(?,?,?,?,?)');
 
     stmt.run(
         id,
@@ -123,9 +123,9 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
         convertLevel(level),
         msg,
         meta,
-        (err) => {
-            if(err) {
-                 // Log to console.log because we may not have a valid logger if we get here.
+        err => {
+            if (err) {
+                // Log to console.log because we may not have a valid logger if we get here.
                 console.log(`Error storing log entry, ${err}`);
             }
 
@@ -138,7 +138,7 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
 };
 
 DbLogger.prototype.query = function(options, callback) {
-    if(!this.dbReady) {
+    if (!this.dbReady) {
         callback(null);
         return;
     }
@@ -146,7 +146,7 @@ DbLogger.prototype.query = function(options, callback) {
     var opt = {
         start: options.start,
         limit: options.rows,
-        sort: {id: options.order === 'desc' ? 'DESC' : 'ASC'}
+        sort: {id: options.order === 'desc' ? 'DESC' : 'ASC'},
     };
 
     const sql = `SELECT * FROM log_entries WHERE id >= ${opt.start} ORDER BY id ${opt.sort.id}`;
@@ -154,14 +154,15 @@ DbLogger.prototype.query = function(options, callback) {
 
     this.db.each(sql,
         (err, row) => {
-            if(err) {
+            if (err) {
                 callback(err);
                 return;
             }
 
-            if(row === null) {
+            if (row === null) {
                 return;
             }
+
             entries.push(row);
         }, function(err, rowCount) {
             callback(null, entries);
@@ -172,7 +173,7 @@ DbLogger.prototype.query = function(options, callback) {
 var createLine = function(options) {
     let timestamp = options.timestamp();
 
-    if(options.meta !== undefined && options.meta.timestamp !== undefined) {
+    if (options.meta !== undefined && options.meta.timestamp !== undefined) {
         timestamp = options.meta.timestamp;
     }
 
@@ -185,8 +186,8 @@ var createLine = function(options) {
 // Delete the log file for now so that it easier to debug
 try {
     fs.unlinkSync(defaultLogFile);
-} catch(err) {
-     // Log to console.log because we may not have a valid logger if we get here.
+} catch (err) {
+    // Log to console.log because we may not have a valid logger if we get here.
     console.log(`Error removing file ${defaultLogFile}. Error is ${err}`);
 }
 
@@ -194,8 +195,9 @@ const transports = [
     new (winston.transports.DbLogger)({
         name: 'db_logger',
         filename: defaultDbFile,
-        level: 'info'
+        level: 'info',
     }),
+
     new (winston.transports.File)({
         name: 'file',
         filename: defaultLogFile,
@@ -204,8 +206,9 @@ const transports = [
         timestamp: function() {
             return new Date();
         },
-        formatter: createLine
-    })
+
+        formatter: createLine,
+    }),
 ];
 
 try {
@@ -218,13 +221,14 @@ try {
         timestamp: function() {
             return new Date();
         },
-        formatter: createLine
+
+        formatter: createLine,
     }));
 
-} catch(exception) {}
+} catch (exception) {}
 
 export const logger = new (winston.Logger)({
-    transports: transports
+    transports: transports,
 });
 
 logger.info(`For a detailed log file see: ${defaultLogFile}`);

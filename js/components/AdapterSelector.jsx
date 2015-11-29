@@ -51,11 +51,11 @@ class AdapterSelector extends Component {
 
         return (
             <span title='Select com port (Alt+P)'>
-                <div className="padded-row">
+                <div className='padded-row'>
                     <DropdownButton id='navbar-dropdown' className='btn-primary btn-nordic' title={adapterStatus} ref='comPortDropdown'>
                         {adapterNodes}
                     </DropdownButton>
-                    <div className={"indicator " + adapterIndicator}></div>
+                    <div className={'indicator ' + adapterIndicator}></div>
                 </div>
             </span>
         );

@@ -82,7 +82,7 @@ export default class DeviceDetailsView extends Component {
                                                  key={instanceId}
                                                  device={device}
                                                  selected={selected}
-                                                 layout="vertical"
+                                                 layout='vertical'
                                                  onSelectComponent={onSelectComponent}
                                                  onDisconnect={() => onDisconnectFromDevice(device)}
                                                  onPair={() => onPairWithDevice(device)}
@@ -90,7 +90,7 @@ export default class DeviceDetailsView extends Component {
 
         if (deviceDetail.discoveringChildren) {
             return (
-                <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
+                <div className='device-details-view' id={instanceId + '_details'} style={this.props.style}>
                     {connectedDevice}
                     <EnumeratingAttributes bars={1} />
                 </div>
@@ -113,9 +113,9 @@ export default class DeviceDetailsView extends Component {
             }
 
             return (
-                <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
+                <div className='device-details-view' id={instanceId + '_details'} style={this.props.style}>
                     {connectedDevice}
-                    <div className="service-items-wrap">
+                    <div className='service-items-wrap'>
                         {childrenList}
                     </div>
                 </div>

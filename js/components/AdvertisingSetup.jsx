@@ -18,6 +18,7 @@ import { connect } from 'react-redux';
 
 import { Modal } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
+import { Label } from 'react-bootstrap';
 
 import AdvertisingList from './AdvertisingList';
 import AdvertisingData from './AdvertisingData';
@@ -30,32 +31,35 @@ class AdvertisingSetup extends Component {
         this.id = 0;
     }
 
-    handleDeleteFromAdvData(id) {
-        console.log('DELETE id: ' + id);
-    }
+    _prepareValue() {
+        if (!this.typeValue) return;
 
-    handleDeleteFromScanRsp(id) {
-        console.log('DELETE id: ' + id);
+        this.id++;
+        this.typeValue.id = this.id;
+        return Object.assign({}, this.typeValue);
     }
 
     addToAdvData() {
-        this.id++;
-        this.typeValue.id = this.id;
-        const newValue = Object.assign({}, this.typeValue);
+        const newValue = this._prepareValue();
+
+        if (!newValue || newValue.value === '') {
+            return;
+        }
+
         this.props.addAdvEntry(newValue);
-        console.log('ADV DATA UPDATED');
     }
 
     addToScanResponse() {
-        this.id++;
-        this.typeValue.id = this.id;
-        const newValue = Object.assign({}, this.typeValue);
+        const newValue = this._prepareValue();
+
+        if (!newValue || newValue.value === '') {
+            return;
+        }
+
         this.props.addScanRsp(newValue);
-        console.log('ADD TO SCAN RESPONSE');
     }
 
     handleValueChange(typeValue) {
-        console.log('VALUE CHANGE');
         this.typeValue = typeValue;
     }
 
@@ -77,6 +81,7 @@ class AdvertisingSetup extends Component {
             addAdvEntry,
             deleteAdvData,
             addScanRsp,
+            setAdvdataStatus,
             deleteScanRsp,
             showDialog,
             hideDialog,
@@ -84,17 +89,17 @@ class AdvertisingSetup extends Component {
 
         return (
             <div>
-                <Modal show={show} onHide={() => {}} bsSize="large">
+                <Modal className="adv-setup" show={show} onHide={() => {}} bsSize="large">
                     <Modal.Header>
                         <Modal.Title>Advertising setup</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body className="adv-setup">
+                    <Modal.Body>
                         <AdvertisingData onValueChange={value => this.handleValueChange(value)}/>
                         <div className="adv-row">
                             <div className="adv-col adv-pkt">
                                 <Button
-                                    className="btn-add"
-                                    onClick={id => this.addToAdvData()}>Add to adv. data</Button>
+                                    className="btn-add btn-primary btn-nordic"
+                                    onClick={() => this.addToAdvData()}>Add to advertising data</Button>
                                 <AdvertisingList
                                     title="Advertising data"
                                     onDelete={deleteAdvData}
@@ -102,7 +107,7 @@ class AdvertisingSetup extends Component {
                             </div>
                             <div className="adv-col scan-rsp-pkt">
                                 <Button
-                                    className="btn-add"
+                                    className="btn-add btn-primary btn-nordic"
                                     onClick={() => this.addToScanResponse()}>Add to scan response</Button>
                                 <AdvertisingList
                                     title="Scan response data"
@@ -112,8 +117,9 @@ class AdvertisingSetup extends Component {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={() => this.handleApply()}>Apply</Button>
-                        <Button onClick={hideDialog}>Close</Button>
+                        <Label className="error-label" bsStyle="danger">{setAdvdataStatus}</Label>
+                        <Button className="btn-primary btn-nordic" onClick={() => this.handleApply()}>Apply</Button>
+                        <Button className="btn-primary btn-nordic" onClick={hideDialog}>Close</Button>
                     </Modal.Footer>
                 </Modal>
             </div>
@@ -129,6 +135,7 @@ function mapStateToProps(state) {
         advDataEntries: advertisingSetup.advDataEntries,
         scanResponseEntries: advertisingSetup.scanResponseEntries,
         show: advertisingSetup.show,
+        setAdvdataStatus: advertisingSetup.setAdvdataStatus,
     };
 }
 
@@ -153,6 +160,7 @@ AdvertisingSetup.propTypes = {
     addAdvEntry: PropTypes.func.isRequired,
     setAdvertisingData: PropTypes.func.isRequired,
     advertisingSetup: PropTypes.object.isRequired,
+    setAdvdataStatus: PropTypes.string.isRequired,
     deleteAdvData: PropTypes.func.isRequired,
     addScanRsp: PropTypes.func.isRequired,
     deleteScanRsp: PropTypes.func.isRequired,

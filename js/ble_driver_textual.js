@@ -10,6 +10,8 @@
  *
  */
 
+ 'use strict';
+
 import changeCase from 'change-case';
 
 import bleDriver from 'pc-ble-driver-js';
@@ -17,36 +19,33 @@ import logger from './logging';
 
 var rewriter = function(value) {
     var rewrite_rules = [
-            { expr:/BLE_GAP_ADV_FLAGS?_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
-            { expr:/BLE_GAP_AD_TYPE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
-            { expr:/BLE_GAP_ADDR_TYPE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
-            { expr: /BLE_GAP_ADV_TYPE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
-            { expr: /([0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2})/,
-                    on_match: function(matches) { return matches[1] }},
-            { expr: /(\d{4})-(\d{2})-(\d{2})T(\d{2})\:(\d{2})\:(\d{2})\.(\d+)Z/,
-                    on_match: function(matches) { return matches.input }},
-            { expr: /BLE_GAP_ROLE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
-            { expr: /BLE_HCI_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }},
-            { expr: /BLE_GATT_STATUS_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]) }}
+            { expr:/BLE_GAP_ADV_FLAGS?_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]); }},
+            { expr:/BLE_GAP_AD_TYPE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]); }},
+            { expr:/BLE_GAP_ADDR_TYPE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]); }},
+            { expr: /BLE_GAP_ADV_TYPE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]); }},
+            { expr: /([0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2})/, on_match: function(matches) { return matches[1]; }},
+            { expr: /(\d{4})-(\d{2})-(\d{2})T(\d{2})\:(\d{2})\:(\d{2})\.(\d+)Z/, on_match: function(matches) { return matches.input; }},
+            { expr: /BLE_GAP_ROLE_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]); }},
+            { expr: /BLE_HCI_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]); }},
+            { expr: /BLE_GATT_STATUS_(.*)/, on_match: function(matches) { return changeCase.camelCase(matches[1]); }},
     ];
 
     try {
-        for(var rewrite_rule in rewrite_rules) {
+        for (var rewrite_rule in rewrite_rules) {
             var rule = rewrite_rules[rewrite_rule];
 
-            if(rule.expr.test(value)) {
+            if (rule.expr.test(value)) {
                 return rule.on_match(rule.expr.exec(value));
             }
         }
-    } catch(err) {
+    } catch (err) {
         // Log to console.log because we may not have a valid logger if we get here.
         console.log(err);
     }
 
     // We did not find any rules to rewrite the value, return original value
     return changeCase.camelCase(value);
-}
-
+};
 
 class Textual {
     constructor(event) {
@@ -56,8 +55,8 @@ class Textual {
     }
 
     toString() {
-        if(this.event === undefined || this.event.id === undefined) {
-            logger.info("Unknown event received.");
+        if (this.event === undefined || this.event.id === undefined) {
+            logger.info('Unknown event received.');
             return;
         }
 
@@ -67,7 +66,7 @@ class Textual {
         this.gapToTextual();
         this.dataToTextual();
 
-        switch(this.event.id) {
+        switch (this.event.id) {
             case bleDriver.BLE_GAP_EVT_ADV_REPORT:
             case bleDriver.BLE_GAP_EVT_CONNECTED:
             case bleDriver.BLE_GAP_EVT_CONN_PARAM_UPDATE_REQUEST:
@@ -86,7 +85,7 @@ class Textual {
     eventToTextual() {
         var evt = this.event.name.split('BLE_')[1];
 
-        if(this.event.adv_type !== undefined) {
+        if (this.event.adv_type !== undefined) {
             var advEvt = this.event.adv_type.split('BLE_GAP_ADV_TYPE_')[1];
             this.current_stack.push(`${evt}/${advEvt}`);
         } else {
@@ -101,33 +100,33 @@ class Textual {
 
     _extractValues(obj) {
         var old_stack = this.current_stack;
-        var new_stack = []
+        var new_stack = [];
         this.current_stack = new_stack;
 
         var keys = Object.keys(obj);
 
-        for(var key in keys) {
+        for (var key in keys) {
             var key = keys[key];
 
-            if(key == 'id') continue;
-            if(key == 'data') continue;
-            if(key == 'name') continue;
+            if (key == 'id') continue;
+            if (key == 'data') continue;
+            if (key == 'name') continue;
 
             var value = eval(`obj.${key}`);
 
             key = rewriter(key);
 
-            if(value.constructor === Array) {
+            if (value.constructor === Array) {
                 var array_stack = [];
 
-                for(var entry in value) {
+                for (var entry in value) {
                     var entry_data = this._extractValues(value[entry]);
                     array_stack.push(`[${entry_data}]`);
                 }
 
                 var data = array_stack.join(',');
                 this.current_stack.push(`${key}:[${data}]`);
-            } else if(typeof value === 'object') {
+            } else if (typeof value === 'object') {
                 var data = this._extractValues(value);
                 data = data.join(' ');
                 this.current_stack.push(`${key}:[${data}]`);
@@ -142,23 +141,23 @@ class Textual {
     }
 
     rssiToTextual() {
-        if(this.event.rssi === undefined) return;
+        if (this.event.rssi === undefined) return;
         this.current_stack.push(`rssi:${this.event.rssi}`);
     }
 
     gapGeneric() {
         var event = this.event;
 
-        if(event === undefined) return;
+        if (event === undefined) return;
 
         var keys = Object.keys(event.data);
 
-        for(var key in keys) {
+        for (var key in keys) {
             var key = keys[key];
 
-            if(key.search("BLE_GAP_AD_TYPE_") != -1) {
+            if (key.search('BLE_GAP_AD_TYPE_') != -1) {
                 // We process BLE_GAP_AD_TYPES_FLAGS somewhere else
-                if(key.search("BLE_GAP_AD_TYPE_FLAGS") != -1) continue;
+                if (key.search('BLE_GAP_AD_TYPE_FLAGS') != -1) continue;
 
                 var value = eval(`event.data.${key}`);
                 var name = rewriter(key);
@@ -170,15 +169,15 @@ class Textual {
     gapToTextual() {
         var event = this.event;
 
-        if(event === undefined) return;
-        if(event.data === undefined) return;
+        if (event === undefined) return;
+        if (event.data === undefined) return;
 
         var gap = [];
         var old_stack = this.current_stack;
         this.current_stack = gap;
 
         // Process flags if they are present
-        if(event.data.BLE_GAP_AD_TYPE_FLAGS !== undefined) {
+        if (event.data.BLE_GAP_AD_TYPE_FLAGS !== undefined) {
             var flags = [];
 
             event.data.BLE_GAP_AD_TYPE_FLAGS.forEach(flag => {
@@ -194,7 +193,7 @@ class Textual {
 
         this.current_stack = old_stack;
 
-        if(gap.length == 0) return;
+        if (gap.length == 0) return;
 
         // Join all GAP information and add to stack
         var text = gap.join(' ');
@@ -204,13 +203,13 @@ class Textual {
     dataToTextual() {
         var event = this.event;
 
-        if(event == undefined) return;
-        if(event.data == undefined) return;
+        if (event == undefined) return;
+        if (event.data == undefined) return;
 
-        if(event.data.raw !== undefined) {
+        if (event.data.raw !== undefined) {
             var raw = event.data.raw.toString('hex').toUpperCase();
             this.current_stack.push(`raw:[${raw}]`);
-        } else if(event.data.constructor === Buffer) {
+        } else if (event.data.constructor === Buffer) {
             var data = event.data.toString('hex').toUpperCase();
             this.current_stack.push(`data:[${data}]`);
         }
@@ -219,11 +218,11 @@ class Textual {
     static peerAddressToTextual(event) {
         var role = '';
 
-        if(event.peer_addr !== undefined) {
-            if(event.role !== undefined) {
-                if(event.role === 'BLE_GAP_ROLE_CENTRAL') {
+        if (event.peer_addr !== undefined) {
+            if (event.role !== undefined) {
+                if (event.role === 'BLE_GAP_ROLE_CENTRAL') {
                     role = 'peripheral';
-                } else if(event.role === 'BLE_GAP_ROLE_PERIPH') {
+                } else if (event.role === 'BLE_GAP_ROLE_PERIPH') {
                     role = 'central';
                 }
             }
@@ -231,7 +230,7 @@ class Textual {
             return `${role} ${event.peer_addr.address.toUpperCase()}`;
         }
 
-        return ''
+        return '';
     }
 };
 

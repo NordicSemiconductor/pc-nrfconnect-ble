@@ -18,13 +18,13 @@ import * as LogAction from '../actions/logActions';
 
 const InitialState = Record({
     autoScroll: true,
-    entries: List()
+    entries: List(),
 });
 
 const initialState = new InitialState();
 
 export default function log(state = initialState, action) {
-    switch(action.type) {
+    switch (action.type) {
         case LogAction.ADD_ENTRY:
             return state.update('entries', entries => entries.push(action.entry));
         case LogAction.CLEAR_ENTRIES:

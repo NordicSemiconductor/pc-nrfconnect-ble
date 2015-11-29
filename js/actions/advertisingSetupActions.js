@@ -23,6 +23,8 @@ export const DELETE_SCANRSP_ENTRY = 'ADVSETUP_DELETE_SCANRSP_ENTRY';
 export const SHOW_DIALOG = 'ADVSETUP_SHOW_DIALOG';
 export const HIDE_DIALOG = 'ADVSETUP_HIDE_DIALOG';
 export const ERROR_OCCURED = 'ADVSETUP_ERROR_OCCURED';
+export const SET_ADVDATA = 'ADVSETUP_SET_ADVDATA';
+export const SET_ADVDATA_COMPLETED = 'ADVSETUP_SET_ADVDATA_COMPLETED';
 
 // Internal functions
 function _setAdvertisingData(advertisingSetup, dispatch, getState) {
@@ -36,32 +38,25 @@ function _setAdvertisingData(advertisingSetup, dispatch, getState) {
             reject('No adapter is selected.');
         }
 
-        // TODO: Improve this
         advertisingSetup.advDataEntries.forEach(entry => {
-            if (entry.typeApi.toLowerCase().indexOf('uuid') > -1) {
-                advData[entry.typeApi] = entry.value.replace(' ', '').split(',');
-            } else {
-                advData[entry.typeApi] = entry.value;
-            }
+            advData[entry.typeApi] = entry.formattedValue;
         });
 
         advertisingSetup.scanResponseEntries.forEach(entry => {
-            if (entry.typeApi.toLowerCase().indexOf('uuid') > -1) {
-                scanResp[entry.typeApi] = entry.value.replace(' ', '').split(',');
-            } else {
-                scanResp[entry.typeApi] = entry.value;
-            }
+            scanResp[entry.typeApi] = entry.formattedValue;
         });
 
         adapter.setAdvertisingData(advData, scanResp, error => {
             if (error) {
+                dispatch(setAdvertisingCompletedAction(error.message));
                 reject(error);
             } else {
+                dispatch(setAdvertisingCompletedAction(''));
                 resolve();
             }
         });
     }).catch(error => {
-        dispatch(advertisingErrorAction(error));
+        dispatch(setAdvertisingCompletedAction(error.message));
     });
 }
 
@@ -157,6 +152,13 @@ function showDialogAction() {
 function hideDialogAction() {
     return {
         type: HIDE_DIALOG,
+    };
+}
+
+function setAdvertisingCompletedAction(status) {
+    return {
+        type: SET_ADVDATA_COMPLETED,
+        status,
     };
 }
 

@@ -1,3 +1,4 @@
+'use strict';
 
 //import hotkey from 'react-hotkey';
 import _ from 'underscore';
@@ -27,15 +28,15 @@ var TreeViewKeyNavigation = {
                 }
                 if (e.getModifierState('Alt')) {
                     switch(e.key) {
-                        case "ArrowUp":
+                        case 'ArrowUp':
                             this.setState({ selected: this._getPreviousVisible() });
                             e.preventDefault();
                             break;
-                        case "ArrowDown":
+                        case 'ArrowDown':
                             this.setState({ selected: this._getNextVisible() });
                             e.preventDefault();
                             break;
-                        case "ArrowRight":
+                        case 'ArrowRight':
                             if (this.state.selected.expanded) {
                                 this.setState({ selected: this._getNextChild() || this.state.selected });
                             }
@@ -45,7 +46,7 @@ var TreeViewKeyNavigation = {
                             }
                             e.preventDefault();
                             break;
-                        case "ArrowLeft":
+                        case 'ArrowLeft':
                             if (this.state.selected.expanded) {
                                 this.state.selected.expanded = false;
                                 this.setState({ selected: this.state.selected });
@@ -82,17 +83,17 @@ var TreeViewKeyNavigation = {
                             }
 
                             if (addButtons) {
-                                yield { parent: characteristics[k], _addBtnId: "add-btn-" + characteristics[k].handle }
+                                yield { parent: characteristics[k], _addBtnId: 'add-btn-' + characteristics[k].handle }
                             }
                         }
 
                         if (addButtons) {
-                            yield { parent: services[j], _addBtnId: "add-btn-" + services[j].handle }
+                            yield { parent: services[j], _addBtnId: 'add-btn-' + services[j].handle }
                         }
                     }
 
                     if (addButtons) {
-                        yield { _addBtnId: "add-btn-root" }
+                        yield { _addBtnId: 'add-btn-root' }
                     }
                 }
             },
@@ -104,21 +105,21 @@ var TreeViewKeyNavigation = {
                     const services = gattDatabases[i].services;
 
                     if (addButtons) {
-                        yield { _addBtnId: "add-btn-root" }
+                        yield { _addBtnId: 'add-btn-root' }
                     }
 
                     for (let j = services.length - 1; j >= 0; j--) {
                         const characteristics = services[j].characteristics;
 
                         if (addButtons) {
-                            yield { parent: services[j], _addBtnId: "add-btn-" + services[j].handle }
+                            yield { parent: services[j], _addBtnId: 'add-btn-' + services[j].handle }
                         }
 
                         for (let k = characteristics.length - 1; k >= 0; k--) {
                             const descriptors = characteristics[k].descriptors;
 
                             if (addButtons) {
-                                yield { parent: characteristics[k], _addBtnId: "add-btn-" + characteristics[k].handle }
+                                yield { parent: characteristics[k], _addBtnId: 'add-btn-' + characteristics[k].handle }
                             }
 
                             for (let l = descriptors.length - 1; l >= 0; l--) {

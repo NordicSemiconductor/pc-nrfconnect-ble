@@ -22,7 +22,7 @@ const Event = Record({
     type: null,
     device: null,
     requestedConnectionParams: null,
-    state: BLEEventState.UNKNOWN
+    state: BLEEventState.UNKNOWN,
 });
 
 let eventIndex = 0;
@@ -65,7 +65,7 @@ function selectEventId(state, selectedEventId) {
 
 export default function bleEvent(state = initialState, action)
 {
-    switch(action.type) {
+    switch (action.type) {
         case BLEEventActions.BLE_EVENT_SHOW_DIALOG:
             return showDialog(state, action.visible);
         case BLEEventActions.BLE_EVENT_CLEAR_ALL_USER_EVENTS:

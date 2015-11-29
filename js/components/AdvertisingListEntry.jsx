@@ -20,7 +20,7 @@ export default class AdvertisingListEntry extends Component {
             <tr>
                 <td>{entry.type}</td>
                 <td>{entry.value}</td>
-                <td><Button bsSize="small" onClick={() => onDelete(entry.id)}>Delete</Button></td>
+                <td><Button bsSize='small' onClick={() => onDelete(entry.id)}>Delete</Button></td>
             </tr>
         );
     }

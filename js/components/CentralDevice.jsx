@@ -69,26 +69,26 @@ export default class CentralDevice extends Component {
         const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
 
         return (
-            <div id={id} className="device main-device standalone" style={style}>
-                <img className="center-block" src="resources/nordic_usb_icon.png" height="41" width="16"/>
-                <div className="device-body text-small">
-                    <div className="pull-right">
-                        <Dropdown id="connectionDropDown" onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
+            <div id={id} className='device main-device standalone' style={style}>
+                <img className='center-block' src='resources/nordic_usb_icon.png' height='41' width='16'/>
+                <div className='device-body text-small'>
+                    <div className='pull-right'>
+                        <Dropdown id='connectionDropDown' onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
                             <Dropdown.Toggle noCaret>
-                                <span className="icon-cog" aria-hidden="true" />
+                                <span className='icon-cog' aria-hidden='true' />
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <MenuItem eventKey="ToggleAdvertising">{advMenuText}</MenuItem>
-                                <MenuItem eventKey="AdvertisingSetup">Advertising setup...</MenuItem>
+                                <MenuItem eventKey='ToggleAdvertising'>{advMenuText}</MenuItem>
+                                <MenuItem eventKey='AdvertisingSetup'>Advertising setup...</MenuItem>
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
                     <div>
-                        <div className="role-flag pull-right">Adapter</div>
+                        <div className='role-flag pull-right'>Adapter</div>
                         <strong>{name}</strong>
                     </div>
-                    <div className="address-text">{address}</div>
-                    <div className={'icon-wifi ' + iconOpacity} aria-hidden="true" title={advIconTitle} />
+                    <div className='address-text'>{address}</div>
+                    <div className={'icon-wifi ' + iconOpacity} aria-hidden='true' title={advIconTitle} style={progressStyle} />
                     <AdvertisingSetup />
                 </div>
             </div>

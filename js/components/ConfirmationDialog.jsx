@@ -22,6 +22,7 @@ var ConfirmationDialog = React.createClass({
     getInitialState() {
         return { showModal: this.props.show };
     },
+
     render() {
         return (
           <div>
@@ -39,7 +40,7 @@ var ConfirmationDialog = React.createClass({
             </Modal>
           </div>
         );
-    }
+    },
 });
 
 module.exports = ConfirmationDialog;
