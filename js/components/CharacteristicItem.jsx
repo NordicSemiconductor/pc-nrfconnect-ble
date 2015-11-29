@@ -115,7 +115,7 @@ export default class CharacteristicItem extends Component {
         const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
         const notifyIcon = notifying ? 'icon-stop' : 'icon-play';
         const notifyIconStyle = properties.notify || properties.indicate ? {} : {display: 'none'};
-        const itemIsSelected = item === selected;
+        const itemIsSelected = item.instanceId === selected;
         const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)'
             : 'white';

@@ -155,6 +155,7 @@ function _toggleAttributeExpanded(dispatch, getState, attribute) {
     }
 
     dispatch(toggledAttributeExpanded(attribute));
+    dispatch(selectComponentAction(attribute));
 }
 
 function discoveringAttributes(parent) {

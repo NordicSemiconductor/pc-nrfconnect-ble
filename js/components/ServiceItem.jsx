@@ -117,7 +117,7 @@ export default class ServiceItem extends Component {
 
         const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
         const iconStyle = children && children.size === 0 && !addNew ? { display: 'none' } : {};
-        const itemIsSelected = item === selected;
+        const itemIsSelected = item.instanceId === selected;
         const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)'
             : 'white';

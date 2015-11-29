@@ -93,7 +93,7 @@ function toggledAttributeExpanded(state, attribute) {
 export default function deviceDetails(state = initialState, action) {
     switch (action.type) {
         case DeviceDetailsActions.SELECT_COMPONENT:
-            return state.update('selectedComponent', selectedComponent => action.component);
+            return state.update('selectedComponent', selectedComponent => action.component.instanceId);
         case DeviceDetailsActions.DISCOVERING_ATTRIBUTES:
             return discoveringAttributes(state, action.parent);
         case DeviceDetailsActions.DISCOVERED_ATTRIBUTES:

@@ -50,7 +50,7 @@ export default class DescriptorItem extends Component {
             value,
         } = item;
 
-        const itemIsSelected = item === selected;
+        const itemIsSelected = item.instanceId === selected;
         const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)'
             : 'white';
