@@ -37,6 +37,7 @@ class DeviceDetailsContainer extends Component {
             deviceDetails,
             selectComponent,
             toggleAttributeExpanded,
+            readCharacteristic,
             showDialog,
             toggleAdvertising,
             disconnectFromDevice,
@@ -70,6 +71,7 @@ class DeviceDetailsContainer extends Component {
                                                   deviceDetails={deviceDetails}
                                                   onSelectComponent={selectComponent}
                                                   onToggleAttributeExpanded={toggleAttributeExpanded}
+                                                  onReadCharacteristic={readCharacteristic}
                                                   onDisconnectFromDevice={disconnectFromDevice}
                                                   onPairWithDevice={pairWithDevice}
                                                   onUpdateDeviceConnectionParams={updateDeviceConnectionParams}
@@ -109,7 +111,6 @@ function mapDispatchToProps(dispatch) {
             bindActionCreators(DeviceDetailsActions, dispatch),
             bindActionCreators(AdvertisingSetupActions, dispatch),
             bindActionCreators(AdapterActions, dispatch),
-            bindActionCreators(DeviceDetailsActions, dispatch)
         );
 
     return retval;
@@ -126,4 +127,5 @@ DeviceDetailsContainer.propTypes = {
     connectedDevices: PropTypes.object,
     deviceServers: PropTypes.object,
     selectComponent: PropTypes.func.isRequired,
+    readCharacteristic: PropTypes.func.isRequired,
 };

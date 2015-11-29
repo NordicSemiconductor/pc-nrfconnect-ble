@@ -81,9 +81,9 @@ export default class ConnectedDevice extends Component {
                                     <span className='icon-cog' aria-hidden='true' />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <MenuItem eventKey='Disconnect'>Disconnect</MenuItem>
                                     <MenuItem eventKey='Update'>Update connection parameters</MenuItem>
-                                    <MenuItem eventKey='Pair'>Initiate pairing</MenuItem>
+                                    <MenuItem eventKey='Pair'>Pair</MenuItem>
+                                    <MenuItem eventKey='Disconnect'>Disconnect</MenuItem>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>

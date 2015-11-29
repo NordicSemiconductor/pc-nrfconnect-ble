@@ -70,6 +70,7 @@ export default class DeviceDetailsView extends Component {
         const {
             onSelectComponent,
             onToggleAttributeExpanded,
+            onReadCharacteristic,
             onDisconnectFromDevice,
             onPairWithDevice,
             onUpdateDeviceConnectionParams,
@@ -107,6 +108,7 @@ export default class DeviceDetailsView extends Component {
                                                    selected={selected}
                                                    onSelectAttribute={onSelectComponent}
                                                    onToggleAttributeExpanded={onToggleAttributeExpanded}
+                                                   onReadCharacteristic={onReadCharacteristic}
                                                    />
                     );
                 });

@@ -67,6 +67,10 @@ export default class CharacteristicItem extends Component {
         //bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
     }
 
+    _onRead() {
+        this.props.onRead(this.props.item.instanceId);
+    }
+
     render() {
         const {
             item,
@@ -138,7 +142,7 @@ export default class CharacteristicItem extends Component {
                                 {propertyList}
                             </div>
                         </div>
-                        <HexOnlyEditableField value={value.toArray()} onSaveChanges={value => this._onWrite(value)} showReadButton={itemIsSelected}/>
+                        <HexOnlyEditableField value={value.toArray()} onWrite={value => this._onWrite(value)} showReadButton={itemIsSelected} onRead={() => this._onRead()} />
                     </div>
                 </div>
             </div>

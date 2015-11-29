@@ -19,6 +19,17 @@ export const DISCOVERED_ATTRIBUTES = 'DEVICE_DETAILS_DISCOVERED_ATTRIBUTES';
 
 export const TOGGLED_ATTRIBUTE_EXPANDED = 'DEVICE_DETAILS_TOGGLED_ATTRIBUTE_EXPANDED';
 
+export const WRITE_CHARACTERISTIC = 'DEVICE_DETAILS_WRITE_CHARACTERISTIC';
+export const READ_CHARACTERISTIC = 'DEVICE_DETAILS_READ_CHARACTERISTIC';
+export const WRITE_DESCRIPTOR = 'DEVICE_DETAILS_WRITE_DESCRIPTOR';
+export const READ_DESCRIPTOR = 'DEVICE_DETAILS_READ_DESCRIPTOR';
+
+export const WRITING_ATTRIBUTE = 'DEVICE_DETAILS_WRITING_ATTRIBUTE';
+export const READING_ATTRIBUTE = 'DEVICE_DETAILS_READING_ATTRIBUTE';
+export const COMPLETED_WRITING_ATTRIBUTE = 'DEVICE_DETAILS_COMPLETED_WRITING_ATTRIBUTE';
+export const COMPLETED_READING_ATTRIBUTE = 'DEVICE_DETAILS_COMPLETED_READING_ATTRIBUTE';
+export const ERROR_OCCURED = 'DEVICE_DETAILS_ERROR_OCCURED';
+
 import { getInstanceIds } from '../utils/api';
 
 function selectComponentAction(component) {
@@ -156,6 +167,36 @@ function _toggleAttributeExpanded(dispatch, getState, attribute) {
     dispatch(selectComponentAction(attribute));
 }
 
+function _readCharacteristic(dispatch, getState, characteristic) {
+    return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        if (adapterToUse === null) {
+            reject(makeError({error: `No adapter selected`}));
+            return;
+        }
+
+        dispatch(readingAttribute(characteristic));
+
+        adapterToUse.readCharacteristicValue(
+            characteristic.instanceId,
+            (error, value) => {
+                if (error) {
+                    dispatch(completedReadingAttribute(characteristic, null));
+                    reject(makeError({adapter: adapterToUse, characteristic: characteristic, error: error}));
+                }
+
+                resolve(value);
+            }
+        );
+    }).then(value => {
+        dispatch(completedReadingAttribute(characteristic, value));
+    }).catch(error => {
+        console.log(error);
+        dispatch(errorOccuredAction(error.adapter, error.error));
+    });
+}
+
 function discoveringAttributes(parent) {
     return {
         type: DISCOVERING_ATTRIBUTES,
@@ -175,6 +216,43 @@ function toggledAttributeExpanded(attribute) {
     return {
         type: TOGGLED_ATTRIBUTE_EXPANDED,
         attribute,
+    };
+}
+
+function readingAttribute(attribute) {
+    return {
+        type: READING_ATTRIBUTE,
+        attribute,
+    };
+}
+
+function writingAttribute(attribute) {
+    return {
+        type: WRITING_ATTRIBUTE,
+        attribute,
+    };
+}
+
+function completedReadingAttribute(attribute, value) {
+    return {
+        type: COMPLETED_READING_ATTRIBUTE,
+        attribute,
+        value,
+    };
+}
+
+function completedWritingAttribute(attribute) {
+    return {
+        type: COMPLETED_WRITING_ATTRIBUTE,
+        attribute,
+    };
+}
+
+function errorOccuredAction(adapter, error) {
+    return {
+        type: ERROR_OCCURED,
+        adapter,
+        error,
     };
 }
 
@@ -203,5 +281,29 @@ export function discoverDescriptors(characteristic) {
 export function toggleAttributeExpanded(attribute) {
     return (dispatch, getState) => {
         return _toggleAttributeExpanded(dispatch, getState, attribute);
+    };
+}
+
+export function readCharacteristic(characteristic) {
+    return (dispatch, getState) => {
+        return _readCharacteristic(dispatch, getState, characteristic);
+    };
+}
+
+export function writeCharacteristic(characteristic, value) {
+    return (dispatch, getState) => {
+        return _writeCharacteristic(dispatch, getState, characteristic, value);
+    };
+}
+
+export function readDescriptor(descriptor) {
+    return (dispatch, getState) => {
+        return _readDescriptor(dispatch, getState, descriptor);
+    };
+}
+
+export function writeDescriptor(descriptor, value) {
+    return (dispatch, getState) => {
+        return _writeDescriptor(dispatch, getState, descriptor, value);
     };
 }

@@ -13,6 +13,7 @@
 'use strict';
 
 import React from 'react';
+import { PropTypes } from 'react';
 
 import Component from 'react-pure-render/component';
 
@@ -37,7 +38,7 @@ export default class EditableField extends Component {
     Usage:
     <EditableField value={value}
         keyPressValidation={keyPressValidation} completeValidation={completeValidation}
-                    onBeforeBackspace={onBeforeBackspace} formatInput={formatInput} insideSelector=".some-selector" />
+                    onBeforeBackspace={onBeforeBackspace} formatInput={formatInput} insideSelector='.some-selector' />
      />
 
     If props
@@ -123,27 +124,29 @@ export default class EditableField extends Component {
         }
 
         if (e.key === 'Enter') {
-            this._saveChanges();
+            this._write();
             e.preventDefault();
         }
     }
 
-    _onOkButtonClick(e) {
+    _onWriteButtonClick(e) {
         e.stopPropagation();
-        this._saveChanges();
+        this._write();
     }
 
     _onReadButtonClick(e) {
+        const { onRead } = this.props;
+
         e.stopPropagation();
         this._read();
     }
 
-    _saveChanges() {
+    _write() {
         const {valid, validationMessage} = this.props.completeValidation ? this.props.completeValidation(this.value) : {valid: true};
         if (valid) {
             this.editing = false;
-            if (this.props.onSaveChanges) {
-                this.props.onSaveChanges(this.props.getValueArray(this.value));
+            if (this.props.onWrite) {
+                this.props.onWrite(this.props.getValueArray(this.value));
             }
         } else {
             this.validationMessage = validationMessage;
@@ -151,7 +154,7 @@ export default class EditableField extends Component {
     }
 
     _read() {
-        console.log('read button pressed!');
+        this.props.onRead();
     }
 
     _stopPropagation(e) {
@@ -165,23 +168,23 @@ export default class EditableField extends Component {
         let child;
         if (this.props.plain) {
             child = <TextareaAutosize {...this.props}
-                                      ref="editableTextarea"
+                                      ref='editableTextarea'
                                       minRows={1}
                                       onKeyDown={e => this._onKeyDown(e)}
                                       value={this.value}
                                       onChange={e => this._onChange(e)}
                                       onClick={this._stopPropagation} />
         } else if (this.editing) {
-            child = <div className="editable-field-editor-wrap">
-                        <div className="alert-wrap">
-                            <div className="alert alert-danger tooltip top" style={{display: this.validationMessage == '' ? 'none' : 'block' }}>
-                                <div className="tooltip-arrow"></div>
+            child = <div className='editable-field-editor-wrap'>
+                        <div className='alert-wrap'>
+                            <div className='alert alert-danger tooltip top' style={{display: this.validationMessage == '' ? 'none' : 'block' }}>
+                                <div className='tooltip-arrow'></div>
                                 {this.validationMessage}
                             </div>
                         </div>
-                        <div className="btn btn-primary btn-xs btn-nordic" onClick={this._onOkButtonClick}><i className="icon-ok"></i></div>
+                        <div className='btn btn-primary btn-xs btn-nordic' onClick={e => this._onWriteButtonClick(e)}><i className='icon-ok'></i></div>
                         <TextareaAutosize {...this.props}
-                                          ref="editableTextarea"
+                                          ref='editableTextarea'
                                           minRows={1}
                                           onKeyDown={e => this._onKeyDown(e)}
                                           value={this.value}
@@ -189,22 +192,30 @@ export default class EditableField extends Component {
                                           onClick={this._stopPropagation} />
                     </div>;
         } else if (this.props.showReadButton) {
-            child = <div className="editable-field-editor-wrap">
-                        <div className="btn btn-primary btn-xs btn-nordic" onClick={this._onReadButtonClick}><i className="icon-ccw"></i></div>
-                        <div className="subtle-text editable" onClick={e => this._toggleEditing(e)}>
+            child = <div className='editable-field-editor-wrap'>
+                        <div className='btn btn-primary btn-xs btn-nordic' onClick={e => this._onReadButtonClick(e)}><i className='icon-ccw'></i></div>
+                        <div className='subtle-text editable' onClick={e => this._toggleEditing(e)}>
                             <span>{this.value || nonBreakingSpace}</span>
                         </div>
                     </div>;
         } else {
-            child = <div className="subtle-text editable" onClick={e => this._toggleEditing(e)}>
+            child = <div className='subtle-text editable' onClick={e => this._toggleEditing(e)}>
                         <span>{this.value || nonBreakingSpace}</span>
                     </div>;
         }
 
         return (
-            <div className="editable-field">
+            <div className='editable-field'>
                 {child}
             </div>
         );
     }
 }
+
+EditableField.propTypes = {
+    value: PropTypes.string.isRequired,
+    onWrite: PropTypes.func.isRequired,
+    onRead: PropTypes.func.isRequired,
+    showReadButton: PropTypes.bool.isRequired,
+    insideSelector: PropTypes.string,
+};

@@ -84,6 +84,29 @@ function discoveredAttributes(state, parent, attributes) {
     return state;
 }
 
+function completedReadingAttribute(state, attribute, value) {
+    if (!attribute) {
+        return state;
+    }
+
+    const attributeInstanceIds = getInstanceIds(attribute);
+    const attributeStatePath = getNodeStatePath(attribute);
+
+    let immutableAttribute = null;
+
+    if (attributeInstanceIds.descriptor) {
+        immutableAttribute = getImmutableDescriptor(attribute);
+    } else if (attributeInstanceIds.characteristic) {
+        immutableAttribute = getImmutableCharacteristic(attribute);
+    } else if (attributeInstanceIds.service) {
+        immutableAttribute = getImmutableService(attribute);
+    }
+
+    state = state.setIn(attributeStatePath.concat('value'), List(value));
+
+    return state;
+}
+
 function toggledAttributeExpanded(state, attribute) {
     const attributeStatePath = getNodeStatePath(attribute);
     const previouslyExpanded = state.getIn(attributeStatePath.concat('expanded'));
@@ -102,6 +125,11 @@ export default function deviceDetails(state = initialState, action) {
             return toggledAttributeExpanded(state, action.attribute);
         case AdapterActions.DEVICE_CONNECTED:
             return state.setIn(['devices', action.device.instanceId], new DeviceDetail());
+        case AdapterActions.READING_ATTRIBUTE:
+            return state;
+        case AdapterActions.COMPLETED_READING_ATTRIBUTE:
+            return state;
+            //return completedReadingAttributes(state, action.attribute, action.value);
         default:
             return state;
     }
