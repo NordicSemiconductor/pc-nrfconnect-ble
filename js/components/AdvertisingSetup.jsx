@@ -99,7 +99,7 @@ class AdvertisingSetup extends Component {
                             <div className="adv-col adv-pkt">
                                 <Button
                                     className="btn-add btn-primary btn-nordic"
-                                    onClick={() => this.addToAdvData()}>Add</Button>
+                                    onClick={() => this.addToAdvData()}>Add to advertising data</Button>
                                 <AdvertisingList
                                     title="Advertising data"
                                     onDelete={deleteAdvData}
@@ -108,7 +108,7 @@ class AdvertisingSetup extends Component {
                             <div className="adv-col scan-rsp-pkt">
                                 <Button
                                     className="btn-add btn-primary btn-nordic"
-                                    onClick={() => this.addToScanResponse()}>Add</Button>
+                                    onClick={() => this.addToScanResponse()}>Add to scan response</Button>
                                 <AdvertisingList
                                     title="Scan response data"
                                     onDelete={deleteScanRsp}
@@ -160,7 +160,7 @@ AdvertisingSetup.propTypes = {
     addAdvEntry: PropTypes.func.isRequired,
     setAdvertisingData: PropTypes.func.isRequired,
     advertisingSetup: PropTypes.object.isRequired,
-    setAdvdataStatus: PropTypes.object,
+    setAdvdataStatus: PropTypes.string.isRequired,
     deleteAdvData: PropTypes.func.isRequired,
     addScanRsp: PropTypes.func.isRequired,
     deleteScanRsp: PropTypes.func.isRequired,

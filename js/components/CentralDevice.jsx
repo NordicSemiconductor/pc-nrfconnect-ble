@@ -88,7 +88,7 @@ export default class CentralDevice extends Component {
                         <strong>{name}</strong>
                     </div>
                     <div className='address-text'>{address}</div>
-                    <div className={'icon-wifi ' + iconOpacity} aria-hidden='true' title={advIconTitle} />
+                    <div className={'icon-wifi ' + iconOpacity} aria-hidden='true' title={advIconTitle} style={progressStyle} />
                     <AdvertisingSetup />
                 </div>
             </div>

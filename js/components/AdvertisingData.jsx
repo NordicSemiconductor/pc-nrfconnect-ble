@@ -32,6 +32,7 @@ export default class AdvertisingData extends Component {
         this.typeApi = null;
         this.typeKey = null;
         this.title = 'Select data type';
+        this.placeholderText = 'Select data type';
     }
 
     keyToAdvertisingType(key) {
@@ -78,10 +79,53 @@ export default class AdvertisingData extends Component {
         }
     }
 
+    formatValue(value, key) {
+        switch (key) {
+            case COMPLETE_LOCAL_NAME:
+            case SHORTENED_LOCAL_NAME:
+                return value;
+
+            case COMPLETE_16_UUIDS:
+            case INCOMPLETE_16_UUIDS:
+            case COMPLETE_128_UUIDS:
+            case INCOMPLETE_128_UUIDS:
+                // Create array of uuid text strings
+                return value.replace(' ', '').split(',');
+
+            case TX_POWER:
+                return parseInt(value);
+
+            default:
+                return null;
+        }
+    }
+
+    getPlaceholderText(key) {
+        switch (key) {
+            case COMPLETE_LOCAL_NAME:
+            case SHORTENED_LOCAL_NAME:
+                return 'Enter local name';
+
+            case COMPLETE_16_UUIDS:
+            case INCOMPLETE_16_UUIDS:
+            case COMPLETE_128_UUIDS:
+            case INCOMPLETE_128_UUIDS:
+                // Create array of uuid text strings
+                return 'Enter UUID(s)';
+
+            case TX_POWER:
+                return 'Enter TX power';
+
+            default:
+                return 'Enter value';
+        }
+    }
+
     handleSelect(event, eventKey) {
         this.value = '';
         this.typeKey = eventKey;
         this.title = this.keyToAdvertisingType(eventKey);
+        this.placeholderText = this.getPlaceholderText(eventKey);
         this.forceUpdate();
 
         this.type = this.keyToAdvertisingType(this.typeKey);
@@ -103,6 +147,7 @@ export default class AdvertisingData extends Component {
             type: this.type,
             typeApi: this.typeApi,
             value: this.value,
+            formattedValue: this.formatValue(this.value, this.typeKey),
         };
 
         if (this.validateInput() != SUCCESS) {
@@ -179,6 +224,8 @@ export default class AdvertisingData extends Component {
             onValueChange,
         } = this.props;
 
+        const inputDisabled = (this.type === null);
+
         return (
             <div>
                 <div className="adv-drop-container">
@@ -198,6 +245,7 @@ export default class AdvertisingData extends Component {
                 </div>
                 <div className="adv-value-container">
                     <Input
+                        disabled={inputDisabled}
                         className="adv-value"
                         type="text"
                         id="value"
@@ -205,7 +253,7 @@ export default class AdvertisingData extends Component {
                         value={this.value}
                         label="Value"
                         hasFeedback
-                        placeholder="Enter value"
+                        placeholder={this.placeholderText}
                         bsStyle={this.validateInput()}
                         onChange={event => this.handleChange(event)} />
                 </div>

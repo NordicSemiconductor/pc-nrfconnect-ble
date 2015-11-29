@@ -38,25 +38,12 @@ function _setAdvertisingData(advertisingSetup, dispatch, getState) {
             reject('No adapter is selected.');
         }
 
-        // TODO: Improve this
         advertisingSetup.advDataEntries.forEach(entry => {
-            if (entry.typeApi.toLowerCase().indexOf('uuid') > -1) {
-                advData[entry.typeApi] = entry.value.replace(' ', '').split(',');
-            } else if (entry.typeApi.toLowerCase().indexOf('power') > -1) {
-                advData[entry.typeApi] = parseInt(entry.value);
-            } else {
-                advData[entry.typeApi] = entry.value;
-            }
+            advData[entry.typeApi] = entry.formattedValue;
         });
 
         advertisingSetup.scanResponseEntries.forEach(entry => {
-            if (entry.typeApi.toLowerCase().indexOf('uuid') > -1) {
-                scanResp[entry.typeApi] = entry.value.replace(' ', '').split(',');
-            } else if (entry.typeApi.toLowerCase().indexOf('power') > -1) {
-                scanResp[entry.typeApi] = parseInt(entry.value);
-            } else {
-                scanResp[entry.typeApi] = entry.value;
-            }
+            scanResp[entry.typeApi] = entry.formattedValue;
         });
 
         adapter.setAdvertisingData(advData, scanResp, error => {

@@ -10,6 +10,7 @@ const InitialState = Record({
         typeKey: 0,
         typeApi: 'completeLocalName',
         value: 'nRF Connect',
+        formattedValue: 'nRF Connect',
         id: 10000, // Random high id to avoid conflict with autoincremented ids
     }]),
     scanResponseEntries: List(),
