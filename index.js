@@ -56,15 +56,20 @@ app.once('ready', function() {
             label: '&File',
             submenu: [
                 {
-                        label: '&Log file...',
-                        enabled: false,
-                        /*accelerator: 'CmdOrCtrl+L',*/
-                        click: function() {
-                            open(global.logFileDir + '\\log.txt');
-                        },
+                    label: '&Log file...',
+                    enabled: false,
+                    /*accelerator: 'CmdOrCtrl+L',*/
+                    click: function() {
+                        open(global.logFileDir + '\\log.txt');
                     },
-                    {type: 'separator'},
-                    {label: '&Quit', accelerator: 'CmdOrCtrl+Q', click: function() {app.quit();},
+                },
+                {type: 'separator'},
+                {
+                    label: '&Quit',
+                    accelerator: 'CmdOrCtrl+Q',
+                    click: function() {
+                        app.quit();
+                    },
                 },
             ],
         },
