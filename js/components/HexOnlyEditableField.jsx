@@ -163,7 +163,7 @@ export default class HexOnlyEditableField extends Component {
 
         // Convert from array [1, 10, 16, 20] to hex string "01-0A-10-14"
         const hexValueStringArray = value.map(decimalNumber => ('0' + decimalNumber.toString(16)).slice(-2));
-        const hexValueString = hexValueStringArray.join('-');
+        const hexValueString = hexValueStringArray.join('-').toUpperCase();
 
         //formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
         return <EditableField {...props}

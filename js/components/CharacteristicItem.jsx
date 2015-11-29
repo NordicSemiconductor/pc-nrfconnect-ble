@@ -90,7 +90,8 @@ export default class CharacteristicItem extends Component {
 
         properties.forEach((propertyValue, property) => {
             if (propertyValue) {
-                propertyList.push(property);
+
+                propertyList.push(<div key={propertyValue} className="device-flag">{property}</div>);
             }
         });
 
