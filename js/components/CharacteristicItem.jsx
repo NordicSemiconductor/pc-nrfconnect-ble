@@ -122,22 +122,22 @@ export default class CharacteristicItem extends Component {
 
         return (
         <div>
-            <div className="characteristic-item" style={{backgroundColor: backgroundColor}} onClick={this._onContentClick.bind(this)} ref="item">
-                <div className="expand-area" onClick={hasPossibleChildren ? this._onExpandAreaClick.bind(this) : null}>
+            <div className="characteristic-item" style={{backgroundColor: backgroundColor}} onClick={e => this._onContentClick(e)} ref="item">
+                <div className="expand-area" onClick={hasPossibleChildren ? e => this._onExpandAreaClick(e) : null}>
                     <div className="bar1" />
                     <div className="bar2" />
                     <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={expandIconStyle}></i></div>
                 </div>
                 <div className="content-wrap">
                     <div className="content">
-                        <div className="btn btn-primary btn-xs btn-nordic btn-notify" title="Toggle notifications" style={notifyIconStyle} onClick={this._onToggleNotify.bind(this)}><i className={notifyIcon}></i></div>
+                        <div className="btn btn-primary btn-xs btn-nordic btn-notify" title="Toggle notifications" style={notifyIconStyle} onClick={e => this._onToggleNotify(e)}><i className={notifyIcon}></i></div>
                         <div>
                             <div className="truncate-text" title={'[' + item.declarationHandle + '] ' + name}>{name}</div>
                             <div className="flag-line">
                                 {propertyList}
                             </div>
                         </div>
-                        <HexOnlyEditableField value={value} insideSelector=".characteristic-item" onSaveChanges={this._onWrite.bind(this)} showReadButton={itemIsSelected}/>
+                        <HexOnlyEditableField value={value.toArray()} insideSelector=".characteristic-item" onSaveChanges={value => this._onWrite(value)} showReadButton={itemIsSelected}/>
                     </div>
                 </div>
             </div>

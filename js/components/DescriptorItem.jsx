@@ -55,14 +55,14 @@ export default class DescriptorItem extends Component {
             ? 'rgb(179,225,245)'
             : 'white';
         return (
-            <div className="descriptor-item" style={{ backgroundColor: backgroundColor }} onClick={this._onContentClick.bind(this)}>
+            <div className="descriptor-item" style={{ backgroundColor: backgroundColor }} onClick={e => this._onContentClick(e)}>
                 <div className="bar1" />
                 <div className="bar2" />
                 <div className="bar3" />
                 <div className="content-wrap">
                     <div className="content">
                         <div className="truncate-text" title={'[' + handle + '] ' + name}>{name}</div>
-                        <HexOnlyEditableField value={value} insideSelector=".descriptor-item" onSaveChanges={this._onWrite} showReadButton={itemIsSelected} />
+                        <HexOnlyEditableField value={value.toArray()} insideSelector=".descriptor-item" onSaveChanges={this._onWrite} showReadButton={itemIsSelected} />
                     </div>
                 </div>
             </div>

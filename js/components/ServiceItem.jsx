@@ -123,8 +123,8 @@ export default class ServiceItem extends Component {
             : 'white';
         return (
             <div>
-                <div className="service-item" style={{ backgroundColor: backgroundColor }}  onClick={this._onContentClick.bind(this)}>
-                    <div className="expand-area" onClick={this._onExpandAreaClick.bind(this)}>
+                <div className="service-item" style={{ backgroundColor: backgroundColor }}  onClick={e => this._onContentClick(e)}>
+                    <div className="expand-area" onClick={e => this._onExpandAreaClick(e)}>
                         <div className="bar1" />
                         <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
                     </div>

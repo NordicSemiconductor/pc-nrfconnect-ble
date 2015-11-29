@@ -45,7 +45,7 @@
     "react-dom": "^0.14.0",
     "react-hotkey": "0.3.0",
     "react-infinite": "NordicSemiconductor/react-infinite",
-    "react-onclickoutside": "0.3.1",
+    "react-onclickoutside": "4.5.0",
     "react-pure-render": "1.0.2",
     "react-redux": "4.0.0",
     "react-textarea-autosize": "2.5.1",
