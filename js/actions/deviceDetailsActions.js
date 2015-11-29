@@ -14,10 +14,10 @@
 
 export const SELECT_COMPONENT = 'DEVICE_DETAILS_SELECT_COMPONENT';
 
-export const DISCOVERING_ATTRIBUTES = 'DISCOVERING_ATTRIBUTES';
-export const DISCOVERED_ATTRIBUTES = 'DISCOVERED_ATTRIBUTES';
+export const DISCOVERING_ATTRIBUTES = 'DEVICE_DETAILS_DISCOVERING_ATTRIBUTES';
+export const DISCOVERED_ATTRIBUTES = 'DEVICE_DETAILS_DISCOVERED_ATTRIBUTES';
 
-export const TOGGLED_ATTRIBUTE_EXPANDED = 'TOGGLED_ATTRIBUTE_EXPANDED';
+export const TOGGLED_ATTRIBUTE_EXPANDED = 'DEVICE_DETAILS_TOGGLED_ATTRIBUTE_EXPANDED';
 
 import { getInstanceIds } from '../utils/api';
 
@@ -131,8 +131,6 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
 function _toggleAttributeExpanded(dispatch, getState, attribute) {
     const state = getState();
     const adapterToUse = state.adapter.api.selectedAdapter;
-
-    console.log('toggleAttributeExpanded');
 
     if (adapterToUse === null) {
         dispatch(errorOccuredAction(undefined, 'No adapter selected'));

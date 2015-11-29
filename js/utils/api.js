@@ -33,6 +33,7 @@ const ImmutableAdapter = Record({
     connectedDevices: Map(),
     /*Adapter sub-reducers*/
     deviceDetails: undefined,
+    serverSetup: undefined,
 });
 
 const ImmutableDevice = Record({

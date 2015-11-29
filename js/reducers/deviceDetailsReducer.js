@@ -97,8 +97,6 @@ export default function deviceDetails(state = initialState, action) {
         case DeviceDetailsActions.DISCOVERING_ATTRIBUTES:
             return discoveringAttributes(state, action.parent);
         case DeviceDetailsActions.DISCOVERED_ATTRIBUTES:
-            console.log('discovered attributes');
-            console.log(action);
             return discoveredAttributes(state, action.parent, action.attributes);
         case DeviceDetailsActions.TOGGLED_ATTRIBUTE_EXPANDED:
             return toggledAttributeExpanded(state, action.attribute);

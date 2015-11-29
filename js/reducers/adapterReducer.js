@@ -8,6 +8,7 @@ import { combineReducers } from 'redux';
 import * as apiHelper from '../utils/api';
 
 import deviceDetails from './deviceDetailsReducer';
+import serverSetup from './serverSetupReducer';
 
 import * as AdapterAction from '../actions/adapterActions';
 import { logger } from '../logging';
@@ -181,11 +182,12 @@ export default function adapter(state =
 
     const adapterSubReducers = combineReducers({
         deviceDetails,
+        serverSetup,
     });
     const selectedAdapter = state.adapters[state.selectedAdapter];
 
     if (selectedAdapter) {
-        const newSubReducerStates = adapterSubReducers({deviceDetails: selectedAdapter.deviceDetails}, action);
+        const newSubReducerStates = adapterSubReducers({deviceDetails: selectedAdapter.deviceDetails, serverSetup: selectedAdapter.serverSetup}, action);
         state.adapters[state.selectedAdapter] = selectedAdapter.merge(newSubReducerStates);
     }
 
