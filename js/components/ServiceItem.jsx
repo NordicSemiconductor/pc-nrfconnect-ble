@@ -100,7 +100,7 @@ export default class ServiceItem extends Component {
         // TODO: Add addDescriptor action
         // addDescriptor={this.props.addDescriptor}
         if (discoveringChildren) {
-            childrenList.push(<EnumeratingAttributes bars={2} />);
+            childrenList.push(<EnumeratingAttributes key={'enumerating-characteristics'} bars={2} />);
         } else if (children) {
             children.forEach(characteristic => {
                 childrenList.push(<CharacteristicItem key={characteristic.instanceId}
@@ -140,7 +140,7 @@ export default class ServiceItem extends Component {
                 </div>
                 <div style={{display: expanded ? 'block' : 'none'}}>
                     {childrenList}
-                    {addNew ? <AddNewItem text="New characteristic" id={"add-btn-" + instanceId} selected={selected} onClick={this._addCharacteristic} bars={2} /> : null}
+                    {addNew ? <AddNewItem key='add-new-characteristic' text="New characteristic" id={"add-btn-" + instanceId} selected={selected} onClick={this._addCharacteristic} bars={2} /> : null}
                 </div>
             </div>
         );

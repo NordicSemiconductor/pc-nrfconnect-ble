@@ -104,7 +104,7 @@ export default class CharacteristicItem extends Component {
         const childrenList = [];
 
         if (discoveringChildren) {
-            childrenList.push(<EnumeratingAttributes bars={3} />);
+            childrenList.push(<EnumeratingAttributes key={'enumerating-descriptor'} bars={3} />);
         } else if (children) {
             children.forEach(descriptor => {
                 childrenList.push(<DescriptorItem key={descriptor.instanceId}
