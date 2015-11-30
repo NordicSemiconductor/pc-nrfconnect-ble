@@ -129,7 +129,7 @@ export default connect(
 
 DeviceDetailsContainer.propTypes = {
     adapterState: PropTypes.object,
-    selectedComponent: PropTypes.object,
+    selectedComponent: PropTypes.string,
     connectedDevices: PropTypes.object,
     deviceServers: PropTypes.object,
     selectComponent: PropTypes.func.isRequired,

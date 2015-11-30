@@ -97,8 +97,7 @@ export default class CharacteristicItem extends Component {
 
         properties.forEach((propertyValue, property) => {
             if (propertyValue) {
-
-                propertyList.push(<div key={propertyValue} className="device-flag">{property}</div>);
+                propertyList.push(<div key={property} className="device-flag">{property}</div>);
             }
         });
 
@@ -153,7 +152,7 @@ export default class CharacteristicItem extends Component {
             </div>
             <div style={{display: expanded ? 'block' : 'none'}}>
                 {childrenList}
-                {addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + instanceId} selected={selected} onClick={this._addDescriptor} bars={3} /> : null}
+                {addNew ? <AddNewItem key={'add-new-descriptor'}text="New descriptor" id={"add-btn-" + instanceId} selected={selected} onClick={this._addDescriptor} bars={3} /> : null}
             </div>
         </div>
         );
