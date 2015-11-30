@@ -13,7 +13,6 @@
 'use strict';
 
 import React from 'react';
-import Reflux from 'reflux';
 
 import {Modal} from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
