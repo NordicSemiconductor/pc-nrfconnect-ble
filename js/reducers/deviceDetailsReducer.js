@@ -12,7 +12,7 @@
 
 'use strict';
 
-import { Record, Map } from 'immutable';
+import { List, Record, Map } from 'immutable';
 
 import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
 import * as AdapterActions from '../actions/adapterActions';
@@ -119,7 +119,7 @@ export default function deviceDetails(state = initialState, action) {
         case DeviceDetailsActions.COMPLETED_READING_ATTRIBUTE:
             return completedReadWriteAttribute(state, action.attribute, action.value);
         case DeviceDetailsActions.COMPLETED_WRITING_ATTRIBUTE:
-            return completedReadWriteAttribute(state, action.attribute);
+            return completedReadWriteAttribute(state, action.attribute, action.value);
         case AdapterActions.DEVICE_CONNECTED:
             return state.setIn(['devices', action.device.instanceId], new DeviceDetail());
         case AdapterActions.READING_ATTRIBUTE:
