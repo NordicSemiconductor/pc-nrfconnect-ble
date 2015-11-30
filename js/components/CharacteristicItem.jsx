@@ -63,12 +63,11 @@ export default class CharacteristicItem extends Component {
     }
 
     _onWrite(value) {
-        // TODO: do a write action
-        //bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
+        this.props.onWrite(this.props.item, value);
     }
 
     _onRead() {
-        this.props.onRead(this.props.item.instanceId);
+        this.props.onRead(this.props.item);
     }
 
     render() {
@@ -77,7 +76,11 @@ export default class CharacteristicItem extends Component {
             selected,
             addNew,
             selectOnClick,
+            onSelectAttribute,
+            onReadDescriptor,
+            onWriteDescriptor,
         } = this.props;
+
         const {
             instanceId,
             handle,
@@ -109,8 +112,10 @@ export default class CharacteristicItem extends Component {
                                                   item={descriptor}
                                                   selectOnClick={selectOnClick}
                                                   selected={selected}
-                                                  onSelectAttribute={this.props.onSelectAttribute}
-                                                  onChange={this._childChanged} />
+                                                  onSelectAttribute={onSelectAttribute}
+                                                  onChange={this._childChanged}
+                                                  onRead={onReadDescriptor}
+                                                  onWrite={onWriteDescriptor} />
                 );
             });
         }

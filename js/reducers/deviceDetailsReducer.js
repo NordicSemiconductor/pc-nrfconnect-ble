@@ -84,23 +84,16 @@ function discoveredAttributes(state, parent, attributes) {
     return state;
 }
 
-function completedReadingAttribute(state, attribute, value) {
+function completedReadWriteAttribute(state, attribute, value) {
     if (!attribute) {
         return state;
     }
 
-    const attributeInstanceIds = getInstanceIds(attribute);
-    const attributeStatePath = getNodeStatePath(attribute);
-
-    let immutableAttribute = null;
-
-    if (attributeInstanceIds.descriptor) {
-        immutableAttribute = getImmutableDescriptor(attribute);
-    } else if (attributeInstanceIds.characteristic) {
-        immutableAttribute = getImmutableCharacteristic(attribute);
-    } else if (attributeInstanceIds.service) {
-        immutableAttribute = getImmutableService(attribute);
+    if (!value) {
+        return state;
     }
+
+    const attributeStatePath = getNodeStatePath(attribute);
 
     state = state.setIn(attributeStatePath.concat('value'), List(value));
 
@@ -123,13 +116,14 @@ export default function deviceDetails(state = initialState, action) {
             return discoveredAttributes(state, action.parent, action.attributes);
         case DeviceDetailsActions.TOGGLED_ATTRIBUTE_EXPANDED:
             return toggledAttributeExpanded(state, action.attribute);
+        case DeviceDetailsActions.COMPLETED_READING_ATTRIBUTE:
+            return completedReadWriteAttribute(state, action.attribute, action.value);
+        case DeviceDetailsActions.COMPLETED_WRITING_ATTRIBUTE:
+            return completedReadWriteAttribute(state, action.attribute);
         case AdapterActions.DEVICE_CONNECTED:
             return state.setIn(['devices', action.device.instanceId], new DeviceDetail());
         case AdapterActions.READING_ATTRIBUTE:
             return state;
-        case AdapterActions.COMPLETED_READING_ATTRIBUTE:
-            return state;
-            //return completedReadingAttributes(state, action.attribute, action.value);
         default:
             return state;
     }

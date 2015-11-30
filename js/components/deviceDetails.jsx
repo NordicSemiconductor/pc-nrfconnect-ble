@@ -71,6 +71,9 @@ export default class DeviceDetailsView extends Component {
             onSelectComponent,
             onToggleAttributeExpanded,
             onReadCharacteristic,
+            onWriteCharacteristic,
+            onReadDescriptor,
+            onWriteDescriptor,
             onDisconnectFromDevice,
             onPairWithDevice,
             onUpdateDeviceConnectionParams,
@@ -109,6 +112,9 @@ export default class DeviceDetailsView extends Component {
                                                    onSelectAttribute={onSelectComponent}
                                                    onToggleAttributeExpanded={onToggleAttributeExpanded}
                                                    onReadCharacteristic={onReadCharacteristic}
+                                                   onWriteCharacteristic={onWriteCharacteristic}
+                                                   onReadDescriptor={onReadDescriptor}
+                                                   onWriteDescriptor={onWriteDescriptor}
                                                    />
                     );
                 });

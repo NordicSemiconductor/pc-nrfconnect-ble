@@ -38,6 +38,9 @@ class DeviceDetailsContainer extends Component {
             selectComponent,
             toggleAttributeExpanded,
             readCharacteristic,
+            writeCharacteristic,
+            readDescriptor,
+            writeDescriptor,
             showDialog,
             toggleAdvertising,
             disconnectFromDevice,
@@ -72,6 +75,9 @@ class DeviceDetailsContainer extends Component {
                                                   onSelectComponent={selectComponent}
                                                   onToggleAttributeExpanded={toggleAttributeExpanded}
                                                   onReadCharacteristic={readCharacteristic}
+                                                  onWriteCharacteristic={writeCharacteristic}
+                                                  onReadDescriptor={readDescriptor}
+                                                  onWriteDescriptor={writeDescriptor}
                                                   onDisconnectFromDevice={disconnectFromDevice}
                                                   onPairWithDevice={pairWithDevice}
                                                   onUpdateDeviceConnectionParams={updateDeviceConnectionParams}

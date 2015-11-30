@@ -110,6 +110,9 @@ export default class ServiceItem extends Component {
                                                       onSelectAttribute={this.props.onSelectAttribute}
                                                       onToggleAttributeExpanded={this.props.onToggleAttributeExpanded}
                                                       onRead={this.props.onReadCharacteristic}
+                                                      onWrite={this.props.onWriteCharacteristic}
+                                                      onReadDescriptor={this.props.onReadDescriptor}
+                                                      onWriteDescriptor={this.props.onWriteDescriptor}
                                                       onChange={this._childChanged}
                                                       addNew={addNew} />
                 );
