@@ -22,12 +22,11 @@ export function getSelectedAdapter(state) {
 // TODO: get clarity regarding what these states actually means...
 export const BLEEventState = {
     UNKNOWN: 0,
-    ERROR: 1,
-    TIMED_OUT: 2,
-    REJECTED: 3,
-    CANCELED: 4,
-    INDETERMINATE: 5,
-    SUCCESS: 6,
+    ERROR: 1,         //
+    REJECTED: 2,      //
+    DISCONNECTED: 3,  // If device has disconnected, set to this state.
+    INDETERMINATE: 4, // State is not determined yet, this is the start state for all events.
+    SUCCESS: 5,
 };
 
 export const BLEEventType = {

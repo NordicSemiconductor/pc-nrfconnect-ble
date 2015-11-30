@@ -63,6 +63,19 @@ function selectEventId(state, selectedEventId) {
     return state.set('selectedEventId', selectedEventId);
 }
 
+function deviceDisconnected(state, device) {
+    // Find given device event that has state INDETERMINATE and set it to DISCONNECTED
+    const events = state.events.filter((value, index) =>
+        (value.state === BLEEventState.INDETERMINATE) &&
+        (value.device.address === device.address));
+
+    events.forEach(event => {
+        state = connectionParamUpdateStatus(state, event.id, BLEEventState.DISCONNECTED);
+    });
+
+    return state;
+}
+
 export default function bleEvent(state = initialState, action)
 {
     switch (action.type) {
@@ -76,6 +89,8 @@ export default function bleEvent(state = initialState, action)
             return connectionUpdateParamRequest(state, action.device, action.requestedConnectionParams);
         case AdapterActions.DEVICE_CONNECTION_PARAM_UPDATE_STATUS:
             return connectionParamUpdateStatus(state, action.id, action.status);
+        case AdapterActions.DEVICE_DISCONNECTED:
+            return deviceDisconnected(state, action.device);
         default:
             return state;
     }

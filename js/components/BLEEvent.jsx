@@ -79,10 +79,9 @@ export class BLEEvent extends Component {
 
         switch (event.state) {
             case BLEEventState.ERROR:
-            case BLEEventState.TIMED_OUT:
-            case BLEEventState.REJECTED:
-            case BLEEventState.CANCELED:
-                return 'failed-item';
+             case BLEEventState.REJECTED:
+             case BLEEventState.DISCONNECTED:
+                  return 'failed-item';
             case BLEEventState.INDETERMINATE:
                 return '';
             case BLEEventState.SUCCESS:
@@ -130,6 +129,9 @@ export class BLEEvent extends Component {
                 </div>
                 <div className='content-wrap'>
                     {this._getEventContent()}
+                    <div>
+                        State: {event.state}
+                    </div>
                 </div>
             </div>
         );
