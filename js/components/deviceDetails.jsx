@@ -78,8 +78,8 @@ export default class DeviceDetailsView extends Component {
 
         const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
 
-        const connectedDevice = <ConnectedDevice id={instanceId + 'details'}
-                                                 sourceId={adapter.instanceId + 'details'}
+        const connectedDevice = <ConnectedDevice id={instanceId + '_details'}
+                                                 sourceId={adapter.instanceId + '_details'}
                                                  key={instanceId}
                                                  device={device}
                                                  selected={selected}
