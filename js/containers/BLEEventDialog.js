@@ -18,7 +18,7 @@ import Component from 'react-pure-render/component';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Modal } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 import { BLEEventState } from '../actions/common';
 
 import { BLEEvent } from '../components/BLEEvent';
@@ -44,25 +44,19 @@ export class BLEEventDialog extends Component {
         selectEventId(selectedEventId);
     }
 
-    _areAllEventsHandledOrTimedOut() {
+    _areAllEventsHandled() {
         const { events } = this.props;
+        let allEventsHandled = true;
 
         events.forEach((event, id) => {
-            if (!event.state) {
-                return false;
+            if (event.state === BLEEventState.INDETERMINATE) {
+                allEventsHandled = false;
+                return false; // Stops the iteration
             }
         });
 
-        return true;
+        return allEventsHandled;
     }
-
-/*
-    _handleEditorUpdate(selectedEventId) {
-        this.refs['event_' + this.props.selectedEventId].stopCounter();
-        this.setState({
-            selectedEventId: null
-        });
-    } */
 
     render() {
         const {
@@ -127,7 +121,7 @@ export class BLEEventDialog extends Component {
                 </div>
 
                 <Modal.Footer>
-                    <button disabled={!this._areAllEventsHandledOrTimedOut()} className='btn btn-primary btn-nordic' onClick={() => this._close()}>Close</button>
+                    <Button disabled={!this._areAllEventsHandled()} className='btn btn-primary btn-nordic' onClick={() => this._close()}>Close</Button>
                 </Modal.Footer>
             </Modal>
         );

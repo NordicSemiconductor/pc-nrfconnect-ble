@@ -11,6 +11,7 @@ const EVENT_TIMEOUT_SECONDS = 30;
 export class BLEEvent extends Component {
     constructor(props) {
         super(props);
+        this.countDownTimerRef = 'counter-' + this.props.event.id;
     }
 
     _getEventInfo() {
@@ -36,13 +37,14 @@ export class BLEEvent extends Component {
     }
 
     _getEventContent() {
-        const { event, onTimedOut } = this.props;
+        const { event, onTimedOut, countDownTimerRef } = this.props;
         const { name, icon } = this._getEventInfo();
 
         let eventTimer = (<div/>);
 
-        if (event.type === BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
-            eventTimer = (<CountdownTimer ref='counter' seconds={EVENT_TIMEOUT_SECONDS} onTimeout={() => onTimedOut()}/>);
+        if (event.type === BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE &&
+            event.state === BLEEventState.INDETERMINATE) {
+            eventTimer = (<CountdownTimer ref={countDownTimerRef} seconds={EVENT_TIMEOUT_SECONDS} onTimeout={() => onTimedOut()}/>);
         }
 
         return (
@@ -109,9 +111,12 @@ export class BLEEvent extends Component {
     }
 
     stopCounter() {
-        // Used to let EventViewer tell Event to stop it's counter
-        if (this.refs.counter) {
-            this.refs.counter.cancelTimer();
+        const {
+            countDownTimerRef
+        } = this.props;
+
+        if (this.refs[countDownTimerRef]) {
+            this.refs[countDownTimerRef].cancelTimer();
         }
     }
 
