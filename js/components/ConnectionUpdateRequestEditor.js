@@ -67,12 +67,13 @@ export class ConnectionUpdateRequestEditor extends Component {
                     <label className='control-label col-sm-8'
                            htmlFor={'interval_' + address}>Connection Interval ({requestedConnectionParams.minConnectionInterval}-{requestedConnectionParams.maxConnectionInterval} ms)</label>
                     <div className='col-sm-4'>
-                        <input id={'interval_' + address}
+                        <Input id={'interval_' + address}
                            type='number'
                            className='form-control nordic-form-control'
                            onChange={_event => this._handleConnectionIntervalChange(_event) }
                            min={requestedConnectionParams.minConnectionInterval}
                            max={requestedConnectionParams.maxConnectionInterval}
+                           step={0.25}
                            value={this.connectionInterval}/>
                     </div>
                 </div>
@@ -109,7 +110,7 @@ export class ConnectionUpdateRequestEditor extends Component {
     }
 
     _handleConnectionIntervalChange(event) {
-        this.connectionInterval = parseInt(event.target.value, 10);
+        this.connectionInterval = parseFloat(event.target.value);
         this.forceUpdate();
     }
 
@@ -234,7 +235,9 @@ export class ConnectionUpdateRequestEditor extends Component {
                                    className='form-control nordic-form-control'
                                    onChange={_event => this._handleSlaveLatencyChange(_event)}
                                    type='number'
-                                   value={this.slaveLatency}/>
+                                   value={this.slaveLatency}
+                                   step={1}
+                                   />
                         </div>
                     </div>
                     <div className='form-group'>
@@ -246,6 +249,7 @@ export class ConnectionUpdateRequestEditor extends Component {
                                        className='form-control nordic-form-control'
                                        onChange={_event => this._handleConnectionSupervisionTimeoutChange(_event)}
                                        type='number'
+                                       step={10}
                                        value={this.connectionSupervisionTimeout}/>
                             </div>
                         </div>
