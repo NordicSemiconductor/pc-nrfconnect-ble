@@ -166,6 +166,11 @@ export default class EditableField extends Component {
         //Delaying the creation of TextareaAutosize etc until they're needed gives a performance win.
         //This matters when we get rapidly rerendered, e.g. during an animation.
         let child;
+
+        if (!this.editing) {
+            this.value = this.props.value;
+        }
+
         if (this.props.plain) {
             child = <TextareaAutosize {...this.props}
                                       ref='editableTextarea'

@@ -84,7 +84,7 @@ function discoveredAttributes(state, parent, attributes) {
     return state;
 }
 
-function completedReadWriteAttribute(state, attribute, value) {
+function completedReadingAttribute(state, attribute, value) {
     if (!attribute) {
         return state;
     }
@@ -95,9 +95,34 @@ function completedReadWriteAttribute(state, attribute, value) {
 
     const attributeStatePath = getNodeStatePath(attribute);
 
-    state = state.setIn(attributeStatePath.concat('value'), List(value));
+    return state.setIn(attributeStatePath.concat('value'), List(value));
+}
 
-    return state;
+function completedWritingAttribute(state, attribute, value) {
+    if (!attribute) {
+        return state;
+    }
+
+    const attributeStatePath = getNodeStatePath(attribute);
+
+    if (!value) {
+        // If value is null the operation failed. Trigger a state change by setting
+        // the original value in a new List object.
+        const attributeInstanceIds = getInstanceIds(attribute);
+        const attributeStatePath = getNodeStatePath(attribute);
+
+        let immutableAttribute = null;
+        if (attributeInstanceIds.descriptor) {
+            immutableAttribute = getImmutableDescriptor(attribute);
+        } else if (attributeInstanceIds.characteristic) {
+            immutableAttribute = getImmutableCharacteristic(attribute);
+        }
+
+        return state.setIn(attributeStatePath.concat('value'), List(immutableAttribute.value.toArray()));
+
+    } else {
+        return state.setIn(attributeStatePath.concat('value'), List(value));
+    }
 }
 
 function toggledAttributeExpanded(state, attribute) {
@@ -117,9 +142,9 @@ export default function deviceDetails(state = initialState, action) {
         case DeviceDetailsActions.TOGGLED_ATTRIBUTE_EXPANDED:
             return toggledAttributeExpanded(state, action.attribute);
         case DeviceDetailsActions.COMPLETED_READING_ATTRIBUTE:
-            return completedReadWriteAttribute(state, action.attribute, action.value);
+            return completedReadingAttribute(state, action.attribute, action.value);
         case DeviceDetailsActions.COMPLETED_WRITING_ATTRIBUTE:
-            return completedReadWriteAttribute(state, action.attribute, action.value);
+            return completedWritingAttribute(state, action.attribute, action.value);
         case AdapterActions.DEVICE_CONNECTED:
             return state.setIn(['devices', action.device.instanceId], new DeviceDetail());
         case AdapterActions.READING_ATTRIBUTE:
