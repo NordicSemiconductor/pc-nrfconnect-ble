@@ -29,11 +29,15 @@ export default class CharacteristicItem extends Component {
         super(props);
     }
 
-    _onContentClick(e) {
-        e.stopPropagation();
+    _selectComponent() {
         if (this.props.onSelectAttribute) {
             this.props.onSelectAttribute(this.props.item);
         }
+    }
+
+    _onContentClick(e) {
+        e.stopPropagation();
+        this._selectComponent();
     }
 
     _onExpandAreaClick(e) {
@@ -146,7 +150,11 @@ export default class CharacteristicItem extends Component {
                                 {propertyList}
                             </div>
                         </div>
-                        <HexOnlyEditableField value={value.toArray()} onWrite={value => this._onWrite(value)} showReadButton={itemIsSelected} onRead={() => this._onRead()} />
+                        <HexOnlyEditableField value={value.toArray()}
+                                              onWrite={value => this._onWrite(value)}
+                                              showReadButton={itemIsSelected}
+                                              onRead={() => this._onRead()}
+                                              selectParent={() => this._selectComponent()} />
                     </div>
                 </div>
             </div>

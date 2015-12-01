@@ -85,6 +85,12 @@ export default class EditableField extends Component {
         }
     }
 
+    _selectParentAndToggleEditing(e) {
+        e.stopPropagation();
+        this._toggleEditing(e);
+        this.props.selectParent(e);
+    }
+
     _toggleEditing(e) {
         e.stopPropagation();
         this.editing = !this.editing;
@@ -161,6 +167,15 @@ export default class EditableField extends Component {
         e.stopPropagation();
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (this.editing) {
+            const textarea = React.findDOMNode(this.refs.editableTextarea);
+            const caretPosition = textarea.value.length;
+            textarea.focus();
+            textarea.setSelectionRange(caretPosition, caretPosition);
+        }
+    }
+
     render() {
         const nonBreakingSpace = '\u00A0';
         //Delaying the creation of TextareaAutosize etc until they're needed gives a performance win.
@@ -204,7 +219,7 @@ export default class EditableField extends Component {
                         </div>
                     </div>;
         } else {
-            child = <div className='subtle-text editable' onClick={e => this._toggleEditing(e)}>
+            child = <div className='subtle-text editable' onClick={e => this._selectParentAndToggleEditing(e)}>
                         <span>{this.value || nonBreakingSpace}</span>
                     </div>;
         }

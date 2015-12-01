@@ -25,11 +25,15 @@ export default class DescriptorItem extends Component {
         super(props);
     }
 
-    _onContentClick(e) {
-        e.stopPropagation();
+    _selectComponent() {
         if (this.props.onSelectAttribute) {
             this.props.onSelectAttribute(this.props.item);
         }
+    }
+
+    _onContentClick(e) {
+        e.stopPropagation();
+        this._selectComponent();
     }
 
     _onWrite(value) {
@@ -66,7 +70,11 @@ export default class DescriptorItem extends Component {
                 <div className="content-wrap">
                     <div className="content">
                         <div className="truncate-text" title={'[' + handle + '] ' + name}>{name}</div>
-                        <HexOnlyEditableField value={value.toArray()} onWrite={value => this._onWrite(value)} onRead={() => this._onRead()} showReadButton={itemIsSelected} />
+                        <HexOnlyEditableField value={value.toArray()}
+                                              onWrite={value => this._onWrite(value)}
+                                              onRead={() => this._onRead()}
+                                              showReadButton={itemIsSelected}
+                                              selectParent={() => this._selectComponent()} />
                     </div>
                 </div>
             </div>
