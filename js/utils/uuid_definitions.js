@@ -256,7 +256,7 @@ export function getPrettyUuid(uuid) {
     };
 
     if (uuid.length === 4) {
-        return uuid;
+        return uuid.toUpperCase();
     }
 
     uuid = insertHyphen(uuid, 20);

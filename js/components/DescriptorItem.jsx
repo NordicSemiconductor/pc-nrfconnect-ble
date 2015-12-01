@@ -48,8 +48,6 @@ export default class DescriptorItem extends Component {
         const {
             item,
             selected,
-            addNew,
-            selectOnClick,
         } = this.props;
         const {
             instanceId,

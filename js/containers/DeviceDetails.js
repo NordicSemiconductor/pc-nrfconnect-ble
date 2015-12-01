@@ -134,4 +134,7 @@ DeviceDetailsContainer.propTypes = {
     deviceServers: PropTypes.object,
     selectComponent: PropTypes.func.isRequired,
     readCharacteristic: PropTypes.func.isRequired,
+    writeCharacteristic: PropTypes.func.isRequired,
+    readDescriptor: PropTypes.func.isRequired,
+    writeDescriptor: PropTypes.func.isRequired,
 };

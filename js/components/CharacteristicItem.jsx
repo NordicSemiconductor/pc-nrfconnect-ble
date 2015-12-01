@@ -23,10 +23,16 @@ import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 
 import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
 
+const NOTIFY = 1;
+const INDICATE = 2;
+
+const CCCD_UUID = '2902';
+
 export default class CharacteristicItem extends Component {
     //mixins: [BlueWhiteBlinkMixin],
     constructor(props) {
         super(props);
+        this.cccdDescriptor;
     }
 
     _selectComponent() {
@@ -47,7 +53,34 @@ export default class CharacteristicItem extends Component {
 
     _onToggleNotify(e) {
         e.stopPropagation();
-        this.props.onToggleCharacteristicNotification(this.props.item);
+
+        const isNotifying = this._isNotifying(this.cccdDescriptor);
+        const hasNotifyProperty = this.props.item.properties.notify;
+        const hasIndicateProperty = this.props.item.properties.indicate;
+
+        if (this.cccdDescriptor === undefined) {
+            return;
+        }
+
+        if (!hasNotifyProperty && !hasIndicateProperty) {
+            return;
+        }
+
+        let cccdValue;
+        if (!isNotifying) {
+            if (hasNotifyProperty) {
+                cccdValue = NOTIFY;
+            } else {
+                cccdValue = INDICATE;
+            }
+        } else {
+            cccdValue = 0;
+        }
+
+        value = [cccdValue, 0];
+
+        this.props.onWriteDescriptor(this.cccdDescriptor, value);
+        //this.props.onToggleNotify(this.props.item);
     }
 
     _childChanged() {
@@ -74,6 +107,28 @@ export default class CharacteristicItem extends Component {
         this.props.onRead(this.props.item);
     }
 
+    _findCccdDescriptor(children) {
+        if (!children) {
+            return;
+        }
+
+        return children.find(child => child.uuid === CCCD_UUID);
+    }
+
+    _isNotifying(cccdDescriptor) {
+        if (!cccdDescriptor) {
+            return false;
+        }
+
+        const valueArray = cccdDescriptor.value.toArray();
+
+        if (valueArray.length < 2) {
+            return false;
+        }
+
+        return ((valueArray[0] & (NOTIFY | INDICATE)) > 0);
+    }
+
     render() {
         const {
             item,
@@ -83,6 +138,7 @@ export default class CharacteristicItem extends Component {
             onSelectAttribute,
             onReadDescriptor,
             onWriteDescriptor,
+            onToggleNotify,
         } = this.props;
 
         const {
@@ -101,7 +157,7 @@ export default class CharacteristicItem extends Component {
 
         properties.forEach((propertyValue, property) => {
             if (propertyValue) {
-                propertyList.push(<div key={property} className="device-flag">{property}</div>);
+                propertyList.push(<div key={property} className='device-flag'>{property}</div>);
             }
         });
 
@@ -113,7 +169,6 @@ export default class CharacteristicItem extends Component {
             children.forEach(descriptor => {
                 childrenList.push(<DescriptorItem key={descriptor.instanceId}
                                                   item={descriptor}
-                                                  selectOnClick={selectOnClick}
                                                   selected={selected}
                                                   onSelectAttribute={onSelectAttribute}
                                                   onChange={this._childChanged}
@@ -123,30 +178,34 @@ export default class CharacteristicItem extends Component {
             });
         }
 
+        this.cccdDescriptor = this._findCccdDescriptor(children);
+        const hasCccd = this.cccdDescriptor !== undefined;
+        const isNotifying = this._isNotifying(this.cccdDescriptor);
+        const hasNotifyProperty = properties.notify;
+        const hasIndicateProperty = properties.indicate;
+
         const hasPossibleChildren = !(children && children.size === 0);
         const expandIconStyle = children && children.size === 0 && !addNew  ? {display: 'none'} : {};
         const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
-        const notifyIcon = notifying ? 'icon-stop' : 'icon-play';
-        const notifyIconStyle = properties.notify || properties.indicate ? {} : {display: 'none'};
+        const notifyIcon = (isNotifying && (hasNotifyProperty || hasIndicateProperty)) ? 'icon-stop' : 'icon-play';
+        const notifyIconStyle = hasCccd ? {} : {display: 'none'};
         const itemIsSelected = item.instanceId === selected;
-        const backgroundColor = itemIsSelected
-            ? 'rgb(179,225,245)'
-            : 'white';
+        const backgroundColor = itemIsSelected ? 'rgb(179,225,245)' : 'white';
 
         return (
         <div>
-            <div className="characteristic-item" style={{backgroundColor: backgroundColor}} onClick={e => this._onContentClick(e)} ref="item">
-                <div className="expand-area" onClick={hasPossibleChildren ? e => this._onExpandAreaClick(e) : null}>
-                    <div className="bar1" />
-                    <div className="bar2" />
-                    <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={expandIconStyle}></i></div>
+            <div className='characteristic-item' style={{backgroundColor: backgroundColor}} onClick={e => this._onContentClick(e)} ref='item'>
+                <div className='expand-area' onClick={hasPossibleChildren ? e => this._onExpandAreaClick(e) : null}>
+                    <div className='bar1' />
+                    <div className='bar2' />
+                    <div className='icon-wrap'><i className={'icon-slim ' + expandIcon} style={expandIconStyle}></i></div>
                 </div>
-                <div className="content-wrap">
-                    <div className="content">
-                        <div className="btn btn-primary btn-xs btn-nordic btn-notify" title="Toggle notifications" style={notifyIconStyle} onClick={e => this._onToggleNotify(e)}><i className={notifyIcon}></i></div>
+                <div className='content-wrap'>
+                    <div className='content'>
+                        <div className='btn btn-primary btn-xs btn-nordic btn-notify' title='Toggle notifications' style={notifyIconStyle} onClick={e => this._onToggleNotify(e)}><i className={notifyIcon}></i></div>
                         <div>
-                            <div className="truncate-text" title={'[' + item.declarationHandle + '] ' + name}>{name}</div>
-                            <div className="flag-line">
+                            <div className='truncate-text' title={'[' + item.declarationHandle + '] ' + name}>{name}</div>
+                            <div className='flag-line'>
                                 {propertyList}
                             </div>
                         </div>
@@ -160,7 +219,7 @@ export default class CharacteristicItem extends Component {
             </div>
             <div style={{display: expanded ? 'block' : 'none'}}>
                 {childrenList}
-                {addNew ? <AddNewItem key={'add-new-descriptor'}text="New descriptor" id={"add-btn-" + instanceId} selected={selected} onClick={this._addDescriptor} bars={3} /> : null}
+                {addNew ? <AddNewItem key={'add-new-descriptor'}text='New descriptor' id={'add-btn-' + instanceId} selected={selected} onClick={this._addDescriptor} bars={3} /> : null}
             </div>
         </div>
         );

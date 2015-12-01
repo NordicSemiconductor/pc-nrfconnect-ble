@@ -61,7 +61,7 @@ export default class ServiceItem extends Component {
         //the selected node and whatever subtree contains props.selected.
         //We should avoid redrawing unless affected.
         for (var prop in nextProps) {
-            if (prop === "selected") {
+            if (prop === 'selected') {
                 //if selected is this.item, or is a child node of it, we need to update
                 //if this.item or a child was selected last time, we also need to update
                 var selected = nextProps[prop];
@@ -85,6 +85,12 @@ export default class ServiceItem extends Component {
             selected,
             addNew,
             selectOnClick,
+            onSelectAttribute,
+            onToggleAttributeExpanded,
+            onReadCharacteristic,
+            onWriteCharacteristic,
+            onReadDescriptor,
+            onWriteDescriptor,
         } = this.props;
         const {
             instanceId,
@@ -107,12 +113,12 @@ export default class ServiceItem extends Component {
                                                       item={characteristic}
                                                       selectOnClick={selectOnClick}
                                                       selected={selected}
-                                                      onSelectAttribute={this.props.onSelectAttribute}
-                                                      onToggleAttributeExpanded={this.props.onToggleAttributeExpanded}
-                                                      onRead={this.props.onReadCharacteristic}
-                                                      onWrite={this.props.onWriteCharacteristic}
-                                                      onReadDescriptor={this.props.onReadDescriptor}
-                                                      onWriteDescriptor={this.props.onWriteDescriptor}
+                                                      onSelectAttribute={onSelectAttribute}
+                                                      onToggleAttributeExpanded={onToggleAttributeExpanded}
+                                                      onRead={onReadCharacteristic}
+                                                      onWrite={onWriteCharacteristic}
+                                                      onReadDescriptor={onReadDescriptor}
+                                                      onWriteDescriptor={onWriteDescriptor}
                                                       onChange={this._childChanged}
                                                       addNew={addNew} />
                 );
@@ -127,20 +133,20 @@ export default class ServiceItem extends Component {
             : 'white';
         return (
             <div>
-                <div className="service-item" style={{ backgroundColor: backgroundColor }} onClick={e => this._onContentClick(e)}>
-                    <div className="expand-area" onClick={e => this._onExpandAreaClick(e)}>
-                        <div className="bar1" />
-                        <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
+                <div className='service-item' style={{ backgroundColor: backgroundColor }} onClick={e => this._onContentClick(e)}>
+                    <div className='expand-area' onClick={e => this._onExpandAreaClick(e)}>
+                        <div className='bar1' />
+                        <div className='icon-wrap'><i className={'icon-slim ' + expandIcon} style={iconStyle}></i></div>
                     </div>
-                    <div className="content-wrap">
-                        <div className="content">
-                            <div className="service-name truncate-text" title={'[' + handle + '] ' + name}>{name}</div>
+                    <div className='content-wrap'>
+                        <div className='content'>
+                            <div className='service-name truncate-text' title={'[' + handle + '] ' + name}>{name}</div>
                         </div>
                     </div>
                 </div>
                 <div style={{display: expanded ? 'block' : 'none'}}>
                     {childrenList}
-                    {addNew ? <AddNewItem key='add-new-characteristic' text="New characteristic" id={"add-btn-" + instanceId} selected={selected} onClick={this._addCharacteristic} bars={2} /> : null}
+                    {addNew ? <AddNewItem key='add-new-characteristic' text='New characteristic' id={'add-btn-' + instanceId} selected={selected} onClick={this._addCharacteristic} bars={2} /> : null}
                 </div>
             </div>
         );
