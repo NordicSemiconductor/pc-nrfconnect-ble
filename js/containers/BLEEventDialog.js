@@ -68,6 +68,7 @@ export class BLEEventDialog extends Component {
             rejectDeviceConnectionParams,
             updateDeviceConnectionParams,
             ignoreEvent,
+            removeEvent,
         } = this.props;
 
         return (
@@ -104,13 +105,14 @@ export class BLEEventDialog extends Component {
                         </div>
 
                         {events.map(event =>
-                            <div key={event.id} className='item-editor' style={ ((selectedEventId === event.id) && (events.get(selectedEventId).state === BLEEventState.INDETERMINATE)) ? {} : {display: 'none'}}>
+                            <div key={event.id} className='item-editor' style={ ((selectedEventId !== -1) && (selectedEventId === event.id) && (events.get(selectedEventId).state === BLEEventState.INDETERMINATE)) ? {} : {display: 'none'}}>
                                 <ConnectionUpdateRequestEditor
                                     event={event}
                                     onUpdate={this._handleEditorUpdate}
                                     onRejectConnectionParams={device => rejectDeviceConnectionParams(event.id, device)}
                                     onUpdateConnectionParams={(device, connectionParams) => updateDeviceConnectionParams(event.id, device, connectionParams)}
                                     onIgnoreEvent={eventId => ignoreEvent(eventId)}
+                                    onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
                                     />
                             </div>
                         )}
@@ -140,6 +142,7 @@ BLEEventDialog.propTypes = {
     rejectDeviceConnectionParams: PropTypes.func.isRequired,
     updateDeviceConnectionParams: PropTypes.func.isRequired,
     ignoreEvent: PropTypes.func.isRequired,
+    removeEvent: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {

@@ -153,6 +153,15 @@ export class ConnectionUpdateRequestEditor extends Component {
         onIgnoreEvent(event.id);
     }
 
+    _handleCancelUserInitiatedEvent() {
+        const {
+            event,
+            onCancelUserInitiatedEvent,
+        } = this.props;
+
+        onCancelUserInitiatedEvent(event.id);
+    }
+
     _getValidInputStyle() {
         return {
             boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6)',
@@ -185,6 +194,27 @@ export class ConnectionUpdateRequestEditor extends Component {
                     onClick={() => this._handleIgnoreConnectionParams()}
                     className='btn btn-default btn-xs btn-nordic'>
                     Ignore
+            </Button> : '';
+
+        const rejectButton = event.type === BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE ?
+            <Button type='button'
+                    onClick={() => this._handleRejectConnectionParams()}
+                    className='btn btn-default btn-xs btn-nordic'>
+                    Reject
+            </Button> : '';
+
+        const updateButton = <Button disabled={!this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid}
+                                    type='button'
+                                    onClick={() => this._handleUpdateConnection()}
+                                    className='btn btn-primary btn-xs btn-nordic'>
+                                    Update
+                             </Button>;
+
+        const cancelButton = event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE ?
+            <Button type='button'
+                    onClick={() => this._handleCancelUserInitiatedEvent()}
+                    className='btn btn-default btn-xs btn-nordic'>
+                    Cancel
             </Button> : '';
 
         return (
@@ -220,18 +250,9 @@ export class ConnectionUpdateRequestEditor extends Component {
                             </div>
                         </div>
                         <div>
-                            <Button disabled={!this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid}
-                                    type='button'
-                                    onClick={() => this._handleUpdateConnection()}
-                                    className='btn btn-primary btn-xs btn-nordic'>
-                                Update
-                            </Button>
-                            <Button type='button'
-                                    onClick={() => this._handleRejectConnectionParams()}
-                                    className='btn btn-default btn-xs btn-nordic'>
-                                {(event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) ? 'Cancel' : 'Reject'}
-                            </Button>
-
+                            {updateButton}
+                            {cancelButton}
+                            {rejectButton}
                             {ignoreButton}
                         </div>
                     </div>
@@ -246,4 +267,5 @@ ConnectionUpdateRequestEditor.propTypes = {
     onRejectConnectionParams: PropTypes.func.isRequired,
     onUpdateConnectionParams: PropTypes.func.isRequired,
     onIgnoreEvent: PropTypes.func.isRequired,
+    onCancelUserInitiatedEvent: PropTypes.func.isRequired,
 };

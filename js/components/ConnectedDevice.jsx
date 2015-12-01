@@ -34,6 +34,7 @@ export default class ConnectedDevice extends Component {
             onDisconnect,
             onPair,
             onConnectionParamsUpdate,
+            device,
         } = this.props;
 
         switch (eventKey) {
@@ -41,7 +42,7 @@ export default class ConnectedDevice extends Component {
                 onDisconnect();
                 break;
             case 'Update':
-                onConnectionParamsUpdate();
+                onConnectionParamsUpdate(device);
                 // connectionActions.connectionParametersUpdateRequest(event, eventTypes.userInitiatedConnectionUpdate);
                 break;
             case 'Pair':

@@ -116,7 +116,7 @@ function mapDispatchToProps(dispatch) {
             {},
             bindActionCreators(DeviceDetailsActions, dispatch),
             bindActionCreators(AdvertisingSetupActions, dispatch),
-            bindActionCreators(AdapterActions, dispatch),
+            bindActionCreators(AdapterActions, dispatch)
         );
 
     return retval;

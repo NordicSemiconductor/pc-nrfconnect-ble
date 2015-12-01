@@ -23,6 +23,7 @@ import CentralDevice from '../components/CentralDevice';
 
 import * as AdapterActions from '../actions/adapterActions';
 import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
+import * as BLEEventActions from '../actions/bleEventActions';
 
 class ConnectionMap extends Component {
     constructor(props) {
@@ -41,7 +42,7 @@ class ConnectionMap extends Component {
             advertising,
             disconnectFromDevice,
             pairWithDevice,
-            updateDeviceConnectionParams,
+            createUserInitiatedConnParamsUpdateEvent,
             showDialog,
         } = this.props;
 
@@ -65,7 +66,7 @@ class ConnectionMap extends Component {
                     layout='horizontal'
                     onDisconnect={() => disconnectFromDevice(device)}
                     onPair={() => pairWithDevice(device)}
-                    onConnectionParamsUpdate={() => updateDeviceConnectionParams(device)}/>);
+                    onConnectionParamsUpdate={device => createUserInitiatedConnParamsUpdateEvent(device)}/>);
             });
         }
 
@@ -109,7 +110,8 @@ function mapDispatchToProps(dispatch) {
     const retval = Object.assign(
         {},
         bindActionCreators(AdapterActions, dispatch),
-        bindActionCreators(AdvertisingSetupActions, dispatch)
+        bindActionCreators(AdvertisingSetupActions, dispatch),
+        bindActionCreators(BLEEventActions, dispatch)
     );
 
     return retval;
@@ -126,7 +128,7 @@ ConnectionMap.propTypes = {
     advertisingSetup: PropTypes.object.isRequired,
     disconnectFromDevice: PropTypes.func.isRequired,
     pairWithDevice: PropTypes.func.isRequired,
-    updateDeviceConnectionParams: PropTypes.func.isRequired,
+    createUserInitiatedConnParamsUpdateEvent: PropTypes.func.isRequired,
     showDialog: PropTypes.func.isRequired,
     toggleAdvertising: PropTypes.func.isRequired,
     setAdvertisingData: PropTypes.func.isRequired,

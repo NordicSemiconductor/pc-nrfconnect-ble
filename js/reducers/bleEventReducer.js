@@ -25,13 +25,22 @@ const Event = Record({
     state: BLEEventState.UNKNOWN,
 });
 
+// Module local variable that is used to generate a unique ID for all events that are
+// added by the user or by incoming connection parameter update requests.
 let eventIndex = 0;
+
+function resetSelectedEventIdAndEventIndex(state)
+{
+    eventIndex = 0;
+    return state.set('selectedEventId', -1);
+}
 
 function showDialog(state, visible) {
     return state.set('visible', visible);
 }
 
-function clearAllUserEvents(state) {
+function clearAllEvents(state) {
+    state = resetSelectedEventIdAndEventIndex(state);
     return state.update('events', events => events.clear());
 }
 
@@ -80,17 +89,61 @@ function ignoreEvent(state, eventId) {
     return state.setIn(['events', eventId, 'state'], BLEEventState.IGNORED);
 }
 
+function removeEvent(state, eventId) {
+    if(state.selectedEventId === eventId) {
+        state = state.set('selectedEventId', -1);
+    }
+
+    return state.deleteIn(['events', eventId]);
+}
+
+function removeAllEvents(state) {
+    state = state.set('selectedEventId', -1);
+    state.update('events');
+}
+
+function createUserInitiatedConnParamsUpdateEvent(state, device) {
+    const defaultConnectionParams = {
+        connectionSupervisionTimeout: 4000,
+        maxConnectionInterval: 1000,
+        minConnectionInterval: 500,
+        slaveLatency: 0,
+    };
+
+    let newState = state.update('events', events => {
+        const event = new Event({
+            type: BLEEventType.USER_INITIATED_CONNECTION_UPDATE,
+            device: apiHelper.getImmutableDevice(device),
+            requestedConnectionParams: defaultConnectionParams,
+            id: eventIndex,
+            state: BLEEventState.INDETERMINATE,
+        });
+
+        return events.push(event);
+    });
+
+    newState = newState.set('selectedEventId', eventIndex);
+    newState = newState.set('visible', true);
+    eventIndex++;
+
+    return newState;
+}
+
 export default function bleEvent(state = initialState, action)
 {
     switch (action.type) {
         case BLEEventActions.BLE_EVENT_SHOW_DIALOG:
             return showDialog(state, action.visible);
-        case BLEEventActions.BLE_EVENT_CLEAR_ALL_USER_EVENTS:
-            return clearAllUserEvents(state);
+        case BLEEventActions.BLE_EVENT_CLEAR_ALL_EVENTS:
+            return clearAllEvents(state);
         case BLEEventActions.BLE_EVENT_SELECT_EVENT_ID:
             return selectEventId(state, action.selectedEventId);
         case BLEEventActions.BLE_EVENT_IGNORE:
             return ignoreEvent(state, action.eventId);
+        case BLEEventActions.BLE_EVENT_CREATE_USER_INITIATED_CONN_PARAMS_UPDATE_EVENT:
+            return createUserInitiatedConnParamsUpdateEvent(state, action.device);
+        case BLEEventActions.BLE_EVENT_REMOVE:
+            return removeEvent(state, action.eventId);
         case AdapterActions.DEVICE_CONNECTION_PARAM_UPDATE_REQUEST:
             return connectionUpdateParamRequest(state, action.device, action.requestedConnectionParams);
         case AdapterActions.DEVICE_CONNECTION_PARAM_UPDATE_STATUS:

@@ -70,10 +70,6 @@ export default class DeviceDetailsView extends Component {
         const {
             onSelectComponent,
             onToggleAttributeExpanded,
-            onReadCharacteristic,
-            onWriteCharacteristic,
-            onReadDescriptor,
-            onWriteDescriptor,
             onDisconnectFromDevice,
             onPairWithDevice,
             onUpdateDeviceConnectionParams,
@@ -81,12 +77,12 @@ export default class DeviceDetailsView extends Component {
 
         const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
 
-        const connectedDevice = <ConnectedDevice id={instanceId + '_details'}
-                                                 sourceId={adapter.instanceId + '_details'}
+        const connectedDevice = <ConnectedDevice id={instanceId + 'details'}
+                                                 sourceId={adapter.instanceId + 'details'}
                                                  key={instanceId}
                                                  device={device}
                                                  selected={selected}
-                                                 layout='vertical'
+                                                 layout="vertical"
                                                  onSelectComponent={onSelectComponent}
                                                  onDisconnect={() => onDisconnectFromDevice(device)}
                                                  onPair={() => onPairWithDevice(device)}
@@ -94,7 +90,7 @@ export default class DeviceDetailsView extends Component {
 
         if (deviceDetail.discoveringChildren) {
             return (
-                <div className='device-details-view' id={instanceId + '_details'} style={this.props.style}>
+                <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
                     {connectedDevice}
                     <EnumeratingAttributes bars={1} />
                 </div>
@@ -111,19 +107,15 @@ export default class DeviceDetailsView extends Component {
                                                    selected={selected}
                                                    onSelectAttribute={onSelectComponent}
                                                    onToggleAttributeExpanded={onToggleAttributeExpanded}
-                                                   onReadCharacteristic={onReadCharacteristic}
-                                                   onWriteCharacteristic={onWriteCharacteristic}
-                                                   onReadDescriptor={onReadDescriptor}
-                                                   onWriteDescriptor={onWriteDescriptor}
                                                    />
                     );
                 });
             }
 
             return (
-                <div className='device-details-view' id={instanceId + '_details'} style={this.props.style}>
+                <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
                     {connectedDevice}
-                    <div className='service-items-wrap'>
+                    <div className="service-items-wrap">
                         {childrenList}
                     </div>
                 </div>
