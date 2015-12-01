@@ -67,6 +67,7 @@ export class BLEEventDialog extends Component {
             clearAllEvents,
             rejectDeviceConnectionParams,
             updateDeviceConnectionParams,
+            ignoreEvent,
         } = this.props;
 
         return (
@@ -109,6 +110,7 @@ export class BLEEventDialog extends Component {
                                     onUpdate={this._handleEditorUpdate}
                                     onRejectConnectionParams={device => rejectDeviceConnectionParams(event.id, device)}
                                     onUpdateConnectionParams={(device, connectionParams) => updateDeviceConnectionParams(event.id, device, connectionParams)}
+                                    onIgnoreEvent={eventId => ignoreEvent(eventId)}
                                     />
                             </div>
                         )}
@@ -137,6 +139,7 @@ BLEEventDialog.propTypes = {
     selectEventId: PropTypes.func.isRequired,
     rejectDeviceConnectionParams: PropTypes.func.isRequired,
     updateDeviceConnectionParams: PropTypes.func.isRequired,
+    ignoreEvent: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {

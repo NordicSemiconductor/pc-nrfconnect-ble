@@ -76,6 +76,10 @@ function deviceDisconnected(state, device) {
     return state;
 }
 
+function ignoreEvent(state, eventId) {
+    return state.setIn(['events', eventId, 'state'], BLEEventState.IGNORED);
+}
+
 export default function bleEvent(state = initialState, action)
 {
     switch (action.type) {
@@ -85,6 +89,8 @@ export default function bleEvent(state = initialState, action)
             return clearAllUserEvents(state);
         case BLEEventActions.BLE_EVENT_SELECT_EVENT_ID:
             return selectEventId(state, action.selectedEventId);
+        case BLEEventActions.BLE_EVENT_IGNORE:
+            return ignoreEvent(state, action.eventId);
         case AdapterActions.DEVICE_CONNECTION_PARAM_UPDATE_REQUEST:
             return connectionUpdateParamRequest(state, action.device, action.requestedConnectionParams);
         case AdapterActions.DEVICE_CONNECTION_PARAM_UPDATE_STATUS:

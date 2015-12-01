@@ -3,7 +3,7 @@
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 
-import { Input } from 'react-bootstrap';
+import { Input, Button } from 'react-bootstrap';
 
 import { BLEEventType } from '../actions/common';
 
@@ -47,7 +47,7 @@ export class ConnectionUpdateRequestEditor extends Component {
         const address = device.address;
         const requestedConnectionParams = event.requestedConnectionParams;
 
-        if (device.minConnectionInterval === device.maxConnectionInterval) {
+        if (requestedConnectionParams.minConnectionInterval === requestedConnectionParams.maxConnectionInterval) {
             return (
                 <div>
                     <label className='control-label col-sm-6' htmlFor={'interval_' + address}>Connection Interval (ms)</label>
@@ -67,7 +67,7 @@ export class ConnectionUpdateRequestEditor extends Component {
                     <label className='control-label col-sm-8'
                            htmlFor={'interval_' + address}>Connection Interval ({requestedConnectionParams.minConnectionInterval}-{requestedConnectionParams.maxConnectionInterval} ms)</label>
                     <div className='col-sm-4'>
-                        <Input id={'interval_' + address}
+                        <input id={'interval_' + address}
                            type='number'
                            className='form-control nordic-form-control'
                            onChange={_event => this._handleConnectionIntervalChange(_event) }
@@ -144,6 +144,15 @@ export class ConnectionUpdateRequestEditor extends Component {
         onRejectConnectionParams(event.device);
     }
 
+    _handleIgnoreConnectionParams() {
+        const {
+            event,
+            onIgnoreEvent,
+        } = this.props;
+
+        onIgnoreEvent(event.id);
+    }
+
     _getValidInputStyle() {
         return {
             boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6)',
@@ -170,6 +179,13 @@ export class ConnectionUpdateRequestEditor extends Component {
             this._getValidInputStyle() : this._getInvalidInputStyle();
         const connectionSupervisionTimeoutInputStyle = this.isConnectionSupervisionTimeoutValid ?
             this._getValidInputStyle() : this._getInvalidInputStyle();
+
+        const ignoreButton = event.type === BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE ?
+            <Button type='button'
+                    onClick={() => this._handleIgnoreConnectionParams()}
+                    className='btn btn-default btn-xs btn-nordic'>
+                    Ignore
+            </Button> : '';
 
         return (
             <div>
@@ -204,17 +220,19 @@ export class ConnectionUpdateRequestEditor extends Component {
                             </div>
                         </div>
                         <div>
-                            <button disabled={!this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid}
+                            <Button disabled={!this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid}
                                     type='button'
                                     onClick={() => this._handleUpdateConnection()}
                                     className='btn btn-primary btn-xs btn-nordic'>
                                 Update
-                            </button>
-                            <button type='button'
+                            </Button>
+                            <Button type='button'
                                     onClick={() => this._handleRejectConnectionParams()}
                                     className='btn btn-default btn-xs btn-nordic'>
                                 {(event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) ? 'Cancel' : 'Reject'}
-                            </button>
+                            </Button>
+
+                            {ignoreButton}
                         </div>
                     </div>
                 </form>
@@ -227,4 +245,5 @@ ConnectionUpdateRequestEditor.propTypes = {
     event: PropTypes.object.isRequired,
     onRejectConnectionParams: PropTypes.func.isRequired,
     onUpdateConnectionParams: PropTypes.func.isRequired,
+    onIgnoreEvent: PropTypes.func.isRequired,
 };

@@ -81,8 +81,9 @@ export class BLEEvent extends Component {
 
         switch (event.state) {
             case BLEEventState.ERROR:
-             case BLEEventState.REJECTED:
-             case BLEEventState.DISCONNECTED:
+            case BLEEventState.REJECTED:
+            case BLEEventState.DISCONNECTED:
+            case BLEEventState.IGNORED:
                   return 'failed-item';
             case BLEEventState.INDETERMINATE:
                 return '';

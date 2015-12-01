@@ -17,6 +17,7 @@ export const BLE_EVENT_SHOW_DIALOG = 'BLE_EVENT_SHOW_DIALOG';
 export const BLE_EVENT_CLEAR_ALL_EVENTS = 'BLE_EVENT_CLEAR_ALL_EVENTS';
 export const BLE_EVENT_SELECT_EVENT_ID = 'BLE_EVENT_SELECT_EVENT_ID';
 export const BLE_EVENT_TIMED_OUT = 'BLE_EVENT_TIMED_OUT';
+export const BLE_EVENT_IGNORE = 'BLE_EVENT_IGNORE';
 
 function showDialogAction(visible) {
     return {
@@ -45,6 +46,13 @@ function eventTimedOutAction(event) {
     };
 }
 
+function ignoreEventAction(eventId) {
+    return {
+        type: BLE_EVENT_IGNORE,
+        eventId,
+    };
+}
+
 // Exported action creators
 export function clearAllEvents() {
     return clearAllEventsAction();
@@ -60,4 +68,8 @@ export function showDialog(visible) {
 
 export function eventTimedOut(event) {
     return eventTimedOutAction(event);
+}
+
+export function ignoreEvent(eventId) {
+    return ignoreEventAction(eventId);
 }

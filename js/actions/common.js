@@ -27,6 +27,7 @@ export const BLEEventState = {
     DISCONNECTED: 3,  // If device has disconnected, set to this state.
     INDETERMINATE: 4, // State is not determined yet, this is the start state for all events.
     SUCCESS: 5,
+    IGNORED: 6,        // State used for events that the user has chosen to ignore
 };
 
 export const BLEEventType = {
