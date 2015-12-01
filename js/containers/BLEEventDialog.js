@@ -101,7 +101,7 @@ export class BLEEventDialog extends Component {
                                     event={event}
                                     onTimedOut={
                                         () => {
-                                            console.log('Event timed out!');
+                                            console.log('Guessing event timed out!');
                                         }
                                     }
                                 />

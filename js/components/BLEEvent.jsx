@@ -6,7 +6,7 @@ import Component from 'react-pure-render/component';
 import { CountdownTimer } from '../components/CountdownTimer';
 import { BLEEventState, BLEEventType } from './../actions/common';
 
-const EVENT_TIMEOUT_SECONDS = 10; // Used to be 30 secs
+const EVENT_TIMEOUT_SECONDS = 30;
 
 export class BLEEvent extends Component {
     constructor(props) {
@@ -41,7 +41,7 @@ export class BLEEvent extends Component {
 
         let eventTimer = (<div/>);
 
-        if (event.eventType === BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
+        if (event.type === BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
             eventTimer = (<CountdownTimer ref='counter' seconds={EVENT_TIMEOUT_SECONDS} onTimeout={() => onTimedOut()}/>);
         }
 
