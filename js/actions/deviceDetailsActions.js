@@ -172,7 +172,7 @@ function _readCharacteristic(dispatch, getState, characteristic) {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if (adapterToUse === null) {
-            reject(makeError({error: `No adapter selected`}));
+            reject(makeError({error: 'No adapter selected'}));
             return;
         }
 
@@ -192,7 +192,101 @@ function _readCharacteristic(dispatch, getState, characteristic) {
     }).then(value => {
         dispatch(completedReadingAttribute(characteristic, value));
     }).catch(error => {
-        console.log(error);
+        dispatch(errorOccuredAction(error.adapter, error.error));
+    });
+}
+
+function _writeCharacteristic(dispatch, getState, characteristic, value) {
+    return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        if (adapterToUse === null) {
+            reject(makeError({error: 'No adapter selected'}));
+            return;
+        }
+
+        dispatch(writingAttribute(characteristic));
+
+        let ack;
+        if (characteristic.properties.write === true) {
+            ack = true;
+        } else if (characteristic.properties.write_wo_resp === true) {
+            ack = false;
+        } else {
+            ack = true;
+        }
+
+        adapterToUse.writeCharacteristicValue(characteristic.instanceId, value, ack, error => {
+            if (error) {
+                dispatch(completedWritingAttribute(characteristic, null));
+                reject(makeError({adapter: adapterToUse, characteristic: characteristic, error: error}));
+            }
+
+            resolve();
+        });
+    }).then(() => {
+        dispatch(completedWritingAttribute(characteristic, value));
+    }).catch(error => {
+        dispatch(errorOccuredAction(error.adapter, error.error));
+    });
+}
+
+function _readDescriptor(dispatch, getState, descriptor) {
+    return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        if (adapterToUse === null) {
+            reject(makeError({error: 'No adapter selected'}));
+            return;
+        }
+
+        dispatch(readingAttribute(descriptor));
+
+        adapterToUse.readDescriptorValue(
+            descriptor.instanceId,
+            (error, value) => {
+                if (error) {
+                    dispatch(completedReadingAttribute(descriptor, null));
+                    reject(makeError({adapter: adapterToUse, descriptor: descriptor, error: error}));
+                }
+
+                resolve(value);
+            }
+        );
+    }).then(value => {
+        dispatch(completedReadingAttribute(descriptor, value));
+    }).catch(error => {
+        dispatch(errorOccuredAction(error.adapter, error.error));
+    });
+}
+
+function _writeDescriptor(dispatch, getState, descriptor, value) {
+    return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        if (adapterToUse === null) {
+            reject(makeError({error: 'No adapter selected'}));
+            return;
+        }
+
+        dispatch(writingAttribute(descriptor));
+
+        adapterToUse.writeDescriptorValue(
+            descriptor.instanceId,
+            value,
+            true, // request ack (write request)
+            error => {
+                if (error) {
+                    dispatch(completedWritingAttribute(descriptor, null));
+                    reject(makeError({adapter: adapterToUse, descriptor: descriptor, error: error}));
+                }
+
+                resolve();
+            }
+        );
+    }).then(() => {
+        dispatch(completedWritingAttribute(descriptor, value));
+    }).catch(error => {
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
 }
@@ -241,10 +335,11 @@ function completedReadingAttribute(attribute, value) {
     };
 }
 
-function completedWritingAttribute(attribute) {
+function completedWritingAttribute(attribute, value) {
     return {
         type: COMPLETED_WRITING_ATTRIBUTE,
         attribute,
+        value,
     };
 }
 

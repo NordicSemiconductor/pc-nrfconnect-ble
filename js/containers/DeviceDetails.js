@@ -38,6 +38,9 @@ class DeviceDetailsContainer extends Component {
             selectComponent,
             toggleAttributeExpanded,
             readCharacteristic,
+            writeCharacteristic,
+            readDescriptor,
+            writeDescriptor,
             showDialog,
             toggleAdvertising,
             disconnectFromDevice,
@@ -72,6 +75,9 @@ class DeviceDetailsContainer extends Component {
                                                   onSelectComponent={selectComponent}
                                                   onToggleAttributeExpanded={toggleAttributeExpanded}
                                                   onReadCharacteristic={readCharacteristic}
+                                                  onWriteCharacteristic={writeCharacteristic}
+                                                  onReadDescriptor={readDescriptor}
+                                                  onWriteDescriptor={writeDescriptor}
                                                   onDisconnectFromDevice={disconnectFromDevice}
                                                   onPairWithDevice={pairWithDevice}
                                                   onUpdateDeviceConnectionParams={updateDeviceConnectionParams}
@@ -123,7 +129,7 @@ export default connect(
 
 DeviceDetailsContainer.propTypes = {
     adapterState: PropTypes.object,
-    selectedComponent: PropTypes.object,
+    selectedComponent: PropTypes.string,
     connectedDevices: PropTypes.object,
     deviceServers: PropTypes.object,
     selectComponent: PropTypes.func.isRequired,

@@ -33,7 +33,11 @@ export default class DescriptorItem extends Component {
     }
 
     _onWrite(value) {
-        // bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
+        this.props.onWrite(this.props.item, value);
+    }
+
+    _onRead() {
+        this.props.onRead(this.props.item);
     }
 
     render() {
@@ -62,7 +66,7 @@ export default class DescriptorItem extends Component {
                 <div className="content-wrap">
                     <div className="content">
                         <div className="truncate-text" title={'[' + handle + '] ' + name}>{name}</div>
-                        <HexOnlyEditableField value={value.toArray()} onSaveChanges={this._onWrite} showReadButton={itemIsSelected} />
+                        <HexOnlyEditableField value={value.toArray()} onWrite={value => this._onWrite(value)} onRead={() => this._onRead()} showReadButton={itemIsSelected} />
                     </div>
                 </div>
             </div>

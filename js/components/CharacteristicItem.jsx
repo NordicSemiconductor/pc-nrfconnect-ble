@@ -63,12 +63,11 @@ export default class CharacteristicItem extends Component {
     }
 
     _onWrite(value) {
-        // TODO: do a write action
-        //bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
+        this.props.onWrite(this.props.item, value);
     }
 
     _onRead() {
-        this.props.onRead(this.props.item.instanceId);
+        this.props.onRead(this.props.item);
     }
 
     render() {
@@ -77,7 +76,11 @@ export default class CharacteristicItem extends Component {
             selected,
             addNew,
             selectOnClick,
+            onSelectAttribute,
+            onReadDescriptor,
+            onWriteDescriptor,
         } = this.props;
+
         const {
             instanceId,
             handle,
@@ -94,23 +97,24 @@ export default class CharacteristicItem extends Component {
 
         properties.forEach((propertyValue, property) => {
             if (propertyValue) {
-
-                propertyList.push(<div key={propertyValue} className="device-flag">{property}</div>);
+                propertyList.push(<div key={property} className="device-flag">{property}</div>);
             }
         });
 
         const childrenList = [];
 
         if (discoveringChildren) {
-            childrenList.push(<EnumeratingAttributes bars={3} />);
+            childrenList.push(<EnumeratingAttributes key={'enumerating-descriptor'} bars={3} />);
         } else if (children) {
             children.forEach(descriptor => {
                 childrenList.push(<DescriptorItem key={descriptor.instanceId}
                                                   item={descriptor}
                                                   selectOnClick={selectOnClick}
                                                   selected={selected}
-                                                  onSelectAttribute={this.props.onSelectAttribute}
-                                                  onChange={this._childChanged} />
+                                                  onSelectAttribute={onSelectAttribute}
+                                                  onChange={this._childChanged}
+                                                  onRead={onReadDescriptor}
+                                                  onWrite={onWriteDescriptor} />
                 );
             });
         }
@@ -148,7 +152,7 @@ export default class CharacteristicItem extends Component {
             </div>
             <div style={{display: expanded ? 'block' : 'none'}}>
                 {childrenList}
-                {addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + instanceId} selected={selected} onClick={this._addDescriptor} bars={3} /> : null}
+                {addNew ? <AddNewItem key={'add-new-descriptor'}text="New descriptor" id={"add-btn-" + instanceId} selected={selected} onClick={this._addDescriptor} bars={3} /> : null}
             </div>
         </div>
         );

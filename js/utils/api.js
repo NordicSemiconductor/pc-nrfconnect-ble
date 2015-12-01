@@ -14,6 +14,7 @@
 
 import { List, Map, Record } from 'immutable';
 import { api } from 'pc-ble-driver-js';
+import { getUuidName } from './uuid_definitions';
 
 const ImmutableAdapterState = Record({
     instanceId: null,
@@ -69,6 +70,7 @@ const ImmutableService = Record({
     deviceInstanceId: null,
     uuid: null,
     name: null,
+    handle: null,
     expanded: false,
     discoveringChildren: false,
     children: null,
@@ -79,10 +81,10 @@ const ImmutableCharacteristic = Record({
     serviceInstanceId: null,
     uuid: null,
     name: null,
-    properties: new ImmutableProperties(),
     declarationHandle: null,
     valueHandle: null,
     value: List(),
+    properties: new ImmutableProperties(),
     expanded: false,
     notifying: false,
     discoveringChildren: false,
@@ -94,6 +96,7 @@ const ImmutableDescriptor = Record({
     characteristicInstanceId: null,
     uuid: null,
     name: null,
+    handle: null,
     value: List(),
 });
 
@@ -199,34 +202,37 @@ export function getImmutableProperties(properties) {
 }
 
 export function getImmutableService(service) {
+    const name = getUuidName(service.uuid);
     return new ImmutableService({
         instanceId: service.instanceId,
         deviceInstanceId: service.deviceInstanceId,
         uuid: service.uuid,
-        name: service.name,
+        name: name,
         handle: service.startHandle,
     });
 }
 
 export function getImmutableCharacteristic(characteristic) {
+    const name = getUuidName(characteristic.uuid);
     return new ImmutableCharacteristic({
         instanceId: characteristic.instanceId,
         serviceInstanceId: characteristic.serviceInstanceId,
         uuid: characteristic.uuid,
-        name: characteristic.name,
-        properties: getImmutableProperties(characteristic.properties),
+        name: name,
         declarationHandle: characteristic.declarationHandle,
         valueHandle: characteristic.valueHandle,
         value: List(characteristic.value),
+        properties: getImmutableProperties(characteristic.properties),
     });
 }
 
 export function getImmutableDescriptor(descriptor) {
+    const name = getUuidName(descriptor.uuid);
     return new ImmutableDescriptor({
         instanceId: descriptor.instanceId,
         characteristicInstanceId: descriptor.characteristicInstanceId,
         uuid: descriptor.uuid,
-        name: descriptor.name,
+        name: name,
         handle: descriptor.handle,
         value: List(descriptor.value),
     });

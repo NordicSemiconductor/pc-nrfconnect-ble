@@ -135,7 +135,7 @@ export default class HexOnlyEditableField extends Component {
         const valueArray = str.split('-');
         for (value of valueArray) {
             if (value.length % 2 !== 0) {
-                return {valid: false, validationMessage: 'Please enter full bytes (pairs of hexadecimals)'}
+                return {valid: false, validationMessage: 'Please enter full bytes (pairs of hexadecimals)'};
             }
         }
 
@@ -173,7 +173,7 @@ export default class HexOnlyEditableField extends Component {
                               formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
                               onBeforeBackspace={this._onBeforeBackspace}
                               onBeforeDelete={this._onBeforeDelete}
-                              getValueArray={this._getValueArray}
+                              getValueArray={value => this._getValueArray(value)}
                               ref="editableField" />;
     }
 }
