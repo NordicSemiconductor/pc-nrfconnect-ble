@@ -170,10 +170,15 @@ export default function adapter(state = getImmutableRoot(), action) {
     });
 
     if(state.selectedAdapter) {
-        const selectedAdapter = state.getIn(['adapters'], state.selectedAdapter);
+        const selectedAdapter = state.getIn(['adapters', state.selectedAdapter]);
 
         if (selectedAdapter) {
-            const newSubReducerStates = adapterSubReducers({deviceDetails: selectedAdapter.deviceDetails, serverSetup: selectedAdapter.serverSetup}, action);
+            const newSubReducerStates = adapterSubReducers(
+                {
+                    deviceDetails: selectedAdapter.deviceDetails,
+                    serverSetup: selectedAdapter.serverSetup,
+                }, action);
+
             state = state.mergeIn(['adapters', state.selectedAdapter], newSubReducerStates);
         }
     }

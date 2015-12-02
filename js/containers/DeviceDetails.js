@@ -54,7 +54,7 @@ class DeviceDetailsContainer extends Component {
             return <div className='device-details-container' style={this.props.style} />;
         }
 
-        // Adapter device
+        // Details for connected adapter
         detailDevices.push(<DeviceDetailsView key={adapterState.instanceId}
                                               device={adapterState}
                                               selected={selectedComponent}
@@ -66,6 +66,7 @@ class DeviceDetailsContainer extends Component {
                                               />
         );
 
+        // Details for connected devices
         connectedDevices.forEach(device => {
             detailDevices.push(<DeviceDetailsView key={device.instanceId}
                                                   adapter = {adapterState}
@@ -97,7 +98,11 @@ class DeviceDetailsContainer extends Component {
 }
 
 function mapStateToProps(state) {
-    const selectedAdapter = state.adapter.adapters[state.adapter.selectedAdapter];
+    const {
+        adapter
+    } = state;
+
+    const selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapter]);
 
     if (!selectedAdapter) {
         return {};
