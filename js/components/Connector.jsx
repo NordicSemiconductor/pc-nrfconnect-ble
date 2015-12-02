@@ -14,9 +14,10 @@
 
  'use strict';
 
-import React, { Component, PropTypes } from 'react';
-
+import React, { PropTypes } from 'react';
+import Component from 'react-pure-render/component';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
+
 import layoutStrategies from '../common/layoutStrategies';
 
 export class ConnectionSetup extends Component {
@@ -63,7 +64,7 @@ export class ConnectionOverlay extends Component {
 
         return (
             <div className='connection-info-button' style={style}>
-                <OverlayTrigger ref='overlayTrigger' trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover id='pover' title='Connection Parameters'><ConnectionSetup device ={device} closePopover = {this._closeme}/></Popover>}>
+                <OverlayTrigger ref='overlayTrigger' trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover id='pover' title='Connection Parameters'><ConnectionSetup device={device} closePopover={this._closeme}/></Popover>}>
                     <span style={{fontSize: '15px'}}>
                         <i className='icon-link icon-encircled'></i>
                     </span>
@@ -83,6 +84,13 @@ export class Connector extends Component {
         super(props);
     }
 
+    componentDidMount() {
+        // To be able to draw the line between two component they have be in the browser DOM
+        // At first render they are not rendered, therefore we have to do an additional rendering
+        // after the componenets are in the brower DOM.
+        this.forceUpdate();
+    }
+
     _generateLines(lineCoordinates) {
         var result = [];
 
@@ -93,7 +101,11 @@ export class Connector extends Component {
         return result;
     }
 
-    _getConnectionOverlay(device, lineCoordinates) {
+    _getConnectionOverlay(lineCoordinates) {
+        const {
+            device
+        } = this.props;
+
         if (lineCoordinates.length < 2) {
             return;
         }
@@ -120,7 +132,6 @@ export class Connector extends Component {
 
     render() {
         const {
-            device,
             sourceId,
             targetId,
             layout,
@@ -139,7 +150,7 @@ export class Connector extends Component {
         const layoutInfo = layoutStrategies(layout)(sourceRect, targetRect, 3);
         const connectorBox = layoutInfo.boundingBox;
         const lines = this._generateLines(layoutInfo.lineCoordinates);
-        const connectionInfoOverlay = this._getConnectionOverlay(device, layoutInfo.lineCoordinates);
+        const connectionInfoOverlay = this._getConnectionOverlay(layoutInfo.lineCoordinates);
 
         return (<div className='connector'>
                     <svg style={{position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height}}>

@@ -166,7 +166,6 @@ function _openAdapter(dispatch, getState, adapter) {
         } else {
             dispatch(adapterErrorAction(errorData.adapter, errorData.error));
         }
-
     });
 }
 
@@ -190,14 +189,14 @@ function _updateDeviceConnectionParams(dispatch, getState, id, device, connectio
     return new Promise((resolve, reject) => {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
-        adapterToUse.updateConnectionParameters(device.instanceId, connectionParams, error => {
+        adapterToUse.updateConnectionParameters(device.instanceId, connectionParams, (error, device) => {
             if (error) {
                 reject(makeError({ adapter: adapterToUse, error: error }));
             } else {
-                resolve();
+                resolve(device);
             }
         });
-    }).then(() => {
+    }).then(device => {
         dispatch(connectionParamUpdateStatusAction(id, device, BLEEventState.SUCCESS));
     }).catch(errorData => {
         dispatch(connectionParamUpdateStatusAction(id, device, BLEEventState.ERROR));

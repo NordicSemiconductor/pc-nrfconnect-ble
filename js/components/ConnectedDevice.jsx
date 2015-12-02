@@ -12,7 +12,9 @@
 
 'use strict';
 
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
+import Component from 'react-pure-render/component';
+
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import { Connector } from './Connector';
@@ -20,13 +22,6 @@ import { Connector } from './Connector';
 export default class ConnectedDevice extends Component {
     constructor(props) {
         super(props);
-    }
-
-    componentDidMount() {
-        // To be able to draw the line between two component they have be in the browser DOM
-        // At first render they are not rendered, therefore we have to do an additional rendering
-        // after the componenets are in the brower DOM.
-        this.forceUpdate();
     }
 
     _onSelect(event, eventKey) {
@@ -43,7 +38,6 @@ export default class ConnectedDevice extends Component {
                 break;
             case 'Update':
                 onConnectionParamsUpdate(device);
-                // connectionActions.connectionParametersUpdateRequest(event, eventTypes.userInitiatedConnectionUpdate);
                 break;
             case 'Pair':
                 onPair();
@@ -105,7 +99,6 @@ export default class ConnectedDevice extends Component {
         //         return (<div key={index} className='device-flag'>{service}</div>);
         //     })}
         // </div>
-
     }
 }
 

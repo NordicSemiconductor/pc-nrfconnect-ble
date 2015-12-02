@@ -73,7 +73,7 @@ export class ConnectionUpdateRequestEditor extends Component {
                            onChange={_event => this._handleConnectionIntervalChange(_event) }
                            min={requestedConnectionParams.minConnectionInterval}
                            max={requestedConnectionParams.maxConnectionInterval}
-                           step={0.25}
+                           step={1.25}
                            value={this.connectionInterval}/>
                     </div>
                 </div>

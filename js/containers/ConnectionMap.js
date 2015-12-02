@@ -49,12 +49,14 @@ class ConnectionMap extends Component {
         let central;
         let deviceNodes = [];
 
-        if (adapter !== null && adapter.get('state').available && connectedDevices !== null) {
-            const name = adapter.getIn(['state', 'name']);
-            const address = adapter.getIn(['state', 'address']);
+        if (adapter !== null && adapter.state.available && connectedDevices !== null) {
+            const name = adapter.state.name;
+            const address = adapter.state.address;
 
-            central = (<CentralDevice id={adapter.instanceId + '_cmap'} name={name}
-                address={address} advertising={adapter.state.advertising}
+            central = (<CentralDevice id={adapter.instanceId + '_cmap'}
+                name={name}
+                address={address}
+                advertising={adapter.state.advertising}
                 onShowSetupDialog={showSetupDialog}
                 onToggleAdvertising={() => {this.handleToggleAdvertising();}} />);
 
@@ -87,7 +89,7 @@ function mapStateToProps(state) {
         advertisingSetup,
     } = state;
 
-    const selectedAdapter = adapter.adapters[adapter.selectedAdapter];
+    const selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapter]);
 
     if (selectedAdapter === undefined) {
         return {

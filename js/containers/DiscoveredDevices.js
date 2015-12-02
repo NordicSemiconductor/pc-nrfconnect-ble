@@ -89,7 +89,7 @@ function mapStateToProps(state) {
     let adapterAvailable = false;
 
     if (adapter.selectedAdapter !== undefined && adapter.selectedAdapter !== null) {
-        selectedAdapter = adapter.adapters[adapter.selectedAdapter];
+        selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapter]);
 
         if (selectedAdapter && selectedAdapter.state) {
             adapterIsConnecting = selectedAdapter.state.connecting || false;
