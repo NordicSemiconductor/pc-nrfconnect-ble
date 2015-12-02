@@ -150,7 +150,7 @@ function _toggleAttributeExpanded(dispatch, getState, attribute) {
     }
 
     const instanceIds = getInstanceIds(attribute);
-    const deviceDetails = state.adapter.getIn(['adapters', state.adapter.selectedAdapter]);
+    const deviceDetails = state.adapter.getIn(['adapters', state.adapter.selectedAdapter, 'deviceDetails']);
     const service = deviceDetails.devices.get(instanceIds.device).children.get(instanceIds.service);
 
     if (instanceIds.characteristic) {
