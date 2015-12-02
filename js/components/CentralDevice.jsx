@@ -17,7 +17,7 @@
 import React, { PropTypes, Component } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
-import AdvertisingSetup from '../components/advertisingSetup';
+import AdvertisingSetup from '../containers/advertisingSetup';
 
 export default class CentralDevice extends Component {
     constructor(props) {
