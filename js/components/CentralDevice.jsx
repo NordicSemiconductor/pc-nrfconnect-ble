@@ -37,7 +37,7 @@ export default class CentralDevice extends Component {
                 break;
             case 'AdvertisingSetup':
                 console.log('AdvertisingSetup');
-                this.props.onShowDialog();
+                this.props.onShowSetupDialog();
                 break;
             default:
                 console.log('Unknown eventKey received: ' + eventKey);
@@ -102,5 +102,5 @@ CentralDevice.propTypes = {
     address: PropTypes.string.isRequired,
     advertising: PropTypes.bool.isRequired,
     onToggleAdvertising: PropTypes.func.isRequired,
-    onShowDialog: PropTypes.func.isRequired,
+    onShowSetupDialog: PropTypes.func.isRequired,
 };

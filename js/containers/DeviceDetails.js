@@ -41,7 +41,7 @@ class DeviceDetailsContainer extends Component {
             writeCharacteristic,
             readDescriptor,
             writeDescriptor,
-            showDialog,
+            showSetupDialog,
             toggleAdvertising,
             disconnectFromDevice,
             pairWithDevice,
@@ -60,7 +60,7 @@ class DeviceDetailsContainer extends Component {
                                               selected={selectedComponent}
                                               onSelectComponent={selectComponent}
                                               onToggleAttributeExpanded={toggleAttributeExpanded}
-                                              onShowAdvertisingSetupDialog={showDialog}
+                                              onShowAdvertisingSetupDialog={showSetupDialog}
                                               onToggleAdvertising={toggleAdvertising}
                                               containerHeight={this.props.style.height}
                                               />

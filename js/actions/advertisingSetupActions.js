@@ -179,11 +179,11 @@ export function deleteScanRsp(id) {
     return deleteScanRspAction(id);
 }
 
-export function showDialog() {
+export function showSetupDialog() {
     return showDialogAction();
 }
 
-export function hideDialog() {
+export function hideSetupDialog() {
     return hideDialogAction();
 }
 

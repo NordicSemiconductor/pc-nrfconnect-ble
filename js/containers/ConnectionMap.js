@@ -43,7 +43,7 @@ class ConnectionMap extends Component {
             disconnectFromDevice,
             pairWithDevice,
             createUserInitiatedConnParamsUpdateEvent,
-            showDialog,
+            showSetupDialog,
         } = this.props;
 
         let central;
@@ -55,7 +55,7 @@ class ConnectionMap extends Component {
 
             central = (<CentralDevice id={adapter.instanceId + '_cmap'} name={name}
                 address={address} advertising={adapter.state.advertising}
-                onShowDialog={showDialog}
+                onShowSetupDialog={showSetupDialog}
                 onToggleAdvertising={() => {this.handleToggleAdvertising();}} />);
 
             connectedDevices.forEach((device, instanceId) => {
@@ -129,7 +129,7 @@ ConnectionMap.propTypes = {
     disconnectFromDevice: PropTypes.func.isRequired,
     pairWithDevice: PropTypes.func.isRequired,
     createUserInitiatedConnParamsUpdateEvent: PropTypes.func.isRequired,
-    showDialog: PropTypes.func.isRequired,
+    showSetupDialog: PropTypes.func.isRequired,
     toggleAdvertising: PropTypes.func.isRequired,
     setAdvertisingData: PropTypes.func.isRequired,
 };

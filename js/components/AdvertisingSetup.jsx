@@ -67,7 +67,6 @@ class AdvertisingSetup extends Component {
         const {
             setAdvertisingData,
             advertisingSetup,
-            hideDialog,
         } = this.props;
 
         setAdvertisingData(advertisingSetup);
@@ -83,8 +82,8 @@ class AdvertisingSetup extends Component {
             addScanRsp,
             setAdvdataStatus,
             deleteScanRsp,
-            showDialog,
-            hideDialog,
+            showSetupDialog,
+            hideSetupDialog,
         } = this.props;
 
         return (
@@ -119,7 +118,7 @@ class AdvertisingSetup extends Component {
                     <Modal.Footer>
                         <Label className="error-label" bsStyle="danger">{setAdvdataStatus}</Label>
                         <Button className="btn-primary btn-nordic" onClick={() => this.handleApply()}>Apply</Button>
-                        <Button className="btn-primary btn-nordic" onClick={hideDialog}>Close</Button>
+                        <Button className="btn-primary btn-nordic" onClick={hideSetupDialog}>Close</Button>
                     </Modal.Footer>
                 </Modal>
             </div>
@@ -164,6 +163,6 @@ AdvertisingSetup.propTypes = {
     deleteAdvData: PropTypes.func.isRequired,
     addScanRsp: PropTypes.func.isRequired,
     deleteScanRsp: PropTypes.func.isRequired,
-    showDialog: PropTypes.func.isRequired,
-    hideDialog: PropTypes.func.isRequired,
+    showSetupDialog: PropTypes.func.isRequired,
+    hideSetupDialog: PropTypes.func.isRequired,
 };

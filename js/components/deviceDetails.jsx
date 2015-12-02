@@ -62,7 +62,7 @@ export default class DeviceDetailsView extends Component {
                                address={address}
                                advertising={advertising}
                                selected={selected}
-                               onShowDialog={onShowAdvertisingSetupDialog}
+                               onShowSetupDialog={onShowAdvertisingSetupDialog}
                                onToggleAdvertising={onToggleAdvertising} />
             );
         }
@@ -70,6 +70,10 @@ export default class DeviceDetailsView extends Component {
         const {
             onSelectComponent,
             onToggleAttributeExpanded,
+            onReadCharacteristic,
+            onWriteCharacteristic,
+            onReadDescriptor,
+            onWriteDescriptor,
             onDisconnectFromDevice,
             onPairWithDevice,
             onUpdateDeviceConnectionParams,
@@ -107,7 +111,10 @@ export default class DeviceDetailsView extends Component {
                                                    selected={selected}
                                                    onSelectAttribute={onSelectComponent}
                                                    onToggleAttributeExpanded={onToggleAttributeExpanded}
-                                                   />
+                                                   onReadCharacteristic={onReadCharacteristic}
+                                                   onWriteCharacteristic={onWriteCharacteristic}
+                                                   onReadDescriptor={onReadDescriptor}
+                                                   onWriteDescriptor={onWriteDescriptor} />
                     );
                 });
             }
