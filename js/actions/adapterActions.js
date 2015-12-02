@@ -34,6 +34,8 @@ export const DEVICE_CONNECTION_PARAM_UPDATE_STATUS = 'DEVICE_CONNECTION_PARAM_UP
 
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
+export const ATTRIBUTE_VALUE_CHANGED = 'ADAPTER_ATTRIBUTE_VALUE_CHANGED';
+
 import _ from 'underscore';
 
 import { driver, api } from 'pc-ble-driver-js';
@@ -140,6 +142,14 @@ function _openAdapter(dispatch, getState, adapter) {
 
         adapterToUse.on('connParamUpdateRequest', (device, requestedConnectionParams) => {
             dispatch(deviceConnParamUpdateRequestAction(device, requestedConnectionParams));
+        });
+
+        adapterToUse.on('characteristicValueChanged', (characteristic) => {
+            dispatch(attributeValueChanged(characteristic));
+        });
+
+        adapterToUse.on('descriptorValueChanged', (descriptor) => {
+            dispatch(attributeValueChanged(descriptor));
         });
 
         dispatch(adapterOpenAction(adapterToUse));
@@ -487,6 +497,14 @@ function pairWithDeviceAction(device) {
     return {
         type: DEVICE_INITIATE_PAIRING,
         device,
+    };
+}
+
+function attributeValueChanged(attribute, value) {
+    return {
+        type: ATTRIBUTE_VALUE_CHANGED,
+        attribute,
+        value,
     };
 }
 

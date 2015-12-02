@@ -13,6 +13,7 @@
 'use strict';
 
 import React from 'react';
+import TWEEN from 'tween.js';
 
 import Component from 'react-pure-render/component';
 
@@ -20,8 +21,6 @@ import EnumeratingAttributes from './EnumeratingAttributes.jsx';
 import DescriptorItem from './DescriptorItem';
 import AddNewItem from './AddNewItem.jsx';
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
-
-import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
 
 const NOTIFY = 1;
 const INDICATE = 2;
@@ -33,6 +32,53 @@ export default class CharacteristicItem extends Component {
     constructor(props) {
         super(props);
         this.cccdDescriptor;
+        this.backgroundColor = {r: 255, g: 255, b: 255},
+        this.animationLoopStarted = false;
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.item.value !== nextProps.item.value) {
+            this._initiateBlink();
+        }
+    }
+
+    _ensureAnimationLoopStarted() {
+        if (!this.animationLoopStarted) {
+            this.animationLoopStarted = true;
+
+            function animationLoop(time) {
+                requestAnimationFrame(animationLoop);
+                TWEEN.update(time);
+            }
+
+            animationLoop();
+        }
+    }
+
+    _blink(reactElement, property, fromColor, toColor, options) {
+        this._ensureAnimationLoopStarted();
+        var options = options || {};
+        var duration = options.duration || 2000;
+        var easing = options.easing || TWEEN.Easing.Linear.None;
+        return new TWEEN.Tween(fromColor)
+            .to(toColor, duration)
+            .easing(easing)
+            .onUpdate(() => { 
+                reactElement.backgroundColor = fromColor;
+                reactElement.forceUpdate();
+            })
+            .start();
+    }
+
+    _initiateBlink() {
+        if (this.animation) {
+            this.animation.stop();
+        }
+
+        var blue  = {r: 179, g: 225, b: 245};
+        //var red  = {r: 244, g: 19, b: 30};
+        var white = {r: 255, g: 255, b: 255};
+        this.animation = this._blink(this, 'backgroundColor', blue, white);
     }
 
     _selectComponent() {
@@ -190,7 +236,9 @@ export default class CharacteristicItem extends Component {
         const notifyIcon = (isNotifying && (hasNotifyProperty || hasIndicateProperty)) ? 'icon-stop' : 'icon-play';
         const notifyIconStyle = hasCccd ? {} : {display: 'none'};
         const itemIsSelected = item.instanceId === selected;
-        const backgroundColor = itemIsSelected ? 'rgb(179,225,245)' : 'white';
+        const backgroundColor = itemIsSelected
+            ? 'rgb(179,225,245)'
+            : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`
 
         return (
         <div>

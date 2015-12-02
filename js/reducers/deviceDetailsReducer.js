@@ -125,6 +125,10 @@ function completedWritingAttribute(state, attribute, value) {
     }
 }
 
+function attributeValueChanged(state, attribute, value) {
+    return completedWritingAttribute(state, attribute, value);    
+}
+
 function toggledAttributeExpanded(state, attribute) {
     const attributeStatePath = getNodeStatePath(attribute);
     const previouslyExpanded = state.getIn(attributeStatePath.concat('expanded'));
@@ -145,6 +149,8 @@ export default function deviceDetails(state = initialState, action) {
             return completedReadingAttribute(state, action.attribute, action.value);
         case DeviceDetailsActions.COMPLETED_WRITING_ATTRIBUTE:
             return completedWritingAttribute(state, action.attribute, action.value);
+        case AdapterActions.ATTRIBUTE_VALUE_CHANGED:
+            return attributeValueChanged(state, action.attribute, action.value);
         case AdapterActions.DEVICE_CONNECTED:
             return state.setIn(['devices', action.device.instanceId], new DeviceDetail());
         case AdapterActions.READING_ATTRIBUTE:
