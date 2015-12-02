@@ -21,7 +21,7 @@ import * as DiscoveryActions from '../actions/discoveryActions';
 import * as AdapterActions from '../actions/adapterActions';
 
 import DiscoveryButton from '../components/discoveryButton';
-import DiscoveredDevice from '../components/discoveredDevice';
+import DiscoveredDevice from '../components/DiscoveredDevice';
 
 class DiscoveredDevices extends Component {
     constructor(props) {
