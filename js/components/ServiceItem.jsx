@@ -16,18 +16,16 @@ import React from 'react';
 
 import Component from 'react-pure-render/component';
 
-import EnumeratingAttributes from './EnumeratingAttributes.jsx';
+import EnumeratingAttributes from './EnumeratingAttributes';
 import CharacteristicItem from './CharacteristicItem';
-import AddNewItem from './AddNewItem.jsx';
+import AddNewItem from './AddNewItem';
 
-import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
-
-//import _ from 'underscore';
+import { Effects } from '../utils/Effects';
 
 export default class ServiceItem extends Component {
-    //mixins: [BlueWhiteBlinkMixin],
     constructor(props) {
         super(props);
+        this.backgroundColor = {r: 255, g: 255, b: 255};
     }
 
     _onContentClick(e) {
@@ -44,9 +42,18 @@ export default class ServiceItem extends Component {
 
     _childChanged() {
         if (!this.props.item.expanded) {
-            console.log('Service BLINKED!');
-            //this.blink();
+            this._blink();
         }
+    }
+
+    _blink() {
+        if (this.animation) {
+            this.animation.stop();
+        }
+
+        var blue  = {r: 179, g: 225, b: 245};
+        var white = {r: 255, g: 255, b: 255};
+        this.animation = Effects.blink(this, 'backgroundColor', blue, white);
     }
 
     _addCharacteristic() {
@@ -119,7 +126,7 @@ export default class ServiceItem extends Component {
                                                       onWrite={onWriteCharacteristic}
                                                       onReadDescriptor={onReadDescriptor}
                                                       onWriteDescriptor={onWriteDescriptor}
-                                                      onChange={this._childChanged}
+                                                      onChange={() => this._childChanged()}
                                                       addNew={addNew} />
                 );
             });
@@ -130,7 +137,8 @@ export default class ServiceItem extends Component {
         const itemIsSelected = item.instanceId === selected;
         const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)'
-            : 'white';
+            : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
+
         return (
             <div>
                 <div className='service-item' style={{ backgroundColor: backgroundColor }} onClick={e => this._onContentClick(e)}>

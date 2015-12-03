@@ -16,13 +16,33 @@ import React from 'react';
 
 import Component from 'react-pure-render/component';
 
-import HexOnlyEditableField from './HexOnlyEditableField.jsx';
-import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
+import HexOnlyEditableField from './HexOnlyEditableField';
+import { Effects } from '../utils/Effects';
 
 export default class DescriptorItem extends Component {
-    //mixins: [BlueWhiteBlinkMixin],
     constructor(props) {
         super(props);
+        this.backgroundColor = {r: 255, g: 255, b: 255};
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.item.value !== nextProps.item.value) {
+            if (this.props.onChange) {
+                this.props.onChange();
+            };
+
+            this._blink();
+        }
+    }
+
+    _blink() {
+        if (this.animation) {
+            this.animation.stop();
+        }
+
+        var blue  = {r: 179, g: 225, b: 245};
+        var white = {r: 255, g: 255, b: 255};
+        this.animation = Effects.blink(this, 'backgroundColor', blue, white);
     }
 
     _selectComponent() {
@@ -59,7 +79,8 @@ export default class DescriptorItem extends Component {
         const itemIsSelected = item.instanceId === selected;
         const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)'
-            : 'white';
+            : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
+
         return (
             <div className="descriptor-item" style={{ backgroundColor: backgroundColor }} onClick={e => this._onContentClick(e)}>
                 <div className="bar1" />
