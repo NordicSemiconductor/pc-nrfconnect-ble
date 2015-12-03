@@ -75,26 +75,30 @@ export default class DescriptorItem extends Component {
             handle,
             name,
             value,
+            errorMessage,
         } = item;
 
-        const itemIsSelected = item.instanceId === selected;
+        const itemIsSelected = instanceId === selected;
+        const errorText = errorMessage ? errorMessage : '';
+        const hideErrorClass = (errorText === '') ? 'hide' : '';
         const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)'
             : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
 
         return (
-            <div className="descriptor-item" style={{ backgroundColor: backgroundColor }} onClick={e => this._onContentClick(e)}>
-                <div className="bar1" />
-                <div className="bar2" />
-                <div className="bar3" />
-                <div className="content-wrap">
-                    <div className="content">
-                        <div className="truncate-text" title={'[' + handle + '] ' + name}>{name}</div>
+            <div className='descriptor-item' style={{ backgroundColor: backgroundColor }} onClick={e => this._onContentClick(e)}>
+                <div className='bar1' />
+                <div className='bar2' />
+                <div className='bar3' />
+                <div className='content-wrap'>
+                    <div className='content'>
+                        <div className='truncate-text' title={'[' + handle + '] ' + name}>{name}</div>
                         <HexOnlyEditableField value={value.toArray()}
                                               onWrite={value => this._onWrite(value)}
                                               onRead={() => this._onRead()}
                                               showReadButton={itemIsSelected}
                                               selectParent={() => this._selectComponent()} />
+                        <div className={'error-label ' + hideErrorClass}>{errorText}</div>
                     </div>
                 </div>
             </div>

@@ -137,7 +137,6 @@ export default class DeviceDetailsView extends Component {
 }
 
 DeviceDetailsView.propTypes = {
-    key: PropTypes.string.isRequired, // Can be null/undefined... ?
     device: PropTypes.object.isRequired,
     selected: PropTypes.string,
     onSelectComponent: PropTypes.func.isRequired,

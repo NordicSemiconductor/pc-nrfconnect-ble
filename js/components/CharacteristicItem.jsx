@@ -169,6 +169,7 @@ export default class CharacteristicItem extends Component {
             notifying,
             discoveringChildren,
             children,
+            errorMessage,
         } = item;
 
         const propertyList = [];
@@ -208,8 +209,10 @@ export default class CharacteristicItem extends Component {
         const notifyIcon = (isNotifying && (hasNotifyProperty || hasIndicateProperty)) ? 'icon-stop' : 'icon-play';
         const notifyIconStyle = hasCccd ? {} : {display: 'none'};
         const itemIsSelected = item.instanceId === selected;
+        const errorText = errorMessage ? errorMessage : '';
+        const hideErrorClass = (errorText === '') ? 'hide' : '';
         const backgroundColor = itemIsSelected
-            ? 'rgb(179,225,245)'
+            ? 'rgb(179,225,245)' //@bar1-color
             : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
 
         return (
@@ -234,6 +237,7 @@ export default class CharacteristicItem extends Component {
                                               showReadButton={itemIsSelected}
                                               onRead={() => this._onRead()}
                                               selectParent={() => this._selectComponent()} />
+                        <div className={'error-label ' + hideErrorClass}>{errorText}</div>
                     </div>
                 </div>
             </div>

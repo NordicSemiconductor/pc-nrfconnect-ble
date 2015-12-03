@@ -183,7 +183,7 @@ function _readCharacteristic(dispatch, getState, characteristic) {
             characteristic.instanceId,
             (error, value) => {
                 if (error) {
-                    dispatch(completedReadingAttribute(characteristic, null));
+                    dispatch(completedReadingAttribute(characteristic, null, error));
                     reject(makeError({adapter: adapterToUse, characteristic: characteristic, error: error}));
                 }
 
@@ -219,7 +219,7 @@ function _writeCharacteristic(dispatch, getState, characteristic, value) {
 
         adapterToUse.writeCharacteristicValue(characteristic.instanceId, value, ack, error => {
             if (error) {
-                dispatch(completedWritingAttribute(characteristic, null));
+                dispatch(completedWritingAttribute(characteristic, null, error));
                 reject(makeError({adapter: adapterToUse, characteristic: characteristic, error: error}));
             }
 
@@ -247,7 +247,7 @@ function _readDescriptor(dispatch, getState, descriptor) {
             descriptor.instanceId,
             (error, value) => {
                 if (error) {
-                    dispatch(completedReadingAttribute(descriptor, null));
+                    dispatch(completedReadingAttribute(descriptor, null, error));
                     reject(makeError({adapter: adapterToUse, descriptor: descriptor, error: error}));
                 }
 
@@ -278,7 +278,7 @@ function _writeDescriptor(dispatch, getState, descriptor, value) {
             true, // request ack (write request)
             error => {
                 if (error) {
-                    dispatch(completedWritingAttribute(descriptor, null));
+                    dispatch(completedWritingAttribute(descriptor, null, error));
                     reject(makeError({adapter: adapterToUse, descriptor: descriptor, error: error}));
                 }
 
@@ -328,19 +328,21 @@ function writingAttribute(attribute) {
     };
 }
 
-function completedReadingAttribute(attribute, value) {
+function completedReadingAttribute(attribute, value, error) {
     return {
         type: COMPLETED_READING_ATTRIBUTE,
         attribute,
         value,
+        error,
     };
 }
 
-function completedWritingAttribute(attribute, value) {
+function completedWritingAttribute(attribute, value, error) {
     return {
         type: COMPLETED_WRITING_ATTRIBUTE,
         attribute,
         value,
+        error,
     };
 }
 

@@ -629,9 +629,6 @@
     border-bottom: 1px solid white;
     margin-right: 1px;
   }
-  @bar1-color: rgb(179, 225, 245);
-  @bar2-color: rgb(102, 196, 235);
-  @bar3-color: rgb(0,   156, 222);
   .bar1 {
     background-color: @bar1-color;
   }
@@ -702,12 +699,21 @@
         max-width: 86%;
         font-size: 10px;
         background-color: @gray-lighter;
+      }
     }
-  }
   }
   .characteristic-item, .descriptor-item {
     .content-wrap {
       font-size: 11px;
+    }
+    .error-label {
+      margin: 1px 3px 1px -3px;
+      padding: 2px 2px 2px 3px;
+      border: 1px solid @device-details-light-border-color;
+      background-color: @bar1-color;
+    }
+    .hide {
+      display: none;
     }
   }
 
