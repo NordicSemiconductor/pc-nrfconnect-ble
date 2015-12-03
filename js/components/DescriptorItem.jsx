@@ -18,11 +18,12 @@ import Component from 'react-pure-render/component';
 
 import HexOnlyEditableField from './HexOnlyEditableField';
 import { Effects } from '../utils/Effects';
+import * as Colors from '../utils/colorDefinitions';
 
 export default class DescriptorItem extends Component {
     constructor(props) {
         super(props);
-        this.backgroundColor = {r: 255, g: 255, b: 255};
+        this.backgroundColor = Colors.getColor(Colors.WHITE);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -40,9 +41,9 @@ export default class DescriptorItem extends Component {
             this.animation.stop();
         }
 
-        var blue  = {r: 179, g: 225, b: 245};
-        var white = {r: 255, g: 255, b: 255};
-        this.animation = Effects.blink(this, 'backgroundColor', blue, white);
+        const fromColor = Colors.getColor(Colors.SOFT_BLUE);
+        const toColor = Colors.getColor(Colors.WHITE);
+        this.animation = Effects.blink(this, 'backgroundColor', fromColor, toColor);
     }
 
     _selectComponent() {
