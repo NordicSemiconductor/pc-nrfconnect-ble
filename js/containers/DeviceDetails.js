@@ -45,7 +45,7 @@ class DeviceDetailsContainer extends Component {
             toggleAdvertising,
             disconnectFromDevice,
             pairWithDevice,
-            updateDeviceConnectionParams,
+            createUserInitiatedConnParamsUpdateEvent,
         } = this.props;
         const elemWidth = 250;
         const detailDevices = [];
@@ -81,7 +81,7 @@ class DeviceDetailsContainer extends Component {
                                                   onWriteDescriptor={writeDescriptor}
                                                   onDisconnectFromDevice={disconnectFromDevice}
                                                   onPairWithDevice={pairWithDevice}
-                                                  onUpdateDeviceConnectionParams={updateDeviceConnectionParams}
+                                                  onUpdateDeviceConnectionParams={createUserInitiatedConnParamsUpdateEvent}
                                                   containerHeight={this.props.style.height}
                                                   />
             );
@@ -142,4 +142,5 @@ DeviceDetailsContainer.propTypes = {
     writeCharacteristic: PropTypes.func.isRequired,
     readDescriptor: PropTypes.func.isRequired,
     writeDescriptor: PropTypes.func.isRequired,
+    createUserInitiatedConnParamsUpdateEvent: PropTypes.func.isRequired,
 };
