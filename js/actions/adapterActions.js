@@ -60,14 +60,6 @@ function makeError(data) {
 
 function _getAdapters(dispatch) {
     return new Promise((resolve, reject) => {
-        _adapterFactory.getAdapters((error, adapters) => {
-            if (error) {
-                reject(makeError({error:error}));
-            } else {
-                resolve(adapters);
-            }
-        });
-    }).then(adapters => {
         // Register listeners for adapters added/removed
         _adapterFactory.on('added', adapter => {
             dispatch(adapterAddedAction(adapter));
@@ -79,10 +71,12 @@ function _getAdapters(dispatch) {
             dispatch(errorOccuredAction(undefined, error));
         });
 
-        // TODO: try to remove the underscore library
-        // Add the adapters to the store
-        _.map(adapters, adapter => {
-            dispatch(adapterAddedAction(adapter));
+        _adapterFactory.getAdapters((error, adapters) => {
+            if (error) {
+                reject(makeError({error:error}));
+            } else {
+                resolve();
+            }
         });
     }).catch(error => {
         dispatch(errorOccuredAction(undefined, error));
