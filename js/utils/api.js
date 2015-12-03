@@ -51,6 +51,9 @@ const ImmutableDevice = Record({
     services: List(),
     rssi: null,
     scanResponse: false,
+    bonded: false,
+    securityMode1Levels: null,
+    securityMode2Levels: null,
 });
 
 const ImmutableProperties = Record({

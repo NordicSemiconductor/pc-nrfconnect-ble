@@ -151,6 +151,21 @@ function deviceInitiatePairing(state, device) {
     return state;
 }
 
+function devicePaired(state, device, parameters) {
+    if (device.address === undefined) {
+        return state;
+    }
+
+    const { index } = getSelectedAdapter(state);
+
+    const _device = device;
+    const bonded = parameters.bonded;
+    const sm1Levels = parameters.sm1Levels;
+    state = state.updateIn(['adapters', index, 'connectedDevices'], connectedDevices => connectedDevices.set(_device.bonded, bonded));
+    state = state.updateIn(['adapters', index, 'connectedDevices'], connectedDevices => connectedDevices.set(_device.securityMode1Levels, sm1Levels));
+    return state;
+}
+
 function addError(state, error) {
     if (error.message === undefined) {
         console.log(`Error does not contain a message! Something is wrong!`);
@@ -214,6 +229,8 @@ export default function adapter(state = getImmutableRoot(), action) {
             return deviceInitiatePairing(state, action.device);
         case AdapterAction.DEVICE_CONNECTION_PARAM_UPDATE_STATUS:
             return connectedDeviceUpdated(state, action.device);
+        case AdapterAction.DEVICE_PAIRED:
+            return devicePaired(state, action.device, action.parameters);
         default:
             return state;
     }

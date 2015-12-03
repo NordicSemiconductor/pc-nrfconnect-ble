@@ -28,6 +28,7 @@ export const DEVICE_DISCONNECTED = 'DEVICE_DISCONNECTED';
 export const DEVICE_CANCEL_CONNECT = 'DEVICE_CANCEL_CONNECT';
 export const DEVICE_CANCELLED_CONNECT = 'DEVICE_CANCELLED_CONNECT';
 export const DEVICE_INITIATE_PAIRING = 'DEVICE_INITIATE_PAIRING';
+export const DEVICE_PAIRED = 'DEVICE_PAIRED';
 
 export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
 export const DEVICE_CONNECTION_PARAM_UPDATE_STATUS = 'DEVICE_CONNECTION_PARAM_UPDATE_STATUS';
@@ -297,6 +298,7 @@ function connectionParamUpdateStatusAction(id, device, status) {
 
 function _pairWithDevice(dispatch, getState, device) {
     function onSecurityChanged(resolve, event) {
+        dispatch(pairedWithDevice(device, event));
         resolve(event);
     }
 
@@ -491,6 +493,14 @@ function pairWithDeviceAction(device) {
     return {
         type: DEVICE_INITIATE_PAIRING,
         device,
+    };
+}
+
+function pairedWithDevice(device, parameters) {
+    return {
+        type: DEVICE_PAIRED,
+        device,
+        parameters,
     };
 }
 
