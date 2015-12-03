@@ -15,7 +15,41 @@
 export const SELECT_COMPONENT = 'SERVER_SETUP_SELECT_COMPONENT';
 export const TOGGLED_ATTRIBUTE_EXPANDED = 'SERVER_SETUP_TOGGLED_ATTRIBUTE_EXPANDED';
 
+export const ADDED_NEW_SERVICE = 'SERVER_SETUP_ADDED_NEW_SERVICE';
+export const ADDED_NEW_CHARACTERISTIC = 'SERVER_SETUP_NEW_CHARACTERISTIC';
+export const ADDED_NEW_DESCRIPTOR = 'SERVER_SETUP_NEW_DESCRIPTOR';
+export const REMOVED_ATTRIBUTE = 'SERVER_SETUP_REMOVED_ATTRIBUTE';
+
 import { getInstanceIds } from '../utils/api';
+
+function _toggleAttributeExpanded(dispatch, getState, attribute) {
+    dispatch(toggledAttributeExpanded(attribute));
+    dispatch(selectComponentAction(attribute));
+}
+
+function _addNewService(dispatch, getState) {
+    dispatch(addedNewService());
+}
+
+function _addNewCharacteristic(dispatch, getState, parent) {
+    dispatch(addedNewCharacteristic(parent));
+}
+
+function _addNewDescriptor(dispatch, getState, parent) {
+    dispatch(addedNewDescriptor(parent));
+}
+
+function _removeAttribute(dispatch, getState, attribute) {
+    //TODO: if attribute is gap or gatt service (check if first in list of services?)
+    dispatch(removedAttribute(attribute));
+}
+
+function toggledAttributeExpanded(attribute) {
+    return {
+        type: TOGGLED_ATTRIBUTE_EXPANDED,
+        attribute,
+    };
+}
 
 function selectComponentAction(component) {
     return {
@@ -24,14 +58,29 @@ function selectComponentAction(component) {
     };
 }
 
-function _toggleAttributeExpanded(dispatch, getState, attribute) {
-    dispatch(toggledAttributeExpanded(attribute));
-    dispatch(selectComponentAction(attribute));
+function addedNewService() {
+    return {
+        type: ADDED_NEW_SERVICE,
+    };
 }
 
-function toggledAttributeExpanded(attribute) {
+function addedNewCharacteristic(parent) {
     return {
-        type: TOGGLED_ATTRIBUTE_EXPANDED,
+        type: ADDED_NEW_CHARACTERISTIC,
+        parent,
+    };
+}
+
+function addedNewDescriptor(parent) {
+    return {
+        type: ADDED_NEW_DESCRIPTOR,
+        parent,
+    };
+}
+
+function removedAttribute(attribute) {
+    return {
+        type: REMOVED_ATTRIBUTE,
         attribute,
     };
 }
@@ -43,5 +92,29 @@ export function selectComponent(component) {
 export function toggleAttributeExpanded(attribute) {
     return (dispatch, getState) => {
         return _toggleAttributeExpanded(dispatch, getState, attribute);
+    };
+}
+
+export function addNewService() {
+    return (dispatch, getState) => {
+        return _addNewService(dispatch, getState);
+    };
+}
+
+export function addNewCharacteristic(parent) {
+    return (dispatch, getState) => {
+        return _addNewCharacteristic(dispatch, getState, parent);
+    };
+}
+
+export function addNewDescriptor(parent) {
+    return (dispatch, getState) => {
+        return _addNewDescriptor(dispatch, getState, parent);
+    };
+}
+
+export function removeAttribute(attribute) {
+    return (dispatch, getState) => {
+        return _removeAttribute(dispatch, getState, attribute);
     };
 }

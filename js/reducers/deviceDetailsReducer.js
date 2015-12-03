@@ -32,7 +32,7 @@ const DeviceDetail = Record({
 const initialState = new InitialState({selectedComponent: null, devices: Map()});
 
 function getNodeStatePath(node) {
-    const nodeInstanceIds = getInstanceIds(node);
+    const nodeInstanceIds = getInstanceIds(node.instanceId);
     const nodeStatePath = ['devices', nodeInstanceIds.device];
 
     if (nodeInstanceIds.service) {
@@ -66,7 +66,7 @@ function discoveredAttributes(state, parent, attributes) {
     state = state.setIn(parentStatePath.concat('children'), Map());
 
     for (let attribute of attributes) {
-        const attributeInstanceIds = getInstanceIds(attribute);
+        const attributeInstanceIds = getInstanceIds(attribute.instanceId);
         const attributeStatePath = getNodeStatePath(attribute);
         let immutableAttribute = null;
 
@@ -108,7 +108,7 @@ function completedWritingAttribute(state, attribute, value) {
     if (!value) {
         // If value is null the operation failed. Trigger a state change by setting
         // the original value in a new List object.
-        const attributeInstanceIds = getInstanceIds(attribute);
+        const attributeInstanceIds = getInstanceIds(attribute.instanceId);
         const attributeStatePath = getNodeStatePath(attribute);
 
         let immutableAttribute = null;

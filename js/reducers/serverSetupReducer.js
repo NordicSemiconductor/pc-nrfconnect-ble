@@ -12,7 +12,7 @@
 
 'use strict';
 
-import { Record, Map } from 'immutable';
+import { List, Record, OrderedMap } from 'immutable';
 
 import * as ServerSetupActions from '../actions/serverSetupActions';
 
@@ -29,14 +29,46 @@ const LocalServer = Record({
     children: null,
 });
 
+const deviceInstanceId = 'local.server';
+let serviceInstanceIdCounter = 0;
+let characteristicInstanceIdCounter = 0;
+let descriptorInstanceIdCounter = 0;
+
+function getInitialLocalServer() {
+    serviceInstanceIdCounter = 0;
+    characteristicInstanceIdCounter = 0;
+    descriptorInstanceIdCounter = 0;
+
+    const gapService = getImmutableService({
+        instanceId: deviceInstanceId + '.' + serviceInstanceIdCounter++,
+        name: 'Generic Access',
+        uuid: '1800',
+        children: OrderedMap(),
+    });
+    const gattService = getImmutableService({
+        instanceId: deviceInstanceId + '.' + serviceInstanceIdCounter++,
+        name: 'Generic Attribute',
+        uuid: '1801',
+        children: OrderedMap(),
+    });
+
+    localServerChildren = {};
+    localServerChildren[gapService.instanceId] = gapService;
+    localServerChildren[gattService.instanceId] = gattService;
+
+    return new LocalServer({
+        children: OrderedMap(localServerChildren),
+    });
+}
+
 const initialState = new InitialState({
     selectedComponent: null,
-    localServer: new LocalServer(),
-    tempServer: new LocalServer(),
+    localServer: getInitialLocalServer(),
+    tempServer: getInitialLocalServer(),
 });
 
 function getNodeStatePath(node) {
-    const nodeInstanceIds = getInstanceIds(node);
+    const nodeInstanceIds = getInstanceIds(node.instanceId);
     const nodeStatePath = ['tempServer'];
 
     if (nodeInstanceIds.service) {
@@ -56,8 +88,43 @@ function getNodeStatePath(node) {
 
 function toggledAttributeExpanded(state, attribute) {
     const attributeStatePath = getNodeStatePath(attribute);
-    const previouslyExpanded = state.getIn(attributeStatePath.concat('expanded'));
+    const previouslyExpanded = state.getIn(attributeStatePath .concat('expanded'));
     return state.setIn(attributeStatePath.concat('expanded'), !previouslyExpanded);
+}
+
+function addedNewService(state) {
+    const newService = getImmutableService({
+        instanceId: deviceInstanceId + '.' + serviceInstanceIdCounter++,
+        children: OrderedMap(),
+    });
+    const newServiceStatePath = getNodeStatePath(newService);
+
+    return state.setIn(newServiceStatePath, newService);
+}
+
+function addedNewCharacteristic(state, parent) {
+    const newCharacteristic = getImmutableCharacteristic({
+        instanceId: parent.instanceId + '.' + characteristicInstanceIdCounter++,
+        children: OrderedMap(),
+    });
+    const newCharacteristicStatePath = getNodeStatePath(newCharacteristic);
+
+    return state.setIn(newCharacteristicStatePath, newCharacteristic);
+}
+
+function addedNewDescriptor(state, parent) {
+    const newDescriptor = getImmutableDescriptor({
+        instanceId: parent.instanceId + '.' + descriptorInstanceIdCounter++,
+        children: OrderedMap(),
+    });
+    const newDescriptorStatePath = getNodeStatePath(newDescriptor);
+
+    return state.setIn(newDescriptorStatePath, newDescriptor);
+}
+
+function removedAttribute(state, attribute) {
+    const attributeStatePath = getNodeStatePath(attribute);
+    return state.deleteIn(attributeStatePath);
 }
 
 export default function deviceDetails(state = initialState, action) {
@@ -66,6 +133,14 @@ export default function deviceDetails(state = initialState, action) {
             return state.update('selectedComponent', selectedComponent => action.component.instanceId);
         case ServerSetupActions.TOGGLED_ATTRIBUTE_EXPANDED:
             return toggledAttributeExpanded(state, action.attribute);
+        case ServerSetupActions.ADDED_NEW_SERVICE:
+            return addedNewService(state);
+        case ServerSetupActions.ADDED_NEW_CHARACTERISTIC:
+            return addedNewCharacteristic(state, action.parent);
+        case ServerSetupActions.ADDED_NEW_DESCRIPTOR:
+            return addedNewDescriptor(state, action.parent);
+        case ServerSetupActions.REMOVED_ATTRIBUTE:
+            return removedAttribute(action.attribute);
         default:
             return state;
     }

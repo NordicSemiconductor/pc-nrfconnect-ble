@@ -193,8 +193,8 @@ export default class EditableField extends Component {
                                       onKeyDown={e => this._onKeyDown(e)}
                                       value={this.value}
                                       onChange={e => this._onChange(e)}
-                                      onClick={this._stopPropagation} />
-        } else if (this.editing) {
+                                      onClick={this._stopPropagation} />;
+        } else if (this.editing && this.props.onWrite) {
             child = <div className='editable-field-editor-wrap'>
                         <div className='alert-wrap'>
                             <div className='alert alert-danger tooltip top' style={{display: this.validationMessage == '' ? 'none' : 'block' }}>
@@ -211,7 +211,7 @@ export default class EditableField extends Component {
                                           onChange={e => this._onChange(e)}
                                           onClick={this._stopPropagation} />
                     </div>;
-        } else if (this.props.showReadButton) {
+        } else if (this.props.showReadButton && this.props.onRead) {
             child = <div className='editable-field-editor-wrap'>
                         <div className='btn btn-primary btn-xs btn-nordic' onClick={e => this._onReadButtonClick(e)}><i className='icon-ccw'></i></div>
                         <div className='subtle-text editable' onClick={e => this._toggleEditing(e)}>

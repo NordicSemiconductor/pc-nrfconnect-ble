@@ -148,7 +148,7 @@ function _toggleAttributeExpanded(dispatch, getState, attribute) {
         return;
     }
 
-    const instaceIds = getInstanceIds(attribute);
+    const instaceIds = getInstanceIds(attribute.instanceId);
     const deviceDetails = state.adapter.adapters[state.adapter.selectedAdapter].deviceDetails;
     const service = deviceDetails.devices.get(instaceIds.device).children.get(instaceIds.service);
 

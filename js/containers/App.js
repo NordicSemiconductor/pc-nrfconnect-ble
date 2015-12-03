@@ -24,7 +24,7 @@ import * as AppActions from '../actions/appActions';
 
 import DeviceDetailsContainer from './DeviceDetails';
 //import ConnectionUpdateRequestModal from './components/ConnectionUpdateRequestModal.jsx';
-// import ServerSetup from '../components/ServerSetup';
+import ServerSetup from './ServerSetup';
 
 import NavBar from '../components/navbar.jsx';
 import BLEEventDialog from '../containers/BLEEventDialog';

@@ -246,6 +246,10 @@ const uuidDefinitions = {
     '22EAC6E924D64BB5BE44B36ACE7C7BFB': 'ANCS Data Source',
 };
 
+// TODO: look into using a database for storing the services UUID's. Also look into importing them from the Bluetooth pages.
+// TODO: Also look into reusing code from the Android MCP project:
+// TODO: http://projecttools.nordicsemi.no/stash/projects/APPS-ANDROID/repos/nrf-master-control-panel/browse/app/src/main/java/no/nordicsemi/android/mcp/database/init
+// TODO: http://projecttools.nordicsemi.no/stash/projects/APPS-ANDROID/repos/nrf-master-control-panel/browse/app/src/main/java/no/nordicsemi/android/mcp/database/DatabaseHelper.java
 export function getUuidName(uuid) {
     return uuidDefinitions[uuid] || uuid;
 }

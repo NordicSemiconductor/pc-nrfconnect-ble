@@ -119,14 +119,19 @@ export default function asImmutable(mutableObject) {
     }
 }
 
-export function getInstanceIds(attribute) {
-    const idArray = attribute.instanceId.split('.');
+export function getInstanceIds(instanceId) {
     const instanceIds = {
         device: null,
         service: null,
         characteristic: null,
         descriptor: null,
     };
+
+    if (!instanceId) {
+        return instanceIds;
+    }
+
+    const idArray = instanceId.split('.');
 
     if (idArray.length > 1) {
         instanceIds.device = idArray.slice(0, 2).join('.');
@@ -209,6 +214,7 @@ export function getImmutableService(service) {
         uuid: service.uuid,
         name: name,
         handle: service.startHandle,
+        children: service.children,
     });
 }
 
@@ -223,6 +229,7 @@ export function getImmutableCharacteristic(characteristic) {
         valueHandle: characteristic.valueHandle,
         value: List(characteristic.value),
         properties: getImmutableProperties(characteristic.properties),
+        children: characteristic.children,
     });
 }
 
