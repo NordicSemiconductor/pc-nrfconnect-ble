@@ -51,7 +51,6 @@ export default class DeviceDetailsView extends Component {
                 device: {
                     advertising,
                 },
-                onSelectComponent,
                 onShowAdvertisingSetupDialog,
                 onToggleAdvertising,
             } = this.props;
@@ -140,7 +139,7 @@ export default class DeviceDetailsView extends Component {
 DeviceDetailsView.propTypes = {
     key: PropTypes.string.isRequired, // Can be null/undefined... ?
     device: PropTypes.object.isRequired,
-    selected: PropTypes.string.isRequired, // Can be null/undefined... ?
+    selected: PropTypes.string,
     onSelectComponent: PropTypes.func.isRequired,
     onToggleAttributeExpanded: PropTypes.func.isRequired,
     onUpdateDeviceConnectionParams: PropTypes.func,
