@@ -21,7 +21,7 @@ import * as DiscoveryActions from '../actions/discoveryActions';
 import * as AdapterActions from '../actions/adapterActions';
 
 import DiscoveryButton from '../components/discoveryButton';
-import DiscoveredDevice from '../components/discoveredDevice';
+import DiscoveredDevice from '../components/DiscoveredDevice';
 
 class DiscoveredDevices extends Component {
     constructor(props) {
@@ -89,7 +89,7 @@ function mapStateToProps(state) {
     let adapterAvailable = false;
 
     if (adapter.selectedAdapter !== undefined && adapter.selectedAdapter !== null) {
-        selectedAdapter = adapter.adapters[adapter.selectedAdapter];
+        selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapter]);
 
         if (selectedAdapter && selectedAdapter.state) {
             adapterIsConnecting = selectedAdapter.state.connecting || false;

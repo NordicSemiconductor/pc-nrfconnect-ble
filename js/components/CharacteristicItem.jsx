@@ -13,15 +13,13 @@
 'use strict';
 
 import React from 'react';
-
 import Component from 'react-pure-render/component';
 
-import EnumeratingAttributes from './EnumeratingAttributes.jsx';
+import EnumeratingAttributes from './EnumeratingAttributes';
 import DescriptorItem from './DescriptorItem';
-import AddNewItem from './AddNewItem.jsx';
-import HexOnlyEditableField from './HexOnlyEditableField.jsx';
-
-import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
+import AddNewItem from './AddNewItem';
+import HexOnlyEditableField from './HexOnlyEditableField';
+import { Effects } from '../utils/Effects';
 
 const NOTIFY = 1;
 const INDICATE = 2;
@@ -29,10 +27,30 @@ const INDICATE = 2;
 const CCCD_UUID = '2902';
 
 export default class CharacteristicItem extends Component {
-    //mixins: [BlueWhiteBlinkMixin],
     constructor(props) {
         super(props);
         this.cccdDescriptor;
+        this.backgroundColor = {r: 255, g: 255, b: 255};
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.item.value !== nextProps.item.value) {
+            if (this.props.onChange) {
+                this.props.onChange();
+            };
+
+            this._blink();
+        }
+    }
+
+    _blink() {
+        if (this.animation) {
+            this.animation.stop();
+        }
+
+        var blue  = {r: 179, g: 225, b: 245};
+        var white = {r: 255, g: 255, b: 255};
+        this.animation = Effects.blink(this, 'backgroundColor', blue, white);
     }
 
     _selectComponent() {
@@ -88,9 +106,8 @@ export default class CharacteristicItem extends Component {
             this.props.onChange();
         }
 
-        if (!this.state.expanded) {
-            console.log('Characteristic BLINKED!');
-            //this.blink();
+        if (!this.props.item.expanded) {
+            this._blink();
         }
     }
 
@@ -171,7 +188,7 @@ export default class CharacteristicItem extends Component {
                                                   item={descriptor}
                                                   selected={selected}
                                                   onSelectAttribute={onSelectAttribute}
-                                                  onChange={this._childChanged}
+                                                  onChange={() => this._childChanged()}
                                                   onRead={onReadDescriptor}
                                                   onWrite={onWriteDescriptor} />
                 );
@@ -190,7 +207,9 @@ export default class CharacteristicItem extends Component {
         const notifyIcon = (isNotifying && (hasNotifyProperty || hasIndicateProperty)) ? 'icon-stop' : 'icon-play';
         const notifyIconStyle = hasCccd ? {} : {display: 'none'};
         const itemIsSelected = item.instanceId === selected;
-        const backgroundColor = itemIsSelected ? 'rgb(179,225,245)' : 'white';
+        const backgroundColor = itemIsSelected
+            ? 'rgb(179,225,245)'
+            : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
 
         return (
         <div>

@@ -20,8 +20,8 @@ import { Modal } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { Label } from 'react-bootstrap';
 
-import AdvertisingList from './AdvertisingList';
-import AdvertisingData from './AdvertisingData';
+import AdvertisingList from '../components/AdvertisingList';
+import AdvertisingData from '../components/AdvertisingData';
 
 import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
 

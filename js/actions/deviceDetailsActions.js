@@ -28,6 +28,7 @@ export const WRITING_ATTRIBUTE = 'DEVICE_DETAILS_WRITING_ATTRIBUTE';
 export const READING_ATTRIBUTE = 'DEVICE_DETAILS_READING_ATTRIBUTE';
 export const COMPLETED_WRITING_ATTRIBUTE = 'DEVICE_DETAILS_COMPLETED_WRITING_ATTRIBUTE';
 export const COMPLETED_READING_ATTRIBUTE = 'DEVICE_DETAILS_COMPLETED_READING_ATTRIBUTE';
+
 export const ERROR_OCCURED = 'DEVICE_DETAILS_ERROR_OCCURED';
 
 import { getInstanceIds } from '../utils/api';
@@ -148,12 +149,12 @@ function _toggleAttributeExpanded(dispatch, getState, attribute) {
         return;
     }
 
-    const instaceIds = getInstanceIds(attribute.instanceId);
-    const deviceDetails = state.adapter.adapters[state.adapter.selectedAdapter].deviceDetails;
-    const service = deviceDetails.devices.get(instaceIds.device).children.get(instaceIds.service);
+    const instanceIds = getInstanceIds(attribute.instanceId);
+    const deviceDetails = state.adapter.getIn(['adapters', state.adapter.selectedAdapter, 'deviceDetails']);
+    const service = deviceDetails.devices.get(instanceIds.device).children.get(instanceIds.service);
 
-    if (instaceIds.characteristic) {
-        const characteristic = service.children.get(instaceIds.characteristic);
+    if (instanceIds.characteristic) {
+        const characteristic = service.children.get(instanceIds.characteristic);
         if (characteristic.children === null && !characteristic.expanded && !characteristic.discoveringChildren) {
             dispatch(discoverDescriptors(characteristic));
         }

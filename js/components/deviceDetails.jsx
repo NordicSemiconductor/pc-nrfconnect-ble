@@ -20,11 +20,7 @@ import ConnectedDevice from './ConnectedDevice.jsx';
 import CentralDevice from './CentralDevice.jsx';
 import EnumeratingAttributes from './EnumeratingAttributes.jsx';
 
-// import KeyNavigation from './common/TreeViewKeyNavigationMixin.jsx';
-import logger from '../logging';
-
 import ServiceItem from './ServiceItem';
-import {GattDatabases} from './../gattDatabases';
 
 export default class DeviceDetailsView extends Component {
     render() {
@@ -33,6 +29,7 @@ export default class DeviceDetailsView extends Component {
             device,
             selected,
         } = this.props;
+
         const {
             instanceId,
             name,
@@ -81,8 +78,12 @@ export default class DeviceDetailsView extends Component {
 
         const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
 
-        const connectedDevice = <ConnectedDevice id={instanceId + 'details'}
-                                                 sourceId={adapter.instanceId + 'details'}
+        if (!deviceDetail) {
+            return <div/>;
+        }
+
+        const connectedDevice = (<ConnectedDevice id={instanceId + '_details'}
+                                                 sourceId={adapter.instanceId + '_details'}
                                                  key={instanceId}
                                                  device={device}
                                                  selected={selected}
@@ -90,9 +91,10 @@ export default class DeviceDetailsView extends Component {
                                                  onSelectComponent={onSelectComponent}
                                                  onDisconnect={() => onDisconnectFromDevice(device)}
                                                  onPair={() => onPairWithDevice(device)}
-                                                 onConnectionParamsUpdate={() => onUpdateDeviceConnectionParams(device)}/>;
+                                                 onConnectionParamsUpdate={() => onUpdateDeviceConnectionParams(device)}/>);
 
-        if (deviceDetail.discoveringChildren) {
+
+        if (deviceDetail && deviceDetail.discoveringChildren) {
             return (
                 <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
                     {connectedDevice}

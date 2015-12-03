@@ -77,7 +77,7 @@ export default connect(
     mapDispatchToProps)(AdapterSelector);
 
 AdapterSelector.propTypes = {
-    adapters: PropTypes.array.isRequired,
+    adapters: PropTypes.object.isRequired,
     adapterStatus: PropTypes.string.isRequired,
     openAdapter: PropTypes.func.isRequired,
 };

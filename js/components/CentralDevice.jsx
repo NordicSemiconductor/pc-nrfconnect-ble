@@ -14,10 +14,11 @@
 
 'use strict';
 
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes } from 'react';
+import Component from 'react-pure-render/component';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
-import AdvertisingSetup from '../components/advertisingSetup';
+import AdvertisingSetup from '../containers/AdvertisingSetup';
 
 export default class CentralDevice extends Component {
     constructor(props) {

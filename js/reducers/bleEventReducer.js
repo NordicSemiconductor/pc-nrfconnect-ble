@@ -97,16 +97,13 @@ function removeEvent(state, eventId) {
     return state.deleteIn(['events', eventId]);
 }
 
-function removeAllEvents(state) {
-    state = state.set('selectedEventId', -1);
-    state.update('events');
-}
-
 function createUserInitiatedConnParamsUpdateEvent(state, device) {
+    // Information regarding BLE parameters are taken from:
+    // https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.gap.peripheral_preferred_connection_parameters.xml
     const defaultConnectionParams = {
         connectionSupervisionTimeout: 4000,
-        maxConnectionInterval: 1000,
-        minConnectionInterval: 500,
+        maxConnectionInterval: 4000,
+        minConnectionInterval: 7.5,
         slaveLatency: 0,
     };
 

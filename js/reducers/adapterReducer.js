@@ -3,6 +3,7 @@
 // const NONE_TEXT = 'None';
 const DEFAULT_ADAPTER_STATUS = 'Select com port';
 
+import { List, Record } from 'immutable';
 import { combineReducers } from 'redux';
 
 import * as apiHelper from '../utils/api';
@@ -13,39 +14,29 @@ import serverSetup from './serverSetupReducer';
 import * as AdapterAction from '../actions/adapterActions';
 import { logger } from '../logging';
 
+const ImmutableRoot = Record({
+    api: { adapters: [], selectedAdapter: null },
+    adapters: List(),
+    adapterStatus: 'Select COM port',
+    adapterIndicator: 'off',
+    selectedAdapter: null, // Index of selected adapter in .adapters (not api.adapters)
+    errors: List(),
+});
+
+function getImmutableRoot() {
+    return new ImmutableRoot();
+}
+
 function getSelectedAdapter(state) {
     return {
-        adapter: state.adapters[state.selectedAdapter],
+        adapter: state.getIn(['adapters', state.selectedAdapter]),
         index: state.selectedAdapter,
     };
 }
 
-function findDevice(state, deviceInstanceId) {
-    const { adapter } = getSelectedAdapter(state);
-
-    return adapter.devices.find(function(device) {
-        return device.instanceId.id === deviceInstanceId;
-    });
-}
-
-function maintainNoneField(state) {
-    return;
-    /*
-    const noneIndex = state.adapters.indexOf(NONE_TEXT);
-
-    if(noneIndex != -1 && state.api.adapters.length > 0) {
-        state.adapters.splice(noneIndex, 1);
-    } else if(noneIndex == -1 && state.api.adapters.length === 0) {
-        state.adapters.push(NONE_TEXT);
-    } */
-}
-
 function addAdapter(state, adapter) {
     state.api.adapters.push(adapter);
-    state.adapters.push(apiHelper.getImmutableAdapter(adapter));
-
-    maintainNoneField(state);
-    return state;
+    return state.update('adapters', adapters => adapters.push(apiHelper.getImmutableAdapter(adapter)));
 }
 
 function removeAdapter(state, adapter) {
@@ -53,12 +44,10 @@ function removeAdapter(state, adapter) {
 
     if (adapterIndex !== -1) {
         state.api.adapters.splice(adapterIndex, 1);
-        state.adapters.splice(adapterIndex, 1);
-        state.adapterIndicator = 'off';
-        state.selectedAdapter = null;
-        state.adapterStatus = DEFAULT_ADAPTER_STATUS;
-
-        maintainNoneField(state);
+        state = state.deleteIn('adapters', adapterIndex);
+        state = state.set('adapterIndicator', 'off');
+        state = state.set('selectedAdapter', null);
+        state = state.set('adapterStatus', DEFAULT_ADAPTER_STATUS);
     } else {
         logger.error(`You removed an adapter I did not know about: ${adapter.adapterStatus.port}.`);
     }
@@ -68,8 +57,7 @@ function removeAdapter(state, adapter) {
 
 function openAdapter(state, adapter) {
     logger.info(`Opening adapter ${adapter.state.port}`);
-
-    state.adapterStatus = adapter.state.port;
+    state = state.set('adapterStatus', adapter.state.port);
     return state;
 }
 
@@ -83,9 +71,9 @@ function adapterOpened(state, adapter) {
 
     state.api.selectedAdapter = adapter;
 
-    state.selectedAdapter = adapterIndex;
-    state.adapterStatus = adapter.state.port;
-    state.adapterIndicator = 'on';
+    state = state.set('selectedAdapter', adapterIndex);
+    state = state.set('adapterStatus', adapter.state.port);
+    state = state.set('adapterIndicator', 'on');
 
     return state;
 }
@@ -93,19 +81,18 @@ function adapterOpened(state, adapter) {
 function adapterStateChanged(state, adapter, adapterState) {
     const adapterIndex = state.api.adapters.indexOf(adapter);
 
-    const _adapter = state.adapters[adapterIndex];
     const immutableState = apiHelper.getImmutableAdapterState(adapterState);
-
-    state.adapters[adapterIndex] = _adapter.set('state', immutableState);
+    state = state.setIn(['adapters', adapterIndex, 'state'], immutableState);
 
     return state;
 }
 
 function closeAdapter(state, adapter) {
-    state.adapterIndicator = 'off';
     state.api.selectedAdapter = null;
-    state.selectedAdapter = null;
-    state.adapterStatus = DEFAULT_ADAPTER_STATUS;
+
+    state = state.set('adapterIndicator', 'off');
+    state = state.set('selectedAdapter',  null);
+    state = state.set('adapterStatus', DEFAULT_ADAPTER_STATUS);
 
     return state;
 }
@@ -114,11 +101,11 @@ function adapterError(state, adapter, error) {
     logger.error(`Error on adapter ${adapter.state.port}: ${error.message}`);
     logger.debug(error.description);
 
-    state.adapterStatus = 'Error connecting';
-    state.adapterIndicator = 'error';
     state.api.selectedAdapter = null;
-    state.selectedAdapter = null;
-    state.errors.push(error.message);
+    state = state.set('adapterStatus', 'Error connecting');
+    state = state.set('adapterIndicator', 'error');
+    state = state.set('selectedAdapter', null);
+    state = state.update('errors', errors => errors.push(error.message));
 
     return state;
 }
@@ -133,17 +120,27 @@ function deviceConnected(state, device) {
     }
 
     const _device = apiHelper.getImmutableDevice(device);
-    const { adapter, index } = getSelectedAdapter(state);
+    const { index } = getSelectedAdapter(state);
 
-    state.adapters[index] = adapter.setIn(['connectedDevices', _device.instanceId], _device);
-    return state;
+    return state.updateIn(['adapters', index, 'connectedDevices'],
+        connectedDevices => connectedDevices.set(_device.instanceId, _device));
+}
+
+function connectedDeviceUpdated(state, device) {
+    if(device.address === undefined) {
+        return state;
+    }
+
+    const { index } = getSelectedAdapter(state);
+
+    // TODO: check if received state is of immutable type
+    const _device = device;
+    return state.updateIn(['adapters', index, 'connectedDevices'], connectedDevices => connectedDevices.set(_device.instanceId, _device));
 }
 
 function deviceDisconnected(state, device) {
-    const { adapter, index } = getSelectedAdapter(state);
-    state.adapters[index] = adapter.deleteIn(['connectedDevices', device.instanceId]);
-
-    return state;
+    const { index } = getSelectedAdapter(state);
+    return state.deleteIn(['adapters', index, 'connectedDevices', device.instanceId]);
 }
 
 function deviceInitiatePairing(state, device) {
@@ -162,33 +159,28 @@ function addError(state, error) {
         logger.debug(error.description);
     }
 
-    state.errors.push(error.message);
+    state = state.update('errors', errors => errors.push(error.message));
     return state;
 }
 
-export default function adapter(state =
-    {
-        api: {
-            adapters: [],
-            selectedAdapter: null,
-        },
-        adapters: [],
-        adapterStatus: DEFAULT_ADAPTER_STATUS,
-        adapterIndicator: 'off',
-        selectedAdapter: null, // index of selected adapter in .adapters (not api.adapters)
-        errors: [],
-    }, action) {
-    state = Object.assign({}, state);
-
+export default function adapter(state = getImmutableRoot(), action) {
     const adapterSubReducers = combineReducers({
         deviceDetails,
         serverSetup,
     });
-    const selectedAdapter = state.adapters[state.selectedAdapter];
 
-    if (selectedAdapter) {
-        const newSubReducerStates = adapterSubReducers({deviceDetails: selectedAdapter.deviceDetails, serverSetup: selectedAdapter.serverSetup}, action);
-        state.adapters[state.selectedAdapter] = selectedAdapter.merge(newSubReducerStates);
+    if(state.selectedAdapter) {
+        const selectedAdapter = state.getIn(['adapters', state.selectedAdapter]);
+
+        if (selectedAdapter) {
+            const newSubReducerStates = adapterSubReducers(
+                {
+                    deviceDetails: selectedAdapter.deviceDetails,
+                    serverSetup: selectedAdapter.serverSetup,
+                }, action);
+
+            state = state.mergeIn(['adapters', state.selectedAdapter], newSubReducerStates);
+        }
     }
 
     switch (action.type) {
@@ -216,6 +208,8 @@ export default function adapter(state =
             return deviceDisconnected(state, action.device);
         case AdapterAction.DEVICE_INITIATE_PAIRING:
             return deviceInitiatePairing(state, action.device);
+        case AdapterAction.DEVICE_CONNECTION_PARAM_UPDATE_STATUS:
+            return connectedDeviceUpdated(state, action.device);
         default:
             return state;
     }
