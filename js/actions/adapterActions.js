@@ -107,7 +107,7 @@ function _openAdapter(dispatch, getState, adapter) {
         }
         // Listen to errors from this adapter since we are opening it now
         adapterToUse.on('error', error => {
-            // TODO: separate between what is an noen recoverable adapter error
+            // TODO: separate between what is an non recoverable adapter error
             // TODO: and a recoverable error.
             // TODO: adapterErrorAction should only be used if it is an unrecoverable errors.
             // TODO: errorOccuredAction should be used for recoverable errors.
