@@ -21,6 +21,7 @@ import { connect } from 'react-redux';
 import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
 import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
 import * as AdapterActions from '../actions/adapterActions';
+import * as BLEEventActions from '../actions/BLEEventActions';
 
 import DeviceDetailsView from '../components/deviceDetails';
 
@@ -45,8 +46,9 @@ class DeviceDetailsContainer extends Component {
             toggleAdvertising,
             disconnectFromDevice,
             pairWithDevice,
-            updateDeviceConnectionParams,
+            createUserInitiatedConnParamsUpdateEvent,
         } = this.props;
+
         const elemWidth = 250;
         const detailDevices = [];
 
@@ -81,7 +83,7 @@ class DeviceDetailsContainer extends Component {
                                                   onWriteDescriptor={writeDescriptor}
                                                   onDisconnectFromDevice={disconnectFromDevice}
                                                   onPairWithDevice={pairWithDevice}
-                                                  onUpdateDeviceConnectionParams={updateDeviceConnectionParams}
+                                                  onUpdateDeviceConnectionParams={createUserInitiatedConnParamsUpdateEvent}
                                                   containerHeight={this.props.style.height}
                                                   />
             );
@@ -122,6 +124,7 @@ function mapDispatchToProps(dispatch) {
             bindActionCreators(DeviceDetailsActions, dispatch),
             bindActionCreators(AdvertisingSetupActions, dispatch),
             bindActionCreators(AdapterActions, dispatch),
+            bindActionCreators(BLEEventActions, dispatch),
         );
 
     return retval;
@@ -137,9 +140,9 @@ DeviceDetailsContainer.propTypes = {
     selectedComponent: PropTypes.string,
     connectedDevices: PropTypes.object,
     deviceServers: PropTypes.object,
-    selectComponent: PropTypes.func.isRequired,
     readCharacteristic: PropTypes.func.isRequired,
     writeCharacteristic: PropTypes.func.isRequired,
     readDescriptor: PropTypes.func.isRequired,
     writeDescriptor: PropTypes.func.isRequired,
+    createUserInitiatedConnParamsUpdateEvent: PropTypes.func.isRequired,
 };

@@ -12,22 +12,26 @@
 
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import Component from 'react-pure-render/component';
 
-import ConnectedDevice from './ConnectedDevice.jsx';
-import CentralDevice from './CentralDevice.jsx';
-import EnumeratingAttributes from './EnumeratingAttributes.jsx';
+import ConnectedDevice from './ConnectedDevice';
+import CentralDevice from './CentralDevice';
+import EnumeratingAttributes from './EnumeratingAttributes';
 
 import ServiceItem from './ServiceItem';
 
 export default class DeviceDetailsView extends Component {
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         const {
             adapter,
             device,
-            selected,
+            selected, // instanceId for the selected component
         } = this.props;
 
         const {
@@ -47,7 +51,6 @@ export default class DeviceDetailsView extends Component {
                 device: {
                     advertising,
                 },
-                onSelectComponent,
                 onShowAdvertisingSetupDialog,
                 onToggleAdvertising,
             } = this.props;
@@ -132,3 +135,20 @@ export default class DeviceDetailsView extends Component {
         }
     }
 }
+
+DeviceDetailsView.propTypes = {
+    device: PropTypes.object.isRequired,
+    selected: PropTypes.string,
+    onSelectComponent: PropTypes.func.isRequired,
+    onToggleAttributeExpanded: PropTypes.func.isRequired,
+    onUpdateDeviceConnectionParams: PropTypes.func,
+    adapter: PropTypes.object,
+    onReadCharacteristic: PropTypes.func,
+    onWriteCharacteristic: PropTypes.func,
+    onReadDescriptor: PropTypes.func,
+    onWriteDescriptor: PropTypes.func,
+    onDisconnectFromDevice: PropTypes.func,
+    onPairWithDevice: PropTypes.func,
+    onShowAdvertisingSetupDialog: PropTypes.func,
+    onToggleAdvertising: PropTypes.func,
+};

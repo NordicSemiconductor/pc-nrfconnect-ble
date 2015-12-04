@@ -28,6 +28,7 @@ export const DEVICE_DISCONNECTED = 'DEVICE_DISCONNECTED';
 export const DEVICE_CANCEL_CONNECT = 'DEVICE_CANCEL_CONNECT';
 export const DEVICE_CANCELLED_CONNECT = 'DEVICE_CANCELLED_CONNECT';
 export const DEVICE_INITIATE_PAIRING = 'DEVICE_INITIATE_PAIRING';
+export const DEVICE_SECURITY_CHANGED = 'DEVICE_SECURITY_CHANGED';
 
 export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
 export const DEVICE_CONNECTION_PARAM_UPDATE_STATUS = 'DEVICE_CONNECTION_PARAM_UPDATE_STATUS';
@@ -60,14 +61,6 @@ function makeError(data) {
 
 function _getAdapters(dispatch) {
     return new Promise((resolve, reject) => {
-        _adapterFactory.getAdapters((error, adapters) => {
-            if (error) {
-                reject(makeError({error:error}));
-            } else {
-                resolve(adapters);
-            }
-        });
-    }).then(adapters => {
         // Register listeners for adapters added/removed
         _adapterFactory.on('added', adapter => {
             dispatch(adapterAddedAction(adapter));
@@ -79,10 +72,12 @@ function _getAdapters(dispatch) {
             dispatch(errorOccuredAction(undefined, error));
         });
 
-        // TODO: try to remove the underscore library
-        // Add the adapters to the store
-        _.map(adapters, adapter => {
-            dispatch(adapterAddedAction(adapter));
+        _adapterFactory.getAdapters((error, adapters) => {
+            if (error) {
+                reject(makeError({error:error}));
+            } else {
+                resolve();
+            }
         });
     }).catch(error => {
         dispatch(errorOccuredAction(undefined, error));
@@ -113,7 +108,7 @@ function _openAdapter(dispatch, getState, adapter) {
         }
         // Listen to errors from this adapter since we are opening it now
         adapterToUse.on('error', error => {
-            // TODO: separate between what is an noen recoverable adapter error
+            // TODO: separate between what is an non recoverable adapter error
             // TODO: and a recoverable error.
             // TODO: adapterErrorAction should only be used if it is an unrecoverable errors.
             // TODO: errorOccuredAction should be used for recoverable errors.
@@ -144,12 +139,16 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(deviceConnParamUpdateRequestAction(device, requestedConnectionParams));
         });
 
-        adapterToUse.on('characteristicValueChanged', (characteristic) => {
+        adapterToUse.on('characteristicValueChanged', characteristic => {
             dispatch(attributeValueChanged(characteristic));
         });
 
-        adapterToUse.on('descriptorValueChanged', (descriptor) => {
+        adapterToUse.on('descriptorValueChanged', descriptor => {
             dispatch(attributeValueChanged(descriptor));
+        });
+
+        adapterToUse.on('securityChanged', (device, authParams) => {
+            dispatch(securityChanged(device, authParams));
         });
 
         dispatch(adapterOpenAction(adapterToUse));
@@ -302,10 +301,6 @@ function connectionParamUpdateStatusAction(id, device, status) {
 }
 
 function _pairWithDevice(dispatch, getState, device) {
-    function onSecurityChanged(resolve, event) {
-        resolve(event);
-    }
-
     function onError(reject, error) {
         reject(makeError({adapter: null, error, device: null}));
     }
@@ -318,18 +313,17 @@ function _pairWithDevice(dispatch, getState, device) {
             reject(makeError({error: 'No adapter selected'}));
         }
 
-        adapterToUse.once('securityChanged', event => onSecurityChanged(resolve, event));
         adapterToUse.once('error', error => onError(reject, error));
 
         adapterToUse.pair(device.instanceId, false, error => {
             if (error) {
                 reject(makeError({adapter: adapterToUse, error, device}));
             }
+
+            resolve();
         });
     }).catch(errorData => {
         dispatch(errorOccuredAction(errorData.adapter, errorData.error));
-    }).then(() => {
-        adapterToUse.removeListener(onSecurityChanged);
     });
 }
 
@@ -497,6 +491,14 @@ function pairWithDeviceAction(device) {
     return {
         type: DEVICE_INITIATE_PAIRING,
         device,
+    };
+}
+
+function securityChanged(device, parameters) {
+    return {
+        type: DEVICE_SECURITY_CHANGED,
+        device,
+        parameters,
     };
 }
 

@@ -86,26 +86,53 @@ function discoveredAttributes(state, parent, attributes) {
     return state;
 }
 
-function completedReadingAttribute(state, attribute, value) {
+function formatErrorMessage(message) {
+    if (typeof message !== 'string') {
+        return '';
+    }
+
+    return message
+        .replace('BLE_GATT_STATUS_ATTERR_INSUF_AUTHENTICATION', 'Insufficient authentication')
+        .replace('BLE_GATT_STATUS_ATTERR_WRITE_NOT_PERMITTED', 'Write not permitted')
+        .replace('BLE_GATT_STATUS_ATTERR_READ_NOT_PERMITTED', 'Read not permitted')
+        .replace('BLE_GATT_STATUS_ATTERR_INVALID_ATT_VAL_LENGTH', 'Invalid length')
+        .replace('BLE_GATT_STATUS_', '');
+}
+
+function completedReadingAttribute(state, attribute, value, error) {
     if (!attribute) {
         return state;
     }
+
+    const attributeStatePath = getNodeStatePath(attribute);
+
+    let errorMessage = '';
+    if (error) {
+        errorMessage = formatErrorMessage(error.message);
+    }
+
+    state = state.setIn(attributeStatePath.concat('errorMessage'), errorMessage);
 
     if (!value) {
         return state;
     }
 
-    const attributeStatePath = getNodeStatePath(attribute);
-
     return state.setIn(attributeStatePath.concat('value'), List(value));
 }
 
-function completedWritingAttribute(state, attribute, value) {
+function completedWritingAttribute(state, attribute, value, error) {
     if (!attribute) {
         return state;
     }
 
     const attributeStatePath = getNodeStatePath(attribute);
+
+    let errorMessage = '';
+    if (error) {
+        errorMessage = formatErrorMessage(error.message);
+    }
+
+    state = state.setIn(attributeStatePath.concat('errorMessage'), errorMessage);
 
     if (!value) {
         // If value is null the operation failed. Trigger a state change by setting
@@ -148,9 +175,9 @@ export default function deviceDetails(state = initialState, action) {
         case DeviceDetailsActions.TOGGLED_ATTRIBUTE_EXPANDED:
             return toggledAttributeExpanded(state, action.attribute);
         case DeviceDetailsActions.COMPLETED_READING_ATTRIBUTE:
-            return completedReadingAttribute(state, action.attribute, action.value);
+            return completedReadingAttribute(state, action.attribute, action.value, action.error);
         case DeviceDetailsActions.COMPLETED_WRITING_ATTRIBUTE:
-            return completedWritingAttribute(state, action.attribute, action.value);
+            return completedWritingAttribute(state, action.attribute, action.value, action.error);
         case AdapterActions.ATTRIBUTE_VALUE_CHANGED:
             return attributeValueChanged(state, action.attribute, action.value);
         case AdapterActions.DEVICE_CONNECTED:

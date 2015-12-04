@@ -30,6 +30,7 @@
     "yargs": "3.26.0"
   },
   "dependencies": {
+    "atom-keymap": "6.1.1",
     "babel": "5.8.34",
     "bootstrap": "3.3.5",
     "change-case": "2.3.0",

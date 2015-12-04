@@ -19,11 +19,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as AppActions from '../actions/appActions';
-
-// import hotkey from 'react-hotkey';
-
 import DeviceDetailsContainer from './DeviceDetails';
-//import ConnectionUpdateRequestModal from './components/ConnectionUpdateRequestModal.jsx';
 import ServerSetup from './ServerSetup';
 
 import NavBar from '../components/navbar.jsx';
@@ -35,6 +31,10 @@ import ConnectionMap from './ConnectionMap';
 
 import { findAdapters } from '../actions/adapterActions';
 
+import KeymapManager from 'atom-keymap';
+
+const keymaps = new KeymapManager();
+
 class AppContainer extends Component {
     constructor(props) {
         super(props);
@@ -42,6 +42,21 @@ class AppContainer extends Component {
         this.state = {
             windowHeight: window.innerHeight,
         };
+
+        keymaps.defaultTarget = document.body;
+
+        // Pass all the window's keydown events to the KeymapManager
+        document.addEventListener('keydown', event => {
+          keymaps.handleKeyboardEvent(event);
+        });
+
+        keymaps.add('core', {
+            'body': {
+                'alt-1': 'core:connection-map',
+                'alt-2': 'core:device-details',
+                'alt-3': 'core:server-setup',
+            }
+        });
     }
 
     componentWillMount() {
@@ -72,7 +87,7 @@ class AppContainer extends Component {
             this.setState({windowHeight: window.innerHeight}); //document.documentElement.clientHeight;
         });
 
-        // hotkey.activate('keydown');
+
     }
 
     componentDidMount() {

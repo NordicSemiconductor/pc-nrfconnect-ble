@@ -62,11 +62,15 @@ export class ConnectionOverlay extends Component {
             device,
         } = this.props;
 
+        const iconClass = (device.bonded === true) ? 'icon-lock'
+            : (device.securityMode1Levels && device.securityMode1Levels) > 1 ? 'icon-lock-open-alt'
+            : 'icon-lock-open';
+
         return (
             <div className='connection-info-button' style={style}>
-                <OverlayTrigger ref='overlayTrigger' trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover id='pover' title='Connection Parameters'><ConnectionSetup device={device} closePopover={this._closeme}/></Popover>}>
+                <OverlayTrigger ref='overlayTrigger' trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover id='pover' title='Connection Information'><ConnectionSetup device={device} closePopover={this._closeme}/></Popover>}>
                     <span style={{fontSize: '15px'}}>
-                        <i className='icon-link icon-encircled'></i>
+                        <i className={'icon-encircled ' + iconClass}></i>
                     </span>
                 </OverlayTrigger>
             </div>

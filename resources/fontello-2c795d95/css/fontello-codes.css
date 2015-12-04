@@ -28,3 +28,17 @@
 .icon-cog:before { content: '\e81a'; } /* '' */
 .icon-ccw:before { content: '\e81b'; } /* '' */
 .icon-up:before { content: '\e81c'; } /* '' */
+.icon-lock:before { content: '\e81d'; } /* '' */
+.icon-lock-open:before { content: '\e81e'; } /* '' */
+.icon-lock-open-alt:before { content: '\e81f'; } /* '' */
+.icon-list-add:before { content: '\e820'; } /* '' */
+.icon-link-1:before { content: '\e821'; } /* '' */
+.icon-trash-empty:before { content: '\e822'; } /* '' */
+.icon-cancel-circled:before { content: '\e823'; } /* '' */
+.icon-help:before { content: '\e824'; } /* '' */
+.icon-info:before { content: '\e825'; } /* '' */
+.icon-attention-alt:before { content: '\e826'; } /* '' */
+.icon-edit:before { content: '\e827'; } /* '' */
+.icon-star:before { content: '\e828'; } /* '' */
+.icon-star-empty:before { content: '\e829'; } /* '' */
+.icon-search:before { content: '\e82a'; } /* '' */

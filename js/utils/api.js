@@ -33,8 +33,8 @@ const ImmutableAdapter = Record({
     state: new ImmutableAdapterState(),
     connectedDevices: Map(),
     /*Adapter sub-reducers*/
-    deviceDetails: undefined,
-    serverSetup: undefined,
+    deviceDetails: null,
+    serverSetup: null,
 });
 
 const ImmutableDevice = Record({
@@ -51,6 +51,9 @@ const ImmutableDevice = Record({
     services: List(),
     rssi: null,
     scanResponse: false,
+    bonded: false,
+    securityMode1Levels: null,
+    securityMode2Levels: null,
 });
 
 const ImmutableProperties = Record({
@@ -89,6 +92,7 @@ const ImmutableCharacteristic = Record({
     notifying: false,
     discoveringChildren: false,
     children: null,
+    errorMessage: null,
 });
 
 const ImmutableDescriptor = Record({
@@ -98,6 +102,7 @@ const ImmutableDescriptor = Record({
     name: null,
     handle: null,
     value: List(),
+    errorMessage: null,
 });
 
 export default function asImmutable(mutableObject) {

@@ -20,6 +20,7 @@ import DescriptorItem from './DescriptorItem';
 import AddNewItem from './AddNewItem';
 import HexOnlyEditableField from './HexOnlyEditableField';
 import { Effects } from '../utils/Effects';
+import * as Colors from '../utils/colorDefinitions';
 
 const NOTIFY = 1;
 const INDICATE = 2;
@@ -30,7 +31,7 @@ export default class CharacteristicItem extends Component {
     constructor(props) {
         super(props);
         this.cccdDescriptor;
-        this.backgroundColor = {r: 255, g: 255, b: 255};
+        this.backgroundColor = Colors.getColor(Colors.WHITE);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -43,14 +44,22 @@ export default class CharacteristicItem extends Component {
         }
     }
 
+    componentWillUnmount() {
+        if (!this.animation) {
+            return;
+        }
+
+        this.animation.stop();
+    }
+
     _blink() {
         if (this.animation) {
             this.animation.stop();
         }
 
-        var blue  = {r: 179, g: 225, b: 245};
-        var white = {r: 255, g: 255, b: 255};
-        this.animation = Effects.blink(this, 'backgroundColor', blue, white);
+        const fromColor = Colors.getColor(Colors.SOFT_BLUE);
+        const toColor = Colors.getColor(Colors.WHITE);
+        this.animation = Effects.blink(this, 'backgroundColor', fromColor, toColor);
     }
 
     _selectComponent() {
@@ -169,6 +178,7 @@ export default class CharacteristicItem extends Component {
             notifying,
             discoveringChildren,
             children,
+            errorMessage,
         } = item;
 
         const propertyList = [];
@@ -208,8 +218,10 @@ export default class CharacteristicItem extends Component {
         const notifyIcon = (isNotifying && (hasNotifyProperty || hasIndicateProperty)) ? 'icon-stop' : 'icon-play';
         const notifyIconStyle = hasCccd ? {} : {display: 'none'};
         const itemIsSelected = item.instanceId === selected;
+        const errorText = errorMessage ? errorMessage : '';
+        const hideErrorClass = (errorText === '') ? 'hide' : '';
         const backgroundColor = itemIsSelected
-            ? 'rgb(179,225,245)'
+            ? 'rgb(179,225,245)' //@bar1-color
             : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
 
         return (
@@ -234,6 +246,7 @@ export default class CharacteristicItem extends Component {
                                               showReadButton={itemIsSelected}
                                               onRead={() => this._onRead()}
                                               selectParent={() => this._selectComponent()} />
+                        <div className={'error-label ' + hideErrorClass}>{errorText}</div>
                     </div>
                 </div>
             </div>

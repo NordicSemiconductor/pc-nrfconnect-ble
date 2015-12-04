@@ -44,10 +44,14 @@ function removeAdapter(state, adapter) {
 
     if (adapterIndex !== -1) {
         state.api.adapters.splice(adapterIndex, 1);
-        state = state.deleteIn('adapters', adapterIndex);
-        state = state.set('adapterIndicator', 'off');
-        state = state.set('selectedAdapter', null);
-        state = state.set('adapterStatus', DEFAULT_ADAPTER_STATUS);
+
+        if(adapterIndex === state.selectedAdapter) {
+            state = state.set('adapterIndicator', 'off');
+            state = state.set('selectedAdapter', null);
+            state = state.set('adapterStatus', DEFAULT_ADAPTER_STATUS);
+        }
+
+        state = state.deleteIn(['adapters', adapterIndex]);
     } else {
         logger.error(`You removed an adapter I did not know about: ${adapter.adapterStatus.port}.`);
     }
@@ -134,8 +138,8 @@ function connectedDeviceUpdated(state, device) {
     const { index } = getSelectedAdapter(state);
 
     // TODO: check if received state is of immutable type
-    const _device = device;
-    return state.updateIn(['adapters', index, 'connectedDevices'], connectedDevices => connectedDevices.set(_device.instanceId, _device));
+    const _device = apiHelper.getImmutableDevice(device);
+    return state.mergeIn(['adapters', index, 'connectedDevices', _device.instanceId], _device);
 }
 
 function deviceDisconnected(state, device) {
@@ -144,6 +148,21 @@ function deviceDisconnected(state, device) {
 }
 
 function deviceInitiatePairing(state, device) {
+    return state;
+}
+
+function deviceSecurityChanged(state, device, parameters) {
+    if (device.address === undefined) {
+        return state;
+    }
+
+    const { index } = getSelectedAdapter(state);
+
+    const bonded = parameters.bonded;
+    const sm1Levels = parameters.sm1Levels;
+
+    state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'bonded'], bonded);
+    state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'securityMode1Levels'], sm1Levels);
     return state;
 }
 
@@ -210,6 +229,8 @@ export default function adapter(state = getImmutableRoot(), action) {
             return deviceInitiatePairing(state, action.device);
         case AdapterAction.DEVICE_CONNECTION_PARAM_UPDATE_STATUS:
             return connectedDeviceUpdated(state, action.device);
+        case AdapterAction.DEVICE_SECURITY_CHANGED:
+            return deviceSecurityChanged(state, action.device, action.parameters);
         default:
             return state;
     }

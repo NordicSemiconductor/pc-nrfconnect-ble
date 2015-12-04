@@ -64,8 +64,13 @@ class AdapterSelector extends Component {
 
 function mapStateToProps(state) {
     const { adapter } = state;
-    return { adapter: adapter, adapterStatus: adapter.adapterStatus, adapterIndicator: adapter.adapterIndicator, adapters: adapter.adapters };
 
+    return {
+        adapter: adapter,
+        adapterStatus: adapter.adapterStatus,
+        adapterIndicator: adapter.adapterIndicator,
+        adapters: adapter.adapters
+    };
 }
 
 function mapDispatchToProps(dispatch) {

@@ -25,6 +25,12 @@ export default class NavBar extends Component {
             passiveStyle: {},
             adapterState: { connected: false },
         };
+
+        const { onChangeMainView } = this.props;
+
+        window.addEventListener('core:connection-map', () => { onChangeMainView('ConnectionMap'); });
+        window.addEventListener('core:device-details', () => { onChangeMainView('DeviceDetails'); });
+        window.addEventListener('core:server-setup', () => { onChangeMainView('ServerSetup'); });
     }
 
     _onViewChange(newView) {
