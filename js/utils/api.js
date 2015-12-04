@@ -207,39 +207,37 @@ export function getImmutableProperties(properties) {
 }
 
 export function getImmutableService(service) {
-    const name = getUuidName(service.uuid);
     return new ImmutableService({
         instanceId: service.instanceId,
         deviceInstanceId: service.deviceInstanceId,
         uuid: service.uuid,
-        name: name,
+        name: service.name,
         handle: service.startHandle,
         children: service.children,
     });
 }
 
 export function getImmutableCharacteristic(characteristic) {
-    const name = getUuidName(characteristic.uuid);
+    const properties = characteristic.properties || {};
     return new ImmutableCharacteristic({
         instanceId: characteristic.instanceId,
         serviceInstanceId: characteristic.serviceInstanceId,
         uuid: characteristic.uuid,
-        name: name,
+        name: characteristic.name,
         declarationHandle: characteristic.declarationHandle,
         valueHandle: characteristic.valueHandle,
         value: List(characteristic.value),
-        properties: getImmutableProperties(characteristic.properties),
+        properties: getImmutableProperties(properties),
         children: characteristic.children,
     });
 }
 
 export function getImmutableDescriptor(descriptor) {
-    const name = getUuidName(descriptor.uuid);
     return new ImmutableDescriptor({
         instanceId: descriptor.instanceId,
         characteristicInstanceId: descriptor.characteristicInstanceId,
         uuid: descriptor.uuid,
-        name: name,
+        name: descriptor.name,
         handle: descriptor.handle,
         value: List(descriptor.value),
     });

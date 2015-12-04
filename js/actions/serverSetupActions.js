@@ -18,31 +18,10 @@ export const TOGGLED_ATTRIBUTE_EXPANDED = 'SERVER_SETUP_TOGGLED_ATTRIBUTE_EXPAND
 export const ADDED_NEW_SERVICE = 'SERVER_SETUP_ADDED_NEW_SERVICE';
 export const ADDED_NEW_CHARACTERISTIC = 'SERVER_SETUP_NEW_CHARACTERISTIC';
 export const ADDED_NEW_DESCRIPTOR = 'SERVER_SETUP_NEW_DESCRIPTOR';
+export const CHANGED_ATTRIBUTE = 'SERVER_SETUP_CHANGED_ATTRIBUTE';
 export const REMOVED_ATTRIBUTE = 'SERVER_SETUP_REMOVED_ATTRIBUTE';
 
 import { getInstanceIds } from '../utils/api';
-
-function _toggleAttributeExpanded(dispatch, getState, attribute) {
-    dispatch(toggledAttributeExpanded(attribute));
-    dispatch(selectComponentAction(attribute));
-}
-
-function _addNewService(dispatch, getState) {
-    dispatch(addedNewService());
-}
-
-function _addNewCharacteristic(dispatch, getState, parent) {
-    dispatch(addedNewCharacteristic(parent));
-}
-
-function _addNewDescriptor(dispatch, getState, parent) {
-    dispatch(addedNewDescriptor(parent));
-}
-
-function _removeAttribute(dispatch, getState, attribute) {
-    //TODO: if attribute is gap or gatt service (check if first in list of services?)
-    dispatch(removedAttribute(attribute));
-}
 
 function toggledAttributeExpanded(attribute) {
     return {
@@ -78,11 +57,44 @@ function addedNewDescriptor(parent) {
     };
 }
 
+function changedAttribute(attribute) {
+    return {
+        type: CHANGED_ATTRIBUTE,
+        attribute,
+    };
+}
+
 function removedAttribute(attribute) {
     return {
         type: REMOVED_ATTRIBUTE,
         attribute,
     };
+}
+
+function _toggleAttributeExpanded(dispatch, getState, attribute) {
+    dispatch(toggledAttributeExpanded(attribute));
+    dispatch(selectComponentAction(attribute));
+}
+
+function _addNewService(dispatch, getState) {
+    dispatch(addedNewService());
+}
+
+function _addNewCharacteristic(dispatch, getState, parent) {
+    dispatch(addedNewCharacteristic(parent));
+}
+
+function _addNewDescriptor(dispatch, getState, parent) {
+    dispatch(addedNewDescriptor(parent));
+}
+
+function _saveChangedAttribute(dispatch, getState, attribute) {
+    dispatch(changedAttribute(attribute));
+}
+
+function _removeAttribute(dispatch, getState, attribute) {
+    //TODO: if attribute is gap or gatt service (check if first in list of services?)
+    dispatch(removedAttribute(attribute));
 }
 
 export function selectComponent(component) {
@@ -110,6 +122,12 @@ export function addNewCharacteristic(parent) {
 export function addNewDescriptor(parent) {
     return (dispatch, getState) => {
         return _addNewDescriptor(dispatch, getState, parent);
+    };
+}
+
+export function saveChangedAttribute(attribute) {
+    return (dispatch, getState) => {
+        return _saveChangedAttribute(dispatch, getState, attribute);
     };
 }
 

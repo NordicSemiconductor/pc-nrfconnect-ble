@@ -127,7 +127,7 @@ function deviceConnected(state, device) {
 }
 
 function connectedDeviceUpdated(state, device) {
-    if(device.address === undefined) {
+    if (device.address === undefined) {
         return state;
     }
 
@@ -169,7 +169,7 @@ export default function adapter(state = getImmutableRoot(), action) {
         serverSetup,
     });
 
-    if(state.selectedAdapter) {
+    if (state.selectedAdapter !== undefined && state.selectedAdapter !== null) {
         const selectedAdapter = state.getIn(['adapters', state.selectedAdapter]);
 
         if (selectedAdapter) {

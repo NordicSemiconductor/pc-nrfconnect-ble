@@ -20,12 +20,7 @@ import { getInstanceIds, getImmutableService, getImmutableCharacteristic, getImm
 
 const InitialState = Record({
     selectedComponent: null,
-    localServer: null,
-    tempServer: null,
-});
-
-const LocalServer = Record({
-    // Add whatever we need here...
+    showDeleteDialog: false,
     children: null,
 });
 
@@ -34,7 +29,7 @@ let serviceInstanceIdCounter = 0;
 let characteristicInstanceIdCounter = 0;
 let descriptorInstanceIdCounter = 0;
 
-function getInitialLocalServer() {
+function getInitialServices() {
     serviceInstanceIdCounter = 0;
     characteristicInstanceIdCounter = 0;
     descriptorInstanceIdCounter = 0;
@@ -56,20 +51,18 @@ function getInitialLocalServer() {
     localServerChildren[gapService.instanceId] = gapService;
     localServerChildren[gattService.instanceId] = gattService;
 
-    return new LocalServer({
-        children: OrderedMap(localServerChildren),
-    });
+    return OrderedMap(localServerChildren);
 }
 
 const initialState = new InitialState({
     selectedComponent: null,
-    localServer: getInitialLocalServer(),
-    tempServer: getInitialLocalServer(),
+    showDeleteDialog: false,
+    children: getInitialServices(),
 });
 
-function getNodeStatePath(node) {
-    const nodeInstanceIds = getInstanceIds(node.instanceId);
-    const nodeStatePath = ['tempServer'];
+function getNodeStatePath(nodeInstanceId) {
+    const nodeInstanceIds = getInstanceIds(nodeInstanceId);
+    const nodeStatePath = [];
 
     if (nodeInstanceIds.service) {
         nodeStatePath.push('children', nodeInstanceIds.service);
@@ -87,7 +80,7 @@ function getNodeStatePath(node) {
 }
 
 function toggledAttributeExpanded(state, attribute) {
-    const attributeStatePath = getNodeStatePath(attribute);
+    const attributeStatePath = getNodeStatePath(attribute.instanceId);
     const previouslyExpanded = state.getIn(attributeStatePath .concat('expanded'));
     return state.setIn(attributeStatePath.concat('expanded'), !previouslyExpanded);
 }
@@ -97,7 +90,7 @@ function addedNewService(state) {
         instanceId: deviceInstanceId + '.' + serviceInstanceIdCounter++,
         children: OrderedMap(),
     });
-    const newServiceStatePath = getNodeStatePath(newService);
+    const newServiceStatePath = getNodeStatePath(newService.instanceId);
 
     return state.setIn(newServiceStatePath, newService);
 }
@@ -107,7 +100,7 @@ function addedNewCharacteristic(state, parent) {
         instanceId: parent.instanceId + '.' + characteristicInstanceIdCounter++,
         children: OrderedMap(),
     });
-    const newCharacteristicStatePath = getNodeStatePath(newCharacteristic);
+    const newCharacteristicStatePath = getNodeStatePath(newCharacteristic.instanceId);
 
     return state.setIn(newCharacteristicStatePath, newCharacteristic);
 }
@@ -117,20 +110,36 @@ function addedNewDescriptor(state, parent) {
         instanceId: parent.instanceId + '.' + descriptorInstanceIdCounter++,
         children: OrderedMap(),
     });
-    const newDescriptorStatePath = getNodeStatePath(newDescriptor);
+    const newDescriptorStatePath = getNodeStatePath(newDescriptor.instanceId);
 
     return state.setIn(newDescriptorStatePath, newDescriptor);
 }
 
+function changedAttribute(state, attribute) {
+    const instanceIds = getInstanceIds(attribute.instanceId);
+    const attributeStatePath = getNodeStatePath(attribute.instanceId);
+    let changedAttribute = null;
+
+    if (instanceIds.descriptor) {
+        changedAttribute = getImmutableDescriptor(attribute);
+    } else if (instanceIds.characteristic) {
+        changedAttribute = getImmutableCharacteristic(attribute);
+    } else if (instanceIds.service) {
+        changedAttribute = getImmutableService(attribute);
+    }
+
+    return state.mergeIn(attributeStatePath, changedAttribute);
+}
+
 function removedAttribute(state, attribute) {
-    const attributeStatePath = getNodeStatePath(attribute);
+    const attributeStatePath = getNodeStatePath(attribute.instanceId);
     return state.deleteIn(attributeStatePath);
 }
 
 export default function deviceDetails(state = initialState, action) {
     switch (action.type) {
         case ServerSetupActions.SELECT_COMPONENT:
-            return state.update('selectedComponent', selectedComponent => action.component.instanceId);
+            return state.set('selectedComponent', action.component.instanceId);
         case ServerSetupActions.TOGGLED_ATTRIBUTE_EXPANDED:
             return toggledAttributeExpanded(state, action.attribute);
         case ServerSetupActions.ADDED_NEW_SERVICE:
@@ -139,8 +148,10 @@ export default function deviceDetails(state = initialState, action) {
             return addedNewCharacteristic(state, action.parent);
         case ServerSetupActions.ADDED_NEW_DESCRIPTOR:
             return addedNewDescriptor(state, action.parent);
+        case ServerSetupActions.CHANGED_ATTRIBUTE:
+            return changedAttribute(state, action.attribute);
         case ServerSetupActions.REMOVED_ATTRIBUTE:
-            return removedAttribute(action.attribute);
+            return removedAttribute(state, action.attribute);
         default:
             return state;
     }

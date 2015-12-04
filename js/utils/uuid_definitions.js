@@ -251,7 +251,12 @@ const uuidDefinitions = {
 // TODO: http://projecttools.nordicsemi.no/stash/projects/APPS-ANDROID/repos/nrf-master-control-panel/browse/app/src/main/java/no/nordicsemi/android/mcp/database/init
 // TODO: http://projecttools.nordicsemi.no/stash/projects/APPS-ANDROID/repos/nrf-master-control-panel/browse/app/src/main/java/no/nordicsemi/android/mcp/database/DatabaseHelper.java
 export function getUuidName(uuid) {
-    return uuidDefinitions[uuid] || uuid;
+    let lookupUuid = uuid.toUpperCase();
+    if (lookupUuid[1] === 'X') {
+        lookupUuid = lookupUuid.slice(2);
+    }
+
+    return uuidDefinitions[lookupUuid] || uuid;
 }
 
 export function getPrettyUuid(uuid) {

@@ -4,7 +4,7 @@
 export function getSelectedAdapter(state) {
     const selectedAdapter = state.adapter.selectedAdapter;
 
-    if(selectedAdapter) {
+    if (state.selectedAdapter !== undefined && state.selectedAdapter !== null) {
         return state.adapter.getIn(['adapters', selectedAdapter]);
     }
 }

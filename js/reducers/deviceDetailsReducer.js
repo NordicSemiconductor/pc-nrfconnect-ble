@@ -18,6 +18,7 @@ import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
 import * as AdapterActions from '../actions/adapterActions';
 
 import { getInstanceIds, getImmutableService, getImmutableCharacteristic, getImmutableDescriptor } from '../utils/api';
+import { getUuidName } from '../utils/uuid_definitions';
 
 const InitialState = Record({
     selectedComponent: null,
@@ -69,6 +70,7 @@ function discoveredAttributes(state, parent, attributes) {
         const attributeInstanceIds = getInstanceIds(attribute.instanceId);
         const attributeStatePath = getNodeStatePath(attribute);
         let immutableAttribute = null;
+        attribute.name = getUuidName(attribute.uuid);
 
         if (attributeInstanceIds.descriptor) {
             immutableAttribute = getImmutableDescriptor(attribute);
@@ -126,7 +128,7 @@ function completedWritingAttribute(state, attribute, value) {
 }
 
 function attributeValueChanged(state, attribute, value) {
-    return completedWritingAttribute(state, attribute, value);    
+    return completedWritingAttribute(state, attribute, value);
 }
 
 function toggledAttributeExpanded(state, attribute) {

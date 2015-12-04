@@ -24,42 +24,19 @@ import * as AdapterActions from '../actions/adapterActions';
 import AddNewItem from '../components/AddNewItem';
 import ServiceItem from '../components/ServiceItem';
 import ServiceEditor from '../components/ServiceEditor';
+import CharacteristicEditor from '../components/CharacteristicEditor';
+import DescriptorEditor from '../components/DescriptorEditor';
 
 import { getInstanceIds } from '../utils/api';
-//import CharacteristicEditor from './components/CharacteristicEditor';
-//import DescriptorEditor from './components/DescriptorEditor';
-//import KeyNavigation from '../common/TreeViewKeyNavigationMixin.jsx';
-//import hotkey from 'react-hotkey';
 
-//import {GattDatabases, GattDatabase, Service, Characteristic, Descriptor, Properties} from '../gattDatabases';
-
-//const readProperties = new Properties(0x02);
-//const notifyProperties = new Properties(0x10);
-//const indicateProperties = new Properties(0x20);
-//
-//const readWriteProperties = new Properties(0x0A);
-//const readNotifyProperties = new Properties(0x12);
-
-export default class ServerSetup extends Component {
+class ServerSetup extends Component {
     //mixins: [KeyNavigation.mixin('gattDatabases', true)],
     constructor(props) {
         super(props);
     }
 
-    _addService() {
-        this.props.addNewService();
-    }
-
-    _addCharacteristic(parent) {
-        this.props.addNewCharacteristic(parent);
-    }
-
-    _addDescriptor(parent) {
-        this.props.addNewDescriptor(parent);
-    }
-
-    _onAttributeDeleted(attribute) {
-        this.props.deleteAttribute(attribute);
+    _saveChangedAttribute(changedAttribute) {
+        this.props.saveChangedAttribute(changedAttribute)
     }
 
     render() {
@@ -67,35 +44,56 @@ export default class ServerSetup extends Component {
             serverSetup,
             selectComponent,
             toggleAttributeExpanded,
+            addNewService,
+            addNewCharacteristic,
+            addNewDescriptor,
             removeAttribute,
         } = this.props;
 
         const {
             selectedComponent,
-            tempServer,
+            showDeleteDialog,
+            children,
         } = serverSetup;
 
         instanceIds = getInstanceIds(selectedComponent);
+        let selectedAttribute = null;
         let selectedIsDescriptor = false;
         let selectedIsCharacteristic = false;
         let selectedIsService = false;
 
         if (instanceIds.descriptor) {
+            selectedAttribute = children.getIn([
+                instanceIds.service, 'children',
+                instanceIds.characteristic, 'children',
+                instanceIds.descriptor,
+            ]);
             selectedIsDescriptor = true;
         } else if (instanceIds.characteristic) {
+            selectedAttribute = children.getIn([
+                instanceIds.service, 'children',
+                instanceIds.characteristic,
+            ]);
             selectedIsCharacteristic = true;
         } else if (instanceIds.service) {
+            selectedAttribute = children.getIn([instanceIds.service]);
             selectedIsService = true;
         }
 
-        const editor = selectedIsService ? <ServiceEditor service={selectedComponent} onAttributeDeleted={removeAttribute}/>
-                     : selectedIsCharacteristic ? <CharacteristicEditor characteristic={selectedComponent} onAttributeDeleted={removeAttribute} />
-                     : selectedIsDescriptor ? <DescriptorEditor descriptor={selectedComponent} onAttributeDeleted={removeAttribute}/>
+        const editor = selectedIsService ? <ServiceEditor service={selectedAttribute}
+                                                          onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
+                                                          onRemoveAttribute={removeAttribute}/>
+                     : selectedIsCharacteristic ? <CharacteristicEditor characteristic={selectedAttribute}
+                                                                        onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
+                                                                        onRemoveAttribute={removeAttribute} />
+                     : selectedIsDescriptor ? <DescriptorEditor descriptor={selectedAttribute}
+                                                                onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
+                                                                onRemoveAttribute={removeAttribute}/>
                      : <div className='nothing-selected' />;
 
         const services = [];
 
-        tempServer.children.forEach((service, i) => {
+        children.forEach((service, i) => {
             services.push(
                 <ServiceItem key={i}
                              item={service}
@@ -106,8 +104,8 @@ export default class ServerSetup extends Component {
                              onSelectAttribute={selectComponent}
                              onToggleAttributeExpanded={toggleAttributeExpanded}
                              addNew={true}
-                             addCharacteristic={() => this._addCharacteristic()}
-                             addDescriptor={() => this._addDescriptor()} />
+                             onAddCharacteristic={addNewCharacteristic}
+                             onAddDescriptor={addNewDescriptor} />
             );
         });
 
@@ -116,11 +114,12 @@ export default class ServerSetup extends Component {
                 <div className='server-setup-view'>
                     <div className='service-items-wrap'>
                         {services}
-                        <AddNewItem text='New service' id='add-btn-root' bars={1} selected={selectedComponent} onClick={() => this._addService()} />
+                        <AddNewItem text='New service' id='add-btn-root' bars={1} parentInstanceId={'local.server'} selected={selectedComponent} onClick={addNewService} />
                     </div>
                     <div className='item-editor'>
                         {editor}
                     </div>
+                    {showDeleteDialog ? <ConfirmationDialog show={this.showConfirmDialog} onOk={this._onDeleteOk} onCancel={this._onDeleteCancel} text='Do you want to delete?'/> : null}
                 </div>
             </div>
         );
@@ -128,7 +127,7 @@ export default class ServerSetup extends Component {
 }
 
 function mapStateToProps(state) {
-    const selectedAdapter = state.adapter.adapters[state.adapter.selectedAdapter];
+    const selectedAdapter = state.adapter.getIn(['adapters', state.adapter.selectedAdapter]);
 
     if (!selectedAdapter) {
         return {};

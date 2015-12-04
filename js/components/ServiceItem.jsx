@@ -36,6 +36,7 @@ export default class ServiceItem extends Component {
     }
 
     _onExpandAreaClick(e) {
+        console.log('here');
         e.stopPropagation();
         this.props.onToggleAttributeExpanded(this.props.item);
     }
@@ -92,6 +93,8 @@ export default class ServiceItem extends Component {
             selected,
             addNew,
             selectOnClick,
+            onAddCharacteristic,
+            onAddDescriptor,
             onSelectAttribute,
             onToggleAttributeExpanded,
             onReadCharacteristic,
@@ -110,8 +113,6 @@ export default class ServiceItem extends Component {
 
         const childrenList = [];
 
-        // TODO: Add addDescriptor action
-        // addDescriptor={this.props.addDescriptor}
         if (discoveringChildren) {
             childrenList.push(<EnumeratingAttributes key={'enumerating-characteristics'} bars={2} />);
         } else if (children) {
@@ -127,7 +128,8 @@ export default class ServiceItem extends Component {
                                                       onReadDescriptor={onReadDescriptor}
                                                       onWriteDescriptor={onWriteDescriptor}
                                                       onChange={() => this._childChanged()}
-                                                      addNew={addNew} />
+                                                      addNew={addNew}
+                                                      onAddDescriptor={onAddDescriptor} />
                 );
             });
         }
@@ -154,7 +156,7 @@ export default class ServiceItem extends Component {
                 </div>
                 <div style={{display: expanded ? 'block' : 'none'}}>
                     {childrenList}
-                    {addNew ? <AddNewItem key='add-new-characteristic' text='New characteristic' id={'add-btn-' + instanceId} selected={selected} onClick={this._addCharacteristic} bars={2} /> : null}
+                    {addNew ? <AddNewItem key='add-new-characteristic' text='New characteristic' id={'add-btn-' + instanceId} parentInstanceId={instanceId} selected={selected} onClick={() => onAddCharacteristic(item)} bars={2} /> : null}
                 </div>
             </div>
         );

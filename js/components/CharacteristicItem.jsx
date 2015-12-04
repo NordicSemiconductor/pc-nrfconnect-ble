@@ -152,6 +152,7 @@ export default class CharacteristicItem extends Component {
             selected,
             addNew,
             selectOnClick,
+            onAddDescriptor,
             onSelectAttribute,
             onReadDescriptor,
             onWriteDescriptor,
@@ -201,7 +202,7 @@ export default class CharacteristicItem extends Component {
         const hasNotifyProperty = properties.notify;
         const hasIndicateProperty = properties.indicate;
 
-        const hasPossibleChildren = !(children && children.size === 0);
+        const hasPossibleChildren = addNew || !(children && children.size === 0);
         const expandIconStyle = children && children.size === 0 && !addNew  ? {display: 'none'} : {};
         const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
         const notifyIcon = (isNotifying && (hasNotifyProperty || hasIndicateProperty)) ? 'icon-stop' : 'icon-play';
@@ -238,7 +239,7 @@ export default class CharacteristicItem extends Component {
             </div>
             <div style={{display: expanded ? 'block' : 'none'}}>
                 {childrenList}
-                {addNew ? <AddNewItem key={'add-new-descriptor'}text='New descriptor' id={'add-btn-' + instanceId} selected={selected} onClick={this._addDescriptor} bars={3} /> : null}
+                {addNew ? <AddNewItem key={'add-new-descriptor'}text='New descriptor' id={'add-btn-' + instanceId} parentInstanceId={instanceId} selected={selected} onClick={() => onAddDescriptor(item)} bars={3} /> : null}
             </div>
         </div>
         );

@@ -155,11 +155,11 @@ function _toggleAttributeExpanded(dispatch, getState, attribute) {
 
     if (instanceIds.characteristic) {
         const characteristic = service.children.get(instanceIds.characteristic);
-        if (characteristic.children === null && !characteristic.expanded && !characteristic.discoveringChildren) {
+        if (!characteristic.children && !characteristic.expanded && !characteristic.discoveringChildren) {
             dispatch(discoverDescriptors(characteristic));
         }
     } else {
-        if (service.children === null && !service.expanded && !service.discoveringChildren) {
+        if (!service.children && !service.expanded && !service.discoveringChildren) {
             dispatch(discoverCharacteristics(service));
         }
     }

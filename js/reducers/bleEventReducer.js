@@ -90,7 +90,7 @@ function ignoreEvent(state, eventId) {
 }
 
 function removeEvent(state, eventId) {
-    if(state.selectedEventId === eventId) {
+    if (state.selectedEventId === eventId) {
         state = state.set('selectedEventId', -1);
     }
 

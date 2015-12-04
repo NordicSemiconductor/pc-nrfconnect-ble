@@ -1,79 +1,99 @@
 'use strict';
 
 import React from 'react';
-import ConfirmationDialog from './ConfirmationDialog.jsx';
-import ReactLinkedStateMixin from 'react-addons-linked-state-mixin';
+import Component from 'react-pure-render/component';
 
-var ServiceEditor = React.createClass({
-    mixins: [ReactLinkedStateMixin],
-    getInitialState() {
-        return {
-            uuid: '',
-            name: '',
-        };
-    },
+import { getUuidName } from '../utils/uuid_definitions';
 
-    componentWillMount() {
-        this._setStateFromService(this.props.service);
-    },
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.service.handle !== nextProps.service.handle) {
-            this._setStateFromService(nextProps.service);
-        }
-    },
-
-    _setStateFromService(service) {
-        this.setState({
-            uuid: service.uuid,
-            name: service.name,
-        });
-    },
+export default class ServiceEditor extends Component{
+    //mixins: [ReactLinkedStateMixin],
+    constructor(props) {
+        super(props);
+    }
 
     _showDeleteConfirmation() {
-        this._continueDelete = function() {
-            attribute.removeFromParent();
+        //this.setState({showConfirmDialog: true});
+    }
+
+    _onUuidChange(e) {
+        const _hexRegEx = /^[0-9A-F]*$/i;
+        const uuid = e.target.value;
+        const valid = _hexRegEx.test(uuid);
+
+        if (!valid) {
+            return;
+        }
+
+        this.uuid = uuid;
+        let uuidName = getUuidName(this.uuid);
+
+        if (this.uuid !== uuidName) {
+            this.name = uuidName;
+        }
+
+        this.forceUpdate();
+    }
+
+    _onNameChange(e) {
+        this.name = e.target.value;
+        this.forceUpdate();
+    }
+
+    _saveAttribute() {
+        // TODO: Add verification?
+        console.log('save');
+        console.log(this.uuid);
+        console.log(this.name);
+
+        const changedService = {
+            instanceId: this.props.service.instanceId,
+            uuid: this.uuid.toUpperCase(),
+            name: this.name,
         };
 
-        this.setState({showConfirmDialog: true});
-    },
-
-    _onDeleteOk() {
-        this.setState({showConfirmDialog: false});
-        this.props.service.removeFromParent();
-        this.props.onAttributeDeleted();
-    },
-
-    _onDeleteCancel() {
-        this.setState({showConfirmDialog: false});
-    },
+        this.props.onSaveChangedAttribute(changedService);
+        this.saved = true;
+    }
 
     render() {
+        const {
+            service,
+        } = this.props;
+
+        const {
+            instanceId,
+            uuid,
+            name,
+        } = service;
+
+        if (this.saved || this.instanceId !== instanceId) {
+            this.saved = false;
+            this.instanceId = instanceId;
+            this.uuid = uuid;
+            this.name = name;
+        }
+
         return (
         <form className='form-horizontal'>
           <div className='form-group'>
-            <label htmlFor='service-name' className='col-md-3 control-label'>Service name</label>
-            <div className='col-md-9'>
-              <input type='text' className='form-control' name='service-name' valueLink={this.linkState('name')} />
-            </div>
-          </div>
-
-          <div className='form-group'>
             <label htmlFor='uuid' className='col-md-3 control-label'>UUID</label>
             <div className='col-md-9'>
-              <input type='text' className='form-control' name='uuid' valueLink={this.linkState('uuid')} />
+              <input ref={'uuidInput'} type='text' className='form-control' name='uuid' value={this.uuid} onChange={e => this._onUuidChange(e)} />
+            </div>
+          </div>
+          <div className='form-group'>
+            <label htmlFor='service-name' className='col-md-3 control-label'>Service name</label>
+            <div className='col-md-9'>
+              <input type='text' className='form-control' name='service-name' value={this.name} onChange={e => this._onNameChange(e)} />
             </div>
           </div>
           <div className='form-group'>
             <div className='col-md-offset-3 col-md-9 padded-row'>
-              <button type='button' className='btn btn-primary'>Save</button>
+              <button type='button' className='btn btn-primary' onClick={() => this._saveAttribute()}>Save</button>
               <button type='button' className='btn btn-primary' onClick={this._showDeleteConfirmation}>Delete</button>
-              <ConfirmationDialog show={this.state.showConfirmDialog} onOk={this._onDeleteOk} onCancel={this._onDeleteCancel} text='Do you want to delete?'/>
             </div>
           </div>
         </form>
         );
-    },
-});
-
-module.exports = ServiceEditor;
+    }
+};
