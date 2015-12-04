@@ -44,6 +44,14 @@ export default class CharacteristicItem extends Component {
         }
     }
 
+    componentWillUnmount() {
+        if (!this.animation) {
+            return;
+        }
+
+        this.animation.stop();
+    }
+
     _blink() {
         if (this.animation) {
             this.animation.stop();
