@@ -50,6 +50,10 @@ class ServerSetup extends Component {
             removeAttribute,
         } = this.props;
 
+        if (!serverSetup) {
+            return <div className='server-setup' style={this.props.style} />
+        }
+
         const {
             selectedComponent,
             showDeleteDialog,

@@ -178,6 +178,7 @@ export function getImmutableAdapter(adapter) {
         connectedDevices: Map(),
         /*Adapter sub-reducers*/
         deviceDetails: undefined,
+        serverSetup: undefined,
     });
 }
 

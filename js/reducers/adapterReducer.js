@@ -45,7 +45,7 @@ function removeAdapter(state, adapter) {
     if (adapterIndex !== -1) {
         state.api.adapters.splice(adapterIndex, 1);
 
-        if(adapterIndex === state.selectedAdapter) {
+        if (adapterIndex === state.selectedAdapter) {
             state = state.set('adapterIndicator', 'off');
             state = state.set('selectedAdapter', null);
             state = state.set('adapterStatus', DEFAULT_ADAPTER_STATUS);
