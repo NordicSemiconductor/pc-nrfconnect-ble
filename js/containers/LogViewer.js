@@ -26,33 +26,11 @@ class LogContainer extends Component {
     constructor(props) {
         super(props);
         this.props.startReading();
-    }
 
-/*
-    componentWillUpdate() {
-        this.createElementsForLogEntries();
-    }
+        const { clear } = this.props;
 
-    createElementsForLogEntries() {
-        for (var i = this.state.elements.length, j = this.state.logEntries.length; i < j; i++) {
-            var entry = this.state.logEntries[i];
-            this.state.elements.push(this.createElement(entry, i));
-        }
+        window.addEventListener('core:clear-log', () => { clear(); });
     }
-
-    createElement(entry, i) {
-        var className = 'log-entry ' + entryClassName(entry);
-        return <div className={className} key={entry.id}>
-            <div className='time'>{moment(new Date(entry.time)).format('HH:mm:ss.SSSS')}</div>
-            <div className='message'>{entry.message}</div>
-        </div>
-    } */
-/*
-    clearLog() {
-        /*
-        this.state.elements.length = 0; // ?
-        this.state.logEntries.length = 0;
-    } */
 
     render() {
         const {
@@ -99,7 +77,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     let retval = Object.assign(
             {},
-            bindActionCreators(LogActions, dispatch),
+            bindActionCreators(LogActions, dispatch)
         );
 
     return retval;

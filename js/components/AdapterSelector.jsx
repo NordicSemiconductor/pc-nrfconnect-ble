@@ -27,8 +27,15 @@ class AdapterSelector extends Component {
     }
 
     focusOnComPorts() {
-        var dropDown = React.findDOMNode(this.refs.comPortDropdown);
+        const dropDown = React.findDOMNode(this.refs.comPortDropdown);
+        dropDown.firstChild.focus();
         dropDown.firstChild.click();
+    }
+
+    componentDidMount() {
+        window.addEventListener('core:select-adapter', function() {
+            this.focusOnComPorts();
+        }.bind(this));
     }
 
     render() {

@@ -25,12 +25,6 @@ export default class NavBar extends Component {
             passiveStyle: {},
             adapterState: { connected: false },
         };
-
-        const { onChangeMainView } = this.props;
-
-        window.addEventListener('core:connection-map', () => { onChangeMainView('ConnectionMap'); });
-        window.addEventListener('core:device-details', () => { onChangeMainView('DeviceDetails'); });
-        window.addEventListener('core:server-setup', () => { onChangeMainView('ServerSetup'); });
     }
 
     _onViewChange(newView) {
@@ -41,6 +35,14 @@ export default class NavBar extends Component {
         return 'btn btn-primary btn-nordic padded-row' + (this.props.view === itemName ? ' active' : '');
     }
 
+    componentDidMount() {
+        const { onChangeMainView } = this.props;
+
+        window.addEventListener('core:connection-map', () => { onChangeMainView('ConnectionMap'); });
+        window.addEventListener('core:device-details', () => { onChangeMainView('DeviceDetails'); });
+        window.addEventListener('core:server-setup', () => { onChangeMainView('ServerSetup'); });
+    }
+
     render() {
         return (
             <div className='nav-bar'>
@@ -49,7 +51,7 @@ export default class NavBar extends Component {
                 </div>
                 <div className='nav-section'>
                     <div className='padded-row'>
-                        <AdapterSelector ref='adapterSelector'/>
+                        <AdapterSelector/>
                     </div>
                 </div>
                 <div className='nav-section bl padded-row'>
@@ -69,4 +71,4 @@ export default class NavBar extends Component {
             </div>
         );
     }
-};
+}

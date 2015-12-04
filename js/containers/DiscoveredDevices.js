@@ -26,6 +26,9 @@ import DiscoveredDevice from '../components/DiscoveredDevice';
 class DiscoveredDevices extends Component {
     constructor(props) {
         super(props);
+
+        const { toggleScan } = this.props;
+        window.addEventListener('core:toggle-scan', () => { toggleScan(); });
     }
 
     render() {

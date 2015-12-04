@@ -115,7 +115,7 @@ export function toggleScan() {
     return (dispatch, getState) => {
         const selectedAdapter = getSelectedAdapter(getState());
 
-        if (selectedAdapter.state) {
+        if (selectedAdapter && selectedAdapter.state) {
             if (selectedAdapter.state.scanning && selectedAdapter.state.available) {
                 return _stopScan(dispatch, getState);
             } else if (!selectedAdapter.state.scanning && selectedAdapter.state.available)  {
