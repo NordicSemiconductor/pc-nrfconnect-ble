@@ -27,6 +27,8 @@ import ServiceEditor from '../components/ServiceEditor';
 import CharacteristicEditor from '../components/CharacteristicEditor';
 import DescriptorEditor from '../components/DescriptorEditor';
 
+import ConfirmationDialog from '../components/ConfirmationDialog';
+
 import { getInstanceIds } from '../utils/api';
 
 class ServerSetup extends Component {
@@ -36,7 +38,7 @@ class ServerSetup extends Component {
     }
 
     _saveChangedAttribute(changedAttribute) {
-        this.props.saveChangedAttribute(changedAttribute)
+        this.props.saveChangedAttribute(changedAttribute);
     }
 
     render() {
@@ -48,10 +50,12 @@ class ServerSetup extends Component {
             addNewCharacteristic,
             addNewDescriptor,
             removeAttribute,
+            showDeleteConfirmationDialog,
+            hideDeleteConfirmationDialog,
         } = this.props;
 
         if (!serverSetup) {
-            return <div className='server-setup' style={this.props.style} />
+            return (<div className='server-setup' style={this.props.style} />);
         }
 
         const {
@@ -86,13 +90,13 @@ class ServerSetup extends Component {
 
         const editor = selectedIsService ? <ServiceEditor service={selectedAttribute}
                                                           onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
-                                                          onRemoveAttribute={removeAttribute}/>
+                                                          onRemoveAttribute={showDeleteConfirmationDialog} />
                      : selectedIsCharacteristic ? <CharacteristicEditor characteristic={selectedAttribute}
                                                                         onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
-                                                                        onRemoveAttribute={removeAttribute} />
+                                                                        onRemoveAttribute={showDeleteConfirmationDialog} />
                      : selectedIsDescriptor ? <DescriptorEditor descriptor={selectedAttribute}
                                                                 onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
-                                                                onRemoveAttribute={removeAttribute}/>
+                                                                onRemoveAttribute={showDeleteConfirmationDialog} />
                      : <div className='nothing-selected' />;
 
         const services = [];
@@ -123,7 +127,10 @@ class ServerSetup extends Component {
                     <div className='item-editor'>
                         {editor}
                     </div>
-                    {showDeleteDialog ? <ConfirmationDialog show={this.showConfirmDialog} onOk={this._onDeleteOk} onCancel={this._onDeleteCancel} text='Do you want to delete?'/> : null}
+                        <ConfirmationDialog show={showDeleteDialog}
+                                            onOk={removeAttribute}
+                                            onCancel={hideDeleteConfirmationDialog}
+                                            text='Do you want to delete?'/>
                 </div>
             </div>
         );

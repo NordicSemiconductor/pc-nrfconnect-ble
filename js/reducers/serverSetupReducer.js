@@ -131,9 +131,10 @@ function changedAttribute(state, attribute) {
     return state.mergeIn(attributeStatePath, changedAttribute);
 }
 
-function removedAttribute(state, attribute) {
-    const attributeStatePath = getNodeStatePath(attribute.instanceId);
-    return state.deleteIn(attributeStatePath);
+function removedAttribute(state) {
+    const attributeStatePath = getNodeStatePath(state.selectedComponent);
+    const changedState = state.merge({selectedComponent: null, showDeleteDialog: false});
+    return changedState.deleteIn(attributeStatePath);
 }
 
 export default function deviceDetails(state = initialState, action) {
@@ -152,6 +153,10 @@ export default function deviceDetails(state = initialState, action) {
             return changedAttribute(state, action.attribute);
         case ServerSetupActions.REMOVED_ATTRIBUTE:
             return removedAttribute(state, action.attribute);
+        case ServerSetupActions.SHOW_DELETE_DIALOG:
+            return state.set('showDeleteDialog', true);
+        case ServerSetupActions.HIDE_DELETE_DIALOG:
+            return state.set('showDeleteDialog', false);
         default:
             return state;
     }

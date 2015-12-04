@@ -58,6 +58,7 @@ export default class ServiceEditor extends Component{
     render() {
         const {
             service,
+            onRemoveAttribute,
         } = this.props;
 
         const {
@@ -90,7 +91,7 @@ export default class ServiceEditor extends Component{
           <div className='form-group'>
             <div className='col-md-offset-3 col-md-9 padded-row'>
               <button type='button' className='btn btn-primary' onClick={() => this._saveAttribute()}>Save</button>
-              <button type='button' className='btn btn-primary' onClick={this._showDeleteConfirmation}>Delete</button>
+              <button type='button' className='btn btn-primary' onClick={onRemoveAttribute}>Delete</button>
             </div>
           </div>
         </form>

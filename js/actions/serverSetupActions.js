@@ -21,6 +21,9 @@ export const ADDED_NEW_DESCRIPTOR = 'SERVER_SETUP_NEW_DESCRIPTOR';
 export const CHANGED_ATTRIBUTE = 'SERVER_SETUP_CHANGED_ATTRIBUTE';
 export const REMOVED_ATTRIBUTE = 'SERVER_SETUP_REMOVED_ATTRIBUTE';
 
+export const SHOW_DELETE_DIALOG = 'SERVER_SETUP_SHOW_DELETE_DIALOG';
+export const HIDE_DELETE_DIALOG = 'SERVER_SETUP_HIDE_DELETE_DIALOG';
+
 import { getInstanceIds } from '../utils/api';
 
 function toggledAttributeExpanded(attribute) {
@@ -64,28 +67,27 @@ function changedAttribute(attribute) {
     };
 }
 
-function removedAttribute(attribute) {
+function removedAttribute() {
     return {
         type: REMOVED_ATTRIBUTE,
-        attribute,
+    };
+}
+
+function showDeleteDialog() {
+    return {
+        type: SHOW_DELETE_DIALOG,
+    };
+}
+
+function hideDeleteDialog() {
+    return {
+        type: HIDE_DELETE_DIALOG,
     };
 }
 
 function _toggleAttributeExpanded(dispatch, getState, attribute) {
     dispatch(toggledAttributeExpanded(attribute));
     dispatch(selectComponentAction(attribute));
-}
-
-function _addNewService(dispatch, getState) {
-    dispatch(addedNewService());
-}
-
-function _addNewCharacteristic(dispatch, getState, parent) {
-    dispatch(addedNewCharacteristic(parent));
-}
-
-function _addNewDescriptor(dispatch, getState, parent) {
-    dispatch(addedNewDescriptor(parent));
 }
 
 function _saveChangedAttribute(dispatch, getState, attribute) {
@@ -103,36 +105,38 @@ export function selectComponent(component) {
 
 export function toggleAttributeExpanded(attribute) {
     return (dispatch, getState) => {
-        return _toggleAttributeExpanded(dispatch, getState, attribute);
+        _toggleAttributeExpanded(dispatch, getState, attribute);
     };
 }
 
 export function addNewService() {
-    return (dispatch, getState) => {
-        return _addNewService(dispatch, getState);
-    };
+    return addedNewService();
 }
 
 export function addNewCharacteristic(parent) {
-    return (dispatch, getState) => {
-        return _addNewCharacteristic(dispatch, getState, parent);
-    };
+    return addedNewCharacteristic(parent);
 }
 
 export function addNewDescriptor(parent) {
-    return (dispatch, getState) => {
-        return _addNewDescriptor(dispatch, getState, parent);
-    };
+    return addedNewDescriptor(parent);
 }
 
 export function saveChangedAttribute(attribute) {
     return (dispatch, getState) => {
-        return _saveChangedAttribute(dispatch, getState, attribute);
+        _saveChangedAttribute(dispatch, getState, attribute);
     };
 }
 
-export function removeAttribute(attribute) {
+export function removeAttribute() {
     return (dispatch, getState) => {
-        return _removeAttribute(dispatch, getState, attribute);
+        _removeAttribute(dispatch, getState);
     };
+}
+
+export function showDeleteConfirmationDialog() {
+    return showDeleteDialog();
+}
+
+export function hideDeleteConfirmationDialog() {
+    return hideDeleteDialog();
 }
