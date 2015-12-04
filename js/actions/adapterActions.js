@@ -28,7 +28,7 @@ export const DEVICE_DISCONNECTED = 'DEVICE_DISCONNECTED';
 export const DEVICE_CANCEL_CONNECT = 'DEVICE_CANCEL_CONNECT';
 export const DEVICE_CANCELLED_CONNECT = 'DEVICE_CANCELLED_CONNECT';
 export const DEVICE_INITIATE_PAIRING = 'DEVICE_INITIATE_PAIRING';
-export const DEVICE_PAIRED = 'DEVICE_PAIRED';
+export const DEVICE_SECURITY_CHANGED = 'DEVICE_SECURITY_CHANGED';
 
 export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
 export const DEVICE_CONNECTION_PARAM_UPDATE_STATUS = 'DEVICE_CONNECTION_PARAM_UPDATE_STATUS';
@@ -139,12 +139,16 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(deviceConnParamUpdateRequestAction(device, requestedConnectionParams));
         });
 
-        adapterToUse.on('characteristicValueChanged', (characteristic) => {
+        adapterToUse.on('characteristicValueChanged', characteristic => {
             dispatch(attributeValueChanged(characteristic));
         });
 
-        adapterToUse.on('descriptorValueChanged', (descriptor) => {
+        adapterToUse.on('descriptorValueChanged', descriptor => {
             dispatch(attributeValueChanged(descriptor));
+        });
+
+        adapterToUse.on('securityChanged', (device, authParams) => {
+            dispatch(securityChanged(device, authParams));
         });
 
         dispatch(adapterOpenAction(adapterToUse));
@@ -297,11 +301,6 @@ function connectionParamUpdateStatusAction(id, device, status) {
 }
 
 function _pairWithDevice(dispatch, getState, device) {
-    function onSecurityChanged(resolve, event) {
-        dispatch(pairedWithDevice(device, event));
-        resolve(event);
-    }
-
     function onError(reject, error) {
         reject(makeError({adapter: null, error, device: null}));
     }
@@ -314,18 +313,17 @@ function _pairWithDevice(dispatch, getState, device) {
             reject(makeError({error: 'No adapter selected'}));
         }
 
-        adapterToUse.once('securityChanged', event => onSecurityChanged(resolve, event));
         adapterToUse.once('error', error => onError(reject, error));
 
         adapterToUse.pair(device.instanceId, false, error => {
             if (error) {
                 reject(makeError({adapter: adapterToUse, error, device}));
             }
+
+            resolve();
         });
     }).catch(errorData => {
         dispatch(errorOccuredAction(errorData.adapter, errorData.error));
-    }).then(() => {
-        adapterToUse.removeListener(onSecurityChanged);
     });
 }
 
@@ -496,9 +494,9 @@ function pairWithDeviceAction(device) {
     };
 }
 
-function pairedWithDevice(device, parameters) {
+function securityChanged(device, parameters) {
     return {
-        type: DEVICE_PAIRED,
+        type: DEVICE_SECURITY_CHANGED,
         device,
         parameters,
     };

@@ -138,8 +138,8 @@ function connectedDeviceUpdated(state, device) {
     const { index } = getSelectedAdapter(state);
 
     // TODO: check if received state is of immutable type
-    const _device = device;
-    return state.updateIn(['adapters', index, 'connectedDevices'], connectedDevices => connectedDevices.set(_device.instanceId, _device));
+    const _device = apiHelper.getImmutableDevice(device);
+    return state.mergeIn(['adapters', index, 'connectedDevices', _device.instanceId], _device);
 }
 
 function deviceDisconnected(state, device) {
@@ -151,18 +151,18 @@ function deviceInitiatePairing(state, device) {
     return state;
 }
 
-function devicePaired(state, device, parameters) {
+function deviceSecurityChanged(state, device, parameters) {
     if (device.address === undefined) {
         return state;
     }
 
     const { index } = getSelectedAdapter(state);
 
-    const _device = device;
     const bonded = parameters.bonded;
     const sm1Levels = parameters.sm1Levels;
-    state = state.updateIn(['adapters', index, 'connectedDevices'], connectedDevices => connectedDevices.set(_device.bonded, bonded));
-    state = state.updateIn(['adapters', index, 'connectedDevices'], connectedDevices => connectedDevices.set(_device.securityMode1Levels, sm1Levels));
+
+    state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'bonded'], bonded);
+    state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'securityMode1Levels'], sm1Levels);
     return state;
 }
 
@@ -229,8 +229,8 @@ export default function adapter(state = getImmutableRoot(), action) {
             return deviceInitiatePairing(state, action.device);
         case AdapterAction.DEVICE_CONNECTION_PARAM_UPDATE_STATUS:
             return connectedDeviceUpdated(state, action.device);
-        case AdapterAction.DEVICE_PAIRED:
-            return devicePaired(state, action.device, action.parameters);
+        case AdapterAction.DEVICE_SECURITY_CHANGED:
+            return deviceSecurityChanged(state, action.device, action.parameters);
         default:
             return state;
     }
