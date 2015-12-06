@@ -14,7 +14,7 @@
   "license": "Proprietary",
   "devDependencies": {
     "asar": "0.7.2",
-    "electron-prebuilt": "0.35.2",
+    "electron-prebuilt": "0.35.4",
     "electron-rebuild": "1.0.2",
     "esperanto": "0.7.5",
     "gulp": "3.9.0",
