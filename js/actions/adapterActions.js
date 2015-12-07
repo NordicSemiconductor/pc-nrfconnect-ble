@@ -38,6 +38,13 @@ export const ERROR_OCCURED = 'ERROR_OCCURED';
 
 export const ATTRIBUTE_VALUE_CHANGED = 'ADAPTER_ATTRIBUTE_VALUE_CHANGED';
 
+export const TRACE = 0;
+export const DEBUG = 1;
+export const INFO = 2;
+export const WARNING = 3;
+export const ERROR = 4;
+export const FATAL = 5;
+
 import _ from 'underscore';
 
 import { driver, api } from 'pc-ble-driver-js';
@@ -93,7 +100,7 @@ function _openAdapter(dispatch, getState, adapter) {
             parity: 'none',
             flowControl: 'none',
             eventInterval: 10,
-            logLevel: 'info',
+            logLevel: 'debug',
         };
 
         // Check if we already have an adapter open
@@ -157,21 +164,7 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(securityChanged(device, authParams));
         });
 
-        adapterToUse.on('logMessage', (severity, message) => {
-            switch (severity) {
-                case 'trace':
-                case 'debug':
-                    logger.debug(message);
-                    break;
-                case 'info':
-                    logger.info(message);
-                    break;
-                case 'error':
-                case 'fatal':
-                    logger.error(message);
-                    break;
-            }
-        });
+        adapterToUse.on('logMessage', _onLogMessage);
 
         dispatch(adapterOpenAction(adapterToUse));
 
@@ -198,6 +191,27 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(adapterErrorAction(errorData.adapter, errorData.error));
         }
     });
+}
+
+function _onLogMessage(severity, message) {
+    switch (severity) {
+        case TRACE:
+        case DEBUG:
+            logger.debug(message);
+            break;
+        case INFO:
+            logger.info(message);
+            break;
+        case WARNING:
+            logger.warn(message);
+            break;
+        case ERROR:
+        case FATAL:
+            logger.error(message);
+            break;
+        default:
+            logger.warn(`Log message of unknown severity ${severity} received: ${message}`);
+    }
 }
 
 function _closeAdapter(dispatch, adapter) {
