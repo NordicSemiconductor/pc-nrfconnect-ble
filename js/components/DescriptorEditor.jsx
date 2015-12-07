@@ -35,13 +35,13 @@ export default class DescriptorEditor extends Component {
         return (
             <form className='form-horizontal'>
                 <div className='form-group'>
-                    <label htmlFor='uuid' className='col-md-3 control-label'>UUID</label>
+                    <label htmlFor='uuid' className='col-md-3 control-label'>Descriptor UUID</label>
                     <div className='col-md-9'>
                         <input type='text' className='form-control' name='uuid' value={uuid} />
                     </div>
                 </div>
                 <div className='form-group'>
-                    <label htmlFor='service-name' className='col-md-3 control-label'>Service name</label>
+                    <label htmlFor='service-name' className='col-md-3 control-label'>Descriptor name</label>
                     <div className='col-md-9'>
                         <input type='text' className='form-control' name='service-name' value={name} />
                     </div>

@@ -88,6 +88,7 @@ function toggledAttributeExpanded(state, attribute) {
 function addedNewService(state) {
     const newService = getImmutableService({
         instanceId: deviceInstanceId + '.' + serviceInstanceIdCounter++,
+        name: 'New Service',
         children: OrderedMap(),
     });
     const newServiceStatePath = getNodeStatePath(newService.instanceId);
@@ -98,6 +99,8 @@ function addedNewService(state) {
 function addedNewCharacteristic(state, parent) {
     const newCharacteristic = getImmutableCharacteristic({
         instanceId: parent.instanceId + '.' + characteristicInstanceIdCounter++,
+        name: 'New Characteristic',
+        security: 'open',
         children: OrderedMap(),
     });
     const newCharacteristicStatePath = getNodeStatePath(newCharacteristic.instanceId);
@@ -108,6 +111,7 @@ function addedNewCharacteristic(state, parent) {
 function addedNewDescriptor(state, parent) {
     const newDescriptor = getImmutableDescriptor({
         instanceId: parent.instanceId + '.' + descriptorInstanceIdCounter++,
+        name: 'New Descriptor',
         children: OrderedMap(),
     });
     const newDescriptorStatePath = getNodeStatePath(newDescriptor.instanceId);

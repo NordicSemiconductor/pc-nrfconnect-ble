@@ -191,7 +191,7 @@ export default class EditableField extends Component {
                                       ref='editableTextarea'
                                       minRows={1}
                                       onKeyDown={e => this._onKeyDown(e)}
-                                      value={this.value}
+                                      value={this.props.value}
                                       onChange={e => this._onChange(e)}
                                       onClick={this._stopPropagation} />;
         } else if (this.editing && this.props.onWrite) {
@@ -234,8 +234,8 @@ export default class EditableField extends Component {
 
 EditableField.propTypes = {
     value: PropTypes.string.isRequired,
-    onWrite: PropTypes.func.isRequired,
-    onRead: PropTypes.func.isRequired,
-    showReadButton: PropTypes.bool.isRequired,
+    onWrite: PropTypes.func,
+    onRead: PropTypes.func,
+    showReadButton: PropTypes.bool,
     insideSelector: PropTypes.string,
 };

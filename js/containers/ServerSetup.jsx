@@ -88,6 +88,7 @@ class ServerSetup extends Component {
             selectedIsService = true;
         }
 
+        const editorBorderClass = selectedAttribute ? ' selected-component-editor-border' : '';
         const editor = selectedIsService ? <ServiceEditor service={selectedAttribute}
                                                           onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
                                                           onRemoveAttribute={showDeleteConfirmationDialog} />
@@ -124,7 +125,7 @@ class ServerSetup extends Component {
                         {services}
                         <AddNewItem text='New service' id='add-btn-root' bars={1} parentInstanceId={'local.server'} selected={selectedComponent} onClick={addNewService} />
                     </div>
-                    <div className='item-editor'>
+                    <div className={'item-editor' + editorBorderClass}>
                         {editor}
                     </div>
                         <ConfirmationDialog show={showDeleteDialog}

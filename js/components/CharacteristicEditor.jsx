@@ -3,9 +3,15 @@
 import React from 'react';
 import Component from 'react-pure-render/component';
 
-import _ from 'underscore';
+import { Input } from 'react-bootstrap';
+
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
-import ConfirmationDialog from './ConfirmationDialog.jsx';
+
+import { getUuidName } from '../utils/uuid_definitions';
+
+const SUCCESS = 'success';
+const WARNING = 'warning';
+const ERROR = 'error';
 
 export default class CharacteristicEditor extends Component {
     //mixins: [ReactLinkedStateMixin],
@@ -13,8 +19,79 @@ export default class CharacteristicEditor extends Component {
         super(props);
     }
 
-    _showDeleteConfirmation() {
-        //this.setState({showConfirmDialog: true});
+    validateUuidInput() {
+        const uuid16regex = /^[0-9a-fA-F]{4}$/;
+        const uuid128regex = /^[0-9a-fA-F]{32}$/;
+
+        return uuid16regex.test(this.uuid) || uuid128regex.test(this.uuid) ? SUCCESS : ERROR;
+    }
+
+    _setCheckedProperty(property, e) {
+        this[property] = e.target.checked;
+        this.forceUpdate();
+    }
+
+    _setValueProperty(property, e) {
+        this[property] = e.target.value;
+        this.forceUpdate();
+    }
+
+    _onUuidChange(e) {
+        const _hexRegEx = /^[0-9A-F]*$/i;
+        const textarea = e.target;
+        const uuid = textarea.value;
+        const valid = _hexRegEx.test(uuid);
+        let caretPosition = textarea.selectionStart;
+
+        if (!valid) {
+            caretPosition--;
+            this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
+            return;
+        }
+
+        this.uuid = uuid;
+        let uuidName = getUuidName(this.uuid);
+
+        if (this.uuid !== uuidName) {
+            this.name = uuidName;
+        }
+
+        this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
+    }
+
+    _saveAttribute() {
+        // TODO: Add verification?
+        if (this.validateUuidInput() === ERROR) {
+            return;
+        }
+
+        // TODO: Check max length vs initial value length.
+
+        const changedProperties = {
+            broadcast: this.broadcast,
+            read: this.read,
+            write_wo_resp: this.write_wo_resp,
+            write: this.write,
+            notify: this.notify,
+            indicate: this.indicate,
+            auth_signed_wr: this.auth_signed_wr,
+            reliable_wr: this.reliable_wr,
+            wr_aux: this.wr_aux,
+        };
+
+        const changedCharacteristic = {
+            instanceId: this.props.characteristic.instanceId,
+            uuid: this.uuid.toUpperCase().trim(),
+            name: this.name,
+            value: this.value,
+            properties: changedProperties,
+            security: this.security,
+            maxLengthActive: this.maxLengthActive,
+            maxLength: parseInt(this.maxLength),
+        };
+
+        this.props.onSaveChangedAttribute(changedCharacteristic);
+        this.saved = true;
     }
 
     render() {
@@ -24,88 +101,97 @@ export default class CharacteristicEditor extends Component {
         } = this.props;
 
         const {
+            instanceId,
             uuid,
             name,
             properties,
             value,
+            security,
             maxLengthActive,
             maxLength,
-            security,
-            readAuthorization,
-            writeAuthorization,
         } = characteristic;
 
         const {
             broadcast,
             read,
-            writeWithoutResponse,
+            write_wo_resp,
             write,
             notify,
             indicate,
-            authenticatedSignedWrites,
-            reliableWrite,
-            writeAuxiliary,
+            auth_signed_wr,
+            reliable_wr,
+            wr_aux,
         } = properties;
+
+        if (this.saved || this.instanceId !== instanceId) {
+            this.saved = false;
+            this.instanceId = instanceId;
+            this.uuid = uuid;
+            this.name = name;
+            this.value = value;
+
+            this.broadcast = broadcast;
+            this.read = read;
+            this.write_wo_resp = write_wo_resp;
+            this.write = write;
+            this.notify = notify;
+            this.indicate = indicate;
+            this.auth_signed_wr = auth_signed_wr;
+            this.reliable_wr = reliable_wr;
+            this.wr_aux = wr_aux;
+
+            this.security = security;
+            this.maxLengthActive = maxLengthActive;
+            this.maxLength = maxLength;
+        }
 
         return (
             <form className='form-horizontal'>
                 <div className='form-group'>
-                    <label htmlFor='uuid' className='col-md-3 control-label'>UUID</label>
+                    <label htmlFor='uuid' className='col-md-3 control-label'>Characteristic UUID</label>
                     <div className='col-md-9'>
-                        <input type='text' className='form-control' name='uuid' value={uuid}/>
+                        <Input type='text' className='form-control' name='uuid' value={this.uuid} onChange={e => this._onUuidChange(e)} hasFeedback bsStyle={this.validateUuidInput()} />
                     </div>
                 </div>
                 <div className='form-group'>
                     <label htmlFor='characteristic-name' className='col-md-3 control-label'>Characteristic name</label>
                     <div className='col-md-9'>
-                        <input type='text' className='form-control' name='characteristic-name' value={name}/>
-                    </div>
-                </div>
-
-                <div className='form-group'>
-                    <label className='col-md-3 control-label'>Properties</label>
-                    <div className='col-md-9'>
-                        <div className='checkbox'><label><input type='checkbox' checked={broadcast}/> Broadcast </label></div>
-                        <div className='checkbox'><label><input type='checkbox' checked={read}/> Read </label></div>
-                        <div className='checkbox'><label><input type='checkbox' checked={writeWithoutResponse}/> Write without response</label></div>
-                        <div className='checkbox'><label><input type='checkbox' checked={write}/> Write </label></div>
-                        <div className='checkbox'><label><input type='checkbox' checked={notify}/> Notify </label></div>
-                        <div className='checkbox'><label><input type='checkbox' checked={indicate}/> Indicate </label></div>
-                        <div className='checkbox'><label><input type='checkbox' checked={authenticatedSignedWrites}/> Authenticated signed write </label></div>
-                    </div>
-                </div>
-
-                <div className='form-group'>
-                    <label className='col-md-3 control-label'>Extended properties</label>
-                    <div className='col-md-9'>
-                        <div className='checkbox'><label><input type='checkbox' checked={reliableWrite}/> Reliable write </label></div>
-                        <div className='checkbox'><label><input type='checkbox' checked={writeAuxiliary}/> Write auxiliary </label></div>
+                        <input type='text' className='form-control' name='characteristic-name' value={this.name} onChange={e => this._setValueProperty('name', e)} />
                     </div>
                 </div>
 
                 <div className='form-group'>
                     <label htmlFor='initial-value' className='col-md-3 control-label'>Initial value</label>
                     <div className='col-md-9'>
-                        {/*<HexOnlyEditableField plain={true} className='form-control' name='initial-value' value={value}/>*/}
-                        <input type='text' className='form-control' name='initial-value' value={value}/>
+                        <HexOnlyEditableField plain={true} className='form-control' name='initial-value' value={this.value.toArray()} onChange={e => this._setValueProperty('value', e)} />
                     </div>
                 </div>
 
                 <div className='form-group'>
-                    <label className='col-md-3 control-label'>Max length</label>
+                    <label className='col-md-3 control-label'>Properties</label>
                     <div className='col-md-9'>
-                        <div className='checkbox'><label><input type='checkbox' checked={maxLengthActive} />Activate</label></div>
+                        <div className='checkbox'><label><input type='checkbox' ref='broadcast' checked={this.broadcast} onChange={e => this._setCheckedProperty('broadcast', e)} /> Broadcast </label></div>
+                        <div className='checkbox'><label><input type='checkbox' ref='read' checked={this.read} onChange={e => this._setCheckedProperty('read', e)} /> Read </label></div>
+                        <div className='checkbox'><label><input type='checkbox' ref='writeWithoutResponse' checked={this.write_wo_resp} onChange={e => this._setCheckedProperty('write_wo_resp', e)} /> Write without response</label></div>
+                        <div className='checkbox'><label><input type='checkbox' ref='write' checked={this.write} onChange={e => this._setCheckedProperty('write', e)} /> Write </label></div>
+                        <div className='checkbox'><label><input type='checkbox' ref='notify' checked={this.notify} onChange={e => this._setCheckedProperty('notify', e)} /> Notify </label></div>
+                        <div className='checkbox'><label><input type='checkbox' ref='indicate' checked={this.indicate} onChange={e => this._setCheckedProperty('indicate', e)} /> Indicate </label></div>
+                        <div className='checkbox'><label><input type='checkbox' ref='authenticatedSignedWrites' checked={this.auth_signed_wr} onChange={e => this._setCheckedProperty('auth_signed_wr', e)} /> Authenticated signed write </label></div>
                     </div>
+                </div>
 
-                    <div className='col-md-offset-3 col-md-9'>
-                        <input type='number' min='0' disabled={!maxLengthActive} className='form-control' name='max-length' value={maxLength}/>
+                <div className='form-group'>
+                    <label className='col-md-3 control-label'>Extended properties</label>
+                    <div className='col-md-9'>
+                        <div className='checkbox'><label><input type='checkbox' ref='reliableWrite' checked={this.reliable_wr} onChange={e => this._setCheckedProperty('reliable_wr', e)} /> Reliable write </label></div>
+                        <div className='checkbox'><label><input type='checkbox' ref='writeAuxiliary' checked={this.wr_aux} onChange={e => this._setCheckedProperty('wr_aux', e)} /> Write auxiliary </label></div>
                     </div>
                 </div>
 
                 <div className='form-group'>
                     <label className='col-md-3 control-label'>Security</label>
                     <div className='col-md-9'>
-                        <select className='form-control' value={'open'}>
+                        <select className='form-control' value={this.security} onChange={e => this._setValueProperty('security', e)}>
                             <option value='open'>No security required</option>
                             <option value='enc_no_mitm'>Encryption required, no MITM</option>
                             <option value='enc_with_mitm'>Encryption and MITM required</option>
@@ -117,10 +203,13 @@ export default class CharacteristicEditor extends Component {
                 </div>
 
                 <div className='form-group'>
-                    <label className='col-md-3 control-label'>Authorization</label>
+                    <label className='col-md-3 control-label'>Max length</label>
                     <div className='col-md-9'>
-                        <div className='checkbox'><label><input type='checkbox' checked={readAuthorization}/> Read authorization required </label></div>
-                        <div className='checkbox'><label><input type='checkbox' checked={writeAuthorization}/> Write authorization required </label></div>
+                        <div className='checkbox'><label><input type='checkbox' ref='maxLengthActive' checked={this.maxLengthActive} onChange={e => this._setCheckedProperty('maxLengthActive', e)} />Activate</label></div>
+                    </div>
+
+                    <div className='col-md-offset-3 col-md-9'>
+                        <input type='number' min='0' max='510' disabled={!this.maxLengthActive} className='form-control' name='max-length' ref='maxLength' value={this.maxLengthActive ? this.maxLength : ''} onChange={e => this._setValueProperty('maxLength', e)} />
                     </div>
                 </div>
 

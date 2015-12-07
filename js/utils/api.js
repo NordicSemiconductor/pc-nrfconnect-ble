@@ -87,8 +87,10 @@ const ImmutableCharacteristic = Record({
     valueHandle: null,
     value: List(),
     properties: new ImmutableProperties(),
+    security: null,
+    maxLengthActive: false,
+    maxLength: null,
     expanded: false,
-    notifying: false,
     discoveringChildren: false,
     children: null,
     errorMessage: null,
@@ -234,6 +236,9 @@ export function getImmutableCharacteristic(characteristic) {
         valueHandle: characteristic.valueHandle,
         value: List(characteristic.value),
         properties: getImmutableProperties(properties),
+        security: characteristic.security,
+        maxLengthActive: characteristic.maxLengthActive,
+        maxLength: characteristic.maxLength,
         children: characteristic.children,
     });
 }

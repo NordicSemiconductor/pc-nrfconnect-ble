@@ -174,6 +174,6 @@ export default class HexOnlyEditableField extends Component {
                               onBeforeBackspace={this._onBeforeBackspace}
                               onBeforeDelete={this._onBeforeDelete}
                               getValueArray={value => this._getValueArray(value)}
-                              ref="editableField" />;
+                              ref='editableField' />;
     }
 }

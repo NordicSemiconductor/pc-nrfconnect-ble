@@ -3,7 +3,13 @@
 import React from 'react';
 import Component from 'react-pure-render/component';
 
+import { Input } from 'react-bootstrap';
+
 import { getUuidName } from '../utils/uuid_definitions';
+
+const SUCCESS = 'success';
+const WARNING = 'warning';
+const ERROR = 'error';
 
 export default class ServiceEditor extends Component{
     //mixins: [ReactLinkedStateMixin],
@@ -11,8 +17,11 @@ export default class ServiceEditor extends Component{
         super(props);
     }
 
-    _showDeleteConfirmation() {
-        //this.setState({showConfirmDialog: true});
+    validateUuidInput() {
+        const uuid16regex = /^[0-9a-fA-F]{4}$/;
+        const uuid128regex = /^[0-9a-fA-F]{32}$/;
+
+        return uuid16regex.test(this.uuid) || uuid128regex.test(this.uuid) ? SUCCESS : ERROR;
     }
 
     _onUuidChange(e) {
@@ -40,14 +49,13 @@ export default class ServiceEditor extends Component{
     }
 
     _saveAttribute() {
-        // TODO: Add verification?
-        console.log('save');
-        console.log(this.uuid);
-        console.log(this.name);
+        if (this.validateUuidInput() === ERROR) {
+            return;
+        }
 
         const changedService = {
             instanceId: this.props.service.instanceId,
-            uuid: this.uuid.toUpperCase(),
+            uuid: this.uuid.toUpperCase().trim(),
             name: this.name,
         };
 
@@ -77,15 +85,15 @@ export default class ServiceEditor extends Component{
         return (
         <form className='form-horizontal'>
           <div className='form-group'>
-            <label htmlFor='uuid' className='col-md-3 control-label'>UUID</label>
+            <label htmlFor='uuid' className='col-md-3 control-label'>Service UUID</label>
             <div className='col-md-9'>
-              <input ref={'uuidInput'} type='text' className='form-control' name='uuid' value={this.uuid} onChange={e => this._onUuidChange(e)} />
+              <Input type='text' className='form-control' name='uuid' value={this.uuid} onChange={e => this._onUuidChange(e)} hasFeedback bsStyle={this.validateUuidInput()} />
             </div>
           </div>
           <div className='form-group'>
             <label htmlFor='service-name' className='col-md-3 control-label'>Service name</label>
             <div className='col-md-9'>
-              <input type='text' className='form-control' name='service-name' value={this.name} onChange={e => this._onNameChange(e)} />
+              <Input type='text' className='form-control' name='service-name' value={this.name} onChange={e => this._onNameChange(e)} />
             </div>
           </div>
           <div className='form-group'>
