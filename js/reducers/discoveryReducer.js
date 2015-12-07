@@ -12,7 +12,7 @@ const InitialState = Record({
 
 const initialState = new InitialState();
 
-function deviceFound(state, device) {
+function deviceDiscovered(state, device) {
     const newDevice = apiHelper.getImmutableDevice(device);
     const existingDevice = state.devices.get(device.address);
     if (existingDevice && existingDevice.name !== '' && device.name === '') {
@@ -56,12 +56,12 @@ function deviceCancelConnect(state) {
 
 export default function discovery(state = initialState, action) {
     switch (action.type) {
-        case DiscoveryAction.DISCOVERY_DEVICE_FOUND:
-            return deviceFound(state, action.device);
         case DiscoveryAction.DISCOVERY_CLEAR_LIST:
             return clearList(state);
         case DiscoveryAction.ERROR_OCCURED:
             return addError(state, action.error);
+        case AdapterAction.DEVICE_DISCOVERED:
+            return deviceDiscovered(state, action.device);
         case AdapterAction.DEVICE_CONNECT:
             return deviceConnect(state, action.device);
         case AdapterAction.DEVICE_CONNECTED:

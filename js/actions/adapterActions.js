@@ -20,6 +20,7 @@ export const ADAPTER_REMOVED = 'ADAPTER_REMOVED';
 export const ADAPTER_ERROR = 'ADAPTER_ERROR';
 export const ADAPTER_STATE_CHANGED = 'ADAPTER_STATE_CHANGED';
 
+export const DEVICE_DISCOVERED = 'DEVICE_DISCOVERED';
 export const DEVICE_CONNECT = 'DEVICE_CONNECT';
 export const DEVICE_CONNECTED = 'DEVICE_CONNECTED';
 export const DEVICE_CONNECT_TIMEOUT = 'DEVICE_CONNECT_TIMEOUT';
@@ -40,8 +41,9 @@ export const ATTRIBUTE_VALUE_CHANGED = 'ADAPTER_ATTRIBUTE_VALUE_CHANGED';
 import _ from 'underscore';
 
 import { driver, api } from 'pc-ble-driver-js';
-
+import { logger } from '../logging';
 import { discoverServices } from './deviceDetailsActions';
+import { deviceDiscovered } from './discoveryActions';
 import { BLEEventState } from './common';
 
 const _adapterFactory = api.AdapterFactory.getInstance(driver);
@@ -122,6 +124,10 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(adapterStateChangedAction(adapterToUse, state));
         });
 
+        adapterToUse.on('deviceDiscovered', device => {
+            dispatch(deviceDiscoveredAction(device));
+        });
+
         adapterToUse.on('deviceConnected', device => {
             dispatch(deviceConnectedAction(device));
             dispatch(discoverServices(device));
@@ -149,6 +155,22 @@ function _openAdapter(dispatch, getState, adapter) {
 
         adapterToUse.on('securityChanged', (device, authParams) => {
             dispatch(securityChanged(device, authParams));
+        });
+
+        adapterToUse.on('logMessage', (severity, message) => {
+            switch (severity) {
+                case 'trace':
+                case 'debug':
+                    logger.debug(message);
+                    break;
+                case 'info':
+                    logger.info(message);
+                    break;
+                case 'error':
+                case 'fatal':
+                    logger.error(message);
+                    break;
+            }
         });
 
         dispatch(adapterOpenAction(adapterToUse));
@@ -429,6 +451,13 @@ function _cancelConnect(dispatch, getState) {
     }).catch(error => {
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
+}
+
+function deviceDiscoveredAction(device) {
+    return {
+        type: DEVICE_DISCOVERED,
+        device,
+    };
 }
 
 function deviceConnectAction(device) {

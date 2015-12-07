@@ -35,10 +35,6 @@ function _startScan(dispatch, getState) {
             reject('No adapter is selected.');
         }
 
-        adapter.on('deviceDiscovered', device => {
-            dispatch(deviceFoundAction(device));
-        });
-
         adapter.startScan(scanParameters, error => {
             if (error) {
                 reject(error);
@@ -72,13 +68,6 @@ function _stopScan(dispatch, getState) {
 }
 
 // Action object functions
-function deviceFoundAction(device) {
-    return {
-        type: DISCOVERY_DEVICE_FOUND,
-        device,
-    };
-}
-
 function scanErrorAction(error) {
     return {
         type: ERROR_OCCURED,
