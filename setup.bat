@@ -21,7 +21,7 @@ call npm install --production
 
 call lessc ./css/styles.less ./css/styles.css
 
-call electron-packager ./ yggdrasil --platform=win32 --arch=%YGGDRASIL_ELECTRON_ARCH% --version=%YGGDRASIL_ELECTRON_VERSION% --overwrite --out=%YGGDRASIL_DEPLOY_DIR% --icon=nordic_logo.ico --app-version=%YGGDRASIL_VERSION% --version-string.CompanyName="Nordic Semiconductor" --version-string.LegalCopyright = "Nordic Semiconductor" --version-string.FileDescription = "FileDescription" --version-string.OriginalFilename = "OriginalFilename" --version-string.FileVersion = "%YGGDRASIL_VERSION%" --version-string.ProductVersion = "%YGGDRASIL_VERSION%" --version-string.ProductName = "Yggdrasil" --version-string.InternalName = "Yggdrasil"
+call electron-packager ./ yggdrasil --platform=win32 --arch=%YGGDRASIL_ELECTRON_ARCH% --version=%YGGDRASIL_ELECTRON_VERSION% --overwrite --out=%YGGDRASIL_DEPLOY_DIR% --icon=nordic_logo.ico --app-version=%YGGDRASIL_VERSION% --version-string.CompanyName="Nordic Semiconductor" --version-string.LegalCopyright="Nordic Semiconductor" --version-string.FileDescription="FileDescription" --version-string.OriginalFilename="OriginalFilename" --version-string.FileVersion=%YGGDRASIL_VERSION% --version-string.ProductVersion=%YGGDRASIL_VERSION% --version-string.ProductName="Yggdrasil" --version-string.InternalName="Yggdrasil"
 
 copy yggdrasil_installer.nsi %YGGDRASIL_DEPLOY_DIR%
 copy nordic_logo.ico %YGGDRASIL_DEPLOY_DIR%
@@ -37,6 +37,7 @@ echo "Need to set SIGNTOOL_PATH and SIGNTOOL_PASSWORD environment variables for 
 %SIGNTOOL_PATH%\signtool.exe sign /v /ac %SIGNTOOL_PATH%\MSCV-VSClass3.cer /f %SIGNTOOL_PATH%\nordic_code_signing_certificate.pfx /p %SIGNTOOL_PASSWORD% /n "Nordic Semiconductor ASA" /t http://timestamp.verisign.com/scripts/timstamp.dll /d "Yggdrasil - %YGGDRASIL_VERSION%" ./yggdrasil-win32-ia32/yggdrasil.exe
 
 "c:\Program Files (x86)\NSIS\makensis.exe" yggdrasil_installer.nsi
+rename yggdrasil_installer.exe yggdrasil_v%YGGDRASIL_VERSION%_installer.exe
 
 echo "Need to set SIGNTOOL_PATH and SIGNTOOL_PASSWORD environment variables for the next command to work"
-%SIGNTOOL_PATH%\signtool.exe sign /v /ac %SIGNTOOL_PATH%\MSCV-VSClass3.cer /f %SIGNTOOL_PATH%\nordic_code_signing_certificate.pfx /p %SIGNTOOL_PASSWORD% /n "Nordic Semiconductor ASA" /t http://timestamp.verisign.com/scripts/timstamp.dll /d "Yggdrasil installer - %YGGDRASIL_VERSION%" yggdrasil-v%YGGDRASIL_VERSION%.exe
+%SIGNTOOL_PATH%\signtool.exe sign /v /ac %SIGNTOOL_PATH%\MSCV-VSClass3.cer /f %SIGNTOOL_PATH%\nordic_code_signing_certificate.pfx /p %SIGNTOOL_PASSWORD% /n "Nordic Semiconductor ASA" /t http://timestamp.verisign.com/scripts/timstamp.dll /d "Yggdrasil installer - %YGGDRASIL_VERSION%" yggdrasil_v%YGGDRASIL_VERSION%_installer.exe
