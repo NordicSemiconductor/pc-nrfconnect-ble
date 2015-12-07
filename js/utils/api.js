@@ -193,6 +193,7 @@ export function getImmutableDevice(device) {
         maxConnectionInterval: device.maxConnectionInterval,
         slaveLatency: device.slaveLatency,
         connectionSupervisionTimeout: device.connectionSupervisionTimeout,
+        services: List(device.services),
         rssi: device.rssi,
         scanResponse: device.scanResponse,
     });

@@ -13,10 +13,17 @@ const InitialState = Record({
 const initialState = new InitialState();
 
 function deviceDiscovered(state, device) {
-    const newDevice = apiHelper.getImmutableDevice(device);
+    let newDevice = apiHelper.getImmutableDevice(device);
     const existingDevice = state.devices.get(device.address);
+
+    // Keep exising name if new name is empty
     if (existingDevice && existingDevice.name !== '' && device.name === '') {
-        return state;
+        newDevice = newDevice.setIn(['name'], existingDevice.name);
+    }
+
+    // Keep existing list of services if new list is empty
+    if (existingDevice && existingDevice.services.length > 0 && device.services.length === 0) {
+        newDevice = newDevice.setIn(['services'], existingDevice.services);
     }
 
     return state.setIn(['devices', device.address], newDevice);

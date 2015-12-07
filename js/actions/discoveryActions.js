@@ -26,7 +26,7 @@ function _startScan(dispatch, getState) {
             active: true,
             interval: 100,
             window: 50,
-            timeout: 20,
+            timeout: 60,
         };
 
         const adapter = getState().adapter.api.selectedAdapter;
