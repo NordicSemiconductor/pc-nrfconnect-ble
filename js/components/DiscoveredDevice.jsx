@@ -2,6 +2,7 @@
 
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
+import { getUuidName } from '../utils/uuid_definitions';
 
 const RSSI_WIDTH_MAX = 20;
 const RSSI_WIDTH_HIGH = Math.round(RSSI_WIDTH_MAX * 0.8);
@@ -69,7 +70,7 @@ export default class DiscoveredDevice extends Component {
                     <div className='flag-line'>
                         {
                             device.services.map(function(service, index) {
-                                return (<div key={index} className='device-flag'>{service}</div>);
+                                return (<div key={index} className='device-flag'>{getUuidName(service)}</div>);
                             })
                         }
                     </div>

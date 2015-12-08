@@ -22,12 +22,11 @@ function deviceDiscovered(state, device) {
     }
 
     // Keep existing list of services if new list is empty
-    if (existingDevice && existingDevice.services.size > 0 && device.services.size === 0) {
+    if (existingDevice && existingDevice.services.size > 0 && device.services.length === 0) {
         newDevice = newDevice.setIn(['services'], existingDevice.services);
     }
 
     return state.setIn(['devices', device.address], newDevice);
-
 }
 
 function addError(state, error) {
