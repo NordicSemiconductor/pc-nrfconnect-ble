@@ -119,10 +119,6 @@ export default class DescriptorEditor extends Component {
             this.maxLength = maxLength;
         }
 
-        console.log('renderrerer');
-        console.log(maxLengthActive);
-        console.log(this.maxLengthActive);
-
         return (
             <form className='form-horizontal'>
                 <div className='form-group'>

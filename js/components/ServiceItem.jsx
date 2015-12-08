@@ -36,7 +36,6 @@ export default class ServiceItem extends Component {
     }
 
     _onExpandAreaClick(e) {
-        console.log('here');
         e.stopPropagation();
         this.props.onToggleAttributeExpanded(this.props.item);
     }
