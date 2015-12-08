@@ -21,10 +21,99 @@ import CentralDevice from './CentralDevice';
 import EnumeratingAttributes from './EnumeratingAttributes';
 
 import ServiceItem from './ServiceItem';
+import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
+
+let moveUpHandle;
+let moveDownHandle;
+let moveRightHandle;
+let moveLeftHandle;
 
 export default class DeviceDetailsView extends Component {
     constructor(props) {
         super(props);
+        this._registerKeyboardShortcuts();
+    }
+
+    _registerKeyboardShortcuts() {
+        // Setup keyboard shortcut callbacks
+        //
+        // Since we move between the different "tabs" we have to
+        // remove the listeners and add them again so that the correct instance
+        // of this class is associated with the callback registered on window.
+        this.moveUp = () => this._selectNextComponent(true);
+        this.moveDown = () => this._selectNextComponent(false);
+        this.moveRight = () => this._expandComponent(true);
+        this.moveLeft = () => this._expandComponent(false);
+
+        if (moveDownHandle) {
+            window.removeEventListener('core:move-down', moveDownHandle);
+        }
+
+        window.addEventListener('core:move-down', this.moveDown);
+        moveDownHandle = this.moveDown;
+
+        if (moveUpHandle) {
+            window.removeEventListener('core:move-up', moveUpHandle);
+        }
+
+        window.addEventListener('core:move-up', this.moveUp);
+        moveUpHandle = this.moveUp;
+
+        if (moveRightHandle) {
+            window.removeEventListener('core:move-right', moveRightHandle);
+        }
+
+        window.addEventListener('core:move-right', this.moveRight);
+        moveRightHandle = this.moveRight;
+
+        if (moveLeftHandle) {
+            window.removeEventListener('core:move-left', moveLeftHandle);
+        }
+
+        window.addEventListener('core:move-left', this.moveLeft);
+        moveLeftHandle = this.moveLeft;
+    }
+
+    _selectNextComponent(backward) {
+        const { device, deviceDetails, selected, onSelectComponent } = this.props;
+        let foundCurrent = false;
+
+        for (let item of traverseItems(deviceDetails, device.instanceId, true, backward)) {
+            if (selected === null) {
+                if (item !== null) {
+                    onSelectComponent(item);
+                    return;
+                }
+            }
+
+            if (item.instanceId === selected) {
+                foundCurrent = true;
+            } else if (foundCurrent) {
+                onSelectComponent(item);
+                return;
+            }
+        }
+    }
+
+    _expandComponent(expand) {
+        const {
+            device,
+            deviceDetails,
+            selected,
+            onToggleAttributeExpanded,
+        } = this.props;
+
+        if (!selected) {
+            return;
+        }
+
+        const item = findSelectedItem(deviceDetails, device.instanceId, selected);
+
+        if (item) {
+            // TODO: when the deviceDetailActions and deviceDetailsReducer supports
+            // TODO: exclicit expansion/collapsing we add that.
+            onToggleAttributeExpanded(item);
+        }
     }
 
     render() {
@@ -142,6 +231,7 @@ DeviceDetailsView.propTypes = {
     onSelectComponent: PropTypes.func.isRequired,
     onToggleAttributeExpanded: PropTypes.func.isRequired,
     onUpdateDeviceConnectionParams: PropTypes.func,
+    deviceDetails: PropTypes.object,
     adapter: PropTypes.object,
     onReadCharacteristic: PropTypes.func,
     onWriteCharacteristic: PropTypes.func,

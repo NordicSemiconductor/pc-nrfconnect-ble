@@ -149,17 +149,17 @@ function _toggleAttributeExpanded(dispatch, getState, attribute) {
         return;
     }
 
-    const instanceIds = getInstanceIds(attribute.instanceId);
+    const instanceIds = getInstanceIds(attribute);
     const deviceDetails = state.adapter.getIn(['adapters', state.adapter.selectedAdapter, 'deviceDetails']);
     const service = deviceDetails.devices.get(instanceIds.device).children.get(instanceIds.service);
 
     if (instanceIds.characteristic) {
         const characteristic = service.children.get(instanceIds.characteristic);
-        if (!characteristic.children && !characteristic.expanded && !characteristic.discoveringChildren) {
+        if (characteristic.children === null && !characteristic.expanded && !characteristic.discoveringChildren) {
             dispatch(discoverDescriptors(characteristic));
         }
     } else {
-        if (!service.children && !service.expanded && !service.discoveringChildren) {
+        if (service.children === null && !service.expanded && !service.discoveringChildren) {
             dispatch(discoverCharacteristics(service));
         }
     }

@@ -124,7 +124,7 @@ function mapDispatchToProps(dispatch) {
             bindActionCreators(DeviceDetailsActions, dispatch),
             bindActionCreators(AdvertisingSetupActions, dispatch),
             bindActionCreators(AdapterActions, dispatch),
-            bindActionCreators(BLEEventActions, dispatch),
+            bindActionCreators(BLEEventActions, dispatch)
         );
 
     return retval;
@@ -138,6 +138,7 @@ export default connect(
 DeviceDetailsContainer.propTypes = {
     adapterState: PropTypes.object,
     selectedComponent: PropTypes.string,
+    deviceDetails: PropTypes.object,
     connectedDevices: PropTypes.object,
     deviceServers: PropTypes.object,
     readCharacteristic: PropTypes.func.isRequired,

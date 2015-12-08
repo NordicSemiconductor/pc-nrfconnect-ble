@@ -58,6 +58,10 @@ class AppContainer extends Component {
                 'alt-c': 'core:clear-log',
                 'alt-s': 'core:toggle-scan',
                 'alt-p': 'core:select-adapter',
+                'down' : 'core:move-down',
+                'up'   : 'core:move-up',
+                'left' : 'core:move-left',
+                'right': 'core:move-right',
             }
         });
     }
