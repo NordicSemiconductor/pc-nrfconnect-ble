@@ -27,8 +27,9 @@ class DiscoveredDevices extends Component {
     constructor(props) {
         super(props);
 
-        const { toggleScan } = this.props;
+        const { toggleScan, clearDevicesList } = this.props;
         window.addEventListener('core:toggle-scan', () => { toggleScan(); });
+        window.addEventListener('core:clear-scan', () => { clearDevicesList(); });
     }
 
     render() {

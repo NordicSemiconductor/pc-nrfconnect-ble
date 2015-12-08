@@ -55,7 +55,7 @@ class AppContainer extends Component {
                 'alt-1': 'core:connection-map',
                 'alt-2': 'core:device-details',
                 'alt-3': 'core:server-setup',
-                'alt-c': 'core:clear-log',
+                'alt-c': 'core:clear-scan',
                 'alt-s': 'core:toggle-scan',
                 'alt-p': 'core:select-adapter',
                 'down' : 'core:move-down',
