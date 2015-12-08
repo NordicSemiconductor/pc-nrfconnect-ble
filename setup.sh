@@ -36,6 +36,9 @@ export YGGDRASIL_APP_ROOT_DIR=$YGGDRASIL_DEPLOY_DIR/$YGGDRASIL_APP_DIR
 
 rm -rf node_modules
 
+mv js/settings.json js/settings.json.dev
+mv js/settings.json.prod js/settings.json
+
 npm install --production
 
 lessc ./css/styles.less ./css/styles.css
@@ -50,5 +53,12 @@ if [ "$YGGDRASIL_PLATFORM" == "linux" ]; then
   cp node_modules/pc-ble-driver-js/driver/lib/libs130_nrf51_ble_driver.so $YGGDRASIL_APP_ROOT_DIR
 fi
 
+pushd .
+
 cd $YGGDRASIL_DEPLOY_DIR
 tar czf $YGGDRASIL_NAME-$YGGDRASIL_VERSION-$YGGDRASIL_PLATFORM-$npm_config_arch.tar.gz $YGGDRASIL_APP_DIR
+
+popd
+
+mv js/settings.json js/settings.json.prod
+mv js/settings.json.dev js/settings.json
