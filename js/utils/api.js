@@ -103,6 +103,8 @@ const ImmutableDescriptor = Record({
     name: null,
     handle: null,
     value: List(),
+    maxLengthActive: false,
+    maxLength: null,
     errorMessage: null,
 });
 
@@ -251,5 +253,7 @@ export function getImmutableDescriptor(descriptor) {
         name: descriptor.name,
         handle: descriptor.handle,
         value: List(descriptor.value),
+        maxLengthActive: descriptor.maxLengthActive,
+        maxLength: descriptor.maxLength,
     });
 }

@@ -118,6 +118,10 @@ export default class EditableField extends Component {
         }
 
         this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
+
+        if (this.props.onChange) {
+            this.props.onChange(this.value);
+        }
     }
 
     _onKeyDown(e) {

@@ -159,15 +159,19 @@ export default class HexOnlyEditableField extends Component {
     }
 
     render() {
-        const {value, keyPressValidation, completeValidation, formatInput, onBeforeBackspace, onBeforeDelete, onChange, ...props} = this.props; //pass along all props except these
+        const {value, keyPressValidation, completeValidation, formatInput, onBeforeBackspace, onBeforeDelete, ...props} = this.props; //pass along all props except these
 
+        let parsedValue = value;
+
+        if (value.constructor === Array) {
         // Convert from array [1, 10, 16, 20] to hex string "01-0A-10-14"
-        const hexValueStringArray = value.map(decimalNumber => ('0' + decimalNumber.toString(16)).slice(-2));
-        const hexValueString = hexValueStringArray.join('-').toUpperCase();
+            const hexValueStringArray = value.map(decimalNumber => ('0' + decimalNumber.toString(16)).slice(-2));
+            parsedValue = hexValueStringArray.join('-').toUpperCase();
+        }
 
         //formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
         return <EditableField {...props}
-                              value={hexValueString}
+                              value={parsedValue}
                               keyPressValidation={this._keyPressValidation}
                               completeValidation={str => this._completeValidation(str)}
                               formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}

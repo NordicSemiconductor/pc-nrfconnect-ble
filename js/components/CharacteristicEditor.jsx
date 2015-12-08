@@ -36,6 +36,20 @@ export default class CharacteristicEditor extends Component {
         this.forceUpdate();
     }
 
+    _parseValueProperty(value) {
+        if (typeof value === 'string') {
+            const valueArray = value.split('-');
+            return valueArray.map(value => parseInt(value, 16));
+        }
+
+        return this.value;
+    }
+
+    _setInitialValue(value) {
+        this.value = value;
+        this.forceUpdate();
+    }
+
     _onUuidChange(e) {
         const _hexRegEx = /^[0-9A-F]*$/i;
         const textarea = e.target;
@@ -83,7 +97,7 @@ export default class CharacteristicEditor extends Component {
             instanceId: this.props.characteristic.instanceId,
             uuid: this.uuid.toUpperCase().trim(),
             name: this.name,
-            value: this.value,
+            value: this._parseValueProperty(this.value),
             properties: changedProperties,
             security: this.security,
             maxLengthActive: this.maxLengthActive,
@@ -128,7 +142,7 @@ export default class CharacteristicEditor extends Component {
             this.instanceId = instanceId;
             this.uuid = uuid;
             this.name = name;
-            this.value = value;
+            this.value = value.toArray();
 
             this.broadcast = broadcast;
             this.read = read;
@@ -163,7 +177,7 @@ export default class CharacteristicEditor extends Component {
                 <div className='form-group'>
                     <label htmlFor='initial-value' className='col-md-3 control-label'>Initial value</label>
                     <div className='col-md-9'>
-                        <HexOnlyEditableField plain={true} className='form-control' name='initial-value' value={this.value.toArray()} onChange={e => this._setValueProperty('value', e)} />
+                        <HexOnlyEditableField plain={true} className='form-control' name='initial-value' value={this.value} onChange={value => this._setInitialValue(value)} />
                     </div>
                 </div>
 

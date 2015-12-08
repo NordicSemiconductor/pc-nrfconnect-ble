@@ -16,7 +16,7 @@ import { List, Record, OrderedMap } from 'immutable';
 
 import * as ServerSetupActions from '../actions/serverSetupActions';
 
-import { getInstanceIds, getImmutableService, getImmutableCharacteristic, getImmutableDescriptor } from '../utils/api';
+import { getInstanceIds, getImmutableService, getImmutableCharacteristic, getImmutableDescriptor, getImmutableProperties } from '../utils/api';
 
 const InitialState = Record({
     selectedComponent: null,
@@ -122,17 +122,12 @@ function addedNewDescriptor(state, parent) {
 function changedAttribute(state, attribute) {
     const instanceIds = getInstanceIds(attribute.instanceId);
     const attributeStatePath = getNodeStatePath(attribute.instanceId);
-    let changedAttribute = null;
 
-    if (instanceIds.descriptor) {
-        changedAttribute = getImmutableDescriptor(attribute);
-    } else if (instanceIds.characteristic) {
-        changedAttribute = getImmutableCharacteristic(attribute);
-    } else if (instanceIds.service) {
-        changedAttribute = getImmutableService(attribute);
+    if (attribute.properties) {
+        attribute.properties = getImmutableProperties(attribute.properties);
     }
 
-    return state.mergeIn(attributeStatePath, changedAttribute);
+    return state.mergeIn(attributeStatePath, attribute);
 }
 
 function removedAttribute(state) {
