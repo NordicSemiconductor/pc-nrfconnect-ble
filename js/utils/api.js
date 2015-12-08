@@ -14,7 +14,6 @@
 
 import { List, Map, Record } from 'immutable';
 import { api } from 'pc-ble-driver-js';
-import { getUuidName } from './uuid_definitions';
 
 const ImmutableAdapterState = Record({
     instanceId: null,
