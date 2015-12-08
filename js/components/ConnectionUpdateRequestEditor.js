@@ -7,6 +7,16 @@ import { Input, Button } from 'react-bootstrap';
 
 import { BLEEventType } from '../actions/common';
 
+const CONN_INTERVAL_MIN = 7.5;
+const CONN_INTERVAL_MAX = 4000;
+const CONN_INTERVAL_STEP = 1.25;
+const CONN_TIMEOUT_MIN = 100;
+const CONN_TIMEOUT_MAX = 32000;
+const CONN_TIMEOUT_STEP = 10;
+const CONN_LATENCY_MIN = 0;
+const CONN_LATENCY_MAX = 499;
+const CONN_LATENCY_STEP = 1;
+
 // This component views an editor for connection update parameters
 // One concept is essential:
 //  If the user sets an connectionInterval we force that value to the SoftDevice
@@ -47,46 +57,30 @@ export class ConnectionUpdateRequestEditor extends Component {
         const address = device.address;
         const requestedConnectionParams = event.requestedConnectionParams;
 
-        if (requestedConnectionParams.minConnectionInterval === requestedConnectionParams.maxConnectionInterval) {
-            return (
-                <div>
-                    <label className='control-label col-sm-6' htmlFor={'interval_' + address}>Connection Interval (ms)</label>
-                    <div className='col-sm-6'>
-                        <Input id={'interval_' + address}
-                               type='number'
-                               onChange={_event => this._handleConnectionIntervalChange(_event)}
-                               className='form-control nordic-form-control'
-                               readOnly
-                               value={this.connectionInterval}/>
-                    </div>
+        return (
+            <div>
+                <label className='control-label col-sm-8'
+                       htmlFor={'interval_' + address}>Connection Interval ({requestedConnectionParams.minConnectionInterval}-{requestedConnectionParams.maxConnectionInterval} ms)</label>
+                <div className='col-sm-4'>
+                    <Input id={'interval_' + address}
+                       type='number'
+                       className='form-control nordic-form-control'
+                       onChange={_event => this._handleConnectionIntervalChange(_event) }
+                       min={CONN_INTERVAL_MIN}
+                       max={CONN_INTERVAL_MAX}
+                       step={CONN_INTERVAL_STEP}
+                       value={this.connectionInterval}/>
                 </div>
-            );
-        } else {
-            return (
-                <div>
-                    <label className='control-label col-sm-8'
-                           htmlFor={'interval_' + address}>Connection Interval ({requestedConnectionParams.minConnectionInterval}-{requestedConnectionParams.maxConnectionInterval} ms)</label>
-                    <div className='col-sm-4'>
-                        <Input id={'interval_' + address}
-                           type='number'
-                           className='form-control nordic-form-control'
-                           onChange={_event => this._handleConnectionIntervalChange(_event) }
-                           min={requestedConnectionParams.minConnectionInterval}
-                           max={requestedConnectionParams.maxConnectionInterval}
-                           step={1.25}
-                           value={this.connectionInterval}/>
-                    </div>
-                </div>
-            );
-        }
+            </div>
+        );
     }
 
     _isSlaveLatencyValid(slaveLatency) {
-        return ((slaveLatency >= 0) && (slaveLatency <= 1000));
+        return ((slaveLatency >= CONN_LATENCY_MIN) && (slaveLatency <= CONN_LATENCY_MAX));
     }
 
     _isConnectionSupervisionTimeoutValid(connectionSupervisionTimeout) {
-        return ((connectionSupervisionTimeout >= 10) && (connectionSupervisionTimeout < 32000));
+        return ((connectionSupervisionTimeout >= CONN_TIMEOUT_MIN) && (connectionSupervisionTimeout < CONN_TIMEOUT_MAX));
     }
 
     _setAndValidateConnectionSupervisionTimeout(value) {
@@ -236,7 +230,9 @@ export class ConnectionUpdateRequestEditor extends Component {
                                    onChange={_event => this._handleSlaveLatencyChange(_event)}
                                    type='number'
                                    value={this.slaveLatency}
-                                   step={1}
+                                   min={CONN_LATENCY_MIN}
+                                   max={CONN_LATENCY_MAX}
+                                   step={CONN_LATENCY_STEP}
                                    />
                         </div>
                     </div>
@@ -249,7 +245,9 @@ export class ConnectionUpdateRequestEditor extends Component {
                                        className='form-control nordic-form-control'
                                        onChange={_event => this._handleConnectionSupervisionTimeoutChange(_event)}
                                        type='number'
-                                       step={10}
+                                       min={CONN_TIMEOUT_MIN}
+                                       max={CONN_TIMEOUT_MAX}
+                                       step={CONN_TIMEOUT_STEP}
                                        value={this.connectionSupervisionTimeout}/>
                             </div>
                         </div>
