@@ -25,6 +25,8 @@ export const HIDE_DIALOG = 'ADVSETUP_HIDE_DIALOG';
 export const ERROR_OCCURED = 'ADVSETUP_ERROR_OCCURED';
 export const SET_ADVDATA = 'ADVSETUP_SET_ADVDATA';
 export const SET_ADVDATA_COMPLETED = 'ADVSETUP_SET_ADVDATA_COMPLETED';
+export const ADVERTISING_STARTED = 'ADVSETUP_ADVERTISING_STARTED';
+export const ADVERTISING_STOPPED = 'ADVSETUP_ADVERTISING_STOPPED';
 
 // Internal functions
 function _setAdvertisingData(advertisingSetup, dispatch, getState) {
@@ -82,6 +84,8 @@ function _startAdvertising(dispatch, getState) {
                 resolve();
             }
         });
+    }).then(() => {
+        dispatch(advertisingStartedAction());
     }).catch(error => {
         dispatch(advertisingErrorAction(error));
     });
@@ -102,6 +106,8 @@ function _stopAdvertising(dispatch, getState) {
                 resolve();
             }
         });
+    }).then(() => {
+        dispatch(advertisingStoppedAction());
     }).catch(error => {
         dispatch(advertisingErrorAction(error));
     });
@@ -159,6 +165,18 @@ function setAdvertisingCompletedAction(status) {
     return {
         type: SET_ADVDATA_COMPLETED,
         status,
+    };
+}
+
+function advertisingStartedAction() {
+    return {
+        type: ADVERTISING_STARTED,
+    };
+}
+
+function advertisingStoppedAction() {
+    return {
+        type: ADVERTISING_STOPPED,
     };
 }
 

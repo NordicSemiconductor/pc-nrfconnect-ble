@@ -115,6 +115,7 @@ function adapterError(state, adapter, error) {
 }
 
 function deviceConnect(state, device) {
+    logger.info('Connecting to device');
     return state;
 }
 
@@ -123,6 +124,8 @@ function deviceConnected(state, device) {
         return state;
     }
 
+    logger.info(`Connected to device ${device.address}`);
+
     const _device = apiHelper.getImmutableDevice(device);
     const { index } = getSelectedAdapter(state);
 
@@ -130,11 +133,17 @@ function deviceConnected(state, device) {
         connectedDevices => connectedDevices.set(_device.instanceId, _device));
 }
 
+function deviceConnectCanceled(state) {
+    logger.info('Connect canceled');
+    return state;
+}
+
 function connectedDeviceUpdated(state, device) {
     if (device.address === undefined) {
         return state;
     }
 
+    logger.info(`Connection updated for device ${device.address}`);
     const { index } = getSelectedAdapter(state);
 
     // TODO: check if received state is of immutable type
@@ -143,11 +152,13 @@ function connectedDeviceUpdated(state, device) {
 }
 
 function deviceDisconnected(state, device) {
+    logger.info(`Disconnected from device ${device.address}`);
     const { index } = getSelectedAdapter(state);
     return state.deleteIn(['adapters', index, 'connectedDevices', device.instanceId]);
 }
 
 function deviceInitiatePairing(state, device) {
+    logger.info(`Pairing initiated`);
     return state;
 }
 
@@ -160,6 +171,8 @@ function deviceSecurityChanged(state, device, parameters) {
 
     const bonded = parameters.bonded;
     const sm1Levels = parameters.sm1Levels;
+
+    logger.info(`Security changed`);
 
     state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'bonded'], bonded);
     state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'securityMode1Levels'], sm1Levels);
@@ -223,6 +236,8 @@ export default function adapter(state = getImmutableRoot(), action) {
             return deviceConnect(state, action.device);
         case AdapterAction.DEVICE_CONNECTED:
             return deviceConnected(state, action.device);
+        case AdapterAction.DEVICE_CONNECT_CANCELED:
+            return deviceConnectCanceled(state);
         case AdapterAction.DEVICE_DISCONNECTED:
             return deviceDisconnected(state, action.device);
         case AdapterAction.DEVICE_INITIATE_PAIRING:

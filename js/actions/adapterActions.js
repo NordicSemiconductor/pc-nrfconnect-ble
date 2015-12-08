@@ -27,7 +27,7 @@ export const DEVICE_CONNECT_TIMEOUT = 'DEVICE_CONNECT_TIMEOUT';
 export const DEVICE_DISCONNECT = 'DEVICE_DISCONNECT';
 export const DEVICE_DISCONNECTED = 'DEVICE_DISCONNECTED';
 export const DEVICE_CANCEL_CONNECT = 'DEVICE_CANCEL_CONNECT';
-export const DEVICE_CANCELLED_CONNECT = 'DEVICE_CANCELLED_CONNECT';
+export const DEVICE_CONNECT_CANCELED = 'DEVICE_CONNECT_CANCELED';
 export const DEVICE_INITIATE_PAIRING = 'DEVICE_INITIATE_PAIRING';
 export const DEVICE_SECURITY_CHANGED = 'DEVICE_SECURITY_CHANGED';
 
@@ -153,15 +153,15 @@ function _openAdapter(dispatch, getState, adapter) {
         });
 
         adapterToUse.on('characteristicValueChanged', characteristic => {
-            dispatch(attributeValueChanged(characteristic));
+            dispatch(attributeValueChangedAction(characteristic));
         });
 
         adapterToUse.on('descriptorValueChanged', descriptor => {
-            dispatch(attributeValueChanged(descriptor));
+            dispatch(attributeValueChangedAction(descriptor));
         });
 
         adapterToUse.on('securityChanged', (device, authParams) => {
-            dispatch(securityChanged(device, authParams));
+            dispatch(securityChangedAction(device, authParams));
         });
 
         adapterToUse.on('logMessage', _onLogMessage);
@@ -461,7 +461,7 @@ function _cancelConnect(dispatch, getState) {
                 resolve();
             });
     }).then(device => {
-        dispatch(deviceCancelledConnectAction());
+        dispatch(deviceConnectCanceledAction());
     }).catch(error => {
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
@@ -502,9 +502,9 @@ function deviceDisconnectedAction(device) {
     };
 }
 
-function deviceCancelledConnectAction() {
+function deviceConnectCanceledAction() {
     return {
-        type: DEVICE_CANCELLED_CONNECT,
+        type: DEVICE_CONNECT_CANCELED,
     };
 }
 
@@ -537,7 +537,7 @@ function pairWithDeviceAction(device) {
     };
 }
 
-function securityChanged(device, parameters) {
+function securityChangedAction(device, parameters) {
     return {
         type: DEVICE_SECURITY_CHANGED,
         device,
@@ -545,7 +545,7 @@ function securityChanged(device, parameters) {
     };
 }
 
-function attributeValueChanged(attribute, value) {
+function attributeValueChangedAction(attribute, value) {
     return {
         type: ATTRIBUTE_VALUE_CHANGED,
         attribute,

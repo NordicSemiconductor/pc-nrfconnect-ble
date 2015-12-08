@@ -4,6 +4,7 @@ import Immutable, { Record, Map, List } from 'immutable';
 import * as DiscoveryAction from '../actions/discoveryActions';
 import * as AdapterAction from '../actions/adapterActions';
 import * as apiHelper from '../utils/api';
+import { logger } from '../logging';
 
 const InitialState = Record({
     devices: Map(),
@@ -11,6 +12,16 @@ const InitialState = Record({
 });
 
 const initialState = new InitialState();
+
+function scanStarted(state) {
+    logger.info('Scan started');
+    return state;
+}
+
+function scanStopped(state) {
+    logger.info('Scan stopped');
+    return state;
+}
 
 function deviceDiscovered(state, device) {
     let newDevice = apiHelper.getImmutableDevice(device);
@@ -66,6 +77,10 @@ export default function discovery(state = initialState, action) {
             return clearList(state);
         case DiscoveryAction.ERROR_OCCURED:
             return addError(state, action.error);
+        case DiscoveryAction.DISCOVERY_SCAN_STARTED:
+            return scanStarted(state);
+        case DiscoveryAction.DISCOVERY_SCAN_STOPPED:
+            return scanStopped(state);
         case AdapterAction.DEVICE_DISCOVERED:
             return deviceDiscovered(state, action.device);
         case AdapterAction.DEVICE_CONNECT:

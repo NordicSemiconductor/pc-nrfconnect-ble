@@ -60,7 +60,7 @@ function _discoverServices(dispatch, getState, device) {
             return;
         }
 
-        dispatch(discoveringAttributes(device));
+        dispatch(discoveringAttributesAction(device));
 
         adapterToUse.getServices(
             device.instanceId,
@@ -73,9 +73,9 @@ function _discoverServices(dispatch, getState, device) {
             }
         );
     }).then(services => {
-        dispatch(discoveredAttributes(device, services));
+        dispatch(discoveredAttributesAction(device, services));
     }).catch(error => {
-        dispatch(discoveredAttributes(device));
+        dispatch(discoveredAttributesAction(device));
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
 }
@@ -89,13 +89,13 @@ function _discoverCharacteristics(dispatch, getState, service) {
             return;
         }
 
-        dispatch(discoveringAttributes(service));
+        dispatch(discoveringAttributesAction(service));
 
         adapterToUse.getCharacteristics(
             service.instanceId,
             (error, characteristics) => {
                 if (error) {
-                    dispatch(discoveredAttributes(service));
+                    dispatch(discoveredAttributesAction(service));
                     reject(makeError({adapter: adapterToUse, service: service, error: error}));
                 }
 
@@ -103,7 +103,7 @@ function _discoverCharacteristics(dispatch, getState, service) {
             }
         );
     }).then(characteristics => {
-        dispatch(discoveredAttributes(service, characteristics));
+        dispatch(discoveredAttributesAction(service, characteristics));
     }).catch(error => {
         console.log(error);
         dispatch(errorOccuredAction(error.adapter, error.error));
@@ -119,13 +119,13 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
             return;
         }
 
-        dispatch(discoveringAttributes(characteristic));
+        dispatch(discoveringAttributesAction(characteristic));
 
         adapterToUse.getDescriptors(
             characteristic.instanceId,
             (error, descriptors) => {
                 if (error) {
-                    dispatch(discoveredAttributes(characteristic));
+                    dispatch(discoveredAttributesAction(characteristic));
                     reject(makeError({adapter: adapterToUse, characteristic: characteristic, error: error}));
                 }
 
@@ -133,7 +133,7 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
             }
         );
     }).then(descriptors => {
-        dispatch(discoveredAttributes(characteristic, descriptors));
+        dispatch(discoveredAttributesAction(characteristic, descriptors));
     }).catch(error => {
         console.log(error);
         dispatch(errorOccuredAction(error.adapter, error.error));
@@ -164,7 +164,7 @@ function _toggleAttributeExpanded(dispatch, getState, attribute) {
         }
     }
 
-    dispatch(toggledAttributeExpanded(attribute));
+    dispatch(toggledAttributeExpandedAction(attribute));
     dispatch(selectComponentAction(attribute));
 }
 
@@ -177,13 +177,13 @@ function _readCharacteristic(dispatch, getState, characteristic) {
             return;
         }
 
-        dispatch(readingAttribute(characteristic));
+        dispatch(readingAttributeAction(characteristic));
 
         adapterToUse.readCharacteristicValue(
             characteristic.instanceId,
             (error, value) => {
                 if (error) {
-                    dispatch(completedReadingAttribute(characteristic, null, error));
+                    dispatch(completedReadingAttributeAction(characteristic, null, error));
                     reject(makeError({adapter: adapterToUse, characteristic: characteristic, error: error}));
                 }
 
@@ -191,7 +191,7 @@ function _readCharacteristic(dispatch, getState, characteristic) {
             }
         );
     }).then(value => {
-        dispatch(completedReadingAttribute(characteristic, value));
+        dispatch(completedReadingAttributeAction(characteristic, value));
     }).catch(error => {
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
@@ -206,7 +206,7 @@ function _writeCharacteristic(dispatch, getState, characteristic, value) {
             return;
         }
 
-        dispatch(writingAttribute(characteristic));
+        dispatch(writingAttributeAction(characteristic));
 
         let ack;
         if (characteristic.properties.write === true) {
@@ -219,14 +219,14 @@ function _writeCharacteristic(dispatch, getState, characteristic, value) {
 
         adapterToUse.writeCharacteristicValue(characteristic.instanceId, value, ack, error => {
             if (error) {
-                dispatch(completedWritingAttribute(characteristic, null, error));
+                dispatch(completedWritingAttributeAction(characteristic, null, error));
                 reject(makeError({adapter: adapterToUse, characteristic: characteristic, error: error}));
             }
 
             resolve();
         });
     }).then(() => {
-        dispatch(completedWritingAttribute(characteristic, value));
+        dispatch(completedWritingAttributeAction(characteristic, value));
     }).catch(error => {
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
@@ -241,13 +241,13 @@ function _readDescriptor(dispatch, getState, descriptor) {
             return;
         }
 
-        dispatch(readingAttribute(descriptor));
+        dispatch(readingAttributeAction(descriptor));
 
         adapterToUse.readDescriptorValue(
             descriptor.instanceId,
             (error, value) => {
                 if (error) {
-                    dispatch(completedReadingAttribute(descriptor, null, error));
+                    dispatch(completedReadingAttributeAction(descriptor, null, error));
                     reject(makeError({adapter: adapterToUse, descriptor: descriptor, error: error}));
                 }
 
@@ -255,7 +255,7 @@ function _readDescriptor(dispatch, getState, descriptor) {
             }
         );
     }).then(value => {
-        dispatch(completedReadingAttribute(descriptor, value));
+        dispatch(completedReadingAttributeAction(descriptor, value));
     }).catch(error => {
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
@@ -270,7 +270,7 @@ function _writeDescriptor(dispatch, getState, descriptor, value) {
             return;
         }
 
-        dispatch(writingAttribute(descriptor));
+        dispatch(writingAttributeAction(descriptor));
 
         adapterToUse.writeDescriptorValue(
             descriptor.instanceId,
@@ -278,7 +278,7 @@ function _writeDescriptor(dispatch, getState, descriptor, value) {
             true, // request ack (write request)
             error => {
                 if (error) {
-                    dispatch(completedWritingAttribute(descriptor, null, error));
+                    dispatch(completedWritingAttributeAction(descriptor, null, error));
                     reject(makeError({adapter: adapterToUse, descriptor: descriptor, error: error}));
                 }
 
@@ -286,20 +286,20 @@ function _writeDescriptor(dispatch, getState, descriptor, value) {
             }
         );
     }).then(() => {
-        dispatch(completedWritingAttribute(descriptor, value));
+        dispatch(completedWritingAttributeAction(descriptor, value));
     }).catch(error => {
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
 }
 
-function discoveringAttributes(parent) {
+function discoveringAttributesAction(parent) {
     return {
         type: DISCOVERING_ATTRIBUTES,
         parent,
     };
 }
 
-function discoveredAttributes(parent, attributes) {
+function discoveredAttributesAction(parent, attributes) {
     return {
         type: DISCOVERED_ATTRIBUTES,
         parent,
@@ -307,28 +307,28 @@ function discoveredAttributes(parent, attributes) {
     };
 }
 
-function toggledAttributeExpanded(attribute) {
+function toggledAttributeExpandedAction(attribute) {
     return {
         type: TOGGLED_ATTRIBUTE_EXPANDED,
         attribute,
     };
 }
 
-function readingAttribute(attribute) {
+function readingAttributeAction(attribute) {
     return {
         type: READING_ATTRIBUTE,
         attribute,
     };
 }
 
-function writingAttribute(attribute) {
+function writingAttributeAction(attribute) {
     return {
         type: WRITING_ATTRIBUTE,
         attribute,
     };
 }
 
-function completedReadingAttribute(attribute, value, error) {
+function completedReadingAttributeAction(attribute, value, error) {
     return {
         type: COMPLETED_READING_ATTRIBUTE,
         attribute,
@@ -337,7 +337,7 @@ function completedReadingAttribute(attribute, value, error) {
     };
 }
 
-function completedWritingAttribute(attribute, value, error) {
+function completedWritingAttributeAction(attribute, value, error) {
     return {
         type: COMPLETED_WRITING_ATTRIBUTE,
         attribute,

@@ -3,6 +3,7 @@
 import { Record, List } from 'immutable';
 
 import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
+import { logger } from '../logging';
 
 const InitialState = Record({
     advDataEntries: List([{ // Default advertising data
@@ -42,6 +43,14 @@ export default function advertisingSetup(state = initialState, action) {
 
         case AdvertisingSetupActions.SET_ADVDATA_COMPLETED:
             return state.update('setAdvdataStatus', setAdvdataStatus => action.status);
+
+        case AdvertisingSetupActions.ADVERTISING_STARTED:
+            logger.info('Advertising started');
+            return state;
+
+        case AdvertisingSetupActions.ADVERTISING_STOPPED:
+            logger.info('Advertising stopped');
+            return state;
 
         default:
             return state;

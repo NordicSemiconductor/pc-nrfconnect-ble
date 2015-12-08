@@ -16,6 +16,8 @@ import { getSelectedAdapter } from './common';
 
 export const DISCOVERY_DEVICE_FOUND = 'DISCOVERY_DEVICE_FOUND';
 export const DISCOVERY_CLEAR_LIST = 'DISCOVERY_CLEAR_LIST';
+export const DISCOVERY_SCAN_STARTED = 'DISCOVERY_SCAN_STARTED';
+export const DISCOVERY_SCAN_STOPPED = 'DISCOVERY_SCAN_STOPPED';
 
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
@@ -42,6 +44,8 @@ function _startScan(dispatch, getState) {
                 resolve();
             }
         });
+    }).then(() => {
+        dispatch(scanStartedAction());
     }).catch(error => {
         dispatch(scanErrorAction(error));
     });
@@ -62,6 +66,8 @@ function _stopScan(dispatch, getState) {
                 resolve();
             }
         });
+    }).then(() => {
+        dispatch(scanStoppedAction());
     }).catch(error => {
         dispatch(scanErrorAction(error));
     });
@@ -78,6 +84,18 @@ function scanErrorAction(error) {
 function clearDevicesListAction() {
     return {
         type: DISCOVERY_CLEAR_LIST,
+    };
+}
+
+function scanStartedAction() {
+    return {
+        type: DISCOVERY_SCAN_STARTED,
+    };
+}
+
+function scanStoppedAction() {
+    return {
+        type: DISCOVERY_SCAN_STOPPED,
     };
 }
 
