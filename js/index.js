@@ -14,7 +14,7 @@
 
 require('babel/register');
 
-var settings = require('./settings.json');
+var settings = require('./js/settings');
 
 if (settings.production) {
     process.env.NODE_ENV = 'production';

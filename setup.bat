@@ -23,8 +23,8 @@ call npm install --production
 
 call lessc ./css/styles.less ./css/styles.css
 
-rename js\settings.json js\settings.json.dev
-rename js\settings.json.prod js\settings.json
+rename js\settings.json settings.json.dev
+rename js\settings.json.prod settings.json
 
 call electron-packager ./ yggdrasil --platform=win32 --arch=%YGGDRASIL_ELECTRON_ARCH% --version=%YGGDRASIL_ELECTRON_VERSION% --overwrite --out=%YGGDRASIL_DEPLOY_DIR% --icon=nordic_logo.ico --app-version=%YGGDRASIL_VERSION% --version-string.CompanyName="Nordic Semiconductor" --version-string.LegalCopyright="Nordic Semiconductor" --version-string.FileDescription="FileDescription" --version-string.OriginalFilename="OriginalFilename" --version-string.FileVersion=%YGGDRASIL_VERSION% --version-string.ProductVersion=%YGGDRASIL_VERSION% --version-string.ProductName="Yggdrasil" --version-string.InternalName="Yggdrasil"
 
@@ -49,5 +49,5 @@ echo "Need to set SIGNTOOL_PATH and SIGNTOOL_PASSWORD environment variables for 
 
 popd
 
-rename js\settings.json js\settings.json.prod
-rename js\settings.json.dev js\settings.json
+rename js\settings.json settings.json.prod
+rename js\settings.json.dev settings.json
