@@ -579,16 +579,32 @@
     margin:20px;
     max-width: 800px;
     box-shadow: @draggable-box-shadow;
-    .service-items-wrap {
+    .server-setup-tree {
+      position: relative;
       max-height: calc(~"100vh - 281px");
-      .flag-line {
-        display: none;
+      .service-items-wrap {
+        max-height: calc(~"100vh - 335px");
+        .flag-line {
+          display: none;
+        }
+        .editable-field {
+          display: none;
+        }
+        .btn-notify {
+          display: none;
+        }
       }
-      .editable-field {
-        display: none;
-      }
-      .btn-notify {
-        display: none;
+      .server-setup-buttons {
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+        padding: 10px;
+        border-top: 1px solid @device-details-light-border-color;
+
+        .btn {
+          float: right;
+          margin-left: 5px;
+        }
       }
     }
     .selected-component-editor-border {

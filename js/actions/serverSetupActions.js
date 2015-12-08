@@ -73,6 +73,19 @@ function removedAttribute() {
     };
 }
 
+function clearedServer() {
+    return {
+        type: CLEARED_SERVER,
+    };
+}
+
+function appliedServer(server) {
+    return {
+        type: APPLIED_SERVER,
+        server: server,
+    };
+}
+
 function showDeleteDialog() {
     return {
         type: SHOW_DELETE_DIALOG,
@@ -97,6 +110,13 @@ function _saveChangedAttribute(dispatch, getState, attribute) {
 function _removeAttribute(dispatch, getState, attribute) {
     //TODO: if attribute is gap or gatt service (check if first in list of services?)
     dispatch(removedAttribute(attribute));
+}
+
+function _applyServer(dispatch, getState) {
+    console.log('apply server');
+    // TODO: Get server generate api services, characteristics and descriptors.
+    // TODO: Call api setServices function
+    // TODO: dispatch appliedServer action to deviceDetail who wants to know how the new local server looks.
 }
 
 export function selectComponent(component) {
@@ -130,6 +150,16 @@ export function saveChangedAttribute(attribute) {
 export function removeAttribute() {
     return (dispatch, getState) => {
         _removeAttribute(dispatch, getState);
+    };
+}
+
+export function newServer() {
+    return clearedServer();
+}
+
+export function applyServer() {
+    return (dispatch, getState) => {
+        _applyServer(dispatch, getState);
     };
 }
 

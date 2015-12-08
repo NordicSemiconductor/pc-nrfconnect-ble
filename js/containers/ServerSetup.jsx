@@ -41,6 +41,10 @@ class ServerSetup extends Component {
         this.props.saveChangedAttribute(changedAttribute);
     }
 
+    _applyServer() {
+        this.props.applyServer();
+    }
+
     render() {
         const {
             serverSetup,
@@ -121,17 +125,23 @@ class ServerSetup extends Component {
         return (
             <div className='server-setup' style={this.props.style}>
                 <div className='server-setup-view'>
-                    <div className='service-items-wrap'>
-                        {services}
-                        <AddNewItem text='New service' id='add-btn-root' bars={1} parentInstanceId={'local.server'} selected={selectedComponent} onClick={addNewService} />
+                    <div className='server-setup-tree'>
+                        <div className='service-items-wrap'>
+                            {services}
+                            <AddNewItem text='New service' id='add-btn-root' bars={1} parentInstanceId={'local.server'} selected={selectedComponent} onClick={addNewService} />
+                        </div>
+                        <div className='server-setup-buttons'>
+                            <button type='button' className='btn btn-primary btn-nordic' onClick={() => this._applyServer()}>Apply</button>
+                            <button type='button' className='btn btn-primary btn-nordic' onClick={() => this._newServer()}>New server</button>
+                        </div>
                     </div>
                     <div className={'item-editor' + editorBorderClass}>
                         {editor}
                     </div>
-                        <ConfirmationDialog show={showDeleteDialog}
-                                            onOk={removeAttribute}
-                                            onCancel={hideDeleteConfirmationDialog}
-                                            text='Do you want to delete?'/>
+                    <ConfirmationDialog show={showDeleteDialog}
+                                        onOk={removeAttribute}
+                                        onCancel={hideDeleteConfirmationDialog}
+                                        text='Do you want to delete?'/>
                 </div>
             </div>
         );
