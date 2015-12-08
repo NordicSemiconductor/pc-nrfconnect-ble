@@ -1,3 +1,5 @@
+pushd %CD%
+
 REM call npm install -g npm
 REM If you screw up your npm veresion (which may happen with 3.X series on Windows)
 REM follow these instructions https://www.npmjs.com/package/npm-windows-upgrade)
@@ -9,7 +11,7 @@ set VCTargetsPath=C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120
 
 set YGGDRASIL_VERSION=0.8.0
 set YGGDRASIL_DEPLOY_DIR=..\deploy
-set YGGDRASIL_ELECTRON_VERSION=0.35.0
+set YGGDRASIL_ELECTRON_VERSION=0.35.4
 set YGGDRASIL_ELECTRON_ARCH=ia32
 
 set npm_config_runtime=electron
@@ -20,6 +22,9 @@ set npm_config_disturl=https://atom.io/download/atom-shell
 call npm install --production
 
 call lessc ./css/styles.less ./css/styles.css
+
+rename js\settings.json js\settings.json.dev
+rename js\settings.json.prod js\settings.json
 
 call electron-packager ./ yggdrasil --platform=win32 --arch=%YGGDRASIL_ELECTRON_ARCH% --version=%YGGDRASIL_ELECTRON_VERSION% --overwrite --out=%YGGDRASIL_DEPLOY_DIR% --icon=nordic_logo.ico --app-version=%YGGDRASIL_VERSION% --version-string.CompanyName="Nordic Semiconductor" --version-string.LegalCopyright="Nordic Semiconductor" --version-string.FileDescription="FileDescription" --version-string.OriginalFilename="OriginalFilename" --version-string.FileVersion=%YGGDRASIL_VERSION% --version-string.ProductVersion=%YGGDRASIL_VERSION% --version-string.ProductName="Yggdrasil" --version-string.InternalName="Yggdrasil"
 
@@ -41,3 +46,8 @@ rename yggdrasil_installer.exe yggdrasil_v%YGGDRASIL_VERSION%_installer.exe
 
 echo "Need to set SIGNTOOL_PATH and SIGNTOOL_PASSWORD environment variables for the next command to work"
 %SIGNTOOL_PATH%\signtool.exe sign /v /ac %SIGNTOOL_PATH%\MSCV-VSClass3.cer /f %SIGNTOOL_PATH%\nordic_code_signing_certificate.pfx /p %SIGNTOOL_PASSWORD% /n "Nordic Semiconductor ASA" /t http://timestamp.verisign.com/scripts/timstamp.dll /d "Yggdrasil installer - %YGGDRASIL_VERSION%" yggdrasil_v%YGGDRASIL_VERSION%_installer.exe
+
+popd
+
+rename js\settings.json js\settings.json.prod
+rename js\settings.json.dev js\settings.json

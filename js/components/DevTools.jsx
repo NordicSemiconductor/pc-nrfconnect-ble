@@ -1,13 +1,7 @@
 'use strict';
 
-import React from 'react';
-import { createDevTools } from 'redux-devtools';
-import LogMonitor from 'redux-devtools-log-monitor';
-import DockMonitor from 'redux-devtools-dock-monitor';
-
-export default createDevTools(
-  <DockMonitor toggleVisibilityKey='H'
-               changePositionKey='W'>
-    <LogMonitor />
-  </DockMonitor>
-);
+if (process.env.NODE_ENV === 'production') {
+    module.exports = require('./DevTools.prod');
+} else {
+    module.exports = require('./DevTools.dev');
+}

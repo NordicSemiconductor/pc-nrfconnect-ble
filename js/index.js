@@ -14,8 +14,13 @@
 
 require('babel/register');
 
-//process.env.NODE_ENV = 'production';
-process.env.NODE_ENV = 'development';
+var settings = require('./settings.json');
+
+if (settings.production) {
+    process.env.NODE_ENV = 'production';
+} else {
+    process.env.NODE_ENV = 'development';
+}
 
 var ReactDOM = require('react-dom');
 var React = require('react');
