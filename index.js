@@ -22,12 +22,13 @@ crashReporter.start();
 
 var mainWindow = null;
 
+global.keymap = app.getPath('userData') + '/keymap.cson';
 global.logFileDir = app.getPath('userData');
 
+console.log(global.keymap);
+
 app.on('window-all-closed', function() {
-    //    if (process.platform !== 'darwin') {
     app.quit();
-    //    }
 });
 
 app.on('ready', function() {

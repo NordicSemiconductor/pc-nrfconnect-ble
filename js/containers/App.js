@@ -34,6 +34,8 @@ import { findAdapters } from '../actions/adapterActions';
 import KeymapManager from 'atom-keymap';
 
 const keymaps = new KeymapManager();
+import remote from 'remote';
+import fs from 'fs';
 
 class AppContainer extends Component {
     constructor(props) {
@@ -50,20 +52,26 @@ class AppContainer extends Component {
           keymaps.handleKeyboardEvent(event);
         });
 
-        keymaps.add('core', {
-            'body': {
-                'alt-1': 'core:connection-map',
-                'alt-2': 'core:device-details',
-                'alt-3': 'core:server-setup',
-                'alt-c': 'core:clear-scan',
-                'alt-s': 'core:toggle-scan',
-                'alt-p': 'core:select-adapter',
-                'down' : 'core:move-down',
-                'up'   : 'core:move-up',
-                'left' : 'core:move-left',
-                'right': 'core:move-right',
-            }
-        });
+        const keymapFile = remote.getGlobal('keymap');
+
+        if (fs.existsSync(keymapFile)) {
+            keymaps.loadKeymap(keymapFile);
+        } else {
+            keymaps.add('core', {
+                'body': {
+                    'alt-1': 'core:connection-map',
+                    'alt-2': 'core:device-details',
+                    'alt-3': 'core:server-setup',
+                    'alt-c': 'core:clear-scan',
+                    'alt-s': 'core:toggle-scan',
+                    'alt-p': 'core:select-adapter',
+                    'down' : 'core:move-down',
+                    'up'   : 'core:move-up',
+                    'left' : 'core:move-left',
+                    'right': 'core:move-right',
+                }
+            });
+        }
     }
 
     componentWillMount() {
