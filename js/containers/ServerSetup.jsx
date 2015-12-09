@@ -17,6 +17,7 @@ import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import * as ServerSetupActions from '../actions/serverSetupActions';
 import * as AdapterActions from '../actions/adapterActions';
@@ -26,8 +27,8 @@ import ServiceItem from '../components/ServiceItem';
 import ServiceEditor from '../components/ServiceEditor';
 import CharacteristicEditor from '../components/CharacteristicEditor';
 import DescriptorEditor from '../components/DescriptorEditor';
-
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import CentralDevice from '../components/CentralDevice';
 
 import { getInstanceIds } from '../utils/api';
 
@@ -47,6 +48,7 @@ class ServerSetup extends Component {
 
     render() {
         const {
+            selectedAdapter,
             serverSetup,
             selectComponent,
             toggleAttributeExpanded,
@@ -122,10 +124,18 @@ class ServerSetup extends Component {
             );
         });
 
+        central = <CentralDevice id={selectedAdapter.instanceId + '_serversetup'}
+            name={selectedAdapter.state.name}
+            address={selectedAdapter.state.address}
+            advertising={selectedAdapter.state.advertising}
+            onShowSetupDialog={() => {}}
+            onToggleAdvertising={() => {}} />;
+
         return (
             <div className='server-setup' style={this.props.style}>
                 <div className='server-setup-view'>
                     <div className='server-setup-tree'>
+                        {central}
                         <div className='service-items-wrap'>
                             {services}
                             <AddNewItem text='New service' id='add-btn-root' bars={1} parentInstanceId={'local.server'} selected={selectedComponent} onClick={addNewService} />
@@ -156,6 +166,7 @@ function mapStateToProps(state) {
     }
 
     return {
+        selectedAdapter: selectedAdapter,
         serverSetup: selectedAdapter.serverSetup,
     };
 }
