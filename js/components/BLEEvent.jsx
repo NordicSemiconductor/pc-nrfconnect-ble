@@ -135,9 +135,6 @@ export class BLEEvent extends Component {
                 </div>
                 <div className='content-wrap'>
                     {this._getEventContent()}
-                    <div>
-                        State: {event.state}
-                    </div>
                 </div>
             </div>
         );

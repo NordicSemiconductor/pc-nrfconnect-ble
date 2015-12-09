@@ -97,8 +97,8 @@ class AdvertisingSetup extends Component {
                         <div className="adv-row">
                             <div className="adv-col adv-pkt">
                                 <Button
-                                    className="btn-add btn-primary btn-nordic"
-                                    onClick={() => this.addToAdvData()}>Add to advertising data</Button>
+                                    className="btn-add btn-primary btn-nordic icon-plus"
+                                    onClick={() => this.addToAdvData()}>{' Add to advertising data'}</Button>
                                 <AdvertisingList
                                     title="Advertising data"
                                     onDelete={deleteAdvData}
@@ -106,8 +106,8 @@ class AdvertisingSetup extends Component {
                             </div>
                             <div className="adv-col scan-rsp-pkt">
                                 <Button
-                                    className="btn-add btn-primary btn-nordic"
-                                    onClick={() => this.addToScanResponse()}>Add to scan response</Button>
+                                    className="btn-add btn-primary btn-nordic icon-plus"
+                                    onClick={() => this.addToScanResponse()}>{' Add to scan response'}</Button>
                                 <AdvertisingList
                                     title="Scan response data"
                                     onDelete={deleteScanRsp}

@@ -27,7 +27,7 @@ export default class AdvertisingList extends Component {
                         <tr>
                             <th>AD type</th>
                             <th>Value</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>

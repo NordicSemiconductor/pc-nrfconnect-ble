@@ -57,11 +57,15 @@ export class ConnectionUpdateRequestEditor extends Component {
         const address = device.address;
         const requestedConnectionParams = event.requestedConnectionParams;
 
+        const range = event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE
+            ? undefined
+            : <div>({requestedConnectionParams.minConnectionInterval}-{requestedConnectionParams.maxConnectionInterval})</div>;
+
         return (
             <div>
-                <label className='control-label col-sm-8'
-                       htmlFor={'interval_' + address}>Connection Interval ({requestedConnectionParams.minConnectionInterval}-{requestedConnectionParams.maxConnectionInterval} ms)</label>
-                <div className='col-sm-4'>
+                <label className='control-label col-sm-6'
+                       htmlFor={'interval_' + address}>Connection Interval (ms) {range}</label>
+                <div className='col-sm-6'>
                     <Input id={'interval_' + address}
                        type='number'
                        className='form-control nordic-form-control'
