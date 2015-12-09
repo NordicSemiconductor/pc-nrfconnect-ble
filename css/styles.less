@@ -273,7 +273,7 @@
     box-shadow: @draggable-box-shadow;
 }
 
-.device-details-view .device.standalone, .server-setup-view {
+.device-details-view .device.standalone, .server-setup-view, .bleevent-dialog-view {
     border-bottom: 1px solid @device-details-light-border-color;
 
     .flag-line {
@@ -573,8 +573,8 @@
   font-size: 12px;
 }
 
-.server-setup {
-  .server-setup-view {
+.server-setup, .bleevent-dialog {
+  .server-setup-view, .bleevent-dialog-view {
     display: flex;
     margin:20px;
     max-width: 800px;
@@ -625,7 +625,7 @@
   }
 }
 
-.device-details-view, .server-setup-view {
+.device-details-view, .server-setup-view, .bleevent-dialog-view {
   background-color: white;
   margin: 80px 0px 0px 20px;
   .service-items-wrap {
@@ -862,7 +862,7 @@ hr {
   .modal-footer {
     border-top: none;
   }
-  .device-details-view, .server-setup-view {
+  .device-details-view, .server-setup-view, .bleevent-dialog-view {
     margin-left: 4px;
     margin-right: 4px;
     margin-bottom: 0px;

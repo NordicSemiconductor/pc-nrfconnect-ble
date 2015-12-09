@@ -84,8 +84,8 @@ export class BLEEventDialog extends Component {
                     <Modal.Title>Events</Modal.Title>
                 </Modal.Header>
 
-                <div className='server-setup'>
-                    <div className='device-details-view'>
+                <div className='bleevent-dialog'>
+                    <div className='bleevent-dialog-view'>
                         <div className='service-items-wrap'>
                             {
                                 events.map(event =>
