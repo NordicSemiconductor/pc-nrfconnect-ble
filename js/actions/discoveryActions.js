@@ -27,7 +27,7 @@ function _startScan(dispatch, getState) {
         const scanParameters = {
             active: true,
             interval: 100,
-            window: 50,
+            window: 20,
             timeout: 60,
         };
 

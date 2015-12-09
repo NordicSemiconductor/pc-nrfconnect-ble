@@ -44,7 +44,7 @@ export class ConnectionUpdateRequestEditor extends Component {
         if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) {
             return `Connection Parameters for device at ${address}`;
         } else {
-            return `The device at ${address} has requested a connection parameter update. (ID#${event.id})`;
+            return `Device ${address} has requested a connection parameter update`;
         }
     }
 

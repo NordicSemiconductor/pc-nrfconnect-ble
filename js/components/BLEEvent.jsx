@@ -20,12 +20,12 @@ export class BLEEvent extends Component {
         switch (eventType) {
             case BLEEventType.USER_INITIATED_CONNECTION_UPDATE:
                 return {
-                    name: 'Update request',
+                    name: 'Connection update',
                     icon: (<span className='icon-link'><span className='icon-down'/></span>),
                 };
             case BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE:
                 return {
-                    name: 'Update request',
+                    name: 'Connection update request',
                     icon: (<span className='icon-link'><span className='icon-up'/></span>),
                 };
             default:
@@ -49,7 +49,6 @@ export class BLEEvent extends Component {
 
         return (
            <div className='content'>
-               <span>{icon}</span>
                <span className='left-space'>
                    <div className='service-name truncate-text'>{name}</div>
                    <div className='address-text'>{event.device.address}</div>
