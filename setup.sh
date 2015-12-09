@@ -5,7 +5,7 @@ sudo npm install -g less
 export YGGDRASIL_VERSION=0.8.0
 export YGGDRASIL_DEPLOY_DIR=../yggdrasil-deploy
 export YGGDRASIL_ELECTRON_VERSION=0.35.4
-export YGGDRASIL_ELECTRON_ARCH=ia32
+export YGGDRASIL_ELECTRON_ARCH=x64
 
 export npm_config_runtime=electron
 export npm_config_target=$YGGDRASIL_ELECTRON_VERSION
