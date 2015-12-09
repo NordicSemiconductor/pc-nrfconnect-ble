@@ -21,7 +21,7 @@ import { connect } from 'react-redux';
 import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
 import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
 import * as AdapterActions from '../actions/adapterActions';
-import * as BLEEventActions from '../actions/BLEEventActions';
+import * as BLEEventActions from '../actions/bleEventActions';
 
 import DeviceDetailsView from '../components/deviceDetails';
 
