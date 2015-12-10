@@ -40,10 +40,6 @@ class ServerSetup extends Component {
         this.props.saveChangedAttribute(changedAttribute);
     }
 
-    _applyServer() {
-        this.props.applyServer();
-    }
-
     render() {
         const {
             selectedAdapter,
@@ -54,6 +50,8 @@ class ServerSetup extends Component {
             addNewCharacteristic,
             addNewDescriptor,
             removeAttribute,
+            applyServer,
+            clearServer,
             showDeleteConfirmationDialog,
             hideDeleteConfirmationDialog,
         } = this.props;
@@ -138,8 +136,8 @@ class ServerSetup extends Component {
                             <AddNewItem text='New service' id='add-btn-root' bars={1} parentInstanceId={'local.server'} selected={selectedComponent} onClick={addNewService} />
                         </div>
                         <div className='server-setup-buttons'>
-                            <button type='button' className='btn btn-primary btn-nordic' onClick={() => this._applyServer()}>Apply</button>
-                            <button type='button' className='btn btn-primary btn-nordic' onClick={() => this._newServer()}>New server</button>
+                            <button type='button' className='btn btn-primary btn-nordic' onClick={applyServer}>Apply</button>
+                            <button type='button' className='btn btn-primary btn-nordic' onClick={clearServer}>Clear</button>
                         </div>
                     </div>
                     <div className={'item-editor' + editorBorderClass}>

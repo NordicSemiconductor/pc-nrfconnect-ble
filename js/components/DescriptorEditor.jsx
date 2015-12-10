@@ -85,7 +85,9 @@ export default class DescriptorEditor extends Component {
             uuid: this.uuid.toUpperCase().trim(),
             name: this.name,
             value: this._parseValueProperty(this.value),
-            maxLengthActive: this.maxLengthActive,
+            readPerm: this.readPerm,
+            writePerm: this.writePerm,
+            fixedLength: this.fixedLength,
             maxLength: parseInt(this.maxLength),
         };
 
@@ -104,7 +106,9 @@ export default class DescriptorEditor extends Component {
             uuid,
             name,
             value,
-            maxLengthActive,
+            readPerm,
+            writePerm,
+            fixedLength,
             maxLength,
         } = descriptor;
 
@@ -115,7 +119,9 @@ export default class DescriptorEditor extends Component {
             this.name = name;
             this.value = value.toArray();
 
-            this.maxLengthActive = maxLengthActive;
+            this.readPerm = readPerm;
+            this.writePerm = writePerm;
+            this.fixedLength = fixedLength;
             this.maxLength = maxLength;
         }
 
@@ -142,13 +148,41 @@ export default class DescriptorEditor extends Component {
                 </div>
 
                 <div className='form-group'>
+                    <label className='col-md-3 control-label'>Read permission</label>
+                    <div className='col-md-9'>
+                        <select className='form-control' value={this.readPerm} onChange={e => this._setValueProperty('readPerm', e)}>
+                            <option value='open'>No security required</option>
+                            <option value='encrypt'>Encryption required, no MITM</option>
+                            <option value='encrypt mitm-protection'>Encryption and MITM required</option>
+                            <option value='signed'>Signing or encryption required, no MITM</option>
+                            <option value='signed mitm-protection'>Signing or encryption with MITM required</option>
+                            <option value='no_access'>No access rights specified (undefined)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div className='form-group'>
+                    <label className='col-md-3 control-label'>Write permission</label>
+                    <div className='col-md-9'>
+                        <select className='form-control' value={this.writePerm} onChange={e => this._setValueProperty('writePerm', e)}>
+                            <option value='open'>No security required</option>
+                            <option value='encrypt'>Encryption required, no MITM</option>
+                            <option value='encrypt mitm-protection'>Encryption and MITM required</option>
+                            <option value='signed'>Signing or encryption required, no MITM</option>
+                            <option value='signed mitm-protection'>Signing or encryption with MITM required</option>
+                            <option value='no_access'>No access rights specified (undefined)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div className='form-group'>
                     <label className='col-md-3 control-label'>Max length</label>
                     <div className='col-md-9'>
-                        <div className='checkbox'><label><input type='checkbox' ref='maxLengthActive' checked={this.maxLengthActive} onChange={e => this._setCheckedProperty('maxLengthActive', e)} />Activate</label></div>
+                        <div className='checkbox'><label><input type='checkbox' ref='fixedLength' checked={this.fixedLength} onChange={e => this._setCheckedProperty('fixedLength', e)} />Fixed length</label></div>
                     </div>
 
                     <div className='col-md-offset-3 col-md-9'>
-                        <input type='number' min='0' max='510' disabled={!this.maxLengthActive} className='form-control' name='max-length' ref='maxLength' value={this.maxLengthActive ? this.maxLength : ''} onChange={e => this._setValueProperty('maxLength', e)} />
+                        <input type='number' min='0' max={this.fixedLength ? '510' : '512'} className='form-control' name='max-length' ref='maxLength' value={this.maxLength} onChange={e => this._setValueProperty('maxLength', e)} />
                     </div>
                 </div>
 

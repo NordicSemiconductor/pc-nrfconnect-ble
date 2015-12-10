@@ -29,16 +29,48 @@ let serviceInstanceIdCounter = 0;
 let characteristicInstanceIdCounter = 0;
 let descriptorInstanceIdCounter = 0;
 
+function getInitialGapServiceCharacteristics(gapInstanceId) {
+    const deviceNameCharacteristic = getImmutableCharacteristic({
+        instanceId: gapInstanceId + '.' + characteristicInstanceIdCounter++,
+        name: 'Device Name',
+        uuid: '2A00',
+        value: [0x6E, 0x52, 0x46, 0x35, 0x31, 0x38, 0x32, 0x32],
+        properties: {read: true, write: true},
+        readPerm: 'open',
+        writePerm: 'open',
+        children: OrderedMap(),
+    });
+
+    const appearanceCharacteristic = getImmutableCharacteristic({
+        instanceId: gapInstanceId + '.' + characteristicInstanceIdCounter++,
+        name: 'Appearance',
+        uuid: '2A01',
+        value: [0x00, 0x00],
+        properties: {read: true},
+        readPerm: 'open',
+        writePerm: 'open',
+        children: OrderedMap(),
+    });
+
+    characteristics = {};
+    characteristics[deviceNameCharacteristic.instanceId] = deviceNameCharacteristic;
+    characteristics[appearanceCharacteristic.instanceId] = appearanceCharacteristic;
+
+    return OrderedMap(characteristics);
+}
+
 function getInitialServices() {
     serviceInstanceIdCounter = 0;
     characteristicInstanceIdCounter = 0;
     descriptorInstanceIdCounter = 0;
 
+    const gapInstanceId = deviceInstanceId + '.' + serviceInstanceIdCounter++;
+
     const gapService = getImmutableService({
-        instanceId: deviceInstanceId + '.' + serviceInstanceIdCounter++,
+        instanceId: gapInstanceId,
         name: 'Generic Access',
         uuid: '1800',
-        children: OrderedMap(),
+        children: getInitialGapServiceCharacteristics(gapInstanceId),
     });
     const gattService = getImmutableService({
         instanceId: deviceInstanceId + '.' + serviceInstanceIdCounter++,
@@ -100,7 +132,10 @@ function addedNewCharacteristic(state, parent) {
     const newCharacteristic = getImmutableCharacteristic({
         instanceId: parent.instanceId + '.' + characteristicInstanceIdCounter++,
         name: 'New Characteristic',
-        security: 'open',
+        readPerm: 'open',
+        writePerm: 'open',
+        fixedLength: false,
+        maxLength: 20,
         children: OrderedMap(),
     });
     const newCharacteristicStatePath = getNodeStatePath(newCharacteristic.instanceId);
@@ -112,6 +147,10 @@ function addedNewDescriptor(state, parent) {
     const newDescriptor = getImmutableDescriptor({
         instanceId: parent.instanceId + '.' + descriptorInstanceIdCounter++,
         name: 'New Descriptor',
+        readPerm: 'open',
+        writePerm: 'open',
+        fixedLength: false,
+        maxLength: 20,
         children: OrderedMap(),
     });
     const newDescriptorStatePath = getNodeStatePath(newDescriptor.instanceId);
@@ -152,6 +191,8 @@ export default function deviceDetails(state = initialState, action) {
             return changedAttribute(state, action.attribute);
         case ServerSetupActions.REMOVED_ATTRIBUTE:
             return removedAttribute(state, action.attribute);
+        case ServerSetupActions.CLEARED_SERVER:
+            return initialState;
         case ServerSetupActions.SHOW_DELETE_DIALOG:
             return state.set('showDeleteDialog', true);
         case ServerSetupActions.HIDE_DELETE_DIALOG:
