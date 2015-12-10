@@ -19,10 +19,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as AppActions from '../actions/appActions';
+import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
 import DeviceDetailsContainer from './DeviceDetails';
 import ServerSetup from './ServerSetup';
 
-import NavBar from '../components/navbar.jsx';
+import NavBar from '../components/navbar';
 import BLEEventDialog from '../containers/BLEEventDialog';
 
 import LogViewer from './LogViewer';
@@ -36,6 +37,8 @@ import KeymapManager from 'atom-keymap';
 const keymaps = new KeymapManager();
 import remote from 'remote';
 import fs from 'fs';
+
+let toggleAdvertisingHandle;
 
 class AppContainer extends Component {
     constructor(props) {
@@ -62,9 +65,10 @@ class AppContainer extends Component {
                     'alt-1': 'core:connection-map',
                     'alt-2': 'core:device-details',
                     'alt-3': 'core:server-setup',
+                    'alt-a': 'core:toggle-advertising',
                     'alt-c': 'core:clear-scan',
-                    'alt-s': 'core:toggle-scan',
                     'alt-p': 'core:select-adapter',
+                    'alt-s': 'core:toggle-scan',
                     'down' : 'core:move-down',
                     'up'   : 'core:move-up',
                     'left' : 'core:move-left',
@@ -72,7 +76,30 @@ class AppContainer extends Component {
                 }
             });
         }
+
+        this._registerKeyboardShortcuts();
     }
+
+    _registerKeyboardShortcuts() {
+        // Setup keyboard shortcut callbacks
+        //
+        // Since we move between the different "tabs" we have to
+        // remove the listeners and add them again so that the correct instance
+        // of this class is associated with the callback registered on window.
+
+        this.toggleAdvertising = () => {
+            const { toggleAdvertising } = this.props;
+            toggleAdvertising();
+        };
+
+        if (toggleAdvertisingHandle) {
+            window.removeEventListener('core:toggle-advertising', toggleAdvertisingHandle);
+        }
+
+        window.addEventListener('core:toggle-advertising', this.toggleAdvertising);
+        toggleAdvertisingHandle = this.toggleAdvertising;
+    }
+
 
     componentWillMount() {
         (function() {
@@ -159,7 +186,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     let retval = Object.assign(
             {},
-            bindActionCreators(AppActions, dispatch)
+            bindActionCreators(AppActions, dispatch),
+            bindActionCreators(AdvertisingSetupActions, dispatch)
     );
 
     return retval;
