@@ -18,8 +18,8 @@ import sqlite3 from'sqlite3';
 import fs from 'fs';
 import remote from 'remote';
 
-var defaultLogFile = 'log.txt';
-var defaultDbFile = 'logger.db';
+let defaultLogFile = 'log.txt';
+let defaultDbFile = 'logger.db';
 
 // Need to retrieve logFileDir from index.js since we do not have access to app.getPath in this file
 defaultLogFile = remote.getGlobal('logFileDir') + '/' + defaultLogFile;
@@ -27,7 +27,7 @@ defaultDbFile = remote.getGlobal('logFileDir') + '/' + defaultDbFile;
 
 let id = 0; // ID is used as primary key in database
 
-var convertLevel = function(level) {
+const convertLevel = function(level) {
     /**
     * @brief Adds log entries to database and datastore
     * @details Adds log entries to database and datastore
@@ -63,12 +63,13 @@ var convertLevel = function(level) {
     }
 };
 
-var DbLogger = winston.transports.DbLogger = function(options) {
+const DbLogger = winston.transports.DbLogger = function(options) {
     this.name = 'db';
     this.level = options.level || 'info';
     this.filename = options.filename || defaultDbFile;
     this.db = null;
     this.dbReady = false;
+    this._queue = [];
 
     try {
         fs.unlinkSync(this.filename);
@@ -85,8 +86,19 @@ var DbLogger = winston.transports.DbLogger = function(options) {
         this.db.run('CREATE INDEX IF NOT EXISTS log_entries_id on log_entries(id)');
         this.db.run('CREATE INDEX IF NOT EXISTS log_entries_level on log_entries(level)', () => {
             this.dbReady = true;
+            processQueue();
         });
     });
+
+    const self = this;
+
+    function processQueue() {
+        self._queue.forEach(operation => {
+            self[operation.method].apply(self, operation.args);
+        });
+
+        delete self._queue;
+    }
 };
 
 util.inherits(DbLogger, winston.Transport);
@@ -97,9 +109,14 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
     }
 
     if (!this.dbReady) {
-        // Log to console.log because we may not have a valid logger if we get here.
-        console.log('Database is not ready yet. Entry will not be stored.');
-        return callback(null, true);
+        console.log('Database is not ready yet. Storing entries in queue for later storage in DB.');
+
+        this._queue.push({
+            method: 'log',
+            args: arguments
+        });
+
+        return;
     }
 
     let timestamp = new Date();
@@ -115,7 +132,7 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
 
     // TODO: We have to figure out if this is an array of events from the ble driver.
     // TODO: Postpone this to later.
-    var stmt = this.db.prepare('INSERT INTO log_entries(id, time, level, message, meta) VALUES(?,?,?,?,?)');
+    const stmt = this.db.prepare('INSERT INTO log_entries(id, time, level, message, meta) VALUES(?,?,?,?,?)');
 
     stmt.run(
         id,
@@ -143,7 +160,7 @@ DbLogger.prototype.query = function(options, callback) {
         return;
     }
 
-    var opt = {
+    const opt = {
         start: options.start,
         limit: options.rows,
         sort: {id: options.order === 'desc' ? 'DESC' : 'ASC'},
@@ -170,7 +187,7 @@ DbLogger.prototype.query = function(options, callback) {
     );
 };
 
-var createLine = function(options) {
+const createLine = function(options) {
     let timestamp = options.timestamp();
 
     if (options.meta !== undefined && options.meta.timestamp !== undefined) {
