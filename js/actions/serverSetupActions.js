@@ -27,7 +27,11 @@ export const APPLIED_SERVER = 'SERVER_SETUP_APPLIED_SERVER';
 export const SHOW_DELETE_DIALOG = 'SERVER_SETUP_SHOW_DELETE_DIALOG';
 export const HIDE_DELETE_DIALOG = 'SERVER_SETUP_HIDE_DELETE_DIALOG';
 
+export const SAVE_ERROR = 'SERVER_SETUP_SAVE_ERROR';
+export const LOAD_ERROR = 'SERVER_SETUP_LOAD_ERROR';
+
 import { getInstanceIds } from '../utils/api';
+import { writeFile } from 'fs';
 
 import { driver, api } from 'pc-ble-driver-js';
 
@@ -100,6 +104,20 @@ function showDeleteDialog() {
 function hideDeleteDialog() {
     return {
         type: HIDE_DELETE_DIALOG,
+    };
+}
+
+function saveErrorAction(error) {
+    return {
+        type: SAVE_ERROR,
+        error
+    };
+}
+
+function loadErrorAction(error) {
+    return {
+        type: LOAD_ERROR,
+        error
     };
 }
 
@@ -254,6 +272,22 @@ function _applyServer(dispatch, getState) {
     // TODO: dispatch appliedServer action to deviceDetail who wants to know how the new local server looks.
 }
 
+function _saveServerSetup(dispatch, getState, adapter, filename) {
+    if (filename) {
+        writeFile(filename, JSON.stringify(adapter.serverSetup), error => {
+            if(error) {
+                // TODO: implement functionality in reducer for this error
+                dispatch(saveErrorAction(error));
+            }
+        });
+    }
+}
+
+function _loadServerSetup(dispatch, getState, selectedAdapter, filename) {
+    // TODO: implement loading of server setup
+    throw new Error('Not implemented!');
+}
+
 export function selectComponent(component) {
     return selectComponentAction(component);
 }
@@ -308,4 +342,16 @@ export function showDeleteConfirmationDialog() {
 
 export function hideDeleteConfirmationDialog() {
     return hideDeleteDialog();
+}
+
+export function saveServerSetup(adapter, filename) {
+    return (dispatch, getState) => {
+        _saveServerSetup(dispatch, getState, adapter, filename);
+    };
+}
+
+export function loadServerSetup(adapter, filename) {
+    return (dispatch, getState) => {
+        _loadServerSetup(dispatch, getState, adapter, filename);
+    };
 }

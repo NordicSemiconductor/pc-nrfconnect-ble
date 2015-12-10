@@ -28,21 +28,26 @@ export default class CentralDevice extends Component {
     _onSelect(event, eventKey) {
         const {
             onToggleAdvertising,
-            onAdvertisingSetup,
+            onShowSetupDialog,
+            onSaveSetup,
+            onLoadSetup,
         } = this.props;
 
         switch (eventKey) {
             case 'ToggleAdvertising':
-                console.log('Toggle advertising');
-                this.props.onToggleAdvertising();
+                onToggleAdvertising();
                 break;
             case 'AdvertisingSetup':
-                console.log('AdvertisingSetup');
-                this.props.onShowSetupDialog();
+                onShowSetupDialog();
+                break;
+            case 'SaveSetup':
+                onSaveSetup();
+                break;
+            case 'LoadSetup':
+                onLoadSetup();
                 break;
             default:
                 console.log('Unknown eventKey received: ' + eventKey);
-
         }
     }
 
@@ -53,6 +58,8 @@ export default class CentralDevice extends Component {
             address,
             advertising,
             onToggleAdvertising,
+            onSaveSetup,
+            onLoadSetup,
         } = this.props;
 
         const style = {
@@ -79,8 +86,27 @@ export default class CentralDevice extends Component {
                                 <span className='icon-cog' aria-hidden='true' />
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <MenuItem eventKey='ToggleAdvertising'>{advMenuText}</MenuItem>
-                                <MenuItem eventKey='AdvertisingSetup'>Advertising setup...</MenuItem>
+                                {(() => {
+                                    const items = [];
+
+                                    if (onToggleAdvertising !== undefined) {
+                                        items.push(<MenuItem key="advertising" eventKey='ToggleAdvertising'>{advMenuText}</MenuItem>);
+                                    }
+
+                                    if (advertising !== undefined) {
+                                        items.push(<MenuItem key="setup" eventKey='AdvertisingSetup'>Advertising setup...</MenuItem>);
+                                    }
+
+                                    if (onSaveSetup !== undefined) {
+                                        items.push(<MenuItem key="save" eventKey='SaveSetup'>Save setup...</MenuItem>);
+                                    }
+
+                                    if (onLoadSetup !== undefined) {
+                                        items.push(<MenuItem key="load" eventKey='LoadSetup'>Load setup...</MenuItem>);
+                                    }
+
+                                    return items;
+                                })()}
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
@@ -101,7 +127,9 @@ CentralDevice.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
-    advertising: PropTypes.bool.isRequired,
-    onToggleAdvertising: PropTypes.func.isRequired,
-    onShowSetupDialog: PropTypes.func.isRequired,
+    advertising: PropTypes.bool,
+    onToggleAdvertising: PropTypes.func,
+    onShowSetupDialog: PropTypes.func,
+    onSaveSetup: PropTypes.func,
+    onLoadSetup: PropTypes.func,
 };

@@ -14,18 +14,23 @@
 
 var app = require('app');
 var BrowserWindow = require('browser-window');
-var crashReporter = require('crash-reporter');
 var Menu = require('menu');
-var MenuItem = require('menu-item');
-var open = require('open');
-crashReporter.start();
 
 var mainWindow = null;
 
 global.keymap = app.getPath('userData') + '/keymap.cson';
 global.logFileDir = app.getPath('userData');
 
-console.log(global.keymap);
+const dialog = require('electron').dialog;
+var ipcMain = require('ipc-main');
+
+ipcMain.on('save-server-setup', function(event, arg) {
+    event.sender.send('save-server-setup-reply', dialog.showSaveDialog());
+});
+
+ipcMain.on('load-server-setup', function(event, arg) {
+    event.sender.send('load-server-setup-reply', dialog.showOpenDialog({ properties: [ 'openFile' ]}));
+});
 
 app.on('window-all-closed', function() {
     app.quit();

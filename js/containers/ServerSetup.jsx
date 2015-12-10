@@ -18,6 +18,8 @@ import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import { ipcRenderer } from 'electron';
+
 import * as ServerSetupActions from '../actions/serverSetupActions';
 import * as AdapterActions from '../actions/adapterActions';
 
@@ -31,9 +33,44 @@ import CentralDevice from '../components/CentralDevice';
 
 import { getInstanceIds } from '../utils/api';
 
+let loadServerSetupReplyHandle;
+let saveServerSetupReplyHandle;
+
 class ServerSetup extends Component {
     constructor(props) {
         super(props);
+
+        this._setupFileDialogs();
+    }
+
+    _setupFileDialogs() {
+        const {
+            selectedAdapter,
+            loadServerSetup,
+            saveServerSetup,
+        } = this.props;
+
+        if(loadServerSetupReplyHandle) {
+            ipcRenderer.removeListener('load-server-setup-reply', loadServerSetupReplyHandle);
+        }
+
+        const loadServerSetupReply = (event, arg) => {
+            loadServerSetup(selectedAdapter, arg);
+        };
+
+        ipcRenderer.on('load-server-setup-reply', loadServerSetupReply);
+        loadServerSetupReplyHandle = loadServerSetupReply;
+
+        if(saveServerSetupReplyHandle) {
+            ipcRenderer.removeListener('save-server-setup-reply', saveServerSetupReplyHandle);
+        }
+
+        const saveServerSetupReply = (event, arg) => {
+            saveServerSetup(selectedAdapter, arg);
+        };
+
+        ipcRenderer.on('save-server-setup-reply', saveServerSetupReply);
+        saveServerSetupReplyHandle = saveServerSetupReply;
     }
 
     _saveChangedAttribute(changedAttribute) {
@@ -122,9 +159,11 @@ class ServerSetup extends Component {
         const central = <CentralDevice id={selectedAdapter.instanceId + '_serversetup'}
             name={selectedAdapter.state.name}
             address={selectedAdapter.state.address}
-            advertising={selectedAdapter.state.advertising}
-            onShowSetupDialog={() => {}}
-            onToggleAdvertising={() => {}} />;
+            onSaveSetup={() => {
+                ipcRenderer.send('save-server-setup', null); }}
+            onLoadSetup={() => {
+                ipcRenderer.send('load-server-setup', null); }}
+         />;
 
         return (
             <div className='server-setup' style={this.props.style}>
