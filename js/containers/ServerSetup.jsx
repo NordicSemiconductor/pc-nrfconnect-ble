@@ -33,7 +33,6 @@ import CentralDevice from '../components/CentralDevice';
 import { getInstanceIds } from '../utils/api';
 
 class ServerSetup extends Component {
-    //mixins: [KeyNavigation.mixin('gattDatabases', true)],
     constructor(props) {
         super(props);
     }

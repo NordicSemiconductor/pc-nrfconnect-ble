@@ -13,8 +13,6 @@
 'use strict';
 
 import { getSelectedAdapter } from './common';
-import { discoverServices } from './deviceDetailsActions';
-import { connectedToDevice } from './adapterActions';
 
 export const ADD_ADVDATA_ENTRY = 'ADVSETUP_ADD_ADVDATA_ENTRY';
 export const ADD_SCANRSP_ENTRY = 'ADVSETUP_ADD_SCANRSP_ENTRY';
@@ -66,8 +64,6 @@ function _startAdvertising(dispatch, getState) {
     const adapter = getState().adapter.api.selectedAdapter;
 
     return new Promise((resolve, reject) => {
-        const advData = {};
-        const scanResp = {};
         const options = {
             interval: 100,
             timeout: 0,
@@ -238,4 +234,3 @@ export function toggleAdvertising() {
         }
     };
 }
-
