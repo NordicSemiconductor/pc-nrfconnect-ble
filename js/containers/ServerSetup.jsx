@@ -17,7 +17,6 @@ import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import * as ServerSetupActions from '../actions/serverSetupActions';
 import * as AdapterActions from '../actions/adapterActions';
@@ -69,7 +68,7 @@ class ServerSetup extends Component {
             children,
         } = serverSetup;
 
-        instanceIds = getInstanceIds(selectedComponent);
+        const instanceIds = getInstanceIds(selectedComponent);
         let selectedAttribute = null;
         let selectedIsDescriptor = false;
         let selectedIsCharacteristic = false;
@@ -114,7 +113,6 @@ class ServerSetup extends Component {
                              selectOnClick={true}
                              selected={selectedComponent}
                              onSelected={this._onSelected}
-                             selectOnClick={true}
                              onSelectAttribute={selectComponent}
                              onToggleAttributeExpanded={toggleAttributeExpanded}
                              addNew={true}
@@ -123,7 +121,7 @@ class ServerSetup extends Component {
             );
         });
 
-        central = <CentralDevice id={selectedAdapter.instanceId + '_serversetup'}
+        const central = <CentralDevice id={selectedAdapter.instanceId + '_serversetup'}
             name={selectedAdapter.state.name}
             address={selectedAdapter.state.address}
             advertising={selectedAdapter.state.advertising}
@@ -174,7 +172,7 @@ function mapDispatchToProps(dispatch) {
     let retval = Object.assign(
             {},
             bindActionCreators(ServerSetupActions, dispatch),
-            bindActionCreators(AdapterActions, dispatch),
+            bindActionCreators(AdapterActions, dispatch)
         );
 
     return retval;
