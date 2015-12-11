@@ -29,6 +29,7 @@ import ServiceEditor from '../components/ServiceEditor';
 import CharacteristicEditor from '../components/CharacteristicEditor';
 import DescriptorEditor from '../components/DescriptorEditor';
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import ErrorDialog from '../components/ErrorDialog';
 import CentralDevice from '../components/CentralDevice';
 
 import { getInstanceIds } from '../utils/api';
@@ -50,7 +51,7 @@ class ServerSetup extends Component {
             saveServerSetup,
         } = this.props;
 
-        if(loadServerSetupReplyHandle) {
+        if (loadServerSetupReplyHandle) {
             ipcRenderer.removeListener('load-server-setup-reply', loadServerSetupReplyHandle);
         }
 
@@ -61,7 +62,7 @@ class ServerSetup extends Component {
         ipcRenderer.on('load-server-setup-reply', loadServerSetupReply);
         loadServerSetupReplyHandle = loadServerSetupReply;
 
-        if(saveServerSetupReplyHandle) {
+        if (saveServerSetupReplyHandle) {
             ipcRenderer.removeListener('save-server-setup-reply', saveServerSetupReplyHandle);
         }
 
@@ -89,8 +90,9 @@ class ServerSetup extends Component {
             removeAttribute,
             applyServer,
             clearServer,
-            showDeleteConfirmationDialog,
-            hideDeleteConfirmationDialog,
+            hideErrorDialog,
+            showDeleteDialog,
+            hideDeleteDialog,
         } = this.props;
 
         if (!serverSetup) {
@@ -98,8 +100,9 @@ class ServerSetup extends Component {
         }
 
         const {
+            errors,
             selectedComponent,
-            showDeleteDialog,
+            showingDeleteDialog,
             children,
         } = serverSetup;
 
@@ -130,13 +133,13 @@ class ServerSetup extends Component {
         const editorBorderClass = selectedAttribute ? ' selected-component-editor-border' : '';
         const editor = selectedIsService ? <ServiceEditor service={selectedAttribute}
                                                           onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
-                                                          onRemoveAttribute={showDeleteConfirmationDialog} />
+                                                          onRemoveAttribute={showDeleteDialog} />
                      : selectedIsCharacteristic ? <CharacteristicEditor characteristic={selectedAttribute}
                                                                         onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
-                                                                        onRemoveAttribute={showDeleteConfirmationDialog} />
+                                                                        onRemoveAttribute={showDeleteDialog} />
                      : selectedIsDescriptor ? <DescriptorEditor descriptor={selectedAttribute}
                                                                 onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
-                                                                onRemoveAttribute={showDeleteConfirmationDialog} />
+                                                                onRemoveAttribute={showDeleteDialog} />
                      : <div className='nothing-selected' />;
 
         const services = [];
@@ -160,9 +163,11 @@ class ServerSetup extends Component {
             name={selectedAdapter.state.name}
             address={selectedAdapter.state.address}
             onSaveSetup={() => {
-                ipcRenderer.send('save-server-setup', null); }}
+                ipcRenderer.send('save-server-setup', null);
+            }}
             onLoadSetup={() => {
-                ipcRenderer.send('load-server-setup', null); }}
+                ipcRenderer.send('load-server-setup', null);
+            }}
          />;
 
         return (
@@ -182,10 +187,13 @@ class ServerSetup extends Component {
                     <div className={'item-editor' + editorBorderClass}>
                         {editor}
                     </div>
-                    <ConfirmationDialog show={showDeleteDialog}
+                    <ConfirmationDialog show={showingDeleteDialog}
                                         onOk={removeAttribute}
-                                        onCancel={hideDeleteConfirmationDialog}
+                                        onCancel={hideDeleteDialog}
                                         text='Do you want to delete?'/>
+                    <ErrorDialog show={errors.length > 0 ? true : false}
+                                 errors={errors}
+                                 onOk={hideErrorDialog} />
                 </div>
             </div>
         );

@@ -19,8 +19,9 @@ import * as ServerSetupActions from '../actions/serverSetupActions';
 import { getInstanceIds, getImmutableService, getImmutableCharacteristic, getImmutableDescriptor, getImmutableProperties } from '../utils/api';
 
 const InitialState = Record({
+    errors: [],
     selectedComponent: null,
-    showDeleteDialog: false,
+    showingDeleteDialog: false,
     children: null,
 });
 
@@ -87,8 +88,9 @@ function getInitialServices() {
 }
 
 const initialState = new InitialState({
+    errors: [],
     selectedComponent: null,
-    showDeleteDialog: false,
+    showingDeleteDialog: false,
     children: getInitialServices(),
 });
 
@@ -111,13 +113,13 @@ function getNodeStatePath(nodeInstanceId) {
     return nodeStatePath;
 }
 
-function toggledAttributeExpanded(state, attribute) {
+function toggleAttributeExpanded(state, attribute) {
     const attributeStatePath = getNodeStatePath(attribute.instanceId);
     const previouslyExpanded = state.getIn(attributeStatePath .concat('expanded'));
     return state.setIn(attributeStatePath.concat('expanded'), !previouslyExpanded);
 }
 
-function addedNewService(state) {
+function addNewService(state) {
     const newService = getImmutableService({
         instanceId: deviceInstanceId + '.' + serviceInstanceIdCounter++,
         name: 'New Service',
@@ -128,7 +130,7 @@ function addedNewService(state) {
     return state.setIn(newServiceStatePath, newService);
 }
 
-function addedNewCharacteristic(state, parent) {
+function addNewCharacteristic(state, parent) {
     const newCharacteristic = getImmutableCharacteristic({
         instanceId: parent.instanceId + '.' + characteristicInstanceIdCounter++,
         name: 'New Characteristic',
@@ -143,7 +145,7 @@ function addedNewCharacteristic(state, parent) {
     return state.setIn(newCharacteristicStatePath, newCharacteristic);
 }
 
-function addedNewDescriptor(state, parent) {
+function addNewDescriptor(state, parent) {
     const newDescriptor = getImmutableDescriptor({
         instanceId: parent.instanceId + '.' + descriptorInstanceIdCounter++,
         name: 'New Descriptor',
@@ -169,9 +171,9 @@ function changedAttribute(state, attribute) {
     return state.mergeIn(attributeStatePath, attribute);
 }
 
-function removedAttribute(state) {
+function removeAttribute(state) {
     const attributeStatePath = getNodeStatePath(state.selectedComponent);
-    const changedState = state.merge({selectedComponent: null, showDeleteDialog: false});
+    const changedState = state.merge({selectedComponent: null, showingDeleteDialog: false});
     return changedState.deleteIn(attributeStatePath);
 }
 
@@ -200,24 +202,28 @@ export default function deviceDetails(state = initialState, action) {
     switch (action.type) {
         case ServerSetupActions.SELECT_COMPONENT:
             return state.set('selectedComponent', action.component.instanceId);
-        case ServerSetupActions.TOGGLED_ATTRIBUTE_EXPANDED:
-            return toggledAttributeExpanded(state, action.attribute);
-        case ServerSetupActions.ADDED_NEW_SERVICE:
-            return addedNewService(state);
-        case ServerSetupActions.ADDED_NEW_CHARACTERISTIC:
-            return addedNewCharacteristic(state, action.parent);
-        case ServerSetupActions.ADDED_NEW_DESCRIPTOR:
-            return addedNewDescriptor(state, action.parent);
+        case ServerSetupActions.TOGGLE_ATTRIBUTE_EXPANDED:
+            return toggleAttributeExpanded(state, action.attribute);
+        case ServerSetupActions.ADD_NEW_SERVICE:
+            return addNewService(state);
+        case ServerSetupActions.ADD_NEW_CHARACTERISTIC:
+            return addNewCharacteristic(state, action.parent);
+        case ServerSetupActions.ADD_NEW_DESCRIPTOR:
+            return addNewDescriptor(state, action.parent);
         case ServerSetupActions.CHANGED_ATTRIBUTE:
             return changedAttribute(state, action.attribute);
-        case ServerSetupActions.REMOVED_ATTRIBUTE:
-            return removedAttribute(state, action.attribute);
-        case ServerSetupActions.CLEARED_SERVER:
+        case ServerSetupActions.REMOVE_ATTRIBUTE:
+            return removeAttribute(state, action.attribute);
+        case ServerSetupActions.CLEAR_SERVER:
             return initialState;
         case ServerSetupActions.SHOW_DELETE_DIALOG:
-            return state.set('showDeleteDialog', true);
+            return state.set('showingDeleteDialog', true);
         case ServerSetupActions.HIDE_DELETE_DIALOG:
-            return state.set('showDeleteDialog', false);
+            return state.set('showingDeleteDialog', false);
+        case ServerSetupActions.SHOW_ERROR_DIALOG:
+            return state.set('errors', action.errors);
+        case ServerSetupActions.HIDE_ERROR_DIALOG:
+            return state.set('errors', '');
         case ServerSetupActions.LOAD:
             return loadSetup(state, action.setup);
         default:

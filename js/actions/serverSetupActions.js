@@ -13,19 +13,22 @@
 'use strict';
 
 export const SELECT_COMPONENT = 'SERVER_SETUP_SELECT_COMPONENT';
-export const TOGGLED_ATTRIBUTE_EXPANDED = 'SERVER_SETUP_TOGGLED_ATTRIBUTE_EXPANDED';
+export const TOGGLE_ATTRIBUTE_EXPANDED = 'SERVER_SETUP_TOGGLE_ATTRIBUTE_EXPANDED';
 
-export const ADDED_NEW_SERVICE = 'SERVER_SETUP_ADDED_NEW_SERVICE';
-export const ADDED_NEW_CHARACTERISTIC = 'SERVER_SETUP_NEW_CHARACTERISTIC';
-export const ADDED_NEW_DESCRIPTOR = 'SERVER_SETUP_NEW_DESCRIPTOR';
+export const ADD_NEW_SERVICE = 'SERVER_SETUP_ADDED_NEW_SERVICE';
+export const ADD_NEW_CHARACTERISTIC = 'SERVER_SETUP_ADDED_NEW_CHARACTERISTIC';
+export const ADD_NEW_DESCRIPTOR = 'SERVER_SETUP_ADDED_NEW_DESCRIPTOR';
 export const CHANGED_ATTRIBUTE = 'SERVER_SETUP_CHANGED_ATTRIBUTE';
-export const REMOVED_ATTRIBUTE = 'SERVER_SETUP_REMOVED_ATTRIBUTE';
+export const REMOVE_ATTRIBUTE = 'SERVER_SETUP_REMOVE_ATTRIBUTE';
 
-export const CLEARED_SERVER = 'SERVER_SETUP_CLEARED_SERVER';
+export const CLEAR_SERVER = 'SERVER_SETUP_CLEAR_SERVER';
 export const APPLIED_SERVER = 'SERVER_SETUP_APPLIED_SERVER';
 
 export const SHOW_DELETE_DIALOG = 'SERVER_SETUP_SHOW_DELETE_DIALOG';
 export const HIDE_DELETE_DIALOG = 'SERVER_SETUP_HIDE_DELETE_DIALOG';
+
+export const SHOW_ERROR_DIALOG = 'SERVER_SETUP_SHOW_ERROR_DIALOG';
+export const HIDE_ERROR_DIALOG = 'SERVER_SETUP_HIDE_ERROR_DIALOG';
 
 export const SAVE_ERROR = 'SERVER_SETUP_SAVE_ERROR';
 export const LOAD_ERROR = 'SERVER_SETUP_LOAD_ERROR';
@@ -36,9 +39,9 @@ import { writeFile, readFileSync } from 'fs';
 
 import { api } from 'pc-ble-driver-js';
 
-function toggledAttributeExpanded(attribute) {
+function toggleAttributeExpandedAction(attribute) {
     return {
-        type: TOGGLED_ATTRIBUTE_EXPANDED,
+        type: TOGGLE_ATTRIBUTE_EXPANDED,
         attribute,
     };
 }
@@ -50,61 +53,81 @@ function selectComponentAction(component) {
     };
 }
 
-function addedNewService() {
+function addNewServiceAction() {
     return {
-        type: ADDED_NEW_SERVICE,
+        type: ADD_NEW_SERVICE,
     };
 }
 
-function addedNewCharacteristic(parent) {
+function addNewCharacteristicAction(parent) {
     return {
-        type: ADDED_NEW_CHARACTERISTIC,
+        type: ADD_NEW_CHARACTERISTIC,
         parent,
     };
 }
 
-function addedNewDescriptor(parent) {
+function addNewDescriptorAction(parent) {
     return {
-        type: ADDED_NEW_DESCRIPTOR,
+        type: ADD_NEW_DESCRIPTOR,
         parent,
     };
 }
 
-function changedAttribute(attribute) {
+function saveChangedAttributeAction(attribute) {
     return {
         type: CHANGED_ATTRIBUTE,
         attribute,
     };
 }
 
-function removedAttribute() {
+function removeAttributeAction() {
     return {
-        type: REMOVED_ATTRIBUTE,
+        type: REMOVE_ATTRIBUTE,
     };
 }
 
-function clearedServer() {
+function clearServerAction() {
     return {
-        type: CLEARED_SERVER,
+        type: CLEAR_SERVER,
     };
 }
 
-function appliedServer(server) {
+function appliedServerAction(server) {
     return {
         type: APPLIED_SERVER,
         server: server,
     };
 }
 
-function showDeleteDialog() {
+function showDeleteDialogAction() {
     return {
         type: SHOW_DELETE_DIALOG,
     };
 }
 
-function hideDeleteDialog() {
+function hideDeleteDialogAction() {
     return {
         type: HIDE_DELETE_DIALOG,
+    };
+}
+
+function showErrorDialogAction(errors) {
+    return {
+        type: SHOW_ERROR_DIALOG,
+        errors,
+    };
+}
+
+function hideErrorDialogAction(error) {
+    return {
+        type: HIDE_ERROR_DIALOG,
+        error,
+    };
+}
+
+function ErrorDialogAction() {
+    return {
+        type: HIDE_ERROR_DIALOG,
     };
 }
 
@@ -130,7 +153,7 @@ function loadAction(setup) {
 }
 
 function _toggleAttributeExpanded(dispatch, getState, attribute) {
-    dispatch(toggledAttributeExpanded(attribute));
+    dispatch(toggleAttributeExpandedAction(attribute));
     dispatch(selectComponentAction(attribute));
 }
 
@@ -144,7 +167,7 @@ function _addNewCharacteristic(dispatch, getState, parent) {
         return;
     }
 
-    dispatch(addedNewCharacteristic(parent));
+    dispatch(addNewCharacteristicAction(parent));
 }
 
 function _addNewDescriptor(dispatch, getState, parent) {
@@ -157,11 +180,20 @@ function _addNewDescriptor(dispatch, getState, parent) {
         return;
     }
 
-    dispatch(addedNewDescriptor(parent));
+    dispatch(addNewDescriptorAction(parent));
 }
 
 function _saveChangedAttribute(dispatch, getState, attribute) {
-    dispatch(changedAttribute(attribute));
+    if (attribute.value) {
+        if (attribute.fixedLength && attribute.value.length < attribute.maxLength) {
+            const fillerArray = Array(attribute.maxLength).fill(0);
+            attribute.value = attribute.value.concat(fillerArray);
+        }
+
+        attribute.value = attribute.value.slice(0, attribute.maxLength);
+    }
+
+    dispatch(saveChangedAttributeAction(attribute));
 }
 
 function _removeAttribute(dispatch, getState) {
@@ -176,7 +208,7 @@ function _removeAttribute(dispatch, getState) {
         return;
     }
 
-    dispatch(removedAttribute());
+    dispatch(removeAttributeAction());
 }
 
 function _applyGapServiceCharacteristics(apiAdapter, gapService) {
@@ -203,6 +235,9 @@ function _applyServer(dispatch, getState) {
     const serverSetup =  state.adapter.adapters.get(state.adapter.selectedAdapter).serverSetup;
     const selectedApi = state.adapter.api.selectedAdapter;
     const services = [];
+    let needSccdDescriptor = false;
+    let missingSccdDescriptor = false;
+    let missingCccdDescriptor = false;
 
     for (let service of serverSetup.children.toArray()) {
         // TODO: At some point we may need/want to support secondary services
@@ -233,6 +268,9 @@ function _applyServer(dispatch, getState) {
                 maxLength,
             } = characteristic;
 
+            let needSccdDescriptor = properties.broadcast || false;
+            let needCccdDescriptor = properties.notify || properties.indicate || false;
+
             // TODO: At some point we need to do something with characteristicProperties, separate out the BLE properties or rename it to options.
             const characteristicProperties = {
                 properties: properties.toObject(),
@@ -254,6 +292,12 @@ function _applyServer(dispatch, getState) {
                     maxLength,
                 } = descriptor;
 
+                if (uuid === '2903') {
+                    needSccdDescriptor = false;
+                } else if (uuid === '2902') {
+                    needCccdDescriptor = false;
+                }
+
                 const descriptorProperties = {
                     readPerm: readPerm.split(' '),
                     writePerm: writePerm.split(' '),
@@ -263,7 +307,30 @@ function _applyServer(dispatch, getState) {
 
                 serviceFactory.createDescriptor(factoryCharacteristic, uuid, value.toArray(), descriptorProperties);
             }
+
+            if (needSccdDescriptor) {
+                missingSccdDescriptor = true;
+            }
+
+            if (needCccdDescriptor) {
+                missingCccdDescriptor = true;
+            }
         }
+    }
+
+    errors = [];
+
+    if (missingSccdDescriptor) {
+        errors.push('Missing SCCD descriptor (uuid: 2903). All characteristics with broadcast property must have an SCCD descriptor.');
+    }
+
+    if (missingCccdDescriptor) {
+        errors.push('Missing CCCD descriptor (uuid: 2902). All characteristics with notify or indicate properties must have a CCCD descriptor.');
+    }
+
+    if (errors.length > 0) {
+        dispatch(showErrorDialogAction(errors));
+        return;
     }
 
     selectedApi.setServices(services, err => {
@@ -273,7 +340,7 @@ function _applyServer(dispatch, getState) {
             console.log(err);
             return;
         } else {
-            dispatch(appliedServer(services));
+            dispatch(appliedServerAction(services));
         }
     });
 
@@ -283,7 +350,7 @@ function _applyServer(dispatch, getState) {
 function _saveServerSetup(dispatch, getState, adapter, filename) {
     if (filename) {
         writeFile(filename, JSON.stringify(adapter.serverSetup), error => {
-            if(error) {
+            if (error) {
                 // TODO: implement functionality in reducer for this error
                 dispatch(saveErrorAction(error));
             }
@@ -314,7 +381,7 @@ export function toggleAttributeExpanded(attribute) {
 }
 
 export function addNewService() {
-    return addedNewService();
+    return addNewServiceAction();
 }
 
 export function addNewCharacteristic(parent) {
@@ -342,7 +409,7 @@ export function removeAttribute() {
 }
 
 export function clearServer() {
-    return clearedServer();
+    return clearServerAction();
 }
 
 export function applyServer() {
@@ -351,12 +418,20 @@ export function applyServer() {
     };
 }
 
-export function showDeleteConfirmationDialog() {
-    return showDeleteDialog();
+export function showErrorDialog(error) {
+    return showErrorDialogAction(error);
 }
 
-export function hideDeleteConfirmationDialog() {
-    return hideDeleteDialog();
+export function hideErrorDialog() {
+    return hideErrorDialogAction();
+}
+
+export function showDeleteDialog() {
+    return showDeleteDialogAction();
+}
+
+export function hideDeleteDialog() {
+    return hideDeleteDialogAction();
 }
 
 export function saveServerSetup(adapter, filename) {

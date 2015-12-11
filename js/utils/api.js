@@ -249,14 +249,33 @@ export function getImmutableCharacteristic(characteristic) {
     });
 }
 
+function getImmutableDescriptorValue(descriptor) {
+    const {
+        uuid,
+        value,
+    } = descriptor;
+
+    if (uuid === '2902') {
+        let cccdValue = new Map();
+        for (let deviceInstanceId in value) {
+            cccdValue = cccdValue.set(deviceInstanceId, value[deviceInstanceId]);
+        }
+
+        return cccdValue;
+    }
+
+    return List(value);
+}
+
 export function getImmutableDescriptor(descriptor) {
+    const value = getImmutableDescriptorValue(descriptor);
     return new ImmutableDescriptor({
         instanceId: descriptor.instanceId,
         characteristicInstanceId: descriptor.characteristicInstanceId,
         uuid: descriptor.uuid,
         name: descriptor.name,
         handle: descriptor.handle,
-        value: List(descriptor.value),
+        value: value,
         readPerm: descriptor.readPerm,
         writePerm: descriptor.writePerm,
         fixedLength: descriptor.fixedLength,
