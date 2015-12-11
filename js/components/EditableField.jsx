@@ -206,7 +206,7 @@ export default class EditableField extends Component {
                                 {this.validationMessage}
                             </div>
                         </div>
-                        <div className='btn btn-primary btn-xs btn-nordic' onClick={e => this._onWriteButtonClick(e)}><i className='icon-ok'></i></div>
+                        <div className='btn btn-primary btn-xs btn-nordic' title="Write" onClick={e => this._onWriteButtonClick(e)}><i className='icon-ok'></i></div>
                         <TextareaAutosize {...this.props}
                                           ref='editableTextarea'
                                           minRows={1}
@@ -217,7 +217,7 @@ export default class EditableField extends Component {
                     </div>;
         } else if (this.props.showReadButton && this.props.onRead) {
             child = <div className='editable-field-editor-wrap'>
-                        <div className='btn btn-primary btn-xs btn-nordic' onClick={e => this._onReadButtonClick(e)}><i className='icon-ccw'></i></div>
+                        <div className='btn btn-primary btn-xs btn-nordic' title="Read" onClick={e => this._onReadButtonClick(e)}><i className='icon-ccw'></i></div>
                         <div className='subtle-text editable' onClick={e => this._toggleEditing(e)}>
                             <span>{this.value || nonBreakingSpace}</span>
                         </div>
