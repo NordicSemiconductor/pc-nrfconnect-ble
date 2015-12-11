@@ -10,8 +10,8 @@ const InitialState = Record({
         type: 'Complete local name',
         typeKey: 0,
         typeApi: 'completeLocalName',
-        value: 'nRF Connect',
-        formattedValue: 'nRF Connect',
+        value: 'Yggdrasil',
+        formattedValue: 'Yggdrasil',
         id: 10000, // Random high id to avoid conflict with autoincremented ids
     }]),
     scanResponseEntries: List(),
@@ -36,13 +36,13 @@ export default function advertisingSetup(state = initialState, action) {
             return state.update('scanResponseEntries', scanResponseEntries => scanResponseEntries.filterNot(entry => entry.id === action.id));
 
         case AdvertisingSetupActions.SHOW_DIALOG:
-            return state.update('show', show => true);
+            return state.set('show', true);
 
         case AdvertisingSetupActions.HIDE_DIALOG:
-            return state.update('show', show => false);
+            return state.set('show', false);
 
         case AdvertisingSetupActions.SET_ADVDATA_COMPLETED:
-            return state.update('setAdvdataStatus', setAdvdataStatus => action.status);
+            return state.set('setAdvdataStatus', action.status);
 
         case AdvertisingSetupActions.ADVERTISING_STARTED:
             logger.info('Advertising started');

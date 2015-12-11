@@ -31,7 +31,6 @@ class ConnectionMap extends Component {
     }
 
     handleToggleAdvertising() {
-        this.props.setAdvertisingData(this.props.advertisingSetup);
         this.props.toggleAdvertising();
     }
 

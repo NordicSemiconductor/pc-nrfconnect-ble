@@ -73,6 +73,10 @@ function _startAdvertising(dispatch, getState) {
             reject('No adapter is selected.');
         }
 
+        // Set advertising data each time advertising is started
+        const advSetupState = getState().advertisingSetup;
+        _setAdvertisingData(advSetupState, dispatch, getState);
+
         adapter.startAdvertising(options, error => {
             if (error) {
                 reject(error);

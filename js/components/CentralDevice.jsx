@@ -90,7 +90,7 @@ export default class CentralDevice extends Component {
                                     const items = [];
 
                                     if (onToggleAdvertising !== undefined) {
-                                        items.push(<MenuItem key="advertising" eventKey='ToggleAdvertising'>{advMenuText}</MenuItem>);
+                                        items.push(<MenuItem key="advertising" eventKey='ToggleAdvertising'>{advMenuText} <span className='subtler-text'>(Alt+A)</span></MenuItem>);
                                     }
 
                                     if (advertising !== undefined) {
