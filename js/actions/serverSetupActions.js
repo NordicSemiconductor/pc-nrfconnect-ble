@@ -29,11 +29,12 @@ export const HIDE_DELETE_DIALOG = 'SERVER_SETUP_HIDE_DELETE_DIALOG';
 
 export const SAVE_ERROR = 'SERVER_SETUP_SAVE_ERROR';
 export const LOAD_ERROR = 'SERVER_SETUP_LOAD_ERROR';
+export const LOAD = 'SERVER_SETUP_LOAD';
 
 import { getInstanceIds } from '../utils/api';
-import { writeFile } from 'fs';
+import { writeFile, readFileSync } from 'fs';
 
-import { driver, api } from 'pc-ble-driver-js';
+import { api } from 'pc-ble-driver-js';
 
 function toggledAttributeExpanded(attribute) {
     return {
@@ -110,14 +111,21 @@ function hideDeleteDialog() {
 function saveErrorAction(error) {
     return {
         type: SAVE_ERROR,
-        error
+        error,
     };
 }
 
 function loadErrorAction(error) {
     return {
         type: LOAD_ERROR,
-        error
+        error,
+    };
+}
+
+function loadAction(setup) {
+    return {
+        type: LOAD,
+        setup,
     };
 }
 
@@ -285,7 +293,14 @@ function _saveServerSetup(dispatch, getState, adapter, filename) {
 
 function _loadServerSetup(dispatch, getState, selectedAdapter, filename) {
     // TODO: implement loading of server setup
-    throw new Error('Not implemented!');
+
+    // Load file into immutable JS structure and replace it in the reducer.
+    // The reducer replaces the instanceId's
+    if (filename && filename.length === 1) {
+        const setup = readFileSync(filename[0]);
+        const setupObj = JSON.parse(setup);
+        dispatch(loadAction(setupObj));
+    }
 }
 
 export function selectComponent(component) {

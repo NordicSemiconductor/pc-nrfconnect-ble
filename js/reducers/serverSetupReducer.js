@@ -175,6 +175,27 @@ function removedAttribute(state) {
     return changedState.deleteIn(attributeStatePath);
 }
 
+function loadSetup(state, setup) {
+    if (setup && setup.children && setup.children.length > 0) {
+        // TODO: Add/create immutable version
+        const services = setup.children;
+
+        for (let service in services) {
+            const characteristics = service.children;
+            // TODO: Add/create immutable version
+
+            for (let characteristic in characteristics) {
+                // TODO: Add/create immutable version
+                const descriptors = characteristic.children;
+
+                for(let descriptor in descriptors) {
+                    // TODO: Add/create immutable version
+                }
+            }
+        }
+    }
+}
+
 export default function deviceDetails(state = initialState, action) {
     switch (action.type) {
         case ServerSetupActions.SELECT_COMPONENT:
@@ -197,6 +218,8 @@ export default function deviceDetails(state = initialState, action) {
             return state.set('showDeleteDialog', true);
         case ServerSetupActions.HIDE_DELETE_DIALOG:
             return state.set('showDeleteDialog', false);
+        case ServerSetupActions.LOAD:
+            return loadSetup(state, action.setup);
         default:
             return state;
     }
