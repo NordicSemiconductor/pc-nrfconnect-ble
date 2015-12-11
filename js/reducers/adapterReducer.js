@@ -42,19 +42,23 @@ function addAdapter(state, adapter) {
 function removeAdapter(state, adapter) {
     const adapterIndex = state.api.adapters.indexOf(adapter);
 
-    if (adapterIndex !== -1) {
-        state.api.adapters.splice(adapterIndex, 1);
-
-        if (adapterIndex === state.selectedAdapter) {
-            state = state.set('adapterIndicator', 'off');
-            state = state.set('selectedAdapter', null);
-            state = state.set('adapterStatus', DEFAULT_ADAPTER_STATUS);
-        }
-
-        state = state.deleteIn(['adapters', adapterIndex]);
-    } else {
+    if (adapterIndex === -1) {
         logger.error(`You removed an adapter I did not know about: ${adapter.adapterStatus.port}.`);
+        return state;
     }
+
+    state.api.adapters.splice(adapterIndex, 1);
+
+    if (adapterIndex === state.selectedAdapter) {
+        state = state.set('adapterIndicator', 'off');
+        state = state.set('selectedAdapter', null);
+        state = state.set('adapterStatus', DEFAULT_ADAPTER_STATUS);
+    } else if (adapterIndex < state.selectedAdapter) {
+        state = state.set('selectedAdapter', state.selectedAdapter - 1);
+    }
+
+    state = state.deleteIn(['adapters', adapterIndex]);
+
 
     return state;
 }
