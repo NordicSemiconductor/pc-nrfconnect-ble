@@ -29,7 +29,7 @@ ipcMain.on('save-server-setup', function(event, arg) {
 });
 
 ipcMain.on('load-server-setup', function(event, arg) {
-    event.sender.send('load-server-setup-reply', dialog.showOpenDialog({ properties: [ 'openFile' ]}));
+    event.sender.send('load-server-setup-reply', dialog.showOpenDialog({ properties: ['openFile']}));
 });
 
 app.on('window-all-closed', function() {
@@ -43,6 +43,7 @@ app.on('ready', function() {
         'min-width': 480,
         'min-height': 280,
         frame: true,
+        icon: './nordic_logo.png',
     });
     mainWindow.loadURL('file://' + __dirname + '/index.html');
     mainWindow.on('closed', function() {
