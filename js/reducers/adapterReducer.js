@@ -12,6 +12,8 @@ import deviceDetails from './deviceDetailsReducer';
 import serverSetup from './serverSetupReducer';
 
 import * as AdapterAction from '../actions/adapterActions';
+import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
+
 import { logger } from '../logging';
 
 const ImmutableRoot = Record({
@@ -183,6 +185,23 @@ function deviceSecurityChanged(state, device, parameters) {
     return state;
 }
 
+function discoveredDeviceName(state, device, value) {
+    if (!value) {
+        return state;
+    }
+
+    if (device.address === undefined) {
+        return state;
+    }
+
+    const name = value.map(el => String.fromCharCode(el)).join('');
+
+    const { index } = getSelectedAdapter(state);
+
+    state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'name'], name);
+    return state;
+}
+
 function addError(state, error) {
     if (error.message === undefined) {
         console.log(`Error does not contain a message! Something is wrong!`);
@@ -250,6 +269,8 @@ export default function adapter(state = getImmutableRoot(), action) {
             return connectedDeviceUpdated(state, action.device);
         case AdapterAction.DEVICE_SECURITY_CHANGED:
             return deviceSecurityChanged(state, action.device, action.parameters);
+        case DeviceDetailsActions.DISCOVERED_DEVICE_NAME:
+            return discoveredDeviceName(state, action.device, action.value);
         default:
             return state;
     }

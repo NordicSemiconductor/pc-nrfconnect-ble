@@ -16,6 +16,7 @@ export const SELECT_COMPONENT = 'DEVICE_DETAILS_SELECT_COMPONENT';
 
 export const DISCOVERING_ATTRIBUTES = 'DEVICE_DETAILS_DISCOVERING_ATTRIBUTES';
 export const DISCOVERED_ATTRIBUTES = 'DEVICE_DETAILS_DISCOVERED_ATTRIBUTES';
+export const DISCOVERED_DEVICE_NAME = 'DEVICE_DETAILS_DISCOVERED_DEVICE_NAME';
 
 export const TOGGLED_ATTRIBUTE_EXPANDED = 'DEVICE_DETAILS_TOGGLED_ATTRIBUTE_EXPANDED';
 
@@ -74,8 +75,36 @@ function _discoverServices(dispatch, getState, device) {
         );
     }).then(services => {
         dispatch(discoveredAttributesAction(device, services));
+        _discoverDeviceName(dispatch, getState, device, services);
     }).catch(error => {
         dispatch(discoveredAttributesAction(device));
+        dispatch(errorOccuredAction(error.adapter, error.error));
+    });
+}
+
+function _discoverDeviceName(dispatch, getState, device, services) {
+
+    return new Promise((resolve, reject) => {
+        for (let service of services) {
+            if (service.uuid === '1800') {
+                resolve(service);
+            }
+        }
+
+        reject('Could not find GAP service');
+    }).then(gapService => {
+        return _discoverCharacteristics(dispatch, getState, gapService);
+    }).then(characteristics => {
+        for (let characteristic of characteristics) {
+            if (characteristic.uuid === '2A00') {
+                return _readCharacteristic(dispatch, getState, characteristic);
+            }
+        }
+
+        throw(makeError({error: 'Did not find GAP service'}));
+    }).then(value => {
+        dispatch(discoveredDeviceNameAction(device, value));
+    }).catch(error => {
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
 }
@@ -104,6 +133,7 @@ function _discoverCharacteristics(dispatch, getState, service) {
         );
     }).then(characteristics => {
         dispatch(discoveredAttributesAction(service, characteristics));
+        return new Promise((resolve, reject) => resolve(characteristics));
     }).catch(error => {
         console.log(error);
         dispatch(errorOccuredAction(error.adapter, error.error));
@@ -192,6 +222,7 @@ function _readCharacteristic(dispatch, getState, characteristic) {
         );
     }).then(value => {
         dispatch(completedReadingAttributeAction(characteristic, value));
+        return new Promise((resolve, reject) => resolve(value));
     }).catch(error => {
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
@@ -307,6 +338,14 @@ function discoveredAttributesAction(parent, attributes) {
     };
 }
 
+function discoveredDeviceNameAction(device, value) {
+    return {
+        type: DISCOVERED_DEVICE_NAME,
+        device,
+        value,
+    };
+}
+
 function toggledAttributeExpandedAction(attribute) {
     return {
         type: TOGGLED_ATTRIBUTE_EXPANDED,
@@ -361,6 +400,12 @@ export function selectComponent(component) {
 export function discoverServices(device) {
     return (dispatch, getState) => {
         return _discoverServices(dispatch, getState, device);
+    };
+}
+
+export function discoverDeviceName(device) {
+    return (dispatch, getState) => {
+        return _discoverDeviceName(dispatch, getState, device);
     };
 }
 
