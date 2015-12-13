@@ -63,9 +63,9 @@ export class ConnectionUpdateRequestEditor extends Component {
 
         return (
             <div>
-                <label className='control-label col-sm-6'
+                <label className='control-label col-sm-7'
                        htmlFor={'interval_' + address}>Connection Interval (ms) {range}</label>
-                <div className='col-sm-6'>
+                <div className='col-sm-5'>
                     <Input id={'interval_' + address}
                        type='number'
                        className='form-control nordic-form-control'
@@ -226,8 +226,8 @@ export class ConnectionUpdateRequestEditor extends Component {
                         {this._createConnectionIntervalControl()}
                     </div>
                     <div className='form-group'>
-                        <label className='control-label col-sm-6' htmlFor={'latency_' + address}>Latency (ms)</label>
-                        <div className='col-sm-6'>
+                        <label className='control-label col-sm-7' htmlFor={'latency_' + address}>Latency (ms)</label>
+                        <div className='col-sm-5'>
                             <Input style={slaveLatencyStyle}
                                    id={'latency_' + address}
                                    className='form-control nordic-form-control'
@@ -242,8 +242,8 @@ export class ConnectionUpdateRequestEditor extends Component {
                     </div>
                     <div className='form-group'>
                         <div>
-                            <label className='control-label col-sm-6' htmlFor={'timeout_' + address}>Timeout (ms)</label>
-                            <div className='col-sm-6'>
+                            <label className='control-label col-sm-7' htmlFor={'timeout_' + address}>Timeout (ms)</label>
+                            <div className='col-sm-5'>
                                 <Input style={connectionSupervisionTimeoutInputStyle}
                                        id={'timeout_' + address}
                                        className='form-control nordic-form-control'
