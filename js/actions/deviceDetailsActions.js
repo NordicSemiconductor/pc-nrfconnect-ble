@@ -133,7 +133,7 @@ function _discoverCharacteristics(dispatch, getState, service) {
         );
     }).then(characteristics => {
         dispatch(discoveredAttributesAction(service, characteristics));
-        return new Promise((resolve, reject) => resolve(characteristics));
+        return characteristics;
     }).catch(error => {
         console.log(error);
         dispatch(errorOccuredAction(error.adapter, error.error));
@@ -222,7 +222,7 @@ function _readCharacteristic(dispatch, getState, characteristic) {
         );
     }).then(value => {
         dispatch(completedReadingAttributeAction(characteristic, value));
-        return new Promise((resolve, reject) => resolve(value));
+        return value;
     }).catch(error => {
         dispatch(errorOccuredAction(error.adapter, error.error));
     });
