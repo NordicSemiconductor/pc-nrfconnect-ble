@@ -183,11 +183,13 @@ export default class CharacteristicItem extends Component {
 
         const propertyList = [];
 
-        properties.forEach((propertyValue, property) => {
-            if (propertyValue) {
-                propertyList.push(<div key={property} className='device-flag'>{property}</div>);
-            }
-        });
+        if (properties) {
+            properties.forEach((propertyValue, property) => {
+                if (propertyValue) {
+                    propertyList.push(<div key={property} className='device-flag'>{property}</div>);
+                }
+            });
+        }
 
         const childrenList = [];
 

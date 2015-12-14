@@ -211,24 +211,6 @@ function _removeAttribute(dispatch, getState) {
     dispatch(removeAttributeAction());
 }
 
-function _applyGapServiceCharacteristics(apiAdapter, gapService) {
-    for (let characteristic of gapService.children.toArray()) {
-        if (characteristic.uuid == '2A00') {
-            const nameArray = characteristic.value.toArray().concat(0);
-            apiAdapter.setDeviceName(nameArray, characteristic.writePerm.split(' '), err => {});
-        }
-
-        if (characteristic.uuid == '2A01') {
-            valueArray = characteristic.value.toArray();
-            appearanceValue = valueArray[0];
-            appearanceValue += valueArray[1] << 8;
-            apiAdapter.setAppearance(appearanceValue, err => {});
-        }
-
-        // TODO: Add PeripheralPreferredConnectionParameters, or do we continue to ignore it?
-    }
-}
-
 function _applyServer(dispatch, getState) {
     const state = getState();
     const serviceFactory = new api.ServiceFactory();
@@ -244,15 +226,6 @@ function _applyServer(dispatch, getState) {
         const {
             uuid,
         } = service;
-
-        if (uuid === '1800') {
-            _applyGapServiceCharacteristics(selectedApi, service);
-            continue;
-        }
-
-        if (uuid === '1801') {
-            continue;
-        }
 
         const factoryService = serviceFactory.createService(service.uuid);
         services.push(factoryService);
@@ -340,8 +313,7 @@ function _applyServer(dispatch, getState) {
             console.log(err);
             return;
         } else {
-            // TODO: Do we need to transfer handles from services to serverSetup before dispatching the action?
-            dispatch(appliedServerAction(serverSetup));
+            dispatch(appliedServerAction(services));
         }
     });
 }

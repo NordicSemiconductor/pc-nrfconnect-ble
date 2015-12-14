@@ -12,7 +12,7 @@
 
 'use strict';
 
-import { List, Record, Map } from 'immutable';
+import { List, Record, Map, OrderedMap } from 'immutable';
 
 import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
 import * as AdapterActions from '../actions/adapterActions';
@@ -154,12 +154,36 @@ function completedWritingAttribute(state, attribute, value, error) {
     }
 }
 
-function appliedServerSetup(state, server) {
-    console.log(state);
-    console.log(server);
-    let localDeviceDetails = new DeviceDetail();
+function appliedServerSetup(state, services) {
+    let localDeviceDetails = new DeviceDetail({children: new OrderedMap()});
 
-    localDeviceDetails = localDeviceDetails.setIn(['children'], server.children);
+    for (let service of services) {
+        service.name = getUuidName(service.uuid);
+        service.children = new OrderedMap();
+        let immutableService = getImmutableService(service);
+
+        if (service._factory_characteristics) {
+            for (let characteristic of service._factory_characteristics) {
+                characteristic.name = getUuidName(characteristic.uuid);
+                characteristic.properties = characteristic.properties.properties;
+                characteristic.children = new OrderedMap();
+                let immutableCharacteristic = getImmutableCharacteristic(characteristic);
+
+                if (characteristic._factory_descriptors) {
+                    for (let descriptor of characteristic._factory_descriptors) {
+                        descriptor.name = getUuidName(descriptor.uuid);
+                        descriptor.children = new OrderedMap();
+                        let immutableDescriptor = getImmutableDescriptor(descriptor);
+                        immutableCharacteristic = immutableCharacteristic.setIn(['children', descriptor.instanceId], immutableDescriptor);
+                    }
+                }
+
+                immutableService = immutableService.setIn(['children', characteristic.instanceId], immutableCharacteristic);
+            }
+        }
+
+        localDeviceDetails = localDeviceDetails.setIn(['children', service.instanceId], immutableService);
+    }
 
     return state.setIn(['devices', 'local.server'], localDeviceDetails);
 }

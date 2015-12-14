@@ -55,9 +55,22 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         children: OrderedMap(),
     });
 
+    const ppcpCharacteristic = getImmutableCharacteristic({
+        instanceId: gapInstanceId + '.' + characteristicInstanceIdCounter++,
+        name: 'Peripheral Preferred Connection Parameters',
+        uuid: '2A04',
+        value: [0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF],
+        properties: {read: true},
+        readPerm: 'open',
+        writePerm: 'open',
+        maxLength: 20,
+        children: OrderedMap(),
+    });
+
     const characteristics = {};
     characteristics[deviceNameCharacteristic.instanceId] = deviceNameCharacteristic;
     characteristics[appearanceCharacteristic.instanceId] = appearanceCharacteristic;
+    characteristics[ppcpCharacteristic.instanceId] = ppcpCharacteristic;
 
     return OrderedMap(characteristics);
 }
