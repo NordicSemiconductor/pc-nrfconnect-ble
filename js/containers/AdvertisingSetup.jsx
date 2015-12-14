@@ -65,17 +65,18 @@ class AdvertisingSetup extends Component {
 
     handleApply() {
         const {
+            applyChanges,
             setAdvertisingData,
-            advertisingSetup,
         } = this.props;
 
-        setAdvertisingData(advertisingSetup);
+        applyChanges();
+        setAdvertisingData();
     }
 
     render() {
         const {
-            advDataEntries,
-            scanResponseEntries,
+            tempAdvDataEntries,
+            tempScanRespEntries,
             show,
             addAdvEntry,
             deleteAdvData,
@@ -102,7 +103,7 @@ class AdvertisingSetup extends Component {
                                 <AdvertisingList
                                     title="Advertising data"
                                     onDelete={deleteAdvData}
-                                    advEntries={advDataEntries}/>
+                                    advEntries={tempAdvDataEntries}/>
                             </div>
                             <div className="adv-col scan-rsp-pkt">
                                 <Button
@@ -111,7 +112,7 @@ class AdvertisingSetup extends Component {
                                 <AdvertisingList
                                     title="Scan response data"
                                     onDelete={deleteScanRsp}
-                                    advEntries={scanResponseEntries}/>
+                                    advEntries={tempScanRespEntries}/>
                             </div>
                         </div>
                     </Modal.Body>
@@ -131,8 +132,8 @@ function mapStateToProps(state) {
 
     return {
         advertisingSetup: advertisingSetup,
-        advDataEntries: advertisingSetup.advDataEntries,
-        scanResponseEntries: advertisingSetup.scanResponseEntries,
+        tempAdvDataEntries: advertisingSetup.tempAdvDataEntries,
+        tempScanRespEntries: advertisingSetup.tempScanRespEntries,
         show: advertisingSetup.show,
         setAdvdataStatus: advertisingSetup.setAdvdataStatus,
     };
@@ -153,10 +154,11 @@ export default connect(
 )(AdvertisingSetup);
 
 AdvertisingSetup.propTypes = {
-    advDataEntries: PropTypes.object.isRequired,
-    scanResponseEntries: PropTypes.object.isRequired,
+    tempAdvDataEntries: PropTypes.object.isRequired,
+    tempScanRespEntries: PropTypes.object.isRequired,
     show: PropTypes.bool.isRequired,
     addAdvEntry: PropTypes.func.isRequired,
+    applyChanges: PropTypes.func.isRequired,
     setAdvertisingData: PropTypes.func.isRequired,
     advertisingSetup: PropTypes.object.isRequired,
     setAdvdataStatus: PropTypes.string.isRequired,

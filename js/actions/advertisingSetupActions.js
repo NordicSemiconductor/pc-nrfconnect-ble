@@ -20,15 +20,17 @@ export const DELETE_ADVDATA_ENTRY = 'ADVSETUP_DELETE_ADVDATA_ENTRY';
 export const DELETE_SCANRSP_ENTRY = 'ADVSETUP_DELETE_SCANRSP_ENTRY';
 export const SHOW_DIALOG = 'ADVSETUP_SHOW_DIALOG';
 export const HIDE_DIALOG = 'ADVSETUP_HIDE_DIALOG';
-export const ERROR_OCCURED = 'ADVSETUP_ERROR_OCCURED';
+export const APPLY_CHANGES = 'ADVSETUP_APPLY_CHANGES';
 export const SET_ADVDATA = 'ADVSETUP_SET_ADVDATA';
 export const SET_ADVDATA_COMPLETED = 'ADVSETUP_SET_ADVDATA_COMPLETED';
 export const ADVERTISING_STARTED = 'ADVSETUP_ADVERTISING_STARTED';
 export const ADVERTISING_STOPPED = 'ADVSETUP_ADVERTISING_STOPPED';
+export const ERROR_OCCURED = 'ADVSETUP_ERROR_OCCURED';
 
 // Internal functions
-function _setAdvertisingData(advertisingSetup, dispatch, getState) {
+function _setAdvertisingData(dispatch, getState) {
     const adapter = getState().adapter.api.selectedAdapter;
+    const advertisingSetup = getState().advertisingSetup;
 
     return new Promise((resolve, reject) => {
         const advData = {};
@@ -73,9 +75,7 @@ function _startAdvertising(dispatch, getState) {
             reject('No adapter is selected.');
         }
 
-        // Set advertising data each time advertising is started
-        const advSetupState = getState().advertisingSetup;
-        _setAdvertisingData(advSetupState, dispatch, getState);
+        _setAdvertisingData(dispatch, getState);
 
         adapter.startAdvertising(options, error => {
             if (error) {
@@ -161,6 +161,12 @@ function hideDialogAction() {
     };
 }
 
+function applyChangesAction() {
+    return {
+        type: APPLY_CHANGES,
+    }
+}
+
 function setAdvertisingCompletedAction(status) {
     return {
         type: SET_ADVDATA_COMPLETED,
@@ -205,13 +211,17 @@ export function hideSetupDialog() {
     return hideDialogAction();
 }
 
-export function setAdvertisingData(advertisingSetup) {
+export function applyChanges() {
+    return applyChangesAction();
+}
+
+export function setAdvertisingData() {
     return (dispatch, getState) => {
         const selectedAdapter = getSelectedAdapter(getState());
 
         if (selectedAdapter.state) {
             if (selectedAdapter.state.available) {
-                return _setAdvertisingData(advertisingSetup, dispatch, getState);
+                return _setAdvertisingData(dispatch, getState);
             } else {
                 return Promise.reject('adapter is not available, cannot set advertising data');
             }
