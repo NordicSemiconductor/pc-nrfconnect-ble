@@ -152,9 +152,12 @@ function connectedDeviceUpdated(state, device) {
     logger.info(`Connection updated for device ${device.address}`);
     const { index } = getSelectedAdapter(state);
 
-    // TODO: check if received state is of immutable type
-    const _device = apiHelper.getImmutableDevice(device);
-    return state.mergeIn(['adapters', index, 'connectedDevices', _device.instanceId], _device);
+    const nodePath = ['adapters', index, 'connectedDevices', device.instanceId];
+    state = state.setIn(nodePath.concat('minConnectionInterval'), device.minConnectionInterval);
+    state = state.setIn(nodePath.concat('maxConnectionInterval'), device.maxConnectionInterval);
+    state = state.setIn(nodePath.concat('slaveLatency'), device.slaveLatency);
+    state = state.setIn(nodePath.concat('connectionSupervisionTimeout'), device.connectionSupervisionTimeout);
+    return state;
 }
 
 function deviceDisconnected(state, device) {
