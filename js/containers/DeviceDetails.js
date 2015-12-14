@@ -57,11 +57,17 @@ class DeviceDetailsContainer extends Component {
         }
 
         // Details for connected adapter
+        const localServer =
         detailDevices.push(<DeviceDetailsView key={adapterState.instanceId}
                                               device={adapterState}
                                               selected={selectedComponent}
+                                              deviceDetails={deviceDetails}
                                               onSelectComponent={selectComponent}
                                               onToggleAttributeExpanded={toggleAttributeExpanded}
+                                              onReadCharacteristic={readCharacteristic}
+                                              onWriteCharacteristic={writeCharacteristic}
+                                              onReadDescriptor={readDescriptor}
+                                              onWriteDescriptor={writeDescriptor}
                                               onShowAdvertisingSetupDialog={showSetupDialog}
                                               onToggleAdvertising={toggleAdvertising}
                                               containerHeight={this.props.style.height}

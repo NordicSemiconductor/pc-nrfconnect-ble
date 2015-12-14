@@ -39,6 +39,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         properties: {read: true, write: true},
         readPerm: 'open',
         writePerm: 'open',
+        maxLength: 20,
         children: OrderedMap(),
     });
 
@@ -50,6 +51,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         properties: {read: true},
         readPerm: 'open',
         writePerm: 'open',
+        maxLength: 20,
         children: OrderedMap(),
     });
 

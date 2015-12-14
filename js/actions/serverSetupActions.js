@@ -214,7 +214,8 @@ function _removeAttribute(dispatch, getState) {
 function _applyGapServiceCharacteristics(apiAdapter, gapService) {
     for (let characteristic of gapService.children.toArray()) {
         if (characteristic.uuid == '2A00') {
-            apiAdapter.setDeviceName(characteristic.value.toArray(), characteristic.writePerm.split(' '), err => {});
+            const nameArray = characteristic.value.toArray().concat(0);
+            apiAdapter.setDeviceName(nameArray, characteristic.writePerm.split(' '), err => {});
         }
 
         if (characteristic.uuid == '2A01') {
@@ -229,7 +230,6 @@ function _applyGapServiceCharacteristics(apiAdapter, gapService) {
 }
 
 function _applyServer(dispatch, getState) {
-    console.log('apply server');
     const state = getState();
     const serviceFactory = new api.ServiceFactory();
     const serverSetup =  state.adapter.adapters.get(state.adapter.selectedAdapter).serverSetup;
@@ -340,11 +340,10 @@ function _applyServer(dispatch, getState) {
             console.log(err);
             return;
         } else {
-            dispatch(appliedServerAction(services));
+            // TODO: Do we need to transfer handles from services to serverSetup before dispatching the action?
+            dispatch(appliedServerAction(serverSetup));
         }
     });
-
-    // TODO: dispatch appliedServer action to deviceDetail who wants to know how the new local server looks.
 }
 
 function _saveServerSetup(dispatch, getState, adapter, filename) {

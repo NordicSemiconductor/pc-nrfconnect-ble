@@ -16,6 +16,7 @@ import { List, Record, Map } from 'immutable';
 
 import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
 import * as AdapterActions from '../actions/adapterActions';
+import * as ServerSetupActions from '../actions/serverSetupActions';
 
 import { getInstanceIds, getImmutableService, getImmutableCharacteristic, getImmutableDescriptor } from '../utils/api';
 import { getUuidName } from '../utils/uuid_definitions';
@@ -148,10 +149,19 @@ function completedWritingAttribute(state, attribute, value, error) {
         }
 
         return state.setIn(attributeStatePath.concat('value'), List(immutableAttribute.value.toArray()));
-
     } else {
         return state.setIn(attributeStatePath.concat('value'), List(value));
     }
+}
+
+function appliedServerSetup(state, server) {
+    console.log(state);
+    console.log(server);
+    let localDeviceDetails = new DeviceDetail();
+
+    localDeviceDetails = localDeviceDetails.setIn(['children'], server.children);
+
+    return state.setIn(['devices', 'local.server'], localDeviceDetails);
 }
 
 function attributeValueChanged(state, attribute, value) {
@@ -178,6 +188,8 @@ export default function deviceDetails(state = initialState, action) {
             return completedReadingAttribute(state, action.attribute, action.value, action.error);
         case DeviceDetailsActions.COMPLETED_WRITING_ATTRIBUTE:
             return completedWritingAttribute(state, action.attribute, action.value, action.error);
+        case ServerSetupActions.APPLIED_SERVER:
+            return appliedServerSetup(state, action.server);
         case AdapterActions.ATTRIBUTE_VALUE_CHANGED:
             return attributeValueChanged(state, action.attribute, action.value);
         case AdapterActions.DEVICE_CONNECTED:

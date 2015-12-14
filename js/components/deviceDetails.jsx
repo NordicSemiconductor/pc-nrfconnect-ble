@@ -121,6 +121,12 @@ export default class DeviceDetailsView extends Component {
             adapter,
             device,
             selected, // instanceId for the selected component
+            onSelectComponent,
+            onToggleAttributeExpanded,
+            onReadCharacteristic,
+            onWriteCharacteristic,
+            onReadDescriptor,
+            onWriteDescriptor,
         } = this.props;
 
         const {
@@ -143,26 +149,57 @@ export default class DeviceDetailsView extends Component {
                 onShowAdvertisingSetupDialog,
                 onToggleAdvertising,
             } = this.props;
-            /*TODO: Add local server*/
+
+            localDevice = (<CentralDevice id={instanceId + '_details'}
+                                          position={centralPosition}
+                                          name={name}
+                                          address={address}
+                                          advertising={advertising}
+                                          selected={selected}
+                                          onShowSetupDialog={onShowAdvertisingSetupDialog}
+                                          onToggleAdvertising={onToggleAdvertising} />
+            );
+
+            const deviceDetail = this.props.deviceDetails.devices.get('local.server');
+
+            if (!deviceDetail) {
+                return (
+                    <div className="local-server device-details-view" id={instanceId + '_details'} style={this.props.style}>
+                        {localDevice}
+                    </div>
+                );
+            }
+
+            const children = deviceDetail.get('children');
+            const childrenList = [];
+
+            if (children) {
+                children.forEach(service => {
+                    childrenList.push(<ServiceItem key={service.instanceId}
+                                                   item={service}
+                                                   selectOnClick={true}
+                                                   selected={selected}
+                                                   onSelectAttribute={onSelectComponent}
+                                                   onToggleAttributeExpanded={onToggleAttributeExpanded}
+                                                   onReadCharacteristic={onReadCharacteristic}
+                                                   onWriteCharacteristic={onWriteCharacteristic}
+                                                   onReadDescriptor={onReadDescriptor}
+                                                   onWriteDescriptor={onWriteDescriptor} />
+                    );
+                });
+            }
+
             return (
-                <CentralDevice id={instanceId + '_details'}
-                               position={centralPosition}
-                               name={name}
-                               address={address}
-                               advertising={advertising}
-                               selected={selected}
-                               onShowSetupDialog={onShowAdvertisingSetupDialog}
-                               onToggleAdvertising={onToggleAdvertising} />
+                <div className="local-server device-details-view" id={instanceId + '_details'} style={this.props.style}>
+                    {localDevice}
+                    <div className="service-items-wrap">
+                        {childrenList}
+                    </div>
+                </div>
             );
         }
 
         const {
-            onSelectComponent,
-            onToggleAttributeExpanded,
-            onReadCharacteristic,
-            onWriteCharacteristic,
-            onReadDescriptor,
-            onWriteDescriptor,
             onDisconnectFromDevice,
             onPairWithDevice,
             onUpdateDeviceConnectionParams,
@@ -184,7 +221,6 @@ export default class DeviceDetailsView extends Component {
                                                  onDisconnect={() => onDisconnectFromDevice(device)}
                                                  onPair={() => onPairWithDevice(device)}
                                                  onConnectionParamsUpdate={() => onUpdateDeviceConnectionParams(device)}/>);
-
 
         if (deviceDetail && deviceDetail.discoveringChildren) {
             return (
