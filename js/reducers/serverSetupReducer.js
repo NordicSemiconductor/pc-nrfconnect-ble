@@ -12,7 +12,7 @@
 
 'use strict';
 
-import { List, Record, OrderedMap } from 'immutable';
+import { List, Record, OrderedMap, fromJS } from 'immutable';
 
 import * as ServerSetupActions from '../actions/serverSetupActions';
 
@@ -55,7 +55,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         children: OrderedMap(),
     });
 
-    characteristics = {};
+    const characteristics = {};
     characteristics[deviceNameCharacteristic.instanceId] = deviceNameCharacteristic;
     characteristics[appearanceCharacteristic.instanceId] = appearanceCharacteristic;
 
@@ -121,19 +121,23 @@ function toggleAttributeExpanded(state, attribute) {
     return state.setIn(attributeStatePath.concat('expanded'), !previouslyExpanded);
 }
 
-function addNewService(state) {
-    const newService = getImmutableService({
+function createNewService() {
+    return getImmutableService({
         instanceId: deviceInstanceId + '.' + serviceInstanceIdCounter++,
         name: 'New Service',
         children: OrderedMap(),
     });
+}
+
+function addNewService(state) {
+    const newService = createNewService();
     const newServiceStatePath = getNodeStatePath(newService.instanceId);
 
     return state.setIn(newServiceStatePath, newService);
 }
 
-function addNewCharacteristic(state, parent) {
-    const newCharacteristic = getImmutableCharacteristic({
+function createNewCharacteristic(parent) {
+    return getImmutableCharacteristic({
         instanceId: parent.instanceId + '.' + characteristicInstanceIdCounter++,
         name: 'New Characteristic',
         readPerm: 'open',
@@ -142,13 +146,17 @@ function addNewCharacteristic(state, parent) {
         maxLength: 20,
         children: OrderedMap(),
     });
+}
+
+function addNewCharacteristic(state, parent) {
+    const newCharacteristic = createNewCharacteristic(parent);
     const newCharacteristicStatePath = getNodeStatePath(newCharacteristic.instanceId);
 
     return state.setIn(newCharacteristicStatePath, newCharacteristic);
 }
 
-function addNewDescriptor(state, parent) {
-    const newDescriptor = getImmutableDescriptor({
+function createNewDescriptor(parent) {
+    return getImmutableDescriptor({
         instanceId: parent.instanceId + '.' + descriptorInstanceIdCounter++,
         name: 'New Descriptor',
         readPerm: 'open',
@@ -157,8 +165,11 @@ function addNewDescriptor(state, parent) {
         maxLength: 20,
         children: OrderedMap(),
     });
-    const newDescriptorStatePath = getNodeStatePath(newDescriptor.instanceId);
+}
 
+function addNewDescriptor(state, parent) {
+    const newDescriptor = createNewDescriptor(parent);
+    const newDescriptorStatePath = getNodeStatePath(newDescriptor.instanceId);
     return state.setIn(newDescriptorStatePath, newDescriptor);
 }
 
@@ -179,24 +190,57 @@ function removeAttribute(state) {
     return changedState.deleteIn(attributeStatePath);
 }
 
+function cloneObjectV1(service) {
+    let retval = {};
+
+    for (let entry in service) {
+        if (service.hasOwnProperty(entry) && entry !== 'children' && entry !== 'instanceId') {
+            retval[entry] = service[entry];
+        }
+    }
+
+    if (retval.properties) {
+        retval.properties = getImmutableProperties(retval.properties);
+    }
+
+    return retval;
+}
+
 function loadSetup(state, setup) {
-    if (setup && setup.children && setup.children.length > 0) {
-        // TODO: Add/create immutable version
-        const services = setup.children;
+    if (setup && setup.children) {
+        const services = Object.keys(setup.children);
 
-        for (let service in services) {
-            const characteristics = service.children;
-            // TODO: Add/create immutable version
+        let newState = new InitialState();
+        newState = newState.setIn(['children'], OrderedMap());
 
-            for (let characteristic in characteristics) {
-                // TODO: Add/create immutable version
-                const descriptors = characteristic.children;
+        for (let service of services) {
+            const _service = setup.children[service];
+            let newService = createNewService();
 
-                for(let descriptor in descriptors) {
-                    // TODO: Add/create immutable version
+            newService = newService.merge(cloneObjectV1(_service));
+            newState = newState.setIn(getNodeStatePath(newService.instanceId), newService);
+
+            const characteristics = Object.keys(_service.children);
+
+            for (let characteristic of characteristics) {
+                const _characteristic = _service.children[characteristic];
+
+                const descriptors = Object.keys(_characteristic.children);
+                let newCharacteristic = createNewCharacteristic(newService);
+                newCharacteristic = newCharacteristic.merge(cloneObjectV1(_characteristic));
+                newState = newState.setIn(getNodeStatePath(newCharacteristic.instanceId), newCharacteristic);
+
+                for(let descriptor of descriptors) {
+                    const _descriptor = _characteristic.children[descriptor];
+                    let newDescriptor = createNewDescriptor(newCharacteristic);
+                    newDescriptor = newDescriptor.merge(cloneObjectV1(_descriptor));
+                    newState = newState.setIn(getNodeStatePath(newDescriptor.instanceId), newDescriptor);
                 }
             }
         }
+
+        // Only update the children data, everything else that is stored we ignore
+        return state.setIn(['children'], newState.children);
     }
 }
 

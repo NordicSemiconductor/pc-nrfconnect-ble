@@ -46,7 +46,6 @@ class ServerSetup extends Component {
 
     _setupFileDialogs() {
         const {
-            selectedAdapter,
             loadServerSetup,
             saveServerSetup,
         } = this.props;
@@ -55,8 +54,8 @@ class ServerSetup extends Component {
             ipcRenderer.removeListener('load-server-setup-reply', loadServerSetupReplyHandle);
         }
 
-        const loadServerSetupReply = (event, arg) => {
-            loadServerSetup(selectedAdapter, arg);
+        const loadServerSetupReply = (event, filename) => {
+            loadServerSetup(filename);
         };
 
         ipcRenderer.on('load-server-setup-reply', loadServerSetupReply);
@@ -66,8 +65,8 @@ class ServerSetup extends Component {
             ipcRenderer.removeListener('save-server-setup-reply', saveServerSetupReplyHandle);
         }
 
-        const saveServerSetupReply = (event, arg) => {
-            saveServerSetup(selectedAdapter, arg);
+        const saveServerSetupReply = (event, filename) => {
+            saveServerSetup(filename);
         };
 
         ipcRenderer.on('save-server-setup-reply', saveServerSetupReply);

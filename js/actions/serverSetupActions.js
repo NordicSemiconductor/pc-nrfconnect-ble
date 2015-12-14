@@ -346,8 +346,9 @@ function _applyServer(dispatch, getState) {
     });
 }
 
-function _saveServerSetup(dispatch, getState, adapter, filename) {
+function _saveServerSetup(dispatch, getState, filename) {
     if (filename) {
+        const adapter = getState().adapter.adapters.get(getState().adapter.selectedAdapter);
         writeFile(filename, JSON.stringify(adapter.serverSetup), error => {
             if (error) {
                 // TODO: implement functionality in reducer for this error
@@ -357,7 +358,7 @@ function _saveServerSetup(dispatch, getState, adapter, filename) {
     }
 }
 
-function _loadServerSetup(dispatch, getState, selectedAdapter, filename) {
+function _loadServerSetup(dispatch, filename) {
     // TODO: implement loading of server setup
 
     // Load file into immutable JS structure and replace it in the reducer.
@@ -433,14 +434,14 @@ export function hideDeleteDialog() {
     return hideDeleteDialogAction();
 }
 
-export function saveServerSetup(adapter, filename) {
+export function saveServerSetup(filename) {
     return (dispatch, getState) => {
-        _saveServerSetup(dispatch, getState, adapter, filename);
+        _saveServerSetup(dispatch, getState, filename);
     };
 }
 
-export function loadServerSetup(adapter, filename) {
-    return (dispatch, getState) => {
-        _loadServerSetup(dispatch, getState, adapter, filename);
+export function loadServerSetup(filename) {
+    return (dispatch) => {
+        _loadServerSetup(dispatch, filename);
     };
 }
