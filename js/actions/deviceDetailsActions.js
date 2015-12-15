@@ -33,6 +33,7 @@ export const COMPLETED_READING_ATTRIBUTE = 'DEVICE_DETAILS_COMPLETED_READING_ATT
 export const ERROR_OCCURED = 'DEVICE_DETAILS_ERROR_OCCURED';
 
 import { getInstanceIds } from '../utils/api';
+import { showErrorDialog } from './errorDialogActions';
 
 function selectComponentAction(component) {
     return {
@@ -41,23 +42,12 @@ function selectComponentAction(component) {
     };
 }
 
-// This function shall only be used by Promise.reject calls.
-function makeError(data) {
-    let {adapter, device, error} = data;
-
-    return {
-        adapter: adapter,
-        device: device,
-        error: error,
-    };
-}
-
 function _discoverServices(dispatch, getState, device) {
     return new Promise((resolve, reject) => {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if (adapterToUse === null) {
-            dispatch(makeError({error: `No adapter selected`}));
+            dispatch(showErrorDialog(`No adapter selected`));
             return;
         }
 
@@ -67,7 +57,7 @@ function _discoverServices(dispatch, getState, device) {
             device.instanceId,
             (error, services) => {
                 if (error) {
-                    reject(makeError({adapter: adapterToUse, device: device, error: error}));
+                    reject(new Error(error));
                 }
 
                 resolve(services);
@@ -78,7 +68,7 @@ function _discoverServices(dispatch, getState, device) {
         _discoverDeviceName(dispatch, getState, device, services);
     }).catch(error => {
         dispatch(discoveredAttributesAction(device));
-        dispatch(errorOccuredAction(error.adapter, error.error));
+        dispatch(showErrorDialog(error.error));
     });
 }
 
@@ -91,7 +81,7 @@ function _discoverDeviceName(dispatch, getState, device, services) {
             }
         }
 
-        reject('Could not find GAP service');
+        reject(new Error('Could not find GAP service'));
     }).then(gapService => {
         return _discoverCharacteristics(dispatch, getState, gapService);
     }).then(characteristics => {
@@ -100,12 +90,10 @@ function _discoverDeviceName(dispatch, getState, device, services) {
                 return _readCharacteristic(dispatch, getState, characteristic);
             }
         }
-
-        throw(makeError({error: 'Did not find GAP service'}));
     }).then(value => {
         dispatch(discoveredDeviceNameAction(device, value));
     }).catch(error => {
-        dispatch(errorOccuredAction(error.adapter, error.error));
+        dispatch(showErrorDialog(error.message));
     });
 }
 
@@ -114,8 +102,7 @@ function _discoverCharacteristics(dispatch, getState, service) {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if (adapterToUse === null) {
-            dispatch(makeError({error: `No adapter selected`}));
-            return;
+            reject(new Error(`No adapter selected`));
         }
 
         dispatch(discoveringAttributesAction(service));
@@ -125,7 +112,7 @@ function _discoverCharacteristics(dispatch, getState, service) {
             (error, characteristics) => {
                 if (error) {
                     dispatch(discoveredAttributesAction(service));
-                    reject(makeError({adapter: adapterToUse, service: service, error: error}));
+                    reject(new Error(error));
                 }
 
                 resolve(characteristics);
@@ -136,7 +123,7 @@ function _discoverCharacteristics(dispatch, getState, service) {
         return characteristics;
     }).catch(error => {
         console.log(error);
-        dispatch(errorOccuredAction(error.adapter, error.error));
+        dispatch(showErrorDialog(error.message));
     });
 }
 
@@ -145,8 +132,7 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if (adapterToUse === null) {
-            reject(makeError({error: `No adapter selected`}));
-            return;
+            reject(new Error(`No adapter selected`));
         }
 
         dispatch(discoveringAttributesAction(characteristic));
@@ -156,7 +142,7 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
             (error, descriptors) => {
                 if (error) {
                     dispatch(discoveredAttributesAction(characteristic));
-                    reject(makeError({adapter: adapterToUse, characteristic: characteristic, error: error}));
+                    reject(new Error(error));
                 }
 
                 resolve(descriptors);
@@ -166,7 +152,7 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
         dispatch(discoveredAttributesAction(characteristic, descriptors));
     }).catch(error => {
         console.log(error);
-        dispatch(errorOccuredAction(error.adapter, error.error));
+        dispatch(showErrorDialog(error.message));
     });
 }
 
@@ -175,7 +161,7 @@ function _toggleAttributeExpanded(dispatch, getState, attribute) {
     const adapterToUse = state.adapter.api.selectedAdapter;
 
     if (adapterToUse === null) {
-        dispatch(errorOccuredAction(undefined, 'No adapter selected'));
+        dispatch(showErrorDialog('No adapter selected'));
         return;
     }
 
@@ -203,8 +189,7 @@ function _readCharacteristic(dispatch, getState, characteristic) {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if (adapterToUse === null) {
-            reject(makeError({error: 'No adapter selected'}));
-            return;
+            reject(new Error('No adapter selected'));
         }
 
         dispatch(readingAttributeAction(characteristic));
@@ -214,7 +199,7 @@ function _readCharacteristic(dispatch, getState, characteristic) {
             (error, value) => {
                 if (error) {
                     dispatch(completedReadingAttributeAction(characteristic, null, error));
-                    reject(makeError({adapter: adapterToUse, characteristic: characteristic, error: error}));
+                    reject(new Error(error));
                 }
 
                 resolve(value);
@@ -224,7 +209,7 @@ function _readCharacteristic(dispatch, getState, characteristic) {
         dispatch(completedReadingAttributeAction(characteristic, value));
         return value;
     }).catch(error => {
-        dispatch(errorOccuredAction(error.adapter, error.error));
+        dispatch(showErrorDialog(error.message));
     });
 }
 
@@ -233,8 +218,7 @@ function _writeCharacteristic(dispatch, getState, characteristic, value) {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if (adapterToUse === null) {
-            reject(makeError({error: 'No adapter selected'}));
-            return;
+            reject(new Error('No adapter selected'));
         }
 
         dispatch(writingAttributeAction(characteristic));
@@ -251,7 +235,7 @@ function _writeCharacteristic(dispatch, getState, characteristic, value) {
         adapterToUse.writeCharacteristicValue(characteristic.instanceId, value, ack, error => {
             if (error) {
                 dispatch(completedWritingAttributeAction(characteristic, null, error));
-                reject(makeError({adapter: adapterToUse, characteristic: characteristic, error: error}));
+                reject(new Error(error));
             }
 
             resolve();
@@ -259,7 +243,7 @@ function _writeCharacteristic(dispatch, getState, characteristic, value) {
     }).then(() => {
         dispatch(completedWritingAttributeAction(characteristic, value));
     }).catch(error => {
-        dispatch(errorOccuredAction(error.adapter, error.error));
+        dispatch(showErrorDialog(error.message));
     });
 }
 
@@ -268,8 +252,7 @@ function _readDescriptor(dispatch, getState, descriptor) {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if (adapterToUse === null) {
-            reject(makeError({error: 'No adapter selected'}));
-            return;
+            reject(new Error('No adapter selected'));
         }
 
         dispatch(readingAttributeAction(descriptor));
@@ -279,7 +262,7 @@ function _readDescriptor(dispatch, getState, descriptor) {
             (error, value) => {
                 if (error) {
                     dispatch(completedReadingAttributeAction(descriptor, null, error));
-                    reject(makeError({adapter: adapterToUse, descriptor: descriptor, error: error}));
+                    reject(new Error(error));
                 }
 
                 resolve(value);
@@ -288,7 +271,7 @@ function _readDescriptor(dispatch, getState, descriptor) {
     }).then(value => {
         dispatch(completedReadingAttributeAction(descriptor, value));
     }).catch(error => {
-        dispatch(errorOccuredAction(error.adapter, error.error));
+        dispatch(showErrorDialog(error.message));
     });
 }
 
@@ -297,8 +280,7 @@ function _writeDescriptor(dispatch, getState, descriptor, value) {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if (adapterToUse === null) {
-            reject(makeError({error: 'No adapter selected'}));
-            return;
+            reject(new Error('No adapter selected'));
         }
 
         dispatch(writingAttributeAction(descriptor));
@@ -310,7 +292,7 @@ function _writeDescriptor(dispatch, getState, descriptor, value) {
             error => {
                 if (error) {
                     dispatch(completedWritingAttributeAction(descriptor, null, error));
-                    reject(makeError({adapter: adapterToUse, descriptor: descriptor, error: error}));
+                    reject(new Error(error));
                 }
 
                 resolve();
@@ -319,7 +301,7 @@ function _writeDescriptor(dispatch, getState, descriptor, value) {
     }).then(() => {
         dispatch(completedWritingAttributeAction(descriptor, value));
     }).catch(error => {
-        dispatch(errorOccuredAction(error.adapter, error.error));
+        dispatch(showErrorDialog(error.message));
     });
 }
 
@@ -381,14 +363,6 @@ function completedWritingAttributeAction(attribute, value, error) {
         type: COMPLETED_WRITING_ATTRIBUTE,
         attribute,
         value,
-        error,
-    };
-}
-
-function errorOccuredAction(adapter, error) {
-    return {
-        type: ERROR_OCCURED,
-        adapter,
         error,
     };
 }

@@ -34,7 +34,7 @@ import { writeFile, readFileSync } from 'fs';
 
 import { api } from 'pc-ble-driver-js';
 import { logger } from '../logging';
-import { showErrorDialog }from './errorDialogActions';
+import { showErrorDialog } from './errorDialogActions';
 
 function toggleAttributeExpandedAction(attribute) {
     return {
@@ -274,6 +274,7 @@ function _applyServer(dispatch, getState) {
             // TODO: log something
             console.log('failed to set services');
             console.log(err);
+            dispatch(showErrorDialog(err));
             return;
         } else {
             dispatch(appliedServerAction(services));
