@@ -44,7 +44,7 @@ export class ErrorDialog extends Component {
                         <Modal.Title>Error!</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {errors}
+                        {_errors}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={() => closeErrorDialog()}>Ok</Button>
