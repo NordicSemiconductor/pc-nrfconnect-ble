@@ -243,7 +243,7 @@ function loadSetup(state, setup) {
                 newCharacteristic = newCharacteristic.merge(cloneObjectV1(_characteristic));
                 newState = newState.setIn(getNodeStatePath(newCharacteristic.instanceId), newCharacteristic);
 
-                for(let descriptor of descriptors) {
+                for (let descriptor of descriptors) {
                     const _descriptor = _characteristic.children[descriptor];
                     let newDescriptor = createNewDescriptor(newCharacteristic);
                     newDescriptor = newDescriptor.merge(cloneObjectV1(_descriptor));

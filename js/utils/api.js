@@ -255,10 +255,12 @@ function getImmutableDescriptorValue(descriptor) {
         value,
     } = descriptor;
 
-    if (uuid === '2902') {
+    const descriptorInstanceIds = getInstanceIds(descriptor.instanceId);
+
+    if (descriptorInstanceIds.device === 'local.server' && uuid === '2902') {
         let cccdValue = new Map();
         for (let deviceInstanceId in value) {
-            cccdValue = cccdValue.set(deviceInstanceId, value[deviceInstanceId]);
+            cccdValue = cccdValue.set(deviceInstanceId, List(value[deviceInstanceId]));
         }
 
         return cccdValue;

@@ -148,7 +148,7 @@ function completedWritingAttribute(state, attribute, value, error) {
             immutableAttribute = getImmutableCharacteristic(attribute);
         }
 
-        return state.setIn(attributeStatePath.concat('value'), List(immutableAttribute.value.toArray()));
+        return state.setIn(attributeStatePath.concat('value'), immutableAttribute.value);
     } else {
         return state.setIn(attributeStatePath.concat('value'), List(value));
     }

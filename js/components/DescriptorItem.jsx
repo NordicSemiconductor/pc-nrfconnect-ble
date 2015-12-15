@@ -15,9 +15,11 @@
 import React from 'react';
 
 import Component from 'react-pure-render/component';
+import { Map } from 'immutable';
 
 import HexOnlyEditableField from './HexOnlyEditableField';
 import { Effects } from '../utils/Effects';
+import { getInstanceIds } from '../utils/api';
 import * as Colors from '../utils/colorDefinitions';
 
 export default class DescriptorItem extends Component {
@@ -57,12 +59,13 @@ export default class DescriptorItem extends Component {
         this._selectComponent();
     }
 
-    _onWrite(value) {
-        this.props.onWrite(this.props.item, value);
+    _isLocalAttribute() {
+        const instanceIds = getInstanceIds(this.props.item.instanceId);
+        return instanceIds.device === 'local.server';
     }
 
-    _onRead() {
-        this.props.onRead(this.props.item);
+    _isCCCDAttribute() {
+        return this.props.item.uuid === '2902';
     }
 
     render() {
@@ -78,12 +81,46 @@ export default class DescriptorItem extends Component {
             errorMessage,
         } = item;
 
+        const isLocal = this._isLocalAttribute();
+        const _onRead = isLocal ? undefined : () => {
+            this.props.onRead(this.props.item);
+        };
+
+        const isCCCD = this._isCCCDAttribute();
+        const _onWrite = isLocal && isCCCD ? undefined : value => {
+            this.props.onWrite(this.props.item, value);
+        };
+
         const itemIsSelected = instanceId === selected;
         const errorText = errorMessage ? errorMessage : '';
         const hideErrorClass = (errorText === '') ? 'hide' : '';
         const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)'
             : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
+
+        const valueList = [];
+
+        if (isLocal && isCCCD && Map.isMap(value)) {
+            value.forEach((cccdValue, deviceInstanceId) => {
+                valueList.push((
+                    <HexOnlyEditableField key={instanceId + '-' + deviceInstanceId}
+                                          value={cccdValue.toArray()}
+                                          onWrite={_onWrite}
+                                          onRead={_onRead}
+                                          showReadButton={itemIsSelected}
+                                          selectParent={() => this._selectComponent()} />
+                ));
+            });
+        } else {
+            valueList.push((
+                <HexOnlyEditableField key={instanceId}
+                                      value={value.toArray()}
+                                      onWrite={_onWrite}
+                                      onRead={_onRead}
+                                      showReadButton={itemIsSelected}
+                                      selectParent={() => this._selectComponent()} />
+            ));
+        }
 
         return (
             <div className='descriptor-item' style={{ backgroundColor: backgroundColor }} onClick={e => this._onContentClick(e)}>
@@ -93,11 +130,7 @@ export default class DescriptorItem extends Component {
                 <div className='content-wrap'>
                     <div className='content'>
                         <div className='truncate-text' title={'[' + handle + '] ' + name}>{name}</div>
-                        <HexOnlyEditableField value={value.toArray()}
-                                              onWrite={value => this._onWrite(value)}
-                                              onRead={() => this._onRead()}
-                                              showReadButton={itemIsSelected}
-                                              selectParent={() => this._selectComponent()} />
+                        {valueList}
                         <div className={'error-label ' + hideErrorClass}>{errorText}</div>
                     </div>
                 </div>

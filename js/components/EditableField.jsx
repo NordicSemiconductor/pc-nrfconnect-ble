@@ -93,8 +93,11 @@ export default class EditableField extends Component {
 
     _toggleEditing(e) {
         e.stopPropagation();
-        this.editing = !this.editing;
-        this.forceUpdate();
+
+        if (this.props.onWrite) {
+            this.editing = !this.editing;
+            this.forceUpdate();
+        }
     }
 
     _onChange(e) {

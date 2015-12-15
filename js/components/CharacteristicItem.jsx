@@ -20,6 +20,7 @@ import DescriptorItem from './DescriptorItem';
 import AddNewItem from './AddNewItem';
 import HexOnlyEditableField from './HexOnlyEditableField';
 import { Effects } from '../utils/Effects';
+import { getInstanceIds } from '../utils/api';
 import * as Colors from '../utils/colorDefinitions';
 
 const NOTIFY = 1;
@@ -129,9 +130,7 @@ export default class CharacteristicItem extends Component {
         this.props.onWrite(this.props.item, value);
     }
 
-    _onRead() {
-        this.props.onRead(this.props.item);
-    }
+
 
     _findCccdDescriptor(children) {
         if (!children) {
@@ -139,6 +138,11 @@ export default class CharacteristicItem extends Component {
         }
 
         return children.find(child => child.uuid === CCCD_UUID);
+    }
+
+    _isLocalAttribute() {
+        const instanceIds = getInstanceIds(this.props.item.instanceId);
+        return instanceIds.device === 'local.server';
     }
 
     _isNotifying(cccdDescriptor) {
@@ -208,6 +212,11 @@ export default class CharacteristicItem extends Component {
             });
         }
 
+        const isLocal = this._isLocalAttribute();
+        const _onRead = isLocal ? undefined : () => {
+            this.props.onRead(this.props.item);
+        };
+
         this.cccdDescriptor = this._findCccdDescriptor(children);
         const hasCccd = this.cccdDescriptor !== undefined;
         const isNotifying = this._isNotifying(this.cccdDescriptor);
@@ -218,7 +227,7 @@ export default class CharacteristicItem extends Component {
         const expandIconStyle = children && children.size === 0 && !addNew  ? {display: 'none'} : {};
         const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
         const notifyIcon = (isNotifying && (hasNotifyProperty || hasIndicateProperty)) ? 'icon-stop' : 'icon-play';
-        const notifyIconStyle = hasCccd ? {} : {display: 'none'};
+        const notifyIconStyle = !isLocal && hasCccd ? {} : {display: 'none'};
         const itemIsSelected = item.instanceId === selected;
         const errorText = errorMessage ? errorMessage : '';
         const hideErrorClass = (errorText === '') ? 'hide' : '';
@@ -246,7 +255,7 @@ export default class CharacteristicItem extends Component {
                         <HexOnlyEditableField value={value.toArray()}
                                               onWrite={value => this._onWrite(value)}
                                               showReadButton={itemIsSelected}
-                                              onRead={() => this._onRead()}
+                                              onRead={_onRead}
                                               selectParent={() => this._selectComponent()} />
                         <div className={'error-label ' + hideErrorClass}>{errorText}</div>
                     </div>
