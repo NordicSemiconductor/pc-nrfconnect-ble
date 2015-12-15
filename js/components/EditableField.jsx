@@ -199,7 +199,7 @@ export default class EditableField extends Component {
                                       onChange={e => this._onChange(e)}
                                       onClick={this._stopPropagation} />;
         } else if (this.editing && this.props.onWrite) {
-            child = <div className='editable-field-editor-wrap'>
+            child = <div className='editable-field-editor-wrap native-key-bindings'>
                         <div className='alert-wrap'>
                             <div className='alert alert-danger tooltip top' style={{display: this.validationMessage == '' ? 'none' : 'block' }}>
                                 <div className='tooltip-arrow'></div>

@@ -77,6 +77,16 @@ class AppContainer extends Component {
             });
         }
 
+        // These shall always be added
+        keymaps.add('core', {
+            'body .native-key-bindings': {
+                'left': 'native!',
+                'right': 'native!',
+                'up': 'native!',
+                'down': 'native!',
+            },
+        });
+
         this._registerKeyboardShortcuts();
     }
 

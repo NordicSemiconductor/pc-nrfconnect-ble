@@ -126,7 +126,7 @@ export default class DescriptorEditor extends Component {
         }
 
         return (
-            <form className='form-horizontal'>
+            <form className='form-horizontal native-key-bindings'>
                 <div className='form-group'>
                     <label htmlFor='uuid' className='col-md-3 control-label'>Descriptor UUID</label>
                     <div className='col-md-9'>
