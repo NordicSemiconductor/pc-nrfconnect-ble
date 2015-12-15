@@ -19,9 +19,40 @@ import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import { Connector } from './Connector';
 
+// Numbers found by trial
+const WINDOW_WIDTH_THRESHOLD = 1035;
+const WINDOW_WIDTH_OFFSET = 375;
+
 export default class ConnectedDevice extends Component {
     constructor(props) {
         super(props);
+        this.belowWidthThreshold = window.innerWidth < WINDOW_WIDTH_THRESHOLD;
+        this.boundResizeListener = this._onResize.bind(this);
+    }
+
+    componentDidMount() {
+        window.addEventListener('resize', this.boundResizeListener);
+        this.boundingRect = React.findDOMNode(this).getBoundingClientRect();
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.boundResizeListener);
+    }
+
+    _onResize() {
+        if (!this.boundingRect) {
+            return;
+        }
+
+        const isCurrentlyBelow = window.innerWidth < (this.boundingRect.right + WINDOW_WIDTH_OFFSET);
+        const hasChanged = isCurrentlyBelow !== this.belowWidthThreshold;
+
+        if (!hasChanged) {
+            return;
+        }
+
+        this.belowWidthThreshold = isCurrentlyBelow;
+        this.forceUpdate();
     }
 
     _onSelect(event, eventKey) {
@@ -62,6 +93,8 @@ export default class ConnectedDevice extends Component {
             opacity: device.connected === true ? 1.0 : 0.5,
         };
 
+        const pullRight = this.belowWidthThreshold ? true : false;
+
         return (
             <div id={id} className='device standalone' style={style}>
                 <div className='top-bar'>
@@ -71,11 +104,11 @@ export default class ConnectedDevice extends Component {
                 <div className='device-body text-small' >
                     <div>
                         <div className='pull-right'>
-                            <Dropdown id='connectionDropDown' onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
+                            <Dropdown pullRight={pullRight} id='connectionDropDown' onClick={() => this._onResize()} onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
                                 <Dropdown.Toggle noCaret>
                                     <span className='icon-cog' aria-hidden='true' />
                                 </Dropdown.Toggle>
-                                <Dropdown.Menu>
+                                <Dropdown.Menu pullRight={pullRight}>
                                     <MenuItem eventKey='Update'>Update connection</MenuItem>
                                     <MenuItem eventKey='Pair'>Pair</MenuItem>
                                     <MenuItem eventKey='Disconnect'>Disconnect</MenuItem>
