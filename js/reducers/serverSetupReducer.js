@@ -19,7 +19,6 @@ import * as ServerSetupActions from '../actions/serverSetupActions';
 import { getInstanceIds, getImmutableService, getImmutableCharacteristic, getImmutableDescriptor, getImmutableProperties } from '../utils/api';
 
 const InitialState = Record({
-    errors: [],
     selectedComponent: null,
     showingDeleteDialog: false,
     children: null,
@@ -103,7 +102,6 @@ function getInitialServices() {
 }
 
 const initialState = new InitialState({
-    errors: [],
     selectedComponent: null,
     showingDeleteDialog: false,
     children: getInitialServices(),
@@ -279,10 +277,6 @@ export default function deviceDetails(state = initialState, action) {
             return state.set('showingDeleteDialog', true);
         case ServerSetupActions.HIDE_DELETE_DIALOG:
             return state.set('showingDeleteDialog', false);
-        case ServerSetupActions.SHOW_ERROR_DIALOG:
-            return state.set('errors', action.errors);
-        case ServerSetupActions.HIDE_ERROR_DIALOG:
-            return state.set('errors', '');
         case ServerSetupActions.LOAD:
             return loadSetup(state, action.setup);
         default:

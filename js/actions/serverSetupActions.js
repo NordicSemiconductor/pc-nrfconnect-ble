@@ -27,17 +27,14 @@ export const APPLIED_SERVER = 'SERVER_SETUP_APPLIED_SERVER';
 export const SHOW_DELETE_DIALOG = 'SERVER_SETUP_SHOW_DELETE_DIALOG';
 export const HIDE_DELETE_DIALOG = 'SERVER_SETUP_HIDE_DELETE_DIALOG';
 
-export const SHOW_ERROR_DIALOG = 'SERVER_SETUP_SHOW_ERROR_DIALOG';
-export const HIDE_ERROR_DIALOG = 'SERVER_SETUP_HIDE_ERROR_DIALOG';
-
-export const SAVE_ERROR = 'SERVER_SETUP_SAVE_ERROR';
-export const LOAD_ERROR = 'SERVER_SETUP_LOAD_ERROR';
 export const LOAD = 'SERVER_SETUP_LOAD';
 
 import { getInstanceIds } from '../utils/api';
 import { writeFile, readFileSync } from 'fs';
 
 import { api } from 'pc-ble-driver-js';
+import { logger } from '../logging';
+import { showErrorDialog }from './errorDialogActions';
 
 function toggleAttributeExpandedAction(attribute) {
     return {
@@ -108,40 +105,6 @@ function showDeleteDialogAction() {
 function hideDeleteDialogAction() {
     return {
         type: HIDE_DELETE_DIALOG,
-    };
-}
-
-function showErrorDialogAction(errors) {
-    return {
-        type: SHOW_ERROR_DIALOG,
-        errors,
-    };
-}
-
-function hideErrorDialogAction(error) {
-    return {
-        type: HIDE_ERROR_DIALOG,
-        error,
-    };
-}
-
-function ErrorDialogAction() {
-    return {
-        type: HIDE_ERROR_DIALOG,
-    };
-}
-
-function saveErrorAction(error) {
-    return {
-        type: SAVE_ERROR,
-        error,
-    };
-}
-
-function loadErrorAction(error) {
-    return {
-        type: LOAD_ERROR,
-        error,
     };
 }
 
@@ -291,7 +254,7 @@ function _applyServer(dispatch, getState) {
         }
     }
 
-    errors = [];
+    let errors = [];
 
     if (missingSccdDescriptor) {
         errors.push('Missing SCCD descriptor (uuid: 2903). All characteristics with broadcast property must have an SCCD descriptor.');
@@ -302,7 +265,7 @@ function _applyServer(dispatch, getState) {
     }
 
     if (errors.length > 0) {
-        dispatch(showErrorDialogAction(errors));
+        dispatch(showErrorDialog(errors));
         return;
     }
 
@@ -313,7 +276,8 @@ function _applyServer(dispatch, getState) {
             console.log(err);
             return;
         } else {
-            dispatch(appliedServerAction(services));
+            // TODO: Do we need to transfer handles from services to serverSetup before dispatching the action?
+            dispatch(appliedServerAction(serverSetup));
         }
     });
 }
@@ -323,22 +287,32 @@ function _saveServerSetup(dispatch, getState, filename) {
         const adapter = getState().adapter.adapters.get(getState().adapter.selectedAdapter);
         writeFile(filename, JSON.stringify(adapter.serverSetup), error => {
             if (error) {
-                // TODO: implement functionality in reducer for this error
-                dispatch(saveErrorAction(error));
+                dispatch(showErrorDialog(error));
+                return;
             }
+
+            logger.info(`Server setup saved to ${filename}.`);
         });
     }
 }
 
 function _loadServerSetup(dispatch, filename) {
-    // TODO: implement loading of server setup
-
     // Load file into immutable JS structure and replace it in the reducer.
     // The reducer replaces the instanceId's
     if (filename && filename.length === 1) {
-        const setup = readFileSync(filename[0]);
-        const setupObj = JSON.parse(setup);
-        dispatch(loadAction(setupObj));
+        try {
+            const setup = readFileSync(filename[0]);
+            const setupObj = JSON.parse(setup);
+
+            if (!setupObj) {
+                throw new Error('Illegal format on server setup file.');
+            }
+
+            dispatch(loadAction(setupObj));
+            logger.info(`Server setup loaded from ${filename}.`);
+        } catch (e) {
+            dispatch(showErrorDialog(e.message));
+        }
     }
 }
 
@@ -388,14 +362,6 @@ export function applyServer() {
     return (dispatch, getState) => {
         _applyServer(dispatch, getState);
     };
-}
-
-export function showErrorDialog(error) {
-    return showErrorDialogAction(error);
-}
-
-export function hideErrorDialog() {
-    return hideErrorDialogAction();
 }
 
 export function showDeleteDialog() {

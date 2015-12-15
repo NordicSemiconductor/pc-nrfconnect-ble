@@ -6,9 +6,9 @@ import adapter from './adapterReducer';
 import discovery from './discoveryReducer';
 import log from './logReducer';
 import app from './appReducer';
-import deviceDetails from './deviceDetailsReducer';
 import advertisingSetup from './advertisingSetupReducer';
 import bleEvent from './bleEventReducer';
+import errorDialog from './errorDialogReducer';
 
 const rootReducer = combineReducers({
     adapter,
@@ -17,6 +17,7 @@ const rootReducer = combineReducers({
     app,
     advertisingSetup,
     bleEvent,
+    errorDialog
 });
 
 export default rootReducer;

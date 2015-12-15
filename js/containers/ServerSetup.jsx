@@ -29,7 +29,6 @@ import ServiceEditor from '../components/ServiceEditor';
 import CharacteristicEditor from '../components/CharacteristicEditor';
 import DescriptorEditor from '../components/DescriptorEditor';
 import ConfirmationDialog from '../components/ConfirmationDialog';
-import ErrorDialog from '../components/ErrorDialog';
 import CentralDevice from '../components/CentralDevice';
 
 import { getInstanceIds } from '../utils/api';
@@ -89,7 +88,6 @@ class ServerSetup extends Component {
             removeAttribute,
             applyServer,
             clearServer,
-            hideErrorDialog,
             showDeleteDialog,
             hideDeleteDialog,
         } = this.props;
@@ -99,7 +97,6 @@ class ServerSetup extends Component {
         }
 
         const {
-            errors,
             selectedComponent,
             showingDeleteDialog,
             children,
@@ -190,9 +187,6 @@ class ServerSetup extends Component {
                                         onOk={removeAttribute}
                                         onCancel={hideDeleteDialog}
                                         text='Do you want to delete?'/>
-                    <ErrorDialog show={errors.length > 0 ? true : false}
-                                 errors={errors}
-                                 onOk={hideErrorDialog} />
                 </div>
             </div>
         );

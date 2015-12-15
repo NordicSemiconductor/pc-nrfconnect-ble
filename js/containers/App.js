@@ -25,6 +25,7 @@ import ServerSetup from './ServerSetup';
 
 import NavBar from '../components/navbar';
 import BLEEventDialog from '../containers/BLEEventDialog';
+import ErrorDialog from '../containers/ErrorDialog';
 
 import LogViewer from './LogViewer';
 import DiscoveredDevices from './DiscoveredDevices';
@@ -180,6 +181,7 @@ class AppContainer extends Component {
                     </div>
                 </div>
                 <BLEEventDialog/>
+                <ErrorDialog/>
             </div>
         );
     }
