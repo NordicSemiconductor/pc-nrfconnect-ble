@@ -102,8 +102,10 @@ export default class DescriptorItem extends Component {
 
         if (isLocal && isCCCD && Map.isMap(value)) {
             value.forEach((cccdValue, deviceInstanceId) => {
+                const address = getInstanceIds(deviceInstanceId).address;
                 valueList.push((
                     <HexOnlyEditableField key={instanceId + '-' + deviceInstanceId}
+                                          title={'CCCD value for device: ' + address}
                                           value={cccdValue.toArray()}
                                           onWrite={_onWrite}
                                           onRead={_onRead}

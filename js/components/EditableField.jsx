@@ -226,7 +226,7 @@ export default class EditableField extends Component {
                         </div>
                     </div>;
         } else {
-            child = <div className='subtle-text editable' onClick={e => this._selectParentAndToggleEditing(e)}>
+            child = <div className='subtle-text editable' title={this.props.title} onClick={e => this._selectParentAndToggleEditing(e)}>
                         <span>{this.value || nonBreakingSpace}</span>
                     </div>;
         }

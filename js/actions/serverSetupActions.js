@@ -276,8 +276,7 @@ function _applyServer(dispatch, getState) {
             console.log(err);
             return;
         } else {
-            // TODO: Do we need to transfer handles from services to serverSetup before dispatching the action?
-            dispatch(appliedServerAction(serverSetup));
+            dispatch(appliedServerAction(services));
         }
     });
 }

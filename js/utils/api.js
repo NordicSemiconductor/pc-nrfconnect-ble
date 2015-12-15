@@ -132,6 +132,7 @@ export default function asImmutable(mutableObject) {
 
 export function getInstanceIds(instanceId) {
     const instanceIds = {
+        address: null,
         device: null,
         service: null,
         characteristic: null,
@@ -143,6 +144,10 @@ export function getInstanceIds(instanceId) {
     }
 
     const idArray = instanceId.split('.');
+
+    if (idArray.length > 0) {
+        instanceIds.address = idArray[0];
+    }
 
     if (idArray.length > 1) {
         instanceIds.device = idArray.slice(0, 2).join('.');
