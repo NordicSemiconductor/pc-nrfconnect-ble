@@ -161,7 +161,7 @@ export default class DeviceDetailsView extends Component {
             }
 
             return (
-                <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
+                <div className="remote-server device-details-view" id={instanceId + '_details'} style={this.props.style}>
                     {connectedDevice}
                     <div className="service-items-wrap">
                         {childrenList}

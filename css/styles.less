@@ -641,13 +641,19 @@
   }
 }
 
+.local-server .service-items-wrap {
+  max-height: calc(~"100vh - 386px");
+}
+.remote-server .service-items-wrap {
+  max-height: calc(~"100vh - 444px");
+}
+
 .device-details-view, .server-setup-view, .bleevent-dialog-view {
   background-color: white;
   margin: 80px 0px 0px 20px;
   .service-items-wrap {
     overflow-y: auto;
     overflow-x: hidden;
-    max-height: calc(~"100vh - 444px");
     width: 250px;
   }
   .enumerating-items-wrap {
