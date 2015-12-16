@@ -25,9 +25,129 @@ import * as BLEEventActions from '../actions/bleEventActions';
 
 import DeviceDetailsView from '../components/deviceDetails';
 
+import { getInstanceIds } from '../utils/api';
+import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
+
+let moveUpHandle;
+let moveDownHandle;
+let moveRightHandle;
+let moveLeftHandle;
+
 class DeviceDetailsContainer extends Component {
     constructor(props) {
         super(props);
+    }
+
+    componentDidMount() {
+        this._registerKeyboardShortcuts();
+    }
+
+    componentWillUnmount() {
+        this._unregisterKeyboardShortcuts();
+    }
+
+    _registerKeyboardShortcuts() {
+        // Setup keyboard shortcut callbacks
+        //
+        // Since we move between the different "tabs" we have to
+        // remove the listeners and add them again so that the correct instance
+        // of this class is associated with the callback registered on window.
+        this.moveUp = () => this._selectNextComponent(true);
+        this.moveDown = () => this._selectNextComponent(false);
+        this.moveRight = () => this._expandComponent(true);
+        this.moveLeft = () => this._expandComponent(false);
+
+        window.addEventListener('core:move-down', this.moveDown);
+        moveDownHandle = this.moveDown;
+
+        window.addEventListener('core:move-up', this.moveUp);
+        moveUpHandle = this.moveUp;
+
+        window.addEventListener('core:move-right', this.moveRight);
+        moveRightHandle = this.moveRight;
+
+        window.addEventListener('core:move-left', this.moveLeft);
+        moveLeftHandle = this.moveLeft;
+    }
+
+    _unregisterKeyboardShortcuts() {
+        if (moveDownHandle) {
+            window.removeEventListener('core:move-down', moveDownHandle);
+        }
+
+        if (moveUpHandle) {
+            window.removeEventListener('core:move-up', moveUpHandle);
+        }
+
+        if (moveRightHandle) {
+            window.removeEventListener('core:move-right', moveRightHandle);
+        }
+
+        if (moveLeftHandle) {
+            window.removeEventListener('core:move-left', moveLeftHandle);
+        }
+    }
+
+    _selectNextComponent(backward) {
+        const { deviceDetails, selectedComponent, selectComponent } = this.props;
+        let foundCurrent = false;
+
+        for (let item of traverseItems(deviceDetails, true, backward)) {
+            if (selectedComponent === null) {
+                if (item !== null) {
+                    selectComponent(item.instanceId);
+                    return;
+                }
+            }
+
+            if (item.instanceId === selectedComponent) {
+                foundCurrent = true;
+            } else if (foundCurrent) {
+                selectComponent(item.instanceId);
+                return;
+            }
+        }
+    }
+
+    _expandComponent(expand) {
+        const {
+            deviceDetails,
+            selectedComponent,
+            setAttributeExpanded,
+            selectComponent,
+        } = this.props;
+
+        if (!selectedComponent) {
+            return;
+        }
+
+        const itemInstanceIds = getInstanceIds(selectedComponent);
+        if (expand && itemInstanceIds.descriptor) {
+            return;
+        }
+
+        const item = findSelectedItem(deviceDetails, selectedComponent);
+
+        if (item) {
+            if (expand && item.children && !item.children.size) {
+                return;
+            }
+
+            if (expand && item.expanded && item.children.size) {
+                this._selectNextComponent(false);
+                return;
+            }
+
+            if (!expand && !item.expanded) {
+                if (itemInstanceIds.characteristic) {
+                    selectComponent(selectedComponent.split('.').slice(0, -1).join('.'));
+                }
+
+                return;
+            }
+
+            setAttributeExpanded(item, expand);
+        }
     }
 
     render() {

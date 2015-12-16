@@ -1,63 +1,71 @@
 'use strict';
 
-export function findSelectedItem(deviceDetails, deviceInstanceId, selectedInstanceId) {
-    for (let item of traverseItems(deviceDetails, deviceInstanceId, true)) {
+export function findSelectedItem(deviceDetails, selectedInstanceId) {
+    for (let item of traverseItems(deviceDetails, true)) {
         if (item.instanceId === selectedInstanceId) {
             return item;
         }
     }
 }
 
-export function* traverseItems(deviceDetails, deviceInstanceId, skipCollapsed, backward) {
-    if (!deviceDetails || !deviceInstanceId) {
+export function* traverseItems(deviceDetails, skipCollapsed, backward) {
+    if (!deviceDetails) {
         return;
     }
 
-    const services = deviceDetails.getIn(['devices', deviceInstanceId, 'children']);
+    const devices = deviceDetails.get('devices');
 
-    if (services !== undefined) {
-        const [...servicesKeys] = backward ? services.reverse().keys() : services.keys();
+    if (devices !== undefined) {
+        const [...deviceKeys] = backward ? devices.reverse().keys() : devices.keys();
 
-        for (let i = 0; i < servicesKeys.length; i++) {
-            const service = services.get(servicesKeys[i]);
+        for (let i = 0; i < deviceKeys.length; i++) {
+            const services = devices.getIn([deviceKeys[i], 'children']);
 
-            if (!backward) { yield service; }
+            if (services !== undefined) {
+                const [...servicesKeys] = backward ? services.reverse().keys() : services.keys();
 
-            if (skipCollapsed && !service.expanded) {
-                if (backward) { yield service; }
-                continue;
-            }
+                for (let j = 0; j < servicesKeys.length; j++) {
+                    const service = services.get(servicesKeys[j]);
 
-            const characteristics = services.get(servicesKeys[i]).children;
+                    if (!backward) { yield service; }
 
-            if (characteristics !== undefined) {
-                const [...characteristicsKeys] = backward ? characteristics.reverse().keys() : characteristics.keys();
-
-                for (let j = 0; j < characteristicsKeys.length; j++) {
-                    const characteristic = characteristics.get(characteristicsKeys[j]);
-
-                    if (!backward) { yield characteristic; }
-
-                    if (skipCollapsed && !characteristic.expanded) {
-                        if (backward) { yield characteristic; }
+                    if (skipCollapsed && !service.expanded) {
+                        if (backward) { yield service; }
                         continue;
                     }
 
-                    const descriptors = characteristics.get(characteristicsKeys[j]).children;
+                    const characteristics = services.get(servicesKeys[j]).children;
 
-                    if (descriptors !== undefined) {
-                        const [...descriptorsKeys] = backward ? descriptors.reverse().keys() : descriptors.keys();
+                    if (characteristics !== undefined) {
+                        const [...characteristicsKeys] = backward ? characteristics.reverse().keys() : characteristics.keys();
 
-                        for (let k = 0; k < descriptorsKeys.length; k++) {
-                            yield descriptors.get(descriptorsKeys[k]);
+                        for (let k = 0; k < characteristicsKeys.length; k++) {
+                            const characteristic = characteristics.get(characteristicsKeys[k]);
+
+                            if (!backward) { yield characteristic; }
+
+                            if (skipCollapsed && !characteristic.expanded) {
+                                if (backward) { yield characteristic; }
+                                continue;
+                            }
+
+                            const descriptors = characteristics.get(characteristicsKeys[k]).children;
+
+                            if (descriptors !== undefined) {
+                                const [...descriptorsKeys] = backward ? descriptors.reverse().keys() : descriptors.keys();
+
+                                for (let l = 0; l < descriptorsKeys.length; l++) {
+                                    yield descriptors.get(descriptorsKeys[l]);
+                                }
+                            }
+
+                            if (backward) { yield characteristic; }
                         }
                     }
 
-                    if (backward) { yield characteristic; }
+                    if (backward) { yield service; }
                 }
             }
-
-            if (backward) { yield service; }
         }
     }
 }
