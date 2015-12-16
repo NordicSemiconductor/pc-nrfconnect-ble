@@ -19,14 +19,13 @@ import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import { Connector } from './Connector';
 
-// Numbers found by trial
-const WINDOW_WIDTH_THRESHOLD = 1035;
+// Number found by trial
 const WINDOW_WIDTH_OFFSET = 375;
 
 export default class ConnectedDevice extends Component {
     constructor(props) {
         super(props);
-        this.belowWidthThreshold = window.innerWidth < WINDOW_WIDTH_THRESHOLD;
+        this.belowWidthThreshold;
         this.boundResizeListener = this._onResize.bind(this);
     }
 
