@@ -258,11 +258,11 @@ function _applyServer(dispatch, getState) {
     let errors = [];
 
     if (missingSccdDescriptor) {
-        errors.push('Missing SCCD descriptor (uuid: 2903). All characteristics with broadcast property must have an SCCD descriptor.');
+        errors.push(new Error('Missing SCCD descriptor (uuid: 2903). All characteristics with broadcast property must have an SCCD descriptor.'));
     }
 
     if (missingCccdDescriptor) {
-        errors.push('Missing CCCD descriptor (uuid: 2902). All characteristics with notify or indicate properties must have a CCCD descriptor.');
+        errors.push(new Error('Missing CCCD descriptor (uuid: 2902). All characteristics with notify or indicate properties must have a CCCD descriptor.'));
     }
 
     if (errors.length > 0) {
@@ -275,7 +275,6 @@ function _applyServer(dispatch, getState) {
             // TODO: log something
             console.log('failed to set services');
             console.log(err);
-            dispatch(showErrorDialog(err));
             return;
         } else {
             dispatch(appliedServerAction(services));
@@ -312,7 +311,7 @@ function _loadServerSetup(dispatch, filename) {
             dispatch(loadAction(setupObj));
             logger.info(`Server setup loaded from ${filename}.`);
         } catch (e) {
-            dispatch(showErrorDialog(e.message));
+            dispatch(showErrorDialog(e));
         }
     }
 }

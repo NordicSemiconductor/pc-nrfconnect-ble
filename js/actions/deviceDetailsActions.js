@@ -47,7 +47,7 @@ function _discoverServices(dispatch, getState, device) {
         const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if (adapterToUse === null) {
-            dispatch(showErrorDialog(`No adapter selected`));
+            dispatch(showErrorDialog(new Error(`No adapter selected`)));
             return;
         }
 
@@ -57,7 +57,7 @@ function _discoverServices(dispatch, getState, device) {
             device.instanceId,
             (error, services) => {
                 if (error) {
-                    reject(new Error(error));
+                    reject(new Error(error.message));
                 }
 
                 resolve(services);
@@ -68,7 +68,7 @@ function _discoverServices(dispatch, getState, device) {
         _discoverDeviceName(dispatch, getState, device, services);
     }).catch(error => {
         dispatch(discoveredAttributesAction(device));
-        dispatch(showErrorDialog(error.error));
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -93,7 +93,7 @@ function _discoverDeviceName(dispatch, getState, device, services) {
     }).then(value => {
         dispatch(discoveredDeviceNameAction(device, value));
     }).catch(error => {
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -112,7 +112,7 @@ function _discoverCharacteristics(dispatch, getState, service) {
             (error, characteristics) => {
                 if (error) {
                     dispatch(discoveredAttributesAction(service));
-                    reject(new Error(error));
+                    reject(new Error(error.message));
                 }
 
                 resolve(characteristics);
@@ -123,7 +123,7 @@ function _discoverCharacteristics(dispatch, getState, service) {
         return characteristics;
     }).catch(error => {
         console.log(error);
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -142,7 +142,7 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
             (error, descriptors) => {
                 if (error) {
                     dispatch(discoveredAttributesAction(characteristic));
-                    reject(new Error(error));
+                    reject(new Error(error.message));
                 }
 
                 resolve(descriptors);
@@ -152,7 +152,7 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
         dispatch(discoveredAttributesAction(characteristic, descriptors));
     }).catch(error => {
         console.log(error);
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -161,7 +161,7 @@ function _setAttributeExpanded(dispatch, getState, attribute, value) {
     const adapterToUse = state.adapter.api.selectedAdapter;
 
     if (adapterToUse === null) {
-        dispatch(showErrorDialog('No adapter selected'));
+        dispatch(showErrorDialog(new Error('No adapter selected')));
         return;
     }
 
@@ -199,7 +199,7 @@ function _readCharacteristic(dispatch, getState, characteristic) {
             (error, value) => {
                 if (error) {
                     dispatch(completedReadingAttributeAction(characteristic, null, error));
-                    reject(new Error(error));
+                    reject(new Error(error.message));
                 }
 
                 resolve(value);
@@ -209,7 +209,7 @@ function _readCharacteristic(dispatch, getState, characteristic) {
         dispatch(completedReadingAttributeAction(characteristic, value));
         return value;
     }).catch(error => {
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -235,7 +235,7 @@ function _writeCharacteristic(dispatch, getState, characteristic, value) {
         adapterToUse.writeCharacteristicValue(characteristic.instanceId, value, ack, error => {
             if (error) {
                 dispatch(completedWritingAttributeAction(characteristic, null, error));
-                reject(new Error(error));
+                reject(new Error(error.message));
             }
 
             resolve();
@@ -243,7 +243,7 @@ function _writeCharacteristic(dispatch, getState, characteristic, value) {
     }).then(() => {
         dispatch(completedWritingAttributeAction(characteristic, value));
     }).catch(error => {
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -262,7 +262,7 @@ function _readDescriptor(dispatch, getState, descriptor) {
             (error, value) => {
                 if (error) {
                     dispatch(completedReadingAttributeAction(descriptor, null, error));
-                    reject(new Error(error));
+                    reject(new Error(error.message));
                 }
 
                 resolve(value);
@@ -271,7 +271,7 @@ function _readDescriptor(dispatch, getState, descriptor) {
     }).then(value => {
         dispatch(completedReadingAttributeAction(descriptor, value));
     }).catch(error => {
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -292,7 +292,7 @@ function _writeDescriptor(dispatch, getState, descriptor, value) {
             error => {
                 if (error) {
                     dispatch(completedWritingAttributeAction(descriptor, null, error));
-                    reject(new Error(error));
+                    reject(new Error(error.message));
                 }
 
                 resolve();
@@ -301,7 +301,7 @@ function _writeDescriptor(dispatch, getState, descriptor, value) {
     }).then(() => {
         dispatch(completedWritingAttributeAction(descriptor, value));
     }).catch(error => {
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 

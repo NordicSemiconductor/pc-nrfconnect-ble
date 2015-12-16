@@ -26,6 +26,22 @@ export class ErrorDialog extends Component {
         super(props);
     }
 
+    _createErrorHtml(index, error) {
+        const {
+            debug
+        } = this.props;
+
+        let html;
+
+        if (debug === true) {
+            html = (<p key={index}>{error.stack}</p>);
+        } else {
+            html = (<p key={index}>{error.message}</p>);
+        }
+
+        return html;
+    }
+
     render() {
         const {
             visible,
@@ -35,7 +51,7 @@ export class ErrorDialog extends Component {
 
         let _errors = [];
 
-        errors.forEach((error, index) => _errors.push(<p key={index}>{error}</p>));
+        errors.forEach((error, index) => _errors.push(this._createErrorHtml(index, error)));
 
         return (
             <div>
@@ -59,6 +75,7 @@ ErrorDialog.propTypes = {
     errors: PropTypes.object.isRequired,
     visible: PropTypes.bool.isRequired,
     closeErrorDialog: PropTypes.func.isRequired,
+    toggleDebug: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -69,11 +86,13 @@ function mapStateToProps(state) {
     return {
         visible: errorDialog.visible,
         errors: errorDialog.errors,
+        debug: errorDialog.debug,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     const retval = Object.assign(
+        {},
         bindActionCreators(ErrorActions, dispatch)
     );
 

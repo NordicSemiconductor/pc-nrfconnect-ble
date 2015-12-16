@@ -20,6 +20,8 @@ import { connect } from 'react-redux';
 
 import * as AppActions from '../actions/appActions';
 import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
+import * as ErrorActions from '../actions/errorDialogActions';
+
 import DeviceDetailsContainer from './DeviceDetails';
 import ServerSetup from './ServerSetup';
 
@@ -40,6 +42,7 @@ import remote from 'remote';
 import fs from 'fs';
 
 let toggleAdvertisingHandle;
+let toggleDebugHandle;
 
 class AppContainer extends Component {
     constructor(props) {
@@ -74,6 +77,7 @@ class AppContainer extends Component {
                     'up'   : 'core:move-up',
                     'left' : 'core:move-left',
                     'right': 'core:move-right',
+                    'ctrl-alt-d': 'core:toggle-debug',
                 }
             });
         }
@@ -109,8 +113,20 @@ class AppContainer extends Component {
 
         window.addEventListener('core:toggle-advertising', this.toggleAdvertising);
         toggleAdvertisingHandle = this.toggleAdvertising;
-    }
 
+        this.toggleDebug = () => {
+            const { toggleDebug } = this.props;
+            toggleDebug();
+        };
+
+        if (toggleDebugHandle) {
+            window.removeEventListener('core:toggle-debug', toggleDebugHandle);
+            toggleDebugHandle = undefined;
+        }
+
+        window.addEventListener('core:toggle-debug', this.toggleDebug);
+        toggleDebugHandle = this.toggleDebug;
+    }
 
     componentWillMount() {
         (function() {
@@ -199,7 +215,8 @@ function mapDispatchToProps(dispatch) {
     let retval = Object.assign(
             {},
             bindActionCreators(AppActions, dispatch),
-            bindActionCreators(AdvertisingSetupActions, dispatch)
+            bindActionCreators(AdvertisingSetupActions, dispatch),
+            bindActionCreators(ErrorActions, dispatch)
     );
 
     return retval;

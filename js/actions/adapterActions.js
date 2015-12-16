@@ -67,18 +67,18 @@ function _getAdapters(dispatch) {
             dispatch(adapterRemovedAction(adapter));
         });
         _adapterFactory.on('error', error => {
-            dispatch(showErrorDialog(error.message));
+            dispatch(showErrorDialog(new Error(error.message)));
         });
 
         _adapterFactory.getAdapters((error, adapters) => {
             if (error) {
-                reject(new Error(error));
+                reject(new Error(error.message));
             } else {
                 resolve();
             }
         });
     }).catch(error => {
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -109,7 +109,7 @@ function _openAdapter(dispatch, getState, adapter) {
             // TODO: and a recoverable error.
             // TODO: adapterErrorAction should only be used if it is an unrecoverable errors.
             // TODO: errorOccuredAction should be used for recoverable errors.
-            dispatch(showErrorDialog(error.message));
+            dispatch(showErrorDialog(new Error(error.message)));
         });
 
         // TODO: remove listeners when closing adapter so that we do not leak memory
@@ -158,11 +158,11 @@ function _openAdapter(dispatch, getState, adapter) {
 
         adapterToUse.open(options, error => {
             if (error) {
-                reject(new Error(error));
+                reject(new Error(error.message));
             } else {
                 adapterToUse.getState((error, state) => {
                     if (error) {
-                        reject(new Error(error));
+                        reject(new Error(error.message));
                     } else {
                         resolve(adapterToUse);
                     }
@@ -172,7 +172,7 @@ function _openAdapter(dispatch, getState, adapter) {
     }).then(adapter => {
         dispatch(adapterOpenedAction(adapter));
     }).catch(error => {
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -201,7 +201,7 @@ function _closeAdapter(dispatch, adapter) {
     return new Promise((resolve, reject) => {
         adapter.close(error => {
             if (error) {
-                reject(new Error(error));
+                reject(new Error(error.message));
             } else {
                 resolve(adapter);
             }
@@ -219,7 +219,7 @@ function _updateDeviceConnectionParams(dispatch, getState, id, device, connectio
 
         adapterToUse.updateConnectionParameters(device.instanceId, connectionParams, (error, device) => {
             if (error) {
-                reject(new Error(error));
+                reject(new Error(error.message));
             } else {
                 resolve(device);
             }
@@ -228,7 +228,7 @@ function _updateDeviceConnectionParams(dispatch, getState, id, device, connectio
         dispatch(connectionParamUpdateStatusAction(id, device, BLEEventState.SUCCESS));
     }).catch(error => {
         dispatch(connectionParamUpdateStatusAction(id, device, BLEEventState.ERROR));
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -242,7 +242,7 @@ function _rejectConnectionParams(dispatch, getState, id, device) {
 
         adapterToUse.rejectConnParams(device.instanceId, error => {
             if (error) {
-                reject(new Error(error));
+                reject(new Error(error.message));
             } else {
                 resolve();
             }
@@ -252,7 +252,7 @@ function _rejectConnectionParams(dispatch, getState, id, device) {
         // Do we need to tell anyone this went OK ?
     }).catch(error => {
         dispatch(connectionParamUpdateStatusAction(id, device, BLEEventState.ERROR));
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -312,7 +312,7 @@ function connectionParamUpdateStatusAction(id, device, status) {
 
 function _pairWithDevice(dispatch, getState, device) {
     function onError(reject, error) {
-        reject(new Error(error));
+        reject(new Error(error.message));
     }
 
     const adapterToUse = getState().adapter.api.selectedAdapter;
@@ -327,13 +327,13 @@ function _pairWithDevice(dispatch, getState, device) {
 
         adapterToUse.pair(device.instanceId, false, error => {
             if (error) {
-                reject(new Error(error));
+                reject(new Error(error.message));
             }
 
             resolve();
         });
     }).catch(error => {
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -381,12 +381,12 @@ function _connectToDevice(dispatch, getState, device) {
             options,
             error => {
                 if (error) {
-                    reject(new Error(error));
+                    reject(new Error(error.message));
                 }
             }
         );
     }).catch(error => {
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     }).then(adapterToUse => {
         adapterToUse.removeListener(onCompleted);
     });
@@ -402,7 +402,7 @@ function _disconnectFromDevice(dispatch, getState, device) {
 
         adapterToUse.disconnect(device.instanceId, (error, device) => {
             if (error) {
-                reject(new Error(error));
+                reject(new Error(error.message));
             } else {
                 resolve(device);
             }
@@ -429,7 +429,7 @@ function _cancelConnect(dispatch, getState) {
         adapterToUse.cancelConnect(
             error => {
                 if (error) {
-                    reject(new Error(error));
+                    reject(new Error(error.message));
                 }
 
                 resolve();
@@ -437,7 +437,7 @@ function _cancelConnect(dispatch, getState) {
     }).then(device => {
         dispatch(deviceConnectCanceledAction());
     }).catch(error => {
-        dispatch(showErrorDialog(error.message));
+        dispatch(showErrorDialog(error));
     });
 }
 

@@ -15,6 +15,7 @@
 export const CLOSE = 'ERROR_CLOSE_ERROR_DIALOG';
 export const SHOW_ERROR_MESSAGES = 'ERROR_SHOW_ERROR_MESSAGES';
 export const ADD_ERROR_MESSAGE = 'ERROR_ADD_ERROR_MESSAGE';
+export const TOGGLE_DEBUG = 'ERROR_TOGGLE_DEBUG';
 
 function closeErrorDialogAction() {
     return {
@@ -36,6 +37,12 @@ function addErrorAction(error) {
     };
 }
 
+function toggleDebugAction() {
+    return {
+        type: TOGGLE_DEBUG,
+    };
+}
+
 // Exported action creators
 export function showErrorDialog(errors) {
     return showErrorDialogAction(errors);
@@ -47,4 +54,8 @@ export function addError(error) {
 
 export function closeErrorDialog() {
     return closeErrorDialogAction();
+}
+
+export function toggleDebug() {
+    return toggleDebugAction();
 }

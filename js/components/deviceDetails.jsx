@@ -22,11 +22,6 @@ import EnumeratingAttributes from './EnumeratingAttributes';
 
 import ServiceItem from './ServiceItem';
 
-let moveUpHandle;
-let moveDownHandle;
-let moveRightHandle;
-let moveLeftHandle;
-
 export default class DeviceDetailsView extends Component {
     constructor(props) {
         super(props);
