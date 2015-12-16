@@ -39,12 +39,12 @@ export class ConnectionSetup extends Component {
 
         return (
             <div className='connection-parameters'>
-                <span className='col-sm-8 connection-parameter-label'>Connection Interval</span>
-                <span className='col-sm-4 connection-parameter-value'>{device.maxConnectionInterval} ms</span>
-                <span className='col-sm-8 connection-parameter-label'>Slave latency</span>
-                <span className='col-sm-4 connection-parameter-value'>{device.slaveLatency} ms</span>
-                <span className='col-sm-8 connection-parameter-label'>Timeout</span>
-                <span className='col-sm-4 connection-parameter-value'>{device.connectionSupervisionTimeout} ms</span>
+                <span className='col-sm-8 col-xs-8 connection-parameter-label'>Connection Interval</span>
+                <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.maxConnectionInterval} ms</span>
+                <span className='col-sm-8 col-xs-8 connection-parameter-label'>Slave latency</span>
+                <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.slaveLatency} ms</span>
+                <span className='col-sm-8 col-xs-8 connection-parameter-label'>Timeout</span>
+                <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.connectionSupervisionTimeout} ms</span>
                 <span className={'connection-security ' + iconClass}> {securityLevelText}</span>
             </div>
         );
