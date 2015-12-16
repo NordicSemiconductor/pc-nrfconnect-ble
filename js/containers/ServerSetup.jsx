@@ -17,6 +17,7 @@ import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Map } from 'immutable';
 
 import { ipcRenderer } from 'electron';
 
@@ -32,6 +33,7 @@ import ConfirmationDialog from '../components/ConfirmationDialog';
 import CentralDevice from '../components/CentralDevice';
 
 import { getInstanceIds } from '../utils/api';
+import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
 
 let loadServerSetupReplyHandle;
 let saveServerSetupReplyHandle;
@@ -41,6 +43,102 @@ class ServerSetup extends Component {
         super(props);
 
         this._setupFileDialogs();
+
+        this.moveUp = () => this._selectNextComponent(true);
+        this.moveDown = () => this._selectNextComponent(false);
+        this.moveRight = () => this._expandComponent(true);
+        this.moveLeft = () => this._expandComponent(false);
+    }
+
+    componentDidMount() {
+        this._registerKeyboardShortcuts();
+    }
+
+    componentWillUnmount() {
+        this._unregisterKeyboardShortcuts();
+    }
+
+    _registerKeyboardShortcuts() {
+        window.addEventListener('core:move-down', this.moveDown);
+        window.addEventListener('core:move-up', this.moveUp);
+        window.addEventListener('core:move-right', this.moveRight);
+        window.addEventListener('core:move-left', this.moveLeft);
+    }
+
+    _unregisterKeyboardShortcuts() {
+        window.removeEventListener('core:move-down', this.moveDown);
+        window.removeEventListener('core:move-up', this.moveUp);
+        window.removeEventListener('core:move-right', this.moveRight);
+        window.removeEventListener('core:move-left', this.moveLeft);
+    }
+
+    _selectNextComponent(backward) {
+        const {
+            serverSetup,
+            selectComponent,
+        } = this.props;
+
+        const selectedComponent = serverSetup.selectedComponent;
+        const deviceDetails = new Map({devices: new Map({'local.server': serverSetup})});
+        let foundCurrent = false;
+
+        for (let item of traverseItems(deviceDetails, true, backward)) {
+            if (selectedComponent === null) {
+                if (item !== null) {
+                    selectComponent(item.instanceId);
+                    return;
+                }
+            }
+
+            if (item.instanceId === selectedComponent) {
+                foundCurrent = true;
+            } else if (foundCurrent) {
+                selectComponent(item.instanceId);
+                return;
+            }
+        }
+    }
+
+    _expandComponent(expand) {
+        const {
+            serverSetup,
+            selectComponent,
+            setAttributeExpanded,
+        } = this.props;
+
+        const selectedComponent = serverSetup.selectedComponent;
+        const deviceDetails = new Map({devices: new Map({'local.server': serverSetup})});
+
+        if (!selectedComponent) {
+            return;
+        }
+
+        const itemInstanceIds = getInstanceIds(selectedComponent);
+        if (expand && itemInstanceIds.descriptor) {
+            return;
+        }
+
+        const item = findSelectedItem(deviceDetails, selectedComponent);
+
+        if (item) {
+            if (expand && item.expanded && item.children.size) {
+                if (item.children.size) {
+                    this._selectNextComponent(false);
+                }
+
+                return;
+            }
+
+            if (!expand && !item.expanded) {
+                if (itemInstanceIds.characteristic) {
+                    selectComponent(selectedComponent.split('.').slice(0, -1).join('.'));
+                }
+
+                return;
+            }
+
+            setAttributeExpanded(item, expand);
+        }
     }
 
     _setupFileDialogs() {
