@@ -40,8 +40,9 @@ app.on('ready', function() {
     mainWindow = new BrowserWindow({
         width: 1024,
         height: 800,
-        'min-width': 480,
-        'min-height': 280,
+        //'min-width': 703,
+        'min-width': 308,
+        'min-height': 499,
         frame: true,
         icon: './nordic_logo.png',
     });
