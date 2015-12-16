@@ -19,14 +19,15 @@ import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import { Connector } from './Connector';
 
-// Number found by trial
 const WINDOW_WIDTH_OFFSET = 375;
+const THROTTLE_TIMEOUT = 100;
 
 export default class ConnectedDevice extends Component {
     constructor(props) {
         super(props);
         this.belowWidthThreshold;
-        this.boundResizeListener = this._onResize.bind(this);
+        this.boundResizeListener = this._resizeThrottler.bind(this);
+        this.resizeTimeout;
     }
 
     componentDidMount() {
@@ -36,6 +37,17 @@ export default class ConnectedDevice extends Component {
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.boundResizeListener);
+    }
+
+    _resizeThrottler() {
+        if (this.resizeTimeout) {
+            return;
+        }
+
+        this.resizeTimeout = setTimeout(() => {
+            this.resizeTimeout = null;
+            this._onResize();
+        }, THROTTLE_TIMEOUT);
     }
 
     _onResize() {
