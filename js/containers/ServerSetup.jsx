@@ -81,7 +81,7 @@ class ServerSetup extends Component {
             selectedAdapter,
             serverSetup,
             selectComponent,
-            toggleAttributeExpanded,
+            setAttributeExpanded,
             addNewService,
             addNewCharacteristic,
             addNewDescriptor,
@@ -148,7 +148,7 @@ class ServerSetup extends Component {
                              selected={selectedComponent}
                              onSelected={this._onSelected}
                              onSelectAttribute={selectComponent}
-                             onToggleAttributeExpanded={toggleAttributeExpanded}
+                             onSetAttributeExpanded={setAttributeExpanded}
                              addNew={true}
                              onAddCharacteristic={addNewCharacteristic}
                              onAddDescriptor={addNewDescriptor} />

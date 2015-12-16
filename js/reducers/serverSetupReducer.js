@@ -126,10 +126,9 @@ function getNodeStatePath(nodeInstanceId) {
     return nodeStatePath;
 }
 
-function toggleAttributeExpanded(state, attribute) {
-    const attributeStatePath = getNodeStatePath(attribute.instanceId);
-    const previouslyExpanded = state.getIn(attributeStatePath .concat('expanded'));
-    return state.setIn(attributeStatePath.concat('expanded'), !previouslyExpanded);
+function setAttributeExpanded(state, attribute, value) {
+    const expandedStatePath = getNodeStatePath(attribute.instanceId).concat('expanded');
+    return state.setIn(expandedStatePath, value);
 }
 
 function createNewService() {
@@ -251,6 +250,7 @@ function loadSetup(state, setup) {
         }
 
         // Only update the children data, everything else that is stored we ignore
+        state = state.setIn(['selectedComponent'], null);
         return state.setIn(['children'], newState.children);
     }
 }
@@ -258,9 +258,9 @@ function loadSetup(state, setup) {
 export default function deviceDetails(state = initialState, action) {
     switch (action.type) {
         case ServerSetupActions.SELECT_COMPONENT:
-            return state.set('selectedComponent', action.component.instanceId);
-        case ServerSetupActions.TOGGLE_ATTRIBUTE_EXPANDED:
-            return toggleAttributeExpanded(state, action.attribute);
+            return state.set('selectedComponent', action.component);
+        case ServerSetupActions.SET_ATTRIBUTE_EXPANDED:
+            return setAttributeExpanded(state, action.attribute, action.value);
         case ServerSetupActions.ADD_NEW_SERVICE:
             return addNewService(state);
         case ServerSetupActions.ADD_NEW_CHARACTERISTIC:

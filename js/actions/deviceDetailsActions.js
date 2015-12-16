@@ -18,7 +18,7 @@ export const DISCOVERING_ATTRIBUTES = 'DEVICE_DETAILS_DISCOVERING_ATTRIBUTES';
 export const DISCOVERED_ATTRIBUTES = 'DEVICE_DETAILS_DISCOVERED_ATTRIBUTES';
 export const DISCOVERED_DEVICE_NAME = 'DEVICE_DETAILS_DISCOVERED_DEVICE_NAME';
 
-export const TOGGLED_ATTRIBUTE_EXPANDED = 'DEVICE_DETAILS_TOGGLED_ATTRIBUTE_EXPANDED';
+export const SET_ATTRIBUTE_EXPANDED = 'DEVICE_DETAILS_SET_ATTRIBUTE_EXPANDED';
 
 export const WRITE_CHARACTERISTIC = 'DEVICE_DETAILS_WRITE_CHARACTERISTIC';
 export const READ_CHARACTERISTIC = 'DEVICE_DETAILS_READ_CHARACTERISTIC';
@@ -156,7 +156,7 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
     });
 }
 
-function _toggleAttributeExpanded(dispatch, getState, attribute) {
+function _setAttributeExpanded(dispatch, getState, attribute, value) {
     const state = getState();
     const adapterToUse = state.adapter.api.selectedAdapter;
 
@@ -180,8 +180,8 @@ function _toggleAttributeExpanded(dispatch, getState, attribute) {
         }
     }
 
-    dispatch(toggledAttributeExpandedAction(attribute));
-    dispatch(selectComponentAction(attribute));
+    dispatch(setAttributeExpandedAction(attribute, value));
+    dispatch(selectComponentAction(attribute.instanceId));
 }
 
 function _readCharacteristic(dispatch, getState, characteristic) {
@@ -328,10 +328,11 @@ function discoveredDeviceNameAction(device, value) {
     };
 }
 
-function toggledAttributeExpandedAction(attribute) {
+function setAttributeExpandedAction(attribute, value) {
     return {
-        type: TOGGLED_ATTRIBUTE_EXPANDED,
+        type: SET_ATTRIBUTE_EXPANDED,
         attribute,
+        value,
     };
 }
 
@@ -395,9 +396,9 @@ export function discoverDescriptors(characteristic) {
     };
 }
 
-export function toggleAttributeExpanded(attribute) {
+export function setAttributeExpanded(attribute, value) {
     return (dispatch, getState) => {
-        return _toggleAttributeExpanded(dispatch, getState, attribute);
+        return _setAttributeExpanded(dispatch, getState, attribute, value);
     };
 }
 

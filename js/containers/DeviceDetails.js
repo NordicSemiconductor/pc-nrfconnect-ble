@@ -37,7 +37,7 @@ class DeviceDetailsContainer extends Component {
             connectedDevices,
             deviceDetails,
             selectComponent,
-            toggleAttributeExpanded,
+            setAttributeExpanded,
             readCharacteristic,
             writeCharacteristic,
             readDescriptor,
@@ -63,7 +63,7 @@ class DeviceDetailsContainer extends Component {
                                               selected={selectedComponent}
                                               deviceDetails={deviceDetails}
                                               onSelectComponent={selectComponent}
-                                              onToggleAttributeExpanded={toggleAttributeExpanded}
+                                              onSetAttributeExpanded={setAttributeExpanded}
                                               onReadCharacteristic={readCharacteristic}
                                               onWriteCharacteristic={writeCharacteristic}
                                               onReadDescriptor={readDescriptor}
@@ -82,7 +82,7 @@ class DeviceDetailsContainer extends Component {
                                                   selected={selectedComponent}
                                                   deviceDetails={deviceDetails}
                                                   onSelectComponent={selectComponent}
-                                                  onToggleAttributeExpanded={toggleAttributeExpanded}
+                                                  onSetAttributeExpanded={setAttributeExpanded}
                                                   onReadCharacteristic={readCharacteristic}
                                                   onWriteCharacteristic={writeCharacteristic}
                                                   onReadDescriptor={readDescriptor}

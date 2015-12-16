@@ -31,13 +31,13 @@ export default class ServiceItem extends Component {
     _onContentClick(e) {
         e.stopPropagation();
         if (this.props.onSelectAttribute) {
-            this.props.onSelectAttribute(this.props.item);
+            this.props.onSelectAttribute(this.props.item.instanceId);
         }
     }
 
     _onExpandAreaClick(e) {
         e.stopPropagation();
-        this.props.onToggleAttributeExpanded(this.props.item);
+        this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
     }
 
     _childChanged() {
@@ -95,7 +95,7 @@ export default class ServiceItem extends Component {
             onAddCharacteristic,
             onAddDescriptor,
             onSelectAttribute,
-            onToggleAttributeExpanded,
+            onSetAttributeExpanded,
             onReadCharacteristic,
             onWriteCharacteristic,
             onReadDescriptor,
@@ -121,7 +121,7 @@ export default class ServiceItem extends Component {
                                                       selectOnClick={selectOnClick}
                                                       selected={selected}
                                                       onSelectAttribute={onSelectAttribute}
-                                                      onToggleAttributeExpanded={onToggleAttributeExpanded}
+                                                      onSetAttributeExpanded={onSetAttributeExpanded}
                                                       onRead={onReadCharacteristic}
                                                       onWrite={onWriteCharacteristic}
                                                       onReadDescriptor={onReadDescriptor}

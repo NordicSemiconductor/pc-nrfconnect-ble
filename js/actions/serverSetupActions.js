@@ -13,7 +13,7 @@
 'use strict';
 
 export const SELECT_COMPONENT = 'SERVER_SETUP_SELECT_COMPONENT';
-export const TOGGLE_ATTRIBUTE_EXPANDED = 'SERVER_SETUP_TOGGLE_ATTRIBUTE_EXPANDED';
+export const SET_ATTRIBUTE_EXPANDED = 'SERVER_SETUP_SET_ATTRIBUTE_EXPANDED';
 
 export const ADD_NEW_SERVICE = 'SERVER_SETUP_ADDED_NEW_SERVICE';
 export const ADD_NEW_CHARACTERISTIC = 'SERVER_SETUP_ADDED_NEW_CHARACTERISTIC';
@@ -36,10 +36,11 @@ import { api } from 'pc-ble-driver-js';
 import { logger } from '../logging';
 import { showErrorDialog } from './errorDialogActions';
 
-function toggleAttributeExpandedAction(attribute) {
+function setAttributeExpandedAction(attribute, value) {
     return {
-        type: TOGGLE_ATTRIBUTE_EXPANDED,
+        type: SET_ATTRIBUTE_EXPANDED,
         attribute,
+        value,
     };
 }
 
@@ -115,9 +116,9 @@ function loadAction(setup) {
     };
 }
 
-function _toggleAttributeExpanded(dispatch, getState, attribute) {
-    dispatch(toggleAttributeExpandedAction(attribute));
-    dispatch(selectComponentAction(attribute));
+function _setAttributeExpanded(dispatch, getState, attribute, value) {
+    dispatch(setAttributeExpandedAction(attribute, value));
+    dispatch(selectComponentAction(attribute.instanceId));
 }
 
 function _addNewCharacteristic(dispatch, getState, parent) {
@@ -320,9 +321,9 @@ export function selectComponent(component) {
     return selectComponentAction(component);
 }
 
-export function toggleAttributeExpanded(attribute) {
+export function setAttributeExpanded(attribute, value) {
     return (dispatch, getState) => {
-        _toggleAttributeExpanded(dispatch, getState, attribute);
+        _setAttributeExpanded(dispatch, getState, attribute, value);
     };
 }
 

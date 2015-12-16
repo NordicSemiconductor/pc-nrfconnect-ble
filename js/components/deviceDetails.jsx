@@ -21,6 +21,7 @@ import CentralDevice from './CentralDevice';
 import EnumeratingAttributes from './EnumeratingAttributes';
 
 import ServiceItem from './ServiceItem';
+import { getInstanceIds } from '../utils/api';
 import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
 
 let moveUpHandle;
@@ -81,7 +82,7 @@ export default class DeviceDetailsView extends Component {
         for (let item of traverseItems(deviceDetails, device.instanceId, true, backward)) {
             if (selected === null) {
                 if (item !== null) {
-                    onSelectComponent(item);
+                    onSelectComponent(item.instanceId);
                     return;
                 }
             }
@@ -89,7 +90,7 @@ export default class DeviceDetailsView extends Component {
             if (item.instanceId === selected) {
                 foundCurrent = true;
             } else if (foundCurrent) {
-                onSelectComponent(item);
+                onSelectComponent(item.instanceId);
                 return;
             }
         }
@@ -100,19 +101,45 @@ export default class DeviceDetailsView extends Component {
             device,
             deviceDetails,
             selected,
-            onToggleAttributeExpanded,
+            onSetAttributeExpanded,
         } = this.props;
 
         if (!selected) {
             return;
         }
 
+        const itemInstanceIds = getInstanceIds(selected);
+
+        if (itemInstanceIds.descriptor) {
+            if (!expand) {
+                console.log(selected);
+                console.log(selected.split('.').slice(0, -1).join('.'));
+                this.props.onSelectComponent(selected.split('.').slice(0, -1).join('.'));
+            }
+
+            return;
+        }
+
         const item = findSelectedItem(deviceDetails, device.instanceId, selected);
 
         if (item) {
-            // TODO: when the deviceDetailActions and deviceDetailsReducer supports
-            // TODO: exclicit expansion/collapsing we add that.
-            onToggleAttributeExpanded(item);
+            if (expand && item.children && !item.children.size) {
+                return;
+            }
+
+            if (expand && item.expanded && item.children.size) {
+                this._selectNextComponent(false);
+                return;
+            }
+
+            if (!expand && !item.expanded && itemInstanceIds.characteristic) {
+                console.log(selected);
+                console.log(selected.split('.').slice(0, -1).join('.'));
+                this.props.onSelectComponent(selected.split('.').slice(0, -1).join('.'));
+                return;
+            }
+
+            onSetAttributeExpanded(item, expand);
         }
     }
 
@@ -122,7 +149,7 @@ export default class DeviceDetailsView extends Component {
             device,
             selected, // instanceId for the selected component
             onSelectComponent,
-            onToggleAttributeExpanded,
+            onSetAttributeExpanded,
             onReadCharacteristic,
             onWriteCharacteristic,
             onReadDescriptor,
@@ -180,7 +207,7 @@ export default class DeviceDetailsView extends Component {
                                                    selectOnClick={true}
                                                    selected={selected}
                                                    onSelectAttribute={onSelectComponent}
-                                                   onToggleAttributeExpanded={onToggleAttributeExpanded}
+                                                   onSetAttributeExpanded={onSetAttributeExpanded}
                                                    onReadCharacteristic={onReadCharacteristic}
                                                    onWriteCharacteristic={onWriteCharacteristic}
                                                    onReadDescriptor={onReadDescriptor}
@@ -240,7 +267,7 @@ export default class DeviceDetailsView extends Component {
                                                    selectOnClick={true}
                                                    selected={selected}
                                                    onSelectAttribute={onSelectComponent}
-                                                   onToggleAttributeExpanded={onToggleAttributeExpanded}
+                                                   onSetAttributeExpanded={onSetAttributeExpanded}
                                                    onReadCharacteristic={onReadCharacteristic}
                                                    onWriteCharacteristic={onWriteCharacteristic}
                                                    onReadDescriptor={onReadDescriptor}
@@ -265,7 +292,7 @@ DeviceDetailsView.propTypes = {
     device: PropTypes.object.isRequired,
     selected: PropTypes.string,
     onSelectComponent: PropTypes.func.isRequired,
-    onToggleAttributeExpanded: PropTypes.func.isRequired,
+    onSetAttributeExpanded: PropTypes.func.isRequired,
     onUpdateDeviceConnectionParams: PropTypes.func,
     deviceDetails: PropTypes.object,
     adapter: PropTypes.object,

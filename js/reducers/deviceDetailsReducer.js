@@ -33,8 +33,8 @@ const DeviceDetail = Record({
 
 const initialState = new InitialState({selectedComponent: null, devices: Map()});
 
-function getNodeStatePath(node) {
-    const nodeInstanceIds = getInstanceIds(node.instanceId);
+function getNodeStatePath(instanceId) {
+    const nodeInstanceIds = getInstanceIds(instanceId);
     const nodeStatePath = ['devices', nodeInstanceIds.device];
 
     if (nodeInstanceIds.service) {
@@ -53,12 +53,12 @@ function getNodeStatePath(node) {
 }
 
 function discoveringAttributes(state, parent) {
-    const parentStatePath = getNodeStatePath(parent);
+    const parentStatePath = getNodeStatePath(parent.instanceId);
     return state.setIn(parentStatePath.concat('discoveringChildren'), true);
 }
 
 function discoveredAttributes(state, parent, attributes) {
-    const parentStatePath = getNodeStatePath(parent);
+    const parentStatePath = getNodeStatePath(parent.instanceId);
     state = state.setIn(parentStatePath.concat('discoveringChildren'), false);
 
     if (!attributes) {
@@ -67,9 +67,13 @@ function discoveredAttributes(state, parent, attributes) {
 
     state = state.setIn(parentStatePath.concat('children'), Map());
 
+    if (attributes.length === 0) {
+        return state.setIn(parentStatePath.concat('expanded'), false);
+    }
+
     for (let attribute of attributes) {
         const attributeInstanceIds = getInstanceIds(attribute.instanceId);
-        const attributeStatePath = getNodeStatePath(attribute);
+        const attributeStatePath = getNodeStatePath(attribute.instanceId);
         let immutableAttribute = null;
         attribute.name = getUuidName(attribute.uuid);
 
@@ -105,7 +109,7 @@ function completedReadingAttribute(state, attribute, value, error) {
         return state;
     }
 
-    const attributeStatePath = getNodeStatePath(attribute);
+    const attributeStatePath = getNodeStatePath(attribute.instanceId);
 
     let errorMessage = '';
     if (error) {
@@ -126,7 +130,7 @@ function completedWritingAttribute(state, attribute, value, error) {
         return state;
     }
 
-    const attributeStatePath = getNodeStatePath(attribute);
+    const attributeStatePath = getNodeStatePath(attribute.instanceId);
 
     let errorMessage = '';
     if (error) {
@@ -139,7 +143,7 @@ function completedWritingAttribute(state, attribute, value, error) {
         // If value is null the operation failed. Trigger a state change by setting
         // the original value in a new List object.
         const attributeInstanceIds = getInstanceIds(attribute.instanceId);
-        const attributeStatePath = getNodeStatePath(attribute);
+        const attributeStatePath = getNodeStatePath(attribute.instanceId);
 
         let immutableAttribute = null;
         if (attributeInstanceIds.descriptor) {
@@ -192,22 +196,21 @@ function attributeValueChanged(state, attribute, value) {
     return completedWritingAttribute(state, attribute, value);
 }
 
-function toggledAttributeExpanded(state, attribute) {
-    const attributeStatePath = getNodeStatePath(attribute);
-    const previouslyExpanded = state.getIn(attributeStatePath.concat('expanded'));
-    return state.setIn(attributeStatePath.concat('expanded'), !previouslyExpanded);
+function setAttributeExpanded(state, attribute, value) {
+    const expandedStatePath = getNodeStatePath(attribute.instanceId).concat('expanded');
+    return state.setIn(expandedStatePath, value);
 }
 
 export default function deviceDetails(state = initialState, action) {
     switch (action.type) {
         case DeviceDetailsActions.SELECT_COMPONENT:
-            return state.update('selectedComponent', selectedComponent => action.component.instanceId);
+            return state.update('selectedComponent', selectedComponent => action.component);
         case DeviceDetailsActions.DISCOVERING_ATTRIBUTES:
             return discoveringAttributes(state, action.parent);
         case DeviceDetailsActions.DISCOVERED_ATTRIBUTES:
             return discoveredAttributes(state, action.parent, action.attributes);
-        case DeviceDetailsActions.TOGGLED_ATTRIBUTE_EXPANDED:
-            return toggledAttributeExpanded(state, action.attribute);
+        case DeviceDetailsActions.SET_ATTRIBUTE_EXPANDED:
+            return setAttributeExpanded(state, action.attribute, action.value);
         case DeviceDetailsActions.COMPLETED_READING_ATTRIBUTE:
             return completedReadingAttribute(state, action.attribute, action.value, action.error);
         case DeviceDetailsActions.COMPLETED_WRITING_ATTRIBUTE:

@@ -65,7 +65,7 @@ export default class CharacteristicItem extends Component {
 
     _selectComponent() {
         if (this.props.onSelectAttribute) {
-            this.props.onSelectAttribute(this.props.item);
+            this.props.onSelectAttribute(this.props.item.instanceId);
         }
     }
 
@@ -76,7 +76,7 @@ export default class CharacteristicItem extends Component {
 
     _onExpandAreaClick(e) {
         e.stopPropagation();
-        this.props.onToggleAttributeExpanded(this.props.item);
+        this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
     }
 
     _onToggleNotify(e) {

@@ -50,7 +50,7 @@ export default class DescriptorItem extends Component {
 
     _selectComponent() {
         if (this.props.onSelectAttribute) {
-            this.props.onSelectAttribute(this.props.item);
+            this.props.onSelectAttribute(this.props.item.instanceId);
         }
     }
 
