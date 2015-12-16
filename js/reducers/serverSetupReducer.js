@@ -17,6 +17,7 @@ import { List, Record, OrderedMap, fromJS } from 'immutable';
 import * as ServerSetupActions from '../actions/serverSetupActions';
 
 import { getInstanceIds, getImmutableService, getImmutableCharacteristic, getImmutableDescriptor, getImmutableProperties } from '../utils/api';
+import { logger } from '../logging';
 
 const InitialState = Record({
     selectedComponent: null,
@@ -272,7 +273,11 @@ export default function deviceDetails(state = initialState, action) {
         case ServerSetupActions.REMOVE_ATTRIBUTE:
             return removeAttribute(state, action.attribute);
         case ServerSetupActions.CLEAR_SERVER:
+            logger.info('Server setup was cleared');
             return initialState;
+        case ServerSetupActions.APPLIED_SERVER:
+            logger.info('Server setup was applied');
+            return state;
         case ServerSetupActions.SHOW_DELETE_DIALOG:
             return state.set('showingDeleteDialog', true);
         case ServerSetupActions.HIDE_DELETE_DIALOG:
