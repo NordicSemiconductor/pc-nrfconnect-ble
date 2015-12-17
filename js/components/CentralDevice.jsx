@@ -97,12 +97,12 @@ export default class CentralDevice extends Component {
                                         items.push(<MenuItem key="setup" eventKey='AdvertisingSetup'>Advertising setup...</MenuItem>);
                                     }
 
-                                    if (onSaveSetup !== undefined) {
-                                        items.push(<MenuItem key="save" eventKey='SaveSetup'>Save setup...</MenuItem>);
-                                    }
-
                                     if (onLoadSetup !== undefined) {
                                         items.push(<MenuItem key="load" eventKey='LoadSetup'>Load setup...</MenuItem>);
+                                    }
+
+                                    if (onSaveSetup !== undefined) {
+                                        items.push(<MenuItem key="save" eventKey='SaveSetup'>Save setup...</MenuItem>);
                                     }
 
                                     return items;
