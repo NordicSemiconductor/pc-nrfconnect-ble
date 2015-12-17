@@ -76,6 +76,7 @@ export default class DescriptorItem extends Component {
         const {
             instanceId,
             handle,
+            uuid,
             name,
             value,
             errorMessage,
@@ -94,7 +95,7 @@ export default class DescriptorItem extends Component {
         const itemIsSelected = instanceId === selected;
         const errorText = errorMessage ? errorMessage : '';
         const hideErrorClass = (errorText === '') ? 'hide' : '';
-        const handleText = item.handle ? ('[Handle: ' + item.handle + '] ') : '';
+        const handleText = item.handle ? ('Handle: ' + item.handle + ', ') : '';
         const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)'
             : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
@@ -132,7 +133,7 @@ export default class DescriptorItem extends Component {
                 <div className='bar3' />
                 <div className='content-wrap'>
                     <div className='content'>
-                        <div className='truncate-text' title={handleText + name}>{name}</div>
+                        <div className='truncate-text' title={handleText + 'UUID: ' + uuid}>{name}</div>
                         {valueList}
                         <div className={'error-label ' + hideErrorClass}>{errorText}</div>
                     </div>

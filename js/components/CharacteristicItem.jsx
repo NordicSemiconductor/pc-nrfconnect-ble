@@ -175,6 +175,7 @@ export default class CharacteristicItem extends Component {
         const {
             instanceId,
             handle,
+            uuid,
             name,
             properties,
             value,
@@ -231,7 +232,7 @@ export default class CharacteristicItem extends Component {
         const itemIsSelected = item.instanceId === selected;
         const errorText = errorMessage ? errorMessage : '';
         const hideErrorClass = (errorText === '') ? 'hide' : '';
-        const handleText = item.declarationHandle ? ('[Handle: ' + item.declarationHandle + '] ') : '';
+        const handleText = item.declarationHandle ? ('Handle: ' + item.declarationHandle + ', ') : '';
         const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)' //@bar1-color
             : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
@@ -248,7 +249,7 @@ export default class CharacteristicItem extends Component {
                     <div className='content'>
                         <div className='btn btn-primary btn-xs btn-nordic btn-notify' title='Toggle notifications' style={notifyIconStyle} onClick={e => this._onToggleNotify(e)}><i className={notifyIcon}></i></div>
                         <div>
-                            <div className='truncate-text' title={handleText + name}>{name}</div>
+                            <div className='truncate-text' title={handleText + 'UUID: ' + uuid}>{name}</div>
                             <div className='flag-line'>
                                 {propertyList}
                             </div>

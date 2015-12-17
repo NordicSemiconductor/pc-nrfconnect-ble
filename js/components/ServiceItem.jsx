@@ -104,6 +104,7 @@ export default class ServiceItem extends Component {
         const {
             instanceId,
             handle,
+            uuid,
             name,
             expanded,
             discoveringChildren,
@@ -136,7 +137,7 @@ export default class ServiceItem extends Component {
         const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
         const iconStyle = children && children.size === 0 && !addNew ? { display: 'none' } : {};
         const itemIsSelected = item.instanceId === selected;
-        const handleText = item.handle ? ('[Handle: ' + item.handle + '] ') : '';
+        const handleText = item.handle ? ('Handle: ' + item.handle + ', ') : '';
         const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)'
             : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
@@ -150,7 +151,7 @@ export default class ServiceItem extends Component {
                     </div>
                     <div className='content-wrap'>
                         <div className='content'>
-                            <div className='service-name truncate-text' title={handleText + name}>{name}</div>
+                            <div className='service-name truncate-text' title={handleText + 'UUID: ' + uuid}>{name}</div>
                         </div>
                     </div>
                 </div>
