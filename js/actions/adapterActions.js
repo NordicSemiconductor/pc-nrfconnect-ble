@@ -103,6 +103,10 @@ function _openAdapter(dispatch, getState, adapter) {
         if (adapterToUse === null) {
             reject(new Error(`Not able to find ${adapter}.`));
         }
+
+        // Remove all old listeners before adding new ones
+        adapterToUse.removeAllListeners();
+
         // Listen to errors from this adapter since we are opening it now
         adapterToUse.on('error', error => {
             // TODO: separate between what is an non recoverable adapter error
