@@ -28,9 +28,7 @@ function showErrors(state, errors) {
             state = addErrorMessage(state, errors);
         } else {
             errors.forEach(error => {
-                state = state.updateIn(['errors'], _errors => _errors.push(error));
-                logger.error(error.message);
-                logger.debug(error.stack);
+                state = addErrorMessage(state, error);
             });
         }
     }
@@ -49,8 +47,12 @@ function toggleDebug(state) {
 }
 
 function addErrorMessage(state, error) {
-    logger.error(error.message);
-    logger.debug(error.stack);
+    // We do not want to log validation errors
+    if(error.name !== 'ValidationError') {
+        logger.error(error.message);
+        logger.debug(error.stack);
+    }
+
     return state.updateIn(['errors'], errors => errors.push(error));
 }
 

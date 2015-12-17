@@ -1,11 +1,12 @@
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 
 import { Input } from 'react-bootstrap';
 
 import { getUuidName } from '../utils/uuid_definitions';
+import { ValidationError } from '../common/Errors';
 
 const SUCCESS = 'success';
 const WARNING = 'warning';
@@ -50,6 +51,7 @@ export default class ServiceEditor extends Component{
 
     _saveAttribute() {
         if (this.validateUuidInput() === ERROR) {
+            this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
         }
 
@@ -106,3 +108,10 @@ export default class ServiceEditor extends Component{
         );
     }
 }
+
+ServiceEditor.propTypes = {
+    service: PropTypes.object.isRequired,
+    onRemoveAttribute: PropTypes.func.isRequired,
+    onSaveChangedAttribute: PropTypes.func.isRequired,
+    onValidationError: PropTypes.func.isRequired,
+};

@@ -23,6 +23,7 @@ import { ipcRenderer } from 'electron';
 
 import * as ServerSetupActions from '../actions/serverSetupActions';
 import * as AdapterActions from '../actions/adapterActions';
+import * as ErrorActions from '../actions/errorDialogActions';
 
 import AddNewItem from '../components/AddNewItem';
 import ServiceItem from '../components/ServiceItem';
@@ -188,6 +189,7 @@ class ServerSetup extends Component {
             clearServer,
             showDeleteDialog,
             hideDeleteDialog,
+            showErrorDialog,
         } = this.props;
 
         if (!serverSetup) {
@@ -227,13 +229,16 @@ class ServerSetup extends Component {
         const editorBorderClass = selectedAttribute ? ' selected-component-editor-border' : '';
         const editor = selectedIsService ? <ServiceEditor service={selectedAttribute}
                                                           onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
-                                                          onRemoveAttribute={showDeleteDialog} />
+                                                          onRemoveAttribute={showDeleteDialog}
+                                                          onValidationError={error => showErrorDialog(error)} />
                      : selectedIsCharacteristic ? <CharacteristicEditor characteristic={selectedAttribute}
                                                                         onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
-                                                                        onRemoveAttribute={showDeleteDialog} />
+                                                                        onRemoveAttribute={showDeleteDialog}
+                                                                        onValidationError={error => showErrorDialog(error)} />
                      : selectedIsDescriptor ? <DescriptorEditor descriptor={selectedAttribute}
                                                                 onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
-                                                                onRemoveAttribute={showDeleteDialog} />
+                                                                onRemoveAttribute={showDeleteDialog}
+                                                                onValidationError={error => showErrorDialog(error)} />
                      : <div className='nothing-selected' />;
 
         const services = [];
@@ -308,7 +313,8 @@ function mapDispatchToProps(dispatch) {
     let retval = Object.assign(
             {},
             bindActionCreators(ServerSetupActions, dispatch),
-            bindActionCreators(AdapterActions, dispatch)
+            bindActionCreators(AdapterActions, dispatch),
+            bindActionCreators(ErrorActions, dispatch)
         );
 
     return retval;
