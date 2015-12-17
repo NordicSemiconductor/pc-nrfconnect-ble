@@ -158,7 +158,7 @@ function _openAdapter(dispatch, getState, adapter) {
 
         adapterToUse.open(options, error => {
             if (error) {
-                reject(new Error(error.message));
+                reject(); // Let the error event inform the user about the error.
             } else {
                 adapterToUse.getState((error, state) => {
                     if (error) {
@@ -172,7 +172,9 @@ function _openAdapter(dispatch, getState, adapter) {
     }).then(adapter => {
         dispatch(adapterOpenedAction(adapter));
     }).catch(error => {
-        dispatch(showErrorDialog(error));
+        if (error) {
+            dispatch(showErrorDialog(error));
+        }
     });
 }
 
