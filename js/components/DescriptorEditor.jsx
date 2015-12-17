@@ -27,6 +27,18 @@ export default class DescriptorEditor extends Component {
         return uuid16regex.test(this.uuid) || uuid128regex.test(this.uuid) ? SUCCESS : ERROR;
     }
 
+    validateValueLength() {
+        const maxLength = parseInt(this.maxLength);
+        const fixedLength = this.fixedLength;
+        const value = this._parseValueProperty(this.value);
+
+        if (maxLength > 510 && fixedLength === true) { return ERROR; }
+        if (maxLength > 512 && fixedLength === false) { return ERROR; }
+        if (maxLength < value.length) { return ERROR; }
+
+        return SUCCESS;
+    }
+
     _setCheckedProperty(property, e) {
         this[property] = e.target.checked;
         this.forceUpdate();
@@ -75,13 +87,16 @@ export default class DescriptorEditor extends Component {
     }
 
     _saveAttribute() {
-        // TODO: Add verification?
         if (this.validateUuidInput() === ERROR) {
             this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
         }
 
-        // TODO: Check max length vs initial value length.
+        if(this.validateValueLength() === ERROR) {
+            this.props.onValidationError(new ValidationError('Length of value is not valid.'));
+            return;
+        }
+
         const changedDescriptor = {
             instanceId: this.props.descriptor.instanceId,
             uuid: this.uuid.toUpperCase().trim(),
@@ -202,5 +217,6 @@ export default class DescriptorEditor extends Component {
 DescriptorEditor.propTypes = {
     descriptor: PropTypes.object.isRequired,
     onRemoveAttribute: PropTypes.func.isRequired,
+    onSaveChangedAttribute: PropTypes.func.isRequired,
     onValidationError: PropTypes.func.isRequired,
 };
