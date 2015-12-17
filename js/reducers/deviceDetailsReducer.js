@@ -23,7 +23,7 @@ import { getUuidName } from '../utils/uuid_definitions';
 
 const InitialState = Record({
     selectedComponent: null,
-    devices: Map(),
+    devices: OrderedMap(),
 });
 
 const DeviceDetail = Record({
@@ -31,7 +31,69 @@ const DeviceDetail = Record({
     children: null,
 });
 
-const initialState = new InitialState({selectedComponent: null, devices: Map()});
+function getInitialGapServiceCharacteristics(gapInstanceId) {
+    let characteristicInstanceIdCounter = 0;
+
+    const deviceNameCharacteristic = getImmutableCharacteristic({
+        instanceId: gapInstanceId + '.' + characteristicInstanceIdCounter++,
+        name: 'Device Name',
+        uuid: '2A00',
+        value: [0x6E, 0x52, 0x46, 0x35, 0x31, 0x38, 0x32, 0x32],
+        properties: {read: true, write: true},
+        children: OrderedMap(),
+    });
+
+    const appearanceCharacteristic = getImmutableCharacteristic({
+        instanceId: gapInstanceId + '.' + characteristicInstanceIdCounter++,
+        name: 'Appearance',
+        uuid: '2A01',
+        value: [0x00, 0x00],
+        properties: {read: true},
+        children: OrderedMap(),
+    });
+
+    const ppcpCharacteristic = getImmutableCharacteristic({
+        instanceId: gapInstanceId + '.' + characteristicInstanceIdCounter++,
+        name: 'Peripheral Preferred Connection Parameters',
+        uuid: '2A04',
+        value: [0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF],
+        properties: {read: true},
+        children: OrderedMap(),
+    });
+
+    const characteristics = {};
+    characteristics[deviceNameCharacteristic.instanceId] = deviceNameCharacteristic;
+    characteristics[appearanceCharacteristic.instanceId] = appearanceCharacteristic;
+    characteristics[ppcpCharacteristic.instanceId] = ppcpCharacteristic;
+
+    return OrderedMap(characteristics);
+}
+
+function getInitialLocalServer() {
+    let serviceInstanceIdCounter = 0;
+    const gapInstanceId = 'local.server' + '.' + serviceInstanceIdCounter++;
+
+    const gapService = getImmutableService({
+        instanceId: gapInstanceId,
+        name: 'Generic Access',
+        uuid: '1800',
+        children: getInitialGapServiceCharacteristics(gapInstanceId),
+    });
+    const gattService = getImmutableService({
+        instanceId: 'local.server' + '.' + serviceInstanceIdCounter++,
+        name: 'Generic Attribute',
+        uuid: '1801',
+        children: OrderedMap(),
+    });
+
+    localServerChildren = {};
+    localServerChildren[gapService.instanceId] = gapService;
+    localServerChildren[gattService.instanceId] = gattService;
+
+    return new DeviceDetail({children: OrderedMap(localServerChildren)});
+}
+
+const initialState = new InitialState({selectedComponent: null, devices: OrderedMap({'local.server': getInitialLocalServer()})});
 
 function getNodeStatePath(instanceId) {
     const nodeInstanceIds = getInstanceIds(instanceId);
