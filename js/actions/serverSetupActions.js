@@ -36,6 +36,8 @@ import { api } from 'pc-ble-driver-js';
 import { logger } from '../logging';
 import { showErrorDialog } from './errorDialogActions';
 
+import { ValidationError } from '../common/Errors';
+
 function setAttributeExpandedAction(attribute, value) {
     return {
         type: SET_ATTRIBUTE_EXPANDED,
@@ -175,10 +177,12 @@ function _removeAttribute(dispatch, getState) {
 
 function _applyServer(dispatch, getState) {
     const state = getState();
+    const invalidUuidErrorMessage = 'Invalid UUID. All attributes must have a valid UUID.';
     const serviceFactory = new api.ServiceFactory();
     const serverSetup =  state.adapter.adapters.get(state.adapter.selectedAdapter).serverSetup;
     const selectedApi = state.adapter.api.selectedAdapter;
     const services = [];
+    const errors = [];
     let needSccdDescriptor = false;
     let missingSccdDescriptor = false;
     let missingCccdDescriptor = false;
@@ -186,14 +190,22 @@ function _applyServer(dispatch, getState) {
     for (let service of serverSetup.children.toArray()) {
         // TODO: At some point we may need/want to support secondary services
         const {
+            instanceId,
             uuid,
         } = service;
+
+        if (!uuid || uuid.length === 0) {
+            dispatch(showErrorDialog(new ValidationError(invalidUuidErrorMessage)));
+            dispatch(selectComponent(instanceId));
+            return;
+        }
 
         const factoryService = serviceFactory.createService(service.uuid);
         services.push(factoryService);
 
         for (let characteristic of service.children.toArray()) {
             const {
+                instanceId,
                 uuid,
                 value,
                 properties,
@@ -202,6 +214,12 @@ function _applyServer(dispatch, getState) {
                 fixedLength,
                 maxLength,
             } = characteristic;
+
+            if (!uuid || uuid.length === 0) {
+                dispatch(showErrorDialog(new ValidationError(invalidUuidErrorMessage)));
+                dispatch(selectComponent(instanceId));
+                return;
+            }
 
             let needSccdDescriptor = properties.broadcast || false;
             let needCccdDescriptor = properties.notify || properties.indicate || false;
@@ -219,6 +237,7 @@ function _applyServer(dispatch, getState) {
 
             for (let descriptor of characteristic.children.toArray()) {
                 const {
+                    instanceId,
                     uuid,
                     value,
                     readPerm,
@@ -226,6 +245,12 @@ function _applyServer(dispatch, getState) {
                     fixedLength,
                     maxLength,
                 } = descriptor;
+
+                if (!uuid || uuid.length === 0) {
+                    dispatch(showErrorDialog(new ValidationError(invalidUuidErrorMessage)));
+                    dispatch(selectComponent(instanceId));
+                    return;
+                }
 
                 if (uuid === '2903') {
                     needSccdDescriptor = false;
@@ -244,28 +269,18 @@ function _applyServer(dispatch, getState) {
             }
 
             if (needSccdDescriptor) {
-                missingSccdDescriptor = true;
+                errors.push(new ValidationError('Missing SCCD descriptor (uuid: 2903). All characteristics with broadcast property must have an SCCD descriptor.'));
             }
 
             if (needCccdDescriptor) {
-                missingCccdDescriptor = true;
+                errors.push(new ValidationError('Missing CCCD descriptor (uuid: 2902). All characteristics with notify or indicate properties must have a CCCD descriptor.'));
+            }
+
+            if (errors.length > 0) {
+                dispatch(showErrorDialog(errors));
+                return;
             }
         }
-    }
-
-    let errors = [];
-
-    if (missingSccdDescriptor) {
-        errors.push(new Error('Missing SCCD descriptor (uuid: 2903). All characteristics with broadcast property must have an SCCD descriptor.'));
-    }
-
-    if (missingCccdDescriptor) {
-        errors.push(new Error('Missing CCCD descriptor (uuid: 2902). All characteristics with notify or indicate properties must have a CCCD descriptor.'));
-    }
-
-    if (errors.length > 0) {
-        dispatch(showErrorDialog(errors));
-        return;
     }
 
     selectedApi.setServices(services, err => {
