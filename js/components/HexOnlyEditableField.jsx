@@ -133,7 +133,7 @@ export default class HexOnlyEditableField extends Component {
 
     _completeValidation(str) {
         const valueArray = str.split('-');
-        for (value of valueArray) {
+        for (let value of valueArray) {
             if (value.length % 2 !== 0) {
                 return {valid: false, validationMessage: 'Please enter full bytes (pairs of hexadecimals)'};
             }

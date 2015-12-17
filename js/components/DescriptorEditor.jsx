@@ -11,11 +11,9 @@ import { getUuidName } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
 
 const SUCCESS = 'success';
-const WARNING = 'warning';
 const ERROR = 'error';
 
 export default class DescriptorEditor extends Component {
-    //mixins: [ReactLinkedStateMixin],
     constructor(props) {
         super(props);
     }

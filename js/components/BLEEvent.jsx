@@ -38,7 +38,7 @@ export class BLEEvent extends Component {
 
     _getEventContent() {
         const { event, onTimedOut, countDownTimerRef } = this.props;
-        const { name, icon } = this._getEventInfo();
+        const { name } = this._getEventInfo();
 
         let eventTimer = (<div/>);
 
@@ -121,11 +121,6 @@ export class BLEEvent extends Component {
     }
 
     render() {
-        const {
-            event,
-            onTimedOut,
-        } = this.props;
-
         return (
             <div className={'service-item ' + this._getClass()} style={this._getStyle()} onClick={_event => this._onClick(_event)}>
                 <div className='expand-area' onClick={() => this._onExpandAreaClick()}>

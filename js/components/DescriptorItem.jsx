@@ -32,7 +32,7 @@ export default class DescriptorItem extends Component {
         if (this.props.item.value !== nextProps.item.value) {
             if (this.props.onChange) {
                 this.props.onChange();
-            };
+            }
 
             this._blink();
         }
@@ -75,7 +75,6 @@ export default class DescriptorItem extends Component {
         } = this.props;
         const {
             instanceId,
-            handle,
             uuid,
             name,
             value,
@@ -96,8 +95,7 @@ export default class DescriptorItem extends Component {
         const errorText = errorMessage ? errorMessage : '';
         const hideErrorClass = (errorText === '') ? 'hide' : '';
         const handleText = item.handle ? ('Handle: ' + item.handle + ', ') : '';
-        const backgroundColor = itemIsSelected
-            ? 'rgb(179,225,245)'
+        const backgroundColor = itemIsSelected ? 'rgb(179,225,245)'
             : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
 
         const valueList = [];

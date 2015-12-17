@@ -142,7 +142,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     let retval = Object.assign(
         {},
-        bindActionCreators(AdvertisingSetupActions, dispatch),
+        bindActionCreators(AdvertisingSetupActions, dispatch)
     );
 
     return retval;

@@ -61,7 +61,7 @@ export default class DeviceDetailsView extends Component {
                 onToggleAdvertising,
             } = this.props;
 
-            localDevice = (<CentralDevice id={instanceId + '_details'}
+            const localDevice = (<CentralDevice id={instanceId + '_details'}
                                           position={centralPosition}
                                           name={name}
                                           address={address}

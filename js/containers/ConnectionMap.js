@@ -38,7 +38,6 @@ class ConnectionMap extends Component {
         const {
             adapter,
             connectedDevices,
-            advertising,
             disconnectFromDevice,
             pairWithDevice,
             createUserInitiatedConnParamsUpdateEvent,

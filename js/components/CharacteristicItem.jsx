@@ -31,7 +31,6 @@ const CCCD_UUID = '2902';
 export default class CharacteristicItem extends Component {
     constructor(props) {
         super(props);
-        this.cccdDescriptor;
         this.backgroundColor = Colors.getColor(Colors.WHITE);
     }
 
@@ -39,7 +38,7 @@ export default class CharacteristicItem extends Component {
         if (this.props.item.value !== nextProps.item.value) {
             if (this.props.onChange) {
                 this.props.onChange();
-            };
+            }
 
             this._blink();
         }
@@ -105,10 +104,9 @@ export default class CharacteristicItem extends Component {
             cccdValue = 0;
         }
 
-        value = [cccdValue, 0];
+        const value = [cccdValue, 0];
 
         this.props.onWriteDescriptor(this.cccdDescriptor, value);
-        //this.props.onToggleNotify(this.props.item);
     }
 
     _childChanged() {

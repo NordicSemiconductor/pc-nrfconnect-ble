@@ -12,7 +12,7 @@
 
 'use strict';
 
-import { List, Record, OrderedMap, fromJS } from 'immutable';
+import { Record, OrderedMap } from 'immutable';
 
 import * as ServerSetupActions from '../actions/serverSetupActions';
 
@@ -95,7 +95,7 @@ function getInitialServices() {
         children: OrderedMap(),
     });
 
-    localServerChildren = {};
+    let localServerChildren = {};
     localServerChildren[gapService.instanceId] = gapService;
     localServerChildren[gattService.instanceId] = gattService;
 

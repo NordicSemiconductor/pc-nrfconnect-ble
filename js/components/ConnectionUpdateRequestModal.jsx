@@ -12,7 +12,7 @@
 
 'use strict';
 
-import React, { PropTypes } from 'react';
+import React from 'react';
 import Component from 'react-pure-render/component';
 
 import {Modal} from 'react-bootstrap';
@@ -58,7 +58,6 @@ export class ConnectionUpdateRequestDialog extends Component {
 
     render() {
         const {
-            visible,
             updateRequests,
         } = this.props;
 

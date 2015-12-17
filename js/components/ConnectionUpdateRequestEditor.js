@@ -57,8 +57,7 @@ export class ConnectionUpdateRequestEditor extends Component {
         const address = device.address;
         const requestedConnectionParams = event.requestedConnectionParams;
 
-        const range = event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE
-            ? undefined
+        const range = event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE ? undefined
             : <div>({requestedConnectionParams.minConnectionInterval}-{requestedConnectionParams.maxConnectionInterval})</div>;
 
         return (

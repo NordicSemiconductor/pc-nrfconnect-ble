@@ -3,13 +3,9 @@
 import React, {PropTypes} from 'react';
 import Component from 'react-pure-render/component';
 
-import {DropdownButton} from 'react-bootstrap';
-import {MenuItem} from 'react-bootstrap';
-import {Button} from 'react-bootstrap';
-import {Input} from 'react-bootstrap';
+import { DropdownButton, MenuItem, Input } from 'react-bootstrap';
 
 const SUCCESS = 'success';
-const WARNING = 'warning';
 const ERROR = 'error';
 
 const COMPLETE_LOCAL_NAME = '0';
@@ -181,7 +177,7 @@ export default class AdvertisingData extends Component {
     }
 
     validateLocalNameString(value) {
-        if (value.length == 0 || value.length > 23) {
+        if (value.length === 0 || value.length > 23) {
             return ERROR;
         } else {
             return SUCCESS;
@@ -202,7 +198,7 @@ export default class AdvertisingData extends Component {
                 return ERROR;
         }
 
-        for (uuid of cleanedUuidArray) {
+        for (let uuid of cleanedUuidArray) {
             if (uuid.trim().search(regex) < 0) {
                 return ERROR;
             }
@@ -220,17 +216,13 @@ export default class AdvertisingData extends Component {
     }
 
     render() {
-        const {
-            onValueChange,
-        } = this.props;
-
         const inputDisabled = (this.type === null);
 
         return (
             <div>
                 <div className="adv-drop-container">
                     <div className="type-label">Type</div>
-                    <DropdownButton className="adv-dropdown" title={this.title} 
+                    <DropdownButton className="adv-dropdown" title={this.title}
                             id="dropdown-adv" label="Type"
                             onSelect={(event, eventKey) => this.handleSelect(event, eventKey)}>
                         <MenuItem eventKey="0">{this.keyToAdvertisingType('0')}</MenuItem>

@@ -10,6 +10,8 @@
  *
  */
 
+ 'use strict';
+
 const uuidDefinitions = {
 
     // Start Predefined names

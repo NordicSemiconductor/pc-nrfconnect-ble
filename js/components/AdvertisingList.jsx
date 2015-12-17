@@ -3,8 +3,6 @@
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 
-import {Button} from 'react-bootstrap';
-
 import AdvertisingListEntry from './AdvertisingListEntry';
 
 export default class AdvertisingList extends Component {

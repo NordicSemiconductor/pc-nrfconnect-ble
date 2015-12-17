@@ -149,7 +149,6 @@ class DeviceDetailsContainer extends Component {
         }
 
         // Details for connected adapter
-        const localServer =
         detailDevices.push(<DeviceDetailsView key={adapterState.instanceId}
                                               device={adapterState}
                                               selected={selectedComponent}

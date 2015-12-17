@@ -138,8 +138,7 @@ export default class ServiceItem extends Component {
         const iconStyle = children && children.size === 0 && !addNew ? { display: 'none' } : {};
         const itemIsSelected = item.instanceId === selected;
         const handleText = item.handle ? ('Handle: ' + item.handle + ', ') : '';
-        const backgroundColor = itemIsSelected
-            ? 'rgb(179,225,245)'
+        const backgroundColor = itemIsSelected ? 'rgb(179,225,245)'
             : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
 
         return (

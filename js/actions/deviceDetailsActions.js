@@ -122,7 +122,6 @@ function _discoverCharacteristics(dispatch, getState, service) {
         dispatch(discoveredAttributesAction(service, characteristics));
         return characteristics;
     }).catch(error => {
-        console.log(error);
         dispatch(showErrorDialog(error));
     });
 }

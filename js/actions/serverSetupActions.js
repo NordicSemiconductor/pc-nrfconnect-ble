@@ -135,8 +135,6 @@ function _addNewCharacteristic(dispatch, getState, parent) {
 }
 
 function _addNewDescriptor(dispatch, getState, parent) {
-    const state = getState();
-    const serverSetup =  state.adapter.adapters.get(state.adapter.selectedAdapter).serverSetup;
     const parentInstanceIds = getInstanceIds(parent.instanceId);
 
     if (parentInstanceIds.service === 'local.server.0' || parentInstanceIds.service === 'local.server.1') {
