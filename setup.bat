@@ -9,7 +9,7 @@ call npm install -g less
 
 set VCTargetsPath=C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120
 
-set YGGDRASIL_VERSION=0.8.0
+set YGGDRASIL_VERSION=0.9.0
 set YGGDRASIL_DEPLOY_DIR=..\deploy
 set YGGDRASIL_ELECTRON_VERSION=0.35.4
 set YGGDRASIL_ELECTRON_ARCH=ia32
