@@ -277,6 +277,7 @@ function _applyServer(dispatch, getState) {
             }
 
             if (errors.length > 0) {
+                dispatch(selectComponent(instanceId));
                 dispatch(showErrorDialog(errors));
                 return;
             }

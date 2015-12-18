@@ -79,6 +79,10 @@ class ServerSetup extends Component {
             selectComponent,
         } = this.props;
 
+        if (!serverSetup) {
+            return;
+        }
+
         const selectedComponent = serverSetup.selectedComponent;
         const deviceDetails = new Map({devices: new Map({'local.server': serverSetup})});
         let foundCurrent = false;

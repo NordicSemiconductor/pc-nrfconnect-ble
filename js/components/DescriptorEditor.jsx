@@ -48,6 +48,10 @@ export default class DescriptorEditor extends Component {
     }
 
     _parseValueProperty(value) {
+        if (value.length === 0) {
+            return [];
+        }
+
         if (typeof value === 'string') {
             const valueArray = value.split('-');
             return valueArray.map(value => parseInt(value, 16));

@@ -49,7 +49,11 @@ export default class CharacteristicEditor extends Component {
     }
 
     _parseValueProperty(value) {
-        if (typeof value === 'string' && value.length > 0) {
+        if (value.length === 0) {
+            return [];
+        }
+
+        if (typeof value === 'string') {
             const valueArray = value.split('-');
             return valueArray.map(value => parseInt(value, 16));
         }
@@ -91,7 +95,7 @@ export default class CharacteristicEditor extends Component {
             return;
         }
 
-        if(this.validateValueLength() === ERROR) {
+        if (this.validateValueLength() === ERROR) {
             this.props.onValidationError(new ValidationError('Length of value is not valid.'));
             return;
         }
