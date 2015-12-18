@@ -12,7 +12,7 @@
 
 import changeCase from 'change-case';
 
-var bleDriver = require('pc-ble-driver-js').driver;
+import bleDriver from 'pc-ble-driver-js';
 import logger from './logging';
 
 var rewriter = function(value) {

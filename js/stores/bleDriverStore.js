@@ -14,8 +14,7 @@
 
 import reflux from 'reflux';
 
-var bleDriver = require('pc-ble-driver-js').driver;
-
+import bleDriver from 'pc-ble-driver-js';
 import logger from '../logging';
 import textual from '../ble_driver_textual';
 import remote from 'remote';
