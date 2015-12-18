@@ -13,7 +13,6 @@
 'use strict';
 
 import React from 'react';
-import Reflux from 'reflux';
 
 import {Modal} from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
@@ -22,6 +21,7 @@ var ConfirmationDialog = React.createClass({
     getInitialState() {
         return { showModal: this.props.show };
     },
+
     render() {
         return (
           <div>
@@ -39,7 +39,7 @@ var ConfirmationDialog = React.createClass({
             </Modal>
           </div>
         );
-    }
+    },
 });
 
 module.exports = ConfirmationDialog;

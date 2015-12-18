@@ -182,6 +182,7 @@
 #main-area-wrapper {
   background-color: @background-color;
   width: 100%;
+  min-width: 930px;
 }
 
 .nav-bar {
@@ -273,7 +274,7 @@
     box-shadow: @draggable-box-shadow;
 }
 
-.device-details-view .device.standalone {
+.device-details-view .device.standalone, .server-setup-view, .bleevent-dialog-view {
     border-bottom: 1px solid @device-details-light-border-color;
 
     .flag-line {
@@ -319,6 +320,11 @@
     }
     .device-body {
       padding: 4px 10px 10px 10px;
+
+      .icon-wifi {
+        margin-right: 4px;
+        float: right;
+      }
 
       .dropdown {
         min-width: 0px;
@@ -444,9 +450,6 @@
 .device-details-container {
   padding: 20px;
   overflow-y: hidden;
-  .main-device {
-    box-shadow: @draggable-box-shadow;
-  }
 
   .device-details-view {
     box-shadow: @draggable-box-shadow;
@@ -461,6 +464,10 @@
 
 .subtle-text {
   color: grey;
+}
+
+.subtler-text {
+  color: @gray-medium-lighter;
 }
 
 .truncate-text {
@@ -569,30 +576,62 @@
 }
 
 .server-setup {
-  .device-details-view {
+  padding: 20px;
+}
+
+.device-details-container {
+  .local-server {
+    margin: 0px;
+  }
+}
+
+.server-setup, .bleevent-dialog {
+  .server-setup-view, .bleevent-dialog-view {
     display: flex;
-    margin:20px;
+    margin: 0px;
     max-width: 800px;
     box-shadow: @draggable-box-shadow;
-    .service-items-wrap {
-      max-height: calc(~"100vh - 281px");
-      .flag-line {
-        display: none;
+    .server-setup-tree {
+      position: relative;
+      max-height: calc(~"100vh - 285px");
+      .service-items-wrap {
+        max-height: calc(~"100vh - 441px");
+        .flag-line {
+          display: none;
+        }
+        .editable-field {
+          display: none;
+        }
+        .btn-notify {
+          display: none;
+        }
       }
-      .editable-field {
-        display: none;
+      .server-setup-buttons {
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+        padding: 10px;
+        border-top: 1px solid @device-details-light-border-color;
+
+        .btn {
+          float: right;
+          margin-left: 5px;
+        }
       }
-      .btn-notify {
-        display: none;
+      .device {
+        border-bottom: 1px solid @device-details-light-border-color;
       }
+    }
+    .selected-component-editor-border {
+      border-left: 8px solid rgb(179, 225, 245);
     }
     .item-editor {
       flex: 1;
+      min-width: 350px;
       overflow: auto;
-      border-left: 8px solid rgb(179, 225, 245);
-      height: calc(~"100vh - 281px");
+      height: calc(~"100vh - 285px");
       > form, .nothing-selected {
-        height: calc(~"100vh - 281px");
+        height: calc(~"100vh - 285px");
         padding: 20px;
       }
       .nothing-selected {
@@ -602,23 +641,34 @@
   }
 }
 
-.device-details-view {
+.local-server .service-items-wrap {
+  max-height: calc(~"100vh - 386px");
+}
+.remote-server .service-items-wrap {
+  max-height: calc(~"100vh - 444px");
+}
+
+.device-details-view, .server-setup-view, .bleevent-dialog-view {
   background-color: white;
   margin: 80px 0px 0px 20px;
   .service-items-wrap {
     overflow-y: auto;
     overflow-x: hidden;
-    max-height: calc(~"100vh - 444px");
     width: 250px;
+  }
+  .enumerating-items-wrap {
+    display: flex;
+    .enumerating-content {
+      width:100%;
+      padding: 4px 0px;
+      border-bottom: 1px solid @device-details-light-border-color;
+    }
   }
   .bar1, .bar2, .bar3 {
     width: 8px;
     border-bottom: 1px solid white;
     margin-right: 1px;
   }
-  @bar1-color: rgb(179, 225, 245);
-  @bar2-color: rgb(102, 196, 235);
-  @bar3-color: rgb(0,   156, 222);
   .bar1 {
     background-color: @bar1-color;
   }
@@ -689,12 +739,21 @@
         max-width: 86%;
         font-size: 10px;
         background-color: @gray-lighter;
+      }
     }
-  }
   }
   .characteristic-item, .descriptor-item {
     .content-wrap {
       font-size: 11px;
+    }
+    .error-label {
+      margin: 1px 3px 1px -3px;
+      padding: 2px 2px 2px 3px;
+      border: 1px solid @device-details-light-border-color;
+      background-color: @bar1-color;
+    }
+    .hide {
+      display: none;
     }
   }
 
@@ -810,10 +869,14 @@ hr {
     text-align: right;
     margin-bottom: 4px;
   }
+  .connection-security {
+    float: left;
+    margin: 10px 15px 0px 15px;
+  }
 }
 .events-modal {
   .modal-dialog {
-    width: 60%;  
+    min-width: 60%;
   }
   .modal-title {
     border-bottom: none;
@@ -821,7 +884,7 @@ hr {
   .modal-footer {
     border-top: none;
   }
-  .device-details-view {
+  .device-details-view, .server-setup-view, .bleevent-dialog-view {
     margin-left: 4px;
     margin-right: 4px;
     margin-bottom: 0px;
@@ -886,4 +949,76 @@ hr {
 .countdown-timer {
   font-size: 1.6em;
   margin-left: 30px;
+}
+
+.adv-setup {
+  .adv-col {
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+  }
+  .adv-row {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+  }
+  .adv-pkt, .scan-rsp-pkt {
+    flex: 1;
+    margin: 10px;
+  }
+  .type-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .adv-drop-container, .adv-value-container {
+    display: inline-block;
+    vertical-align: top;
+    margin: 10px;
+  }
+  .adv-value-container {
+    width: 315px;
+  }
+  .form-group {
+    width: 100%;
+  }
+  table {
+    width: 100%;
+  }
+  .btn-add {
+    margin-bottom: 20px;
+    align-self: center;
+  }
+  .adv-header {
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  .adv-table-container {
+    //background: rgba(205, 205, 205, 0.21);
+    padding: 10px;
+    border: 1px solid lightgray;
+  }
+  .form-group {
+    display: inline-block;
+  }
+  .adv-dropdown {
+    min-width: 220px;
+    text-align: left;
+    .dropdown-menu {
+      li > a:focus {
+        outline: 1px solid black;
+      }
+      background-color: #FFFFFF;
+      li > a {
+        background-color: #FFFFFF;
+        color: rgb(51, 51, 51);
+      }
+      li > a:hover{
+        background-color: #E6E6E6;
+      }
+    }
+  }
+  .error-label {
+    margin: 5px;
+    padding: 5px;
+  }
 }

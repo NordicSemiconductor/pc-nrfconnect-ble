@@ -12,10 +12,25 @@
 
 'use strict';
 
+import React from 'react';
+import { PropTypes } from 'react';
+
+import Component from 'react-pure-render/component';
+
+import listensToClickOutside from 'react-onclickoutside/decorator';
 import TextareaAutosize from 'react-textarea-autosize';
+
 import $ from 'jquery';
 
-let EditableField = React.createClass({
+@listensToClickOutside()
+export default class EditableField extends Component {
+    constructor(props) {
+        super(props);
+
+        this.editing = false;
+        this.value = this.props.value;
+        this.validationMessage = '';
+    }
     /*
     Produces some text that changes into a textarea when clicked, OR if plain={true}, it simply produces a textarea.
     Exposes various events for validation and formatting.
@@ -23,7 +38,7 @@ let EditableField = React.createClass({
     Usage:
     <EditableField value={value}
         keyPressValidation={keyPressValidation} completeValidation={completeValidation}
-                    onBeforeBackspace={onBeforeBackspace} formatInput={formatInput} insideSelector=".some-selector" />
+                    onBeforeBackspace={onBeforeBackspace} formatInput={formatInput} insideSelector='.some-selector' />
      />
 
     If props
@@ -50,11 +65,8 @@ let EditableField = React.createClass({
         function, fires if the value changed due to user input. First argument is the new value.
 
     */
-    mixins: [
-        require('react-onclickoutside')
-    ],
-    handleClickOutside: function(e) {
-        if (this.state.editing) {
+    handleClickOutside(e) {
+        if (this.editing) {
             if (this.props.insideSelector) {
                 //dont close if click was within a parent element that matches insideSelector
                 const textarea = React.findDOMNode(this.refs.editableTextarea);
@@ -65,117 +77,172 @@ let EditableField = React.createClass({
                     }
                 }
             }
-            this.setState({
-                value: this.props.value, //reset textarea value
-                editing: false,
-                validationMessage: ""
-            });
+
+            this.editing = false,
+            this.value = this.props.value, //reset textarea value
+            this.validationMessage = '';
+            this.forceUpdate();
         }
-    },
-    getInitialState: function() {
-        return {
-            editing: false,
-            value: this.props.value,
-            validationMessage: ""
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (!this.state.editing && this.props.value !== nextProps.value) {
-            this.setState({ value: nextProps.value });
-        }
-    },
-    _toggleEditing: function(e) {
+    }
+
+    _selectParentAndToggleEditing(e) {
         e.stopPropagation();
-        this.setState({editing: !this.state.editing});
-    },
-    _onChange: function(e) {
-        let textarea = e.target;
+        this._toggleEditing(e);
+        this.props.selectParent(e);
+    }
+
+    _toggleEditing(e) {
+        e.stopPropagation();
+
+        if (this.props.onWrite) {
+            this.editing = !this.editing;
+            this.forceUpdate();
+        }
+    }
+
+    _onChange(e) {
+        const textarea = e.target;
+        let value = textarea.value;
         let caretPosition = textarea.selectionStart;
-        const valid = this.props.keyPressValidation ? this.props.keyPressValidation(textarea.value) : true;
+        const valid = this.props.keyPressValidation ? this.props.keyPressValidation(value) : true;
 
         if (valid) {
-            let value = e.target.value;
             if (this.props.formatInput) {
-                ({ value, caretPosition } = this.props.formatInput(value, caretPosition));
+                const formatInputResult = this.props.formatInput(value, caretPosition);
+                value = formatInputResult.value;
+                caretPosition = formatInputResult.caretPosition;
             }
-            this.setState({value: value, validationMessage: ""}, () =>
-                textarea.setSelectionRange(caretPosition, caretPosition));
-            if (this.props.onChange) {
-                this.props.onChange(value);
-            }
+
+            this.value = value;
+            this.validationMessage = '';
+
         } else {
-            this.setState({}, () =>
-                textarea.setSelectionRange(caretPosition-1, caretPosition-1));
+            caretPosition--;
         }
-    },
-    _onKeyDown: function(e) {
-        if (e.key === "Backspace" && this.props.onBeforeBackspace) {
+
+        this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
+
+        if (this.props.onChange) {
+            this.props.onChange(this.value);
+        }
+    }
+
+    _onKeyDown(e) {
+        if (e.key === 'Backspace' && this.props.onBeforeBackspace) {
             this.props.onBeforeBackspace(e);
         }
-        if (e.key === "Enter") {
-            this._saveChanges();
+
+        if (e.key === 'Delete' && this.props.onBeforeDelete) {
+            this.props.onBeforeDelete(e);
+        }
+
+        if (e.key === 'Enter') {
+            this._write();
             e.preventDefault();
         }
-    },
-    _onOkButtonClick: function(e) {
+    }
+
+    _onWriteButtonClick(e) {
         e.stopPropagation();
-        this._saveChanges();
-    },
+        this._write();
+    }
+
     _onReadButtonClick(e) {
-        e.stopPropagation()
-        this._read();
-    },
-    _saveChanges: function() {
-        const valid = this.props.completeValidation ? this.props.completeValidation(this.state.value) : true;
-        if (valid) {
-            this.setState({editing: false});
-            if (this.props.onSaveChanges) {
-                this.props.onSaveChanges(this.props.getValueArray(this.state.value));
-            }
-        }
-    },
-    _read() {
-        console.log('read button pressed!');
-    },
-    _stopPropagation: function(e) {
+        const { onRead } = this.props;
+
         e.stopPropagation();
-    },
-    render: function() {
-        const nonBreakingSpace = "\u00A0";
+        this._read();
+    }
+
+    _write() {
+        const {valid, validationMessage} = this.props.completeValidation ? this.props.completeValidation(this.value) : {valid: true};
+        if (valid) {
+            this.editing = false;
+            if (this.props.onWrite) {
+                this.props.onWrite(this.props.getValueArray(this.value));
+            }
+        } else {
+            this.validationMessage = validationMessage;
+        }
+    }
+
+    _read() {
+        this.props.onRead();
+    }
+
+    _stopPropagation(e) {
+        e.stopPropagation();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.editing) {
+            const textarea = React.findDOMNode(this.refs.editableTextarea);
+            const caretPosition = textarea.value.length;
+            textarea.focus();
+            textarea.setSelectionRange(caretPosition, caretPosition);
+        }
+    }
+
+    render() {
+        const nonBreakingSpace = '\u00A0';
         //Delaying the creation of TextareaAutosize etc until they're needed gives a performance win.
         //This matters when we get rapidly rerendered, e.g. during an animation.
         let child;
+
+        if (!this.editing) {
+            this.value = this.props.value;
+        }
+
         if (this.props.plain) {
-            child = <TextareaAutosize {...this.props} ref="editableTextarea" minRows={1} onKeyDown={this._onKeyDown} value={this.state.value} onChange={this._onChange} onClick={this._stopPropagation}></TextareaAutosize>
-        } else if (this.state.editing) {
-            child = <div className="editable-field-editor-wrap">
-                        <div className="alert-wrap">
-                            <div className="alert alert-danger tooltip top" style={{display: this.state.validationMessage == '' ? 'none' : 'block' }}>
-                                <div className="tooltip-arrow"></div>
-                                {this.state.validationMessage}
+            child = <TextareaAutosize {...this.props}
+                                      ref='editableTextarea'
+                                      minRows={1}
+                                      onKeyDown={e => this._onKeyDown(e)}
+                                      value={this.props.value}
+                                      onChange={e => this._onChange(e)}
+                                      onClick={this._stopPropagation} />;
+        } else if (this.editing && this.props.onWrite) {
+            child = <div className='editable-field-editor-wrap native-key-bindings'>
+                        <div className='alert-wrap'>
+                            <div className='alert alert-danger tooltip top' style={{display: this.validationMessage == '' ? 'none' : 'block' }}>
+                                <div className='tooltip-arrow'></div>
+                                {this.validationMessage}
                             </div>
                         </div>
-                        <div className="btn btn-primary btn-xs btn-nordic" onClick={this._onOkButtonClick}><i className="icon-ok"></i></div>
-                        <TextareaAutosize {...this.props} ref="editableTextarea" minRows={1} onKeyDown={this._onKeyDown} value={this.state.value} onChange={this._onChange} onClick={this._stopPropagation}></TextareaAutosize>
-                    </div>
-        } else if (this.props.showReadButton) {
-            child = <div className="editable-field-editor-wrap">
-                        <div className="btn btn-primary btn-xs btn-nordic" onClick={this._onReadButtonClick}><i className="icon-ccw"></i></div>
-                        <div className="subtle-text editable" onClick={this._toggleEditing}>
-                            <span>{this.state.value || nonBreakingSpace}</span>
+                        <div className='btn btn-primary btn-xs btn-nordic' title="Write" onClick={e => this._onWriteButtonClick(e)}><i className='icon-ok'></i></div>
+                        <TextareaAutosize {...this.props}
+                                          ref='editableTextarea'
+                                          minRows={1}
+                                          onKeyDown={e => this._onKeyDown(e)}
+                                          value={this.value}
+                                          onChange={e => this._onChange(e)}
+                                          onClick={this._stopPropagation} />
+                    </div>;
+        } else if (this.props.showReadButton && this.props.onRead) {
+            child = <div className='editable-field-editor-wrap'>
+                        <div className='btn btn-primary btn-xs btn-nordic' title="Read" onClick={e => this._onReadButtonClick(e)}><i className='icon-ccw'></i></div>
+                        <div className='subtle-text editable' onClick={e => this._toggleEditing(e)}>
+                            <span>{this.value || nonBreakingSpace}</span>
                         </div>
-                    </div>
+                    </div>;
         } else {
-            child = <div className="subtle-text editable" onClick={this._toggleEditing}>
-                        <span>{this.state.value || nonBreakingSpace}</span>
-                    </div>
+            child = <div className='subtle-text editable' title={this.props.title} onClick={e => this._selectParentAndToggleEditing(e)}>
+                        <span>{this.value || nonBreakingSpace}</span>
+                    </div>;
         }
+
         return (
-            <div className="editable-field">
+            <div className='editable-field'>
                 {child}
             </div>
         );
     }
-});
+}
 
-module.exports = EditableField;
+EditableField.propTypes = {
+    value: PropTypes.string.isRequired,
+    onWrite: PropTypes.func,
+    onRead: PropTypes.func,
+    showReadButton: PropTypes.bool,
+    insideSelector: PropTypes.string,
+};

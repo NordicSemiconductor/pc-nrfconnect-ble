@@ -12,9 +12,17 @@
 
 'use strict';
 
+import React from 'react';
+
+import Component from 'react-pure-render/component';
+
 import EditableField from './EditableField.jsx';
 
-let HexOnlyEditableField = React.createClass({
+export default class HexOnlyEditableField extends Component {
+    constructor(props) {
+        super(props);
+    }
+
     /*
         Produces some text that changes into a textarea when clicked (like EditableField).
         The textarea only accepts hexadecimal characters.
@@ -31,38 +39,65 @@ let HexOnlyEditableField = React.createClass({
 
         There's a lot of complexity here related to keeping the caret in the right position.
     */
-    _hexRegEx: /^[0-9a-f\-]*$/i,
     _keyPressValidation(str) {
-        return this._hexRegEx.test(str);
-    },
+        const _hexRegEx = /^[0-9a-fA-F\-]*$/i;
+        return _hexRegEx.test(str);
+    }
+
     _formatInput(str, caretPosition) {
         caretPosition = this._calcCaretPosition(str, caretPosition);
-        let chars = str.toUpperCase().replace(/-/g, "").split("");
+        let chars = str.toUpperCase().replace(/-/g, '').split('');
         //insert dashes after every second char
         let inserted = 0;
         const originalLength = chars.length;
 
         for (let i = 2; i < originalLength; i += 2) {
-            chars.splice(i+inserted, 0, "-");
+            chars.splice(i + inserted, 0, '-');
             inserted += 1;
         }
 
         return {
-            value: chars.join(""),
-            caretPosition: caretPosition
-        }
-    },
+            value: chars.join(''),
+            caretPosition: caretPosition,
+        };
+    }
+
     _onBeforeBackspace(e) {
         //when backspace will remove a dash, also remove the character before the dash
-        let str = e.target.value;
-        const caret = e.target.selectionStart;
-        if (str.substr(caret-1, 1) === "-") {
-            //remove the dash - this sets the caret at end of the text
-            e.target.value = str.slice(0, caret-1) + str.slice(caret, str.length);
-            //reset the caret back to before the dash, so the backspace event itself will remove the char before the dash
-            e.target.setSelectionRange(caret-1, caret-1);
+        const selectionStart = e.target.selectionStart;
+        const selectionEnd = e.target.selectionEnd;
+        if (selectionStart !== selectionEnd) {
+            return;
         }
-    },
+
+        const caret = selectionStart;
+        let str = e.target.value;
+        if (str.substr(caret - 1, 1) === '-') {
+            //remove the dash - this sets the caret at end of the text
+            e.target.value = str.slice(0, caret - 1) + str.slice(caret);
+            //reset the caret back to before the dash, so the backspace event itself will remove the char before the dash
+            e.target.setSelectionRange(caret - 1, caret - 1);
+        }
+    }
+
+    _onBeforeDelete(e) {
+        const selectionStart = e.target.selectionStart;
+        const selectionEnd = e.target.selectionEnd;
+        if (selectionStart !== selectionEnd) {
+            return;
+        }
+
+        const caret = selectionStart;
+        let str = e.target.value;
+
+        if (str.substr(caret, 1) === '-') {
+            //remove the dash - this sets the caret at end of the text
+            e.target.value = str.slice(0, caret) + str.slice(caret + 1);
+            //reset the caret back to after the dash, so the delete event itself will remove the char after the dash
+            e.target.setSelectionRange(caret, caret);
+        }
+    }
+
     _calcCaretPosition(origValue, caretPosition) {
         /*
         * Replacing the textarea contents places the caret at the end.
@@ -88,25 +123,25 @@ let HexOnlyEditableField = React.createClass({
         * Find where the caret would be without the dashes,
         * and map that position back to the dashed string
         */
-        const dashesBeforeCaret = origValue.substr(0, caretPosition).match(/-/g)
-        const numDashesBeforeCaret = dashesBeforeCaret === null ? 0 : dashesBeforeCaret.length
+        const dashesBeforeCaret = origValue.substr(0, caretPosition).match(/-/g);
+        const numDashesBeforeCaret = dashesBeforeCaret === null ? 0 : dashesBeforeCaret.length;
         const caretPositionWithoutDashes = caretPosition - numDashesBeforeCaret;
-        const correctNumberOfDashes = Math.floor(caretPositionWithoutDashes/2);
+        const correctNumberOfDashes = Math.floor(caretPositionWithoutDashes / 2);
         caretPosition = caretPositionWithoutDashes + correctNumberOfDashes;
         return caretPosition;
-    },
-    _onChange(value) {
-        if (this.props.onChange) {
-            this.props.onChange(value);
-        }
-    },
+    }
+
     _completeValidation(str) {
-        let isFullbytes = str.replace(/-/g, "").length % 2 === 0;
-        if (!isFullbytes) {
-            this.refs.editableField.setState({validationMessage: "Please enter full bytes (pairs of hexadecimals)"});
+        const valueArray = str.split('-');
+        for (let value of valueArray) {
+            if (value.length % 2 !== 0) {
+                return {valid: false, validationMessage: 'Please enter full bytes (pairs of hexadecimals)'};
+            }
         }
-        return isFullbytes;
-    },
+
+        return {valid: true, validationMessage: 'Valid value'};
+    }
+
     _getValueArray(value) {
         if (!this._completeValidation(value)) {
             return;
@@ -115,20 +150,34 @@ let HexOnlyEditableField = React.createClass({
         let valueArray = [];
 
         for (let i = 0; i < value.length; i += 3) {
-            let slice = value.substring(i, i+2);
+            let slice = value.substring(i, i + 2);
             let parsedInt = parseInt(slice, 16);
             valueArray.push(parsedInt);
         }
 
         return valueArray;
-    },
-    render() {
-        const {keyPressValidation, completeValidation, onBackspace, formatInput, onChange, ...props} = this.props; //pass along all props except these
-        return <EditableField {...props}
-                    keyPressValidation={this._keyPressValidation} completeValidation={this._completeValidation}
-                    onBeforeBackspace={this._onBeforeBackspace} formatInput={this._formatInput} onChange={this._onChange} getValueArray={this._getValueArray} ref="editableField" />;
     }
-});
 
+    render() {
+        const {value, keyPressValidation, completeValidation, formatInput, onBeforeBackspace, onBeforeDelete, ...props} = this.props; //pass along all props except these
 
-module.exports = HexOnlyEditableField;
+        let parsedValue = value;
+
+        if (value.constructor === Array) {
+        // Convert from array [1, 10, 16, 20] to hex string "01-0A-10-14"
+            const hexValueStringArray = value.map(decimalNumber => ('0' + decimalNumber.toString(16)).slice(-2));
+            parsedValue = hexValueStringArray.join('-').toUpperCase();
+        }
+
+        //formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
+        return <EditableField {...props}
+                              value={parsedValue}
+                              keyPressValidation={this._keyPressValidation}
+                              completeValidation={str => this._completeValidation(str)}
+                              formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
+                              onBeforeBackspace={this._onBeforeBackspace}
+                              onBeforeDelete={this._onBeforeDelete}
+                              getValueArray={value => this._getValueArray(value)}
+                              ref='editableField' />;
+    }
+}

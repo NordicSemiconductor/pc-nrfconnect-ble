@@ -1,8 +1,9 @@
 {
   "node": true,
   "esnext": true,
+  "browser": true,
   "bitwise": true,
-  "camelcase": true,
+  "camelcase": false,
   "curly": true,
   "immed": true,
   "newcap": true,

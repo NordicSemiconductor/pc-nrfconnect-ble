@@ -10,104 +10,170 @@
  *
  */
 
-'use strict';
+ /*jslint browser:true */
 
-import React from 'react';
-import Reflux from 'reflux';
+ 'use strict';
 
-import {Popover, OverlayTrigger} from 'react-bootstrap';
-import connectionActions from '../actions/connectionActions.js';
-import layoutStrategies from '../common/layoutStrategies.js';
-import connectionStore from '../stores/connectionStore.js';
+import React, { PropTypes } from 'react';
+import Component from 'react-pure-render/component';
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 
-var ConnectionSetup = React.createClass({
-    render: function() {
+import layoutStrategies from '../common/layoutStrategies';
+
+export class ConnectionSetup extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        const {
+            device,
+        } = this.props;
+
+        const securityLevelText = (device.securityMode1Levels === 2) ? 'Encrypted link (unauthenticated)'
+            : 'Unencrypted link';
+
+        const iconClass = (device.securityMode1Levels && device.securityMode1Levels) > 1 ? 'icon-lock'
+            : 'icon-lock-open';
+
         return (
-            <div className="connection-parameters">
-                <span className="col-sm-8 connection-parameter-label">Connection Interval</span>
-                <span className="col-sm-4 connection-parameter-value">{this.props.device.connection.conn_params.max_conn_interval} ms</span>
-                <span className="col-sm-8 connection-parameter-label">Slave latency</span>
-                <span className="col-sm-4 connection-parameter-value">{this.props.device.connection.conn_params.slave_latency} ms</span>
-                <span className="col-sm-8 connection-parameter-label">Timeout</span>
-                <span className="col-sm-4 connection-parameter-value">{this.props.device.connection.conn_params.conn_sup_timeout} ms</span>
+            <div className='connection-parameters'>
+                <span className='col-sm-8 col-xs-8 connection-parameter-label'>Connection Interval</span>
+                <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.maxConnectionInterval} ms</span>
+                <span className='col-sm-8 col-xs-8 connection-parameter-label'>Slave latency</span>
+                <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.slaveLatency} ms</span>
+                <span className='col-sm-8 col-xs-8 connection-parameter-label'>Timeout</span>
+                <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.connectionSupervisionTimeout} ms</span>
+                <span className={'connection-security ' + iconClass}> {securityLevelText}</span>
             </div>
         );
     }
-});
+}
 
-var ConnectionOverlay = React.createClass({
-    _closeme: function() {
+ConnectionSetup.propTypes = {
+    device: PropTypes.object.isRequired,
+};
+
+export class ConnectionOverlay extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    _closeme() {
         this.refs.overlayTrigger.hide();
-    },
-    render: function() {
-        var overlayRef = this.refs.overlayTrigger;
+    }
+
+    render() {
+        const {
+            style,
+            device,
+        } = this.props;
+
+        const iconClass = (device.securityMode1Levels && device.securityMode1Levels) > 1 ? 'icon-lock'
+            : 'icon-lock-open';
+
         return (
-            <div className="connection-info-button" style={this.props.style}>
-                <OverlayTrigger ref="overlayTrigger" trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover title='Connection Parameters'><ConnectionSetup device ={this.props.device} closePopover = {this._closeme}/></Popover>}>
+            <div className='connection-info-button' style={style}>
+                <OverlayTrigger ref='overlayTrigger' trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover id='pover' title='Connection Information'><ConnectionSetup device={device} closePopover={this._closeme}/></Popover>}>
                     <span style={{fontSize: '15px'}}>
-                        <i className="icon-link icon-encircled"></i>
+                        <i className={'icon-encircled ' + iconClass}></i>
                     </span>
                 </OverlayTrigger>
             </div>
-            );
+        );
     }
-});
+}
 
-var Connector = React.createClass({
-    _generateLines: function(lineCoordinates) {
+ConnectionOverlay.propTypes = {
+    style: PropTypes.object.isRequired,
+    device: PropTypes.object.isRequired,
+};
+
+export class Connector extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidMount() {
+        // To be able to draw the line between two component they have be in the browser DOM
+        // At first render they are not rendered, therefore we have to do an additional rendering
+        // after the componenets are in the brower DOM.
+        this.forceUpdate();
+    }
+
+    _generateLines(lineCoordinates) {
         var result = [];
-        for(var i=0; i<lineCoordinates.length-1; i++) {
-            result.push(<line stroke="black" strokeWidth="3" strokeLinecap="square" key={i}
-                         x1={lineCoordinates[i].x} y1={lineCoordinates[i].y} x2={lineCoordinates[i+1].x} y2={lineCoordinates[i+1].y}/>);
+
+        for (let i = 0; i < lineCoordinates.length - 1; i++) {
+            result.push(<line stroke='black' strokeWidth='3' strokeLinecap='square' key={i} x1={lineCoordinates[i].x} y1={lineCoordinates[i].y} x2={lineCoordinates[i + 1].x} y2={lineCoordinates[i + 1].y}/>);
         }
+
         return result;
-    },
-    _getConnectionOverlay: function(lineCoordinates) {
+    }
+
+    _getConnectionOverlay(lineCoordinates) {
+        const {
+            device
+        } = this.props;
+
         if (lineCoordinates.length < 2) {
             return;
         }
 
-        var pointA = lineCoordinates[lineCoordinates.length - 2];
-        var pointB = lineCoordinates[lineCoordinates.length - 1];
+        const pointA = lineCoordinates[lineCoordinates.length - 2];
+        const pointB = lineCoordinates[lineCoordinates.length - 1];
 
-        var posX = (pointA.x - pointB.x) / 2;
-        var posY = (pointA.y - pointB.y) / 2;
+        let posX = (pointA.x - pointB.x) / 2;
+        let posY = (pointA.y - pointB.y) / 2;
 
-        var targetElement = document.getElementById(this.props.targetId);
-        var targetRect = targetElement.getBoundingClientRect();
+        const targetElement = document.getElementById(this.props.targetId);
+        const targetRect = targetElement.getBoundingClientRect();
 
-        if (posX == 0) {
+        if (posX === 0) {
             posX = targetRect.width / 2;
         }
 
-        if (posY == 0) {
+        if (posY === 0) {
             posY = targetRect.height / 2;
         }
 
-        return (<ConnectionOverlay style={{position: 'absolute', left: posX - 12, top: posY - 12}} device={this.props.device}/>);
-    },
-    render: function() {
-        var sourceElement = document.getElementById(this.props.sourceId);
-        var targetElement = document.getElementById(this.props.targetId);
+        return (<ConnectionOverlay style={{position: 'absolute', left: posX - 12, top: posY - 12}} device={device}/>);
+    }
 
-        if(!sourceElement || !targetElement) {
+    render() {
+        const {
+            sourceId,
+            targetId,
+            layout,
+        } = this.props;
+
+        const sourceElement = document.getElementById(sourceId);
+        const targetElement = document.getElementById(targetId);
+
+        if (!sourceElement || !targetElement) {
             return (<div/>);
         }
-        var sourceRect = sourceElement.getBoundingClientRect();
-        var targetRect = targetElement.getBoundingClientRect();
 
-        var layoutInfo = layoutStrategies[this.props.layout](sourceRect, targetRect, 3);
-        var connectorBox = layoutInfo.boundingBox;
-        var lines = this._generateLines(layoutInfo.lineCoordinates);
-        var connectionInfoOverlay = this._getConnectionOverlay(layoutInfo.lineCoordinates);
+        const sourceRect = sourceElement.getBoundingClientRect();
+        const targetRect = targetElement.getBoundingClientRect();
 
-        return (<div className="connector">
+        const layoutInfo = layoutStrategies(layout)(sourceRect, targetRect, 3);
+        const connectorBox = layoutInfo.boundingBox;
+        const lines = this._generateLines(layoutInfo.lineCoordinates);
+        const connectionInfoOverlay = this._getConnectionOverlay(layoutInfo.lineCoordinates);
+
+        return (<div className='connector'>
                     <svg style={{position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height}}>
                         {lines}
                     </svg>
                     {connectionInfoOverlay}
                 </div>);
     }
-});
+}
 
-module.exports = Connector;
+Connector.propTypes = {
+    device: PropTypes.object.isRequired,
+    sourceId: PropTypes.string.isRequired,
+    targetId: PropTypes.string.isRequired,
+    layout: PropTypes.string.isRequired,
+};

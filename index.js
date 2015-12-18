@@ -10,39 +10,49 @@
  *
  */
 
+ 'use strict';
+
 var app = require('app');
 var BrowserWindow = require('browser-window');
-var crashReporter = require('crash-reporter');
 var Menu = require('menu');
-var MenuItem = require('menu-item');
-var open = require('open');
-crashReporter.start();
 
 var mainWindow = null;
 
+global.keymap = app.getPath('userData') + '/keymap.cson';
 global.logFileDir = app.getPath('userData');
 
+const dialog = require('electron').dialog;
+var ipcMain = require('ipc-main');
+
+ipcMain.on('save-server-setup', function(event, arg) {
+    event.sender.send('save-server-setup-reply', dialog.showSaveDialog());
+});
+
+ipcMain.on('load-server-setup', function(event, arg) {
+    event.sender.send('load-server-setup-reply', dialog.showOpenDialog({ properties: ['openFile']}));
+});
+
 app.on('window-all-closed', function() {
-//    if (process.platform !== 'darwin') {
-        app.quit();
-//    }
+    app.quit();
 });
 
 app.on('ready', function() {
     mainWindow = new BrowserWindow({
         width: 1024,
         height: 800,
-        'min-width': 480,
-        'min-height': 280,
-        frame: true
+        //'min-width': 703,
+        'min-width': 308,
+        'min-height': 499,
+        frame: true,
+        icon: './nordic_logo.png',
     });
-    mainWindow.loadUrl('file://' + __dirname + '/index.html');
+    mainWindow.loadURL('file://' + __dirname + '/index.html');
     mainWindow.on('closed', function() {
-        console.log("windows closed");
+        console.log('windows closed');
         mainWindow = null;
     });
 
-    mainWindow.webContents.on('did-finish-load',function() {
+    mainWindow.webContents.on('did-finish-load', function() {
         mainWindow.setTitle('Yggdrasil');
     });
 });
@@ -52,9 +62,24 @@ app.once('ready', function() {
     var template = [
         {
             label: '&File',
-            submenu: [{label: '&Log file...', enabled: false, /*accelerator: 'CmdOrCtrl+L',*/ click: function() {open(global.logFileDir + '\\log.txt');}},
-                      {type: 'separator'},
-                      {label: '&Quit', accelerator: 'CmdOrCtrl+Q', click: function() {app.quit();}}]
+            submenu: [
+                {
+                    label: '&Log file...',
+                    enabled: false,
+                    /*accelerator: 'CmdOrCtrl+L',*/
+                    click: function() {
+                        open(global.logFileDir + '\\log.txt');
+                    },
+                },
+                {type: 'separator'},
+                {
+                    label: '&Quit',
+                    accelerator: 'CmdOrCtrl+Q',
+                    click: function() {
+                        app.quit();
+                    },
+                },
+            ],
         },
         {
             label: '&View',
@@ -66,7 +91,7 @@ app.once('ready', function() {
                         if (focusedWindow) {
                             focusedWindow.reload();
                         }
-                    }
+                    },
                 },
                 {
                     label: 'Toggle &Full Screen',
@@ -75,7 +100,7 @@ app.once('ready', function() {
                         if (focusedWindow) {
                             focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
                         }
-                    }
+                    },
                 },
                 {
                     label: 'Toggle &Developer Tools',
@@ -84,10 +109,10 @@ app.once('ready', function() {
                         if (focusedWindow) {
                             focusedWindow.toggleDevTools();
                         }
-                    }
+                    },
                 },
-            ]
-        }
+            ],
+        },
     ];
 
     if (process.platform == 'darwin') {
@@ -97,9 +122,11 @@ app.once('ready', function() {
                 {
                     label: 'Quit',
                     accelerator: 'Command+Q',
-                    click: function() { app.quit(); }
+                    click: function() {
+                        app.quit();
+                    },
                 },
-            ]
+            ],
         });
     }
 

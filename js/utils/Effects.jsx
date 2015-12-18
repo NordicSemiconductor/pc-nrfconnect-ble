@@ -1,5 +1,14 @@
+'use strict';
 
 import TWEEN from 'tween.js';
+
+// Usage:
+// if (this.animation) {
+//     this.animation.stop();
+// }
+// var blue  = {r: 179, g: 225, b: 245};
+// var white = {r: 255, g: 255, b: 255};
+// this.animation = Effects.blink(this, 'backgroundColor', blue, white);
 
 var Effects = {
     blink(reactElement, property, fromColor, toColor, options) {
@@ -11,10 +20,12 @@ var Effects = {
             .to(toColor, duration)
             .easing(easing)
             .onUpdate(() => {
-                reactElement.setState({ [property]: fromColor });
+                reactElement[property] = fromColor;
+                reactElement.forceUpdate();
             })
             .start();
     },
+
     ensureAnimationLoopStarted: (function() {
         //closure trickery to make it impossible to start animationLoop twice
         var animationLoopStarted = false;
@@ -26,26 +37,11 @@ var Effects = {
                     requestAnimationFrame(animationLoop);
                     TWEEN.update(time);
                 }
+
                 animationLoop();
             }
-        }
-    })()
-}
-
-var BlueWhiteBlinkMixin = {
-    getInitialState: function() {
-        return {
-            backgroundColor: {r: 255, g: 255, b: 255}
         };
-    },
-    blink: function() {
-        if (this.animation) {
-            this.animation.stop();
-        }
-        var blue  = {r: 179, g: 225, b: 245};
-        var white = {r: 255, g: 255, b: 255};
-        this.animation = Effects.blink(this, 'backgroundColor', blue, white);
-    }
-}
+    })(),
+};
 
-module.exports = {Effects, BlueWhiteBlinkMixin};
+module.exports = {Effects};

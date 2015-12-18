@@ -20,6 +20,7 @@
 @gray-dark:              lighten(@gray-base, 20%);   // #333
 @gray:                   lighten(@gray-base, 33.5%); // #555
 @gray-light:             lighten(@gray-base, 46.7%); // #777
+@gray-medium-lighter:    lighten(@gray-base, 70%);
 @gray-lighter:           lighten(@gray-base, 93.5%); // #eee
 
 @brand-main:            #009CDE; // Nordic primary blue
@@ -35,6 +36,11 @@
 @brand-primary-dark:    darken(@brand-primary, 5%);     // #006e9e //used by button border
 @brand-primary-darker:  darken(@brand-primary, 10%);    // #005c84 //used by focus and active
 @brand-primary-darkest: darken(@brand-primary, 17%);    // #005c84 //used whe both focus and active at the same time
+
+@bar1-color: rgb(179, 225, 245);
+@bar2-color: rgb(102, 196, 235);
+@bar3-color: rgb(0,   156, 222);
+
 
 //== Scaffolding
 //
@@ -91,7 +97,7 @@
 //## Specify custom location and filename of the included Glyphicons icon font. Useful for those including Bootstrap via Bower.
 
 //** Load fonts from this directory.
-@icon-font-path:          "../fonts/";
+@icon-font-path:          "../node_modules/bootstrap/fonts/";
 //** File name for all font files.
 @icon-font-name:          "glyphicons-halflings-regular";
 //** Element ID within SVG icon file.

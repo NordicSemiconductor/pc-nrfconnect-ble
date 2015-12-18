@@ -11,7 +11,7 @@
 Name "Yggdrasil"
 
 ; The file to write
-OutFile "yggdrasil-v0.7.0.exe"
+OutFile "yggdrasil_installer.exe"
 
 ; The default installation directory
 InstallDir "$PROGRAMFILES\Nordic Semiconductor\Yggdrasil"

@@ -12,59 +12,131 @@
 
 'use strict';
 
-import react from 'react';
+import React from 'react';
 
-import HexOnlyEditableField from './HexOnlyEditableField.jsx';
+import Component from 'react-pure-render/component';
+import { Map } from 'immutable';
 
-import bleDriverActions from '../actions/bleDriverActions';
+import HexOnlyEditableField from './HexOnlyEditableField';
+import { Effects } from '../utils/Effects';
+import { getInstanceIds } from '../utils/api';
+import * as Colors from '../utils/colorDefinitions';
 
-import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
+export default class DescriptorItem extends Component {
+    constructor(props) {
+        super(props);
+        this.backgroundColor = Colors.getColor(Colors.WHITE);
+    }
 
-
-var DescriptorItem = React.createClass({
-    mixins: [BlueWhiteBlinkMixin],
-    getInitialState: function() {
-        return {};
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (this.props.value !== nextProps.value) {
+    componentWillReceiveProps(nextProps) {
+        if (this.props.item.value !== nextProps.item.value) {
             if (this.props.onChange) {
-                this.props.onChange()
+                this.props.onChange();
             }
-            this.blink();
+
+            this._blink();
         }
-    },
-    _onClick: function() {
-        if (this.props.onSelected) {
-            this.props.onSelected(this.props.item);
+    }
+
+    _blink() {
+        if (this.animation) {
+            this.animation.stop();
         }
-    },
-    _onWrite: function(value) {
-        bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
-    },
-    render: function() {
-        var hidden = !this.props.item.parent.expanded && !this.props.item.parent.parent.expanded;
-        if (hidden) {
-            return null;
+
+        const fromColor = Colors.getColor(Colors.SOFT_BLUE);
+        const toColor = Colors.getColor(Colors.WHITE);
+        this.animation = Effects.blink(this, 'backgroundColor', fromColor, toColor);
+    }
+
+    _selectComponent() {
+        if (this.props.onSelectAttribute) {
+            this.props.onSelectAttribute(this.props.item.instanceId);
         }
-        var selected = this.props.item === this.props.selected;
-        var backgroundColor = selected
-            ? 'rgb(179,225,245)'
-            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
+    }
+
+    _onContentClick(e) {
+        e.stopPropagation();
+        this._selectComponent();
+    }
+
+    _isLocalAttribute() {
+        const instanceIds = getInstanceIds(this.props.item.instanceId);
+        return instanceIds.device === 'local.server';
+    }
+
+    _isCCCDAttribute() {
+        return this.props.item.uuid === '2902';
+    }
+
+    render() {
+        const {
+            item,
+            selected,
+        } = this.props;
+        const {
+            instanceId,
+            uuid,
+            name,
+            value,
+            errorMessage,
+        } = item;
+
+        const isLocal = this._isLocalAttribute();
+        const _onRead = isLocal ? undefined : () => {
+            this.props.onRead(this.props.item);
+        };
+
+        const isCCCD = this._isCCCDAttribute();
+        const _onWrite = isLocal && isCCCD ? undefined : value => {
+            this.props.onWrite(this.props.item, value);
+        };
+
+        const itemIsSelected = instanceId === selected;
+        const errorText = errorMessage ? errorMessage : '';
+        const hideErrorClass = (errorText === '') ? 'hide' : '';
+        const handleText = item.handle ? ('Handle: ' + item.handle + ', ') : '';
+        const backgroundColor = itemIsSelected ? 'rgb(179,225,245)'
+            : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
+
+        const valueList = [];
+
+        if (isLocal && isCCCD && Map.isMap(value)) {
+            value.forEach((cccdValue, deviceInstanceId) => {
+                const address = getInstanceIds(deviceInstanceId).address;
+                valueList.push((
+                    <HexOnlyEditableField key={instanceId + '-' + deviceInstanceId}
+                                          title={'CCCD value for device: ' + address}
+                                          value={cccdValue.toArray()}
+                                          onWrite={_onWrite}
+                                          onRead={_onRead}
+                                          showReadButton={itemIsSelected}
+                                          selectParent={() => this._selectComponent()} />
+                ));
+            });
+        } else {
+            valueList.push((
+                <HexOnlyEditableField key={instanceId}
+                                      value={value.toArray()}
+                                      onWrite={_onWrite}
+                                      onRead={_onRead}
+                                      showReadButton={itemIsSelected}
+                                      selectParent={() => this._selectComponent()} />
+            ));
+        }
+
         return (
-            <div className="descriptor-item" style={{ backgroundColor: backgroundColor }} onClick={this._onClick}>
-                <div className="bar1" />
-                <div className="bar2" />
-                <div className="bar3" />
-                <div className="content-wrap">
-                    <div className="content">
-                        <div className="truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
-                        <HexOnlyEditableField value={this.props.value} insideSelector=".descriptor-item" onSaveChanges={this._onWrite} showReadButton={selected} />
+            <div className='descriptor-item' style={{ backgroundColor: backgroundColor }} onClick={e => this._onContentClick(e)}>
+                <div className='bar1' />
+                <div className='bar2' />
+                <div className='bar3' />
+                <div className='content-wrap'>
+                    <div className='content'>
+                        <div className='truncate-text' title={handleText + 'UUID: ' + uuid}>{name}</div>
+                        {valueList}
+                        <div className={'error-label ' + hideErrorClass}>{errorText}</div>
                     </div>
                 </div>
             </div>
         );
     }
-});
-
-module.exports = DescriptorItem;
+}

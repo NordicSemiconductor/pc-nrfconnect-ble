@@ -10,30 +10,126 @@
  *
  */
 
+ /*jslint browser:true */
+
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
+import Component from 'react-pure-render/component';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 
-var CentralDevice = React.createClass({
-    render: function() {
-        var style={
+import AdvertisingSetup from '../containers/AdvertisingSetup';
+
+export default class CentralDevice extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    _onSelect(event, eventKey) {
+        const {
+            onToggleAdvertising,
+            onShowSetupDialog,
+            onSaveSetup,
+            onLoadSetup,
+        } = this.props;
+
+        switch (eventKey) {
+            case 'ToggleAdvertising':
+                onToggleAdvertising();
+                break;
+            case 'AdvertisingSetup':
+                onShowSetupDialog();
+                break;
+            case 'SaveSetup':
+                onSaveSetup();
+                break;
+            case 'LoadSetup':
+                onLoadSetup();
+                break;
+            default:
+                console.log('Unknown eventKey received: ' + eventKey);
+        }
+    }
+
+    render() {
+        const {
+            id,
+            name,
+            address,
+            advertising,
+            onToggleAdvertising,
+            onSaveSetup,
+            onLoadSetup,
+        } = this.props;
+
+        const style = {
             position: 'relative',
             width: '250px',
-            height: '102px'
+            height: '102px',
         };
+
+        const progressStyle = {
+            visibility: advertising ? 'visible' : 'hidden',
+        };
+
+        const iconOpacity = advertising ? '' : 'icon-background';
+        const advMenuText = advertising ? 'Stop advertising' : 'Start advertising';
+        const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
+
         return (
-            <div id={this.props.id} className="device main-device standalone" style={style}>
-                <img className="center-block" src="resources/nordic_usb_icon.png" height="41" width="16"/>
-                <div className="device-body text-small">
-                    <div>
-                        <div className="role-flag pull-right">Central</div>
-                        <strong>{this.props.name}</strong>
+            <div id={id} className='device main-device standalone' style={style}>
+                <img className='center-block' src='resources/nordic_usb_icon.png' height='41' width='16'/>
+                <div className='device-body text-small'>
+                    <div className='pull-right'>
+                        <Dropdown id='connectionDropDown' onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
+                            <Dropdown.Toggle noCaret>
+                                <span className='icon-cog' aria-hidden='true' />
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                {(() => {
+                                    const items = [];
+
+                                    if (onToggleAdvertising !== undefined) {
+                                        items.push(<MenuItem key="advertising" eventKey='ToggleAdvertising'>{advMenuText} <span className='subtler-text'>(Alt+A)</span></MenuItem>);
+                                    }
+
+                                    if (advertising !== undefined) {
+                                        items.push(<MenuItem key="setup" eventKey='AdvertisingSetup'>Advertising setup...</MenuItem>);
+                                    }
+
+                                    if (onLoadSetup !== undefined) {
+                                        items.push(<MenuItem key="load" eventKey='LoadSetup'>Load setup...</MenuItem>);
+                                    }
+
+                                    if (onSaveSetup !== undefined) {
+                                        items.push(<MenuItem key="save" eventKey='SaveSetup'>Save setup...</MenuItem>);
+                                    }
+
+                                    return items;
+                                })()}
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </div>
-                    <div className="address-text">{this.props.address}</div>    
+                    <div>
+                        <div className='role-flag pull-right'>Adapter</div>
+                        <strong>{name}</strong>
+                    </div>
+                    <div className='address-text'>{address}</div>
+                    <div className={'icon-wifi ' + iconOpacity} aria-hidden='true' title={advIconTitle} style={progressStyle} />
+                    <AdvertisingSetup />
                 </div>
             </div>
         );
     }
-});
+}
 
-module.exports = CentralDevice;
+CentralDevice.propTypes = {
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    advertising: PropTypes.bool,
+    onToggleAdvertising: PropTypes.func,
+    onShowSetupDialog: PropTypes.func,
+    onSaveSetup: PropTypes.func,
+    onLoadSetup: PropTypes.func,
+};

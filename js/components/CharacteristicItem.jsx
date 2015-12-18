@@ -12,123 +12,260 @@
 
 'use strict';
 
-import react from 'react';
+import React from 'react';
+import Component from 'react-pure-render/component';
 
+import EnumeratingAttributes from './EnumeratingAttributes';
 import DescriptorItem from './DescriptorItem';
-import AddNewItem from './AddNewItem.jsx';
-import HexOnlyEditableField from './HexOnlyEditableField.jsx';
+import AddNewItem from './AddNewItem';
+import HexOnlyEditableField from './HexOnlyEditableField';
+import { Effects } from '../utils/Effects';
+import { getInstanceIds } from '../utils/api';
+import * as Colors from '../utils/colorDefinitions';
 
-import bleDriverActions from '../actions/bleDriverActions';
+const NOTIFY = 1;
+const INDICATE = 2;
 
-import { BlueWhiteBlinkMixin } from '../utils/Effects.jsx';
+const CCCD_UUID = '2902';
 
+export default class CharacteristicItem extends Component {
+    constructor(props) {
+        super(props);
+        this.backgroundColor = Colors.getColor(Colors.WHITE);
+    }
 
-var CharacteristicItem = React.createClass({
-    mixins: [BlueWhiteBlinkMixin],
-    getInitialState: function() {
-        return {
-            expanded: false,
-            notifying: false
-        };
-    },
-    componentWillReceiveProps: function(nextProps) {
-        if (this.props.value !== nextProps.value) {
+    componentWillReceiveProps(nextProps) {
+        if (this.props.item.value !== nextProps.item.value) {
             if (this.props.onChange) {
                 this.props.onChange();
             }
-            this.blink();
-        }
 
-        if (this.props.selected === nextProps.selected && nextProps.selected === this.props.item) {
-            this.setState({ expanded: nextProps.selected.expanded })
+            this._blink();
         }
-    },
-    componentWillUpdate: function(nextProps, nextState) {
-        nextProps.item.expanded = nextState.expanded;
-    },
-    _onClick: function(e) {
-        e.stopPropagation();
+    }
 
-        if (this.props.onSelected) {
-            this.props.onSelected(this.props.item);
-        }
-    },
-    _onExpandAreaClick(e) {
-        if (this.props.descriptors.length === 0 && !this.props.addNew) {
+    componentWillUnmount() {
+        if (!this.animation) {
             return;
         }
 
-        e.stopPropagation();
-        this.setState({expanded: !this.state.expanded});
-    },
-    _onToggleNotify: function(e) {
-        e.stopPropagation();
-        this.setState({notifying: !this.state.notifying});
-        if (this.props.item.properties.notify) {
-            console.log('Toggle notify on handle ' + this.props.item.handle);
-        } else { //must have indicate property
-            console.log('Toggle indicate on handle ' + this.props.item.handle);
+        this.animation.stop();
+    }
+
+    _blink() {
+        if (this.animation) {
+            this.animation.stop();
         }
-    },
-    _childChanged: function() {
+
+        const fromColor = Colors.getColor(Colors.SOFT_BLUE);
+        const toColor = Colors.getColor(Colors.WHITE);
+        this.animation = Effects.blink(this, 'backgroundColor', fromColor, toColor);
+    }
+
+    _selectComponent() {
+        if (this.props.onSelectAttribute) {
+            this.props.onSelectAttribute(this.props.item.instanceId);
+        }
+    }
+
+    _onContentClick(e) {
+        e.stopPropagation();
+        this._selectComponent();
+    }
+
+    _onExpandAreaClick(e) {
+        e.stopPropagation();
+        this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
+    }
+
+    _onToggleNotify(e) {
+        e.stopPropagation();
+
+        const isNotifying = this._isNotifying(this.cccdDescriptor);
+        const hasNotifyProperty = this.props.item.properties.notify;
+        const hasIndicateProperty = this.props.item.properties.indicate;
+
+        if (this.cccdDescriptor === undefined) {
+            return;
+        }
+
+        if (!hasNotifyProperty && !hasIndicateProperty) {
+            return;
+        }
+
+        let cccdValue;
+        if (!isNotifying) {
+            if (hasNotifyProperty) {
+                cccdValue = NOTIFY;
+            } else {
+                cccdValue = INDICATE;
+            }
+        } else {
+            cccdValue = 0;
+        }
+
+        const value = [cccdValue, 0];
+
+        this.props.onWriteDescriptor(this.cccdDescriptor, value);
+    }
+
+    _childChanged() {
         if (this.props.onChange) {
             this.props.onChange();
         }
-        if (!this.state.expanded) {
-            this.blink();
+
+        if (!this.props.item.expanded) {
+            this._blink();
         }
-    },
-    _addDescriptor: function() {
-        this.props.addDescriptor(this.props.item);
-    },
-    _onWrite: function(value) {
-        bleDriverActions.writeRequest(this.props.connectionHandle, this.props.item.valueHandle, value);
-    },
-    render: function() {
-        const expandIcon = this.state.expanded ? 'icon-down-dir' : 'icon-right-dir';
-        const iconStyle = this.props.descriptors.length === 0 && !this.props.addNew  ? { display: 'none' } : {};
-        const notifyIcon = this.state.notifying ? 'icon-stop' : 'icon-play';
-        const notifyIconStyle = this.props.item.properties.notify || this.props.item.properties.indicate ? {} : {display: 'none'};
-        const selected = this.props.item === this.props.selected;
-        const backgroundColor = selected
-            ? 'rgb(179,225,245)'
-            : `rgb(${Math.floor(this.state.backgroundColor.r)}, ${Math.floor(this.state.backgroundColor.g)}, ${Math.floor(this.state.backgroundColor.b)})`;
+    }
+
+    _addDescriptor() {
+        // TODO: Add descriptor
+        //this.props.addDescriptor(this.props.item);
+    }
+
+    _onWrite(value) {
+        this.props.onWrite(this.props.item, value);
+    }
+
+
+
+    _findCccdDescriptor(children) {
+        if (!children) {
+            return;
+        }
+
+        return children.find(child => child.uuid === CCCD_UUID);
+    }
+
+    _isLocalAttribute() {
+        const instanceIds = getInstanceIds(this.props.item.instanceId);
+        return instanceIds.device === 'local.server';
+    }
+
+    _isNotifying(cccdDescriptor) {
+        if (!cccdDescriptor) {
+            return false;
+        }
+
+        const valueArray = cccdDescriptor.value.toArray();
+
+        if (valueArray.length < 2) {
+            return false;
+        }
+
+        return ((valueArray[0] & (NOTIFY | INDICATE)) > 0);
+    }
+
+    render() {
+        const {
+            item,
+            selected,
+            addNew,
+            selectOnClick,
+            onAddDescriptor,
+            onSelectAttribute,
+            onReadDescriptor,
+            onWriteDescriptor,
+            onToggleNotify,
+        } = this.props;
+
+        const {
+            instanceId,
+            handle,
+            uuid,
+            name,
+            properties,
+            value,
+            expanded,
+            notifying,
+            discoveringChildren,
+            children,
+            errorMessage,
+        } = item;
+
+        const propertyList = [];
+
+        if (properties) {
+            properties.forEach((propertyValue, property) => {
+                if (propertyValue) {
+                    propertyList.push(<div key={property} className='device-flag'>{property}</div>);
+                }
+            });
+        }
+
+        const childrenList = [];
+
+        if (discoveringChildren) {
+            childrenList.push(<EnumeratingAttributes key={'enumerating-descriptor'} bars={3} />);
+        } else if (children) {
+            children.forEach(descriptor => {
+                childrenList.push(<DescriptorItem key={descriptor.instanceId}
+                                                  item={descriptor}
+                                                  selected={selected}
+                                                  onSelectAttribute={onSelectAttribute}
+                                                  onChange={() => this._childChanged()}
+                                                  onRead={onReadDescriptor}
+                                                  onWrite={onWriteDescriptor} />
+                );
+            });
+        }
+
+        const isLocal = this._isLocalAttribute();
+        const _onRead = isLocal ? undefined : () => {
+            this.props.onRead(this.props.item);
+        };
+
+        this.cccdDescriptor = this._findCccdDescriptor(children);
+        const hasCccd = this.cccdDescriptor !== undefined;
+        const isNotifying = this._isNotifying(this.cccdDescriptor);
+        const hasNotifyProperty = properties.notify;
+        const hasIndicateProperty = properties.indicate;
+
+        const hasPossibleChildren = addNew || !(children && children.size === 0);
+        const expandIconStyle = children && children.size === 0 && !addNew  ? {display: 'none'} : {};
+        const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
+        const notifyIcon = (isNotifying && (hasNotifyProperty || hasIndicateProperty)) ? 'icon-stop' : 'icon-play';
+        const notifyIconStyle = !isLocal && hasCccd ? {} : {display: 'none'};
+        const itemIsSelected = item.instanceId === selected;
+        const errorText = errorMessage ? errorMessage : '';
+        const hideErrorClass = (errorText === '') ? 'hide' : '';
+        const handleText = item.declarationHandle ? ('Handle: ' + item.declarationHandle + ', ') : '';
+        const backgroundColor = itemIsSelected
+            ? 'rgb(179,225,245)' //@bar1-color
+            : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
 
         return (
         <div>
-            {/*Conditionally render first div for performance. We always have to render DescriptorItems, for right-arrow-key expansion to work.*/}
-            {!this.props.item.parent.expanded ? null : <div className="characteristic-item" style={{ backgroundColor: backgroundColor }} onClick={this._onClick} ref="item">
-                <div className="expand-area" onClick={this._onExpandAreaClick}>
-                    <div className="bar1" />
-                    <div className="bar2" />
-                    <div className="icon-wrap"><i className={"icon-slim " + expandIcon} style={iconStyle}></i></div>
+            <div className='characteristic-item' style={{backgroundColor: backgroundColor}} onClick={e => this._onContentClick(e)} ref='item'>
+                <div className='expand-area' onClick={hasPossibleChildren ? e => this._onExpandAreaClick(e) : null}>
+                    <div className='bar1' />
+                    <div className='bar2' />
+                    <div className='icon-wrap'><i className={'icon-slim ' + expandIcon} style={expandIconStyle}></i></div>
                 </div>
-                <div className="content-wrap">
-                    <div className="content">
-                        <div className="btn btn-primary btn-xs btn-nordic btn-notify" title="Toggle notifications" style={notifyIconStyle} onClick={this._onToggleNotify}><i className={notifyIcon}></i></div>
+                <div className='content-wrap'>
+                    <div className='content'>
+                        <div className='btn btn-primary btn-xs btn-nordic btn-notify' title='Toggle notifications' style={notifyIconStyle} onClick={e => this._onToggleNotify(e)}><i className={notifyIcon}></i></div>
                         <div>
-                            <div className="truncate-text" title={'[' + this.props.item.handle + '] ' + this.props.name}>{this.props.name}</div>
-                            <div className="flag-line">
-                                {(this.props.item.properties.getProperties()).map(function(property, index) {
-                                    return (<div key={index} className="device-flag">{property}</div>)
-                                })}
+                            <div className='truncate-text' title={handleText + 'UUID: ' + uuid}>{name}</div>
+                            <div className='flag-line'>
+                                {propertyList}
                             </div>
                         </div>
-                        <HexOnlyEditableField value={this.props.value} insideSelector=".characteristic-item" onSaveChanges={this._onWrite} showReadButton={selected}/>
+                        <HexOnlyEditableField value={value.toArray()}
+                                              onWrite={value => this._onWrite(value)}
+                                              showReadButton={itemIsSelected}
+                                              onRead={_onRead}
+                                              selectParent={() => this._selectComponent()} />
+                        <div className={'error-label ' + hideErrorClass}>{errorText}</div>
                     </div>
                 </div>
-            </div>}
-            <div style={{display: this.state.expanded ? 'block' : 'none'}}>
-                {this.props.descriptors.map((descriptor, k) =>
-                    <DescriptorItem key={k} name={descriptor.name} value={descriptor.value} onChange={this._childChanged}
-                        item={descriptor} selected={this.props.selected} onSelected={this.props.onSelected}  selectOnClick={this.props.selectOnClick}
-                        connectionHandle={this.props.connectionHandle} />
-                )}
-                {this.props.addNew ? <AddNewItem text="New descriptor" id={"add-btn-" + this.props.item.handle} selected={this.props.selected} onClick={this._addDescriptor} bars={3} /> : null}
+            </div>
+            <div style={{display: expanded ? 'block' : 'none'}}>
+                {childrenList}
+                {addNew ? <AddNewItem key={'add-new-descriptor'}text='New descriptor' id={'add-btn-' + instanceId} parentInstanceId={instanceId} selected={selected} onClick={() => onAddDescriptor(item)} bars={3} /> : null}
             </div>
         </div>
         );
     }
-});
-
-module.exports = CharacteristicItem;
+}
