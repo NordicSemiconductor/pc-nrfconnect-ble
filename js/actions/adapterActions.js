@@ -145,11 +145,11 @@ function _openAdapter(dispatch, getState, adapter) {
         });
 
         adapterToUse.on('characteristicValueChanged', characteristic => {
-            dispatch(attributeValueChangedAction(characteristic));
+            dispatch(attributeValueChangedAction(characteristic, characteristic.value));
         });
 
         adapterToUse.on('descriptorValueChanged', descriptor => {
-            dispatch(attributeValueChangedAction(descriptor));
+            dispatch(attributeValueChangedAction(descriptor, descriptor.value));
         });
 
         adapterToUse.on('securityChanged', (device, authParams) => {
