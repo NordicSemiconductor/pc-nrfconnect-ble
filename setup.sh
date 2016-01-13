@@ -1,7 +1,9 @@
 #!/bin/bash
-sudo npm install -g node-gyp
-sudo npm install -g electron-packager
-sudo npm install -g less
+
+#Only uncomment these to get the newest versions
+#sudo npm install -g node-gyp
+#sudo npm install -g electron-packager
+#sudo npm install -g less
 
 if [ "$YGGDRASIL_VERSION" = "" ]; then
     export YGGDRASIL_VERSION=0.0.0
