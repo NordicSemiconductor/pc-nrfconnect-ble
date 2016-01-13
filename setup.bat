@@ -7,7 +7,9 @@ call npm install -g node-gyp
 call npm install -g electron-packager
 call npm install -g less
 
-set VCTargetsPath=C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120
+call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
+
+set VCTargetsPath="C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120"
 
 if ["%YGGDRASIL_VERSION%"] == [""] goto setVersion
 goto versionIsSet
