@@ -1,8 +1,12 @@
+#!/bin/bash
 sudo npm install -g node-gyp
 sudo npm install -g electron-packager
 sudo npm install -g less
 
-export YGGDRASIL_VERSION=0.9.0
+if [ "$YGGDRASIL_VERSION" = "" ]; then
+    export YGGDRASIL_VERSION=0.0.0
+fi
+
 export YGGDRASIL_DEPLOY_DIR=../yggdrasil-deploy
 export YGGDRASIL_ELECTRON_VERSION=0.35.4
 export YGGDRASIL_ELECTRON_ARCH=x64
