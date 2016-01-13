@@ -197,7 +197,8 @@ function discoveredDeviceName(state, device, value) {
         return state;
     }
 
-    const name = value.map(el => String.fromCharCode(el)).join('');
+    const nameBuffer = new Buffer(value);
+    const name = nameBuffer.toString('utf8');
 
     const { index } = getSelectedAdapter(state);
 
