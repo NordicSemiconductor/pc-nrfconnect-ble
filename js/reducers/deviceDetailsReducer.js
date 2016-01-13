@@ -20,6 +20,8 @@ import * as ServerSetupActions from '../actions/serverSetupActions';
 
 import { getInstanceIds, getImmutableService, getImmutableCharacteristic, getImmutableDescriptor } from '../utils/api';
 import { getUuidName } from '../utils/uuid_definitions';
+import { toHexString } from '../utils/stringUtil';
+import { logger } from '../logging';
 
 const InitialState = Record({
     selectedComponent: null,
@@ -176,6 +178,9 @@ function completedReadingAttribute(state, attribute, value, error) {
     let errorMessage = '';
     if (error) {
         errorMessage = formatErrorMessage(error.message);
+    } else {
+        const handle = attribute.valueHandle ? attribute.valueHandle : attribute.handle;
+        logger.info(`Attribute read, handle: ${handle}, value (0x): ${toHexString(value)}`);
     }
 
     state = state.setIn(attributeStatePath.concat('errorMessage'), errorMessage);
@@ -197,6 +202,9 @@ function completedWritingAttribute(state, attribute, value, error) {
     let errorMessage = '';
     if (error) {
         errorMessage = formatErrorMessage(error.message);
+    } else {
+        const handle = attribute.valueHandle ? attribute.valueHandle : attribute.handle;
+        logger.info(`Attribute written, handle: ${handle}, value (0x): ${toHexString(value)}`);
     }
 
     state = state.setIn(attributeStatePath.concat('errorMessage'), errorMessage);
@@ -218,6 +226,26 @@ function completedWritingAttribute(state, attribute, value, error) {
     } else {
         return state.setIn(attributeStatePath.concat('value'), List(value));
     }
+}
+
+function attributeValueChanged(state, attribute, value, error) {
+    if (!attribute) {
+        return state;
+    }
+
+    const attributeStatePath = getNodeStatePath(attribute.instanceId);
+
+    let errorMessage = '';
+    if (error) {
+        errorMessage = formatErrorMessage(error.message);
+    } else {
+        const handle = attribute.valueHandle ? attribute.valueHandle : attribute.handle;
+        logger.info(`Attribute value changed, handle: ${handle}, value (0x): ${toHexString(value)}`);
+    }
+
+    state = state.setIn(attributeStatePath.concat('errorMessage'), errorMessage);
+
+    return state.setIn(attributeStatePath.concat('value'), List(value));
 }
 
 function appliedServerSetup(state, services) {
@@ -252,10 +280,6 @@ function appliedServerSetup(state, services) {
     }
 
     return state.setIn(['devices', 'local.server'], localDeviceDetails);
-}
-
-function attributeValueChanged(state, attribute, value) {
-    return completedWritingAttribute(state, attribute, value);
 }
 
 function setAttributeExpanded(state, attribute, value) {
