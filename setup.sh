@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#To ensure that bash is used. Taken from https://answers.atlassian.com/questions/28625/making-a-bamboo-script-execute-using-binbash
+if [ "$(ps -p "$$" -o comm=)" != "bash" ]; then
+    # Taken from http://unix-linux.questionfor.info/q_unix-linux-programming_85038.html
+    bash "$0" "$@"
+    exit "$?"
+fi
+
 #Only uncomment these to get the newest versions
 #sudo npm install -g node-gyp
 #sudo npm install -g electron-packager
