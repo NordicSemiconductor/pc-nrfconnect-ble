@@ -226,11 +226,12 @@ export default class CharacteristicItem extends Component {
         const expandIconStyle = children && children.size === 0 && !addNew  ? {display: 'none'} : {};
         const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
         const notifyIcon = (isNotifying && (hasNotifyProperty || hasIndicateProperty)) ? 'icon-stop' : 'icon-play';
-        const notifyIconStyle = !isLocal && hasCccd ? {} : {display: 'none'};
+        const notifyIconStyle = !isLocal && (hasNotifyProperty || hasIndicateProperty) ? {} : {display: 'none'};
         const itemIsSelected = item.instanceId === selected;
         const errorText = errorMessage ? errorMessage : '';
         const hideErrorClass = (errorText === '') ? 'hide' : '';
         const handleText = item.declarationHandle ? ('Handle: ' + item.declarationHandle + ', ') : '';
+        const toggleNotificationsText = hasCccd ? 'Toggle notifications' : 'Toggle notifications (CCCD not discovered)';
         const backgroundColor = itemIsSelected
             ? 'rgb(179,225,245)' //@bar1-color
             : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
@@ -245,7 +246,7 @@ export default class CharacteristicItem extends Component {
                 </div>
                 <div className='content-wrap'>
                     <div className='content'>
-                        <div className='btn btn-primary btn-xs btn-nordic btn-notify' title='Toggle notifications' style={notifyIconStyle} onClick={e => this._onToggleNotify(e)}><i className={notifyIcon}></i></div>
+                        <div className='btn btn-primary btn-xs btn-nordic btn-notify' title={toggleNotificationsText} disabled={!hasCccd} style={notifyIconStyle} onClick={e => this._onToggleNotify(e)}><i className={notifyIcon}></i></div>
                         <div>
                             <div className='truncate-text' title={handleText + 'UUID: ' + uuid}>{name}</div>
                             <div className='flag-line'>
@@ -263,7 +264,7 @@ export default class CharacteristicItem extends Component {
             </div>
             <div style={{display: expanded ? 'block' : 'none'}}>
                 {childrenList}
-                {addNew ? <AddNewItem key={'add-new-descriptor'}text='New descriptor' id={'add-btn-' + instanceId} parentInstanceId={instanceId} selected={selected} onClick={() => onAddDescriptor(item)} bars={3} /> : null}
+                {addNew ? <AddNewItem key={'add-new-descriptor'} text='New descriptor' id={'add-btn-' + instanceId} parentInstanceId={instanceId} selected={selected} onClick={() => onAddDescriptor(item)} bars={3} /> : null}
             </div>
         </div>
         );
