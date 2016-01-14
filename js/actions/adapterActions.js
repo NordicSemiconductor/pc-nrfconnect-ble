@@ -383,7 +383,7 @@ function _connectToDevice(dispatch, getState, device) {
         adapterToUse.once('connectTimedOut', onCompleted.bind(this, resolve, adapterToUse));
 
         adapterToUse.connect(
-            { address: device.address, type: 'BLE_GAP_ADDR_TYPE_RANDOM_STATIC' },
+            { address: device.address, type: device.addressType },
             options,
             error => {
                 if (error) {

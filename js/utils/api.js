@@ -41,6 +41,7 @@ const ImmutableDevice = Record({
     isConnecting: false, // Used by UI to determine visualize we are connecting
     connected: false,
     address: null,
+    addressType: null,
     name: null,
     role: null,
     minConnectionInterval: null,
@@ -198,6 +199,7 @@ export function getImmutableDevice(device) {
         instanceId: device.instanceId,
         connected: device.connected,
         address: device.address,
+        addressType: device.addressType,
         name: device.name,
         role: device.role,
         minConnectionInterval: device.minConnectionInterval,
