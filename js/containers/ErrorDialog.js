@@ -63,7 +63,7 @@ export class ErrorDialog extends Component {
                         {_errors}
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={() => closeErrorDialog()}>OK</Button>
+                        <Button autoFocus onClick={() => closeErrorDialog()}>OK</Button>
                     </Modal.Footer>
                 </Modal>
             </div>
