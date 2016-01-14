@@ -98,7 +98,6 @@ export default class ConnectedDevice extends Component {
         const role = device.role === 'central' ? 'Central' : 'Peripheral';
 
         const style = {
-            width: '250px',
             opacity: device.connected === true ? 1.0 : 0.5,
         };
 

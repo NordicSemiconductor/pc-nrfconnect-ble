@@ -64,7 +64,6 @@ export default class CentralDevice extends Component {
 
         const style = {
             position: 'relative',
-            width: '250px',
             height: '102px',
         };
 
