@@ -73,7 +73,7 @@ export class ConnectionOverlay extends Component {
             : 'icon-lock-open';
 
         return (
-            <div className='connection-info-button' style={style}>
+            <div className='connection-info-button btn btn-xs btn-link' style={style}>
                 <OverlayTrigger ref='overlayTrigger' trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover id='pover' title='Connection Information'><ConnectionSetup device={device} closePopover={this._closeme}/></Popover>}>
                     <span style={{fontSize: '15px'}}>
                         <i className={'icon-encircled ' + iconClass}></i>
@@ -137,7 +137,7 @@ export class Connector extends Component {
             posY = targetRect.height / 2;
         }
 
-        return (<ConnectionOverlay style={{position: 'absolute', left: posX - 12, top: posY - 12}} device={device}/>);
+        return (<ConnectionOverlay style={{position: 'absolute', left: posX - 14, top: posY - 14}} device={device}/>);
     }
 
     render() {
