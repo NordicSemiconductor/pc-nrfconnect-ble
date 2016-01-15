@@ -75,7 +75,7 @@ export class ConnectionOverlay extends Component {
         return (
             <div className='connection-info-button btn btn-xs btn-link' style={style}>
                 <OverlayTrigger ref='overlayTrigger' trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover id='pover' title='Connection Information'><ConnectionSetup device={device} closePopover={this._closeme}/></Popover>}>
-                    <span style={{fontSize: '15px'}}>
+                    <span>
                         <i className={'icon-encircled ' + iconClass}></i>
                     </span>
                 </OverlayTrigger>

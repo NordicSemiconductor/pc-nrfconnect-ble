@@ -71,11 +71,17 @@ export class BLEEventDialog extends Component {
             removeEvent,
         } = this.props;
 
+        if (events === null || events === undefined || events.size < 1)
+        {
+            this._close();
+            return <div />;
+        }
+
         return (
             <Modal
                 className='events-modal'
                 show={visible}
-                backdrop='static'
+                backdrop={true}
                 onHide={() => {
                     clearAllEvents();
                     showDialog(false);
@@ -125,7 +131,7 @@ export class BLEEventDialog extends Component {
                 </div>
 
                 <Modal.Footer>
-                    <Button disabled={!this._areAllEventsHandled()} className='btn btn-primary btn-nordic' onClick={() => this._close()}>Close</Button>
+                    <Button className='btn btn-primary btn-nordic' onClick={() => this._close()}>Close</Button>
                 </Modal.Footer>
             </Modal>
         );

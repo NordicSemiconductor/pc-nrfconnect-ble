@@ -50,9 +50,9 @@ export class ConnectionUpdateRequestEditor extends Component {
         const address = event.device.address;
 
         if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) {
-            return `Connection Parameters for device at ${address}`;
+            return `Connection parameters update for device ${address}`;
         } else {
-            return `Device ${address} has requested a connection parameter update`;
+            return `Connection parameters update request from device ${address}`;
         }
     }
 
@@ -197,35 +197,35 @@ export class ConnectionUpdateRequestEditor extends Component {
         const ignoreButton = event.type === BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE ?
             <Button type='button'
                     onClick={() => this._handleIgnoreConnectionParams()}
-                    className='btn btn-default btn-xs btn-nordic'>
+                    className='btn btn-default btn-sm btn-nordic'>
                     Ignore
             </Button> : '';
 
         const rejectButton = event.type === BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE ?
             <Button type='button'
                     onClick={() => this._handleRejectConnectionParams()}
-                    className='btn btn-default btn-xs btn-nordic'>
+                    className='btn btn-default btn-sm btn-nordic'>
                     Reject
             </Button> : '';
 
         const updateButton = <Button disabled={!this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid}
                                     type='button'
                                     onClick={() => this._handleUpdateConnection()}
-                                    className='btn btn-primary btn-xs btn-nordic'>
+                                    className='btn btn-primary btn-sm btn-nordic'>
                                     Update
                              </Button>;
 
         const cancelButton = event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE ?
             <Button type='button'
                     onClick={() => this._handleCancelUserInitiatedEvent()}
-                    className='btn btn-default btn-xs btn-nordic'>
+                    className='btn btn-default btn-sm btn-nordic'>
                     Cancel
             </Button> : '';
 
         return (
             <div>
                 <div className='event-header'>
-                    <p>{this._generateHeaderMessage()}</p>
+                    <h4>{this._generateHeaderMessage()}</h4>
                 </div>
                  <form className='form-horizontal'>
                     <div className='form-group '>
