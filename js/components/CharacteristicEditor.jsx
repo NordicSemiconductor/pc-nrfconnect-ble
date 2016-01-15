@@ -265,8 +265,8 @@ export default class CharacteristicEditor extends Component {
 
                 <div className='form-group'>
                     <div className='col-md-offset-3 col-md-9 padded-row'>
-                        <button type='button' className='btn btn-primary' onClick={() => this._saveAttribute()}>Save</button>
-                        <button type='button' className='btn btn-primary' onClick={onRemoveAttribute}>Delete</button>
+                        <button type='button' className='btn btn-primary btn-nordic' onClick={onRemoveAttribute}><i className='icon-cancel'/> Delete</button>
+                        <button type='button' className='btn btn-primary btn-nordic' onClick={() => this._saveAttribute()}>Apply</button>
                     </div>
                 </div>
             </form>

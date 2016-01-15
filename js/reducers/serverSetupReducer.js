@@ -22,6 +22,7 @@ import { logger } from '../logging';
 const InitialState = Record({
     selectedComponent: null,
     showingDeleteDialog: false,
+    showingClearDialog: false,
     children: null,
 });
 
@@ -282,6 +283,10 @@ export default function deviceDetails(state = initialState, action) {
             return state.set('showingDeleteDialog', true);
         case ServerSetupActions.HIDE_DELETE_DIALOG:
             return state.set('showingDeleteDialog', false);
+        case ServerSetupActions.SHOW_CLEAR_DIALOG:
+            return state.set('showingClearDialog', true);
+        case ServerSetupActions.HIDE_CLEAR_DIALOG:
+            return state.set('showingClearDialog', false);
         case ServerSetupActions.LOAD:
             return loadSetup(state, action.setup);
         default:

@@ -193,6 +193,8 @@ class ServerSetup extends Component {
             clearServer,
             showDeleteDialog,
             hideDeleteDialog,
+            showClearDialog,
+            hideClearDialog,
             showErrorDialog,
         } = this.props;
 
@@ -203,6 +205,7 @@ class ServerSetup extends Component {
         const {
             selectedComponent,
             showingDeleteDialog,
+            showingClearDialog,
             children,
         } = serverSetup;
 
@@ -283,8 +286,8 @@ class ServerSetup extends Component {
                             <AddNewItem text='New service' id='add-btn-root' bars={1} parentInstanceId={'local.server'} selected={selectedComponent} onClick={addNewService} />
                         </div>
                         <div className='server-setup-buttons'>
-                            <button type='button' className='btn btn-primary btn-nordic' onClick={applyServer}>Apply</button>
-                            <button type='button' className='btn btn-primary btn-nordic' onClick={clearServer}>Clear</button>
+                            <button type='button' className='btn btn-primary btn-nordic' onClick={applyServer}><i className='icon-ok' /> Apply to device</button>
+                            <button type='button' className='btn btn-primary btn-nordic' onClick={showClearDialog}><i className='icon-trash' /> Clear</button>
                         </div>
                     </div>
                     <div className={'item-editor' + editorBorderClass}>
@@ -293,7 +296,11 @@ class ServerSetup extends Component {
                     <ConfirmationDialog show={showingDeleteDialog}
                                         onOk={removeAttribute}
                                         onCancel={hideDeleteDialog}
-                                        text='Do you want to delete?'/>
+                                        text='Are you sure you want to delete the attribute?'/>
+                    <ConfirmationDialog show={showingClearDialog}
+                                        onOk={clearServer}
+                                        onCancel={hideClearDialog}
+                                        text='Are you sure you want to clear the server setup?'/>
                 </div>
             </div>
         );
