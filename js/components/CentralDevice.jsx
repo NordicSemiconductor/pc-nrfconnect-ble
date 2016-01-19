@@ -31,6 +31,7 @@ export default class CentralDevice extends Component {
             onShowSetupDialog,
             onSaveSetup,
             onLoadSetup,
+            onToggleAutoConnUpdate,
         } = this.props;
 
         switch (eventKey) {
@@ -46,6 +47,9 @@ export default class CentralDevice extends Component {
             case 'LoadSetup':
                 onLoadSetup();
                 break;
+            case 'ToggleAutoConnUpdate':
+                onToggleAutoConnUpdate();
+                break;
             default:
                 console.log('Unknown eventKey received: ' + eventKey);
         }
@@ -60,6 +64,8 @@ export default class CentralDevice extends Component {
             onToggleAdvertising,
             onSaveSetup,
             onLoadSetup,
+            onToggleAutoConnUpdate,
+            autoConnUpdate,
         } = this.props;
 
         const style = {
@@ -74,6 +80,7 @@ export default class CentralDevice extends Component {
         const iconOpacity = advertising ? '' : 'icon-background';
         const advMenuText = advertising ? 'Stop advertising' : 'Start advertising';
         const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
+        const iconCheckmark = autoConnUpdate ? 'icon-ok' : '';
 
         return (
             <div id={id} className='device main-device standalone' style={style}>
@@ -89,11 +96,11 @@ export default class CentralDevice extends Component {
                                     const items = [];
 
                                     if (onToggleAdvertising !== undefined) {
-                                        items.push(<MenuItem key="advertising" eventKey='ToggleAdvertising'>{advMenuText} <span className='subtler-text'>(Alt+A)</span></MenuItem>);
-                                    }
+                                        if (advertising !== undefined) {
+                                            items.push(<MenuItem key="setup" eventKey='AdvertisingSetup'>Advertising setup...</MenuItem>);
+                                        }
 
-                                    if (advertising !== undefined) {
-                                        items.push(<MenuItem key="setup" eventKey='AdvertisingSetup'>Advertising setup...</MenuItem>);
+                                        items.push(<MenuItem key="advertising" eventKey='ToggleAdvertising'>{advMenuText} <span className='subtler-text'>(Alt+A)</span></MenuItem>);
                                     }
 
                                     if (onLoadSetup !== undefined) {
@@ -102,6 +109,13 @@ export default class CentralDevice extends Component {
 
                                     if (onSaveSetup !== undefined) {
                                         items.push(<MenuItem key="save" eventKey='SaveSetup'>Save setup...</MenuItem>);
+                                    }
+
+                                    if (onToggleAutoConnUpdate !== undefined) {
+                                        items.push(<MenuItem key='divider' divider />);
+                                        items.push(<MenuItem key='autoConnUpdate'
+                                            title='Automatically respond to connection update requests'
+                                            eventKey='ToggleAutoConnUpdate'><i className={iconCheckmark} />Auto connection update response</MenuItem>);
                                     }
 
                                     return items;
@@ -131,4 +145,6 @@ CentralDevice.propTypes = {
     onShowSetupDialog: PropTypes.func,
     onSaveSetup: PropTypes.func,
     onLoadSetup: PropTypes.func,
+    autoConnUpdate: PropTypes.bool,
+    onToggleAutoConnUpdate: PropTypes.func,
 };

@@ -65,6 +65,10 @@ function connectionUpdateParamRequest(state, device, requestedConnectionParams) 
 }
 
 function connectionParamUpdateStatus(state, eventId, eventState) {
+    if (eventId < 0) {
+        return state;
+    }
+
     return state.setIn(['events', eventId, 'state'], eventState);
 }
 

@@ -22,6 +22,7 @@ const ImmutableRoot = Record({
     adapterStatus: 'Select COM port',
     adapterIndicator: 'off',
     selectedAdapter: null, // Index of selected adapter in .adapters (not api.adapters)
+    autoConnUpdate: true,
     errors: List(),
 });
 
@@ -149,7 +150,7 @@ function connectedDeviceUpdated(state, device) {
         return state;
     }
 
-    logger.info(`Connection updated for device ${device.address}`);
+    logger.info(`Connection parameters updated for device ${device.address}. Connection interval: ${device.minConnectionInterval}ms`);
     const { index } = getSelectedAdapter(state);
 
     const nodePath = ['adapters', index, 'connectedDevices', device.instanceId];
@@ -222,6 +223,10 @@ function addError(state, error) {
     return state;
 }
 
+function toggleAutoConnUpdate(state) {
+    return state.set('autoConnUpdate', !state.autoConnUpdate);
+}
+
 export default function adapter(state = getImmutableRoot(), action) {
     const adapterSubReducers = combineReducers({
         deviceDetails,
@@ -273,6 +278,8 @@ export default function adapter(state = getImmutableRoot(), action) {
             return connectedDeviceUpdated(state, action.device);
         case AdapterAction.DEVICE_SECURITY_CHANGED:
             return deviceSecurityChanged(state, action.device, action.parameters);
+        case AdapterAction.DEVICE_TOGGLE_AUTO_CONN_UPDATE:
+            return toggleAutoConnUpdate(state);
         case DeviceDetailsActions.DISCOVERED_DEVICE_NAME:
             return discoveredDeviceName(state, action.device, action.value);
         default:

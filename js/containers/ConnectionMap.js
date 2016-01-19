@@ -30,10 +30,6 @@ class ConnectionMap extends Component {
         super(props);
     }
 
-    handleToggleAdvertising() {
-        this.props.toggleAdvertising();
-    }
-
     render() {
         const {
             adapter,
@@ -42,6 +38,9 @@ class ConnectionMap extends Component {
             pairWithDevice,
             createUserInitiatedConnParamsUpdateEvent,
             showSetupDialog,
+            toggleAdvertising,
+            autoConnUpdate,
+            toggleAutoConnUpdate,
         } = this.props;
 
         let central;
@@ -56,7 +55,9 @@ class ConnectionMap extends Component {
                 address={address}
                 advertising={adapter.state.advertising}
                 onShowSetupDialog={showSetupDialog}
-                onToggleAdvertising={() => {this.handleToggleAdvertising();}} />);
+                onToggleAdvertising={toggleAdvertising}
+                autoConnUpdate={autoConnUpdate}
+                onToggleAutoConnUpdate={toggleAutoConnUpdate} />);
 
             connectedDevices.forEach((device, instanceId) => {
                 deviceNodes.push(<ConnectedDevice id={instanceId + '_cmap'}
@@ -95,6 +96,7 @@ function mapStateToProps(state) {
             connectedDevices: null,
             advertising: false,
             advertisingSetup: advertisingSetup,
+            autoConnUpdate: adapter.autoConnUpdate,
         };
     } else {
         return {
@@ -102,6 +104,7 @@ function mapStateToProps(state) {
             connectedDevices: selectedAdapter.connectedDevices,
             advertising: selectedAdapter.state.advertising,
             advertisingSetup: advertisingSetup,
+            autoConnUpdate: adapter.autoConnUpdate,
         };
     }
 }
@@ -132,4 +135,5 @@ ConnectionMap.propTypes = {
     showSetupDialog: PropTypes.func.isRequired,
     toggleAdvertising: PropTypes.func.isRequired,
     setAdvertisingData: PropTypes.func.isRequired,
+    toggleAutoConnUpdate: PropTypes.func.isRequired,
 };

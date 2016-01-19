@@ -33,6 +33,7 @@ export const DEVICE_SECURITY_CHANGED = 'DEVICE_SECURITY_CHANGED';
 
 export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
 export const DEVICE_CONNECTION_PARAM_UPDATE_STATUS = 'DEVICE_CONNECTION_PARAM_UPDATE_STATUS';
+export const DEVICE_TOGGLE_AUTO_CONN_UPDATE = 'DEVICE_TOGGLE_AUTO_CONN_UPDATE';
 
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
@@ -141,7 +142,7 @@ function _openAdapter(dispatch, getState, adapter) {
         });
 
         adapterToUse.on('connParamUpdateRequest', (device, requestedConnectionParams) => {
-            dispatch(deviceConnParamUpdateRequestAction(device, requestedConnectionParams));
+            _onConnParamUpdateRequest(dispatch, getState, device, requestedConnectionParams);
         });
 
         adapterToUse.on('characteristicValueChanged', characteristic => {
@@ -180,6 +181,15 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(showErrorDialog(error));
         }
     });
+}
+
+function _onConnParamUpdateRequest(dispatch, getState, device, requestedConnectionParams) {
+    if (getState().adapter.autoConnUpdate === true) {
+        requestedConnectionParams.max_conn_interval = requestedConnectionParams.min_conn_interval;
+        _updateDeviceConnectionParams(dispatch, getState, -1, device, requestedConnectionParams);
+    } else {
+        dispatch(deviceConnParamUpdateRequestAction(device, requestedConnectionParams));
+    }
 }
 
 function _onLogMessage(severity, message) {
@@ -525,6 +535,12 @@ function attributeValueChangedAction(attribute, value) {
     };
 }
 
+function toggleAutoConnUpdateAction() {
+    return {
+        type: DEVICE_TOGGLE_AUTO_CONN_UPDATE,
+    };
+}
+
 export function findAdapters() {
     return dispatch => {
         return _getAdapters(dispatch);
@@ -577,4 +593,8 @@ export function rejectDeviceConnectionParams(id, device) {
     return (dispatch, getState) => {
         return _rejectConnectionParams(dispatch, getState, id, device);
     };
+}
+
+export function toggleAutoConnUpdate() {
+    return toggleAutoConnUpdateAction();
 }
