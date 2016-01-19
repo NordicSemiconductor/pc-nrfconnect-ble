@@ -57,3 +57,9 @@
 .icon-cog-1:before { content: '\e837'; } /* '' */
 .icon-cog-alt:before { content: '\e838'; } /* '' */
 .icon-wrench:before { content: '\e839'; } /* '' */
+.icon-ellipsis-vert:before { content: '\e83a'; } /* '' */
+.icon-toggle-on:before { content: '\e83b'; } /* '' */
+.icon-toggle-off:before { content: '\e83c'; } /* '' */
+.icon-check:before { content: '\e83d'; } /* '' */
+.icon-css3:before { content: '\e83e'; } /* '' */
+.icon-html5:before { content: '\e83f'; } /* '' */

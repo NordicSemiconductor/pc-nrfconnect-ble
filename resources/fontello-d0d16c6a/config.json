@@ -279,6 +279,30 @@
       "src": "fontawesome"
     },
     {
+      "uid": "750058837a91edae64b03d60fc7e81a7",
+      "css": "ellipsis-vert",
+      "code": 59450,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "2a4e6c99b732a57da40e32fa2a7800a4",
+      "css": "toggle-off",
+      "code": 59452,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "3256ef03b16e7ab51235bc7378b53bb5",
+      "css": "toggle-on",
+      "code": 59451,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "dd6c6b221a1088ff8a9b9cd32d0b3dd5",
+      "css": "check",
+      "code": 59453,
+      "src": "fontawesome"
+    },
+    {
       "uid": "130380e481a7defc690dfb24123a1f0c",
       "css": "circle",
       "code": 59396,
@@ -318,6 +342,18 @@
       "uid": "a14be0c7e0689076e2bdde97f8e309f9",
       "css": "plug",
       "code": 59395,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "01c946ce2ed5500e0a918f2b3a7d1923",
+      "css": "css3",
+      "code": 59454,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "ff44f01f60948555026580eedf1e39bb",
+      "css": "html5",
+      "code": 59455,
       "src": "fontawesome"
     },
     {
