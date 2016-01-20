@@ -150,7 +150,7 @@ function connectedDeviceUpdated(state, device) {
         return state;
     }
 
-    logger.info(`Connection parameters updated for device ${device.address}. Connection interval: ${device.minConnectionInterval}ms`);
+    logger.info(`Connection parameters updated for device ${device.address}: interval ${device.minConnectionInterval}ms, timeout ${device.connectionSupervisionTimeout}ms, latency: ${device.slaveLatency}`);
     const { index } = getSelectedAdapter(state);
 
     const nodePath = ['adapters', index, 'connectedDevices', device.instanceId];

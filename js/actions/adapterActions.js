@@ -185,7 +185,7 @@ function _openAdapter(dispatch, getState, adapter) {
 
 function _onConnParamUpdateRequest(dispatch, getState, device, requestedConnectionParams) {
     if (getState().adapter.autoConnUpdate === true) {
-        requestedConnectionParams.max_conn_interval = requestedConnectionParams.min_conn_interval;
+        requestedConnectionParams.maxConnectionInterval = requestedConnectionParams.minConnectionInterval;
         _updateDeviceConnectionParams(dispatch, getState, -1, device, requestedConnectionParams);
     } else {
         dispatch(deviceConnParamUpdateRequestAction(device, requestedConnectionParams));
