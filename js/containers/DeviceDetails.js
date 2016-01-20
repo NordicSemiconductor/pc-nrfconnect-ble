@@ -139,6 +139,8 @@ class DeviceDetailsContainer extends Component {
             disconnectFromDevice,
             pairWithDevice,
             createUserInitiatedConnParamsUpdateEvent,
+            toggleAutoConnUpdate,
+            autoConnUpdate,
         } = this.props;
 
         const elemWidth = 250;
@@ -162,6 +164,8 @@ class DeviceDetailsContainer extends Component {
                                               onShowAdvertisingSetupDialog={showSetupDialog}
                                               onToggleAdvertising={toggleAdvertising}
                                               containerHeight={this.props.style.height}
+                                              onToggleAutoConnUpdate={toggleAutoConnUpdate}
+                                              autoConnUpdate={autoConnUpdate}
                                               />
         );
 
@@ -212,6 +216,7 @@ function mapStateToProps(state) {
         selectedComponent: selectedAdapter.deviceDetails && selectedAdapter.deviceDetails.selectedComponent,
         connectedDevices: selectedAdapter.connectedDevices,
         deviceDetails: selectedAdapter.deviceDetails,
+        autoConnUpdate: adapter.autoConnUpdate,
     };
 }
 

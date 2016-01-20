@@ -59,6 +59,8 @@ export default class DeviceDetailsView extends Component {
                 },
                 onShowAdvertisingSetupDialog,
                 onToggleAdvertising,
+                autoConnUpdate,
+                onToggleAutoConnUpdate,
             } = this.props;
 
             const localDevice = (<CentralDevice id={instanceId + '_details'}
@@ -68,7 +70,9 @@ export default class DeviceDetailsView extends Component {
                                           advertising={advertising}
                                           selected={selected}
                                           onShowSetupDialog={onShowAdvertisingSetupDialog}
-                                          onToggleAdvertising={onToggleAdvertising} />
+                                          onToggleAdvertising={onToggleAdvertising}
+                                          autoConnUpdate={autoConnUpdate}
+                                          onToggleAutoConnUpdate={onToggleAutoConnUpdate} />
             );
 
             const deviceDetail = this.props.deviceDetails.devices.get('local.server');
@@ -188,4 +192,6 @@ DeviceDetailsView.propTypes = {
     onPairWithDevice: PropTypes.func,
     onShowAdvertisingSetupDialog: PropTypes.func,
     onToggleAdvertising: PropTypes.func,
+    onToggleAutoConnUpdate: PropTypes.func,
+    autoConnUpdate: PropTypes.bool,
 };
