@@ -30,6 +30,9 @@ export const HIDE_DELETE_DIALOG = 'SERVER_SETUP_HIDE_DELETE_DIALOG';
 export const SHOW_CLEAR_DIALOG = 'SERVER_SETUP_SHOW_CLEAR_DIALOG';
 export const HIDE_CLEAR_DIALOG = 'SERVER_SETUP_HIDE_CLEAR_DIALOG';
 
+export const SHOW_DISCARD_DIALOG = 'SERVER_SETUP_SHOW_DISCARD_DIALOG';
+export const HIDE_DISCARD_DIALOG = 'SERVER_SETUP_DISCARD_DIALOG';
+
 export const LOAD = 'SERVER_SETUP_LOAD';
 
 import { getInstanceIds } from '../utils/api';
@@ -123,6 +126,18 @@ function showClearDialogAction() {
 function hideClearDialogAction() {
     return {
         type: HIDE_CLEAR_DIALOG,
+    };
+}
+
+function showDiscardDialogAction() {
+    return {
+        type: SHOW_DISCARD_DIALOG,
+    };
+}
+
+function hideDiscardDialogAction() {
+    return {
+        type: HIDE_DISCARD_DIALOG,
     };
 }
 
@@ -407,6 +422,14 @@ export function showClearDialog() {
 
 export function hideClearDialog() {
     return hideClearDialogAction();
+}
+
+export function showDiscardDialog() {
+    return showDiscardDialogAction();
+}
+
+export function hideDiscardDialog() {
+    return hideDiscardDialogAction();
 }
 
 export function saveServerSetup(filename) {

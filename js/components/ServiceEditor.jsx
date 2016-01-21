@@ -39,11 +39,14 @@ export default class ServiceEditor extends Component{
             this.name = uuidName;
         }
 
+        this.props.onModified(true);
+
         this.forceUpdate();
     }
 
     _onNameChange(e) {
         this.name = e.target.value;
+        this.props.onModified(true);
         this.forceUpdate();
     }
 
@@ -61,6 +64,7 @@ export default class ServiceEditor extends Component{
 
         this.props.onSaveChangedAttribute(changedService);
         this.saved = true;
+        this.props.onModified(false);
     }
 
     render() {
@@ -99,7 +103,7 @@ export default class ServiceEditor extends Component{
           <div className='form-group'>
             <div className='col-md-offset-3 col-md-9 padded-row'>
               <button type='button' className='btn btn-primary btn-nordic' onClick={onRemoveAttribute}><i className='icon-cancel'/> Delete</button>
-              <button type='button' className='btn btn-primary btn-nordic' onClick={() => this._saveAttribute()}>Apply</button>
+              <button type='button' className='btn btn-primary btn-nordic' onClick={() => this._saveAttribute()}>Save</button>
             </div>
           </div>
         </form>

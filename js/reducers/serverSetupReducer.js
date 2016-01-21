@@ -23,6 +23,7 @@ const InitialState = Record({
     selectedComponent: null,
     showingDeleteDialog: false,
     showingClearDialog: false,
+    showingDiscardDialog: false,
     children: null,
 });
 
@@ -287,6 +288,10 @@ export default function deviceDetails(state = initialState, action) {
             return state.set('showingClearDialog', true);
         case ServerSetupActions.HIDE_CLEAR_DIALOG:
             return state.set('showingClearDialog', false);
+        case ServerSetupActions.SHOW_DISCARD_DIALOG:
+            return state.set('showingDiscardDialog', true);
+        case ServerSetupActions.HIDE_DISCARD_DIALOG:
+            return state.set('showingDiscardDialog', false);
         case ServerSetupActions.LOAD:
             return loadSetup(state, action.setup);
         default:

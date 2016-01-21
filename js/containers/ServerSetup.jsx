@@ -49,6 +49,9 @@ class ServerSetup extends Component {
         this.moveDown = () => this._selectNextComponent(false);
         this.moveRight = () => this._expandComponent(true);
         this.moveLeft = () => this._expandComponent(false);
+
+        this.modified = false;
+        this.pendingSelectInstanceId = null;
     }
 
     componentDidMount() {
@@ -57,6 +60,12 @@ class ServerSetup extends Component {
 
     componentWillUnmount() {
         this._unregisterKeyboardShortcuts();
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        if (nextProps.serverSetup.selectedComponent !== this.props.serverSetup.selectedComponent) {
+            this.modified = false;
+        }
     }
 
     _registerKeyboardShortcuts() {
@@ -179,6 +188,31 @@ class ServerSetup extends Component {
         this.props.saveChangedAttribute(changedAttribute);
     }
 
+    _onModified(value) {
+        this.modified = value;
+    }
+
+    _onSelectComponent(instanceId) {
+        if (!this.modified) {
+            this.props.selectComponent(instanceId);
+            return;
+        }
+
+        this.pendingSelectInstanceId = instanceId;
+        this.props.showDiscardDialog();
+    }
+
+    _onDiscardCancel() {
+        this.pendingSelectInstanceId = null;
+
+        this.props.hideDiscardDialog();
+    }
+
+    _onDiscardOk() {
+        this.props.hideDiscardDialog();
+        this.props.selectComponent(this.pendingSelectInstanceId);
+    }
+
     render() {
         const {
             selectedAdapter,
@@ -196,6 +230,8 @@ class ServerSetup extends Component {
             showClearDialog,
             hideClearDialog,
             showErrorDialog,
+            showDiscardDialog,
+            hideDiscardDialog,
         } = this.props;
 
         if (!serverSetup) {
@@ -206,6 +242,7 @@ class ServerSetup extends Component {
             selectedComponent,
             showingDeleteDialog,
             showingClearDialog,
+            showingDiscardDialog,
             children,
         } = serverSetup;
 
@@ -237,14 +274,17 @@ class ServerSetup extends Component {
         const editor = selectedIsService ? <ServiceEditor service={selectedAttribute}
                                                           onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
                                                           onRemoveAttribute={showDeleteDialog}
+                                                          onModified={modified => this._onModified(modified)}
                                                           onValidationError={error => showErrorDialog(error)} />
                      : selectedIsCharacteristic ? <CharacteristicEditor characteristic={selectedAttribute}
                                                                         onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
                                                                         onRemoveAttribute={showDeleteDialog}
+                                                                        onModified={modified => this._onModified(modified)}
                                                                         onValidationError={error => showErrorDialog(error)} />
                      : selectedIsDescriptor ? <DescriptorEditor descriptor={selectedAttribute}
                                                                 onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
                                                                 onRemoveAttribute={showDeleteDialog}
+                                                                onModified={modified => this._onModified(modified)}
                                                                 onValidationError={error => showErrorDialog(error)} />
                      : <div className='nothing-selected' />;
 
@@ -257,7 +297,7 @@ class ServerSetup extends Component {
                              selectOnClick={true}
                              selected={selectedComponent}
                              onSelected={this._onSelected}
-                             onSelectAttribute={selectComponent}
+                             onSelectAttribute={instanceId => this._onSelectComponent(instanceId)}
                              onSetAttributeExpanded={setAttributeExpanded}
                              addNew={true}
                              onAddCharacteristic={addNewCharacteristic}
@@ -301,6 +341,10 @@ class ServerSetup extends Component {
                                         onOk={clearServer}
                                         onCancel={hideClearDialog}
                                         text='Are you sure you want to clear the server setup?'/>
+                    <ConfirmationDialog show={showingDiscardDialog}
+                                        onOk={() => this._onDiscardOk()}
+                                        onCancel={() => this._onDiscardCancel()}
+                                        text='The attribute has been modified. Discard the changes?' />
                 </div>
             </div>
         );

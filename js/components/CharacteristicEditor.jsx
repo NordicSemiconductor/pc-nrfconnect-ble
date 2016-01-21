@@ -41,11 +41,13 @@ export default class CharacteristicEditor extends Component {
     _setCheckedProperty(property, e) {
         this[property] = e.target.checked;
         this.forceUpdate();
+        this.props.onModified(true);
     }
 
     _setValueProperty(property, e) {
         this[property] = e.target.value;
         this.forceUpdate();
+        this.props.onModified(true);
     }
 
     _parseValueProperty(value) {
@@ -64,6 +66,7 @@ export default class CharacteristicEditor extends Component {
     _setInitialValue(value) {
         this.value = value;
         this.forceUpdate();
+        this.props.onModified(true);
     }
 
     _onUuidChange(e) {
@@ -87,6 +90,7 @@ export default class CharacteristicEditor extends Component {
         }
 
         this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
+        this.props.onModified(true);
     }
 
     _saveAttribute() {
@@ -126,6 +130,7 @@ export default class CharacteristicEditor extends Component {
 
         this.props.onSaveChangedAttribute(changedCharacteristic);
         this.saved = true;
+        this.props.onModified(false);
     }
 
     render() {
@@ -266,14 +271,13 @@ export default class CharacteristicEditor extends Component {
                 <div className='form-group'>
                     <div className='col-md-offset-3 col-md-9 padded-row'>
                         <button type='button' className='btn btn-primary btn-nordic' onClick={onRemoveAttribute}><i className='icon-cancel'/> Delete</button>
-                        <button type='button' className='btn btn-primary btn-nordic' onClick={() => this._saveAttribute()}>Apply</button>
+                        <button type='button' className='btn btn-primary btn-nordic' onClick={() => this._saveAttribute()}>Save</button>
                     </div>
                 </div>
             </form>
         );
     }
 }
-
 
 CharacteristicEditor.propTypes = {
     characteristic: PropTypes.object.isRequired,
