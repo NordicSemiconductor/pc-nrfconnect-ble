@@ -129,7 +129,7 @@ function discoveredAttributes(state, parent, attributes) {
         return state;
     }
 
-    state = state.setIn(parentStatePath.concat('children'), Map());
+    state = state.setIn(parentStatePath.concat('children'), OrderedMap());
 
     if (attributes.length === 0) {
         return state.setIn(parentStatePath.concat('expanded'), false);
