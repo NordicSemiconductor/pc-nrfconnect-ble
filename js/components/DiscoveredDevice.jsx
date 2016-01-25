@@ -13,6 +13,8 @@ const RSSI_WIDTH_MIN = Math.round(RSSI_WIDTH_MAX * 0.2);
 export default class DiscoveredDevice extends Component {
     constructor(props) {
         super(props);
+
+        this.currentAdvType = undefined;
     }
 
     getRssiWidth(rssi) {
@@ -32,6 +34,24 @@ export default class DiscoveredDevice extends Component {
         return rssiWidth;
     }
 
+    getAdvTypeText(advType) {
+        if (!advType) {
+            return;
+        }
+
+        if (advType.includes('ADV_IND')) {
+            return 'Connectable undirected';
+        } else if (advType.includes('ADV_DIRECT')) {
+            return 'Connectable directed';
+        } else if (advType.includes('ADV_SCAN')) {
+            return 'Scannable undirected';
+        } else if (advType.includes('NONCONN_IND')) {
+            return 'Non connectable undirected';
+        }
+
+        return;
+    }
+
     render() {
         const {
             device,
@@ -40,6 +60,16 @@ export default class DiscoveredDevice extends Component {
             onConnect,
             onCancelConnect,
         } = this.props;
+
+        if (device.advType) {
+            this.currentAdvType = device.advType;
+        }
+
+        const advTypeDiv = this.currentAdvType ?
+            <div className='flag-line'>
+                <div className='device-flag'>{this.getAdvTypeText(this.currentAdvType)}</div>
+            </div>
+            : '';
 
         if (!device) {
             return (
@@ -74,6 +104,7 @@ export default class DiscoveredDevice extends Component {
                             })
                         }
                     </div>
+                    {advTypeDiv}
                 </div>
             </div>
         );
