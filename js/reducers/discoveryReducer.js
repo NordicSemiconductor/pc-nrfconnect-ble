@@ -37,6 +37,10 @@ function deviceDiscovered(state, device) {
         newDevice = newDevice.setIn(['services'], existingDevice.services);
     }
 
+    if (existingDevice) {
+        newDevice = newDevice.mergeIn(['adData'], existingDevice.adData);
+    }
+
     return state.setIn(['devices', device.address], newDevice);
 }
 

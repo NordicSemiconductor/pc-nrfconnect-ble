@@ -12,7 +12,7 @@
 
 'use strict';
 
-import { List, Map, Record } from 'immutable';
+import { List, Map, OrderedMap, Record } from 'immutable';
 import { api } from 'pc-ble-driver-js';
 
 const ImmutableAdapterState = Record({
@@ -43,6 +43,8 @@ const ImmutableDevice = Record({
     address: null,
     addressType: null,
     advType: null,
+    flags: List(),
+    adData: OrderedMap(),
     name: null,
     role: null,
     minConnectionInterval: null,
@@ -203,6 +205,8 @@ export function getImmutableDevice(device) {
         addressType: device.addressType,
         name: device.name,
         advType: device.advType,
+        adData: Map(device.adData),
+        flags: List(device.flags),
         role: device.role,
         minConnectionInterval: device.minConnectionInterval,
         maxConnectionInterval: device.maxConnectionInterval,
