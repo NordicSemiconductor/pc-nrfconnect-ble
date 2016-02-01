@@ -19,7 +19,7 @@ set YGGDRASIL_VERSION master
 
 :versionIsSet
 set YGGDRASIL_DEPLOY_DIR=..\deploy
-set YGGDRASIL_ELECTRON_VERSION=0.35.4
+set YGGDRASIL_ELECTRON_VERSION=0.36.1
 set YGGDRASIL_ELECTRON_ARCH=ia32
 
 set npm_config_runtime=electron

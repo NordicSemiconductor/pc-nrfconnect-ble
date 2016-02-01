@@ -57,6 +57,7 @@ const ImmutableDevice = Record({
     bonded: false,
     securityMode1Levels: null,
     securityMode2Levels: null,
+    isExpanded: false,
 });
 
 const ImmutableProperties = Record({

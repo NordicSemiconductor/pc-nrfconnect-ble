@@ -81,70 +81,92 @@ export default class DiscoveredDevice extends Component {
         return changeCase.camelCase(value);
     };
 
+    onButtonClick(e, device) {
+        const {
+            onCancelConnect,
+            onConnect,
+            adapterIsConnecting,
+        } = this.props;
+
+        e.stopPropagation();
+
+        if (adapterIsConnecting) {
+            onCancelConnect(device);
+        } else {
+            onConnect(device);
+        }
+    }
+
     render() {
         const {
             device,
-            adapterIsConnecting,
             isConnecting,
-            onConnect,
-            onCancelConnect,
+            onToggleExpanded,
+            adapterIsConnecting,
         } = this.props;
 
-        if (device.advType) {
-            this.currentAdvType = device.advType;
-        }
+        let adDataDiv = '';
+        let advTypeDiv = '';
+        let flagsDiv = '';
+        let servicesDiv = '';
 
-        if (device.flags && device.flags.size > 0) {
-            this.currentFlags = device.flags;
-        }
-
-        if (device.services && device.services.size > 0) {
-            this.currentServices = device.services;
-        }
-
-        const adDataDiv =
-            <div className='flag-line'>
-             {
-                device.adData
-                .filterNot((value, key) => key.includes('BIT_SERVICE') || key.includes('_FLAGS') || key.includes('LOCAL_NAME'))
-                .map((value, key) => {
-                    return (
-                    <div>
-                        <span key={key + '_1'}className='text-smaller inline-block'>{this.rewriter(key)}:</span>
-                        <span key={key + '_2'} className='device-flag'>{value} </span>
-                    </div>);
-                })
+        if (device.isExpanded) {
+            if (device.advType) {
+                this.currentAdvType = device.advType;
             }
-            </div>;
 
-        const advTypeDiv = this.currentAdvType ?
-            <div className='flag-line'>
-                <span className='text-smaller inline-block'>Advertising type:</span>
-                <span className='device-flag'>{this.getAdvTypeText(this.currentAdvType)} </span>
-            </div>
-            : '';
+            if (device.flags && device.flags.size > 0) {
+                this.currentFlags = device.flags;
+            }
 
-        const flagsDiv = this.currentFlags && this.currentFlags.size > 0 ?
-                    <div className='flag-line'>
-                        <span className='text-smaller inline-block'>Flags:</span>
-                        {
-                            this.currentFlags.map(function(flag, index) {
-                                return (<span key={index + '_3'} className='device-flag'>{flag}</span>);
-                            })
-                        }
-                    </div>
-                    : '';
+            if (device.services && device.services.size > 0) {
+                this.currentServices = device.services;
+            }
 
-        const servicesDiv = this.currentServices && this.currentServices.size > 0 ?
-                    <div className='flag-line'>
-                        <span className='text-smaller inline-block'>Services:</span>
-                        {
-                            device.services.map(function(service, index) {
-                                return (<span key={index + '_4'} className='device-flag'>{getUuidName(service)} </span>);
-                            })
-                        }
-                    </div>
-                    : '';
+            adDataDiv =
+                <div className='flag-line'>
+                 {
+                    device.adData
+                    .filterNot((value, key) => key.includes('BIT_SERVICE') || key.includes('_FLAGS') || key.includes('LOCAL_NAME'))
+                    .map((value, key) => {
+                        return (
+                        <div>
+                            <span key={key + '_1'}className='text-smaller inline-block'>{this.rewriter(key)}:</span>
+                            <span key={key + '_2'} className='device-flag'>{value} </span>
+                        </div>);
+                    })
+                }
+                </div>;
+
+            advTypeDiv = this.currentAdvType ?
+                <div className='flag-line'>
+                    <span className='text-smaller inline-block'>Advertising type:</span>
+                    <span className='device-flag'>{this.getAdvTypeText(this.currentAdvType)} </span>
+                </div>
+                : '';
+
+            flagsDiv = this.currentFlags && this.currentFlags.size > 0 ?
+                        <div className='flag-line'>
+                            <span className='text-smaller inline-block'>Flags:</span>
+                            {
+                                this.currentFlags.map(function(flag, index) {
+                                    return (<span key={index + '_3'} className='device-flag'>{flag}</span>);
+                                })
+                            }
+                        </div>
+                        : '';
+
+            servicesDiv = this.currentServices && this.currentServices.size > 0 ?
+                        <div className='flag-line'>
+                            <span className='text-smaller inline-block'>Services:</span>
+                            {
+                                device.services.map(function(service, index) {
+                                    return (<span key={index + '_4'} className='device-flag'>{getUuidName(service)} </span>);
+                                })
+                            }
+                        </div>
+                        : '';
+        }
 
         if (!device) {
             return (
@@ -155,17 +177,17 @@ export default class DiscoveredDevice extends Component {
         }
 
         return (
-            <div className='device'>
+            <div className='device' onClick={e => onToggleExpanded(device.address)} >
                 <div className='top-bar'>
                     <div style={{float: 'right'}}>
                         <span style={{width: this.getRssiWidth(device.rssi) + 'px'}} className='icon-signal icon-foreground' />
-                        <span className='icon-signal icon-background' title={device.rssi}/>
+                        <span className='icon-signal icon-background' title={device.rssi + ' dBm'}/>
                     </div>
-                    <div className='text-small truncate-text'>{device.name || '<Unknown name>'}</div>
+                    <div className='text-small truncate-text'><i className={device.isExpanded ? 'icon-down-dir' : 'icon-right-dir'} />{device.name || '<Unknown name>'}</div>
                 </div>
                 <div className='device-body text-small'>
                     <div className='discovered-device-address-line'>
-                        <button onClick={adapterIsConnecting ? () => { onCancelConnect(device); } : () => { onConnect(device); }} className='btn btn-primary btn-xs btn-nordic' disabled={!isConnecting && adapterIsConnecting}>
+                        <button onClick={e => this.onButtonClick(e, device)} className='btn btn-primary btn-xs btn-nordic' disabled={!isConnecting && adapterIsConnecting}>
                             {isConnecting ? 'Cancel' : 'Connect'} <i className='icon-link'></i>
                         </button>
                         <div className='address-text'>

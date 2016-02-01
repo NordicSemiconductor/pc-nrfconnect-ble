@@ -38,6 +38,7 @@ function deviceDiscovered(state, device) {
     }
 
     if (existingDevice) {
+        newDevice = newDevice.setIn(['isExpanded'], existingDevice.isExpanded);
         newDevice = newDevice.mergeIn(['adData'], existingDevice.adData);
     }
 
@@ -75,6 +76,10 @@ function deviceCancelConnect(state) {
     return state.set('devices', newDevices);
 }
 
+function toggleExpanded(state, deviceAddress) {
+    return state.updateIn(['devices', deviceAddress, 'isExpanded'], value => !value);
+}
+
 export default function discovery(state = initialState, action) {
     switch (action.type) {
         case DiscoveryAction.DISCOVERY_CLEAR_LIST:
@@ -85,6 +90,8 @@ export default function discovery(state = initialState, action) {
             return scanStarted(state);
         case DiscoveryAction.DISCOVERY_SCAN_STOPPED:
             return scanStopped(state);
+        case DiscoveryAction.DISCOVERY_TOGGLE_EXPANDED:
+            return toggleExpanded(state, action.deviceAddress);
         case AdapterAction.DEVICE_DISCOVERED:
             return deviceDiscovered(state, action.device);
         case AdapterAction.DEVICE_CONNECT:

@@ -18,6 +18,7 @@ export const DISCOVERY_DEVICE_FOUND = 'DISCOVERY_DEVICE_FOUND';
 export const DISCOVERY_CLEAR_LIST = 'DISCOVERY_CLEAR_LIST';
 export const DISCOVERY_SCAN_STARTED = 'DISCOVERY_SCAN_STARTED';
 export const DISCOVERY_SCAN_STOPPED = 'DISCOVERY_SCAN_STOPPED';
+export const DISCOVERY_TOGGLE_EXPANDED = 'DISCOVERY_TOGGLE_EXPANDED';
 
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
@@ -99,6 +100,13 @@ function scanStoppedAction() {
     };
 }
 
+function toggleExpandedAction(deviceAddress) {
+    return {
+        type: DISCOVERY_TOGGLE_EXPANDED,
+        deviceAddress: deviceAddress,
+    };
+}
+
 // Exported action starters
 export function stopScan() {
     return (dispatch, getState) => {
@@ -134,4 +142,8 @@ export function toggleScan() {
             return Promise.reject('No adapter selected or adapter is missing state. Failing.');
         }
     };
+}
+
+export function toggleExpanded(deviceAddress) {
+    return toggleExpandedAction(deviceAddress);
 }

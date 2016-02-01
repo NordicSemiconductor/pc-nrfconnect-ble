@@ -42,6 +42,7 @@ class DiscoveredDevices extends Component {
             toggleScan,
             connectToDevice,
             cancelConnect,
+            toggleExpanded,
         } = this.props;
 
         const progressStyle = {
@@ -74,7 +75,8 @@ class DiscoveredDevices extends Component {
                                     adapterIsConnecting={adapterIsConnecting}
                                     isConnecting={device.isConnecting}
                                     onConnect={device => connectToDevice(device)}
-                                    onCancelConnect={() => cancelConnect()} />
+                                    onCancelConnect={() => cancelConnect()}
+                                    onToggleExpanded={toggleExpanded} />
                             );
                         })
                     }
