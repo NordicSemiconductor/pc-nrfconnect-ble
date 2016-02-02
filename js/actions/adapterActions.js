@@ -54,7 +54,7 @@ import { discoverServices } from './deviceDetailsActions';
 import { BLEEventState } from './common';
 import { showErrorDialog } from './errorDialogActions';
 
-const _adapterFactory = api.AdapterFactory.getInstance(driver);
+const _adapterFactory = api.AdapterFactory.getInstance();
 
 // Internal functions
 
@@ -158,6 +158,7 @@ function _openAdapter(dispatch, getState, adapter) {
         });
 
         adapterToUse.on('logMessage', _onLogMessage);
+        adapterToUse.on('status', _onStatus);
 
         dispatch(adapterOpenAction(adapterToUse));
 
@@ -211,6 +212,10 @@ function _onLogMessage(severity, message) {
         default:
             logger.warn(`Log message of unknown severity ${severity} received: ${message}`);
     }
+}
+
+function _onStatus(code, message) {
+    logger.warn(`Received status with code ${code}, message ${message}`);
 }
 
 function _closeAdapter(dispatch, adapter) {
