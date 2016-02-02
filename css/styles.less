@@ -264,7 +264,7 @@
 }
 
 #discoveredDevicesContainer {
-  padding: 15px;
+  padding: 10px 15px;
   .spinner {
     margin-left: 10px;
   }
@@ -522,6 +522,48 @@
 .address-text {
   .subtle-text;
   .text-smaller;
+}
+
+.adv-label {
+  .inline-block;
+  .text-smaller;
+  font-weight: bold;
+}
+
+.adv-value {
+  .inline-block;
+  .text-smaller;
+}
+
+.adv-line {
+  .flag-line;
+  background-color: #F8F8F8;
+  margin: 3px 0px 0px 3px;
+  padding: 0px 3px 0px 3px;
+}
+
+.adv-details {
+  .adv-value;
+  color: @gray;
+
+  i[class^='icon-']:before {
+    margin-left: 0px;
+    padding-left: 0px;
+    width: 8px;
+  }
+}
+
+.device-name {
+  .text-small;
+  .truncate-text;
+  font-weight: bold;
+}
+
+.discovered-device-body {
+  .discovered-device-address-line {
+    height: 22px;
+    margin-top: 5px;
+  }
 }
 
 .log-wrap {

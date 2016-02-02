@@ -3,6 +3,7 @@
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 import { getUuidName } from '../utils/uuid_definitions';
+import { toHexString } from '../utils/stringUtil';
 import changeCase from 'change-case'
 
 const RSSI_WIDTH_MAX = 20;
@@ -109,6 +110,7 @@ export default class DiscoveredDevice extends Component {
         let advTypeDiv = '';
         let flagsDiv = '';
         let servicesDiv = '';
+        let addressDiv = '';
 
         if (device.isExpanded) {
             if (device.advType) {
@@ -124,49 +126,56 @@ export default class DiscoveredDevice extends Component {
             }
 
             adDataDiv =
-                <div className='flag-line'>
+                <div>
                  {
                     device.adData
                     .filterNot((value, key) => key.includes('BIT_SERVICE') || key.includes('_FLAGS') || key.includes('LOCAL_NAME'))
                     .map((value, key) => {
                         return (
-                        <div>
-                            <span key={key + '_1'}className='text-smaller inline-block'>{this.rewriter(key)}:</span>
-                            <span key={key + '_2'} className='device-flag'>{value} </span>
+                        <div className='adv-line'>
+                            <span key={key + '_1'} className='adv-label'>{this.rewriter(key)}: </span>
+                            <span key={key + '_2'} className='adv-value'>{toHexString(value)} </span>
                         </div>);
                     })
                 }
                 </div>;
 
             advTypeDiv = this.currentAdvType ?
-                <div className='flag-line'>
-                    <span className='text-smaller inline-block'>Advertising type:</span>
-                    <span className='device-flag'>{this.getAdvTypeText(this.currentAdvType)} </span>
+                <div className='adv-line'>
+                    <span className='adv-label'>Advertising type:</span>
+                    <span className='adv-value'>{this.getAdvTypeText(this.currentAdvType)} </span>
                 </div>
                 : '';
 
             flagsDiv = this.currentFlags && this.currentFlags.size > 0 ?
-                        <div className='flag-line'>
-                            <span className='text-smaller inline-block'>Flags:</span>
+                        <div className='adv-line'>
+                            <span className='adv-label'>Flags:</span>
                             {
                                 this.currentFlags.map(function(flag, index) {
-                                    return (<span key={index + '_3'} className='device-flag'>{flag}</span>);
+                                    return (<span key={index + '_3'} className='adv-value'>{flag}</span>);
                                 })
                             }
                         </div>
                         : '';
 
             servicesDiv = this.currentServices && this.currentServices.size > 0 ?
-                        <div className='flag-line'>
-                            <span className='text-smaller inline-block'>Services:</span>
+                        <div className='adv-line'>
+                            <span className='adv-label'>Services:</span>
                             {
                                 device.services.map(function(service, index) {
-                                    return (<span key={index + '_4'} className='device-flag'>{getUuidName(service)} </span>);
+                                    return (<span key={index + '_4'} className='adv-value'>{getUuidName(service)} </span>);
                                 })
                             }
                         </div>
                         : '';
+
         }
+
+        addressDiv = <div className='address-text'>
+                        {device.address}
+                    </div>;
+
+        const dirIcon = device.isExpanded ? 'icon-down-dir' : 'icon-right-dir'
 
         if (!device) {
             return (
@@ -183,21 +192,22 @@ export default class DiscoveredDevice extends Component {
                         <span style={{width: this.getRssiWidth(device.rssi) + 'px'}} className='icon-signal icon-foreground' />
                         <span className='icon-signal icon-background' title={device.rssi + ' dBm'}/>
                     </div>
-                    <div className='text-small truncate-text'><i className={device.isExpanded ? 'icon-down-dir' : 'icon-right-dir'} />{device.name || '<Unknown name>'}</div>
+                    <div className='device-name'>{device.name || '<Unknown name>'}</div>
                 </div>
-                <div className='device-body text-small'>
+                <div className='discovered-device-body text-small'>
                     <div className='discovered-device-address-line'>
                         <button onClick={e => this.onButtonClick(e, device)} className='btn btn-primary btn-xs btn-nordic' disabled={!isConnecting && adapterIsConnecting}>
                             {isConnecting ? 'Cancel' : 'Connect'} <i className='icon-link'></i>
                         </button>
-                        <div className='address-text'>
-                            {device.address}
-                        </div>
+                        {addressDiv}
                     </div>
-                    {advTypeDiv}
-                    {servicesDiv}
-                    {flagsDiv}
-                    {adDataDiv}
+                    <div>
+                        <span className={'adv-details'}><i className={dirIcon}/>Advertising details</span>
+                        {advTypeDiv}
+                        {servicesDiv}
+                        {flagsDiv}
+                        {adDataDiv}
+                    </div>
                 </div>
             </div>
         );
