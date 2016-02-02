@@ -77,13 +77,13 @@ export class ConnectionUpdateRequestEditor extends Component {
                        htmlFor={'interval_' + address}>Connection Interval (ms) {range}</label>
                 <div className='col-sm-5'>
                     <Input id={'interval_' + address}
-                       type='number'
-                       className='form-control nordic-form-control'
-                       onChange={_event => this._handleConnectionIntervalChange(_event) }
-                       min={CONN_INTERVAL_MIN}
-                       max={CONN_INTERVAL_MAX}
-                       step={CONN_INTERVAL_STEP}
-                       value={this.connectionInterval}/>
+                        type='number'
+                        className='form-control nordic-form-control'
+                        onChange={_event => this._handleConnectionIntervalChange(_event) }
+                        min={CONN_INTERVAL_MIN}
+                        max={CONN_INTERVAL_MAX}
+                        step={CONN_INTERVAL_STEP}
+                        defaultValue={this.connectionInterval} />
                 </div>
             </div>
         );
@@ -118,8 +118,11 @@ export class ConnectionUpdateRequestEditor extends Component {
     }
 
     _handleConnectionIntervalChange(event) {
+        if (event.target.value === '') {
+            return;
+        }
+
         this.connectionInterval = parseFloat(event.target.value);
-        this.forceUpdate();
     }
 
     _handleUpdateConnection() {
