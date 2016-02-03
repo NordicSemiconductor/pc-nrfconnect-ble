@@ -305,6 +305,8 @@ class ServerSetup extends Component {
             );
         });
 
+        const btnTitle = selectedAdapter.isServerSetupApplied ? 'Server setup can be applied only once between resets' : '';
+
         const central = <CentralDevice id={selectedAdapter.instanceId + '_serversetup'}
             name={selectedAdapter.state.name}
             address={selectedAdapter.state.address}
@@ -326,7 +328,9 @@ class ServerSetup extends Component {
                             <AddNewItem text='New service' id='add-btn-root' bars={1} parentInstanceId={'local.server'} selected={selectedComponent} onClick={addNewService} />
                         </div>
                         <div className='server-setup-buttons'>
-                            <button type='button' className='btn btn-primary btn-nordic' onClick={applyServer}><i className='icon-ok' /> Apply to device</button>
+                            <button type='button' className='btn btn-primary btn-nordic'
+                                disabled={selectedAdapter.isServerSetupApplied} title={btnTitle}
+                                onClick={applyServer}><i className='icon-ok' /> Apply to device</button>
                             <button type='button' className='btn btn-primary btn-nordic' onClick={showClearDialog}><i className='icon-trash' /> Clear</button>
                         </div>
                     </div>
