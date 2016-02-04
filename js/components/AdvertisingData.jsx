@@ -3,7 +3,9 @@
 import React, {PropTypes} from 'react';
 import Component from 'react-pure-render/component';
 
-import { DropdownButton, MenuItem, Input } from 'react-bootstrap';
+import { Dropdown, DropdownButton, MenuItem, Input } from 'react-bootstrap';
+
+import { uuidDefinitions, uuid16bitServiceDefinitions, uuid128bitServiceDefinitions } from '../utils/uuid_definitions';
 
 const SUCCESS = 'success';
 const ERROR = 'error';
@@ -117,6 +119,16 @@ export default class AdvertisingData extends Component {
         }
     }
 
+    handleUuidSelect(event, eventKey) {
+        if (this.value !== '') {
+            this.value += ', ';
+        }
+
+        this.value += eventKey;
+        this.forceUpdate();
+        this.emitValueChange();
+    }
+
     handleSelect(event, eventKey) {
         this.value = '';
         this.typeKey = eventKey;
@@ -185,7 +197,7 @@ export default class AdvertisingData extends Component {
     }
 
     validateUuid(value, uuidType) {
-        const cleanedUuidArray = value.replace(/0[xX]/g, '').split(',');
+        const cleanedUuidArray = value.replace(/0[xX]/g, '').replace('-', '').split(',');
         let regex;
         switch (uuidType) {
             case UUID_TYPE_16:
@@ -215,39 +227,69 @@ export default class AdvertisingData extends Component {
         }
     }
 
+    formatUuid(value) {
+        if (!value) return value;
+
+        if (value.length > 8) {
+            return value.slice(0, 8) + '... ';
+        }
+
+        return value;
+    }
+
     render() {
         const inputDisabled = (this.type === null);
+        const uuidDef = this.title.includes('16 bit') ? uuid16bitServiceDefinitions
+            : this.title.includes('128 bit') ? uuid128bitServiceDefinitions
+            : {};
+        const uuidLookupDisabled = Object.keys(uuidDef).length === 0;
 
         return (
             <div>
-                <div className="adv-drop-container">
-                    <div className="type-label">Type</div>
-                    <DropdownButton className="adv-dropdown" title={this.title}
-                            id="dropdown-adv" label="Type"
+                <div className='adv-drop-container'>
+                    <div className='type-label'>AD type</div>
+                    <DropdownButton className='adv-dropdown' title={this.title}
+                            id='dropdown-adv' label='Type'
                             onSelect={(event, eventKey) => this.handleSelect(event, eventKey)}>
-                        <MenuItem eventKey="0">{this.keyToAdvertisingType('0')}</MenuItem>
-                        <MenuItem eventKey="1">{this.keyToAdvertisingType('1')}</MenuItem>
-                        <MenuItem eventKey="2">{this.keyToAdvertisingType('2')}</MenuItem>
-                        <MenuItem eventKey="3">{this.keyToAdvertisingType('3')}</MenuItem>
-                        <MenuItem eventKey="4">{this.keyToAdvertisingType('4')}</MenuItem>
-                        <MenuItem eventKey="5">{this.keyToAdvertisingType('5')}</MenuItem>
-                        <MenuItem eventKey="6">{this.keyToAdvertisingType('6')}</MenuItem>
-                        {/*TODO: add support for custom AD: <MenuItem eventKey="7">{this.keyToAdvertisingType('7')}</MenuItem>*/}
+                        <MenuItem eventKey='0'>{this.keyToAdvertisingType('0')}</MenuItem>
+                        <MenuItem eventKey='1'>{this.keyToAdvertisingType('1')}</MenuItem>
+                        <MenuItem eventKey='2'>{this.keyToAdvertisingType('2')}</MenuItem>
+                        <MenuItem eventKey='3'>{this.keyToAdvertisingType('3')}</MenuItem>
+                        <MenuItem eventKey='4'>{this.keyToAdvertisingType('4')}</MenuItem>
+                        <MenuItem eventKey='5'>{this.keyToAdvertisingType('5')}</MenuItem>
+                        <MenuItem eventKey='6'>{this.keyToAdvertisingType('6')}</MenuItem>
+                        {/*TODO: add support for custom AD: <MenuItem eventKey='7'>{this.keyToAdvertisingType('7')}</MenuItem>*/}
                     </DropdownButton>
                 </div>
-                <div className="adv-value-container">
+                <div className='adv-value-container'>
                     <Input
                         disabled={inputDisabled}
-                        className="adv-value"
-                        type="text"
-                        id="value"
-                        ref="advDataValue"
+                        type='text'
+                        id='value'
+                        ref='advDataValue'
                         value={this.value}
-                        label="Value"
+                        label='Value'
                         hasFeedback
                         placeholder={this.placeholderText}
                         bsStyle={this.validateInput()}
                         onChange={event => this.handleChange(event)} />
+                </div>
+                <div className='adv-uuid-lookup'>
+                    <Dropdown className='adv-dropdown' id='dropdown-uuid-lookup' title='Predefined service UUIDs'
+                        onSelect={(event, eventKey) => this.handleUuidSelect(event, eventKey)}>
+                        <Dropdown.Toggle noCaret style={{display: uuidLookupDisabled ? 'none' : ''}}>
+                            <span className='icon-search' aria-hidden='true' />
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className='scroll-menu-uuid'>
+                            <MenuItem header key='header0'>Predefined service UUIDs</MenuItem>
+                            {
+                                Object.keys(uuidDef).map((uuid, index) => {
+                                    return (<MenuItem key={index} title={'0x' + uuid} 
+                                        eventKey={uuid}>{'0x' + this.formatUuid(uuid) + ': ' + uuidDefinitions[uuid]}</MenuItem>);
+                                })
+                            }
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </div>
             </div>
         );

@@ -12,17 +12,14 @@
 
  'use strict';
 
-const uuidDefinitions = {
-
-    // Start Predefined names
-    //
-    //GATT Attribute Types
+export const uuid16bitGattDefinitions = {
     '2800': 'Primary Service',
     '2801': 'Secondary Service',
     '2802': 'Include',
     '2803': 'Characteristic',
+};
 
-    // Services
+export const uuid16bitServiceDefinitions = {
     '1800': 'Generic Access',
     '1801': 'Generic Attribute',
     '1802': 'Immediate Alert',
@@ -55,8 +52,9 @@ const uuidDefinitions = {
     '1820': 'Internet Protocol Support',
     '1821': 'Indoor Positioning',
     '1822': 'Pulse Oximeter',
+};
 
-    // Characteristics
+export const uuid16bitCharacteristicDefinitions = {
     '2A00': 'Device Name',
     '2A01': 'Appearance',
     '2A02': 'Peripheral Privacy Flag',
@@ -218,8 +216,9 @@ const uuidDefinitions = {
     '2AB3': 'Altitude',
     '2AB4': 'Uncertainty',
     '2AB5': 'Location Name',
+};
 
-    // Descriptors
+export const uuid16bitDescriptorDefinitions = {
     '2900': 'Characteristic Extended Properties',
     '2901': 'Characteristic User Description',
     '2902': 'Client Characteristic Configuration',
@@ -233,20 +232,41 @@ const uuidDefinitions = {
     '290B': 'Environmental Sensing Configuration',
     '290C': 'Environmental Sensing Measurement',
     '290D': 'Environmental Sensing Trigger Setting',
-    // End Predefined names
+};
 
-    // "User" defined UUIDs
-    '6E400001B5A3F393E0A9E50E24DCCA9E': 'UART over BLE',
-    '6E400002B5A3F393E0A9E50E24DCCA9E': 'UART RX',
-    '6E400003B5A3F393E0A9E50E24DCCA9E': 'UART TX',
+export const uuid16bitDefinitions = Object.assign({},
+    uuid16bitServiceDefinitions,
+    uuid16bitCharacteristicDefinitions,
+    uuid16bitDescriptorDefinitions,
+    uuid16bitGattDefinitions);
+
+export const uuid128bitServiceDefinitions = {
     '000015301212EFDE1523785FEABCD123': 'DFU',
+    '6E400001B5A3F393E0A9E50E24DCCA9E': 'UART over BLE',
+    '7905F431B5CE4E99A40F4B1E122D00D0': 'ANCS',
+};
+
+export const uuid128bitCharacteristicDefinitions = {
     '000015311212EFDE1523785FEABCD123': 'DFU Control Point',
     '000015321212EFDE1523785FEABCD123': 'DFU Packet',
-    '7905F431B5CE4E99A40F4B1E122D00D0': 'ANCS',
+    '6E400002B5A3F393E0A9E50E24DCCA9E': 'UART RX',
+    '6E400003B5A3F393E0A9E50E24DCCA9E': 'UART TX',
     '9FBF120D630142D98C5825E699A21DBD': 'ANCS Notification Source',
     '69D1D8F345E149A898219BBDFDAAD9D9': 'ANCS Control Point',
     '22EAC6E924D64BB5BE44B36ACE7C7BFB': 'ANCS Data Source',
 };
+
+export const uuid128bitDescriptorDefinitions = {
+};
+
+export const uuid128bitDefinitions = Object.assign({},
+    uuid128bitServiceDefinitions,
+    uuid128bitCharacteristicDefinitions,
+    uuid128bitDescriptorDefinitions);
+
+export const uuidDefinitions = Object.assign({},
+    uuid16bitDefinitions,
+    uuid128bitDefinitions);
 
 // TODO: look into using a database for storing the services UUID's. Also look into importing them from the Bluetooth pages.
 // TODO: Also look into reusing code from the Android MCP project:
