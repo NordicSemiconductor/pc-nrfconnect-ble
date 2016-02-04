@@ -34,6 +34,7 @@ const ImmutableAdapter = Record({
     /*Adapter sub-reducers*/
     deviceDetails: null,
     serverSetup: null,
+    isServerSetupApplied: false,
 });
 
 const ImmutableDevice = Record({

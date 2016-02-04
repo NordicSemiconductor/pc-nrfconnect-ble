@@ -13,6 +13,7 @@ import serverSetup from './serverSetupReducer';
 
 import * as AdapterAction from '../actions/adapterActions';
 import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
+import * as ServerSetupActions from '../actions/serverSetupActions';
 
 import { logger } from '../logging';
 
@@ -227,6 +228,12 @@ function toggleAutoConnUpdate(state) {
     return state.set('autoConnUpdate', !state.autoConnUpdate);
 }
 
+function serverSetupApplied(state) {
+    const { adapter, index } = getSelectedAdapter(state);
+
+    return state.setIn(['adapters', index, 'isServerSetupApplied'], true);
+}
+
 export default function adapter(state = getImmutableRoot(), action) {
     const adapterSubReducers = combineReducers({
         deviceDetails,
@@ -282,6 +289,8 @@ export default function adapter(state = getImmutableRoot(), action) {
             return toggleAutoConnUpdate(state);
         case DeviceDetailsActions.DISCOVERED_DEVICE_NAME:
             return discoveredDeviceName(state, action.device, action.value);
+        case ServerSetupActions.APPLIED_SERVER:
+            return serverSetupApplied(state, action.adapter);
         default:
             return state;
     }
