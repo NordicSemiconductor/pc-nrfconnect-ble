@@ -56,13 +56,20 @@ export default class DiscoveredDevice extends Component {
         return;
     }
 
+    getAddressTypeText(adrType) {
+        return changeCase.camelCase();
+    }
+
     rewriter(value) {
         const rewrite_rules = [
             { expr: /BLE_GAP_AD_TYPE_(.*)/, on_match: function(matches) {
                     return changeCase.pascalCase(matches[1]);
                 },
             },
-
+            { expr: /BLE_GAP_ADDR_TYPE_(.*)/, on_match: function(matches) {
+                    return changeCase.pascalCase(matches[1]);
+                },
+            },
         ];
 
         try {
@@ -111,6 +118,7 @@ export default class DiscoveredDevice extends Component {
         let flagsDiv = '';
         let servicesDiv = '';
         let addressDiv = '';
+        let addressTypeDiv = '';
 
         if (device.isExpanded) {
             if (device.advType) {
@@ -146,6 +154,12 @@ export default class DiscoveredDevice extends Component {
                     <span className='adv-value'>{this.getAdvTypeText(this.currentAdvType)} </span>
                 </div>
                 : '';
+
+            addressTypeDiv =
+                <div className='adv-line'>
+                    <span className='adv-label'>Address type: </span>
+                    <span className='adv-value'>{this.rewriter(device.addressType)} </span>
+                </div>;
 
             flagsDiv = this.currentFlags && this.currentFlags.size > 0 ?
                         <div className='adv-line'>
@@ -202,7 +216,8 @@ export default class DiscoveredDevice extends Component {
                         {addressDiv}
                     </div>
                     <div>
-                        <span className={'adv-details'}><i className={dirIcon}/>Advertising details</span>
+                        <span className={'adv-details'}><i className={dirIcon}/>Details</span>
+                        {addressTypeDiv}
                         {advTypeDiv}
                         {servicesDiv}
                         {flagsDiv}
