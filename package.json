@@ -23,9 +23,9 @@
     "install": "0.1.8",
     "npm": "2.14.7",
     "q": "1.4.1",
-    "redux-devtools": "3.0.0-beta-3",
-    "redux-devtools-dock-monitor": "1.0.0-beta-3",
-    "redux-devtools-log-monitor": "1.0.0-beta-3",
+    "redux-devtools": "3.1.0",
+    "redux-devtools-dock-monitor": "1.0.1",
+    "redux-devtools-log-monitor": "1.0.4",
     "run-sequence": "1.1.4",
     "yargs": "3.26.0"
   },
