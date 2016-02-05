@@ -16,6 +16,7 @@ var app = require('app');
 var BrowserWindow = require('browser-window');
 var Menu = require('menu');
 
+var splashScreen = null;
 var mainWindow = null;
 
 global.keymap = app.getPath('userData') + '/keymap.cson';
@@ -37,6 +38,18 @@ app.on('window-all-closed', function() {
 });
 
 app.on('ready', function() {
+    splashScreen = new BrowserWindow({
+        width: 420,
+        height: 250,
+        frame: false,
+        'always-on-top': true,
+        'skip-taskbar': true,
+    });
+    splashScreen.loadURL('file://' + __dirname + '/splashScreen.html');
+    splashScreen.on('closed', function() {
+        splashScreen = null;
+    });
+
     mainWindow = new BrowserWindow({
         width: 1024,
         height: 800,
@@ -45,15 +58,22 @@ app.on('ready', function() {
         'min-height': 499,
         frame: true,
         icon: './nordic_logo.png',
+        'auto-hide-menu-bar': true,
     });
     mainWindow.loadURL('file://' + __dirname + '/index.html');
     mainWindow.on('closed', function() {
         console.log('windows closed');
         mainWindow = null;
+        if (splashScreen) {
+            splashScreen.close();
+        }
     });
 
     mainWindow.webContents.on('did-finish-load', function() {
         mainWindow.setTitle('Yggdrasil');
+        if (splashScreen) {
+           splashScreen.close();
+        }
     });
 });
 
