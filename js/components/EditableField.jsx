@@ -13,6 +13,7 @@
 'use strict';
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { PropTypes } from 'react';
 
 import Component from 'react-pure-render/component';
@@ -69,7 +70,7 @@ export default class EditableField extends Component {
         if (this.editing) {
             if (this.props.insideSelector) {
                 //dont close if click was within a parent element that matches insideSelector
-                const textarea = React.findDOMNode(this.refs.editableTextarea);
+                const textarea = ReactDOM.findDOMNode(this.refs.editableTextarea);
                 if (textarea) {
                     const insideParent = $(textarea).parents(this.props.insideSelector)[0];
                     if (e.path.includes(insideParent)) {
@@ -176,7 +177,7 @@ export default class EditableField extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (this.editing) {
-            const textarea = React.findDOMNode(this.refs.editableTextarea);
+            const textarea = ReactDOM.findDOMNode(this.refs.editableTextarea);
             const caretPosition = textarea.value.length;
             textarea.focus();
             textarea.setSelectionRange(caretPosition, caretPosition);

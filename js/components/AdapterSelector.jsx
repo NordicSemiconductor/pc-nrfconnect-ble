@@ -13,6 +13,7 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -27,7 +28,7 @@ class AdapterSelector extends Component {
     }
 
     focusOnComPorts() {
-        const dropDown = React.findDOMNode(this.refs.comPortDropdown);
+        const dropDown = ReactDOM.findDOMNode(this.refs.comPortDropdown);
         dropDown.firstChild.focus();
         dropDown.firstChild.click();
     }
@@ -37,6 +38,23 @@ class AdapterSelector extends Component {
             this.focusOnComPorts();
         }.bind(this));
     }
+
+    compareAdapterNodes(nodeA, nodeB) {
+            if (!nodeA.props.eventKey || !nodeB.props.eventKey) return 0;
+
+            const portA = nodeA.props.eventKey;
+            const portB = nodeB.props.eventKey;
+
+            // Trick: COM1 and COM10 sorts equally with regular sort, use length to differentiate them
+            if (portA.length > portB.length) return 1;
+            if (portA.length < portB.length) return -1;
+
+            // Use regulart text comparison on names of equal length
+            if (portA > portB) return 1;
+            else if (portA < portB) return -1;
+
+            else return 0;
+        }
 
     render() {
         const {
@@ -55,6 +73,8 @@ class AdapterSelector extends Component {
             const port = adapter.get('port');
             adapterNodes.push(<MenuItem className='btn-primary' eventKey={port} onSelect={() => openAdapter(port)} key={i}>{port}</MenuItem>);
         });
+
+        adapterNodes.sort(this.compareAdapterNodes);
 
         return (
             <span title='Select com port (Alt+P)'>
@@ -76,7 +96,7 @@ function mapStateToProps(state) {
         adapter: adapter,
         adapterStatus: adapter.adapterStatus,
         adapterIndicator: adapter.adapterIndicator,
-        adapters: adapter.adapters
+        adapters: adapter.adapters,
     };
 }
 

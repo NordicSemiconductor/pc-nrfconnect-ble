@@ -56,10 +56,6 @@ export default class DiscoveredDevice extends Component {
         return;
     }
 
-    getAddressTypeText(adrType) {
-        return changeCase.camelCase();
-    }
-
     rewriter(value) {
         const rewrite_rules = [
             { expr: /BLE_GAP_AD_TYPE_(.*)/, on_match: function(matches) {

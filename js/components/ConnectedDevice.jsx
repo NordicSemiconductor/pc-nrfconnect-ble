@@ -13,6 +13,7 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import Component from 'react-pure-render/component';
 
 import { Dropdown, MenuItem } from 'react-bootstrap';
@@ -30,7 +31,7 @@ export default class ConnectedDevice extends Component {
 
     componentDidMount() {
         window.addEventListener('resize', this.boundResizeListener);
-        this.boundingRect = React.findDOMNode(this).getBoundingClientRect();
+        this.boundingRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
     }
 
     componentWillUnmount() {
