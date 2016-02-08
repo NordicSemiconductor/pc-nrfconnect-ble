@@ -37,12 +37,14 @@ export default class UuidLookup extends Component {
             title,
             onSelect,
             uuidDefs,
+            pullRight,
         } = this.props;
 
         return (
             <div className='uuid-lookup'>
                 <Dropdown className='uuid-dropdown' id='dropdown-uuid-lookup' title={title}
-                    onSelect={(event, eventKey) => onSelect(event, eventKey)}>
+                    onSelect={(event, eventKey) => onSelect(event, eventKey)}
+                    pullRight={pullRight}>
                     <Dropdown.Toggle noCaret>
                         <span className='icon-search' aria-hidden='true' />
                     </Dropdown.Toggle>
@@ -50,7 +52,7 @@ export default class UuidLookup extends Component {
                         <MenuItem header key='header0'>{title}</MenuItem>
                         {
                             Object.keys(uuidDefs).map((uuid, index) => {
-                                return (<MenuItem key={index} title={'0x' + uuid}
+                                return (<MenuItem key={index} title={'0x' + uuid + ': ' + uuidDefs[uuid]}
                                     eventKey={uuid}>{'0x' + this.formatUuid(uuid) + ': ' + uuidDefs[uuid]}</MenuItem>);
                             })
                         }
@@ -65,9 +67,12 @@ UuidLookup.propTypes = {
     title: PropTypes.string,
     onSelect: PropTypes.func.isRequired,
     uuidDefs: PropTypes.object.isRequired,
+    pullRight: PropTypes.bool,
 };
 
 UuidLookup.defaultProps = {
     title: 'Predefined UUIDs',
     uuidDefs: uuidDefinitions,
+    pullRight: false,
+
 };

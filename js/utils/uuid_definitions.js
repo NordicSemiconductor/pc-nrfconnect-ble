@@ -264,6 +264,18 @@ export const uuid128bitDefinitions = Object.assign({},
     uuid128bitCharacteristicDefinitions,
     uuid128bitDescriptorDefinitions);
 
+export const uuidServiceDefinitions = Object.assign({},
+    uuid16bitServiceDefinitions,
+    uuid128bitServiceDefinitions);
+
+export const uuidCharacteristicDefinitions = Object.assign({},
+    uuid16bitCharacteristicDefinitions,
+    uuid128bitCharacteristicDefinitions);
+
+export const uuidDescriptorDefinitions = Object.assign({},
+    uuid16bitDescriptorDefinitions,
+    uuid128bitDescriptorDefinitions);
+
 export const uuidDefinitions = Object.assign({},
     uuid16bitDefinitions,
     uuid128bitDefinitions);

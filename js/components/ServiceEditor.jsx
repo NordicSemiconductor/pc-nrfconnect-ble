@@ -5,6 +5,9 @@ import Component from 'react-pure-render/component';
 
 import { Input } from 'react-bootstrap';
 
+import UuidLookup from '../components/UuidLookup';
+
+import { uuidServiceDefinitions } from '../utils/uuid_definitions';
 import { getUuidName } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
 
@@ -23,9 +26,8 @@ export default class ServiceEditor extends Component{
         return uuid16regex.test(this.uuid) || uuid128regex.test(this.uuid) ? SUCCESS : ERROR;
     }
 
-    _onUuidChange(e) {
+    _onUuidChange(uuid) {
         const _hexRegEx = /^[0-9A-F]*$/i;
-        const uuid = e.target.value;
         const valid = _hexRegEx.test(uuid);
 
         if (!valid) {
@@ -67,6 +69,10 @@ export default class ServiceEditor extends Component{
         this.props.onModified(false);
     }
 
+    handleUuidSelect(event, eventKey) {
+        this._onUuidChange(eventKey);
+    }
+
     render() {
         const {
             service,
@@ -90,8 +96,13 @@ export default class ServiceEditor extends Component{
         <form className='form-horizontal native-key-bindings'>
           <div className='form-group'>
             <label htmlFor='uuid' className='col-md-3 control-label'>Service UUID</label>
-            <div className='col-md-9'>
-              <Input type='text' className='form-control' name='uuid' value={this.uuid} onChange={e => this._onUuidChange(e)} hasFeedback bsStyle={this.validateUuidInput()} />
+            <div className='col-md-7'>
+              <Input type='text' className='form-control' name='uuid' value={this.uuid}
+                onChange={e => this._onUuidChange(e.target.value)} hasFeedback bsStyle={this.validateUuidInput()} />
+            </div>
+            <div className='col-md-1'>
+              <UuidLookup onSelect={(event, eventKey) => this.handleUuidSelect(event, eventKey)}
+                title={'Predefined service UUIDs'} uuidDefs={uuidServiceDefinitions} pullRight={true}/>
             </div>
           </div>
           <div className='form-group'>

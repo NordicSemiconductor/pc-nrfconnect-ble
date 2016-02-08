@@ -6,7 +6,9 @@ import Component from 'react-pure-render/component';
 import { Input } from 'react-bootstrap';
 
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
+import UuidLookup from '../components/UuidLookup';
 
+import { uuidDescriptorDefinitions } from '../utils/uuid_definitions';
 import { getUuidName } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
 
@@ -119,6 +121,18 @@ export default class DescriptorEditor extends Component {
         this.props.onModified(false);
     }
 
+    _handleUuidSelect(event, eventKey) {
+        this.uuid = eventKey;
+        let uuidName = getUuidName(this.uuid);
+
+        if (this.uuid !== uuidName) {
+            this.name = uuidName;
+        }
+
+        this.forceUpdate();
+        this.props.onModified(true);
+    }
+
     render() {
         const {
             descriptor,
@@ -153,8 +167,12 @@ export default class DescriptorEditor extends Component {
             <form className='form-horizontal native-key-bindings'>
                 <div className='form-group'>
                     <label htmlFor='uuid' className='col-md-3 control-label'>Descriptor UUID</label>
-                    <div className='col-md-9'>
+                    <div className='col-md-7 uuid-input'>
                         <Input type='text' className='form-control' name='uuid' value={this.uuid} onChange={e => this._onUuidChange(e)} hasFeedback bsStyle={this.validateUuidInput()} />
+                    </div>
+                    <div className='col-md-1'>
+                        <UuidLookup onSelect={(event, eventKey) => this._handleUuidSelect(event, eventKey)}
+                            title={'Predefined descriptor UUIDs'} uuidDefs={uuidDescriptorDefinitions} pullRight={true}/>
                     </div>
                 </div>
                 <div className='form-group'>
