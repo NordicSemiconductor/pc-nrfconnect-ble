@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 import { getUuidName } from '../utils/uuid_definitions';
 import { toHexString } from '../utils/stringUtil';
-import changeCase from 'change-case'
+import changeCase from 'change-case';
 
 const RSSI_WIDTH_MAX = 20;
 const RSSI_WIDTH_HIGH = Math.round(RSSI_WIDTH_MAX * 0.8);

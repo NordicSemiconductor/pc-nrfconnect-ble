@@ -1073,6 +1073,24 @@ hr {
   margin-left: 30px;
 }
 
+.nordic-dropdown {
+  min-width: 220px;
+  text-align: left;
+  .dropdown-menu {
+    li > a:focus {
+      outline: 1px solid black;
+    }
+    background-color: #FFFFFF;
+    li > a {
+      background-color: #FFFFFF;
+      color: rgb(51, 51, 51);
+    }
+    li > a:hover{
+      background-color: #E6E6E6;
+    }
+  }
+}
+
 .adv-setup {
   .adv-col {
     display: flex;
@@ -1122,39 +1140,10 @@ hr {
     display: inline-block;
   }
   .adv-dropdown {
-    min-width: 220px;
-    text-align: left;
-    .dropdown-menu {
-      li > a:focus {
-        outline: 1px solid black;
-      }
-      background-color: #FFFFFF;
-      li > a {
-        background-color: #FFFFFF;
-        color: rgb(51, 51, 51);
-      }
-      li > a:hover{
-        background-color: #E6E6E6;
-      }
-    }
+    .nordic-dropdown;
   }
   .adv-uuid-lookup {
-    display: inline-block;
-    vertical-align: bottom;
-    margin-bottom: 22px;
-    padding: 3px;
-    .dropdown-toggle {
-      margin-left: 0px;
-      min-width: 0px;
-      padding: 0px;
-      span[class^='icon-'] {
-        font-size: 18px;
-        padding: 3px;
-      }
-    }
-    .adv-dropdown {
-      min-width: 0px;
-    }
+    margin-left: 4px;
   }
   .error-label {
     margin: 5px;
@@ -1162,22 +1151,30 @@ hr {
   }
 }
 
-.scroll-menu-uuid {
-    overflow-x: auto;
-    max-height: 300px;
-    top: 34px;
-    width:300px;
-/*    position: relative;
-    display: inherit !important;
-    overflow-scrolling: touch;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100%;
-    height: auto;
-    max-height: 500px;
-    margin: 0;
-    border-left: none;
-    border-right: none;
-    border-radius: 0 !important;
-    box-shadow: none;
-*/}
+.scroll-menu {
+  overflow-x: auto;
+  max-height: 300px;
+  top: 34px;
+  width:300px;
+}
+
+.uuid-lookup {
+  display: inline-block;
+  vertical-align: bottom;
+  margin-bottom: 22px;
+  padding: 3px;
+  .dropdown-toggle {
+    margin-left: 0px;
+    min-width: 0px;
+    padding: 0px;
+    span[class^='icon-'] {
+      font-size: 18px;
+      padding: 3px;
+    }
+  }
+}
+
+.uuid-dropdown {
+  .nordic-dropdown;
+  min-width: 0px;
+}

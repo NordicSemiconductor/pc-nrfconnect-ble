@@ -5,7 +5,8 @@ import Component from 'react-pure-render/component';
 
 import { Dropdown, DropdownButton, MenuItem, Input } from 'react-bootstrap';
 
-import { uuidDefinitions, uuid16bitServiceDefinitions, uuid128bitServiceDefinitions } from '../utils/uuid_definitions';
+import UuidLookup from '../components/UuidLookup';
+import { uuid16bitServiceDefinitions, uuid128bitServiceDefinitions } from '../utils/uuid_definitions';
 
 const SUCCESS = 'success';
 const ERROR = 'error';
@@ -227,22 +228,17 @@ export default class AdvertisingData extends Component {
         }
     }
 
-    formatUuid(value) {
-        if (!value) return value;
-
-        if (value.length > 8) {
-            return value.slice(0, 8) + '... ';
-        }
-
-        return value;
-    }
-
     render() {
         const inputDisabled = (this.type === null);
         const uuidDef = this.title.includes('16 bit') ? uuid16bitServiceDefinitions
             : this.title.includes('128 bit') ? uuid128bitServiceDefinitions
             : {};
         const uuidLookupDisabled = Object.keys(uuidDef).length === 0;
+
+        const uuidLookupDiv = !uuidLookupDisabled ?
+            <span className='adv-uuid-lookup'>
+                <UuidLookup onSelect={(event, eventKey) => this.handleUuidSelect(event, eventKey)} title={'Predefined service UUIDs'} uuidDefs={uuidDef} />
+            </span> : '';
 
         return (
             <div>
@@ -274,23 +270,7 @@ export default class AdvertisingData extends Component {
                         bsStyle={this.validateInput()}
                         onChange={event => this.handleChange(event)} />
                 </div>
-                <div className='adv-uuid-lookup'>
-                    <Dropdown className='adv-dropdown' id='dropdown-uuid-lookup' title='Predefined service UUIDs'
-                        onSelect={(event, eventKey) => this.handleUuidSelect(event, eventKey)}>
-                        <Dropdown.Toggle noCaret style={{display: uuidLookupDisabled ? 'none' : ''}}>
-                            <span className='icon-search' aria-hidden='true' />
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className='scroll-menu-uuid'>
-                            <MenuItem header key='header0'>Predefined service UUIDs</MenuItem>
-                            {
-                                Object.keys(uuidDef).map((uuid, index) => {
-                                    return (<MenuItem key={index} title={'0x' + uuid} 
-                                        eventKey={uuid}>{'0x' + this.formatUuid(uuid) + ': ' + uuidDefinitions[uuid]}</MenuItem>);
-                                })
-                            }
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </div>
+                {uuidLookupDiv}
             </div>
         );
     }
