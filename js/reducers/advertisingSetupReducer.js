@@ -9,8 +9,8 @@ const defaultAdvData = [{
     type: 'Complete local name',
     typeKey: 0,
     typeApi: 'completeLocalName',
-    value: 'Yggdrasil',
-    formattedValue: 'Yggdrasil',
+    value: 'nRF Connect',
+    formattedValue: 'nRF Connect',
     id: 10000, // Random high id to avoid conflict with autoincremented ids
 }];
 
