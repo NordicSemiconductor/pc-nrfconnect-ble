@@ -214,8 +214,8 @@ function _onLogMessage(severity, message) {
     }
 }
 
-function _onStatus(code, message) {
-    logger.warn(`Received status with code ${code}, message ${message}`);
+function _onStatus(status) {
+    logger.warn(`Received status with code ${status.id} ${status.name}, message: '${status.message}'`);
 }
 
 function _closeAdapter(dispatch, adapter) {
