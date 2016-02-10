@@ -200,8 +200,7 @@ function discoveredDeviceName(state, device, value) {
     }
 
     const nameBuffer = new Buffer(value);
-    // Convert to utf8 and remove any invalid characters
-    const name = nameBuffer.toString('utf8').replace(/\uFFFD/g, '');
+    const name = nameBuffer.toString('utf8');
 
     const { index } = getSelectedAdapter(state);
 

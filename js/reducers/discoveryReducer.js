@@ -24,9 +24,6 @@ function scanStopped(state) {
 }
 
 function deviceDiscovered(state, device) {
-    // Remove invalid characters in device name
-    device.name = device.name.replace(/\uFFFD/g, '');
-
     let newDevice = apiHelper.getImmutableDevice(device);
     const existingDevice = state.devices.get(device.address);
 
