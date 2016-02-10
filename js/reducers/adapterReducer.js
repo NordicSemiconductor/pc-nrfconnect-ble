@@ -122,6 +122,16 @@ function adapterError(state, adapter, error) {
     return state;
 }
 
+function adapterResetPerformed(state, adapter) {
+    logger.info(`Reset performed on adapter ${adapter.state.port}`);
+
+    const { index } = getSelectedAdapter(state);
+    state = state.setIn(['adapters', index, 'isServerSetupApplied'], false);
+    state = state.updateIn(['adapters', index, 'connectedDevices'], connectedDevices => connectedDevices.clear());
+
+    return state;
+}
+
 function deviceConnect(state, device) {
     logger.info('Connecting to device');
     return state;
@@ -269,6 +279,8 @@ export default function adapter(state = getImmutableRoot(), action) {
             return adapterError(state, action.adapter, action.error);
         case AdapterAction.ADAPTER_STATE_CHANGED:
             return adapterStateChanged(state, action.adapter, action.state);
+        case AdapterAction.ADAPTER_RESET_PERFORMED:
+            return adapterResetPerformed(state, action.adapter);
         case AdapterAction.ERROR_OCCURED:
             return addError(state, action.error);
         case AdapterAction.DEVICE_CONNECT:

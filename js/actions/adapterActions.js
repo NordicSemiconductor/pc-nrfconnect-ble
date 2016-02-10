@@ -19,6 +19,7 @@ export const ADAPTER_ADDED = 'ADAPTER_ADDED';
 export const ADAPTER_REMOVED = 'ADAPTER_REMOVED';
 export const ADAPTER_ERROR = 'ADAPTER_ERROR';
 export const ADAPTER_STATE_CHANGED = 'ADAPTER_STATE_CHANGED';
+export const ADAPTER_RESET_PERFORMED = 'ADAPTER_RESET_PERFORMED';
 
 export const DEVICE_DISCOVERED = 'DEVICE_DISCOVERED';
 export const DEVICE_CONNECT = 'DEVICE_CONNECT';
@@ -91,6 +92,7 @@ function _openAdapter(dispatch, getState, adapter) {
             flowControl: 'none',
             eventInterval: 10,
             logLevel: 'debug',
+            enableBLE: false,
         };
 
         // Check if we already have an adapter open
@@ -116,8 +118,6 @@ function _openAdapter(dispatch, getState, adapter) {
             // TODO: errorOccuredAction should be used for recoverable errors.
             dispatch(showErrorDialog(new Error(error.message)));
         });
-
-        // TODO: remove listeners when closing adapter so that we do not leak memory
 
         // Listen to adapter changes
         adapterToUse.on('stateChanged', state => {
@@ -158,7 +158,10 @@ function _openAdapter(dispatch, getState, adapter) {
         });
 
         adapterToUse.on('logMessage', _onLogMessage);
-        adapterToUse.on('status', _onStatus);
+
+        adapterToUse.on('status', (status) => {
+            _onStatus(dispatch, getState, status);
+        });
 
         dispatch(adapterOpenAction(adapterToUse));
 
@@ -214,8 +217,47 @@ function _onLogMessage(severity, message) {
     }
 }
 
-function _onStatus(status) {
-    logger.warn(`Received status with code ${status.id} ${status.name}, message: '${status.message}'`);
+function _onStatus(dispatch, getState, status) {
+    const adapterToUse = getState().adapter.api.selectedAdapter;
+
+    console.log(JSON.stringify(status));
+
+    // Check if it is a reset performed status and if selectedAdapter is set.
+    // selectedAdapter is set in the immutable state of the application after the adapter has been successfully opened.
+    if (status.name === 'RESET_PERFORMED') {
+        if (adapterToUse) {
+            dispatch(adapterResetPerformedAction(adapterToUse));
+        }
+    } else if (status.name === 'CONNECTION_ACTIVE') {
+        _enableBLE(dispatch, adapterToUse);
+    } else {
+        logger.error(`Received status with code ${status.id} ${status.name}, message: '${status.message}'`);
+    }
+}
+
+function _enableBLE(dispatch, adapter) {
+    // Adapter has been through state RESET and has now transitioned to CONNECTION_ACTIVE, we now need to able the BLE stack
+    if (adapter) {
+        return new Promise((resolve, reject) => {
+            adapter.enableBLE(error => {
+                if (error) {
+                    reject(new Error(error.message));
+                } else {
+                    // Initiate fetching of adapter state, let API emit state changes
+                    adapter.getState((error) => {
+                        if (error) {
+                            reject(new Error(error.message));
+                        } else {
+                            resolve();
+                        }
+                    });
+                }});
+        }).then(() => {
+            logger.debug('SoftDevice BLE stack enabled.');
+        }).catch(error => {
+            dispatch(showErrorDialog('Not able to start SoftDevice BLE stack and fetch state. Error: ' + error));
+        })
+    }
 }
 
 function _closeAdapter(dispatch, adapter) {
@@ -544,6 +586,13 @@ function toggleAutoConnUpdateAction() {
     return {
         type: DEVICE_TOGGLE_AUTO_CONN_UPDATE,
     };
+}
+
+function adapterResetPerformedAction(adapter) {
+    return {
+        type: ADAPTER_RESET_PERFORMED,
+        adapter
+    }
 }
 
 export function findAdapters() {

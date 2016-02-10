@@ -3,6 +3,7 @@
 import { Record, List } from 'immutable';
 
 import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
+import * as AdapterAction from '../actions/adapterActions';
 import { logger } from '../logging';
 
 const defaultAdvData = [{
@@ -63,7 +64,8 @@ export default function advertisingSetup(state = initialState, action) {
         case AdvertisingSetupActions.ADVERTISING_STOPPED:
             logger.info('Advertising stopped');
             return state;
-
+        case AdapterAction.ADAPTER_RESET_PERFORMED:
+            return initialState;
         default:
             return state;
     }
