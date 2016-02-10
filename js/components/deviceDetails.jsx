@@ -57,6 +57,7 @@ export default class DeviceDetailsView extends Component {
                 device: {
                     advertising,
                 },
+                deviceDetails,
                 onShowAdvertisingSetupDialog,
                 onToggleAdvertising,
                 autoConnUpdate,
@@ -74,6 +75,14 @@ export default class DeviceDetailsView extends Component {
                                           autoConnUpdate={autoConnUpdate}
                                           onToggleAutoConnUpdate={onToggleAutoConnUpdate} />
             );
+
+            if (!deviceDetails) {
+                return (
+                    <div className="local-server device-details-view" id={instanceId + '_details'} style={this.props.style}>
+                        {localDevice}
+                    </div>
+                );
+            }
 
             const deviceDetail = this.props.deviceDetails.devices.get('local.server');
 
@@ -127,15 +136,15 @@ export default class DeviceDetailsView extends Component {
         }
 
         const connectedDevice = (<ConnectedDevice id={instanceId + '_details'}
-                                                 sourceId={adapter.instanceId + '_details'}
-                                                 key={instanceId}
-                                                 device={device}
-                                                 selected={selected}
-                                                 layout="vertical"
-                                                 onSelectComponent={onSelectComponent}
-                                                 onDisconnect={() => onDisconnectFromDevice(device)}
-                                                 onPair={() => onPairWithDevice(device)}
-                                                 onConnectionParamsUpdate={() => onUpdateDeviceConnectionParams(device)}/>);
+                                                  sourceId={adapter.instanceId + '_details'}
+                                                  key={instanceId}
+                                                  device={device}
+                                                  selected={selected}
+                                                  layout="vertical"
+                                                  onSelectComponent={onSelectComponent}
+                                                  onDisconnect={() => onDisconnectFromDevice(device)}
+                                                  onPair={() => onPairWithDevice(device)}
+                                                  onConnectionParamsUpdate={() => onUpdateDeviceConnectionParams(device)}/>);
 
         if (deviceDetail && deviceDetail.discoveringChildren) {
             return (

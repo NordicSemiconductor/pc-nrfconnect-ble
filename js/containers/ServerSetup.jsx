@@ -63,7 +63,8 @@ class ServerSetup extends Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
-        if (nextProps.serverSetup.selectedComponent !== this.props.serverSetup.selectedComponent) {
+        if (!this.props.serverSetup ||
+            nextProps.serverSetup.selectedComponent !== this.props.serverSetup.selectedComponent) {
             this.modified = false;
         }
     }
