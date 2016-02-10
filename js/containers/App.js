@@ -66,7 +66,7 @@ class AppContainer extends Component {
         } else {
             keymaps.add('core', {
                 'body': {
-                    'alt-1': 'core:device-details',
+                    'alt-1': 'core:connection-map',
                     'alt-2': 'core:server-setup',
                     'alt-a': 'core:toggle-advertising',
                     'alt-c': 'core:clear-scan',
@@ -174,8 +174,7 @@ class AppContainer extends Component {
         };
         const mainAreaHeight = layoutStyle.height - 189;
 
-        const active = selectedMainView === 'ConnectionMap' ? <ConnectionMap style={{height: mainAreaHeight}}/>
-                     : selectedMainView === 'DeviceDetails' ? <DeviceDetailsContainer style={{height: mainAreaHeight}}/>
+        const active = selectedMainView === 'ConnectionMap' ? <DeviceDetailsContainer style={{height: mainAreaHeight}}/>
                      : selectedMainView === 'ServerSetup'   ? <ServerSetup style={{height: mainAreaHeight}}/>
                      : null;
 

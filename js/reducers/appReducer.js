@@ -17,7 +17,7 @@ import { Record } from 'immutable';
 import * as AppActions from '../actions/appActions';
 
 const InitialState = Record({
-    selectedMainView: 'DeviceDetails',
+    selectedMainView: 'ConnectionMap',
 });
 
 const initialState = new InitialState();
