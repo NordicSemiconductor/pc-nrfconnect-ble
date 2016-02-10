@@ -66,9 +66,8 @@ class AppContainer extends Component {
         } else {
             keymaps.add('core', {
                 'body': {
-                    'alt-1': 'core:connection-map',
-                    'alt-2': 'core:device-details',
-                    'alt-3': 'core:server-setup',
+                    'alt-1': 'core:device-details',
+                    'alt-2': 'core:server-setup',
                     'alt-a': 'core:toggle-advertising',
                     'alt-c': 'core:clear-scan',
                     'alt-p': 'core:select-adapter',

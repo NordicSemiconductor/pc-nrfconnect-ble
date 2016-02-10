@@ -44,6 +44,7 @@ app.on('ready', function() {
         frame: false,
         'always-on-top': true,
         'skip-taskbar': true,
+        resizable: false,
     });
     splashScreen.loadURL('file://' + __dirname + '/splashScreen.html');
     splashScreen.on('closed', function() {
@@ -70,7 +71,7 @@ app.on('ready', function() {
     });
 
     mainWindow.webContents.on('did-finish-load', function() {
-        mainWindow.setTitle('Yggdrasil');
+        mainWindow.setTitle('nRF Connect');
         if (splashScreen) {
            splashScreen.close();
         }

@@ -44,6 +44,12 @@ export default class NavBar extends Component {
     }
 
     render() {
+        const connectionMapButton =
+            <button title='Connection map (Alt+1)' onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
+                <span className='icon-sitemap icon-rotate-270' />
+                <span>Connection map</span>
+            </button>;
+
         return (
             <div className='nav-bar'>
                 <div>
@@ -55,15 +61,11 @@ export default class NavBar extends Component {
                     </div>
                 </div>
                 <div className='nav-section bl padded-row'>
-                    <button title='Connection map (Alt+1)' onClick={this._onViewChange.bind(this, 'ConnectionMap')} className={this._getClassForTabButton('ConnectionMap')}>
-                        <span className='icon-sitemap icon-rotate-270' />
-                        <span>Connection map</span>
-                    </button>
-                    <button title='Device details (Alt+2)' onClick={this._onViewChange.bind(this, 'DeviceDetails')}  className={this._getClassForTabButton('DeviceDetails')}>
+                    <button title='Device details (Alt+1)' onClick={this._onViewChange.bind(this, 'DeviceDetails')}  className={this._getClassForTabButton('DeviceDetails')}>
                         <span className='icon-columns' />
                         <span>Device details</span>
                     </button>
-                    <button title='Server Setup (Alt+3)' onClick={this._onViewChange.bind(this, 'ServerSetup')}  className={this._getClassForTabButton('ServerSetup')}>
+                    <button title='Server Setup (Alt+2)' onClick={this._onViewChange.bind(this, 'ServerSetup')}  className={this._getClassForTabButton('ServerSetup')}>
                         <span className='icon-indent-right' />
                         <span>Server setup</span>
                     </button>
