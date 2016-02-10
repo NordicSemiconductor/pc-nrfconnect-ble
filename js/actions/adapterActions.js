@@ -220,8 +220,6 @@ function _onLogMessage(severity, message) {
 function _onStatus(dispatch, getState, status) {
     const adapterToUse = getState().adapter.api.selectedAdapter;
 
-    console.log(JSON.stringify(status));
-
     // Check if it is a reset performed status and if selectedAdapter is set.
     // selectedAdapter is set in the immutable state of the application after the adapter has been successfully opened.
     if (status.name === 'RESET_PERFORMED') {

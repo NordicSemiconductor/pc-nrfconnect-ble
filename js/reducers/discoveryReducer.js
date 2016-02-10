@@ -104,6 +104,8 @@ export default function discovery(state = initialState, action) {
             return deviceCancelConnect(state);
         case AdapterAction.ADAPTER_RESET_PERFORMED:
             return initialState;
+        case AdapterAction.ADAPTER_CLOSED:
+            return initialState;
         default:
             return state;
     }

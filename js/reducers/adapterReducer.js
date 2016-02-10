@@ -102,6 +102,10 @@ function adapterStateChanged(state, adapter, adapterState) {
 function closeAdapter(state, adapter) {
     state.api.selectedAdapter = null;
 
+    const index = state.api.adapters.indexOf(adapter);
+    state = state.setIn(['adapters', index, 'isServerSetupApplied'], false);
+    state = state.updateIn(['adapters', index, 'connectedDevices'], connectedDevices => connectedDevices.clear());
+
     state = state.set('adapterIndicator', 'off');
     state = state.set('selectedAdapter',  null);
     state = state.set('adapterStatus', DEFAULT_ADAPTER_STATUS);

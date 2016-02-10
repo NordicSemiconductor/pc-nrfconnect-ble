@@ -15,6 +15,7 @@
 import { Record, OrderedMap } from 'immutable';
 
 import * as ServerSetupActions from '../actions/serverSetupActions';
+import * as AdapterAction from '../actions/adapterActions';
 
 import { getInstanceIds, getImmutableService, getImmutableCharacteristic, getImmutableDescriptor, getImmutableProperties } from '../utils/api';
 import { logger } from '../logging';
@@ -294,6 +295,8 @@ export default function deviceDetails(state = initialState, action) {
             return state.set('showingDiscardDialog', false);
         case ServerSetupActions.LOAD:
             return loadSetup(state, action.setup);
+        case AdapterAction.ADAPTER_CLOSED:
+            return initialState;
         default:
             return state;
     }
