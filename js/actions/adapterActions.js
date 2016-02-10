@@ -95,7 +95,7 @@ function _openAdapter(dispatch, getState, adapter) {
             enableBLE: false,
         };
 
-        // Check if we already have an adapter open
+        // Check if we already have an adapter open, if so, close it
         if (getState().adapter.api.selectedAdapter !== null) {
             _closeAdapter(dispatch, getState().adapter.api.selectedAdapter);
         }
@@ -255,7 +255,7 @@ function _enableBLE(dispatch, adapter) {
         }).then(() => {
             logger.debug('SoftDevice BLE stack enabled.');
         }).catch(error => {
-            dispatch(showErrorDialog('Not able to start SoftDevice BLE stack and fetch state. Error: ' + error));
+            dispatch(showErrorDialog(error));
         })
     }
 }

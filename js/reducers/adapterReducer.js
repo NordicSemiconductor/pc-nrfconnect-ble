@@ -68,13 +68,13 @@ function removeAdapter(state, adapter) {
 }
 
 function openAdapter(state, adapter) {
-    logger.info(`Opening adapter ${adapter.state.port}`);
+    logger.info(`Opening adapter connected to ${adapter.state.port}`);
     state = state.set('adapterStatus', adapter.state.port);
     return state;
 }
 
 function adapterOpened(state, adapter) {
-    logger.info(`Adapter ${adapter.state.port} opened`);
+    logger.info(`Adapter connected to ${adapter.state.port} opened`);
 
     // Since we maintain state.api.adapters and state.adapters simultaniously
     // we use adapter index from state.api.adapters to access the "same" adapter
@@ -269,7 +269,7 @@ export default function adapter(state = getImmutableRoot(), action) {
             return openAdapter(state, action.adapter);
         case AdapterAction.ADAPTER_OPENED:
             return adapterOpened(state, action.adapter);
-        case AdapterAction.ADAPTER_CLOSE:
+        case AdapterAction.ADAPTER_CLOSED:
             return closeAdapter(state, action.adapter);
         case AdapterAction.ADAPTER_ADDED:
             return addAdapter(state, action.adapter);
