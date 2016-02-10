@@ -245,7 +245,20 @@ function attributeValueChanged(state, attribute, value, error) {
 
     state = state.setIn(attributeStatePath.concat('errorMessage'), errorMessage);
 
-    return state.setIn(attributeStatePath.concat('value'), List(value));
+    if (Array.isArray(value)) {
+        // Normal value
+        state = state.setIn(attributeStatePath.concat('value'), List(value));
+    } else {
+        // CCCD or other per-connection based values.
+        let valueMap = Map();
+        for (let connectedDeviceIds in value) {
+            valueMap = valueMap.set(connectedDeviceIds, List(value[connectedDeviceIds]));
+        }
+
+        state = state.setIn(attributeStatePath.concat('value'), valueMap);
+    }
+
+    return state;
 }
 
 function appliedServerSetup(state, services) {
