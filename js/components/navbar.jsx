@@ -54,7 +54,7 @@ export default class NavBar extends Component {
                     </div>
                 </div>
                 <div className='nav-section bl padded-row'>
-                    <button title='Connection map (Alt+1)' onClick={this._onViewChange.bind(this, 'DeviceDetails')}  className={this._getClassForTabButton('DeviceDetails')}>
+                    <button title='Connection map (Alt+1)' onClick={this._onViewChange.bind(this, 'ConnectionMap')}  className={this._getClassForTabButton('ConnectionMap')}>
                         <span className='icon-columns' />
                         <span>Connection map</span>
                     </button>
