@@ -322,6 +322,9 @@ export default function deviceDetails(state = initialState, action) {
             return state.setIn(['devices', action.device.instanceId], new DeviceDetail());
         case AdapterActions.READING_ATTRIBUTE:
             return state;
+        case AdapterActions.ADAPTER_CLOSED:
+        case AdapterActions.ADAPTER_RESET_PERFORMED:
+            return initialState;
         default:
             return state;
     }
