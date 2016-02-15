@@ -145,6 +145,10 @@ function _openAdapter(dispatch, getState, adapter) {
             _onConnParamUpdateRequest(dispatch, getState, device, requestedConnectionParams);
         });
 
+        adapterToUse.on('connParamUpdate', (device) => {
+            _onConnParamUpdate(dispatch, getState, device);
+        });
+
         adapterToUse.on('characteristicValueChanged', characteristic => {
             dispatch(attributeValueChangedAction(characteristic, characteristic.value));
         });
@@ -194,6 +198,10 @@ function _onConnParamUpdateRequest(dispatch, getState, device, requestedConnecti
     } else {
         dispatch(deviceConnParamUpdateRequestAction(device, requestedConnectionParams));
     }
+}
+
+function _onConnParamUpdate(dispatch, getState, device) {
+    dispatch(connectionParamUpdateStatusAction(-1, device, -1));
 }
 
 function _onLogMessage(severity, message) {
