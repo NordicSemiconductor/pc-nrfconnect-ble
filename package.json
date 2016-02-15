@@ -1,6 +1,6 @@
 {
-  "name": "yggdrasil",
-  "version": "0.7.0",
+  "name": "nrfconnect",
+  "version": "0.9.0",
   "description": "A natural first choice for BLE development.",
   "repository": {
     "type": "git",
