@@ -39,17 +39,21 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
     splashScreen = new BrowserWindow({
-        width: 420,
-        height: 250,
+        width: 400,
+        height: 244,
         frame: false,
         'always-on-top': true,
         'skip-taskbar': true,
         resizable: false,
+        show: false,
+        transparent: true,
     });
     splashScreen.loadURL('file://' + __dirname + '/splashScreen.html');
     splashScreen.on('closed', function() {
         splashScreen = null;
     });
+
+    splashScreen.show();
 
     mainWindow = new BrowserWindow({
         width: 1024,
@@ -60,6 +64,7 @@ app.on('ready', function() {
         frame: true,
         icon: './nordic_logo.png',
         'auto-hide-menu-bar': true,
+        show: false,
     });
     mainWindow.loadURL('file://' + __dirname + '/index.html');
     mainWindow.on('closed', function() {
@@ -71,10 +76,12 @@ app.on('ready', function() {
     });
 
     mainWindow.webContents.on('did-finish-load', function() {
-        mainWindow.setTitle('nRF Connect');
         if (splashScreen) {
-           splashScreen.close();
+            splashScreen.close();
         }
+
+        mainWindow.setTitle('nRF Connect');
+        mainWindow.show();
     });
 });
 
