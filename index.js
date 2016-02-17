@@ -62,7 +62,7 @@ app.on('ready', function() {
         'min-width': 308,
         'min-height': 499,
         frame: true,
-        icon: './nordic_logo.png',
+        icon: './nrfconnect.png',
         'auto-hide-menu-bar': true,
         show: false,
     });
