@@ -16,8 +16,8 @@ if [ "$YGGDRASIL_VERSION" = "" ]; then
     export YGGDRASIL_VERSION=0.0.0
 fi
 
-export YGGDRASIL_DEPLOY_DIR=../yggdrasil-deploy
-export YGGDRASIL_ELECTRON_VERSION=0.35.4
+export YGGDRASIL_DEPLOY_DIR=../nrfconnect-deploy
+export YGGDRASIL_ELECTRON_VERSION=0.36.7
 export YGGDRASIL_ELECTRON_ARCH=x64
 
 export npm_config_runtime=electron
@@ -29,14 +29,14 @@ case "$(uname -s)" in
   Darwin)
     echo 'Detected platform is OS X'
     export YGGDRASIL_PLATFORM=darwin
-    export YGGDRASIL_ICON=nordic_logo.icns
-    export YGGDRASIL_NAME=Yggdrasil
+    export YGGDRASIL_ICON=nrfconnect.icns
+    export YGGDRASIL_NAME=nrfconnect
     ;;
   Linux)
     echo 'Detected platform is Linux'
     export YGGDRASIL_PLATFORM=linux
-    export YGGDRASIL_ICON=nordic_logo.png
-    export YGGDRASIL_NAME=yggdrasil
+    export YGGDRASIL_ICON=nrfconnect.png
+    export YGGDRASIL_NAME=nrfconnect
     ;;
   *)
     echo 'Not able to detect platform, quitting.'
@@ -55,7 +55,7 @@ mv js/settings.json.prod js/settings.json
 npm install --production
 
 lessc ./css/styles.less ./css/styles.css
-electron-packager . $YGGDRASIL_NAME --platform=$YGGDRASIL_PLATFORM --arch=$npm_config_arch --icon=$YGGDRASIL_ICON --version=$npm_config_target --overwrite --out=$YGGDRASIL_DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName="Nordic Semiconductor ASA" --version-string.LegalCopyright="Nordic Semiconductor ASA" --version-string.FileDescription="" --version-string.OriginalFilename="" --version-string.FileVersion="$YGGDRASIL_VERSION" --version-string.ProductVersion="$YGGDRASIL_VERSION" --version-string.ProductName="$YGGDRASIL_NAME" --version-string.InternalName="$YGGDRASIL_NAME"
+electron-packager . $YGGDRASIL_NAME --platform=$YGGDRASIL_PLATFORM --arch=$npm_config_arch --icon=$YGGDRASIL_ICON --version=$npm_config_target --overwrite --out=$YGGDRASIL_DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName="Nordic Semiconductor ASA" --version-string.LegalCopyright="Nordic Semiconductor ASA" --version-string.FileDescription="nRF Connect" --version-string.OriginalFilename="nrfconnect" --version-string.FileVersion="$YGGDRASIL_VERSION" --version-string.ProductVersion="$YGGDRASIL_VERSION" --version-string.ProductName="$YGGDRASIL_NAME" --version-string.InternalName="$YGGDRASIL_NAME"
 
 cp README.md $YGGDRASIL_APP_ROOT_DIR/README.txt
 cp LICENSE $YGGDRASIL_APP_ROOT_DIR/LICENSE
