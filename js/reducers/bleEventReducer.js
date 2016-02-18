@@ -19,7 +19,7 @@ import { BLEEventState, BLEEventType } from '../actions/common';
 
 import * as apiHelper from '../utils/api';
 
-import { Record, List } from 'immutable';
+import { Record, List, Map } from 'immutable';
 
 const InitialState = Record({
     visible: false,
@@ -35,6 +35,13 @@ const Event = Record({
     device: null,
     requestedConnectionParams: null,
     state: BLEEventState.UNKNOWN,
+});
+
+const ConnectionParameters = Record({
+    connectionSupervisionTimeout: 0,
+    maxConnectionInterval: 0,
+    minConnectionInterval: 0,
+    slaveLatency: 0,
 });
 
 // Module local variable that is used to generate a unique ID for all events that are
@@ -53,22 +60,26 @@ function showDialog(state, visible) {
 
 function clearAllEvents(state) {
     state = resetSelectedEventIdAndEventIndex(state);
-    return state.update('events', events => events.clear());
+    return state.set('events', state.events.clear());
 }
 
 function connectionUpdateParamRequest(state, device, requestedConnectionParams) {
-    let newState = state.update('events', events => {
-        const event = new Event({
-            type: BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE,
-            device: apiHelper.getImmutableDevice(device),
-            requestedConnectionParams: requestedConnectionParams,
-            id: eventIndex,
-            state: BLEEventState.INDETERMINATE,
-        });
-
-        return events.push(event);
+    const connectionParams = new ConnectionParameters({
+        connectionSupervisionTimeout: requestedConnectionParams.connectionSupervisionTimeout,
+        maxConnectionInterval: requestedConnectionParams.maxConnectionInterval,
+        minConnectionInterval: requestedConnectionParams.minConnectionInterval,
+        slaveLatency: requestedConnectionParams.slaveLatency,
     });
 
+    const event = new Event({
+        type: BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE,
+        device: apiHelper.getImmutableDevice(device),
+        requestedConnectionParams: connectionParams,
+        id: eventIndex,
+        state: BLEEventState.INDETERMINATE,
+    });
+
+    let newState = state.set('events', state.events.push(event));
     newState = newState.set('selectedEventId', eventIndex);
     newState = newState.set('visible', true);
     eventIndex++;
@@ -92,7 +103,7 @@ function deviceDisconnected(state, device) {
     // Find given device event that has state INDETERMINATE and set it to DISCONNECTED
     const events = state.events.filter((value, index) =>
         (value.state === BLEEventState.INDETERMINATE) &&
-        (value.device.address === device.address));
+        (value.device.instanceId === device.instanceId));
 
     events.forEach(event => {
         state = connectionParamUpdateStatus(state, event.id, BLEEventState.DISCONNECTED);
@@ -116,25 +127,22 @@ function removeEvent(state, eventId) {
 function createUserInitiatedConnParamsUpdateEvent(state, device) {
     // Information regarding BLE parameters are taken from:
     // https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.gap.peripheral_preferred_connection_parameters.xml
-    const defaultConnectionParams = {
-        connectionSupervisionTimeout: 4000,
-        maxConnectionInterval: 4000,
-        minConnectionInterval: 7.5,
-        slaveLatency: 0,
-    };
-
-    let newState = state.update('events', events => {
-        const event = new Event({
-            type: BLEEventType.USER_INITIATED_CONNECTION_UPDATE,
-            device: apiHelper.getImmutableDevice(device),
-            requestedConnectionParams: defaultConnectionParams,
-            id: eventIndex,
-            state: BLEEventState.INDETERMINATE,
-        });
-
-        return events.push(event);
+    const initialConnectionParams = new ConnectionParameters({
+        connectionSupervisionTimeout: device.connectionSupervisionTimeout,
+        maxConnectionInterval: device.maxConnectionInterval,
+        minConnectionInterval: device.minConnectionInterval,
+        slaveLatency: device.slaveLatency,
     });
 
+    const event = new Event({
+        type: BLEEventType.USER_INITIATED_CONNECTION_UPDATE,
+        device: apiHelper.getImmutableDevice(device),
+        requestedConnectionParams: initialConnectionParams,
+        id: eventIndex,
+        state: BLEEventState.INDETERMINATE,
+    });
+
+    let newState = state.set('events', state.events.push(event));
     newState = newState.set('selectedEventId', eventIndex);
     newState = newState.set('visible', true);
     eventIndex++;

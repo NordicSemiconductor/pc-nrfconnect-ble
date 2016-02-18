@@ -272,7 +272,7 @@ function appliedServerSetup(state, services) {
         if (service._factory_characteristics) {
             for (let characteristic of service._factory_characteristics) {
                 characteristic.name = getUuidName(characteristic.uuid);
-                characteristic.properties = characteristic.properties.properties;
+                characteristic.properties = characteristic.properties;
                 characteristic.children = new OrderedMap();
                 let immutableCharacteristic = getImmutableCharacteristic(characteristic);
 

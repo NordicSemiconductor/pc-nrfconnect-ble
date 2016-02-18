@@ -42,17 +42,9 @@ export class ConnectionUpdateRequestEditor extends Component {
 
         const requestedConnectionParams = event.requestedConnectionParams;
 
-        if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) {
-            // When user initiated update, set the conn int to the current conn int of the connection
-            this.connectionInterval = device.minConnectionInterval;
-            this.connectionSupervisionTimeout = device.connectionSupervisionTimeout;
-            this.slaveLatency = device.slaveLatency;
-        } else {
-            // Use minConnection interval as start value for selected connection interval
-            this.connectionInterval = requestedConnectionParams.minConnectionInterval;
-            this.connectionSupervisionTimeout = requestedConnectionParams.connectionSupervisionTimeout;
-            this.slaveLatency = requestedConnectionParams.slaveLatency;
-        }
+        this.connectionInterval = requestedConnectionParams.minConnectionInterval;
+        this.connectionSupervisionTimeout = requestedConnectionParams.connectionSupervisionTimeout;
+        this.slaveLatency = requestedConnectionParams.slaveLatency;
 
         this.maxConnectionInterval = requestedConnectionParams.maxConnectionInterval;
         this.minConnectionInterval = requestedConnectionParams.minConnectionInterval;

@@ -254,16 +254,19 @@ function _applyServer(dispatch, getState) {
             let needSccdDescriptor = properties.broadcast || false;
             let needCccdDescriptor = properties.notify || properties.indicate || false;
 
-            // TODO: At some point we need to do something with characteristicProperties, separate out the BLE properties or rename it to options.
-            const characteristicProperties = {
-                properties: properties.toObject(),
+            const characteristicOptions = {
                 readPerm: readPerm.split(' '),
                 writePerm: writePerm.split(' '),
                 variableLength: !fixedLength,
                 maxLength,
             };
 
-            const factoryCharacteristic = serviceFactory.createCharacteristic(factoryService, uuid, value.toArray(), characteristicProperties);
+            const factoryCharacteristic = serviceFactory.createCharacteristic(
+                factoryService,
+                uuid,
+                value.toArray(),
+                properties.toObject(),
+                characteristicOptions);
 
             for (let descriptor of characteristic.children.toArray()) {
                 const {
@@ -288,14 +291,18 @@ function _applyServer(dispatch, getState) {
                     needCccdDescriptor = false;
                 }
 
-                const descriptorProperties = {
+                const descriptorOptions = {
                     readPerm: readPerm.split(' '),
                     writePerm: writePerm.split(' '),
                     variableLength: !fixedLength,
                     maxLength,
                 };
 
-                serviceFactory.createDescriptor(factoryCharacteristic, uuid, value.toArray(), descriptorProperties);
+                serviceFactory.createDescriptor(
+                    factoryCharacteristic,
+                    uuid,
+                    value.toArray(),
+                    descriptorOptions);
             }
 
             if (needSccdDescriptor) {
