@@ -44,7 +44,8 @@ copy node_modules\pc-ble-driver-js\driver\lib\s130_nrf51_ble_driver.dll %YGGDRAS
 copy README.md %YGGDRASIL_DEPLOY_DIR%\nrf-connect-win32-ia32\README.txt
 copy LICENSE %YGGDRASIL_DEPLOY_DIR%\nrf-connect-win32-ia32\LICENSE
 mkdir %YGGDRASIL_DEPLOY_DIR%\nrf-connect-win32-ia32\hex
-copy node_modules\pc-ble-driver-js\driver\hex\connectivity_115k2_with_s130_1.0.0.hex %YGGDRASIL_DEPLOY_DIR%\nrf-connect-win32-ia32\hex\connectivity_115k2_with_s130_1.0.0.hex
+copy node_modules\pc-ble-driver-js\driver\hex\connectivity_115k2_sdk-10.0.0_s130-1.0.0.hex %YGGDRASIL_DEPLOY_DIR%\nrf-connect-win32-ia32\hex\connectivity_115k2_sdk-10.0.0_s130-1.0.0.hex
+copy node_modules\pc-ble-driver-js\build\driver\Debug\pc-ble-driver.dll %YGGDRASIL_DEPLOY_DIR%\node_modules\pc-ble-driver-js\build\Debug\pc-ble-driver.dll
 
 cd %YGGDRASIL_DEPLOY_DIR%
 

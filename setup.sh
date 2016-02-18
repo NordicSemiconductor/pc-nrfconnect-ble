@@ -30,13 +30,13 @@ case "$(uname -s)" in
     echo 'Detected platform is OS X'
     export YGGDRASIL_PLATFORM=darwin
     export YGGDRASIL_ICON=nrfconnect.icns
-    export YGGDRASIL_NAME=nrfconnect
+    export YGGDRASIL_NAME=nrf-connect
     ;;
   Linux)
     echo 'Detected platform is Linux'
     export YGGDRASIL_PLATFORM=linux
     export YGGDRASIL_ICON=nrfconnect.png
-    export YGGDRASIL_NAME=nrfconnect
+    export YGGDRASIL_NAME=nrf-connect
     ;;
   *)
     echo 'Not able to detect platform, quitting.'
@@ -60,7 +60,7 @@ electron-packager . $YGGDRASIL_NAME --platform=$YGGDRASIL_PLATFORM --arch=$npm_c
 cp README.md $YGGDRASIL_APP_ROOT_DIR/README.txt
 cp LICENSE $YGGDRASIL_APP_ROOT_DIR/LICENSE
 mkdir $YGGDRASIL_APP_ROOT_DIR/hex
-cp node_modules/pc-ble-driver-js/driver/hex/connectivity_115k2_with_s130_1.0.0.hex $YGGDRASIL_APP_ROOT_DIR/hex/connectivity_115k2_with_s130_1.0.0.hex
+cp node_modules/pc-ble-driver-js/driver/hex/connectivity_115k2_sdk-10.0.0_s130-1.0.0.hex $YGGDRASIL_APP_ROOT_DIR/hex/connectivity_115k2_sdk-10.0.0_s130-1.0.0.hex
 
 if [ "$YGGDRASIL_PLATFORM" = "linux" ]; then
   cp node_modules/pc-ble-driver-js/driver/lib/libs130_nrf51_ble_driver.so $YGGDRASIL_APP_ROOT_DIR
