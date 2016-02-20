@@ -192,9 +192,12 @@ class DeviceDetailsContainer extends Component {
 
         const perDevice = (20 + elemWidth);
         const width = (perDevice * detailDevices.length);
+
+        // TODO: Fix better solution to right padding of scroll area than div box with border
         return (<div className='device-details-container' style={this.props.style}>
                     <div style={{width: width}}>
                         {detailDevices}
+                        <div style={{borderColor: 'transparent', borderLeftWidth: '20px', borderRightWidth: '0px', borderStyle: 'solid'}} />
                     </div>
                 </div>);
     }

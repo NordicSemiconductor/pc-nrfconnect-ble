@@ -173,14 +173,13 @@ export default class DeviceDetailsView extends Component {
                 });
             }
 
-            // TODO: Fix better solution to right padding of scroll area than div box with border
             return (
                 <div className="remote-server device-details-view" id={instanceId + '_details'} style={this.props.style}>
                     {connectedDevice}
                     <div className="service-items-wrap">
                         {childrenList}
                     </div>
-                    <div style="border-color: transparent; border-left-width: 20px; border-right-width: 0px; border-style: solid;" />
+                    
                 </div>
             );
         }
