@@ -25,7 +25,7 @@ const initialState = new InitialState();
 export default function app(state = initialState, action) {
     switch (action.type) {
         case AppActions.SELECT_MAIN_VIEW:
-            return state.update('selectedMainView', selectedMainView => action.view);
+            return state.set('selectedMainView', action.view);
         default:
             return state;
     }

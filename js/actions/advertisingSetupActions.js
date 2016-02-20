@@ -164,7 +164,7 @@ function hideDialogAction() {
 function applyChangesAction() {
     return {
         type: APPLY_CHANGES,
-    }
+    };
 }
 
 function setAdvertisingCompletedAction(status) {

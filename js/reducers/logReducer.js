@@ -26,11 +26,11 @@ const initialState = new InitialState();
 export default function log(state = initialState, action) {
     switch (action.type) {
         case LogAction.ADD_ENTRY:
-            return state.update('entries', entries => entries.push(action.entry));
+            return state.set('entries', state.entries.push(action.entry));
         case LogAction.CLEAR_ENTRIES:
-            return state.update('entries', entries => entries.clear());
+            return state.set('entries', state.entries.clear());
         case LogAction.TOGGLE_AUTOSCROLL:
-            return state.update('autoScroll', autoScroll => !autoScroll);
+            return state.set('autoScroll', !autoScroll);
         default:
             return state;
     }
