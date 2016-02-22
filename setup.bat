@@ -1,24 +1,25 @@
+echo off
+echo "Pushing the current directory onto the stack to easier come back to it at end of script"
 pushd %CD%
 
+echo "Removing node_modules to ensure clean build"
 rm -rf node_modules
 
-REM call npm install -g npm
-REM If you screw up your npm veresion (which may happen with 3.X series on Windows)
-REM follow these instructions https://www.npmjs.com/package/npm-windows-upgrade)
 echo "Installing global npm requirements"
+REM call npm install -g npm
+REM If you mess up your npm version (which may happen with 3.X series on Windows)
+REM follow these instructions https://www.npmjs.com/package/npm-windows-upgrade)
 call npm install -g node-gyp
 call npm install -g electron-packager
 call npm install -g less
 
 echo "Setting up Visual Studio environment"
-
 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
 
-echo "Setting up Visual Stuido Target Path"
+echo "Setting up Visual Studio Target Path"
 set VCTargetsPath=C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120
 
 echo "Checking if version is set"
-
 if ["%YGGDRASIL_VERSION%"] == [""] goto setVersion
 echo "Version is set"
 goto versionSet
@@ -50,7 +51,10 @@ rename js\settings.json settings.json.dev
 rename js\settings.json.prod settings.json
 
 echo "Copy driver"
-copy node_modules\pc-ble-driver-js\build\driver\Debug\pc-ble-driver.dll node_modules\pc-ble-driver-js\build\Debug\pc-ble-driver.dll
+copy node_modules\pc-ble-driver-js\build\driver\Release\pc-ble-driver.dll node_modules\pc-ble-driver-js\build\Release\pc-ble-driver.dll
+
+echo "Copy runtime redistributable files for Visual Studio"
+copy "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT\*.dll" node_modules\pc-ble-driver-js\build\Release\
 
 echo "Packaging"
 call electron-packager ./ nrf-connect --platform=win32 --arch=%YGGDRASIL_ELECTRON_ARCH% --version=%YGGDRASIL_ELECTRON_VERSION% --overwrite --out=%YGGDRASIL_DEPLOY_DIR% --icon=nrfconnect.ico --app-version=%YGGDRASIL_VERSION% --version-string.CompanyName="Nordic Semiconductor" --version-string.LegalCopyright="Nordic Semiconductor" --version-string.FileDescription="nRF Connect" --version-string.OriginalFilename="nrf-connect.exe" --version-string.FileVersion=%YGGDRASIL_VERSION% --version-string.ProductVersion=%YGGDRASIL_VERSION% --version-string.ProductName="nRF Connect" --version-string.InternalName="nRF Connect"
