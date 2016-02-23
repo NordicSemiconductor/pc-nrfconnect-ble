@@ -10,7 +10,7 @@
  *
  */
 
- 'use strict';
+'use strict';
 
 import { combineReducers } from 'redux';
 
@@ -29,7 +29,7 @@ const rootReducer = combineReducers({
     app,
     advertisingSetup,
     bleEvent,
-    errorDialog
+    errorDialog,
 });
 
 export default rootReducer;

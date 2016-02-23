@@ -10,7 +10,7 @@
  *
  */
 
- 'use strict';
+'use strict';
 
 import Immutable, { Record, Map, List } from 'immutable';
 import * as DiscoveryAction from '../actions/discoveryActions';

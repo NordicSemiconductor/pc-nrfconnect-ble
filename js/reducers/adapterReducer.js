@@ -12,7 +12,6 @@
 
  'use strict';
 
-// const NONE_TEXT = 'None';
 const DEFAULT_ADAPTER_STATUS = 'Select com port';
 
 import { List, Record } from 'immutable';
@@ -88,7 +87,7 @@ function openAdapter(state, adapter) {
 function adapterOpened(state, adapter) {
     logger.info(`Adapter connected to ${adapter.state.port} opened`);
 
-    // Since we maintain state.api.adapters and state.adapters simultaniously
+    // Since we maintain state.api.adapters and state.adapters simultaneously
     // we use adapter index from state.api.adapters to access the "same" adapter
     // in state.adapters
     const adapterIndex = state.api.adapters.indexOf(adapter);

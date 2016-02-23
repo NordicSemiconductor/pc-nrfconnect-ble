@@ -65,23 +65,22 @@ function _setAdvertisingData(dispatch, getState) {
 function _startAdvertising(dispatch, getState) {
     const adapter = getState().adapter.api.selectedAdapter;
 
-    return new Promise((resolve, reject) => {
+    return _setAdvertisingData(dispatch, getState)
+    .then(() => {
         const options = {
             interval: 100,
             timeout: 0,
         };
 
         if (adapter === null || adapter === undefined) {
-            reject('No adapter is selected.');
+            Promise.reject('No adapter is selected.');
         }
-
-        _setAdvertisingData(dispatch, getState);
 
         adapter.startAdvertising(options, error => {
             if (error) {
-                reject(error);
+                Promise.reject(error);
             } else {
-                resolve();
+                Promise.resolve();
             }
         });
     }).then(() => {
