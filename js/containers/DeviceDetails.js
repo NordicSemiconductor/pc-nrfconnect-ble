@@ -19,7 +19,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
-import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
+import * as AdvertisingActions from '../actions/advertisingActions';
 import * as AdapterActions from '../actions/adapterActions';
 import * as BLEEventActions from '../actions/bleEventActions';
 
@@ -227,7 +227,7 @@ function mapDispatchToProps(dispatch) {
     let retval = Object.assign(
             {},
             bindActionCreators(DeviceDetailsActions, dispatch),
-            bindActionCreators(AdvertisingSetupActions, dispatch),
+            bindActionCreators(AdvertisingActions, dispatch),
             bindActionCreators(AdapterActions, dispatch),
             bindActionCreators(BLEEventActions, dispatch)
         );

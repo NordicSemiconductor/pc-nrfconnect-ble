@@ -10,7 +10,7 @@
  *
  */
 
- 'use strict';
+'use strict';
 
 const DEFAULT_ADAPTER_STATUS = 'Select com port';
 
@@ -51,7 +51,7 @@ function getSelectedAdapter(state) {
 
 function addAdapter(state, adapter) {
     state.api.adapters.push(adapter);
-    return state.update('adapters', adapters => adapters.push(apiHelper.getImmutableAdapter(adapter)));
+    return state.set('adapters', state.adapters.push(apiHelper.getImmutableAdapter(adapter)));
 }
 
 function removeAdapter(state, adapter) {
@@ -73,7 +73,6 @@ function removeAdapter(state, adapter) {
     }
 
     state = state.deleteIn(['adapters', adapterIndex]);
-
 
     return state;
 }
@@ -132,7 +131,7 @@ function adapterError(state, adapter, error) {
     state = state.set('adapterStatus', 'Error connecting');
     state = state.set('adapterIndicator', 'error');
     state = state.set('selectedAdapter', null);
-    state = state.update('errors', errors => errors.push(error.message));
+    state = state.set('errors', state.errors.push(error.message));
 
     return state;
 }

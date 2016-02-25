@@ -293,6 +293,16 @@ export function getUuidName(uuid) {
     return uuidDefinitions[lookupUuid] || uuid;
 }
 
+export function getUuidByName(name) {
+    for (let uuid in uuidDefinitions) {
+        if (uuidDefinitions.hasOwnProperty(uuid)) {
+            if (uuidDefinitions[uuid] === name) {
+                return uuid;
+            }
+        }
+    }
+}
+
 export function getPrettyUuid(uuid) {
     const insertHyphen = (string, index) => {
         return string.substr(0, index) + '-' + string.substr(index);

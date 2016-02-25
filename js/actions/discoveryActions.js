@@ -108,18 +108,6 @@ function toggleExpandedAction(deviceAddress) {
 }
 
 // Exported action starters
-export function stopScan() {
-    return (dispatch, getState) => {
-        return _stopScan(dispatch, getState);
-    };
-}
-
-export function startScan() {
-    return (dispatch, getState) => {
-        return _startScan(dispatch, getState);
-    };
-}
-
 export function clearDevicesList() {
     return dispatch => {
         dispatch(clearDevicesListAction());
@@ -136,10 +124,10 @@ export function toggleScan() {
             } else if (!selectedAdapter.state.scanning && selectedAdapter.state.available)  {
                 return _startScan(dispatch, getState);
             } else {
-                return Promise.reject('scanInProgress and adapterIsOpen is in a combination that makes it impossible to toggle scanning.');
+                dispatch(scanErrorAction('scanInProgress and adapterIsOpen is in a combination that makes it impossible to toggle scanning.'));
             }
         } else {
-            return Promise.reject('No adapter selected or adapter is missing state. Failing.');
+            dispatch(scanErrorAction('No adapter selected or adapter is missing state. Failing.'));
         }
     };
 }

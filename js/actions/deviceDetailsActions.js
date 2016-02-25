@@ -25,8 +25,6 @@ export const READ_CHARACTERISTIC = 'DEVICE_DETAILS_READ_CHARACTERISTIC';
 export const WRITE_DESCRIPTOR = 'DEVICE_DETAILS_WRITE_DESCRIPTOR';
 export const READ_DESCRIPTOR = 'DEVICE_DETAILS_READ_DESCRIPTOR';
 
-export const WRITING_ATTRIBUTE = 'DEVICE_DETAILS_WRITING_ATTRIBUTE';
-export const READING_ATTRIBUTE = 'DEVICE_DETAILS_READING_ATTRIBUTE';
 export const COMPLETED_WRITING_ATTRIBUTE = 'DEVICE_DETAILS_COMPLETED_WRITING_ATTRIBUTE';
 export const COMPLETED_READING_ATTRIBUTE = 'DEVICE_DETAILS_COMPLETED_READING_ATTRIBUTE';
 
@@ -34,13 +32,7 @@ export const ERROR_OCCURED = 'DEVICE_DETAILS_ERROR_OCCURED';
 
 import { getInstanceIds } from '../utils/api';
 import { showErrorDialog } from './errorDialogActions';
-
-function selectComponentAction(component) {
-    return {
-        type: SELECT_COMPONENT,
-        component: component,
-    };
-}
+import { getUuidByName } from '../utils/uuid_definitions'
 
 function _discoverServices(dispatch, getState, device) {
     return new Promise((resolve, reject) => {
@@ -76,7 +68,7 @@ function _discoverDeviceName(dispatch, getState, device, services) {
 
     return new Promise((resolve, reject) => {
         for (let service of services) {
-            if (service.uuid === '1800') {
+            if (service.uuid === getUuidByName('Generic Access')) {
                 resolve(service);
             }
         }
@@ -86,7 +78,7 @@ function _discoverDeviceName(dispatch, getState, device, services) {
         return _discoverCharacteristics(dispatch, getState, gapService);
     }).then(characteristics => {
         for (let characteristic of characteristics) {
-            if (characteristic.uuid === '2A00') {
+            if (characteristic.uuid === getUuidByName('Device Name')) {
                 return _readCharacteristic(dispatch, getState, characteristic);
             }
         }
@@ -191,8 +183,6 @@ function _readCharacteristic(dispatch, getState, characteristic) {
             reject(new Error('No adapter selected'));
         }
 
-        dispatch(readingAttributeAction(characteristic));
-
         adapterToUse.readCharacteristicValue(
             characteristic.instanceId,
             (error, value) => {
@@ -220,8 +210,6 @@ function _writeCharacteristic(dispatch, getState, characteristic, value) {
             reject(new Error('No adapter selected'));
         }
 
-        dispatch(writingAttributeAction(characteristic));
-
         let ack;
         if (characteristic.properties.write === true) {
             ack = true;
@@ -235,9 +223,9 @@ function _writeCharacteristic(dispatch, getState, characteristic, value) {
             if (error) {
                 dispatch(completedWritingAttributeAction(characteristic, null, error));
                 reject(new Error(error.message));
+            } else {
+                resolve();
             }
-
-            resolve();
         });
     }).then(() => {
         dispatch(completedWritingAttributeAction(characteristic, value));
@@ -253,8 +241,6 @@ function _readDescriptor(dispatch, getState, descriptor) {
         if (adapterToUse === null) {
             reject(new Error('No adapter selected'));
         }
-
-        dispatch(readingAttributeAction(descriptor));
 
         adapterToUse.readDescriptorValue(
             descriptor.instanceId,
@@ -282,8 +268,6 @@ function _writeDescriptor(dispatch, getState, descriptor, value) {
             reject(new Error('No adapter selected'));
         }
 
-        dispatch(writingAttributeAction(descriptor));
-
         adapterToUse.writeDescriptorValue(
             descriptor.instanceId,
             value,
@@ -302,6 +286,13 @@ function _writeDescriptor(dispatch, getState, descriptor, value) {
     }).catch(error => {
         dispatch(showErrorDialog(error));
     });
+}
+
+function selectComponentAction(component) {
+    return {
+        type: SELECT_COMPONENT,
+        component: component,
+    };
 }
 
 function discoveringAttributesAction(parent) {

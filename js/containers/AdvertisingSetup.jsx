@@ -24,7 +24,7 @@ import { Label } from 'react-bootstrap';
 import AdvertisingList from '../components/AdvertisingList';
 import AdvertisingData from '../components/AdvertisingData';
 
-import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
+import * as AdvertisingActions from '../actions/advertisingActions';
 
 class AdvertisingSetup extends Component {
     constructor(props) {
@@ -129,21 +129,21 @@ class AdvertisingSetup extends Component {
 }
 
 function mapStateToProps(state) {
-    const {advertisingSetup} = state;
+    const {advertising} = state;
 
     return {
-        advertisingSetup: advertisingSetup,
-        tempAdvDataEntries: advertisingSetup.tempAdvDataEntries,
-        tempScanRespEntries: advertisingSetup.tempScanRespEntries,
-        show: advertisingSetup.show,
-        setAdvdataStatus: advertisingSetup.setAdvdataStatus,
+        advertising: advertising,
+        tempAdvDataEntries: advertising.tempAdvDataEntries,
+        tempScanRespEntries: advertising.tempScanRespEntries,
+        show: advertising.show,
+        setAdvdataStatus: advertising.setAdvdataStatus,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     let retval = Object.assign(
         {},
-        bindActionCreators(AdvertisingSetupActions, dispatch)
+        bindActionCreators(AdvertisingActions, dispatch)
     );
 
     return retval;
@@ -161,7 +161,7 @@ AdvertisingSetup.propTypes = {
     addAdvEntry: PropTypes.func.isRequired,
     applyChanges: PropTypes.func.isRequired,
     setAdvertisingData: PropTypes.func.isRequired,
-    advertisingSetup: PropTypes.object.isRequired,
+    advertising: PropTypes.object.isRequired,
     setAdvdataStatus: PropTypes.string.isRequired,
     deleteAdvData: PropTypes.func.isRequired,
     addScanRsp: PropTypes.func.isRequired,

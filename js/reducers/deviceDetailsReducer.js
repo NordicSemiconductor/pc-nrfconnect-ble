@@ -40,7 +40,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         instanceId: gapInstanceId + '.' + characteristicInstanceIdCounter++,
         name: 'Device Name',
         uuid: '2A00',
-        value: [0x6E, 0x52, 0x46, 0x35, 0x31, 0x38, 0x32, 0x32],
+        value: [0x6E, 0x52, 0x46, 0x20, 0x43, 0x6F, 0x6E, 0x6E, 0x65, 0x63, 0x74], // nRF Connect
         properties: {read: true, write: true},
         children: OrderedMap(),
     });
@@ -58,17 +58,17 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         instanceId: gapInstanceId + '.' + characteristicInstanceIdCounter++,
         name: 'Peripheral Preferred Connection Parameters',
         uuid: '2A04',
-        value: [0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF],
+        value: [0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF], // no specific minimum/maximum interval and timeout, 0 slave latency
         properties: {read: true},
         children: OrderedMap(),
     });
 
-    const characteristics = {};
-    characteristics[deviceNameCharacteristic.instanceId] = deviceNameCharacteristic;
-    characteristics[appearanceCharacteristic.instanceId] = appearanceCharacteristic;
-    characteristics[ppcpCharacteristic.instanceId] = ppcpCharacteristic;
+    let characteristics = OrderedMap();
+    characteristics = characteristics.set(deviceNameCharacteristic.instanceId, deviceNameCharacteristic);
+    characteristics = characteristics.set(appearanceCharacteristic.instanceId, appearanceCharacteristic);
+    characteristics = characteristics.set(ppcpCharacteristic.instanceId, ppcpCharacteristic);
 
-    return OrderedMap(characteristics);
+    return characteristics;
 }
 
 function getInitialLocalServer() {
@@ -88,11 +88,11 @@ function getInitialLocalServer() {
         children: OrderedMap(),
     });
 
-    localServerChildren = {};
-    localServerChildren[gapService.instanceId] = gapService;
-    localServerChildren[gattService.instanceId] = gattService;
+    let localServerChildren = OrderedMap();
+    localServerChildren = localServerChildren.set(gapService.instanceId, gapService);
+    localServerChildren = localServerChildren.set(gattService.instanceId, gattService);
 
-    return new DeviceDetail({children: OrderedMap(localServerChildren)});
+    return new DeviceDetail({children: localServerChildren});
 }
 
 const initialState = new InitialState({selectedComponent: null, devices: OrderedMap({'local.server': getInitialLocalServer()})});
@@ -213,7 +213,6 @@ function completedWritingAttribute(state, attribute, value, error) {
         // If value is null the operation failed. Trigger a state change by setting
         // the original value in a new List object.
         const attributeInstanceIds = getInstanceIds(attribute.instanceId);
-        const attributeStatePath = getNodeStatePath(attribute.instanceId);
 
         let immutableAttribute = null;
         if (attributeInstanceIds.descriptor) {
@@ -320,8 +319,6 @@ export default function deviceDetails(state = initialState, action) {
             return attributeValueChanged(state, action.attribute, action.value);
         case AdapterActions.DEVICE_CONNECTED:
             return state.setIn(['devices', action.device.instanceId], new DeviceDetail());
-        case AdapterActions.READING_ATTRIBUTE:
-            return state;
         case AdapterActions.ADAPTER_CLOSED:
         case AdapterActions.ADAPTER_RESET_PERFORMED:
             return initialState;

@@ -22,7 +22,7 @@ import ConnectedDevice from '../components/ConnectedDevice';
 import CentralDevice from '../components/CentralDevice';
 
 import * as AdapterActions from '../actions/adapterActions';
-import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
+import * as AdvertisingActions from '../actions/advertisingActions';
 import * as BLEEventActions from '../actions/bleEventActions';
 
 class ConnectionMap extends Component {
@@ -85,7 +85,7 @@ class ConnectionMap extends Component {
 function mapStateToProps(state) {
     const {
         adapter,
-        advertisingSetup,
+        advertising,
     } = state;
 
     const selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapter]);
@@ -94,16 +94,14 @@ function mapStateToProps(state) {
         return {
             adapter: null,
             connectedDevices: null,
-            advertising: false,
-            advertisingSetup: advertisingSetup,
+            advertising: advertising,
             autoConnUpdate: adapter.autoConnUpdate,
         };
     } else {
         return {
             adapter: selectedAdapter,
             connectedDevices: selectedAdapter.connectedDevices,
-            advertising: selectedAdapter.state.advertising,
-            advertisingSetup: advertisingSetup,
+            advertising: advertising,
             autoConnUpdate: adapter.autoConnUpdate,
         };
     }
@@ -113,7 +111,7 @@ function mapDispatchToProps(dispatch) {
     const retval = Object.assign(
         {},
         bindActionCreators(AdapterActions, dispatch),
-        bindActionCreators(AdvertisingSetupActions, dispatch),
+        bindActionCreators(AdvertisingActions, dispatch),
         bindActionCreators(BLEEventActions, dispatch)
     );
 
@@ -128,7 +126,7 @@ export default connect(
 ConnectionMap.propTypes = {
     connectedDevices: PropTypes.object,
     adapter: PropTypes.object,
-    advertisingSetup: PropTypes.object.isRequired,
+    advertising: PropTypes.object.isRequired,
     disconnectFromDevice: PropTypes.func.isRequired,
     pairWithDevice: PropTypes.func.isRequired,
     createUserInitiatedConnParamsUpdateEvent: PropTypes.func.isRequired,

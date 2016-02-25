@@ -30,7 +30,7 @@ export const ERROR_OCCURED = 'ADVSETUP_ERROR_OCCURED';
 // Internal functions
 function _setAdvertisingData(dispatch, getState) {
     const adapter = getState().adapter.api.selectedAdapter;
-    const advertisingSetup = getState().advertisingSetup;
+    const advertising = getState().advertising;
 
     return new Promise((resolve, reject) => {
         const advData = {};
@@ -40,11 +40,11 @@ function _setAdvertisingData(dispatch, getState) {
             reject('No adapter is selected.');
         }
 
-        advertisingSetup.advDataEntries.forEach(entry => {
+        advertising.advDataEntries.forEach(entry => {
             advData[entry.typeApi] = entry.formattedValue;
         });
 
-        advertisingSetup.scanResponseEntries.forEach(entry => {
+        advertising.scanResponseEntries.forEach(entry => {
             scanResp[entry.typeApi] = entry.formattedValue;
         });
 
@@ -67,21 +67,23 @@ function _startAdvertising(dispatch, getState) {
 
     return _setAdvertisingData(dispatch, getState)
     .then(() => {
-        const options = {
-            interval: 100,
-            timeout: 0,
-        };
+        return new Promise((resolve, reject) => {
+            const options = {
+                interval: 100,
+                timeout: 0,
+            };
 
-        if (adapter === null || adapter === undefined) {
-            Promise.reject('No adapter is selected.');
-        }
-
-        adapter.startAdvertising(options, error => {
-            if (error) {
-                Promise.reject(error);
-            } else {
-                Promise.resolve();
+            if (adapter === null || adapter === undefined) {
+                reject('No adapter is selected.');
             }
+
+            adapter.startAdvertising(options, error => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            });
         });
     }).then(() => {
         dispatch(advertisingStartedAction());

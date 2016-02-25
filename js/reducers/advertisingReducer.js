@@ -14,7 +14,7 @@
 
 import { Record, List } from 'immutable';
 
-import * as AdvertisingSetupActions from '../actions/advertisingSetupActions';
+import * as advertisingActions from '../actions/advertisingActions';
 import * as AdapterAction from '../actions/adapterActions';
 import { logger } from '../logging';
 
@@ -38,42 +38,33 @@ const InitialState = Record({
 
 const initialState = new InitialState();
 
-export default function advertisingSetup(state = initialState, action) {
+export default function advertising(state = initialState, action) {
     switch (action.type) {
-        case AdvertisingSetupActions.ADD_ADVDATA_ENTRY:
-            return state.update('tempAdvDataEntries', tempAdvDataEntries => tempAdvDataEntries.push(action.entry));
-
-        case AdvertisingSetupActions.ADD_SCANRSP_ENTRY:
-            return state.update('tempScanRespEntries', tempScanRespEntries => tempScanRespEntries.push(action.entry));
-
-        case AdvertisingSetupActions.DELETE_ADVDATA_ENTRY:
-            return state.update('tempAdvDataEntries', entries => entries.filterNot(entry => entry.id === action.id));
-
-        case AdvertisingSetupActions.DELETE_SCANRSP_ENTRY:
-            return state.update('tempScanRespEntries', entries => entries.filterNot(entry => entry.id === action.id));
-
-        case AdvertisingSetupActions.APPLY_CHANGES:
+        case advertisingActions.ADD_ADVDATA_ENTRY:
+            return state.set('tempAdvDataEntries', state.tempAdvDataEntries.push(action.entry));
+        case advertisingActions.ADD_SCANRSP_ENTRY:
+            return state.set('tempScanRespEntries', state.tempScanRespEntries.push(action.entry));
+        case advertisingActions.DELETE_ADVDATA_ENTRY:
+            return state.set('tempAdvDataEntries', state.tempAdvDataEntries.filterNot(entry => entry.id === action.id));
+        case advertisingActions.DELETE_SCANRSP_ENTRY:
+            return state.set('tempScanRespEntries', state.tempScanRespEntries.filterNot(entry => entry.id === action.id));
+        case advertisingActions.APPLY_CHANGES:
             state = state.set('advDataEntries', state.tempAdvDataEntries);
             state = state.set('scanResponseEntries', state.tempScanRespEntries);
             return state;
-
-        case AdvertisingSetupActions.SHOW_DIALOG:
+        case advertisingActions.SHOW_DIALOG:
             return state.set('show', true);
-
-        case AdvertisingSetupActions.HIDE_DIALOG:
-            state = state.set('tempAdvDataEntries', List(state.advDataEntries.toArray()));
-            state = state.set('tempScanRespEntries', List(state.scanResponseEntries.toArray()));
+        case advertisingActions.HIDE_DIALOG:
+            state = state.set('tempAdvDataEntries', state.advDataEntries);
+            state = state.set('tempScanRespEntries', state.scanResponseEntries);
             state = state.set('show', false);
             return state;
-
-        case AdvertisingSetupActions.SET_ADVDATA_COMPLETED:
+        case advertisingActions.SET_ADVDATA_COMPLETED:
             return state.set('setAdvdataStatus', action.status);
-
-        case AdvertisingSetupActions.ADVERTISING_STARTED:
+        case advertisingActions.ADVERTISING_STARTED:
             logger.info('Advertising started');
             return state;
-
-        case AdvertisingSetupActions.ADVERTISING_STOPPED:
+        case advertisingActions.ADVERTISING_STOPPED:
             logger.info('Advertising stopped');
             return state;
         case AdapterAction.ADAPTER_RESET_PERFORMED:

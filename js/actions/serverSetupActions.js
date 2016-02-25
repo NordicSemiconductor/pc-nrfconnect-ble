@@ -44,6 +44,9 @@ import { showErrorDialog } from './errorDialogActions';
 
 import { ValidationError } from '../common/Errors';
 
+const SCCD_UUID = '2903';
+const CCCD_UUID = '2902';
+
 function setAttributeExpandedAction(attribute, value) {
     return {
         type: SET_ATTRIBUTE_EXPANDED,
@@ -159,7 +162,7 @@ function _addNewCharacteristic(dispatch, getState, parent) {
     const parentInstanceIds = getInstanceIds(parent.instanceId);
 
     if (parentInstanceIds.service === 'local.server.0' || parentInstanceIds.service === 'local.server.1') {
-        // Not allowed to remove GAP or GATT service and their children.
+        // Not allowed to add characteristics under the GAP and GATT services.
         return;
     }
 
@@ -170,7 +173,7 @@ function _addNewDescriptor(dispatch, getState, parent) {
     const parentInstanceIds = getInstanceIds(parent.instanceId);
 
     if (parentInstanceIds.service === 'local.server.0' || parentInstanceIds.service === 'local.server.1') {
-        // Not allowed to remove GAP or GATT service and their children.
+        // Not allowed to add descriptors under the GAP and GATT services.
         return;
     }
 
@@ -191,7 +194,6 @@ function _saveChangedAttribute(dispatch, getState, attribute) {
 }
 
 function _removeAttribute(dispatch, getState) {
-    //TODO: if attribute is gap or gatt service (check if first in list of services?)
     const state = getState();
     const serverSetup =  state.adapter.adapters.get(state.adapter.selectedAdapter).serverSetup;
     const selectedInstanceIds = getInstanceIds(serverSetup.selectedComponent);
@@ -285,9 +287,9 @@ function _applyServer(dispatch, getState) {
                     return;
                 }
 
-                if (uuid === '2903') {
+                if (uuid === SCCD_UUID) {
                     needSccdDescriptor = false;
-                } else if (uuid === '2902') {
+                } else if (uuid === CCCD_UUID) {
                     needCccdDescriptor = false;
                 }
 
@@ -323,9 +325,8 @@ function _applyServer(dispatch, getState) {
 
     selectedApi.setServices(services, err => {
         if (err) {
-            // TODO: log something
-            console.log('failed to set services');
-            console.log(err);
+            logger.info('Failed to set services');
+            logger.info(err);
             return;
         } else {
             dispatch(appliedServerAction(services));
@@ -347,12 +348,13 @@ function _saveServerSetup(dispatch, getState, filename) {
     }
 }
 
-function _loadServerSetup(dispatch, filename) {
+function _loadServerSetup(dispatch, files) {
     // Load file into immutable JS structure and replace it in the reducer.
     // The reducer replaces the instanceId's
-    if (filename && filename.length === 1) {
+    if (files && files.length === 1) {
         try {
-            const setup = readFileSync(filename[0]);
+            const filename = files[0];
+            const setup = readFileSync(filename);
             const setupObj = JSON.parse(setup);
 
             if (!setupObj) {
@@ -446,7 +448,7 @@ export function saveServerSetup(filename) {
 }
 
 export function loadServerSetup(filename) {
-    return (dispatch) => {
+    return dispatch => {
         _loadServerSetup(dispatch, filename);
     };
 }

@@ -18,7 +18,7 @@ import adapter from './adapterReducer';
 import discovery from './discoveryReducer';
 import log from './logReducer';
 import app from './appReducer';
-import advertisingSetup from './advertisingSetupReducer';
+import advertising from './advertisingReducer';
 import bleEvent from './bleEventReducer';
 import errorDialog from './errorDialogReducer';
 
@@ -27,7 +27,7 @@ const rootReducer = combineReducers({
     discovery,
     log,
     app,
-    advertisingSetup,
+    advertising,
     bleEvent,
     errorDialog,
 });

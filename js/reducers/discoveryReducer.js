@@ -12,14 +12,14 @@
 
 'use strict';
 
-import Immutable, { Record, Map, List } from 'immutable';
+import Immutable, { Record, OrderedMap, List } from 'immutable';
 import * as DiscoveryAction from '../actions/discoveryActions';
 import * as AdapterAction from '../actions/adapterActions';
 import * as apiHelper from '../utils/api';
 import { logger } from '../logging';
 
 const InitialState = Record({
-    devices: Map(),
+    devices: OrderedMap(),
     errors: List(),
 });
 
@@ -58,11 +58,11 @@ function deviceDiscovered(state, device) {
 }
 
 function addError(state, error) {
-    return state.update('errors', errors => errors.push(error));
+    return state.set('errors', state.errors.push(error));
 }
 
 function clearList(state) {
-    return state.update('devices', devices => devices.clear());
+    return state.set('devices', state.devices.clear());
 }
 
 function deviceConnect(state, device) {
@@ -78,13 +78,7 @@ function deviceConnectTimeout(state, deviceAddress) {
 }
 
 function deviceCancelConnect(state) {
-    const _devices = state.devices;
-    let newDevices = Immutable.Map();
-
-    _devices.forEach((device, address) => {
-        newDevices = newDevices.set(address, device.set('isConnecting', false));
-    });
-
+    const newDevices = state.devices.map(device => device.set('isConnecting', false));
     return state.set('devices', newDevices);
 }
 

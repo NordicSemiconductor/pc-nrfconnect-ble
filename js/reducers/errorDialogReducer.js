@@ -28,7 +28,7 @@ const initialState = new InitialState();
 function hideAndClearErrors(state) {
     // Only clear the list of errors if we are not in debug mode.
     if (state.debug !== true) {
-        state = state.updateIn(['errors'], errors => errors.clear());
+        state = state.set('errors', state.errors.clear());
     }
 
     return state.set('visible', false);
@@ -65,7 +65,7 @@ function addErrorMessage(state, error) {
         logger.debug(error.stack);
     }
 
-    return state.updateIn(['errors'], errors => errors.push(error));
+    return state.set('errors', state.errors.push(error));
 }
 
 export default function errorDialog(state = initialState, action)

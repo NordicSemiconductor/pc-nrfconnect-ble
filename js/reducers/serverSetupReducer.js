@@ -38,7 +38,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         instanceId: gapInstanceId + '.' + characteristicInstanceIdCounter++,
         name: 'Device Name',
         uuid: '2A00',
-        value: [0x6E, 0x52, 0x46, 0x35, 0x31, 0x38, 0x32, 0x32],
+        value: [0x6E, 0x52, 0x46, 0x20, 0x43, 0x6F, 0x6E, 0x6E, 0x65, 0x63, 0x74], // nRF Connect
         properties: {read: true, write: true},
         readPerm: 'open',
         writePerm: 'open',
@@ -62,7 +62,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         instanceId: gapInstanceId + '.' + characteristicInstanceIdCounter++,
         name: 'Peripheral Preferred Connection Parameters',
         uuid: '2A04',
-        value: [0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF],
+        value: [0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF], // no specific minimum/maximum interval and timeout, 0 slave latency
         properties: {read: true},
         readPerm: 'open',
         writePerm: 'open',
@@ -70,12 +70,12 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         children: OrderedMap(),
     });
 
-    const characteristics = {};
-    characteristics[deviceNameCharacteristic.instanceId] = deviceNameCharacteristic;
-    characteristics[appearanceCharacteristic.instanceId] = appearanceCharacteristic;
-    characteristics[ppcpCharacteristic.instanceId] = ppcpCharacteristic;
+    let characteristics = OrderedMap();
+    characteristics = characteristics.set(deviceNameCharacteristic.instanceId, deviceNameCharacteristic);
+    characteristics = characteristics.set(appearanceCharacteristic.instanceId, appearanceCharacteristic);
+    characteristics = characteristics.set(ppcpCharacteristic.instanceId, ppcpCharacteristic);
 
-    return OrderedMap(characteristics);
+    return characteristics;
 }
 
 function getInitialServices() {
@@ -98,9 +98,9 @@ function getInitialServices() {
         children: OrderedMap(),
     });
 
-    let localServerChildren = {};
-    localServerChildren[gapService.instanceId] = gapService;
-    localServerChildren[gattService.instanceId] = gattService;
+    let localServerChildren = OrderedMap();
+    localServerChildren = localServerChildren.set(gapService.instanceId, gapService);
+    localServerChildren = localServerChildren.set(gattService.instanceId, gattService);
 
     return OrderedMap(localServerChildren);
 }
@@ -146,7 +146,6 @@ function createNewService() {
 function addNewService(state) {
     const newService = createNewService();
     const newServiceStatePath = getNodeStatePath(newService.instanceId);
-
     return state.setIn(newServiceStatePath, newService);
 }
 
@@ -165,7 +164,6 @@ function createNewCharacteristic(parent) {
 function addNewCharacteristic(state, parent) {
     const newCharacteristic = createNewCharacteristic(parent);
     const newCharacteristicStatePath = getNodeStatePath(newCharacteristic.instanceId);
-
     return state.setIn(newCharacteristicStatePath, newCharacteristic);
 }
 
@@ -204,7 +202,7 @@ function removeAttribute(state) {
     return changedState.deleteIn(attributeStatePath);
 }
 
-function cloneObjectV1(service) {
+function cloneLoadedObject(service) {
     let retval = {};
 
     for (let entry in service) {
@@ -231,7 +229,7 @@ function loadSetup(state, setup) {
             const _service = setup.children[service];
             let newService = createNewService();
 
-            newService = newService.merge(cloneObjectV1(_service));
+            newService = newService.merge(cloneLoadedObject(_service));
             newState = newState.setIn(getNodeStatePath(newService.instanceId), newService);
 
             const characteristics = Object.keys(_service.children);
@@ -241,13 +239,13 @@ function loadSetup(state, setup) {
 
                 const descriptors = Object.keys(_characteristic.children);
                 let newCharacteristic = createNewCharacteristic(newService);
-                newCharacteristic = newCharacteristic.merge(cloneObjectV1(_characteristic));
+                newCharacteristic = newCharacteristic.merge(cloneLoadedObject(_characteristic));
                 newState = newState.setIn(getNodeStatePath(newCharacteristic.instanceId), newCharacteristic);
 
                 for (let descriptor of descriptors) {
                     const _descriptor = _characteristic.children[descriptor];
                     let newDescriptor = createNewDescriptor(newCharacteristic);
-                    newDescriptor = newDescriptor.merge(cloneObjectV1(_descriptor));
+                    newDescriptor = newDescriptor.merge(cloneLoadedObject(_descriptor));
                     newState = newState.setIn(getNodeStatePath(newDescriptor.instanceId), newDescriptor);
                 }
             }
@@ -279,6 +277,7 @@ export default function deviceDetails(state = initialState, action) {
             logger.info('Server setup was cleared');
             return initialState;
         case ServerSetupActions.APPLIED_SERVER:
+            // Adapter reducer keeps track of which adapter has applied servers.
             logger.info('Server setup was applied');
             return state;
         case ServerSetupActions.SHOW_DELETE_DIALOG:
