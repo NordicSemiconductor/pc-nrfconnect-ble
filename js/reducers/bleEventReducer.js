@@ -44,6 +44,12 @@ const ConnectionParameters = Record({
     slaveLatency: 0,
 });
 
+const PairingParameters = Record({
+    ioCapabilities: 'keyboardAndDisplay',
+    authentication: 'noAuth',
+    bond: false,
+});
+
 // Module local variable that is used to generate a unique ID for all events that are
 // added by the user or by incoming connection parameter update requests.
 let eventIndex = 0;
@@ -150,6 +156,25 @@ function createUserInitiatedConnParamsUpdateEvent(state, device) {
     return newState;
 }
 
+function createUserInitiatedPairingEvent(state, device) {
+    const initialPairingParams = new PairingParameters();
+
+    const event = new Event({
+        type: BLEEventType.USER_INITIATED_PAIRING,
+        device: apiHelper.getImmutableDevice(device),
+        pairingParameters: initialPairingParams,
+        id: eventIndex,
+        state: BLEEventState.INDETERMINATE,
+    });
+
+    let newState = state.set('events', state.events.push(event));
+    newState = newState.set('selectedEventId', eventIndex);
+    newState = newState.set('visible', true);
+    eventIndex++;
+
+    return newState;
+}
+
 export default function bleEvent(state = initialState, action)
 {
     switch (action.type) {
@@ -163,6 +188,8 @@ export default function bleEvent(state = initialState, action)
             return ignoreEvent(state, action.eventId);
         case BLEEventActions.BLE_EVENT_CREATE_USER_INITIATED_CONN_PARAMS_UPDATE_EVENT:
             return createUserInitiatedConnParamsUpdateEvent(state, action.device);
+        case BLEEventActions.BLE_EVENT_CREATE_USER_INITIATED_PAIRING_EVENT:
+            return createUserInitiatedPairingEvent(state, action.device);
         case BLEEventActions.BLE_EVENT_REMOVE:
             return removeEvent(state, action.eventId);
         case AdapterActions.DEVICE_CONNECTION_PARAM_UPDATE_REQUEST:

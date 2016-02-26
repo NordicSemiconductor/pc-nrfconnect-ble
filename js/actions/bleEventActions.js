@@ -20,6 +20,7 @@ export const BLE_EVENT_TIMED_OUT = 'BLE_EVENT_TIMED_OUT';
 export const BLE_EVENT_IGNORE = 'BLE_EVENT_IGNORE';
 export const BLE_EVENT_REMOVE = 'BLE_EVENT_REMOVE';
 export const BLE_EVENT_CREATE_USER_INITIATED_CONN_PARAMS_UPDATE_EVENT = 'BLE_EVENT_CREATE_USER_INITIATED_CONN_PARAMS_UPDATE_EVENT';
+export const BLE_EVENT_CREATE_USER_INITIATED_PAIRING_EVENT = 'BLE_EVENT_CREATE_USER_INITIATED_PAIRING_EVENT';
 
 function showDialogAction(visible) {
     return {
@@ -69,6 +70,13 @@ function createUserInitiatedConnParamsUpdateEventAction(device) {
     };
 }
 
+function createUserInitiatedPairingEventAction(device) {
+    return {
+        type: BLE_EVENT_CREATE_USER_INITIATED_PAIRING_EVENT,
+        device,
+    };
+}
+
 // Exported action creators
 export function selectEventId(eventId) {
     return selectEventIdAction(eventId);
@@ -96,4 +104,8 @@ export function clearAllEvents() {
 
 export function createUserInitiatedConnParamsUpdateEvent(device) {
     return createUserInitiatedConnParamsUpdateEventAction(device);
+}
+
+export function createUserInitiatedPairingEvent(device) {
+    return createUserInitiatedPairingEventAction(device);
 }

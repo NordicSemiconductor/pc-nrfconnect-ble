@@ -10,7 +10,7 @@
  *
  */
 
- 'use strict';
+'use strict';
 
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
@@ -39,6 +39,11 @@ export class BLEEvent extends Component {
                 return {
                     name: 'Connection update request',
                     icon: (<span className='icon-link'><span className='icon-up'/></span>),
+                };
+            case BLEEventType.USER_INITIATED_PAIRING:
+                return {
+                    name: 'Pairing',
+                    icon: (<span className='icon-link'><span className='icon-down'/></span>),
                 };
             default:
                 return {

@@ -19,10 +19,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { Modal, Button } from 'react-bootstrap';
-import { BLEEventState } from '../actions/common';
+import { BLEEventState, BLEEventType } from '../actions/common';
 
 import { BLEEvent } from '../components/BLEEvent';
 import { ConnectionUpdateRequestEditor } from '../components/ConnectionUpdateRequestEditor';
+import { PairingEditor } from '../components/PairingEditor';
 
 import * as BLEEventActions from '../actions/bleEventActions';
 import * as AdapterActions from '../actions/adapterActions';
@@ -56,6 +57,24 @@ export class BLEEventDialog extends Component {
         });
 
         return allEventsHandled;
+    }
+
+    _getEditorComponent(event) {
+        if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) {
+        return <ConnectionUpdateRequestEditor
+            event={event}
+            onUpdate={this._handleEditorUpdate}
+            onRejectConnectionParams={device => rejectDeviceConnectionParams(event.id, device)}
+            onUpdateConnectionParams={(device, connectionParams) => updateDeviceConnectionParams(event.id, device, connectionParams)}
+            onIgnoreEvent={eventId => ignoreEvent(eventId)}
+            onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+            />;
+        } else if (event.type === BLEEventType.USER_INITIATED_PAIRING) {
+            return <PairingEditor
+                event={event}
+                onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+                />;
+        }
     }
 
     render() {
@@ -112,14 +131,7 @@ export class BLEEventDialog extends Component {
 
                         {events.map(event =>
                             <div key={event.id} className='item-editor' style={ ((selectedEventId !== -1) && (selectedEventId === event.id) && (events.get(selectedEventId).state === BLEEventState.INDETERMINATE)) ? {} : {display: 'none'}}>
-                                <ConnectionUpdateRequestEditor
-                                    event={event}
-                                    onUpdate={this._handleEditorUpdate}
-                                    onRejectConnectionParams={device => rejectDeviceConnectionParams(event.id, device)}
-                                    onUpdateConnectionParams={(device, connectionParams) => updateDeviceConnectionParams(event.id, device, connectionParams)}
-                                    onIgnoreEvent={eventId => ignoreEvent(eventId)}
-                                    onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
-                                    />
+                                {this._getEditorComponent(event)}
                             </div>
                         )}
 
