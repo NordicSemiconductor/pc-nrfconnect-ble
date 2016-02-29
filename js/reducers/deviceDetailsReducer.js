@@ -40,7 +40,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         instanceId: gapInstanceId + '.' + characteristicInstanceIdCounter++,
         name: 'Device Name',
         uuid: '2A00',
-        value: [0x6E, 0x52, 0x46, 0x20, 0x43, 0x6F, 0x6E, 0x6E, 0x65, 0x63, 0x74], // nRF Connect
+        value: [0x6E, 0x52, 0x46, 0x35, 0x75], // nRF5x
         properties: {read: true, write: true},
         children: OrderedMap(),
     });
