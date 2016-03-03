@@ -205,14 +205,14 @@ export class ConnectionUpdateRequestEditor extends Component {
         const connectionSupervisionTimeoutInputStyle = this.isConnectionSupervisionTimeoutValid ?
             this._getValidInputStyle() : this._getInvalidInputStyle();
 
-        const ignoreButton = event.type === BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE ?
+        const ignoreButton = event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE ?
             <Button type='button'
                     onClick={() => this._handleIgnoreConnectionParams()}
                     className='btn btn-default btn-sm btn-nordic'>
                     Ignore
             </Button> : '';
 
-        const rejectButton = event.type === BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE ?
+        const rejectButton = event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE ?
             <Button type='button'
                     onClick={() => this._handleRejectConnectionParams()}
                     className='btn btn-default btn-sm btn-nordic'>
@@ -273,8 +273,8 @@ export class ConnectionUpdateRequestEditor extends Component {
                             </div>
                         </div>
                         <div>
-                            {updateButton}
                             {cancelButton}
+                            {updateButton}
                             {rejectButton}
                             {ignoreButton}
                         </div>

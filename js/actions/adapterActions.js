@@ -36,6 +36,8 @@ export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_U
 export const DEVICE_CONNECTION_PARAM_UPDATE_STATUS = 'DEVICE_CONNECTION_PARAM_UPDATE_STATUS';
 export const DEVICE_TOGGLE_AUTO_CONN_UPDATE = 'DEVICE_TOGGLE_AUTO_CONN_UPDATE';
 
+export const DEVICE_PAIRING_STATUS = 'DEVICE_PAIRING_STATUS';
+
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
 export const ATTRIBUTE_VALUE_CHANGED = 'ADAPTER_ATTRIBUTE_VALUE_CHANGED';
@@ -333,7 +335,7 @@ function _rejectConnectionParams(dispatch, getState, id, device) {
     });
 }
 
-function _pairWithDevice(dispatch, getState, device) {
+function _pairWithDevice(dispatch, getState, id, device, securityParams) {
     const onError = () => {
         Promise.reject();
     };
@@ -348,14 +350,17 @@ function _pairWithDevice(dispatch, getState, device) {
 
         adapterToUse.once('error', onError);
 
-        adapterToUse.pair(device.instanceId, false, error => {
+        adapterToUse.pair(device.instanceId, securityParams, error => {
             if (error) {
                 reject(new Error(error.message));
             }
 
             resolve();
         });
+    }).then(() => {
+        dispatch(pairingStatusAction(id, device, BLEEventState.SUCCESS));
     }).catch(error => {
+        dispatch(pairingStatusAction(id, device, BLEEventState.ERROR));
         dispatch(showErrorDialog(error));
     }).
     then(() => {
@@ -519,6 +524,15 @@ function connectionParamUpdateStatusAction(id, device, status) {
     };
 }
 
+function pairingStatusAction(id, device, status) {
+    return {
+        type: DEVICE_PAIRING_STATUS,
+        id: id,
+        device: device,
+        status: status,
+    };
+}
+
 function deviceDiscoveredAction(device) {
     return {
         type: DEVICE_DISCOVERED,
@@ -640,9 +654,9 @@ export function disconnectFromDevice(device) {
     };
 }
 
-export function pairWithDevice(device) {
+export function pairWithDevice(id, device, securityParams) {
     return (dispatch, getState) => {
-        return _pairWithDevice(dispatch, getState, device);
+        return _pairWithDevice(dispatch, getState, id, device, securityParams);
     };
 }
 

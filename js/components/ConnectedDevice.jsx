@@ -119,7 +119,7 @@ export default class ConnectedDevice extends Component {
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu pullRight={pullRight}>
                                     <MenuItem eventKey='Update'>Update connection...</MenuItem>
-                                    <MenuItem eventKey='Pair'>Pair</MenuItem>
+                                    <MenuItem eventKey='Pair'>Pair...</MenuItem>
                                     <MenuItem eventKey='Disconnect'>Disconnect</MenuItem>
                                 </Dropdown.Menu>
                             </Dropdown>

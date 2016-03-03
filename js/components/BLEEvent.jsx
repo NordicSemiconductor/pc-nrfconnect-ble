@@ -35,7 +35,7 @@ export class BLEEvent extends Component {
                     name: 'Connection update',
                     icon: (<span className='icon-link'><span className='icon-down'/></span>),
                 };
-            case BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE:
+            case BLEEventType.PEER_INITIATED_CONNECTION_UPDATE:
                 return {
                     name: 'Connection update request',
                     icon: (<span className='icon-link'><span className='icon-up'/></span>),
@@ -59,7 +59,7 @@ export class BLEEvent extends Component {
 
         let eventTimer = (<div/>);
 
-        if (event.type === BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE &&
+        if (event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE &&
             event.state === BLEEventState.INDETERMINATE) {
             eventTimer = (<CountdownTimer ref={countDownTimerRef} seconds={EVENT_TIMEOUT_SECONDS} onTimeout={() => onTimedOut()}/>);
         }

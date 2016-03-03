@@ -60,7 +60,15 @@ export class BLEEventDialog extends Component {
     }
 
     _getEditorComponent(event) {
-        if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) {
+        const {
+            rejectDeviceConnectionParams,
+            updateDeviceConnectionParams,
+            ignoreEvent,
+            removeEvent,
+            pairWithDevice,
+        } = this.props;
+
+        if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE || event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE) {
         return <ConnectionUpdateRequestEditor
             event={event}
             onUpdate={this._handleEditorUpdate}
@@ -72,7 +80,8 @@ export class BLEEventDialog extends Component {
         } else if (event.type === BLEEventType.USER_INITIATED_PAIRING) {
             return <PairingEditor
                 event={event}
-                onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+                onPair={(device, securityParams) => pairWithDevice(event.id, device, securityParams)}
+                onCancel={eventId => removeEvent(eventId)}
                 />;
         }
     }
@@ -84,10 +93,6 @@ export class BLEEventDialog extends Component {
             selectedEventId,
             showDialog,
             clearAllEvents,
-            rejectDeviceConnectionParams,
-            updateDeviceConnectionParams,
-            ignoreEvent,
-            removeEvent,
         } = this.props;
 
         if (events === null || events === undefined || events.size < 1)

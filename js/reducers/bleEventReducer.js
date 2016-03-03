@@ -78,7 +78,7 @@ function connectionUpdateParamRequest(state, device, requestedConnectionParams) 
     });
 
     const event = new Event({
-        type: BLEEventType.PERIPHERAL_INITIATED_CONNECTION_UPDATE,
+        type: BLEEventType.PEER_INITIATED_CONNECTION_UPDATE,
         device: apiHelper.getImmutableDevice(device),
         requestedConnectionParams: connectionParams,
         id: eventIndex,
