@@ -22,6 +22,7 @@ import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
 import * as AdvertisingActions from '../actions/advertisingActions';
 import * as AdapterActions from '../actions/adapterActions';
 import * as BLEEventActions from '../actions/bleEventActions';
+import * as SecurityActions from '../actions/securityActions';
 
 import DeviceDetailsView from '../components/deviceDetails';
 
@@ -139,10 +140,14 @@ class DeviceDetailsContainer extends Component {
             disconnectFromDevice,
             pairWithDevice,
             createUserInitiatedConnParamsUpdateEvent,
-            createUserInitiatedPairingEvent,
             toggleAutoConnUpdate,
             autoConnUpdate,
+            showSecurityParamsDialog,
+            toggleAutoAcceptPairing,
+            security,
         } = this.props;
+
+        console.log('SECURITY DEVDET CONTAINER ' + security);
 
         const elemWidth = 250;
         const detailDevices = [];
@@ -167,6 +172,9 @@ class DeviceDetailsContainer extends Component {
                                               containerHeight={this.props.style.height}
                                               onToggleAutoConnUpdate={toggleAutoConnUpdate}
                                               autoConnUpdate={autoConnUpdate}
+                                              onShowSecurityParamsDialog={showSecurityParamsDialog}
+                                              onToggleAutoAcceptPairing={toggleAutoAcceptPairing}
+                                              security={security}
                                               />
         );
 
@@ -184,7 +192,7 @@ class DeviceDetailsContainer extends Component {
                                                   onReadDescriptor={readDescriptor}
                                                   onWriteDescriptor={writeDescriptor}
                                                   onDisconnectFromDevice={disconnectFromDevice}
-                                                  onPairWithDevice={createUserInitiatedPairingEvent}
+                                                  onPairWithDevice={pairWithDevice}
                                                   onUpdateDeviceConnectionParams={createUserInitiatedConnParamsUpdateEvent}
                                                   containerHeight={this.props.style.height}
                                                   />
@@ -221,6 +229,7 @@ function mapStateToProps(state) {
         connectedDevices: selectedAdapter.connectedDevices,
         deviceDetails: selectedAdapter.deviceDetails,
         autoConnUpdate: adapter.autoConnUpdate,
+        security: selectedAdapter.security,
     };
 }
 
@@ -230,7 +239,8 @@ function mapDispatchToProps(dispatch) {
             bindActionCreators(DeviceDetailsActions, dispatch),
             bindActionCreators(AdvertisingActions, dispatch),
             bindActionCreators(AdapterActions, dispatch),
-            bindActionCreators(BLEEventActions, dispatch)
+            bindActionCreators(BLEEventActions, dispatch),
+            bindActionCreators(SecurityActions, dispatch),
         );
 
     return retval;
@@ -252,4 +262,7 @@ DeviceDetailsContainer.propTypes = {
     readDescriptor: PropTypes.func.isRequired,
     writeDescriptor: PropTypes.func.isRequired,
     createUserInitiatedConnParamsUpdateEvent: PropTypes.func.isRequired,
+    security: PropTypes.object,
+    toggleAutoAcceptPairing: PropTypes.func.isRequired,
+    showSecurityParamsDialog: PropTypes.func.isRequired,
 };

@@ -62,7 +62,13 @@ export default class DeviceDetailsView extends Component {
                 onToggleAdvertising,
                 autoConnUpdate,
                 onToggleAutoConnUpdate,
+                onShowSecurityParamsDialog,
+                onToggleAutoAcceptPairing,
+                onSetSecurityParams,
+                security,
             } = this.props;
+
+            console.log('SECURITY DEVDET JSX ' + security);
 
             const localDevice = (<CentralDevice id={instanceId + '_details'}
                                           position={centralPosition}
@@ -73,7 +79,12 @@ export default class DeviceDetailsView extends Component {
                                           onShowSetupDialog={onShowAdvertisingSetupDialog}
                                           onToggleAdvertising={onToggleAdvertising}
                                           autoConnUpdate={autoConnUpdate}
-                                          onToggleAutoConnUpdate={onToggleAutoConnUpdate} />
+                                          onToggleAutoConnUpdate={onToggleAutoConnUpdate}
+                                          onShowSecurityParamsDialog={onShowSecurityParamsDialog}
+                                          onToggleAutoAcceptPairing={onToggleAutoAcceptPairing}
+                                          onSetSecurityParams={onSetSecurityParams}
+                                          security={security}
+/>
             );
 
             if (!deviceDetails) {
@@ -204,4 +215,7 @@ DeviceDetailsView.propTypes = {
     onToggleAdvertising: PropTypes.func,
     onToggleAutoConnUpdate: PropTypes.func,
     autoConnUpdate: PropTypes.bool,
+    security: PropTypes.object,
+    onToggleAutoAcceptPairing: PropTypes.func,
+    onShowSecurityParamsDialog: PropTypes.func,
 };

@@ -34,6 +34,7 @@ const ImmutableAdapter = Record({
     /*Adapter sub-reducers*/
     deviceDetails: null,
     serverSetup: null,
+    security: null,
     isServerSetupApplied: false,
 });
 
@@ -196,6 +197,7 @@ export function getImmutableAdapter(adapter) {
         /*Adapter sub-reducers*/
         deviceDetails: undefined,
         serverSetup: undefined,
+        security: undefined,
     });
 }
 

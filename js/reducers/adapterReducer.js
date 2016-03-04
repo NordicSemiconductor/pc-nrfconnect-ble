@@ -21,10 +21,12 @@ import * as apiHelper from '../utils/api';
 
 import deviceDetails from './deviceDetailsReducer';
 import serverSetup from './serverSetupReducer';
+import security from './securityReducer';
 
 import * as AdapterAction from '../actions/adapterActions';
 import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
 import * as ServerSetupActions from '../actions/serverSetupActions';
+import * as SecurityActions from '../actions/securityActions';
 
 import { logger } from '../logging';
 
@@ -262,6 +264,7 @@ export default function adapter(state = getImmutableRoot(), action) {
     const adapterSubReducers = combineReducers({
         deviceDetails,
         serverSetup,
+        security,
     });
 
     if (state.selectedAdapter !== undefined && state.selectedAdapter !== null) {
@@ -272,6 +275,7 @@ export default function adapter(state = getImmutableRoot(), action) {
                 {
                     deviceDetails: selectedAdapter.deviceDetails,
                     serverSetup: selectedAdapter.serverSetup,
+                    security: selectedAdapter.security,
                 }, action);
 
             state = state.mergeIn(['adapters', state.selectedAdapter], newSubReducerStates);
