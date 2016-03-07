@@ -68,8 +68,6 @@ export default class DeviceDetailsView extends Component {
                 security,
             } = this.props;
 
-            console.log('SECURITY DEVDET JSX ' + security);
-
             const localDevice = (<CentralDevice id={instanceId + '_details'}
                                           position={centralPosition}
                                           name={name}

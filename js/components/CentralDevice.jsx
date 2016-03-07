@@ -77,8 +77,6 @@ export default class CentralDevice extends Component {
             security,
         } = this.props;
 
-        console.log('SECURITY CENTR DEV: ' + security);
-
         const style = {
             position: 'relative',
             height: '102px',
@@ -92,7 +90,7 @@ export default class CentralDevice extends Component {
         const advMenuText = advertising ? 'Stop advertising' : 'Start advertising';
         const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
         const iconCheckmarkConnUpdate = autoConnUpdate ? 'icon-ok' : '';
-        const iconCheckmarkPairing = security ? 'icon-ok' : '';
+        const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'icon-ok' : '';
 
         return (
             <div id={id} className='device main-device standalone' style={style}>

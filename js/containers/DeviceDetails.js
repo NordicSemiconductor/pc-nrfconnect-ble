@@ -147,8 +147,6 @@ class DeviceDetailsContainer extends Component {
             security,
         } = this.props;
 
-        console.log('SECURITY DEVDET CONTAINER ' + security);
-
         const elemWidth = 250;
         const detailDevices = [];
 
