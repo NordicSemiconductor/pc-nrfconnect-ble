@@ -56,9 +56,9 @@ export default function discovery(state = initialState, action) {
         case SecurityActions.SECURITY_PARAMS_APPLIED:
             return state.set('securityParams', new SecurityParameters(action.params));
         case SecurityActions.SECURITY_HIDE_DIALOG:
-            return state.set('showingSecurityDialog', true);
-        case SecurityActions.SECURITY_SHOW_DIALOG:
             return state.set('showingSecurityDialog', false);
+        case SecurityActions.SECURITY_SHOW_DIALOG:
+            return state.set('showingSecurityDialog', true);
         case SecurityActions.SECURITY_TOGGLE_AUTO_ACCEPT_PAIRING:
             return state.set('autoAcceptPairing', !state.autoAcceptPairing);
         default:

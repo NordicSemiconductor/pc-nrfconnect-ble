@@ -212,7 +212,7 @@ class DeviceDetailsContainer extends Component {
 
 function mapStateToProps(state) {
     const {
-        adapter
+        adapter,
     } = state;
 
     const selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapter]);

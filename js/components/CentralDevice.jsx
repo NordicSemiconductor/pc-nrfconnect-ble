@@ -17,6 +17,7 @@ import Component from 'react-pure-render/component';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import AdvertisingSetup from '../containers/AdvertisingSetup';
+import SecurityDialog from '../containers/SecurityDialog';
 
 export default class CentralDevice extends Component {
     constructor(props) {
@@ -108,26 +109,26 @@ export default class CentralDevice extends Component {
                                     if (onToggleAdvertising !== undefined) {
                                         items.push(<MenuItem key='advHeader' header>Advertising</MenuItem>);
                                         if (advertising !== undefined) {
-                                            items.push(<MenuItem key="setup" eventKey='AdvertisingSetup'>Advertising setup...</MenuItem>);
+                                            items.push(<MenuItem key='setup' eventKey='AdvertisingSetup'>Advertising setup...</MenuItem>);
                                         }
 
-                                        items.push(<MenuItem key="advertising" eventKey='ToggleAdvertising'>{advMenuText} <span className='subtler-text'>(Alt+A)</span></MenuItem>);
+                                        items.push(<MenuItem key='advertising' eventKey='ToggleAdvertising'>{advMenuText} <span className='subtler-text'>(Alt+A)</span></MenuItem>);
                                     }
 
                                     if (onLoadSetup !== undefined) {
-                                        items.push(<MenuItem key="load" eventKey='LoadSetup'>Load setup...</MenuItem>);
+                                        items.push(<MenuItem key='load' eventKey='LoadSetup'>Load setup...</MenuItem>);
                                     }
 
                                     if (onSaveSetup !== undefined) {
-                                        items.push(<MenuItem key="save" eventKey='SaveSetup'>Save setup...</MenuItem>);
+                                        items.push(<MenuItem key='save' eventKey='SaveSetup'>Save setup...</MenuItem>);
                                     }
 
                                     if (onToggleAutoConnUpdate !== undefined) {
                                         items.push(<MenuItem key='dividerConnUpdate' divider />);
                                         items.push(<MenuItem key='connUpdateHeader' header>Connection update</MenuItem>);
                                         items.push(<MenuItem key='autoConnUpdate'
-                                            title='Automatically respond to connection update requests'
-                                            eventKey='ToggleAutoConnUpdate'><i className={iconCheckmarkConnUpdate} />Auto connection update response</MenuItem>);
+                                            title='Automatically accept connection update requests'
+                                            eventKey='ToggleAutoConnUpdate'><i className={iconCheckmarkConnUpdate} />Auto accept update requests</MenuItem>);
                                     }
 
                                     if (onToggleAutoAcceptPairing !== undefined && onShowSecurityParamsDialog !== undefined) {
@@ -135,10 +136,10 @@ export default class CentralDevice extends Component {
                                         items.push(<MenuItem key='securityHeader' header>Security</MenuItem>);
                                         items.push(<MenuItem key='setSecurityParams'
                                             title='Configure security parameters related to pairing'
-                                            eventKey='SetSecurityParams'>Set security parameters...</MenuItem>);
+                                            eventKey='SetSecurityParams'>Security parameters...</MenuItem>);
                                         items.push(<MenuItem key='autoAcceptPairing'
-                                            title='Automatically accept pairing requests'
-                                            eventKey='ToggleAutoAcceptPairing'><i className={iconCheckmarkPairing} />Auto accept pairing requests</MenuItem>);
+                                            title='Automatically accept security requests'
+                                            eventKey='ToggleAutoAcceptPairing'><i className={iconCheckmarkPairing} />Auto accept security requests</MenuItem>);
                                     }
 
                                     return items;
@@ -153,6 +154,7 @@ export default class CentralDevice extends Component {
                     <div className='address-text'>{address}</div>
                     <div className={'icon-wifi ' + iconOpacity} aria-hidden='true' title={advIconTitle} style={progressStyle} />
                     <AdvertisingSetup />
+                    <SecurityDialog />
                 </div>
             </div>
         );
