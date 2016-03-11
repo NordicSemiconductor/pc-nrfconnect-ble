@@ -17,7 +17,7 @@ import Component from 'react-pure-render/component';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import AdvertisingSetup from '../containers/AdvertisingSetup';
-import SecurityDialog from '../containers/SecurityDialog';
+import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 
 export default class CentralDevice extends Component {
     constructor(props) {
@@ -154,7 +154,7 @@ export default class CentralDevice extends Component {
                     <div className='address-text'>{address}</div>
                     <div className={'icon-wifi ' + iconOpacity} aria-hidden='true' title={advIconTitle} style={progressStyle} />
                     <AdvertisingSetup />
-                    <SecurityDialog />
+                    <SecurityParamsDialog />
                 </div>
             </div>
         );

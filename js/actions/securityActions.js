@@ -15,39 +15,17 @@
 import { getSelectedAdapter } from './common';
 
 export const SECURITY_SET_PARAMS = 'SECURITY_SET_PARAMS';
-export const SECURITY_SET_PARAMS_COMPLETED = 'SECURITY_SET_PARAMS_COMPLETED';
 export const SECURITY_TOGGLE_AUTO_ACCEPT_PAIRING = 'SECURITY_TOGGLE_AUTO_ACCEPT_PAIRING';
 export const SECURITY_SHOW_DIALOG = 'SECURITY_SHOW_DIALOG';
 export const SECURITY_HIDE_DIALOG = 'SECURITY_HIDE_DIALOG';
 export const SECURITY_ERROR_OCCURED = 'SECURITY_ERROR_OCCURED';
 
 // Internal functions
-function _setSecurityParams(dispatch, getState, params) {
-    const adapter = getState().adapter.api.selectedAdapter;
-    const security = getState().security;
-
-    return new Promise((resolve, reject) => {
-        if (!adapter) {
-            reject('No adapter is selected');
-        }
-
-        adapter.setSecurityParams(params, error => {
-            if (error) {
-                reject(error);
-            } else {
-                dispatch(setSecurityParamsCompletedAction(params));
-                resolve();
-            }
-        });
-    }).catch(error => {
-        dispatch(securityErrorOccuredAction(error.message));
-    });
-}
 
 // Action object functions
-function setSecurityParamsCompletedAction(params) {
+function setSecurityParamsAction(params) {
     return {
-        type: SECURITY_SET_PARAMS_COMPLETED,
+        type: SECURITY_SET_PARAMS,
         params: params,
     };
 }
@@ -79,9 +57,7 @@ function securityErrorOccuredAction(error) {
 
 // Exported action starters
 export function setSecurityParams(params) {
-    return (dispatch, getState) => {
-        _setSecurityParams(dispatch, getState, params);
-    };
+    return setSecurityParamsAction(params);
 }
 
 export function toggleAutoAcceptPairing() {

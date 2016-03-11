@@ -35,7 +35,7 @@ const SecurityParameters = Record({
 const defaultSecurityParams = new SecurityParameters({
     bond: false,
     ioCaps: IO_CAPS_KEYBOARD_DISPLAY,
-    lesc: false,
+    lesc: true,
     mitm: false,
     oob: false,
     keypress: false,
@@ -51,9 +51,7 @@ const initialState = new InitialState();
 
 export default function discovery(state = initialState, action) {
     switch (action.type) {
-        case SecurityActions.APPLY_SECURITY_PARAMS:
-            return state;
-        case SecurityActions.SECURITY_PARAMS_APPLIED:
+        case SecurityActions.SECURITY_SET_PARAMS:
             return state.set('securityParams', new SecurityParameters(action.params));
         case SecurityActions.SECURITY_HIDE_DIALOG:
             return state.set('showingSecurityDialog', false);
