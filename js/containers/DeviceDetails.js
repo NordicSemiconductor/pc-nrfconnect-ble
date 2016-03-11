@@ -140,6 +140,7 @@ class DeviceDetailsContainer extends Component {
             disconnectFromDevice,
             pairWithDevice,
             createUserInitiatedConnParamsUpdateEvent,
+            createUserInitiatedPairingEvent,
             toggleAutoConnUpdate,
             autoConnUpdate,
             showSecurityParamsDialog,
@@ -190,7 +191,7 @@ class DeviceDetailsContainer extends Component {
                                                   onReadDescriptor={readDescriptor}
                                                   onWriteDescriptor={writeDescriptor}
                                                   onDisconnectFromDevice={disconnectFromDevice}
-                                                  onPairWithDevice={pairWithDevice}
+                                                  onPairWithDevice={createUserInitiatedPairingEvent}
                                                   onUpdateDeviceConnectionParams={createUserInitiatedConnParamsUpdateEvent}
                                                   containerHeight={this.props.style.height}
                                                   />
@@ -260,6 +261,7 @@ DeviceDetailsContainer.propTypes = {
     readDescriptor: PropTypes.func.isRequired,
     writeDescriptor: PropTypes.func.isRequired,
     createUserInitiatedConnParamsUpdateEvent: PropTypes.func.isRequired,
+    createUserInitiatedPairingEvent: PropTypes.func.isRequired,
     security: PropTypes.object,
     toggleAutoAcceptPairing: PropTypes.func.isRequired,
     showSecurityParamsDialog: PropTypes.func.isRequired,

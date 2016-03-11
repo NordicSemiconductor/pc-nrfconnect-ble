@@ -66,6 +66,7 @@ export class BLEEventDialog extends Component {
             ignoreEvent,
             removeEvent,
             pairWithDevice,
+            security,
         } = this.props;
 
         if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE || event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE) {
@@ -82,6 +83,7 @@ export class BLEEventDialog extends Component {
                 event={event}
                 onPair={(device, securityParams) => pairWithDevice(event.id, device, securityParams)}
                 onCancel={eventId => removeEvent(eventId)}
+                security={security}
                 />;
         }
     }
@@ -171,12 +173,16 @@ BLEEventDialog.propTypes = {
 function mapStateToProps(state) {
     const {
         bleEvent,
+        adapter,
     } = state;
+
+    const selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapter]);
 
     return {
         visible: bleEvent.visible,
         events: bleEvent.events,
         selectedEventId: bleEvent.selectedEventId,
+        security: selectedAdapter ? selectedAdapter.security : null,
     };
 }
 
