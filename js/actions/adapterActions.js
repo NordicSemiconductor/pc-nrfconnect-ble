@@ -93,7 +93,7 @@ function _openAdapter(dispatch, getState, adapter) {
             flowControl: 'none',
             eventInterval: 10,
             logLevel: 'debug',
-            enableBLE: false,
+            enableBLE: true,
         };
 
         // Check if we already have an adapter open, if so, close it
