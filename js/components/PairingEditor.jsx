@@ -31,7 +31,7 @@ export class PairingEditor extends Component {
     }
 
     handleSecParamsChange(params) {
-        this.secParams = params;
+        this.secParams.merge(params);
     }
 
     handlePair() {
@@ -40,7 +40,25 @@ export class PairingEditor extends Component {
             onPair,
         } = this.props;
 
-        onPair(event.device, this.secParams);
+        onPair(this.secParams);
+    }
+
+    handleAccept() {
+        const {
+            event,
+            onAccept,
+        } = this.props;
+
+        onAccept(this.secParams);
+    }
+
+    handleReject() {
+        const {
+            event,
+            onReject,
+        } = this.props;
+
+        onReject();
     }
 
     handleCancel() {
@@ -49,7 +67,7 @@ export class PairingEditor extends Component {
             onCancel,
         } = this.props;
 
-        onCancel(event.id);
+        onCancel();
     }
 
     render() {
@@ -59,19 +77,42 @@ export class PairingEditor extends Component {
             security,
         } = this.props;
 
+        const title = (event.type === BLEEventType.PEER_INITIATED_PAIRING) ? 'Pairing requested'
+            : 'User initiated pairing';
+
+        const cancelButton = (event.type === BLEEventType.USER_INITIATED_PAIRING) ?
+            <Button type='button' onClick={() => this.handleCancel()}
+                    className='btn btn-default btn-sm btn-nordic'>Cancel</Button> : '';
+
+        const pairButton = (event.type === BLEEventType.USER_INITIATED_PAIRING) ?
+            <Button type='button' onClick={() => this.handlePair()}
+                className='btn btn-primary btn-sm btn-nordic'>Pair</Button> : '';
+
+        const acceptButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING) ?
+            <Button type='button' onClick={() => this.handleAccept()}
+                className='btn btn-primary btn-sm btn-nordic'>Accept</Button> : '';
+
+        const rejectButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING) ?
+            <Button type='button' onClick={() => this.handleReject()}
+                className='btn btn-primary btn-sm btn-nordic'>Reject</Button> : '';
+
+        const ignoreButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING) ?
+            <Button type='button' onClick={() => this.handleCancel()}
+                className='btn btn-primary btn-sm btn-nordic'>Ignore</Button> : '';
+
         return (
             <div>
                 <div className='event-header'>
-                    <h4>Pairing</h4>
+                    <h4>{title}</h4>
                 </div>
                 <form className='form-horizontal'>
                     <SecurityParamsControls onChange={secParams => this.handleSecParamsChange(secParams)} securityParams={security.securityParams} />
                     <div className='form-group'>
-                        <Button type='button'
-                                onClick={() => this.handleCancel()}
-                                className='btn btn-default btn-sm btn-nordic'>Cancel</Button>
-                        <Button type='button' onClick={() => this.handlePair()}
-                            className='btn btn-primary btn-sm btn-nordic'>Pair</Button>
+                        {cancelButton}
+                        {ignoreButton}
+                        {pairButton}
+                        {acceptButton}
+                        {rejectButton}
                     </div>
                 </form>
             </div>

@@ -60,6 +60,7 @@ const ImmutableDevice = Record({
     securityMode1Levels: null,
     securityMode2Levels: null,
     isExpanded: false,
+    ownPeriphInitiatedPairingPending: false,
 });
 
 const ImmutableProperties = Record({
@@ -219,6 +220,7 @@ export function getImmutableDevice(device) {
         services: List(device.services),
         rssi: device.rssi,
         scanResponse: device.scanResponse,
+        ownPeriphInitiatedPairingPending: device.ownPeriphInitiatedPairingPending,
     });
 }
 

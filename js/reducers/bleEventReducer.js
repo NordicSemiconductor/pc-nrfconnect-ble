@@ -156,6 +156,33 @@ function createUserInitiatedConnParamsUpdateEvent(state, device) {
     return newState;
 }
 
+function securityRequest(state, device) {
+    const initialPairingParams = new PairingParameters();
+
+    const event = new Event({
+        type: BLEEventType.PEER_INITIATED_PAIRING,
+        device: apiHelper.getImmutableDevice(device),
+        pairingParameters: initialPairingParams,
+        id: eventIndex,
+        state: BLEEventState.INDETERMINATE,
+    });
+
+    let newState = state.set('events', state.events.push(event));
+    newState = newState.set('selectedEventId', eventIndex);
+    newState = newState.set('visible', true);
+    eventIndex++;
+
+    return newState;
+}
+
+function pairingStatus(state, eventId, eventState) {
+    if (eventId < 0) {
+        return state;
+    }
+
+    return state.setIn(['events', eventId, 'state'], eventState);
+}
+
 function createUserInitiatedPairingEvent(state, device) {
     const initialPairingParams = new PairingParameters();
 
@@ -194,6 +221,10 @@ export default function bleEvent(state = initialState, action)
             return removeEvent(state, action.eventId);
         case AdapterActions.DEVICE_CONNECTION_PARAM_UPDATE_REQUEST:
             return connectionUpdateParamRequest(state, action.device, action.requestedConnectionParams);
+        case AdapterActions.DEVICE_SECURITY_REQUEST:
+            return securityRequest(state, action.device);
+        case AdapterActions.DEVICE_PAIRING_STATUS:
+            return pairingStatus(state, action.id, action.status);
         case AdapterActions.DEVICE_CONNECTION_PARAM_UPDATE_STATUS:
             return connectionParamUpdateStatus(state, action.id, action.status);
         case AdapterActions.DEVICE_DISCONNECTED:

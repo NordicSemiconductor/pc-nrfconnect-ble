@@ -67,6 +67,8 @@ export class BLEEventDialog extends Component {
             removeEvent,
             pairWithDevice,
             security,
+            rejectPairing,
+            acceptPairing,
         } = this.props;
 
         if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE || event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE) {
@@ -81,8 +83,16 @@ export class BLEEventDialog extends Component {
         } else if (event.type === BLEEventType.USER_INITIATED_PAIRING) {
             return <PairingEditor
                 event={event}
-                onPair={(device, securityParams) => pairWithDevice(event.id, device, securityParams)}
+                onPair={securityParams => pairWithDevice(event.id, event.device, securityParams)}
                 onCancel={eventId => removeEvent(eventId)}
+                security={security}
+                />;
+        } else if (event.type === BLEEventType.PEER_INITIATED_PAIRING) {
+            return <PairingEditor
+                event={event}
+                onAccept={securityParams => acceptPairing(event.id, event.device, securityParams)}
+                onReject={() => rejectPairing(event.id, event.device)}
+                onCancel={() => removeEvent(event.id)}
                 security={security}
                 />;
         }
@@ -99,7 +109,7 @@ export class BLEEventDialog extends Component {
 
         if (events === null || events === undefined || events.size < 1)
         {
-            this._close();
+            //this._close();
             return <div />;
         }
 
@@ -113,7 +123,7 @@ export class BLEEventDialog extends Component {
                     showDialog(false);
                 }} >
                 <Modal.Header>
-                    <Modal.Title>Events</Modal.Title>
+                    <Modal.Title>Events and actions</Modal.Title>
                 </Modal.Header>
 
                 <div className='bleevent-dialog'>
@@ -168,6 +178,8 @@ BLEEventDialog.propTypes = {
     updateDeviceConnectionParams: PropTypes.func.isRequired,
     ignoreEvent: PropTypes.func.isRequired,
     removeEvent: PropTypes.func.isRequired,
+    rejectPairing: PropTypes.func.isRequired,
+    acceptPairing: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {

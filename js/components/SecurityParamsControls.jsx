@@ -30,7 +30,7 @@ export class SecurityParamsControls extends Component {
     constructor(props) {
         super(props);
 
-        this.ioCaps = props.securityParams.ioCaps;
+        this.ioCaps = props.securityParams.io_caps;
         this.enableLesc = props.securityParams.lesc;
         this.enableMitm = props.securityParams.mitm;
         this.enableOob = props.securityParams.oob;
@@ -73,7 +73,7 @@ export class SecurityParamsControls extends Component {
 
     handleChange() {
         const newSecParams = {
-            ioCaps: this.ioCaps,
+            io_caps: this.ioCaps,
             lesc: this.enableLesc,
             mitm: this.enableMitm,
             oob: this.enableOob,

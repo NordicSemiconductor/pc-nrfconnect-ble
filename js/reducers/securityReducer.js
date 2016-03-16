@@ -25,20 +25,48 @@ const IO_CAPS_KEYBOARD_DISPLAY = 4;
 
 const SecurityParameters = Record({
     bond: false,
-    ioCaps: null,
+    io_caps: null,
     lesc: false,
     mitm: false,
     oob: false,
     keypress: false,
+    min_key_size: 0,
+    max_key_size: 0,
+    kdist_own: {
+        enc: false,   /**< Long Term Key and Master Identification. */
+        id: false,    /**< Identity Resolving Key and Identity Address Information. */
+        sign: false,  /**< Connection Signature Resolving Key. */
+        link: false,  /**< Derive the Link Key from the LTK. */
+    },
+    kdist_peer: {
+        enc: false,   /**< Long Term Key and Master Identification. */
+        id: false,    /**< Identity Resolving Key and Identity Address Information. */
+        sign: false,  /**< Connection Signature Resolving Key. */
+        link: false,  /**< Derive the Link Key from the LTK. */
+    },
 });
 
 const defaultSecurityParams = new SecurityParameters({
     bond: false,
-    ioCaps: IO_CAPS_KEYBOARD_DISPLAY,
-    lesc: true,
+    io_caps: IO_CAPS_KEYBOARD_DISPLAY,
+    lesc: false,
     mitm: false,
     oob: false,
     keypress: false,
+    min_key_size: 7,
+    max_key_size: 16,
+    kdist_own: {
+        enc: false,   /**< Long Term Key and Master Identification. */
+        id: false,    /**< Identity Resolving Key and Identity Address Information. */
+        sign: false,  /**< Connection Signature Resolving Key. */
+        link: false,  /**< Derive the Link Key from the LTK. */
+    },
+    kdist_peer: {
+        enc: false,   /**< Long Term Key and Master Identification. */
+        id: false,    /**< Identity Resolving Key and Identity Address Information. */
+        sign: false,  /**< Connection Signature Resolving Key. */
+        link: false,  /**< Derive the Link Key from the LTK. */
+    },
 });
 
 const InitialState = Record({

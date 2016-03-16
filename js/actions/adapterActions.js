@@ -37,6 +37,7 @@ export const DEVICE_CONNECTION_PARAM_UPDATE_STATUS = 'DEVICE_CONNECTION_PARAM_UP
 export const DEVICE_TOGGLE_AUTO_CONN_UPDATE = 'DEVICE_TOGGLE_AUTO_CONN_UPDATE';
 
 export const DEVICE_PAIRING_STATUS = 'DEVICE_PAIRING_STATUS';
+export const DEVICE_SECURITY_REQUEST = 'DEVICE_SECURITY_REQUEST';
 
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
@@ -119,6 +120,8 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(showErrorDialog(new Error(error.message)));
         });
 
+        adapterToUse.on('logMessage', _onLogMessage);
+
         // Listen to adapter changes
         adapterToUse.on('stateChanged', state => {
             dispatch(adapterStateChangedAction(adapterToUse, state));
@@ -161,7 +164,13 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(securityChangedAction(device, authParams));
         });
 
-        adapterToUse.on('logMessage', _onLogMessage);
+        adapterToUse.on('securityRequest', (device, params) => {
+            _onSecurityRequest(dispatch, getState, device, params);
+        });
+
+        adapterToUse.on('secParamsRequest', (device, params) => {
+            _onSecParamsRequest(dispatch, getState, device, params.peerParams);
+        });
 
         adapterToUse.on('status', status => {
             _onStatus(dispatch, getState, status);
@@ -206,6 +215,105 @@ function _onConnParamUpdateRequest(dispatch, getState, device, requestedConnecti
 
 function _onConnParamUpdate(dispatch, getState, device) {
     dispatch(connectionParamUpdateStatusAction(-1, device, -1));
+}
+
+function _onSecurityRequest(dispatch, getState, device, params) {
+    const state = getState();
+    const selectedAdapter = state.adapter.getIn(['adapters', state.adapter.selectedAdapter]);
+    const defaultSecParams = selectedAdapter.security.securityParams;
+
+    if (!defaultSecParams) {
+        logger.warn('Security request received but security state is undefined');
+        return;
+    }
+
+    if (false) { //selectedAdapter.security.autoAcceptPairing) {
+        _authenticate(dispatch, getState, device, defaultSecParams);
+    } else {
+        dispatch(securityRequestAction(device));
+    }
+}
+
+function _onSecParamsRequest(dispatch, getState, device, peerParams) {
+    const state = getState();
+    const selectedAdapter = state.adapter.getIn(['adapters', state.adapter.selectedAdapter]);
+    const defaultSecParams = selectedAdapter.security.securityParams;
+
+    const secKeyset = {
+        keys_own: {
+            enc_key: {
+                enc_info: {
+                    ltk: [0, 0, 0, 0, 0, 0, 0, 0],
+                    lesc: false,
+                    auth: false,
+                    ltk_len: 8,
+                },
+                master_id: {
+                    ediv: 0x1234,
+                    rand: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                },
+            },
+            id_key: null,
+            sign_key: null,
+            pk: null,
+        },
+        keys_peer: {
+            enc_key: {
+                enc_info: {
+                    ltk: [0, 0, 0, 0, 0, 0, 0, 0],
+                    lesc: false,
+                    auth: false,
+                    ltk_len: 8,
+                },
+                master_id: {
+                    ediv: 0x1234,
+                    rand: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                },
+            },
+            id_key: null,
+            sign_key: null,
+            pk: null,
+        },
+    };
+
+    const adapterToUse = getState().adapter.api.selectedAdapter;
+
+    if (device.role === 'central') {
+        if (device.ownPeriphInitiatedPairingPending) {
+            // If pairing initiated by own peripheral, proceed directly with replySecParams
+            adapterToUse.replySecParams(device.instanceId, 0, defaultSecParams, secKeyset, error => {
+                if (error) {
+                    logger.warn(`Error when calling replySecParams: ${error}`);
+                }
+            });
+        } else {
+            if (false) { //selectedAdapter.security.autoAcceptPairing) {
+                _authenticate(dispatch, getState, device, defaultSecParams);
+            } else {
+                dispatch(securityRequestAction(device));
+            }
+        }
+    } else if (device.role === 'peripheral') {
+        adapterToUse.replySecParams(device.instanceId, 0, null, secKeyset, error => {
+            if (error) {
+                logger.warn(`Error when calling replySecParams: ${error}`);
+            }
+        });
+    }
+}
+
+function _authenticate(dispatch, getState, device, securityParams) {
+    const adapterToUse = getState().adapter.api.selectedAdapter;
+
+    return new Promise((resolve, reject) => {
+        adapterToUse.authenticate(device.instanceId, securityParams, error => {
+            if (error) {
+                reject(new Error(error.message));
+            }
+
+            resolve(adapterToUse);
+        });
+    });
 }
 
 function _onLogMessage(severity, message) {
@@ -335,22 +443,84 @@ function _rejectConnectionParams(dispatch, getState, id, device) {
     });
 }
 
-function _pairWithDevice(dispatch, getState, id, device, securityParams) {
-    const onError = () => {
-        Promise.reject();
-    };
-
-    const adapterToUse = getState().adapter.api.selectedAdapter;
-
+function _rejectPairing(dispatch, getState, id, device) {
     return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
 
         if (adapterToUse === null) {
-            reject(new Error('No adapter selected'));
+            reject(new Error('No adapter selected!'));
         }
 
-        adapterToUse.once('error', onError);
+        if (device.role === 'peripheral') {
+            adapterToUse.authenticate(device.instanceId, null, error => {
+                if (error) {
+                    reject(new Error(error.message));
+                }
 
-        adapterToUse.pair(device.instanceId, securityParams, error => {
+                resolve();
+            });
+        } else if (device.role === 'central') {
+            const PAIRING_NOT_SUPPORTED = 0x85;
+            adapterToUse.replySecParams(device.instanceId, PAIRING_NOT_SUPPORTED, null, null, error => {
+                if (error) {
+                    reject(new Error(error.message));
+                }
+
+                resolve();
+            });
+        } else {
+            reject(new Error('Invalid role'));
+        }
+    }).then(() => {
+        dispatch(pairingStatusAction(id, device, BLEEventState.REJECTED));
+    }).catch(() => {
+        dispatch(pairingStatusAction(id, device, BLEEventState.ERROR));
+    });
+}
+
+function _acceptPairing(dispatch, getState, id, device, securityParams) {
+    return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        if (adapterToUse === null) {
+            reject(new Error('No adapter selected!'));
+        }
+
+        if (device.role === 'peripheral') {
+            adapterToUse.authenticate(device.instanceId, securityParams, error => {
+                if (error) {
+                    reject(new Error(error.message));
+                }
+
+                resolve();
+            });
+        } else if (device.role === 'central') {
+            adapterToUse.replySecParams(device.instanceId, 0, securityParams, null, error => {
+                if (error) {
+                    reject(new Error(error.message));
+                }
+
+                resolve();
+            });
+        } else {
+            reject(new Error('Unknown role'));
+        }
+    }).then(() => {
+        dispatch(pairingStatusAction(id, device, BLEEventState.SUCCESS));
+    }).catch(() => {
+        dispatch(pairingStatusAction(id, device, BLEEventState.ERROR));
+    });
+}
+
+function _pairWithDevice(dispatch, getState, id, device, securityParams) {
+    return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        if (!adapterToUse) {
+            reject(new Error('No adapter selected!'));
+        }
+
+        adapterToUse.authenticate(device.instanceId, securityParams, error => {
             if (error) {
                 reject(new Error(error.message));
             }
@@ -362,9 +532,6 @@ function _pairWithDevice(dispatch, getState, id, device, securityParams) {
     }).catch(error => {
         dispatch(pairingStatusAction(id, device, BLEEventState.ERROR));
         dispatch(showErrorDialog(error));
-    }).
-    then(() => {
-        adapterToUse.removeListener('error', onError);
     });
 }
 
@@ -588,6 +755,13 @@ function deviceConnParamUpdateRequestAction(device, requestedConnectionParams) {
     };
 }
 
+function securityRequestAction(device) {
+    return {
+        type: DEVICE_SECURITY_REQUEST,
+        device,
+    };
+}
+
 function pairWithDeviceAction(device) {
     return {
         type: DEVICE_INITIATE_PAIRING,
@@ -657,6 +831,18 @@ export function disconnectFromDevice(device) {
 export function pairWithDevice(id, device, securityParams) {
     return (dispatch, getState) => {
         return _pairWithDevice(dispatch, getState, id, device, securityParams);
+    };
+}
+
+export function acceptPairing(id, device, securityParams) {
+    return (dispatch, getState) => {
+        return _acceptPairing(dispatch, getState, id, device, securityParams);
+    };
+}
+
+export function rejectPairing(id, device) {
+    return (dispatch, getState) => {
+        return _rejectPairing(dispatch, getState, id, device);
     };
 }
 

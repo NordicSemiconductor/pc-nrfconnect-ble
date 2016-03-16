@@ -45,6 +45,11 @@ export class BLEEvent extends Component {
                     name: 'Pairing',
                     icon: (<span className='icon-link'><span className='icon-down'/></span>),
                 };
+            case BLEEventType.PEER_INITIATED_PAIRING:
+                return {
+                    name: 'Pairing requested',
+                    icon: (<span className='icon-link'><span className='icon-up'/></span>),
+                };
             default:
                 return {
                    name: 'unknown event',
@@ -60,6 +65,11 @@ export class BLEEvent extends Component {
         let eventTimer = (<div/>);
 
         if (event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE &&
+            event.state === BLEEventState.INDETERMINATE) {
+            eventTimer = (<CountdownTimer ref={countDownTimerRef} seconds={EVENT_TIMEOUT_SECONDS} onTimeout={() => onTimedOut()}/>);
+        }
+
+        if (event.type === BLEEventType.PEER_INITIATED_PAIRING &&
             event.state === BLEEventState.INDETERMINATE) {
             eventTimer = (<CountdownTimer ref={countDownTimerRef} seconds={EVENT_TIMEOUT_SECONDS} onTimeout={() => onTimedOut()}/>);
         }
