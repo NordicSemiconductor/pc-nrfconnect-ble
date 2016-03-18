@@ -25,13 +25,13 @@ const IO_CAPS_KEYBOARD_DISPLAY = 4;
 
 const SecurityParameters = Record({
     bond: false,
-    io_caps: null,
+    io_caps: IO_CAPS_KEYBOARD_DISPLAY,
     lesc: false,
     mitm: false,
     oob: false,
     keypress: false,
-    min_key_size: 0,
-    max_key_size: 0,
+    min_key_size: 7,
+    max_key_size: 16,
     kdist_own: {
         enc: false,   /**< Long Term Key and Master Identification. */
         id: false,    /**< Identity Resolving Key and Identity Address Information. */
