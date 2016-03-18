@@ -31,7 +31,7 @@ export class PairingEditor extends Component {
     }
 
     handleSecParamsChange(params) {
-        this.secParams.merge(params);
+        this.secParams = this.secParams.merge(params);
     }
 
     handlePair() {

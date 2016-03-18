@@ -38,6 +38,9 @@ export const DEVICE_TOGGLE_AUTO_CONN_UPDATE = 'DEVICE_TOGGLE_AUTO_CONN_UPDATE';
 
 export const DEVICE_PAIRING_STATUS = 'DEVICE_PAIRING_STATUS';
 export const DEVICE_SECURITY_REQUEST = 'DEVICE_SECURITY_REQUEST';
+export const DEVICE_PASSKEY_DISPLAY = 'DEVICE_PASSKEY_DISPLAY';
+export const DEVICE_AUTHKEY_REQUEST = 'DEVICE_AUTHKEY_REQUEST';
+export const DEVICE_AUTHKEY_STATUS = 'DEVICE_AUTHKEY_STATUS';
 
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
@@ -168,8 +171,32 @@ function _openAdapter(dispatch, getState, adapter) {
             _onSecurityRequest(dispatch, getState, device, params);
         });
 
-        adapterToUse.on('secParamsRequest', (device, params) => {
-            _onSecParamsRequest(dispatch, getState, device, params.peerParams);
+        adapterToUse.on('secParamsRequest', (device, peerParams) => {
+            _onSecParamsRequest(dispatch, getState, device, peerParams);
+        });
+
+        adapterToUse.on('authKeyRequest', (device, keyType) => {
+            _onAuthKeyRequest(dispatch, getState, device, keyType);
+        });
+
+        adapterToUse.on('passkeyDisplay', (device, matchRequest, passkey) => {
+            _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey);
+        });
+
+        adapterToUse.on('lescDhkeyRequest', (device, peerPublicKey, oobDataRequired) => {
+            _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobDataRequired);
+        });
+
+        adapterToUse.on('keyPressed', (device, keypressType) => {
+            _onKeyPressed(dispatch, getState, device, keypressType);
+        });
+
+        adapterToUse.on('connSecUpdate', (device, connSec) => {
+            _onConnSecUpdate(dispatch, getState, device, connSec);
+        });
+
+        adapterToUse.on('authStatus', (device, params) => {
+            _onAuthStatus(dispatch, getState, device, params);
         });
 
         adapterToUse.on('status', status => {
@@ -227,7 +254,7 @@ function _onSecurityRequest(dispatch, getState, device, params) {
         return;
     }
 
-    if (false) { //selectedAdapter.security.autoAcceptPairing) {
+    if (selectedAdapter.security.autoAcceptPairing) {
         _authenticate(dispatch, getState, device, defaultSecParams);
     } else {
         dispatch(securityRequestAction(device));
@@ -285,10 +312,12 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
                 if (error) {
                     logger.warn(`Error when calling replySecParams: ${error}`);
                 }
+
+                console.log(`ReplySecParams, secParams: ${defaultSecParams}`);
             });
         } else {
-            if (false) { //selectedAdapter.security.autoAcceptPairing) {
-                _authenticate(dispatch, getState, device, defaultSecParams);
+            if (selectedAdapter.security.autoAcceptPairing) {
+                _acceptPairing(dispatch, getState, -1, device, defaultSecParams);
             } else {
                 dispatch(securityRequestAction(device));
             }
@@ -298,8 +327,34 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
             if (error) {
                 logger.warn(`Error when calling replySecParams: ${error}`);
             }
+
+            console.log(`ReplySecParams, secParams: null`);
         });
     }
+}
+
+function _onAuthKeyRequest(dispatch, getState, device, keyType) {
+    dispatch(authKeyRequestAction(device, keyType));
+}
+
+function _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey) {
+    dispatch(passkeyDisplayAction(device, matchRequest, passkey));
+}
+
+function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequired) {
+    console.log('TODO onLescDhkeyRequest');
+}
+
+function _onKeyPressed(dispatch, getState, device, keypressType) {
+    console.log('TODO onKeyPressed');
+}
+
+function _onConnSecUpdate(dispatch, getState, device, connSec) {
+    console.log('TODO onConnSecUpdate ' + JSON.stringify(connSec));
+}
+
+function _onAuthStatus(dispatch, getState, device, params) {
+    console.log('TODO onAuthStatus');
 }
 
 function _authenticate(dispatch, getState, device, securityParams) {
@@ -478,6 +533,32 @@ function _rejectPairing(dispatch, getState, id, device) {
     });
 }
 
+function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
+    return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        if (adapterToUse === null) {
+            reject(new Error('No adapter selected!'));
+        }
+
+        const keyTypeInt = (keyType === 'BLE_GAP_AUTH_KEY_TYPE_PASSKEY') ? 1
+            : (keyType === 'BLE_GAP_AUTH_KEY_TYPE_OOB') ? 2
+            : 0;
+
+        adapterToUse.replyAuthKey(device.instanceId, keyTypeInt, key, error => {
+            if (error) {
+                reject(new Error(error.message));
+            }
+
+            resolve();
+        });
+    }).then(() => {
+        dispatch(authKeyStatusAction(id, device, BLEEventState.SUCCESS));
+    }).catch(() => {
+        dispatch(authKeyStatusAction(id, device, BLEEventState.ERROR));
+    });
+}
+
 function _acceptPairing(dispatch, getState, id, device, securityParams) {
     return new Promise((resolve, reject) => {
         const adapterToUse = getState().adapter.api.selectedAdapter;
@@ -492,6 +573,7 @@ function _acceptPairing(dispatch, getState, id, device, securityParams) {
                     reject(new Error(error.message));
                 }
 
+                console.log(`Authenticate, secParams: ${securityParams}`);
                 resolve();
             });
         } else if (device.role === 'central') {
@@ -500,6 +582,7 @@ function _acceptPairing(dispatch, getState, id, device, securityParams) {
                     reject(new Error(error.message));
                 }
 
+                console.log(`ReplySecParams, secParams: ${securityParams}`);
                 resolve();
             });
         } else {
@@ -525,6 +608,7 @@ function _pairWithDevice(dispatch, getState, id, device, securityParams) {
                 reject(new Error(error.message));
             }
 
+            console.log(`Authenticate, secParams: ${securityParams}`);
             resolve();
         });
     }).then(() => {
@@ -700,6 +784,15 @@ function pairingStatusAction(id, device, status) {
     };
 }
 
+function authKeyStatusAction(id, device, status) {
+    return {
+        type: DEVICE_AUTHKEY_STATUS,
+        id,
+        device,
+        status,
+    };
+}
+
 function deviceDiscoveredAction(device) {
     return {
         type: DEVICE_DISCOVERED,
@@ -752,6 +845,23 @@ function deviceConnParamUpdateRequestAction(device, requestedConnectionParams) {
         type: DEVICE_CONNECTION_PARAM_UPDATE_REQUEST,
         device,
         requestedConnectionParams,
+    };
+}
+
+function passkeyDisplayAction(device, matchRequest, passkey) {
+    return {
+        type: DEVICE_PASSKEY_DISPLAY,
+        device,
+        matchRequest,
+        passkey,
+    };
+}
+
+function authKeyRequestAction(device, keyType) {
+    return {
+        type: DEVICE_AUTHKEY_REQUEST,
+        device,
+        keyType,
     };
 }
 
@@ -843,6 +953,12 @@ export function acceptPairing(id, device, securityParams) {
 export function rejectPairing(id, device) {
     return (dispatch, getState) => {
         return _rejectPairing(dispatch, getState, id, device);
+    };
+}
+
+export function replyAuthKey(id, device, keyType, key) {
+    return (dispatch, getState) => {
+        return _replyAuthKey(dispatch, getState, id, device, keyType, key);
     };
 }
 

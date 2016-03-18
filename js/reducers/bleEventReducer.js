@@ -34,6 +34,8 @@ const Event = Record({
     type: null,
     device: null,
     requestedConnectionParams: null,
+    pairingParameters: null,
+    authKeyParams: null,
     state: BLEEventState.UNKNOWN,
 });
 
@@ -48,6 +50,11 @@ const PairingParameters = Record({
     ioCapabilities: 'keyboardAndDisplay',
     authentication: 'noAuth',
     bond: false,
+});
+
+const AuthKeyParameters = Record({
+    passkey: '',
+    keypress: '',
 });
 
 // Module local variable that is used to generate a unique ID for all events that are
@@ -93,7 +100,7 @@ function connectionUpdateParamRequest(state, device, requestedConnectionParams) 
     return newState;
 }
 
-function connectionParamUpdateStatus(state, eventId, eventState) {
+function updateEventStatus(state, eventId, eventState) {
     if (eventId < 0) {
         return state;
     }
@@ -112,7 +119,7 @@ function deviceDisconnected(state, device) {
         (value.device.instanceId === device.instanceId));
 
     events.forEach(event => {
-        state = connectionParamUpdateStatus(state, event.id, BLEEventState.DISCONNECTED);
+        state = updateEventStatus(state, event.id, BLEEventState.DISCONNECTED);
     });
 
     return state;
@@ -175,12 +182,45 @@ function securityRequest(state, device) {
     return newState;
 }
 
-function pairingStatus(state, eventId, eventState) {
-    if (eventId < 0) {
-        return state;
-    }
+function passkeyDisplay(state, device, matchRequest, passkey) {
+    const eventType = matchRequest ? BLEEventType.NUMERICAL_COMPARISON : BLEEventType.PASSKEY_DISPLAY;
 
-    return state.setIn(['events', eventId, 'state'], eventState);
+    const keyParams = new AuthKeyParameters({
+        passkey: passkey,
+    });
+
+    const event = new Event({
+        type: eventType,
+        device: apiHelper.getImmutableDevice(device),
+        authKeyParams: keyParams,
+        id: eventIndex,
+        state: BLEEventState.INDETERMINATE,
+    });
+
+    let newState = state.set('events', state.events.push(event));
+    newState = newState.set('selectedEventId', eventIndex);
+    eventIndex++;
+
+    return newState;
+}
+
+function authKeyRequest(state, device, keyType) {
+    const eventType = (keyType === 'BLE_GAP_AUTH_KEY_TYPE_PASSKEY') ? BLEEventType.PASSKEY_REQUEST
+        : (keyType === 'BLE_GAP_AUTH_KEY_TYPE_OOB') ? BLEEventType.LEGACY_OOB_REQUEST
+        : null;
+
+    const event = new Event({
+        type: eventType,
+        device: apiHelper.getImmutableDevice(device),
+        id: eventIndex,
+        state: BLEEventState.INDETERMINATE,
+    });
+
+    let newState = state.set('events', state.events.push(event));
+    newState = newState.set('selectedEventId', eventIndex);
+    eventIndex++;
+
+    return newState;
 }
 
 function createUserInitiatedPairingEvent(state, device) {
@@ -223,10 +263,16 @@ export default function bleEvent(state = initialState, action)
             return connectionUpdateParamRequest(state, action.device, action.requestedConnectionParams);
         case AdapterActions.DEVICE_SECURITY_REQUEST:
             return securityRequest(state, action.device);
+        case AdapterActions.DEVICE_PASSKEY_DISPLAY:
+            return passkeyDisplay(state, action.device, action.matchRequest, action.passkey);
+        case AdapterActions.DEVICE_AUTHKEY_REQUEST:
+            return authKeyRequest(state, action.device, action.keyType);
+        case AdapterActions.DEVICE_AUTHKEY_STATUS:
+            return updateEventStatus(state, action.id, action.status);
         case AdapterActions.DEVICE_PAIRING_STATUS:
-            return pairingStatus(state, action.id, action.status);
+            return updateEventStatus(state, action.id, action.status);
         case AdapterActions.DEVICE_CONNECTION_PARAM_UPDATE_STATUS:
-            return connectionParamUpdateStatus(state, action.id, action.status);
+            return updateEventStatus(state, action.id, action.status);
         case AdapterActions.DEVICE_DISCONNECTED:
             return deviceDisconnected(state, action.device);
         default:

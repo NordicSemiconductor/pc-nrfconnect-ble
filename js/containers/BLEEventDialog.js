@@ -24,6 +24,7 @@ import { BLEEventState, BLEEventType } from '../actions/common';
 import { BLEEvent } from '../components/BLEEvent';
 import { ConnectionUpdateRequestEditor } from '../components/ConnectionUpdateRequestEditor';
 import { PairingEditor } from '../components/PairingEditor';
+import { AuthKeyEditor } from '../components/AuthKeyEditor';
 
 import * as BLEEventActions from '../actions/bleEventActions';
 import * as AdapterActions from '../actions/adapterActions';
@@ -69,6 +70,7 @@ export class BLEEventDialog extends Component {
             security,
             rejectPairing,
             acceptPairing,
+            replyAuthKey,
         } = this.props;
 
         if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE || event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE) {
@@ -94,6 +96,17 @@ export class BLEEventDialog extends Component {
                 onReject={() => rejectPairing(event.id, event.device)}
                 onCancel={() => removeEvent(event.id)}
                 security={security}
+                />;
+        } else if (event.type === BLEEventType.PASSKEY_DISPLAY ||
+            event.type === BLEEventType.PASSKEY_REQUEST ||
+            event.type === BLEEventType.NUMERICAL_COMPARISON ||
+            event.type === BLEEventType.LEGACY_OOB_REQUEST ||
+            event.type === BLEEventType.LESC_OOB_REQUEST) {
+            return <AuthKeyEditor
+                event={event}
+                onAuthKeySubmit={(keyType, key) => replyAuthKey(event.id, event.device, keyType, key)}
+                onNumericalComparisonMatch={match => replyNumericalComparisonMatch(event.id, event.device, match)}
+                onCancel={() => removeEvent(event.id)}
                 />;
         }
     }
@@ -180,6 +193,7 @@ BLEEventDialog.propTypes = {
     removeEvent: PropTypes.func.isRequired,
     rejectPairing: PropTypes.func.isRequired,
     acceptPairing: PropTypes.func.isRequired,
+    replyAuthKey: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {

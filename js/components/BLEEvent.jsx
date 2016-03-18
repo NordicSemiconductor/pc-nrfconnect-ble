@@ -50,6 +50,27 @@ export class BLEEvent extends Component {
                     name: 'Pairing requested',
                     icon: (<span className='icon-link'><span className='icon-up'/></span>),
                 };
+            case BLEEventType.PASSKEY_DISPLAY:
+                return {
+                    name: 'Passkey display',
+                    icon: '',
+                };
+            case BLEEventType.PASSKEY_REQUEST:
+                return {
+                    name: 'Passkey request',
+                    icon: '',
+                };
+            case BLEEventType.NUMERICAL_COMPARISON:
+                return {
+                    name: 'Numerical comparison',
+                    icon: '',
+                };
+            case BLEEventType.LEGACY_OOB_REQUEST:
+            case BLEEventType.LESC_OOB_REQUEST:
+                return {
+                    name: 'OOB request',
+                    icon: '',
+                };
             default:
                 return {
                    name: 'unknown event',
