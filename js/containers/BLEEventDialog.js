@@ -86,7 +86,7 @@ export class BLEEventDialog extends Component {
             return <PairingEditor
                 event={event}
                 onPair={securityParams => pairWithDevice(event.id, event.device, securityParams)}
-                onCancel={eventId => removeEvent(eventId)}
+                onCancel={() => removeEvent(event.id)}
                 security={security}
                 />;
         } else if (event.type === BLEEventType.PEER_INITIATED_PAIRING) {

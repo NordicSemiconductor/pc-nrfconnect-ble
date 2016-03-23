@@ -14,6 +14,7 @@
 
 import Immutable, { Record, OrderedMap, List } from 'immutable';
 import * as SecurityActions from '../actions/securityActions';
+import * as AdapterActions from '../actions/adapterActions';
 import * as apiHelper from '../utils/api';
 import { logger } from '../logging';
 
@@ -33,47 +34,45 @@ const SecurityParameters = Record({
     min_key_size: 7,
     max_key_size: 16,
     kdist_own: {
-        enc: false,   /**< Long Term Key and Master Identification. */
+        enc: true,   /**< Long Term Key and Master Identification. */
         id: false,    /**< Identity Resolving Key and Identity Address Information. */
         sign: false,  /**< Connection Signature Resolving Key. */
         link: false,  /**< Derive the Link Key from the LTK. */
     },
     kdist_peer: {
-        enc: false,   /**< Long Term Key and Master Identification. */
+        enc: true,   /**< Long Term Key and Master Identification. */
         id: false,    /**< Identity Resolving Key and Identity Address Information. */
         sign: false,  /**< Connection Signature Resolving Key. */
         link: false,  /**< Derive the Link Key from the LTK. */
     },
 });
 
-const defaultSecurityParams = new SecurityParameters({
-    bond: false,
-    io_caps: IO_CAPS_KEYBOARD_DISPLAY,
+const EncryptionInfo = Record({
+    ltk: List(),
     lesc: false,
-    mitm: false,
-    oob: false,
-    keypress: false,
-    min_key_size: 7,
-    max_key_size: 16,
-    kdist_own: {
-        enc: false,   /**< Long Term Key and Master Identification. */
-        id: false,    /**< Identity Resolving Key and Identity Address Information. */
-        sign: false,  /**< Connection Signature Resolving Key. */
-        link: false,  /**< Derive the Link Key from the LTK. */
-    },
-    kdist_peer: {
-        enc: false,   /**< Long Term Key and Master Identification. */
-        id: false,    /**< Identity Resolving Key and Identity Address Information. */
-        sign: false,  /**< Connection Signature Resolving Key. */
-        link: false,  /**< Derive the Link Key from the LTK. */
-    },
+    auth: false,
+    ltk_len: 16,
 });
 
 const InitialState = Record({
-    securityParams: defaultSecurityParams,
+    securityParams: new SecurityParameters(),
     showingSecurityDialog: false,
     autoAcceptPairing: true,
+    bondStore: new Map(),
 });
+
+function authStatus(state, device, params) {
+
+    const newState = state.set('bondStore', state.bondStore.set(device.address, Immutable.fromJS(params.keyset)));
+    console.log(`Store bonding information for device ${device.address}: ${JSON.stringify(state.bondStore)}`);
+    return newState;
+}
+
+function addBondInfo(state, device, params) {
+    const newState = state.set('bondStore', state.bondStore.set(device.address, Immutable.fromJS(params.keyset)));
+    console.log(`Add bonding information for device ${device.address}: ${JSON.stringify(state.bondStore)}`);
+    return newState;
+}
 
 const initialState = new InitialState();
 
@@ -87,6 +86,8 @@ export default function discovery(state = initialState, action) {
             return state.set('showingSecurityDialog', true);
         case SecurityActions.SECURITY_TOGGLE_AUTO_ACCEPT_PAIRING:
             return state.set('autoAcceptPairing', !state.autoAcceptPairing);
+        case AdapterActions.DEVICE_ADD_BOND_INFO:
+            return addBondInfo(state, action.device, action.params);
         default:
             return state;
     }

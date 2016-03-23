@@ -63,7 +63,6 @@ export class PairingEditor extends Component {
 
     handleCancel() {
         const {
-            event,
             onCancel,
         } = this.props;
 
@@ -111,8 +110,8 @@ export class PairingEditor extends Component {
                         {cancelButton}
                         {ignoreButton}
                         {pairButton}
-                        {acceptButton}
                         {rejectButton}
+                        {acceptButton}
                     </div>
                 </form>
             </div>

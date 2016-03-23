@@ -45,6 +45,8 @@ export class ConnectionSetup extends Component {
                 <span className='col-sm-8 col-xs-8 connection-parameter-label'>Timeout</span>
                 <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.connectionSupervisionTimeout} ms</span>
                 <span className={'connection-security ' + iconClass}> {securityLevelText}</span>
+                <span className='col-sm-8 col-xs-8 connection-parameter-label'>Bonded</span>
+                <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.bonded + ''}</span>
             </div>
         );
     }

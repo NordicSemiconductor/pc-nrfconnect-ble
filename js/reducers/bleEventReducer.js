@@ -199,6 +199,7 @@ function passkeyDisplay(state, device, matchRequest, passkey) {
 
     let newState = state.set('events', state.events.push(event));
     newState = newState.set('selectedEventId', eventIndex);
+    newState = newState.set('visible', true);
     eventIndex++;
 
     return newState;
@@ -218,6 +219,7 @@ function authKeyRequest(state, device, keyType) {
 
     let newState = state.set('events', state.events.push(event));
     newState = newState.set('selectedEventId', eventIndex);
+    newState = newState.set('visible', true);
     eventIndex++;
 
     return newState;

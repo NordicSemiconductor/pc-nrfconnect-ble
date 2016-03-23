@@ -31,6 +31,7 @@ export const DEVICE_CANCEL_CONNECT = 'DEVICE_CANCEL_CONNECT';
 export const DEVICE_CONNECT_CANCELED = 'DEVICE_CONNECT_CANCELED';
 export const DEVICE_INITIATE_PAIRING = 'DEVICE_INITIATE_PAIRING';
 export const DEVICE_SECURITY_CHANGED = 'DEVICE_SECURITY_CHANGED';
+export const DEVICE_ADD_BOND_INFO = 'DEVICE_ADD_BOND_INFO';
 
 export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
 export const DEVICE_CONNECTION_PARAM_UPDATE_STATUS = 'DEVICE_CONNECTION_PARAM_UPDATE_STATUS';
@@ -53,6 +54,7 @@ export const WARNING = 3;
 export const ERROR = 4;
 export const FATAL = 5;
 
+import Immutable from 'immutable';
 import { driver, api } from 'pc-ble-driver-js';
 import { logger } from '../logging';
 import { discoverServices } from './deviceDetailsActions';
@@ -175,7 +177,12 @@ function _openAdapter(dispatch, getState, adapter) {
             _onSecParamsRequest(dispatch, getState, device, peerParams);
         });
 
+        adapterToUse.on('secInfoRequest', (device, params) => {
+            _onSecInfoRequest(dispatch, getState, device, params);
+        });
+
         adapterToUse.on('authKeyRequest', (device, keyType) => {
+            console.log('onAuthKeyRequest');
             _onAuthKeyRequest(dispatch, getState, device, keyType);
         });
 
@@ -333,6 +340,31 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
     }
 }
 
+function _onSecInfoRequest(dispatch, getState, device, params) {
+    const adapterToUse = getState().adapter.api.selectedAdapter;
+
+    const bondInfo = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'bondStore', device.address]);
+
+    if (!bondInfo) {
+        console.log(`No bond info store for address ${device.address}`);
+        return;
+    }
+
+    const encInfo = bondInfo.getIn(['keys_own', 'enc_key', 'enc_info']);
+    const idInfo = bondInfo.getIn(['keys_own', 'id_key', 'id_info']);
+
+    const encInfoJs = encInfo.toJS();
+    const idInfoJs = idInfo.toJS();
+
+    adapterToUse.secInfoReply(device.instanceId, encInfoJs, idInfoJs, null, error => {
+        if (error) {
+            logger.warn(`Error when calling secInfoReply: ${error}`);
+        }
+
+        console.log(`SecInfoReply, ${encInfo}, ${idInfo}`);
+    });
+}
+
 function _onAuthKeyRequest(dispatch, getState, device, keyType) {
     dispatch(authKeyRequestAction(device, keyType));
 }
@@ -354,7 +386,22 @@ function _onConnSecUpdate(dispatch, getState, device, connSec) {
 }
 
 function _onAuthStatus(dispatch, getState, device, params) {
-    console.log('TODO onAuthStatus');
+    console.log('onAuthStatus');
+    if (params.auth_status !== 0) {
+        logger.info(`Authentication failed with status ${params.auth_status_name}`);
+        return;
+    }
+
+    if (!(params.keyset && params.keyset.keys_own && params.keyset.keys_own.enc_key
+        && params.keyset.keys_own.enc_key && params.keyset.keys_own.id_key)) {
+        return;
+    }
+
+    if (!params.bonded) {
+        console.log('No bond, don\'t store keys');
+    }
+
+    dispatch(addBondInfo(device, params));
 }
 
 function _authenticate(dispatch, getState, device, securityParams) {
@@ -876,6 +923,14 @@ function pairWithDeviceAction(device) {
     return {
         type: DEVICE_INITIATE_PAIRING,
         device,
+    };
+}
+
+function addBondInfo(device, params) {
+    return {
+        type: DEVICE_ADD_BOND_INFO,
+        device,
+        params,
     };
 }
 

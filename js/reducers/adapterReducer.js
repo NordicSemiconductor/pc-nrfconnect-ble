@@ -163,8 +163,15 @@ function deviceConnected(state, device) {
     const _device = apiHelper.getImmutableDevice(device);
     const { index } = getSelectedAdapter(state);
 
-    return state.updateIn(['adapters', index, 'connectedDevices'],
+    state = state.updateIn(['adapters', index, 'connectedDevices'],
         connectedDevices => connectedDevices.set(_device.instanceId, _device));
+
+    const bonded = state.getIn(['adapters', index, 'security', 'bondStore', device.address]);
+    if (bonded) {
+        state = state.setIn(['adapters', index, 'connectedDevices', _device.instanceId, 'bonded'], true);
+    }
+
+    return state;
 }
 
 function deviceConnectCanceled(state) {
@@ -211,7 +218,7 @@ function deviceSecurityChanged(state, device, parameters) {
 
     logger.info(`Security changed`);
 
-    state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'bonded'], bonded);
+    //state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'bonded'], bonded);
     state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'securityMode1Levels'], sm1Levels);
     return state;
 }
@@ -252,6 +259,12 @@ function addError(state, error) {
 
 function toggleAutoConnUpdate(state) {
     return state.set('autoConnUpdate', !state.autoConnUpdate);
+}
+
+function addBondInfo(state, device, params) {
+    const { index } = getSelectedAdapter(state);
+    state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'bonded'], true);
+    return state;
 }
 
 function serverSetupApplied(state) {
@@ -317,6 +330,8 @@ export default function adapter(state = getImmutableRoot(), action) {
             return deviceSecurityChanged(state, action.device, action.parameters);
         case AdapterAction.DEVICE_TOGGLE_AUTO_CONN_UPDATE:
             return toggleAutoConnUpdate(state);
+        case AdapterAction.ADD_BOND_INFO:
+            return addBondInfo(state, action.device, action.parameters);
         case DeviceDetailsActions.DISCOVERED_DEVICE_NAME:
             return discoveredDeviceName(state, action.device, action.value);
         case ServerSetupActions.APPLIED_SERVER:
