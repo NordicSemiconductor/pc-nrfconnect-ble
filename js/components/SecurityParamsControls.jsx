@@ -50,16 +50,16 @@ export class SecurityParamsControls extends Component {
     keyToIoCapsText(key) {
         switch (key) {
             case IO_CAPS_DISPLAY_ONLY:
-                return 'No keyboard, no display';
-
-            case IO_CAPS_DISPLAY_YESNO:
-                return 'Keyboard, no display';
-
-            case IO_CAPS_KEYBOARD_ONLY:
                 return 'Display, no keyboard';
 
-            case IO_CAPS_NONE:
+            case IO_CAPS_DISPLAY_YESNO:
                 return 'Display and yes no entry';
+
+            case IO_CAPS_KEYBOARD_ONLY:
+                return 'Keyboard, no display';
+
+            case IO_CAPS_NONE:
+                return 'No keyboard, no display';
 
             case IO_CAPS_KEYBOARD_DISPLAY:
                 return 'Keyboard and display';
