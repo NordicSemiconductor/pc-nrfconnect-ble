@@ -137,8 +137,7 @@ function _openAdapter(dispatch, getState, adapter) {
         });
 
         adapterToUse.on('deviceConnected', device => {
-            dispatch(deviceConnectedAction(device));
-            dispatch(discoverServices(device));
+            _onDeviceConnected(dispatch, getState, device);
         });
 
         adapterToUse.on('deviceDisconnected', device => {
@@ -236,6 +235,31 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(showErrorDialog(error));
         }
     });
+}
+
+function _onDeviceConnected(dispatch, getState, device) {
+    const adapterToUse = getState().adapter.api.selectedAdapter;
+
+    if (!adapterToUse) {
+        logger.warn('No adapter');
+    }
+
+    const bondInfo = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'bondStore', device.address]);
+
+    if (device.role === 'peripheral' && bondInfo) {
+        const encInfo = bondInfo.getIn(['keys_own', 'enc_key', 'enc_info']);
+        const masterId = bondInfo.getIn(['keys_own', 'enc_key', 'master_id']);
+        adapterToUse.encrypt(device.instanceId, masterId, encInfo, error => {
+            if (error) {
+                logger.warn(`Encrypt procedure failed: ${error}`);
+            }
+
+            console.log(`Encrypt, masterId: ${masterId}, encInfo: ${encInfo}`);
+        });
+    }
+
+    dispatch(deviceConnectedAction(device));
+    dispatch(discoverServices(device));
 }
 
 function _onConnParamUpdateRequest(dispatch, getState, device, requestedConnectionParams) {
@@ -650,14 +674,29 @@ function _pairWithDevice(dispatch, getState, id, device, securityParams) {
             reject(new Error('No adapter selected!'));
         }
 
-        adapterToUse.authenticate(device.instanceId, securityParams, error => {
-            if (error) {
-                reject(new Error(error.message));
-            }
+        const bondInfo = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'bondStore', device.address]);
 
-            console.log(`Authenticate, secParams: ${securityParams}`);
-            resolve();
-        });
+        if (bondInfo) {
+            const encInfo = bondInfo.getIn(['keys_own', 'enc_key', 'enc_info']);
+            const masterId = bondInfo.getIn(['keys_own', 'enc_key', 'master_id']);
+            adapterToUse.encrypt(device.instanceId, masterId, encInfo, error => {
+                if (error) {
+                    reject(new Error(error.message));
+                }
+
+                console.log(`Encrypt, masterId: ${masterId}, encInfo: ${encInfo}`);
+                resolve();
+            });
+        } else {
+            adapterToUse.authenticate(device.instanceId, securityParams, error => {
+                if (error) {
+                    reject(new Error(error.message));
+                }
+
+                console.log(`Authenticate, secParams: ${securityParams}`);
+                resolve();
+            });
+        }
     }).then(() => {
         dispatch(pairingStatusAction(id, device, BLEEventState.SUCCESS));
     }).catch(error => {
