@@ -247,14 +247,14 @@ function _onDeviceConnected(dispatch, getState, device) {
     const bondInfo = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'bondStore', device.address]);
 
     if (device.role === 'peripheral' && bondInfo) {
-        const encInfo = bondInfo.getIn(['keys_own', 'enc_key', 'enc_info']);
-        const masterId = bondInfo.getIn(['keys_own', 'enc_key', 'master_id']);
+        const encInfo = bondInfo.getIn(['keys_own', 'enc_key', 'enc_info']).toJS();
+        const masterId = bondInfo.getIn(['keys_own', 'enc_key', 'master_id']).toJS();
         adapterToUse.encrypt(device.instanceId, masterId, encInfo, error => {
             if (error) {
                 logger.warn(`Encrypt procedure failed: ${error}`);
             }
 
-            console.log(`Encrypt, masterId: ${masterId}, encInfo: ${encInfo}`);
+            console.log(`Encrypt, masterId: ${JSON.stringify(masterId)}, encInfo: ${JSON.stringify(encInfo)}`);
         });
     }
 
@@ -676,27 +676,14 @@ function _pairWithDevice(dispatch, getState, id, device, securityParams) {
 
         const bondInfo = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'bondStore', device.address]);
 
-        if (bondInfo) {
-            const encInfo = bondInfo.getIn(['keys_own', 'enc_key', 'enc_info']);
-            const masterId = bondInfo.getIn(['keys_own', 'enc_key', 'master_id']);
-            adapterToUse.encrypt(device.instanceId, masterId, encInfo, error => {
-                if (error) {
-                    reject(new Error(error.message));
-                }
+        adapterToUse.authenticate(device.instanceId, securityParams, error => {
+            if (error) {
+                reject(new Error(error.message));
+            }
 
-                console.log(`Encrypt, masterId: ${masterId}, encInfo: ${encInfo}`);
-                resolve();
-            });
-        } else {
-            adapterToUse.authenticate(device.instanceId, securityParams, error => {
-                if (error) {
-                    reject(new Error(error.message));
-                }
-
-                console.log(`Authenticate, secParams: ${securityParams}`);
-                resolve();
-            });
-        }
+            console.log(`Authenticate, secParams: ${securityParams}`);
+            resolve();
+        });
     }).then(() => {
         dispatch(pairingStatusAction(id, device, BLEEventState.SUCCESS));
     }).catch(error => {
