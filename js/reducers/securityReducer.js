@@ -86,6 +86,8 @@ export default function discovery(state = initialState, action) {
             return state.set('showingSecurityDialog', true);
         case SecurityActions.SECURITY_TOGGLE_AUTO_ACCEPT_PAIRING:
             return state.set('autoAcceptPairing', !state.autoAcceptPairing);
+        case SecurityActions.SECURITY_DELETE_BOND_INFO:
+            return state.set('bondStore', new Map());
         case AdapterActions.DEVICE_ADD_BOND_INFO:
             return addBondInfo(state, action.device, action.params);
         default:

@@ -145,6 +145,7 @@ class DeviceDetailsContainer extends Component {
             autoConnUpdate,
             showSecurityParamsDialog,
             toggleAutoAcceptPairing,
+            deleteBondInfo,
             security,
         } = this.props;
 
@@ -173,6 +174,7 @@ class DeviceDetailsContainer extends Component {
                                               autoConnUpdate={autoConnUpdate}
                                               onShowSecurityParamsDialog={showSecurityParamsDialog}
                                               onToggleAutoAcceptPairing={toggleAutoAcceptPairing}
+                                              onDeleteBondInfo={deleteBondInfo}
                                               security={security}
                                               />
         );
@@ -264,5 +266,6 @@ DeviceDetailsContainer.propTypes = {
     createUserInitiatedPairingEvent: PropTypes.func.isRequired,
     security: PropTypes.object,
     toggleAutoAcceptPairing: PropTypes.func.isRequired,
+    deleteBondInfo: PropTypes.func.isRequired,
     showSecurityParamsDialog: PropTypes.func.isRequired,
 };

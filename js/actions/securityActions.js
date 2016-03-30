@@ -16,6 +16,7 @@ import { getSelectedAdapter } from './common';
 
 export const SECURITY_SET_PARAMS = 'SECURITY_SET_PARAMS';
 export const SECURITY_TOGGLE_AUTO_ACCEPT_PAIRING = 'SECURITY_TOGGLE_AUTO_ACCEPT_PAIRING';
+export const SECURITY_DELETE_BOND_INFO = 'SECURITY_DELETE_BOND_INFO';
 export const SECURITY_SHOW_DIALOG = 'SECURITY_SHOW_DIALOG';
 export const SECURITY_HIDE_DIALOG = 'SECURITY_HIDE_DIALOG';
 export const SECURITY_ERROR_OCCURED = 'SECURITY_ERROR_OCCURED';
@@ -33,6 +34,12 @@ function setSecurityParamsAction(params) {
 function toggleAutoAcceptPairingAction() {
     return {
         type: SECURITY_TOGGLE_AUTO_ACCEPT_PAIRING,
+    };
+}
+
+function deleteBondInfoAction() {
+    return {
+        type: SECURITY_DELETE_BOND_INFO,
     };
 }
 
@@ -62,6 +69,10 @@ export function setSecurityParams(params) {
 
 export function toggleAutoAcceptPairing() {
     return toggleAutoAcceptPairingAction();
+}
+
+export function deleteBondInfo() {
+    return deleteBondInfoAction();
 }
 
 export function showSecurityParamsDialog() {

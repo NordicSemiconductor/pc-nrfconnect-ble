@@ -32,6 +32,7 @@ export default class CentralDevice extends Component {
             onLoadSetup,
             onToggleAutoConnUpdate,
             onToggleAutoAcceptPairing,
+            onDeleteBondInfo,
             onShowSecurityParamsDialog,
         } = this.props;
 
@@ -54,6 +55,9 @@ export default class CentralDevice extends Component {
             case 'ToggleAutoAcceptPairing':
                 onToggleAutoAcceptPairing();
                 break;
+            case 'DeleteBondInfo':
+                onDeleteBondInfo();
+                break;
             case 'SetSecurityParams':
                 onShowSecurityParamsDialog();
                 break;
@@ -74,6 +78,7 @@ export default class CentralDevice extends Component {
             onToggleAutoConnUpdate,
             autoConnUpdate,
             onToggleAutoAcceptPairing,
+            onDeleteBondInfo,
             onShowSecurityParamsDialog,
             security,
         } = this.props;
@@ -140,6 +145,9 @@ export default class CentralDevice extends Component {
                                         items.push(<MenuItem key='autoAcceptPairing'
                                             title='Automatically accept security requests'
                                             eventKey='ToggleAutoAcceptPairing'><i className={iconCheckmarkPairing} />Auto accept security requests</MenuItem>);
+                                        items.push(<MenuItem key='deleteBondInfo'
+                                            title='Delete bond information'
+                                            eventKey='DeleteBondInfo'>Delete bond information</MenuItem>);
                                     }
 
                                     return items;
@@ -174,4 +182,5 @@ CentralDevice.propTypes = {
     autoAcceptPairing: PropTypes.bool,
     onToggleAutoConnUpdate: PropTypes.func,
     onToggleAutoAcceptPairing: PropTypes.func,
+    onDeleteBondInfo: PropTypes.func,
 };

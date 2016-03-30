@@ -64,6 +64,7 @@ export default class DeviceDetailsView extends Component {
                 onToggleAutoConnUpdate,
                 onShowSecurityParamsDialog,
                 onToggleAutoAcceptPairing,
+                onDeleteBondInfo,
                 onSetSecurityParams,
                 security,
             } = this.props;
@@ -80,9 +81,9 @@ export default class DeviceDetailsView extends Component {
                                           onToggleAutoConnUpdate={onToggleAutoConnUpdate}
                                           onShowSecurityParamsDialog={onShowSecurityParamsDialog}
                                           onToggleAutoAcceptPairing={onToggleAutoAcceptPairing}
+                                          onDeleteBondInfo={onDeleteBondInfo}
                                           onSetSecurityParams={onSetSecurityParams}
-                                          security={security}
-/>
+                                          security={security} />
             );
 
             if (!deviceDetails) {
@@ -188,7 +189,6 @@ export default class DeviceDetailsView extends Component {
                     <div className="service-items-wrap">
                         {childrenList}
                     </div>
-                    
                 </div>
             );
         }
@@ -215,5 +215,6 @@ DeviceDetailsView.propTypes = {
     autoConnUpdate: PropTypes.bool,
     security: PropTypes.object,
     onToggleAutoAcceptPairing: PropTypes.func,
+    onDeleteBondInfo: PropTypes.func,
     onShowSecurityParamsDialog: PropTypes.func,
 };
