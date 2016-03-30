@@ -385,7 +385,7 @@ function _onSecInfoRequest(dispatch, getState, device, params) {
             logger.warn(`Error when calling secInfoReply: ${error}`);
         }
 
-        console.log(`SecInfoReply, ${encInfo}, ${idInfo}`);
+        console.log(`SecInfoReply, ${encInfoJs}, ${idInfoJs}`);
     });
 }
 
@@ -625,7 +625,8 @@ function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
         });
     }).then(() => {
         dispatch(authKeyStatusAction(id, device, BLEEventState.SUCCESS));
-    }).catch(() => {
+    }).catch(error => {
+        dispatch(showErrorDialog(error));
         dispatch(authKeyStatusAction(id, device, BLEEventState.ERROR));
     });
 }

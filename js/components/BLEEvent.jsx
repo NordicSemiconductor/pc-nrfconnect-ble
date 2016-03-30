@@ -131,13 +131,13 @@ export class BLEEvent extends Component {
             case BLEEventState.REJECTED:
             case BLEEventState.DISCONNECTED:
             case BLEEventState.IGNORED:
-                  return 'failed-item';
+                return 'failed-item';
             case BLEEventState.INDETERMINATE:
                 return '';
             case BLEEventState.SUCCESS:
                 return 'success-item';
             default:
-                throw 'error: unknown ble event state';
+                throw `Error. Unknown ble event state: ${event.state}`;
         }
     }
 

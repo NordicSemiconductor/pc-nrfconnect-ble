@@ -39,6 +39,12 @@ export class AuthKeyEditor extends Component {
         onAuthKeySubmit('BLE_GAP_AUTH_KEY_TYPE_PASSKEY', this.authKeyInput);
     }
 
+    handleOobSubmit() {
+        const { onAuthKeySubmit } = this.props;
+
+        onAuthKeySubmit('BLE_GAP_AUTH_KEY_TYPE_OOB', this.authKeyInput);
+    }
+
     handleNumericalComparisonMatch(match) {
         const { onNumericalComparisonMatch } = this.props;
 
@@ -112,7 +118,21 @@ export class AuthKeyEditor extends Component {
     }
 
     createLegacyOobRequestControls() {
-        return '';
+        return (
+            <form className='form-horizontal'>
+                <div className='form-group'>
+                    <label className='control-label col-sm-4'>Out-of-band data</label>
+                    <div className='col-sm-7'>
+                        <Input
+                            type='text' size={6} id='passkeyInputId' onChange={event => this.handlePasskeyChange(event)} />
+                    </div>
+                </div>
+                <div className='form-group'>
+                    <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
+                    <Button type='button' onClick={() => this.handleOobSubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
+                </div>
+            </form>
+        );
     }
 
     createLescOobRequestControls() {
