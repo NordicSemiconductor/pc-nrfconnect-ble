@@ -64,6 +64,12 @@ export class AuthKeyEditor extends Component {
                     </div>
                 </div>
                 <div className='form-group'>
+                    <label className='control-label col-sm-4'>Keypress</label>
+                    <div className='col-sm-7'>
+                        <Input readOnly type='text' size={6} id='keypressNotifyId' value={this.keypressNotifyValue}/>
+                    </div>
+                </div>
+                <div className='form-group'>
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-primary btn-sm btn-nordic'>OK</Button>
                 </div>
             </form>
@@ -78,12 +84,6 @@ export class AuthKeyEditor extends Component {
                     <div className='col-sm-7'>
                         <Input
                             type='text' size={6} id='passkeyInputId' onChange={event => this.handlePasskeyChange(event)} />
-                    </div>
-                </div>
-                <div className='form-group'>
-                    <label className='control-label col-sm-4'>Keypress</label>
-                    <div className='col-sm-7'>
-                        <Input readOnly type='text' size={6} id='keypressNotifyId' value={this.keypressNotifyValue}/>
                     </div>
                 </div>
                 <div className='form-group'>
