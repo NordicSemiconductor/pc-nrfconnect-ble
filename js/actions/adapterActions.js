@@ -60,6 +60,8 @@ import { logger } from '../logging';
 import { discoverServices } from './deviceDetailsActions';
 import { BLEEventState } from './common';
 import { showErrorDialog } from './errorDialogActions';
+import { createECDH } from 'crypto';
+import { toHexString } from '../utils/stringUtil';
 
 const _adapterFactory = api.AdapterFactory.getInstance();
 
@@ -181,7 +183,6 @@ function _openAdapter(dispatch, getState, adapter) {
         });
 
         adapterToUse.on('authKeyRequest', (device, keyType) => {
-            console.log('onAuthKeyRequest');
             _onAuthKeyRequest(dispatch, getState, device, keyType);
         });
 
@@ -190,7 +191,7 @@ function _openAdapter(dispatch, getState, adapter) {
         });
 
         adapterToUse.on('lescDhkeyRequest', (device, peerPublicKey, oobDataRequired) => {
-            _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobDataRequired);
+            _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey.pk, oobDataRequired);
         });
 
         adapterToUse.on('keyPressed', (device, keypressType) => {
@@ -313,7 +314,15 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
             },
             id_key: null,
             sign_key: null,
-            pk: null,
+            pk: { pk: [0x20, 0xb0, 0x03, 0xd2, 0xf2, 0x97, 0xbe, 0x2c,
+                    0x5e, 0x2c, 0x83, 0xa7, 0xe9, 0xf9, 0xa5, 0xb9,
+                    0xef, 0xf4, 0x91, 0x11, 0xac, 0xf4, 0xfd, 0xdb,
+                    0xcc, 0x03, 0x01, 0x48, 0x0e, 0x35, 0x9d, 0xe6,
+                    0xdc, 0x80, 0x9c, 0x49, 0x65, 0x2a, 0xeb, 0x6d,
+                    0x63, 0x32, 0x9a, 0xbf, 0x5a, 0x52, 0x15, 0x5c,
+                    0x76, 0x63, 0x45, 0xc2, 0x8f, 0xed, 0x30, 0x24,
+                    0x74, 0x1c, 0x8e, 0xd0, 0x15, 0x89, 0xd2, 0x8b],
+            },
         },
         keys_peer: {
             enc_key: {
@@ -398,7 +407,14 @@ function _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey) {
 }
 
 function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequired) {
-    console.log('TODO onLescDhkeyRequest');
+    const peerPkHex = toHexString(peerPublicKey).replace(/-/g, '');
+    console.log('peerPublicKey: ' + JSON.stringify(peerPkHex));
+    const ownKey = createECDH('prime256v1');
+    console.log(JSON.stringify(ownKey));
+    const generatedPk = ownKey.setPrivateKey('3f49f6d4a3c55f3874c9b3e3d2103f504aff607beb40b7995899b8a6cd3c1abd', 'hex');
+    console.log(JSON.stringify(generatedPk));
+    const dhkey = ownKey.computeSecret(peerPkHex, 'hex', 'hex');
+    console.log(JSON.stringify(dhkey));
 }
 
 function _onKeyPressed(dispatch, getState, device, keypressType) {

@@ -160,7 +160,7 @@ export class BLEEvent extends Component {
 
     stopCounter() {
         const {
-            countDownTimerRef
+            countDownTimerRef,
         } = this.props;
 
         if (this.refs[countDownTimerRef]) {
