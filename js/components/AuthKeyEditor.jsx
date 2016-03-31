@@ -116,7 +116,7 @@ export class AuthKeyEditor extends Component {
         );
     }
 
-    createNumericalComparisonControls() {
+    createNumericalComparisonControls(passkey) {
         return (
             <form className='form-horizontal'>
                 <div className='form-group'>

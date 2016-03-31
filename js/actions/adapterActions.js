@@ -65,6 +65,9 @@ import { toHexString } from '../utils/stringUtil';
 
 const _adapterFactory = api.AdapterFactory.getInstance();
 
+const adapterEcdh = createECDH('prime256v1');
+adapterEcdh.generateKeys();
+
 // Internal functions
 
 function _getAdapters(dispatch) {
@@ -191,7 +194,7 @@ function _openAdapter(dispatch, getState, adapter) {
         });
 
         adapterToUse.on('lescDhkeyRequest', (device, peerPublicKey, oobDataRequired) => {
-            _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey.pk, oobDataRequired);
+            _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobDataRequired);
         });
 
         adapterToUse.on('keyPressed', (device, keypressType) => {
@@ -314,14 +317,7 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
             },
             id_key: null,
             sign_key: null,
-            pk: { pk: [0x20, 0xb0, 0x03, 0xd2, 0xf2, 0x97, 0xbe, 0x2c,
-                    0x5e, 0x2c, 0x83, 0xa7, 0xe9, 0xf9, 0xa5, 0xb9,
-                    0xef, 0xf4, 0x91, 0x11, 0xac, 0xf4, 0xfd, 0xdb,
-                    0xcc, 0x03, 0x01, 0x48, 0x0e, 0x35, 0x9d, 0xe6,
-                    0xdc, 0x80, 0x9c, 0x49, 0x65, 0x2a, 0xeb, 0x6d,
-                    0x63, 0x32, 0x9a, 0xbf, 0x5a, 0x52, 0x15, 0x5c,
-                    0x76, 0x63, 0x45, 0xc2, 0x8f, 0xed, 0x30, 0x24,
-                    0x74, 0x1c, 0x8e, 0xd0, 0x15, 0x89, 0xd2, 0x8b],
+            pk: { pk: Array.from(adapterEcdh.getPublicKey()).slice(1),
             },
         },
         keys_peer: {
@@ -407,14 +403,32 @@ function _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey) {
 }
 
 function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequired) {
-    const peerPkHex = toHexString(peerPublicKey).replace(/-/g, '');
-    console.log('peerPublicKey: ' + JSON.stringify(peerPkHex));
-    const ownKey = createECDH('prime256v1');
-    console.log(JSON.stringify(ownKey));
-    const generatedPk = ownKey.setPrivateKey('3f49f6d4a3c55f3874c9b3e3d2103f504aff607beb40b7995899b8a6cd3c1abd', 'hex');
-    console.log(JSON.stringify(generatedPk));
-    const dhkey = ownKey.computeSecret(peerPkHex, 'hex', 'hex');
-    console.log(JSON.stringify(dhkey));
+    if (!peerPublicKey) {
+        logger.warn('Error, missing public key during pairing/bonding.');
+        return;
+    }
+
+    const peerPkHex = '04' + toHexString(peerPublicKey.pk).replace(/-/g, '');
+    console.log('peerPublicKey: ' + peerPkHex);
+
+    //const debugPrivateKey = '3f49f6d4a3c55f3874c9b3e3d2103f504aff607beb40b7995899b8a6cd3c1abd';
+    //const debugPublicKey = '04' + '20b003d2f297be2c5e2c83a7e9f9a5b9eff49111acf4fddbcc0301480e359de6dc809c49652aeb6d63329abf5a52155c766345c28fed3024741c8ed01589d28b';
+
+    //const ownEcdh = createECDH('prime256v1');
+    //ownEcdh.generateKeys();
+    //ownEcdh.setPrivateKey(debugPrivateKey, 'hex');
+    //ownEcdh.setPublicKey(debugPublicKey, 'hex');
+    //const dhKey = Array.from(ownEcdh.computeSecret(peerPkHex, 'hex'));
+    console.log(adapterEcdh.getPrivateKey('hex'));
+    const dhKey = Array.from(adapterEcdh.computeSecret(peerPkHex, 'hex'));
+    console.log(dhKey);
+
+    const adapterToUse = getState().adapter.api.selectedAdapter;
+    adapterToUse.replyLescDhKey(device.instanceId, dhKey, error => {
+        if (error) {
+            logger.warn(`Error when sending LESC DH key`);
+        }
+    });
 }
 
 function _onKeyPressed(dispatch, getState, device, keypressType) {
