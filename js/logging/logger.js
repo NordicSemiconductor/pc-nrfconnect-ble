@@ -17,13 +17,16 @@ import util from 'util';
 import sqlite3 from'sqlite3';
 import fs from 'fs';
 import remote from 'remote';
+import path from 'path';
 
-let defaultLogFile = 'log.txt';
-let defaultDbFile = 'logger.db';
+let filePrefix = new Date().toISOString().replace(/:/gi, '_');
+
+let defaultLogFile = filePrefix + '-log.txt';
+let defaultDbFile = filePrefix + '-logger.db';
 
 // Need to retrieve logFileDir from index.js since we do not have access to app.getPath in this file
-defaultLogFile = remote.getGlobal('logFileDir') + '/' + defaultLogFile;
-defaultDbFile = remote.getGlobal('logFileDir') + '/' + defaultDbFile;
+defaultLogFile = remote.getGlobal('logFileDir') + path.sep + defaultLogFile;
+defaultDbFile = remote.getGlobal('logFileDir') + path.sep + defaultDbFile;
 
 let id = 0; // ID is used as primary key in database
 
