@@ -76,28 +76,6 @@ export class AuthKeyEditor extends Component {
         );
     }
 
-    createPasskeyDisplayControlsWithKeypress(passkey) {
-        return (
-            <form className='form-horizontal'>
-                <div className='form-group'>
-                    <label className='control-label col-sm-4'>Passkey</label>
-                    <div className='col-sm-7'>
-                        <Input readOnly type='text' value={passkey} />
-                    </div>
-                </div>
-                <div className='form-group'>
-                    <label className='control-label col-sm-4'>Keypress</label>
-                    <div className='col-sm-7'>
-                        <Input readOnly type='text' size={6} id='keypressNotifyId' value={this.keypressNotifyValue}/>
-                    </div>
-                </div>
-                <div className='form-group'>
-                    <Button type='button' onClick={() => this.handleCancel()} className='btn btn-primary btn-sm btn-nordic'>OK</Button>
-                </div>
-            </form>
-        );
-    }
-
     createPasskeyRequestControls() {
         return (
             <form className='form-horizontal'>
@@ -122,20 +100,7 @@ export class AuthKeyEditor extends Component {
                 <div className='form-group'>
                     <label className='control-label col-sm-4'>Passkey</label>
                     <div className='col-sm-7'>
-                        <Input standalone readonly value={passkey}/>
-                    </div>
-                </div>
-            </form>
-        );
-    }
-
-    createNumericalComparisonControlsWithYesNo(passkey) {
-        return (
-            <form className='form-horizontal'>
-                <div className='form-group'>
-                    <label className='control-label col-sm-4'>Passkey</label>
-                    <div className='col-sm-7'>
-                        <Input standalone readonly value={passkey}/>
+                        <Input readOnly type='text' value={passkey}/>
                     </div>
                 </div>
                 <div className='form-group'>

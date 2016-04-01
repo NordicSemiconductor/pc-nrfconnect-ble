@@ -70,6 +70,7 @@ export class BLEEventDialog extends Component {
             security,
             rejectPairing,
             acceptPairing,
+            replyNumericalComparisonMatch,
             replyAuthKey,
         } = this.props;
 
@@ -192,6 +193,7 @@ BLEEventDialog.propTypes = {
     removeEvent: PropTypes.func.isRequired,
     rejectPairing: PropTypes.func.isRequired,
     acceptPairing: PropTypes.func.isRequired,
+    replyNumericalComparisonMatch: PropTypes.func.isRequired,
     replyAuthKey: PropTypes.func.isRequired,
 };
 

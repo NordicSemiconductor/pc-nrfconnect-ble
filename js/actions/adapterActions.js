@@ -1046,6 +1046,14 @@ export function rejectPairing(id, device) {
     };
 }
 
+export function replyNumericalComparisonMatch(id, device, match) {
+    return (dispatch, getState) => {
+        if (match) {
+            return _replyAuthKey(dispatch, getState, id, device, 'BLE_GAP_AUTH_KEY_TYPE_PASSKEY', null);
+        }
+    };
+}
+
 export function replyAuthKey(id, device, keyType, key) {
     return (dispatch, getState) => {
         return _replyAuthKey(dispatch, getState, id, device, keyType, key);
