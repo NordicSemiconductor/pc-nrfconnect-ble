@@ -122,7 +122,6 @@ export class BLEEventDialog extends Component {
 
         if (events === null || events === undefined || events.size < 1)
         {
-            //this._close();
             return <div />;
         }
 
@@ -160,7 +159,7 @@ export class BLEEventDialog extends Component {
                         </div>
 
                         {events.map(event =>
-                            <div key={event.id} className='item-editor' style={ ((selectedEventId !== -1) && (selectedEventId === event.id) && (events.get(selectedEventId).state === BLEEventState.INDETERMINATE)) ? {} : {display: 'none'}}>
+                            <div key={event.id} className='item-editor' style={ ((selectedEventId !== -1) && (selectedEventId === event.id) && event.state === BLEEventState.INDETERMINATE) ? {} : {display: 'none'}}>
                                 {this._getEditorComponent(event)}
                             </div>
                         )}
