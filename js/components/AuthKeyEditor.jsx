@@ -125,6 +125,19 @@ export class AuthKeyEditor extends Component {
                         <Input standalone readonly value={passkey}/>
                     </div>
                 </div>
+            </form>
+        );
+    }
+
+    createNumericalComparisonControlsWithYesNo(passkey) {
+        return (
+            <form className='form-horizontal'>
+                <div className='form-group'>
+                    <label className='control-label col-sm-4'>Passkey</label>
+                    <div className='col-sm-7'>
+                        <Input standalone readonly value={passkey}/>
+                    </div>
+                </div>
                 <div className='form-group'>
                     <Button type='button' onClick={() => this.handleNumericalComparisonMatch(true)} className='btn btn-primary btn-sm btn-nordic'>Match</Button>
                     <Button type='button' onClick={() => this.handleNumericalComparisonMatch(false)} className='btn btn-default btn-sm btn-nordic'>No match</Button>

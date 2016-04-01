@@ -67,6 +67,22 @@ const _adapterFactory = api.AdapterFactory.getInstance();
 
 const adapterEcdh = createECDH('prime256v1');
 adapterEcdh.generateKeys();
+// TODO: move to security reducer?
+const secKeyset = {
+    keys_own: {
+        enc_key: null,
+        id_key: null,
+        sign_key: null,
+        pk: { pk: Array.from(adapterEcdh.getPublicKey()).slice(1),
+        },
+    },
+    keys_peer: {
+        enc_key: null,
+        id_key: null,
+        sign_key: null,
+        pk: null,
+    },
+};
 
 // Internal functions
 
@@ -301,44 +317,6 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
     const selectedAdapter = state.adapter.getIn(['adapters', state.adapter.selectedAdapter]);
     const defaultSecParams = selectedAdapter.security.securityParams;
 
-    const secKeyset = {
-        keys_own: {
-            enc_key: {
-                enc_info: {
-                    ltk: [0, 0, 0, 0, 0, 0, 0, 0],
-                    lesc: false,
-                    auth: false,
-                    ltk_len: 8,
-                },
-                master_id: {
-                    ediv: 0x1234,
-                    rand: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                },
-            },
-            id_key: null,
-            sign_key: null,
-            pk: { pk: Array.from(adapterEcdh.getPublicKey()).slice(1),
-            },
-        },
-        keys_peer: {
-            enc_key: {
-                enc_info: {
-                    ltk: [0, 0, 0, 0, 0, 0, 0, 0],
-                    lesc: false,
-                    auth: false,
-                    ltk_len: 8,
-                },
-                master_id: {
-                    ediv: 0x1234,
-                    rand: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                },
-            },
-            id_key: null,
-            sign_key: null,
-            pk: null,
-        },
-    };
-
     const adapterToUse = getState().adapter.api.selectedAdapter;
 
     if (device.role === 'central') {
@@ -424,7 +402,7 @@ function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequ
     console.log(dhKey);
 
     const adapterToUse = getState().adapter.api.selectedAdapter;
-    adapterToUse.replyLescDhKey(device.instanceId, dhKey, error => {
+    adapterToUse.replyLescDhkey(device.instanceId, dhKey, error => {
         if (error) {
             logger.warn(`Error when sending LESC DH key`);
         }
@@ -679,7 +657,7 @@ function _acceptPairing(dispatch, getState, id, device, securityParams) {
                 resolve();
             });
         } else if (device.role === 'central') {
-            adapterToUse.replySecParams(device.instanceId, 0, securityParams, null, error => {
+            adapterToUse.replySecParams(device.instanceId, 0, securityParams, secKeyset, error => {
                 if (error) {
                     reject(new Error(error.message));
                 }
