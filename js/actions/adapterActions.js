@@ -267,8 +267,8 @@ function _onDeviceConnected(dispatch, getState, device) {
     const bondInfo = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'bondStore', device.address]);
 
     if (device.role === 'peripheral' && bondInfo) {
-        const encInfo = bondInfo.getIn(['keys_own', 'enc_key', 'enc_info']).toJS();
-        const masterId = bondInfo.getIn(['keys_own', 'enc_key', 'master_id']).toJS();
+        const encInfo = bondInfo.getIn(['keys_peer', 'enc_key', 'enc_info']).toJS();
+        const masterId = bondInfo.getIn(['keys_peer', 'enc_key', 'master_id']).toJS();
         adapterToUse.encrypt(device.instanceId, masterId, encInfo, error => {
             if (error) {
                 logger.warn(`Encrypt procedure failed: ${error}`);
@@ -368,7 +368,7 @@ function _onSecInfoRequest(dispatch, getState, device, params) {
             logger.warn(`Error when calling secInfoReply: ${error}`);
         }
 
-        console.log(`SecInfoReply, ${encInfoJs}, ${idInfoJs}`);
+        console.log(`SecInfoReply, ${JSON.stringify(encInfoJs)}, ${JSON.stringify(idInfoJs)}`);
     });
 }
 
