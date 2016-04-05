@@ -37,6 +37,13 @@ const Event = Record({
     pairingParameters: null,
     authKeyParams: null,
     state: BLEEventState.UNKNOWN,
+    receiveKeypressEnabled: false,
+    keypressStartReceived: false,
+    keypressEndReceived: false,
+    sendKeypressEnabled: false,
+    keypressStartSent: false,
+    keypressEndSent: false,
+    keypressCount: 0,
 });
 
 const ConnectionParameters = Record({
@@ -54,7 +61,6 @@ const PairingParameters = Record({
 
 const AuthKeyParameters = Record({
     passkey: '',
-    keypress: '',
 });
 
 // Module local variable that is used to generate a unique ID for all events that are
@@ -110,6 +116,48 @@ function updateEventStatus(state, eventId, eventState) {
 
 function selectEventId(state, selectedEventId) {
     return state.set('selectedEventId', selectedEventId);
+}
+
+function passkeyKeypressReceived(state, device, keypressType) {
+    const events = state.events.filter((value, index) =>
+        (value.state === BLEEventState.INDETERMINATE) &&
+        (value.device.instanceId === device.instanceId));
+
+    events.forEach(event => {
+        if (event.type === BLEEventType.PASSKEY_DISPLAY && event.receiveKeypressEnabled === true) {
+            state = updateEventKeypressCount(state, event.id, keypressType);
+        }
+    });
+
+    return state;
+}
+
+function updateEventKeypressCount(state, eventId, keypressType) {
+    if (eventId < 0) {
+        return state;
+    }
+
+    let keypressCount = state.getIn(['events', eventId, 'keypressCount']);
+
+    switch(keypressType) {
+        case 'BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_IN':
+            keypressCount++;
+            break;
+        case 'BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_OUT':
+            keypressCount--;
+            break;
+        case 'BLE_GAP_KP_NOT_TYPE_PASSKEY_CLEAR':
+            keypressCount = 0;
+            break;
+        case 'BLE_GAP_KP_NOT_TYPE_PASSKEY_START':
+            state = state.setIn(['events', eventId, 'keypressStartReceived'], true);
+            break;
+        case 'BLE_GAP_KP_NOT_TYPE_PASSKEY_END':
+            state = state.setIn(['events', eventId, 'keypressEndReceived'], true);
+            break;
+    }
+
+    return state.setIn(['events', eventId, 'keypressCount'], keypressCount);
 }
 
 function deviceDisconnected(state, device) {
@@ -182,7 +230,7 @@ function securityRequest(state, device) {
     return newState;
 }
 
-function passkeyDisplay(state, device, matchRequest, passkey) {
+function passkeyDisplay(state, device, matchRequest, passkey, receiveKeypress) {
     const eventType = matchRequest ? BLEEventType.NUMERICAL_COMPARISON : BLEEventType.PASSKEY_DISPLAY;
 
     const keyParams = new AuthKeyParameters({
@@ -195,6 +243,7 @@ function passkeyDisplay(state, device, matchRequest, passkey) {
         authKeyParams: keyParams,
         id: eventIndex,
         state: BLEEventState.INDETERMINATE,
+        receiveKeypressEnabled: receiveKeypress,
     });
 
     let newState = state.set('events', state.events.push(event));
@@ -205,7 +254,29 @@ function passkeyDisplay(state, device, matchRequest, passkey) {
     return newState;
 }
 
-function authKeyRequest(state, device, keyType) {
+function passkeyKeypressSent(state, eventId, keypressType) {
+    if (eventId < 0) {
+        return state;
+    }
+
+    let keypressCount = state.getIn(['events', eventId, 'keypressCount']);
+
+    if (keypressType === 'BLE_GAP_KP_NOT_TYPE_PASSKEY_START') {
+        return state.setIn(['events', eventId, 'keypressStartSent'], true);
+    } else if (keypressType === 'BLE_GAP_KP_NOT_TYPE_PASSKEY_END') {
+        return state.setIn(['events', eventId, 'keypressEndSent'], true);
+    } else if (keypressType === 'BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_IN') {
+        return state.setIn(['events', eventId, 'keypressCount'], ++keypressCount);
+    } else if (keypressType === 'BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_OUT') {
+        return state.setIn(['events', eventId, 'keypressCount'], --keypressCount);
+    } else if (keypressType === 'BLE_GAP_KP_NOT_TYPE_PASSKEY_CLEAR') {
+        return state.setIn(['events', eventId, 'keypressCount'], 0);
+    }
+
+    return state;
+}
+
+function authKeyRequest(state, device, keyType, sendKeypress) {
     const eventType = (keyType === 'BLE_GAP_AUTH_KEY_TYPE_PASSKEY') ? BLEEventType.PASSKEY_REQUEST
         : (keyType === 'BLE_GAP_AUTH_KEY_TYPE_OOB') ? BLEEventType.LEGACY_OOB_REQUEST
         : null;
@@ -215,6 +286,7 @@ function authKeyRequest(state, device, keyType) {
         device: apiHelper.getImmutableDevice(device),
         id: eventIndex,
         state: BLEEventState.INDETERMINATE,
+        sendKeypressEnabled: sendKeypress,
     });
 
     let newState = state.set('events', state.events.push(event));
@@ -266,9 +338,13 @@ export default function bleEvent(state = initialState, action)
         case AdapterActions.DEVICE_SECURITY_REQUEST:
             return securityRequest(state, action.device);
         case AdapterActions.DEVICE_PASSKEY_DISPLAY:
-            return passkeyDisplay(state, action.device, action.matchRequest, action.passkey);
+            return passkeyDisplay(state, action.device, action.matchRequest, action.passkey, action.receiveKeypress);
+        case AdapterActions.DEVICE_PASSKEY_KEYPRESS_SENT:
+            return passkeyKeypressSent(state, action.eventId, action.keypressType);
+        case AdapterActions.DEVICE_PASSKEY_KEYPRESS_RECEIVED:
+            return passkeyKeypressReceived(state, action.device, action.keypressType);
         case AdapterActions.DEVICE_AUTHKEY_REQUEST:
-            return authKeyRequest(state, action.device, action.keyType);
+            return authKeyRequest(state, action.device, action.keyType, action.sendKeypress);
         case AdapterActions.DEVICE_AUTHKEY_STATUS:
             return updateEventStatus(state, action.id, action.status);
         case AdapterActions.DEVICE_PAIRING_STATUS:

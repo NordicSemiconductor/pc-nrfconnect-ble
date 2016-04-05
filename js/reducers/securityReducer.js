@@ -54,18 +54,55 @@ const EncryptionInfo = Record({
     ltk_len: 16,
 });
 
+const ConnectionSecurityParameters = Record({
+    ownParams: new SecurityParameters(),
+    peerParams: new SecurityParameters(),
+});
+
 const InitialState = Record({
     securityParams: new SecurityParameters(),
     showingSecurityDialog: false,
     autoAcceptPairing: true,
     bondStore: new Map(),
+    connectionsSecParameters: new Map(),
 });
+
+function authStatus(state, device, params) {
+    const newState = state.set('bondStore', state.bondStore.set(device.address, Immutable.fromJS(params.keyset)));
+    console.log(`Store bonding information for device ${device.address}: ${JSON.stringify(state.bondStore)}`);
+    return newState;
+}
 
 function addBondInfo(state, device, params) {
     const newState = state.set('bondStore', state.bondStore.set(device.address, Immutable.fromJS(params.keyset)));
     logger.info(`Storing bond info for device ${device.address}`);
     logger.debug(`Bond info: ${JSON.stringify(state.bondStore)}`);
     return newState;
+}
+
+function storeConnectionSecurityParameters(state, device, ownParams, peerParams) {
+    let params = state.getIn(['connectionsSecParameters', device.address]);
+
+    if (!params) {
+        params = new ConnectionSecurityParameters({
+            ownParams,
+            peerParams,
+        });
+    } else {
+        if (ownParams !== undefined && ownParams !== null) {
+            params = params.set('ownParams', ownParams);
+        }
+
+        if (peerParams !== undefined && peerParams !== null) {
+            params = params.set('peerParams', peerParams);
+        }
+    }
+
+    return state.setIn(['connectionsSecParameters', device.address], params);
+}
+
+function deleteConnectionSecurityParameters(state, device) {
+    return state.deleteIn(['connectionsSecParameters', device.address]);
 }
 
 const initialState = new InitialState();
@@ -84,6 +121,10 @@ export default function discovery(state = initialState, action) {
             return state.set('bondStore', new Map());
         case AdapterActions.DEVICE_ADD_BOND_INFO:
             return addBondInfo(state, action.device, action.params);
+        case AdapterActions.DEVICE_SECURITY_STORE_PEER_PARAMS:
+            return storeConnectionSecurityParameters(state, action.device, null, action.peerParams);
+        case AdapterActions.DEVICE_SECURITY_STORE_OWN_PARAMS:
+            return storeConnectionSecurityParameters(state, action.device, action.ownParams, null);
         default:
             return state;
     }

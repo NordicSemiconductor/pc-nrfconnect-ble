@@ -26,10 +26,31 @@ export class AuthKeyEditor extends Component {
         super(props);
 
         this.authKeyInput = '';
-        this.keypressNotifyValue = props.keypressNotifyValue ? props.keypressNotifyValue : '';
     }
 
     handlePasskeyChange(event) {
+        const { onKeypress } = this.props;
+        let _event = this.props.event;
+
+        if (_event.sendKeypressEnabled === true) {
+            let newCount = event.target.value.length - this.authKeyInput.length;
+
+            if (event.target.value.length === 0 && this.authKeyInput.length > 1)
+            {
+                onKeypress('BLE_GAP_KP_NOT_TYPE_PASSKEY_CLEAR');
+            } else {
+                if (newCount > 0) {
+                    for (let i = 0; i < newCount; i++) {
+                        onKeypress('BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_IN');
+                    }
+                } else if (newCount < 0) {
+                    for (let i = 0; i < Math.abs(newCount); i++) {
+                        onKeypress('BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_OUT');
+                    }
+                }
+            }
+        }
+
         this.authKeyInput = event.target.value;
     }
 
@@ -60,15 +81,58 @@ export class AuthKeyEditor extends Component {
         onCancel();
     }
 
-    createPasskeyDisplayControls(passkey) {
+    createPasskeyDisplayControls(passkey, keypressEnabled, keypressStartReceived, keypressEndReceived, keypressCount) {
+        const digitsCreated = [];
+        const digitsTypedIn = [];
+
+        for(let i of passkey) {
+            digitsCreated.push(
+                <div className='col-sm-1'>{i}</div>
+            );
+        }
+
+        let digitsCreatedFormGroup = <div className='form-group'>
+            <label className='control-label col-sm-4'>Passkey</label>
+            <div className='col-sm-8'>
+                {digitsCreated}
+            </div>
+        </div>;
+
+        let digitsTypedInFormGroup = '';
+
+        if (keypressEnabled) {
+            if (keypressCount !== undefined) {
+                let style = {
+                    backgroundColor: keypressStartReceived === true ? 'green' : 'red'
+                }
+
+                for(let i = 0; i < keypressCount; i++) {
+                    digitsTypedIn.push(
+                        <div className='col-sm-1' style={style}>*</div>
+                    );
+                }
+
+                if (keypressCount < 6) {
+                    for(let i = 0; i < 6 - keypressCount; i++) {
+                        digitsTypedIn.push(
+                            <div className='col-sm-1'  style={style}>-</div>
+                        );
+                    }
+                }
+
+                digitsTypedInFormGroup = <div className='form-group'>
+                    <label className='control-label col-sm-4'>Typed</label>
+                    <div className='col-sm-8'>
+                        {digitsTypedIn}
+                    </div>
+                </div>;
+            }
+        }
+
         return (
             <form className='form-horizontal'>
-                <div className='form-group'>
-                    <label className='control-label col-sm-4'>Passkey</label>
-                    <div className='col-sm-7'>
-                        <Input readOnly type='text' value={passkey} />
-                    </div>
-                </div>
+                {digitsCreatedFormGroup}
+                {digitsTypedInFormGroup}
                 <div className='form-group'>
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-primary btn-sm btn-nordic'>OK</Button>
                 </div>
@@ -100,7 +164,7 @@ export class AuthKeyEditor extends Component {
                 <div className='form-group'>
                     <label className='control-label col-sm-4'>Passkey</label>
                     <div className='col-sm-7'>
-                        <Input readOnly type='text' value={passkey}/>
+                        <Input standalone readonly value={passkey}/>
                     </div>
                 </div>
                 <div className='form-group'>
@@ -143,7 +207,7 @@ export class AuthKeyEditor extends Component {
             : (event.type === BLEEventType.LESC_OOB_REQUEST) ? 'Out-of-band data request'
             : '';
 
-        const controls = (event.type === BLEEventType.PASSKEY_DISPLAY) ? this.createPasskeyDisplayControls(event.authKeyParams.passkey)
+        const controls = (event.type === BLEEventType.PASSKEY_DISPLAY) ? this.createPasskeyDisplayControls(event.authKeyParams.passkey, event.receiveKeypressEnabled, event.keypressStartReceived, event.keypressEndReceived, event.keypressCount)
             : (event.type === BLEEventType.PASSKEY_REQUEST) ? this.createPasskeyRequestControls()
             : (event.type === BLEEventType.NUMERICAL_COMPARISON) ? this.createNumericalComparisonControls(event.authKeyParams.passkey)
             : (event.type === BLEEventType.LEGACY_OOB_REQUEST) ? this.createLegacyOobRequestControls()
@@ -163,4 +227,7 @@ export class AuthKeyEditor extends Component {
 
 AuthKeyEditor.propTypes = {
     event: PropTypes.object.isRequired,
+    onKeypress: PropTypes.func,
+    onAuthKeySubmit: PropTypes.func,
+    onNumericalComparisonMatch:  PropTypes.func,
 };

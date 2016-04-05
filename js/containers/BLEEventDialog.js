@@ -72,16 +72,17 @@ export class BLEEventDialog extends Component {
             acceptPairing,
             replyNumericalComparisonMatch,
             replyAuthKey,
+            sendKeypress,
         } = this.props;
 
         if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE || event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE) {
-        return <ConnectionUpdateRequestEditor
-            event={event}
-            onUpdate={this._handleEditorUpdate}
-            onRejectConnectionParams={device => rejectDeviceConnectionParams(event.id, device)}
-            onUpdateConnectionParams={(device, connectionParams) => updateDeviceConnectionParams(event.id, device, connectionParams)}
-            onIgnoreEvent={eventId => ignoreEvent(eventId)}
-            onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+            return <ConnectionUpdateRequestEditor
+                event={event}
+                onUpdate={this._handleEditorUpdate}
+                onRejectConnectionParams={device => rejectDeviceConnectionParams(event.id, device)}
+                onUpdateConnectionParams={(device, connectionParams) => updateDeviceConnectionParams(event.id, device, connectionParams)}
+                onIgnoreEvent={eventId => ignoreEvent(eventId)}
+                onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
             />;
         } else if (event.type === BLEEventType.USER_INITIATED_PAIRING) {
             return <PairingEditor
@@ -107,6 +108,7 @@ export class BLEEventDialog extends Component {
                 event={event}
                 onAuthKeySubmit={(keyType, key) => replyAuthKey(event.id, event.device, keyType, key)}
                 onNumericalComparisonMatch={match => replyNumericalComparisonMatch(event.id, event.device, match)}
+                onKeypress={(value) => sendKeypress(event.id, event.device, value)}
                 onCancel={() => removeEvent(event.id)}
                 />;
         }
@@ -195,6 +197,7 @@ BLEEventDialog.propTypes = {
     acceptPairing: PropTypes.func.isRequired,
     replyNumericalComparisonMatch: PropTypes.func.isRequired,
     replyAuthKey: PropTypes.func.isRequired,
+    sendKeypress: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {

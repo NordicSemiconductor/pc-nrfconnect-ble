@@ -42,6 +42,11 @@ export const DEVICE_SECURITY_REQUEST = 'DEVICE_SECURITY_REQUEST';
 export const DEVICE_PASSKEY_DISPLAY = 'DEVICE_PASSKEY_DISPLAY';
 export const DEVICE_AUTHKEY_REQUEST = 'DEVICE_AUTHKEY_REQUEST';
 export const DEVICE_AUTHKEY_STATUS = 'DEVICE_AUTHKEY_STATUS';
+export const DEVICE_PASSKEY_KEYPRESS_RECEIVED = 'DEVICE_PASSKEY_KEYPRESS_RECEIVED';
+export const DEVICE_PASSKEY_KEYPRESS_SENT = 'DEVICE_PASSKEY_KEYPRESS_SENT';
+
+export const DEVICE_SECURITY_STORE_PEER_PARAMS = 'DEVICE_SECURITY_STORE_PEER_PARAMS';
+export const DEVICE_SECURITY_STORE_OWN_PARAMS = 'DEVICE_SECURITY_STORE_OWN_PARAMS';
 
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
@@ -306,6 +311,7 @@ function _onSecurityRequest(dispatch, getState, device, params) {
     }
 
     if (selectedAdapter.security.autoAcceptPairing) {
+        dispatch(storeSecurityOwnParamsAction(device, defaultSecParams));
         _authenticate(dispatch, getState, device, defaultSecParams);
     } else {
         dispatch(securityRequestAction(device));
@@ -319,6 +325,8 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
 
     const adapterToUse = getState().adapter.api.selectedAdapter;
 
+    dispatch(storeSecurityPeerParamsAction(device, peerParams));
+
     if (device.role === 'central') {
         if (device.ownPeriphInitiatedPairingPending) {
             // If pairing initiated by own peripheral, proceed directly with replySecParams
@@ -328,6 +336,7 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
                 }
 
                 logger.debug(`ReplySecParams, secParams: ${defaultSecParams}`);
+                dispatch(storeSecurityOwnParamsAction(device, defaultSecParams));
             });
         } else {
             if (selectedAdapter.security.autoAcceptPairing) {
@@ -373,33 +382,27 @@ function _onSecInfoRequest(dispatch, getState, device, params) {
 }
 
 function _onAuthKeyRequest(dispatch, getState, device, keyType) {
-    dispatch(authKeyRequestAction(device, keyType));
+    // TODO: add if enableKeypress shall be sent
+    // Find sec params info regarding if keypress notification shall be sent
+    const secParameters = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'connectionsSecParameters', device.address]);
+    const sendKeypress = secParameters.peerParams.keypress === true && secParameters.ownParams.keypress === true;
+
+
+    dispatch(authKeyRequestAction(device, keyType, sendKeypress));
 }
 
 function _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey) {
-    dispatch(passkeyDisplayAction(device, matchRequest, passkey));
+    const secParameters = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'connectionsSecParameters', device.address]);
+    const receiveKeypress = secParameters.peerParams.keypress === true && secParameters.ownParams.keypress === true;
+    dispatch(passkeyDisplayAction(device, matchRequest, passkey, receiveKeypress));
 }
 
+
 function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequired) {
-    if (!peerPublicKey) {
-        logger.warn('Error, missing public key during pairing/bonding.');
-        return;
-    }
-
-    const peerPkHex = '04' + toHexString(peerPublicKey.pk).replace(/-/g, '');
-    logger.debug('peerPublicKey: ' + peerPkHex);
-
-    //const debugPrivateKey = '3f49f6d4a3c55f3874c9b3e3d2103f504aff607beb40b7995899b8a6cd3c1abd';
-    //const debugPublicKey = '04' + '20b003d2f297be2c5e2c83a7e9f9a5b9eff49111acf4fddbcc0301480e359de6dc809c49652aeb6d63329abf5a52155c766345c28fed3024741c8ed01589d28b';
-
-    //const ownEcdh = createECDH('prime256v1');
-    //ownEcdh.generateKeys();
-    //ownEcdh.setPrivateKey(debugPrivateKey, 'hex');
-    //ownEcdh.setPublicKey(debugPublicKey, 'hex');
-    //const dhKey = Array.from(ownEcdh.computeSecret(peerPkHex, 'hex'));
-    logger.debug('Private key: ' + adapterEcdh.getPrivateKey('hex'));
-    const dhKey = Array.from(adapterEcdh.computeSecret(peerPkHex, 'hex'));
-    logger.debug('DH Key: ' + dhKey);
+    const peerPkHex = toHexString(peerPublicKey).replace(/-/g, '');
+    const ownKey = createECDH('prime256v1');
+    const generatedPk = ownKey.setPrivateKey('3f49f6d4a3c55f3874c9b3e3d2103f504aff607beb40b7995899b8a6cd3c1abd', 'hex');
+    const dhKey = ownKey.computeSecret(peerPkHex, 'hex', 'hex');
 
     const adapterToUse = getState().adapter.api.selectedAdapter;
     adapterToUse.replyLescDhkey(device.instanceId, dhKey, error => {
@@ -410,7 +413,7 @@ function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequ
 }
 
 function _onKeyPressed(dispatch, getState, device, keypressType) {
-    logger.info('TODO onKeyPressed');
+    dispatch(keypressReceivedAction(device, keypressType));
 }
 
 function _onConnSecUpdate(dispatch, getState, device, connSec) {
@@ -639,6 +642,72 @@ function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
     });
 }
 
+function _sendKeypress(dispatch, getState, eventId, device, keypressType) {
+    const adapterToUse = getState().adapter.api.selectedAdapter;
+
+    const keypressStartSent = getState().bleEvent.getIn(
+        [
+            'events',
+            eventId,
+            'keypressStartSent'
+        ]);
+
+    if (adapterToUse == null) {
+        dispatch(showErrorDialog('No adapter selected!'));
+        return;
+    }
+
+    return new Promise((resolve, reject) => {
+        if (keypressStartSent !== true) {
+            adapterToUse.notifyKeypress(device.instanceId, driver.BLE_GAP_KP_NOT_TYPE_PASSKEY_START, error => {
+                if (error) {
+                    reject(new Error(error.message));
+                } else {
+                    keypressSent = true;
+                    resolve();
+                }
+            });
+        } else {
+            resolve();
+        }
+    }).then(() => {
+        dispatch(keypressSentAction(eventId, device, 'BLE_GAP_KP_NOT_TYPE_PASSKEY_START'));
+
+        return new Promise((resolve, reject) => {
+            let keypressTypeValue;
+
+            if (keypressType === 'BLE_GAP_KP_NOT_TYPE_PASSKEY_START') {
+                keypressTypeValue = driver.BLE_GAP_KP_NOT_TYPE_PASSKEY_START;
+            } else if (keypressType === 'BLE_GAP_KP_NOT_TYPE_PASSKEY_END') {
+                keypressTypeValue = driver.BLE_GAP_KP_NOT_TYPE_PASSKEY_END;
+            } else if (keypressType === 'BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_IN') {
+                keypressTypeValue = driver.BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_IN;
+            } else if (keypressType === 'BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_OUT') {
+                keypressTypeValue = driver.BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_OUT;
+            } else if (keypressType === 'BLE_GAP_KP_NOT_TYPE_PASSKEY_CLEAR') {
+                keypressTypeValue = driver.BLE_GAP_KP_NOT_TYPE_PASSKEY_CLEAR;
+            } else {
+                reject(new Error('Unknown keypress received.'));
+                return;
+            }
+
+            adapterToUse.notifyKeypress(device.instanceId, keypressTypeValue, error => {
+                if (error) {
+                    reject(new Error(error.message));
+                } else {
+                    resolve();
+                }
+            });
+        }).then(() => {
+            dispatch(keypressSentAction(eventId, device, keypressType));
+        }).catch(error => {
+            dispatch(showErrorDialog(error));
+        });
+    }).catch(error => {
+        dispatch(showErrorDialog(error));
+    });
+}
+
 function _acceptPairing(dispatch, getState, id, device, securityParams) {
     return new Promise((resolve, reject) => {
         const adapterToUse = getState().adapter.api.selectedAdapter;
@@ -669,6 +738,7 @@ function _acceptPairing(dispatch, getState, id, device, securityParams) {
             reject(new Error('Unknown role'));
         }
     }).then(() => {
+        dispatch(storeSecurityOwnParamsAction(device, securityParams));
         dispatch(pairingStatusAction(id, device, BLEEventState.SUCCESS));
     }).catch(() => {
         dispatch(pairingStatusAction(id, device, BLEEventState.ERROR));
@@ -694,6 +764,7 @@ function _pairWithDevice(dispatch, getState, id, device, securityParams) {
             resolve();
         });
     }).then(() => {
+        dispatch(storeSecurityOwnParamsAction(device, securityParams));
         dispatch(pairingStatusAction(id, device, BLEEventState.SUCCESS));
     }).catch(error => {
         dispatch(pairingStatusAction(id, device, BLEEventState.ERROR));
@@ -857,12 +928,14 @@ function connectionParamUpdateStatusAction(id, device, status) {
     };
 }
 
-function pairingStatusAction(id, device, status) {
+function pairingStatusAction(id, device, status, ownSecurityParams, peerSecurityParams) {
     return {
         type: DEVICE_PAIRING_STATUS,
         id: id,
-        device: device,
-        status: status,
+        device,
+        status,
+        ownSecurityParams,
+        peerSecurityParams,
     };
 }
 
@@ -930,20 +1003,22 @@ function deviceConnParamUpdateRequestAction(device, requestedConnectionParams) {
     };
 }
 
-function passkeyDisplayAction(device, matchRequest, passkey) {
+function passkeyDisplayAction(device, matchRequest, passkey, receiveKeypress) {
     return {
         type: DEVICE_PASSKEY_DISPLAY,
         device,
         matchRequest,
         passkey,
+        receiveKeypress,
     };
 }
 
-function authKeyRequestAction(device, keyType) {
+function authKeyRequestAction(device, keyType, sendKeypress) {
     return {
         type: DEVICE_AUTHKEY_REQUEST,
         device,
         keyType,
+        sendKeypress,
     };
 }
 
@@ -995,6 +1070,39 @@ function adapterResetPerformedAction(adapter) {
     return {
         type: ADAPTER_RESET_PERFORMED,
         adapter,
+    };
+}
+
+function keypressSentAction(eventId, device, keypressType) {
+    return {
+        type: DEVICE_PASSKEY_KEYPRESS_SENT,
+        eventId,
+        device,
+        keypressType
+    }
+}
+
+function keypressReceivedAction(device, keypressType) {
+    return  {
+        type: DEVICE_PASSKEY_KEYPRESS_RECEIVED,
+        device,
+        keypressType
+    };
+}
+
+function storeSecurityPeerParamsAction(device, peerParams) {
+    return {
+        type: DEVICE_SECURITY_STORE_PEER_PARAMS,
+        device,
+        peerParams,
+    };
+}
+
+function storeSecurityOwnParamsAction(device, ownParams) {
+    return {
+        type: DEVICE_SECURITY_STORE_OWN_PARAMS,
+        device,
+        ownParams,
     };
 }
 
@@ -1058,6 +1166,12 @@ export function replyAuthKey(id, device, keyType, key) {
     return (dispatch, getState) => {
         return _replyAuthKey(dispatch, getState, id, device, keyType, key);
     };
+}
+
+export function sendKeypress(id, device, keypressType) {
+    return (dispatch, getState) => {
+        return _sendKeypress(dispatch, getState, id, device, keypressType);
+    }
 }
 
 export function cancelConnect() {
