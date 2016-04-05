@@ -213,13 +213,24 @@ function deviceSecurityChanged(state, device, parameters) {
 
     const { index } = getSelectedAdapter(state);
 
-    const bonded = parameters.bonded;
-    const sm1Levels = parameters.sm1Levels;
+    logger.info(`Security updated, mode:${parameters.securityMode}, level:${parameters.securityLevel} `);
 
-    logger.info(`Security changed`);
+    state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'securityMode'], parameters.securityMode);
+    state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'securityLevel'], parameters.securityLevel);
 
-    //state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'bonded'], bonded);
-    state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'securityMode1Levels'], sm1Levels);
+    return state;
+}
+
+function bondStoreUpdated(state) {
+    const { index } = getSelectedAdapter(state);
+
+    const devices = state.getIn(['adapters', index, 'connectedDevices']);
+
+    devices.map(device => {
+        const bonded = state.getIn(['adapters', index, 'security', 'bondStore', device.address]) ? true : false;
+        state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'bonded'], bonded);
+    });
+
     return state;
 }
 
@@ -264,6 +275,18 @@ function toggleAutoConnUpdate(state) {
 function addBondInfo(state, device, params) {
     const { index } = getSelectedAdapter(state);
     state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'bonded'], true);
+    return state;
+}
+
+function deleteBondInfo(state) {
+    const { index } = getSelectedAdapter(state);
+
+    const devices = state.getIn(['adapters', index, 'connectedDevices']);
+
+    devices.map(device => {
+        state = state.setIn(['adapters', index, 'connectedDevices', device.instanceId, 'bonded'], false);
+    });
+
     return state;
 }
 
@@ -330,8 +353,10 @@ export default function adapter(state = getImmutableRoot(), action) {
             return deviceSecurityChanged(state, action.device, action.parameters);
         case AdapterAction.DEVICE_TOGGLE_AUTO_CONN_UPDATE:
             return toggleAutoConnUpdate(state);
-        case AdapterAction.ADD_BOND_INFO:
+        case AdapterAction.DEVICE_ADD_BOND_INFO:
             return addBondInfo(state, action.device, action.parameters);
+        case SecurityActions.SECURITY_DELETE_BOND_INFO:
+            return deleteBondInfo(state);
         case DeviceDetailsActions.DISCOVERED_DEVICE_NAME:
             return discoveredDeviceName(state, action.device, action.value);
         case ServerSetupActions.APPLIED_SERVER:

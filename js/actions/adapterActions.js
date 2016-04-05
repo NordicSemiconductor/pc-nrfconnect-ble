@@ -185,8 +185,8 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(attributeValueChangedAction(descriptor, descriptor.value));
         });
 
-        adapterToUse.on('securityChanged', (device, authParams) => {
-            dispatch(securityChangedAction(device, authParams));
+        adapterToUse.on('securityChanged', (device, connectionSecurity) => {
+            dispatch(securityChangedAction(device, connectionSecurity));
         });
 
         adapterToUse.on('securityRequest', (device, params) => {
@@ -274,7 +274,7 @@ function _onDeviceConnected(dispatch, getState, device) {
                 logger.warn(`Encrypt procedure failed: ${error}`);
             }
 
-            console.log(`Encrypt, masterId: ${JSON.stringify(masterId)}, encInfo: ${JSON.stringify(encInfo)}`);
+            logger.debug(`Encrypt, masterId: ${JSON.stringify(masterId)}, encInfo: ${JSON.stringify(encInfo)}`);
         });
     }
 
@@ -327,7 +327,7 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
                     logger.warn(`Error when calling replySecParams: ${error}`);
                 }
 
-                console.log(`ReplySecParams, secParams: ${defaultSecParams}`);
+                logger.debug(`ReplySecParams, secParams: ${defaultSecParams}`);
             });
         } else {
             if (selectedAdapter.security.autoAcceptPairing) {
@@ -342,7 +342,7 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
                 logger.warn(`Error when calling replySecParams: ${error}`);
             }
 
-            console.log(`ReplySecParams, secParams: null`);
+            logger.debug(`ReplySecParams, secParams: null`);
         });
     }
 }
@@ -353,7 +353,7 @@ function _onSecInfoRequest(dispatch, getState, device, params) {
     const bondInfo = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'bondStore', device.address]);
 
     if (!bondInfo) {
-        console.log(`No bond info store for address ${device.address}`);
+        logger.info(`Received security info request, but no record found for address ${device.address}`);
         return;
     }
 
@@ -368,7 +368,7 @@ function _onSecInfoRequest(dispatch, getState, device, params) {
             logger.warn(`Error when calling secInfoReply: ${error}`);
         }
 
-        console.log(`SecInfoReply, ${JSON.stringify(encInfoJs)}, ${JSON.stringify(idInfoJs)}`);
+        logger.debug(`SecInfoReply, ${JSON.stringify(encInfoJs)}, ${JSON.stringify(idInfoJs)}`);
     });
 }
 
@@ -387,7 +387,7 @@ function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequ
     }
 
     const peerPkHex = '04' + toHexString(peerPublicKey.pk).replace(/-/g, '');
-    console.log('peerPublicKey: ' + peerPkHex);
+    logger.debug('peerPublicKey: ' + peerPkHex);
 
     //const debugPrivateKey = '3f49f6d4a3c55f3874c9b3e3d2103f504aff607beb40b7995899b8a6cd3c1abd';
     //const debugPublicKey = '04' + '20b003d2f297be2c5e2c83a7e9f9a5b9eff49111acf4fddbcc0301480e359de6dc809c49652aeb6d63329abf5a52155c766345c28fed3024741c8ed01589d28b';
@@ -397,9 +397,9 @@ function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequ
     //ownEcdh.setPrivateKey(debugPrivateKey, 'hex');
     //ownEcdh.setPublicKey(debugPublicKey, 'hex');
     //const dhKey = Array.from(ownEcdh.computeSecret(peerPkHex, 'hex'));
-    console.log(adapterEcdh.getPrivateKey('hex'));
+    logger.debug('Private key: ' + adapterEcdh.getPrivateKey('hex'));
     const dhKey = Array.from(adapterEcdh.computeSecret(peerPkHex, 'hex'));
-    console.log(dhKey);
+    logger.debug('DH Key: ' + dhKey);
 
     const adapterToUse = getState().adapter.api.selectedAdapter;
     adapterToUse.replyLescDhkey(device.instanceId, dhKey, error => {
@@ -410,15 +410,14 @@ function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequ
 }
 
 function _onKeyPressed(dispatch, getState, device, keypressType) {
-    console.log('TODO onKeyPressed');
+    logger.info('TODO onKeyPressed');
 }
 
 function _onConnSecUpdate(dispatch, getState, device, connSec) {
-    console.log('TODO onConnSecUpdate ' + JSON.stringify(connSec));
+    //empty
 }
 
 function _onAuthStatus(dispatch, getState, device, params) {
-    console.log('onAuthStatus');
     if (params.auth_status !== 0) {
         logger.info(`Authentication failed with status ${params.auth_status_name}`);
         return;
@@ -430,7 +429,8 @@ function _onAuthStatus(dispatch, getState, device, params) {
     }
 
     if (!params.bonded) {
-        console.log('No bond, don\'t store keys');
+        logger.debug('No bonding performed, don\'t store keys');
+        return;
     }
 
     dispatch(addBondInfo(device, params));
@@ -653,7 +653,7 @@ function _acceptPairing(dispatch, getState, id, device, securityParams) {
                     reject(new Error(error.message));
                 }
 
-                console.log(`Authenticate, secParams: ${securityParams}`);
+                logger.debug(`Authenticate, secParams: ${securityParams}`);
                 resolve();
             });
         } else if (device.role === 'central') {
@@ -662,7 +662,7 @@ function _acceptPairing(dispatch, getState, id, device, securityParams) {
                     reject(new Error(error.message));
                 }
 
-                console.log(`ReplySecParams, secParams: ${securityParams}`);
+                logger.debug(`ReplySecParams, secParams: ${securityParams}`);
                 resolve();
             });
         } else {
@@ -690,7 +690,7 @@ function _pairWithDevice(dispatch, getState, id, device, securityParams) {
                 reject(new Error(error.message));
             }
 
-            console.log(`Authenticate, secParams: ${securityParams}`);
+            logger.debug(`Authenticate, secParams: ${securityParams}`);
             resolve();
         });
     }).then(() => {

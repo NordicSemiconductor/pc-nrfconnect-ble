@@ -57,8 +57,8 @@ const ImmutableDevice = Record({
     rssi: null,
     scanResponse: false,
     bonded: false,
-    securityMode1Levels: null,
-    securityMode2Levels: null,
+    securityMode: null,
+    securityLevel: null,
     isExpanded: false,
     ownPeriphInitiatedPairingPending: false,
 });

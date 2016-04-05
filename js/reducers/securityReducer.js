@@ -61,16 +61,10 @@ const InitialState = Record({
     bondStore: new Map(),
 });
 
-function authStatus(state, device, params) {
-
-    const newState = state.set('bondStore', state.bondStore.set(device.address, Immutable.fromJS(params.keyset)));
-    console.log(`Store bonding information for device ${device.address}: ${JSON.stringify(state.bondStore)}`);
-    return newState;
-}
-
 function addBondInfo(state, device, params) {
     const newState = state.set('bondStore', state.bondStore.set(device.address, Immutable.fromJS(params.keyset)));
-    console.log(`Add bonding information for device ${device.address}: ${JSON.stringify(state.bondStore)}`);
+    logger.info(`Storing bond info for device ${device.address}`);
+    logger.debug(`Bond info: ${JSON.stringify(state.bondStore)}`);
     return newState;
 }
 
