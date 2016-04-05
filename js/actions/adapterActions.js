@@ -222,10 +222,6 @@ function _openAdapter(dispatch, getState, adapter) {
             _onKeyPressed(dispatch, getState, device, keypressType);
         });
 
-        adapterToUse.on('connSecUpdate', (device, connSec) => {
-            _onConnSecUpdate(dispatch, getState, device, connSec);
-        });
-
         adapterToUse.on('authStatus', (device, params) => {
             _onAuthStatus(dispatch, getState, device, params);
         });
@@ -399,13 +395,11 @@ function _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey) {
 
 
 function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequired) {
-    const peerPkHex = toHexString(peerPublicKey).replace(/-/g, '');
-    const ownKey = createECDH('prime256v1');
-    const generatedPk = ownKey.setPrivateKey('3f49f6d4a3c55f3874c9b3e3d2103f504aff607beb40b7995899b8a6cd3c1abd', 'hex');
-    const dhKey = ownKey.computeSecret(peerPkHex, 'hex', 'hex');
+    const peerPkHex = '04' + toHexString(peerPublicKey.pk).replace(/-/g, '');
+    const dhKey = adapterEcdh.computeSecret(peerPkHex, 'hex', 'hex');
 
     const adapterToUse = getState().adapter.api.selectedAdapter;
-    adapterToUse.replyLescDhkey(device.instanceId, dhKey, error => {
+    adapterToUse.replyLescDhkey(device.instanceId, Array.from(dhKey), error => {
         if (error) {
             logger.warn(`Error when sending LESC DH key`);
         }
@@ -414,10 +408,6 @@ function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequ
 
 function _onKeyPressed(dispatch, getState, device, keypressType) {
     dispatch(keypressReceivedAction(device, keypressType));
-}
-
-function _onConnSecUpdate(dispatch, getState, device, connSec) {
-    //empty
 }
 
 function _onAuthStatus(dispatch, getState, device, params) {
