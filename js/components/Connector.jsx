@@ -28,9 +28,9 @@ export class ConnectionSetup extends Component {
             device,
         } = this.props;
 
-        const securityLevelText = (device.securityLevel && 2) ? 'Unauthenticated encrypted link'
-            : (device.securityLevel && 4) ? 'Authenticated encrypted link'
-            : (device.securityLevel && 8) ? 'LESC authenticated encrypted link'
+        const securityLevelText = (device.securityLevel === 2) ? 'Unauthenticated encrypted link'
+            : (device.securityLevel === 3) ? 'Authenticated encrypted link'
+            : (device.securityLevel === 4) ? 'LESC authenticated encrypted link'
             : 'Unencrypted link';
 
         const iconClass = (device.securityLevel && (device.securityLevel > 1)) ? 'icon-lock'
