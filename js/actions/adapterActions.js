@@ -606,29 +606,57 @@ function _rejectPairing(dispatch, getState, id, device) {
 }
 
 function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
+    const adapterToUse = getState().adapter.api.selectedAdapter;
+
+    if (adapterToUse === null) {
+        reject(new Error('No adapter selected!'));
+    }
+
+    // Check if we shall send keypressEnd based
+    // on keypressStart has been sent previously
+    const keypressStartSent = getState().bleEvent.getIn(
+        [
+            'events',
+            id,
+            'keypressStartSent'
+        ]
+    );
+
     return new Promise((resolve, reject) => {
-        const adapterToUse = getState().adapter.api.selectedAdapter;
-
-        if (adapterToUse === null) {
-            reject(new Error('No adapter selected!'));
-        }
-
-        const keyTypeInt = (keyType === 'BLE_GAP_AUTH_KEY_TYPE_PASSKEY') ? 1
-            : (keyType === 'BLE_GAP_AUTH_KEY_TYPE_OOB') ? 2
-            : 0;
-
-        adapterToUse.replyAuthKey(device.instanceId, keyTypeInt, key, error => {
-            if (error) {
-                reject(new Error(error.message));
-            }
-
+        if (keypressStartSent === true) {
+            adapterToUse.notifyKeypress(device.instanceId, driver.BLE_GAP_KP_NOT_TYPE_PASSKEY_END, error => {
+                if (error) {
+                    reject(new Error(error.message));
+                } else {
+                    resolve();
+                }
+            });
+        } else {
             resolve();
-        });
+        }
     }).then(() => {
-        dispatch(authKeyStatusAction(id, device, BLEEventState.SUCCESS));
+        dispatch(keypressSentAction(id, device, 'BLE_GAP_KP_NOT_TYPE_PASSKEY_END'));
+
+        return new Promise((resolve, reject) => {
+            const keyTypeInt = (keyType === 'BLE_GAP_AUTH_KEY_TYPE_PASSKEY') ? 1
+                : (keyType === 'BLE_GAP_AUTH_KEY_TYPE_OOB') ? 2
+                : 0;
+
+            adapterToUse.replyAuthKey(device.instanceId, keyTypeInt, key, error => {
+                if (error) {
+                    reject(new Error(error.message));
+                }
+
+                resolve();
+            });
+        }).then(() => {
+            dispatch(authKeyStatusAction(id, device, BLEEventState.SUCCESS));
+        }).catch(error => {
+            dispatch(showErrorDialog(error));
+            dispatch(authKeyStatusAction(id, device, BLEEventState.ERROR));
+        });
     }).catch(error => {
         dispatch(showErrorDialog(error));
-        dispatch(authKeyStatusAction(id, device, BLEEventState.ERROR));
     });
 }
 
@@ -653,7 +681,6 @@ function _sendKeypress(dispatch, getState, eventId, device, keypressType) {
                 if (error) {
                     reject(new Error(error.message));
                 } else {
-                    keypressSent = true;
                     resolve();
                 }
             });
