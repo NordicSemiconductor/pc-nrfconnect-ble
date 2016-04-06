@@ -149,7 +149,10 @@ function _openAdapter(dispatch, getState, adapter) {
             // TODO: and a recoverable error.
             // TODO: adapterErrorAction should only be used if it is an unrecoverable errors.
             // TODO: errorOccuredAction should be used for recoverable errors.
-            dispatch(showErrorDialog(new Error(error.message)));
+            const message = (error.description && error.description.errcode) ?
+                `${error.message} (${error.description.errcode})`
+                : `${error.message}`;
+            dispatch(showErrorDialog(new Error(message)));
         });
 
         adapterToUse.on('logMessage', _onLogMessage);
