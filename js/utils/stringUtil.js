@@ -30,3 +30,14 @@ function arrayToHexString(value) {
 function intToHexString(value) {
     return ('0' + value.toString(16)).slice(-2).toUpperCase();
 }
+
+export function hexStringToArray(hexString) {
+    let result = [];
+    while (hexString.length >= 2) {
+        const element = parseInt(hexString.substring(0, 2), 16);
+        result.push(element);
+        hexString = hexString.substring(2, hexString.length);
+    }
+
+    return result;
+}

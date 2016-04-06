@@ -36,6 +36,7 @@ const Event = Record({
     requestedConnectionParams: null,
     pairingParameters: null,
     authKeyParams: null,
+    ownOobData: null,
     state: BLEEventState.UNKNOWN,
     receiveKeypressEnabled: false,
     keypressStartReceived: false,
@@ -297,6 +298,23 @@ function authKeyRequest(state, device, keyType, sendKeypress) {
     return newState;
 }
 
+function lescOobRequest(state, device, ownOobData) {
+    const event = new Event({
+        type: BLEEventType.LESC_OOB_REQUEST,
+        device: apiHelper.getImmutableDevice(device),
+        id: eventIndex,
+        state: BLEEventState.INDETERMINATE,
+        ownOobData: ownOobData,
+    });
+
+    let newState = state.set('events', state.events.push(event));
+    newState = newState.set('selectedEventId', eventIndex);
+    newState = newState.set('visible', true);
+    eventIndex++;
+
+    return newState;
+}
+
 function createUserInitiatedPairingEvent(state, device) {
     const initialPairingParams = new PairingParameters();
 
@@ -345,6 +363,8 @@ export default function bleEvent(state = initialState, action)
             return passkeyKeypressReceived(state, action.device, action.keypressType);
         case AdapterActions.DEVICE_AUTHKEY_REQUEST:
             return authKeyRequest(state, action.device, action.keyType, action.sendKeypress);
+        case AdapterActions.DEVICE_LESC_OOB_REQUEST:
+            return lescOobRequest(state, action.device, action.ownOobData);
         case AdapterActions.DEVICE_AUTHKEY_STATUS:
             return updateEventStatus(state, action.id, action.status);
         case AdapterActions.DEVICE_PAIRING_STATUS:

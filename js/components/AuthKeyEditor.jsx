@@ -20,12 +20,15 @@ import { Button, Input } from 'react-bootstrap';
 import { SecurityParamsControls } from '../components/SecurityParamsControls';
 
 import { BLEEventType } from '../actions/common';
+import { toHexString } from '../utils/stringUtil';
 
 export class AuthKeyEditor extends Component {
     constructor(props) {
         super(props);
 
         this.authKeyInput = '';
+        this.randomInput = '';
+        this.confirmInput = '';
     }
 
     handlePasskeyChange(event) {
@@ -35,8 +38,7 @@ export class AuthKeyEditor extends Component {
         if (_event.sendKeypressEnabled === true) {
             let newCount = event.target.value.length - this.authKeyInput.length;
 
-            if (event.target.value.length === 0 && this.authKeyInput.length > 1)
-            {
+            if (event.target.value.length === 0 && this.authKeyInput.length > 1) {
                 onKeypress('BLE_GAP_KP_NOT_TYPE_PASSKEY_CLEAR');
             } else {
                 if (newCount > 0) {
@@ -54,6 +56,14 @@ export class AuthKeyEditor extends Component {
         this.authKeyInput = event.target.value;
     }
 
+    handleRandomChange(event) {
+        this.randomInput = event.target.value;
+    }
+
+    handleConfirmChange(event) {
+        this.confirmInput = event.target.value;
+    }
+
     handlePasskeySubmit() {
         const { onAuthKeySubmit } = this.props;
 
@@ -64,6 +74,15 @@ export class AuthKeyEditor extends Component {
         const { onAuthKeySubmit } = this.props;
 
         onAuthKeySubmit('BLE_GAP_AUTH_KEY_TYPE_OOB', this.authKeyInput);
+    }
+
+    handleLescOobSubmit() {
+        const { onLescOobSubmit } = this.props;
+
+        onLescOobSubmit({
+            confirm: this.confirmInput,
+            random: this.randomInput,
+        });
     }
 
     handleNumericalComparisonMatch(match) {
@@ -85,7 +104,7 @@ export class AuthKeyEditor extends Component {
         const digitsCreated = [];
         const digitsTypedIn = [];
 
-        for(let i of passkey) {
+        for (let i of passkey) {
             digitsCreated.push(
                 <div className='col-sm-1'>{i}</div>
             );
@@ -194,7 +213,44 @@ export class AuthKeyEditor extends Component {
     }
 
     createLescOobRequestControls() {
-        return '';
+        const { event } = this.props;
+
+        const random = toHexString(event.ownOobData.r).replace(/-/g, '');
+        const confirm = toHexString(event.ownOobData.c).replace(/-/g, '');
+
+        return (
+            <form className='form-horizontal'>
+                <div className='form-group'>
+                    <label className='control-label col-sm-4'>OOB random</label>
+                    <div className='col-sm-7'>
+                        <Input
+                            type='text' size={32} id='randomInputId' onChange={event => this.handleRandomChange(event)} />
+                    </div>
+
+                    <label className='control-label col-sm-4'>OOB confirm value</label>
+                    <div className='col-sm-7'>
+                        <Input
+                            type='text' size={32} id='confirmInputId' onChange={event => this.handleConfirmChange(event)} />
+                    </div>
+
+                    <label className='control-label col-sm-4'>Own random</label>
+                    <div className='col-sm-7'>
+                        <Input readOnly
+                            type='text' size={32} id='passkeyInputId' value={random} />
+                    </div>
+
+                    <label className='control-label col-sm-4'>Own confirm</label>
+                    <div className='col-sm-7'>
+                        <Input readOnly
+                            type='text' size={32} id='passkeyInputId' value={confirm} />
+                    </div>
+                </div>
+                <div className='form-group'>
+                    <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
+                    <Button type='button' onClick={() => this.handleLescOobSubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
+                </div>
+            </form>
+        );
     }
 
     render() {

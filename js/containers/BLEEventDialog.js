@@ -72,6 +72,7 @@ export class BLEEventDialog extends Component {
             acceptPairing,
             replyNumericalComparisonMatch,
             replyAuthKey,
+            replyLescOob,
             sendKeypress,
         } = this.props;
 
@@ -107,6 +108,7 @@ export class BLEEventDialog extends Component {
             return <AuthKeyEditor
                 event={event}
                 onAuthKeySubmit={(keyType, key) => replyAuthKey(event.id, event.device, keyType, key)}
+                onLescOobSubmit={peerOobData => replyLescOob(event.id, event.device, peerOobData, event.ownOobData)}
                 onNumericalComparisonMatch={match => replyNumericalComparisonMatch(event.id, event.device, match)}
                 onKeypress={(value) => sendKeypress(event.id, event.device, value)}
                 onCancel={() => removeEvent(event.id)}
@@ -197,6 +199,7 @@ BLEEventDialog.propTypes = {
     acceptPairing: PropTypes.func.isRequired,
     replyNumericalComparisonMatch: PropTypes.func.isRequired,
     replyAuthKey: PropTypes.func.isRequired,
+    replyLescOob: PropTypes.func.isRequired,
     sendKeypress: PropTypes.func.isRequired,
 };
 

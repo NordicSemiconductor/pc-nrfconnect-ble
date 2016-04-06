@@ -41,6 +41,7 @@ export const DEVICE_PAIRING_STATUS = 'DEVICE_PAIRING_STATUS';
 export const DEVICE_SECURITY_REQUEST = 'DEVICE_SECURITY_REQUEST';
 export const DEVICE_PASSKEY_DISPLAY = 'DEVICE_PASSKEY_DISPLAY';
 export const DEVICE_AUTHKEY_REQUEST = 'DEVICE_AUTHKEY_REQUEST';
+export const DEVICE_LESC_OOB_REQUEST = 'DEVICE_LESC_OOB_REQUEST';
 export const DEVICE_AUTHKEY_STATUS = 'DEVICE_AUTHKEY_STATUS';
 export const DEVICE_PASSKEY_KEYPRESS_RECEIVED = 'DEVICE_PASSKEY_KEYPRESS_RECEIVED';
 export const DEVICE_PASSKEY_KEYPRESS_SENT = 'DEVICE_PASSKEY_KEYPRESS_SENT';
@@ -66,7 +67,7 @@ import { discoverServices } from './deviceDetailsActions';
 import { BLEEventState } from './common';
 import { showErrorDialog } from './errorDialogActions';
 import { createECDH } from 'crypto';
-import { toHexString } from '../utils/stringUtil';
+import { toHexString, hexStringToArray } from '../utils/stringUtil';
 
 const _adapterFactory = api.AdapterFactory.getInstance();
 
@@ -393,7 +394,6 @@ function _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey) {
     dispatch(passkeyDisplayAction(device, matchRequest, passkey, receiveKeypress));
 }
 
-
 function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequired) {
     const peerPkHex = '04' + toHexString(peerPublicKey.pk).replace(/-/g, '');
     const dhKey = adapterEcdh.computeSecret(peerPkHex, 'hex', 'hex');
@@ -402,6 +402,21 @@ function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequ
     adapterToUse.replyLescDhkey(device.instanceId, Array.from(dhKey), error => {
         if (error) {
             logger.warn(`Error when sending LESC DH key`);
+            return;
+        }
+    });
+
+    const publicKey = Array.from(adapterEcdh.getPublicKey()).slice(1);
+    adapterToUse.getLescOobData(device.instanceId, publicKey, (error, ownOobData) => {
+        if (error) {
+            logger.warn(`Error in getLescOobData: ${error.message}`);
+            return;
+        }
+
+        logger.debug(`Own OOB data: ${JSON.stringify(ownOobData)}`);
+
+        if (oobdRequired) {
+            dispatch(lescOobRequestAction(device, ownOobData));
         }
     });
 }
@@ -657,6 +672,35 @@ function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
         });
     }).catch(error => {
         dispatch(showErrorDialog(error));
+    });
+}
+
+function _replyLescOob(dispatch, getState, id, device, peerOob, ownOobData) {
+    return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+        const peerOobData = {
+            addr: {
+                address: device.address,
+                type: device.addressType,
+            },
+            r: hexStringToArray(peerOob.random),
+            c: hexStringToArray(peerOob.confirm),
+        };
+
+        logger.debug(`setLescOobData, ownOobData: ${JSON.stringify(ownOobData)}, peerOobData: ${JSON.stringify(peerOobData)}`);
+
+        adapterToUse.setLescOobData(device.instanceId, ownOobData, peerOobData, error => {
+            if (error) {
+                reject(new Error(error.message));
+            }
+
+            resolve();
+        });
+    }).then(() => {
+        dispatch(authKeyStatusAction(id, device, BLEEventState.SUCCESS));
+    }).catch(error => {
+        dispatch(showErrorDialog(error));
+        dispatch(authKeyStatusAction(id, device, BLEEventState.ERROR));
     });
 }
 
@@ -1039,6 +1083,14 @@ function authKeyRequestAction(device, keyType, sendKeypress) {
     };
 }
 
+function lescOobRequestAction(device, ownOobData) {
+    return {
+        type: DEVICE_LESC_OOB_REQUEST,
+        device,
+        ownOobData,
+    };
+}
+
 function securityRequestAction(device) {
     return {
         type: DEVICE_SECURITY_REQUEST,
@@ -1095,15 +1147,15 @@ function keypressSentAction(eventId, device, keypressType) {
         type: DEVICE_PASSKEY_KEYPRESS_SENT,
         eventId,
         device,
-        keypressType
-    }
+        keypressType,
+    };
 }
 
 function keypressReceivedAction(device, keypressType) {
-    return  {
+    return {
         type: DEVICE_PASSKEY_KEYPRESS_RECEIVED,
         device,
-        keypressType
+        keypressType,
     };
 }
 
@@ -1185,10 +1237,16 @@ export function replyAuthKey(id, device, keyType, key) {
     };
 }
 
+export function replyLescOob(id, device, peerOobData, ownOobData) {
+    return (dispatch, getState) => {
+        return _replyLescOob(dispatch, getState, id, device, peerOobData, ownOobData);
+    };
+}
+
 export function sendKeypress(id, device, keypressType) {
     return (dispatch, getState) => {
         return _sendKeypress(dispatch, getState, id, device, keypressType);
-    }
+    };
 }
 
 export function cancelConnect() {
