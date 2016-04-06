@@ -105,14 +105,6 @@ function adapterOpened(state, adapter) {
 function adapterStateChanged(state, adapter, adapterState) {
     const adapterIndex = state.api.adapters.indexOf(adapter);
 
-    const currentscanning = state.getIn(['adapters', adapterIndex, 'state', 'scanning']);
-    const newscanning = adapterState.scanning;
-
-    if (currentscanning && currentscanning != newscanning)
-    {
-        logger.info(`Scanning timed out on ${adapter.state.port}`);
-    }
-
     const immutableState = apiHelper.getImmutableAdapterState(adapterState);
     state = state.setIn(['adapters', adapterIndex, 'state'], immutableState);
 
@@ -156,6 +148,16 @@ function adapterResetPerformed(state, adapter) {
         state = state.updateIn(['adapters', index, 'connectedDevices'], connectedDevices => connectedDevices.clear());
     }
 
+    return state;
+}
+
+function adapterScanTimeout(state, adapter) {
+    logger.info(`Scanning timed out on adapter ${adapter.state.port}`);
+    return state;
+}
+
+function adapterAdvertisementTimeout(state, adapter) {
+    logger.info(`Advertisement timed out on adapter ${adapter.state.port}`);
     return state;
 }
 
@@ -346,6 +348,10 @@ export default function adapter(state = getImmutableRoot(), action) {
             return adapterStateChanged(state, action.adapter, action.state);
         case AdapterAction.ADAPTER_RESET_PERFORMED:
             return adapterResetPerformed(state, action.adapter);
+        case AdapterAction.ADAPTER_SCAN_TIMEOUT:
+            return adapterScanTimeout(state, action.adapter);
+        case AdapterAction.ADAPTER_ADVERTISEMENT_TIMEOUT:
+            return adapterAdvertisementTimeout(state, action.adapter);
         case AdapterAction.ERROR_OCCURED:
             return addError(state, action.error);
         case AdapterAction.DEVICE_CONNECT:

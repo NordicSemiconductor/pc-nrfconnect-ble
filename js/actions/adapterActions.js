@@ -20,6 +20,8 @@ export const ADAPTER_REMOVED = 'ADAPTER_REMOVED';
 export const ADAPTER_ERROR = 'ADAPTER_ERROR';
 export const ADAPTER_STATE_CHANGED = 'ADAPTER_STATE_CHANGED';
 export const ADAPTER_RESET_PERFORMED = 'ADAPTER_RESET_PERFORMED';
+export const ADAPTER_SCAN_TIMEOUT = 'ADAPTER_SCAN_TIMEOUT';
+export const ADAPTER_ADVERTISEMENT_TIMEOUT = 'ADAPTER_ADVERTISEMENT_TIMEOUT';
 
 export const DEVICE_DISCOVERED = 'DEVICE_DISCOVERED';
 export const DEVICE_CONNECT = 'DEVICE_CONNECT';
@@ -178,6 +180,14 @@ function _openAdapter(dispatch, getState, adapter) {
 
         adapterToUse.on('connectTimedOut', deviceAddress => {
             dispatch(deviceConnectTimeoutAction(deviceAddress));
+        });
+
+        adapterToUse.on('scanTimedOut', () => {
+            dispatch(scanTimeoutAction(adapterToUse));
+        });
+
+        adapterToUse.on('advertiseTimedOut', () => {
+            dispatch(advertiseTimeoutAction(adapterToUse));
         });
 
         adapterToUse.on('connParamUpdateRequest', (device, requestedConnectionParams) => {
@@ -1035,6 +1045,20 @@ function deviceConnectTimeoutAction(deviceAddress) {
     return {
         type: DEVICE_CONNECT_TIMEOUT,
         deviceAddress,
+    };
+}
+
+function scanTimeoutAction(adapter) {
+    return {
+        type: ADAPTER_SCAN_TIMEOUT,
+        adapter,
+    };
+}
+
+function advertiseTimeoutAction(adapter) {
+    return {
+        type: ADAPTER_ADVERTISEMENT_TIMEOUT,
+        adapter,
     };
 }
 

@@ -74,6 +74,7 @@ function deviceConnected(state, device) {
 }
 
 function deviceConnectTimeout(state, deviceAddress) {
+    logger.info(`Connection to device timed out`);
     return state.setIn(['devices', deviceAddress.address, 'isConnecting'], false);
 }
 
