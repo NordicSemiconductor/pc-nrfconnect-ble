@@ -105,6 +105,14 @@ function adapterOpened(state, adapter) {
 function adapterStateChanged(state, adapter, adapterState) {
     const adapterIndex = state.api.adapters.indexOf(adapter);
 
+    const currentscanning = state.getIn(['adapters', adapterIndex, 'state', 'scanning']);
+    const newscanning = adapterState.scanning;
+
+    if (currentscanning && currentscanning != newscanning)
+    {
+        logger.info(`Scanning timed out on ${adapter.state.port}`);
+    }
+
     const immutableState = apiHelper.getImmutableAdapterState(adapterState);
     state = state.setIn(['adapters', adapterIndex, 'state'], immutableState);
 
