@@ -171,8 +171,8 @@ export default class CentralDevice extends Component {
 
 CentralDevice.propTypes = {
     id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    address: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    address: PropTypes.string,
     advertising: PropTypes.bool,
     onToggleAdvertising: PropTypes.func,
     onShowSetupDialog: PropTypes.func,

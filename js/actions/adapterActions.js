@@ -126,7 +126,7 @@ function _openAdapter(dispatch, getState, adapter) {
             flowControl: 'none',
             eventInterval: 10,
             logLevel: 'debug',
-            enableBLE: true,
+            enableBLE: false,
         };
 
         // Check if we already have an adapter open, if so, close it
@@ -139,6 +139,8 @@ function _openAdapter(dispatch, getState, adapter) {
         if (adapterToUse === null) {
             reject(new Error(`Not able to find ${adapter}.`));
         }
+
+        getState().adapter.api.selectedAdapter = adapterToUse;
 
         // Remove all old listeners before adding new ones
         adapterToUse.removeAllListeners();
@@ -242,16 +244,6 @@ function _openAdapter(dispatch, getState, adapter) {
             } else {
                 resolve(adapterToUse);
             }
-        });
-    }).then(adapter => {
-        return new Promise((resolve, reject) => {
-            adapter.getState((error, state) => {
-                if (error) {
-                    reject(new Error(error.message));
-                } else {
-                    resolve(adapter);
-                }
-            });
         });
     }).then(adapter => {
         dispatch(adapterOpenedAction(adapter));
@@ -505,7 +497,7 @@ function _enableBLE(dispatch, adapter) {
     }
 
     return new Promise((resolve, reject) => {
-        adapter.enableBLE(error => {
+        adapter.enableBLE(null, error => {
             if (error) {
                 reject(new Error(error.message));
             } else {
