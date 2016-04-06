@@ -678,14 +678,20 @@ function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
 function _replyLescOob(dispatch, getState, id, device, peerOob, ownOobData) {
     return new Promise((resolve, reject) => {
         const adapterToUse = getState().adapter.api.selectedAdapter;
-        const peerOobData = {
-            addr: {
-                address: device.address,
-                type: device.addressType,
-            },
-            r: hexStringToArray(peerOob.random),
-            c: hexStringToArray(peerOob.confirm),
-        };
+        let peerOobData;
+
+        if (peerOob.confirm === '' || peerOob.random === '') {
+            peerOobData = null;
+        } else {
+            peerOobData = {
+                addr: {
+                    address: device.address,
+                    type: device.addressType,
+                },
+                r: hexStringToArray(peerOob.random),
+                c: hexStringToArray(peerOob.confirm),
+            };
+        }
 
         logger.debug(`setLescOobData, ownOobData: ${JSON.stringify(ownOobData)}, peerOobData: ${JSON.stringify(peerOobData)}`);
 

@@ -122,17 +122,17 @@ export class AuthKeyEditor extends Component {
         if (keypressEnabled) {
             if (keypressCount !== undefined) {
                 let style = {
-                    backgroundColor: keypressStartReceived === true ? 'green' : 'red'
-                }
+                    backgroundColor: keypressStartReceived === true ? 'green' : 'red',
+                };
 
-                for(let i = 0; i < keypressCount; i++) {
+                for (let i = 0; i < keypressCount; i++) {
                     digitsTypedIn.push(
                         <div className='col-sm-1' style={style}>*</div>
                     );
                 }
 
                 if (keypressCount < 6) {
-                    for(let i = 0; i < 6 - keypressCount; i++) {
+                    for (let i = 0; i < 6 - keypressCount; i++) {
                         digitsTypedIn.push(
                             <div className='col-sm-1'  style={style}>-</div>
                         );
@@ -221,13 +221,13 @@ export class AuthKeyEditor extends Component {
         return (
             <form className='form-horizontal'>
                 <div className='form-group'>
-                    <label className='control-label col-sm-4'>OOB random</label>
+                    <label className='control-label col-sm-4'>Peer random</label>
                     <div className='col-sm-7'>
                         <Input
                             type='text' size={32} id='randomInputId' onChange={event => this.handleRandomChange(event)} />
                     </div>
 
-                    <label className='control-label col-sm-4'>OOB confirm value</label>
+                    <label className='control-label col-sm-4'>Peer confirm</label>
                     <div className='col-sm-7'>
                         <Input
                             type='text' size={32} id='confirmInputId' onChange={event => this.handleConfirmChange(event)} />
