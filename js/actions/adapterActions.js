@@ -121,147 +121,160 @@ function _getAdapters(dispatch) {
     });
 }
 
+function _setupListeners(dispatch, getState, adapterToUse) {
+    // Remove all old listeners before adding new ones
+    adapterToUse.removeAllListeners();
+
+    // Listen to errors from this adapter since we are opening it now
+    adapterToUse.on('error', error => {
+        // TODO: separate between what is an non recoverable adapter error
+        // TODO: and a recoverable error.
+        // TODO: adapterErrorAction should only be used if it is an unrecoverable errors.
+        // TODO: errorOccuredAction should be used for recoverable errors.
+        const message = (error.description && error.description.errcode) ?
+            `${error.message} (${error.description.errcode})`
+            : `${error.message}`;
+        dispatch(showErrorDialog(new Error(message)));
+    });
+
+    adapterToUse.on('logMessage', _onLogMessage);
+
+    // Listen to adapter changes
+    adapterToUse.on('stateChanged', state => {
+        dispatch(adapterStateChangedAction(adapterToUse, state));
+    });
+
+    adapterToUse.on('deviceDiscovered', device => {
+        dispatch(deviceDiscoveredAction(device));
+    });
+
+    adapterToUse.on('deviceConnected', device => {
+        _onDeviceConnected(dispatch, getState, device);
+    });
+
+    adapterToUse.on('deviceDisconnected', device => {
+        dispatch(deviceDisconnectedAction(device));
+    });
+
+    adapterToUse.on('connectTimedOut', deviceAddress => {
+        dispatch(deviceConnectTimeoutAction(deviceAddress));
+    });
+
+    adapterToUse.on('scanTimedOut', () => {
+        dispatch(scanTimeoutAction(adapterToUse));
+    });
+
+    adapterToUse.on('advertiseTimedOut', () => {
+        dispatch(advertiseTimeoutAction(adapterToUse));
+    });
+
+    adapterToUse.on('securityRequestTimedOut', device => {
+        dispatch(deviceSecurityRequestTimedOutAction(device));
+    });
+
+    adapterToUse.on('connParamUpdateRequest', (device, requestedConnectionParams) => {
+        _onConnParamUpdateRequest(dispatch, getState, device, requestedConnectionParams);
+    });
+
+    adapterToUse.on('connParamUpdate', device => {
+        _onConnParamUpdate(dispatch, getState, device);
+    });
+
+    adapterToUse.on('characteristicValueChanged', characteristic => {
+        dispatch(attributeValueChangedAction(characteristic, characteristic.value));
+    });
+
+    adapterToUse.on('descriptorValueChanged', descriptor => {
+        dispatch(attributeValueChangedAction(descriptor, descriptor.value));
+    });
+
+    adapterToUse.on('securityChanged', (device, connectionSecurity) => {
+        dispatch(securityChangedAction(device, connectionSecurity));
+    });
+
+    adapterToUse.on('securityRequest', (device, params) => {
+        _onSecurityRequest(dispatch, getState, device, params);
+    });
+
+    adapterToUse.on('secParamsRequest', (device, peerParams) => {
+        _onSecParamsRequest(dispatch, getState, device, peerParams);
+    });
+
+    adapterToUse.on('secInfoRequest', (device, params) => {
+        _onSecInfoRequest(dispatch, getState, device, params);
+    });
+
+    adapterToUse.on('authKeyRequest', (device, keyType) => {
+        _onAuthKeyRequest(dispatch, getState, device, keyType);
+    });
+
+    adapterToUse.on('passkeyDisplay', (device, matchRequest, passkey) => {
+        _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey);
+    });
+
+    adapterToUse.on('lescDhkeyRequest', (device, peerPublicKey, oobDataRequired) => {
+        _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobDataRequired);
+    });
+
+    adapterToUse.on('keyPressed', (device, keypressType) => {
+        _onKeyPressed(dispatch, getState, device, keypressType);
+    });
+
+    adapterToUse.on('authStatus', (device, params) => {
+        _onAuthStatus(dispatch, getState, device, params);
+    });
+
+    adapterToUse.on('status', status => {
+        _onStatus(dispatch, getState, status);
+    });
+}
+
 function _openAdapter(dispatch, getState, adapter) {
     return new Promise((resolve, reject) => {
-        const options = {
-            baudRate: 115200,
-            parity: 'none',
-            flowControl: 'none',
-            eventInterval: 10,
-            logLevel: 'debug',
-            enableBLE: false,
-        };
-
         // Check if we already have an adapter open, if so, close it
         if (getState().adapter.api.selectedAdapter !== null) {
-            _closeAdapter(dispatch, getState().adapter.api.selectedAdapter);
+            _closeAdapter(dispatch, getState().adapter.api.selectedAdapter).then(() => {
+                resolve();
+            }).catch(error => {
+                reject(error);
+            });
+        } else {
+            resolve();
         }
+    }).then((resolve, reject) => {
+        return new Promise((resolve, reject) => {
+            const options = {
+                baudRate: 115200,
+                parity: 'none',
+                flowControl: 'none',
+                eventInterval: 10,
+                logLevel: 'debug',
+                enableBLE: false,
+            };
 
-        const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
+            const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
 
-        if (adapterToUse === null) {
-            reject(new Error(`Not able to find ${adapter}.`));
-        }
-
-        getState().adapter.api.selectedAdapter = adapterToUse;
-
-        // Remove all old listeners before adding new ones
-        adapterToUse.removeAllListeners();
-
-        // Listen to errors from this adapter since we are opening it now
-        adapterToUse.on('error', error => {
-            // TODO: separate between what is an non recoverable adapter error
-            // TODO: and a recoverable error.
-            // TODO: adapterErrorAction should only be used if it is an unrecoverable errors.
-            // TODO: errorOccuredAction should be used for recoverable errors.
-            const message = (error.description && error.description.errcode) ?
-                `${error.message} (${error.description.errcode})`
-                : `${error.message}`;
-            dispatch(showErrorDialog(new Error(message)));
-        });
-
-        adapterToUse.on('logMessage', _onLogMessage);
-
-        // Listen to adapter changes
-        adapterToUse.on('stateChanged', state => {
-            dispatch(adapterStateChangedAction(adapterToUse, state));
-        });
-
-        adapterToUse.on('deviceDiscovered', device => {
-            dispatch(deviceDiscoveredAction(device));
-        });
-
-        adapterToUse.on('deviceConnected', device => {
-            _onDeviceConnected(dispatch, getState, device);
-        });
-
-        adapterToUse.on('deviceDisconnected', device => {
-            dispatch(deviceDisconnectedAction(device));
-        });
-
-        adapterToUse.on('connectTimedOut', deviceAddress => {
-            dispatch(deviceConnectTimeoutAction(deviceAddress));
-        });
-
-        adapterToUse.on('scanTimedOut', () => {
-            dispatch(scanTimeoutAction(adapterToUse));
-        });
-
-        adapterToUse.on('advertiseTimedOut', () => {
-            dispatch(advertiseTimeoutAction(adapterToUse));
-        });
-
-        adapterToUse.on('securityRequestTimedOut', device => {
-            dispatch(deviceSecurityRequestTimedOutAction(device));
-        });
-
-        adapterToUse.on('connParamUpdateRequest', (device, requestedConnectionParams) => {
-            _onConnParamUpdateRequest(dispatch, getState, device, requestedConnectionParams);
-        });
-
-        adapterToUse.on('connParamUpdate', device => {
-            _onConnParamUpdate(dispatch, getState, device);
-        });
-
-        adapterToUse.on('characteristicValueChanged', characteristic => {
-            dispatch(attributeValueChangedAction(characteristic, characteristic.value));
-        });
-
-        adapterToUse.on('descriptorValueChanged', descriptor => {
-            dispatch(attributeValueChangedAction(descriptor, descriptor.value));
-        });
-
-        adapterToUse.on('securityChanged', (device, connectionSecurity) => {
-            dispatch(securityChangedAction(device, connectionSecurity));
-        });
-
-        adapterToUse.on('securityRequest', (device, params) => {
-            _onSecurityRequest(dispatch, getState, device, params);
-        });
-
-        adapterToUse.on('secParamsRequest', (device, peerParams) => {
-            _onSecParamsRequest(dispatch, getState, device, peerParams);
-        });
-
-        adapterToUse.on('secInfoRequest', (device, params) => {
-            _onSecInfoRequest(dispatch, getState, device, params);
-        });
-
-        adapterToUse.on('authKeyRequest', (device, keyType) => {
-            _onAuthKeyRequest(dispatch, getState, device, keyType);
-        });
-
-        adapterToUse.on('passkeyDisplay', (device, matchRequest, passkey) => {
-            _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey);
-        });
-
-        adapterToUse.on('lescDhkeyRequest', (device, peerPublicKey, oobDataRequired) => {
-            _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobDataRequired);
-        });
-
-        adapterToUse.on('keyPressed', (device, keypressType) => {
-            _onKeyPressed(dispatch, getState, device, keypressType);
-        });
-
-        adapterToUse.on('authStatus', (device, params) => {
-            _onAuthStatus(dispatch, getState, device, params);
-        });
-
-        adapterToUse.on('status', status => {
-            _onStatus(dispatch, getState, status);
-        });
-
-        dispatch(adapterOpenAction(adapterToUse));
-
-        adapterToUse.open(options, error => {
-            if (error) {
-                reject(); // Let the error event inform the user about the error.
-            } else {
-                resolve(adapterToUse);
+            if (adapterToUse === null) {
+                reject(new Error(`Not able to find ${adapter}.`));
             }
+
+            getState().adapter.api.selectedAdapter = adapterToUse;
+
+            dispatch(adapterOpenAction(adapterToUse));
+
+            _setupListeners(dispatch, getState, adapterToUse);
+
+            adapterToUse.open(options, error => {
+                if (error) {
+                    console.log('ERROR DURING OPEN:' + JSON.stringify(error));
+                    reject(error); // Let the error event inform the user about the error.
+                } else {
+                    resolve(adapterToUse);
+                }
+            });
+        }).then(adapter => {
+            dispatch(adapterOpenedAction(adapter));
         });
-    }).then(adapter => {
-        dispatch(adapterOpenedAction(adapter));
     }).catch(error => {
         if (error) {
             dispatch(showErrorDialog(error));
@@ -492,6 +505,11 @@ function _onLogMessage(severity, message) {
 function _onStatus(dispatch, getState, status) {
     const adapterToUse = getState().adapter.api.selectedAdapter;
 
+    if (adapterToUse === undefined || adapterToUse === null) {
+        logger.error('Received status callback, but adapter is not selected yet.');
+        return;
+    }
+
     // Check if it is a reset performed status and if selectedAdapter is set.
     // selectedAdapter is set in the immutable state of the application after the adapter has been successfully opened.
     if (status.name === 'RESET_PERFORMED') {
@@ -508,6 +526,7 @@ function _onStatus(dispatch, getState, status) {
 function _enableBLE(dispatch, adapter) {
     // Adapter has been through state RESET and has now transitioned to CONNECTION_ACTIVE, we now need to enable the BLE stack
     if (!adapter) {
+        logger.error('Trying to enable BLE, but adapter not provided.');
         return;
     }
 
