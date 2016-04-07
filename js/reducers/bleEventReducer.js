@@ -334,6 +334,23 @@ function createUserInitiatedPairingEvent(state, device) {
     return newState;
 }
 
+function securityRequestTimedOut(state, device) {
+    if (!device) {
+        return state;
+    }
+
+    // Find given device event that has state INDETERMINATE and set it to ERROR
+    const events = state.events.filter((value, index) =>
+        (value.state === BLEEventState.INDETERMINATE) &&
+        (value.device.instanceId === device.instanceId));
+
+    events.forEach(event => {
+        state = updateEventStatus(state, event.id, BLEEventState.ERROR);
+    });
+
+    return state;
+}
+
 export default function bleEvent(state = initialState, action)
 {
     switch (action.type) {
@@ -369,6 +386,8 @@ export default function bleEvent(state = initialState, action)
             return updateEventStatus(state, action.id, action.status);
         case AdapterActions.DEVICE_PAIRING_STATUS:
             return updateEventStatus(state, action.id, action.status);
+        case AdapterActions.DEVICE_SECURITY_REQUEST_TIMEOUT:
+            return securityRequestTimedOut(state, action.device);
         case AdapterActions.DEVICE_CONNECTION_PARAM_UPDATE_STATUS:
             return updateEventStatus(state, action.id, action.status);
         case AdapterActions.DEVICE_DISCONNECTED:

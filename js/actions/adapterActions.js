@@ -34,6 +34,7 @@ export const DEVICE_CONNECT_CANCELED = 'DEVICE_CONNECT_CANCELED';
 export const DEVICE_INITIATE_PAIRING = 'DEVICE_INITIATE_PAIRING';
 export const DEVICE_SECURITY_CHANGED = 'DEVICE_SECURITY_CHANGED';
 export const DEVICE_ADD_BOND_INFO = 'DEVICE_ADD_BOND_INFO';
+export const DEVICE_SECURITY_REQUEST_TIMEOUT = 'DEVICE_SECURITY_REQUEST_TIMEOUT';
 
 export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
 export const DEVICE_CONNECTION_PARAM_UPDATE_STATUS = 'DEVICE_CONNECTION_PARAM_UPDATE_STATUS';
@@ -188,6 +189,10 @@ function _openAdapter(dispatch, getState, adapter) {
 
         adapterToUse.on('advertiseTimedOut', () => {
             dispatch(advertiseTimeoutAction(adapterToUse));
+        });
+
+        adapterToUse.on('securityRequestTimedOut', device => {
+            dispatch(deviceSecurityRequestTimedOutAction(device));
         });
 
         adapterToUse.on('connParamUpdateRequest', (device, requestedConnectionParams) => {
@@ -1059,6 +1064,13 @@ function advertiseTimeoutAction(adapter) {
     return {
         type: ADAPTER_ADVERTISEMENT_TIMEOUT,
         adapter,
+    };
+}
+
+function deviceSecurityRequestTimedOutAction(device) {
+    return {
+        type: DEVICE_SECURITY_REQUEST_TIMEOUT,
+        device,
     };
 }
 
