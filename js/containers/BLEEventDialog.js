@@ -146,27 +146,32 @@ export class BLEEventDialog extends Component {
                 <div className='bleevent-dialog'>
                     <div className='bleevent-dialog-view'>
                         <div className='service-items-wrap'>
+                            {console.log('A: ' + JSON.stringify(events))}
                             {
                                 events.map(event =>
-                                <BLEEvent
-                                    key={event.id}
-                                    ref={'event_' + event.id}
-                                    onSelected={eventId => this._onSelected(eventId)}
-                                    selected={selectedEventId === event.id}
-                                    event={event}
-                                    onTimedOut={
-                                        () => {
-                                            console.log('Guessing event timed out!');
+                                {
+                                    return <BLEEvent
+                                        key={event.id}
+                                        ref={'event_' + event.id}
+                                        onSelected={eventId => this._onSelected(eventId)}
+                                        selected={selectedEventId === event.id}
+                                        event={event}
+                                        onTimedOut={
+                                            () => {
+                                                console.log('Guessing event timed out!');
+                                            }
                                         }
-                                    }
-                                />
+                                    />
+                                }
                             )}
                         </div>
 
                         {events.map(event =>
-                            <div key={event.id} className='item-editor' style={ ((selectedEventId !== -1) && (selectedEventId === event.id) && event.state === BLEEventState.INDETERMINATE) ? {} : {display: 'none'}}>
-                                {this._getEditorComponent(event)}
-                            </div>
+                            {
+                                return <div key={event.id} className='item-editor' style={ ((selectedEventId !== -1) && (selectedEventId === event.id) && event.state === BLEEventState.INDETERMINATE) ? {} : {display: 'none'}}>
+                                    {this._getEditorComponent(event)}
+                                </div>
+                            }
                         )}
 
                         <div className='item-editor'

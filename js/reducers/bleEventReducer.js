@@ -23,7 +23,7 @@ import { Record, List, Map } from 'immutable';
 
 const InitialState = Record({
     visible: false,
-    events: List(),
+    events: Map(),
     selectedEventId: -1,
 });
 
@@ -99,7 +99,7 @@ function connectionUpdateParamRequest(state, device, requestedConnectionParams) 
         state: BLEEventState.INDETERMINATE,
     });
 
-    let newState = state.set('events', state.events.push(event));
+    let newState = state.setIn(['events', eventIndex], event);
     newState = newState.set('selectedEventId', eventIndex);
     newState = newState.set('visible', true);
     eventIndex++;
@@ -112,7 +112,10 @@ function updateEventStatus(state, eventId, eventState) {
         return state;
     }
 
-    return state.setIn(['events', eventId, 'state'], eventState);
+    console.log(`Update event status, eventId: ${eventId}, eventState: ${eventState}, events: ${state.events}`);
+    state = state.setIn(['events', eventId, 'state'], eventState);
+    console.log(`Update event status, events: ${state.events}`);
+    return state;
 }
 
 function selectEventId(state, selectedEventId) {
@@ -204,7 +207,7 @@ function createUserInitiatedConnParamsUpdateEvent(state, device) {
         state: BLEEventState.INDETERMINATE,
     });
 
-    let newState = state.set('events', state.events.push(event));
+    let newState = state.setIn(['events', eventIndex], event);
     newState = newState.set('selectedEventId', eventIndex);
     newState = newState.set('visible', true);
     eventIndex++;
@@ -223,7 +226,7 @@ function securityRequest(state, device) {
         state: BLEEventState.INDETERMINATE,
     });
 
-    let newState = state.set('events', state.events.push(event));
+    let newState = state.setIn(['events', eventIndex], event);
     newState = newState.set('selectedEventId', eventIndex);
     newState = newState.set('visible', true);
     eventIndex++;
@@ -247,7 +250,7 @@ function passkeyDisplay(state, device, matchRequest, passkey, receiveKeypress) {
         receiveKeypressEnabled: receiveKeypress,
     });
 
-    let newState = state.set('events', state.events.push(event));
+    let newState = state.setIn(['events', eventIndex], event);
     newState = newState.set('selectedEventId', eventIndex);
     newState = newState.set('visible', true);
     eventIndex++;
@@ -290,7 +293,7 @@ function authKeyRequest(state, device, keyType, sendKeypress) {
         sendKeypressEnabled: sendKeypress,
     });
 
-    let newState = state.set('events', state.events.push(event));
+    let newState = state.setIn(['events', eventIndex], event);
     newState = newState.set('selectedEventId', eventIndex);
     newState = newState.set('visible', true);
     eventIndex++;
@@ -307,7 +310,7 @@ function lescOobRequest(state, device, ownOobData) {
         ownOobData: ownOobData,
     });
 
-    let newState = state.set('events', state.events.push(event));
+    let newState = state.setIn(['events', eventIndex], event);
     newState = newState.set('selectedEventId', eventIndex);
     newState = newState.set('visible', true);
     eventIndex++;
@@ -326,7 +329,7 @@ function createUserInitiatedPairingEvent(state, device) {
         state: BLEEventState.INDETERMINATE,
     });
 
-    let newState = state.set('events', state.events.push(event));
+    let newState = state.setIn(['events', eventIndex], event);
     newState = newState.set('selectedEventId', eventIndex);
     newState = newState.set('visible', true);
     eventIndex++;
