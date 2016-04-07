@@ -146,7 +146,6 @@ export class BLEEventDialog extends Component {
                 <div className='bleevent-dialog'>
                     <div className='bleevent-dialog-view'>
                         <div className='service-items-wrap'>
-                            {console.log('A: ' + JSON.stringify(events))}
                             {
                                 events.map(event =>
                                 {

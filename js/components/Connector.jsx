@@ -33,8 +33,9 @@ export class ConnectionSetup extends Component {
             : (device.securityLevel === 4) ? 'LESC authenticated encrypted link'
             : 'Unencrypted link';
 
-        const iconClass = (device.securityLevel && (device.securityLevel > 1)) ? 'icon-lock'
-            : 'icon-lock-open';
+        const iconClass = (device.securityLevel && (device.securityLevel > 1)) ? 'icon-lock' : 'icon-lock-open';
+        const iconBondedClass = device.bonded ? 'icon-link' : '';
+        const bondedText = device.bonded ? 'Bonded' : 'Not bonded';
 
         return (
             <div className='connection-parameters'>
@@ -44,9 +45,9 @@ export class ConnectionSetup extends Component {
                 <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.slaveLatency} ms</span>
                 <span className='col-sm-8 col-xs-8 connection-parameter-label'>Timeout</span>
                 <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.connectionSupervisionTimeout} ms</span>
+                <span className={'col-sm-8 col-xs-8 ' + iconBondedClass}> {bondedText}</span>
+                <span className='col-sm-4 col-xs-4 connection-parameter-value'></span>
                 <span className={'connection-security ' + iconClass}> {securityLevelText}</span>
-                <span className='col-sm-8 col-xs-8 connection-parameter-label'>Bonded</span>
-                <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.bonded + ''}</span>
             </div>
         );
     }
