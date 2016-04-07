@@ -93,11 +93,11 @@ export class PairingEditor extends Component {
 
         const rejectButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING) ?
             <Button type='button' onClick={() => this.handleReject()}
-                className='btn btn-primary btn-sm btn-nordic'>Reject</Button> : '';
+                className='btn btn-default btn-sm btn-nordic'>Reject</Button> : '';
 
         const ignoreButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING) ?
             <Button type='button' onClick={() => this.handleCancel()}
-                className='btn btn-primary btn-sm btn-nordic'>Ignore</Button> : '';
+                className='btn btn-default btn-sm btn-nordic'>Ignore</Button> : '';
 
         return (
             <div>
