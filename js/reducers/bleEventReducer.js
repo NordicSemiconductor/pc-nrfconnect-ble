@@ -337,7 +337,7 @@ function createUserInitiatedPairingEvent(state, device) {
     return newState;
 }
 
-function securityRequestTimedOut(state, device) {
+function authErrorOccured(state, device) {
     if (!device) {
         return state;
     }
@@ -351,7 +351,11 @@ function securityRequestTimedOut(state, device) {
         state = updateEventStatus(state, event.id, BLEEventState.ERROR);
     });
 
-    return state;
+    return state;    
+}
+
+function securityRequestTimedOut(state, device) {
+    return authErrorOccured(state, device);
 }
 
 export default function bleEvent(state = initialState, action)
@@ -387,6 +391,8 @@ export default function bleEvent(state = initialState, action)
             return lescOobRequest(state, action.device, action.ownOobData);
         case AdapterActions.DEVICE_AUTHKEY_STATUS:
             return updateEventStatus(state, action.id, action.status);
+        case AdapterActions.DEVICE_AUTH_ERROR_OCCURED:
+            return authErrorOccured(state, action.device);
         case AdapterActions.DEVICE_PAIRING_STATUS:
             return updateEventStatus(state, action.id, action.status);
         case AdapterActions.DEVICE_SECURITY_REQUEST_TIMEOUT:

@@ -34,6 +34,7 @@ export const DEVICE_CONNECT_CANCELED = 'DEVICE_CONNECT_CANCELED';
 export const DEVICE_INITIATE_PAIRING = 'DEVICE_INITIATE_PAIRING';
 export const DEVICE_SECURITY_CHANGED = 'DEVICE_SECURITY_CHANGED';
 export const DEVICE_ADD_BOND_INFO = 'DEVICE_ADD_BOND_INFO';
+export const DEVICE_AUTH_ERROR_OCCURED = 'DEVICE_AUTH_ERROR_OCCURED';
 export const DEVICE_SECURITY_REQUEST_TIMEOUT = 'DEVICE_SECURITY_REQUEST_TIMEOUT';
 
 export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
@@ -450,7 +451,8 @@ function _onKeyPressed(dispatch, getState, device, keypressType) {
 
 function _onAuthStatus(dispatch, getState, device, params) {
     if (params.auth_status !== 0) {
-        logger.info(`Authentication failed with status ${params.auth_status_name}`);
+        logger.warn(`Authentication failed with status ${params.auth_status_name}`);
+        dispatch(deviceAuthErrorOccured(device));
         return;
     }
 
@@ -1083,6 +1085,13 @@ function advertiseTimeoutAction(adapter) {
     return {
         type: ADAPTER_ADVERTISEMENT_TIMEOUT,
         adapter,
+    };
+}
+
+function deviceAuthErrorOccured(device) {
+    return {
+        type: DEVICE_AUTH_ERROR_OCCURED,
+        device,
     };
 }
 
