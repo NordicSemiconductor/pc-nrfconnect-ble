@@ -1292,6 +1292,8 @@ export function replyNumericalComparisonMatch(id, device, match) {
     return (dispatch, getState) => {
         if (match) {
             return _replyAuthKey(dispatch, getState, id, device, 'BLE_GAP_AUTH_KEY_TYPE_PASSKEY', null);
+        } else {
+            return _replyAuthKey(dispatch, getState, id, device, 'BLE_GAP_AUTH_KEY_TYPE_NONE', null);
         }
     };
 }

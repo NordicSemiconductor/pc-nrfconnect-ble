@@ -181,10 +181,8 @@ export class AuthKeyEditor extends Component {
         return (
             <form className='form-horizontal'>
                 <div className='form-group'>
-                    <label className='control-label col-sm-4'>Passkey</label>
-                    <div className='col-sm-7'>
-                        <Input standalone readonly value={passkey}/>
-                    </div>
+                    <label className='col-sm-4'>Passkey</label>
+                    <label className='col-sm-7'>{passkey}</label>
                 </div>
                 <div className='form-group'>
                     <Button type='button' onClick={() => this.handleNumericalComparisonMatch(false)} className='btn btn-default btn-sm btn-nordic'>No match</Button>
