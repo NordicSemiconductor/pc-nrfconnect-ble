@@ -426,8 +426,9 @@ function _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey) {
 }
 
 function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequired) {
-    const peerPkHex = '04' + toHexString(peerPublicKey.pk).replace(/-/g, '');
-    const dhKey = adapterEcdh.computeSecret(peerPkHex, 'hex', 'hex');
+    let peerPkHex = toHexString(peerPublicKey.pk.reverse()).replace(/-/g, '');
+    peerPkHex = peerPkHex.match(/.{64}/g).reverse().join('');
+    const dhKey = adapterEcdh.computeSecret('04' + peerPkHex, 'hex', 'hex');
 
     const adapterToUse = getState().adapter.api.selectedAdapter;
     adapterToUse.replyLescDhkey(device.instanceId, Array.from(dhKey), error => {
