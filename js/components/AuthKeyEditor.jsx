@@ -111,8 +111,8 @@ export class AuthKeyEditor extends Component {
         }
 
         let digitsCreatedFormGroup = <div className='form-group'>
-            <label className='control-label col-sm-4'>Passkey</label>
-            <div className='col-sm-8'>
+            <label className='control-label col-sm-4' for='passkeydigits'>Passkey</label>
+            <div className='col-sm-8 form-control-static' id='passkeydigits'>
                 {digitsCreated}
             </div>
         </div>;
@@ -122,7 +122,9 @@ export class AuthKeyEditor extends Component {
         if (keypressEnabled) {
             if (keypressCount !== undefined) {
                 let style = {
-                    backgroundColor: keypressStartReceived === true ? 'green' : 'red',
+                    backgroundColor: keypressCount > 0 ?
+                                        (keypressCount == 6 ? 'green' : 'yellow')
+                                        : 'red',
                 };
 
                 for (let i = 0; i < keypressCount; i++) {
@@ -140,8 +142,8 @@ export class AuthKeyEditor extends Component {
                 }
 
                 digitsTypedInFormGroup = <div className='form-group'>
-                    <label className='control-label col-sm-4'>Typed</label>
-                    <div className='col-sm-8'>
+                    <label className='control-label col-sm-4' for='passkeytypedin'>Typed</label>
+                    <div className='col-sm-8 form-control-static' id='passkeytypedin'>
                         {digitsTypedIn}
                     </div>
                 </div>;
