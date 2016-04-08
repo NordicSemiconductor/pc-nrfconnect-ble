@@ -85,13 +85,15 @@ export class BLEEvent extends Component {
 
         let eventTimer = (<div/>);
 
-        if (event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE &&
-            event.state === BLEEventState.INDETERMINATE) {
-            eventTimer = (<CountdownTimer ref={countDownTimerRef} seconds={EVENT_TIMEOUT_SECONDS} onTimeout={() => onTimedOut()}/>);
-        }
-
-        if (event.type === BLEEventType.PEER_INITIATED_PAIRING &&
-            event.state === BLEEventState.INDETERMINATE) {
+        if ((event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE
+            || event.type === BLEEventType.PEER_INITIATED_PAIRING
+            || event.type === BLEEventType.PASSKEY_DISPLAY
+            || event.type === BLEEventType.PASSKEY_REQUEST
+            || event.type === BLEEventType.NUMERICAL_COMPARISON
+            || event.type === BLEEventType.LEGACY_OOB_REQUEST
+            || event.type === BLEEventType.LESC_OOB_REQUEST)
+            && (event.state === BLEEventState.INDETERMINATE || event.state === BLEEventState.PENDING)) 
+        {
             eventTimer = (<CountdownTimer ref={countDownTimerRef} seconds={EVENT_TIMEOUT_SECONDS} onTimeout={() => onTimedOut()}/>);
         }
 
