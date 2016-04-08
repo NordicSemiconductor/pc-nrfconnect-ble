@@ -227,7 +227,7 @@ export default class CharacteristicEditor extends Component {
                 <div className='form-group'>
                     <label htmlFor='characteristic-name' className='col-md-3 control-label'>Characteristic name</label>
                     <div className='col-md-9'>
-                        <input type='text' className='form-control' name='characteristic-name' value={this.name} onChange={e => this._setValueProperty('name', e)} />
+                        <Input type='text' className='form-control' name='characteristic-name' value={this.name} onChange={e => this._setValueProperty('name', e)} />
                     </div>
                 </div>
 
@@ -241,60 +241,60 @@ export default class CharacteristicEditor extends Component {
                 <div className='form-group'>
                     <label className='col-md-3 control-label'>Properties</label>
                     <div className='col-md-9'>
-                        <div className='checkbox'><label><input type='checkbox' ref='broadcast' checked={this.broadcast} onChange={e => this._setCheckedProperty('broadcast', e)} /> Broadcast </label></div>
-                        <div className='checkbox'><label><input type='checkbox' ref='read' checked={this.read} onChange={e => this._setCheckedProperty('read', e)} /> Read </label></div>
-                        <div className='checkbox'><label><input type='checkbox' ref='writeWithoutResponse' checked={this.write_wo_resp} onChange={e => this._setCheckedProperty('write_wo_resp', e)} /> Write without response</label></div>
-                        <div className='checkbox'><label><input type='checkbox' ref='write' checked={this.write} onChange={e => this._setCheckedProperty('write', e)} /> Write </label></div>
-                        <div className='checkbox'><label><input type='checkbox' ref='notify' checked={this.notify} onChange={e => this._setCheckedProperty('notify', e)} /> Notify </label></div>
-                        <div className='checkbox'><label><input type='checkbox' ref='indicate' checked={this.indicate} onChange={e => this._setCheckedProperty('indicate', e)} /> Indicate </label></div>
-                        <div className='checkbox'><label><input type='checkbox' ref='authenticatedSignedWrites' checked={this.auth_signed_wr} onChange={e => this._setCheckedProperty('auth_signed_wr', e)} /> Authenticated signed write </label></div>
+                        <Input type='checkbox' ref='broadcast' checked={this.broadcast} onChange={e => this._setCheckedProperty('broadcast', e)} label='Broadcast' />
+                        <Input type='checkbox' ref='read' checked={this.read} onChange={e => this._setCheckedProperty('read', e)} label='Read' />
+                        <Input type='checkbox' ref='writeWithoutResponse' checked={this.write_wo_resp} onChange={e => this._setCheckedProperty('write_wo_resp', e)} label='Write without response' />
+                        <Input type='checkbox' ref='write' checked={this.write} onChange={e => this._setCheckedProperty('write', e)} label='Write' />
+                        <Input type='checkbox' ref='notify' checked={this.notify} onChange={e => this._setCheckedProperty('notify', e)} label='Notify' />
+                        <Input type='checkbox' ref='indicate' checked={this.indicate} onChange={e => this._setCheckedProperty('indicate', e)} label='Indicate' />
+                        <Input type='checkbox' ref='authenticatedSignedWrites' checked={this.auth_signed_wr} onChange={e => this._setCheckedProperty('auth_signed_wr', e)} label='Authenticated signed write' />
                     </div>
                 </div>
 
                 <div className='form-group'>
                     <label className='col-md-3 control-label'>Extended properties</label>
                     <div className='col-md-9'>
-                        <div className='checkbox'><label><input type='checkbox' ref='reliableWrite' checked={this.reliable_wr} onChange={e => this._setCheckedProperty('reliable_wr', e)} /> Reliable write </label></div>
-                        <div className='checkbox'><label><input type='checkbox' ref='writeAuxiliary' checked={this.wr_aux} onChange={e => this._setCheckedProperty('wr_aux', e)} /> Write auxiliary </label></div>
+                        <Input type='checkbox' ref='reliableWrite' checked={this.reliable_wr} onChange={e => this._setCheckedProperty('reliable_wr', e)} label='Reliable write'/>
+                        <Input type='checkbox' ref='writeAuxiliary' checked={this.wr_aux} onChange={e => this._setCheckedProperty('wr_aux', e)} label='Write auxiliary'/>
                     </div>
                 </div>
 
                 <div className='form-group'>
                     <label className='col-md-3 control-label'>Read permission</label>
                     <div className='col-md-9'>
-                        <select className='form-control' value={this.readPerm} onChange={e => this._setValueProperty('readPerm', e)}>
+                        <Input type='select' className='form-control' value={this.readPerm} onChange={e => this._setValueProperty('readPerm', e)}>
                             <option value='open'>No security required</option>
                             <option value='encrypt'>Encryption required, no MITM</option>
                             <option value='encrypt mitm-protection'>Encryption and MITM required</option>
                             <option value='signed'>Signing or encryption required, no MITM</option>
                             <option value='signed mitm-protection'>Signing or encryption with MITM required</option>
                             <option value='no_access'>No access rights specified (undefined)</option>
-                        </select>
+                        </Input>
                     </div>
                 </div>
 
                 <div className='form-group'>
                     <label className='col-md-3 control-label'>Write permission</label>
                     <div className='col-md-9'>
-                        <select className='form-control' value={this.writePerm} onChange={e => this._setValueProperty('writePerm', e)}>
+                        <Input type='select' className='form-control' value={this.writePerm} onChange={e => this._setValueProperty('writePerm', e)}>
                             <option value='open'>No security required</option>
                             <option value='encrypt'>Encryption required, no MITM</option>
                             <option value='encrypt mitm-protection'>Encryption and MITM required</option>
                             <option value='signed'>Signing or encryption required, no MITM</option>
                             <option value='signed mitm-protection'>Signing or encryption with MITM required</option>
                             <option value='no_access'>No access rights specified (undefined)</option>
-                        </select>
+                        </Input>
                     </div>
                 </div>
 
                 <div className='form-group'>
                     <label className='col-md-3 control-label'>Max length</label>
                     <div className='col-md-9'>
-                        <div className='checkbox'><label><input type='checkbox' ref='fixedLength' checked={this.fixedLength} onChange={e => this._setCheckedProperty('fixedLength', e)} />Fixed length</label></div>
+                        <Input type='checkbox' ref='fixedLength' checked={this.fixedLength} onChange={e => this._setCheckedProperty('fixedLength', e)} label='Fixed length' />
                     </div>
 
                     <div className='col-md-offset-3 col-md-9'>
-                        <input type='number' min='0' max={this.fixedLength ? '510' : '512'} className='form-control' name='max-length' ref='maxLength' value={this.maxLength} onChange={e => this._setValueProperty('maxLength', e)} />
+                        <Input type='number' min='0' max={this.fixedLength ? '510' : '512'} className='form-control' name='max-length' ref='maxLength' value={this.maxLength} onChange={e => this._setValueProperty('maxLength', e)} />
                     </div>
                 </div>
 

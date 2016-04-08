@@ -21,6 +21,8 @@ import Component from 'react-pure-render/component';
 import listensToClickOutside from 'react-onclickoutside/decorator';
 import TextareaAutosize from 'react-textarea-autosize';
 
+import { Input } from 'react-bootstrap';
+
 import $ from 'jquery';
 
 @listensToClickOutside()
@@ -195,7 +197,7 @@ export default class EditableField extends Component {
         }
 
         if (this.props.plain) {
-            child = <TextareaAutosize {...this.props}
+            child = <Input type='textarea' {...this.props}
                                       ref='editableTextarea'
                                       minRows={1}
                                       onKeyDown={e => this._onKeyDown(e)}
