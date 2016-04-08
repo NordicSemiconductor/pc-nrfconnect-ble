@@ -133,6 +133,7 @@ export class BLEEvent extends Component {
             case BLEEventState.IGNORED:
                 return 'failed-item';
             case BLEEventState.INDETERMINATE:
+            case BLEEventState.PENDING:
                 return '';
             case BLEEventState.SUCCESS:
                 return 'success-item';

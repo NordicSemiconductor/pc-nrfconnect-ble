@@ -35,6 +35,7 @@ export const DEVICE_INITIATE_PAIRING = 'DEVICE_INITIATE_PAIRING';
 export const DEVICE_SECURITY_CHANGED = 'DEVICE_SECURITY_CHANGED';
 export const DEVICE_ADD_BOND_INFO = 'DEVICE_ADD_BOND_INFO';
 export const DEVICE_AUTH_ERROR_OCCURED = 'DEVICE_AUTH_ERROR_OCCURED';
+export const DEVICE_AUTH_SUCCESS_OCCURED = 'DEVICE_AUTH_SUCCESS_OCCURED';
 export const DEVICE_SECURITY_REQUEST_TIMEOUT = 'DEVICE_SECURITY_REQUEST_TIMEOUT';
 
 export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
@@ -452,9 +453,11 @@ function _onKeyPressed(dispatch, getState, device, keypressType) {
 function _onAuthStatus(dispatch, getState, device, params) {
     if (params.auth_status !== 0) {
         logger.warn(`Authentication failed with status ${params.auth_status_name}`);
-        dispatch(deviceAuthErrorOccured(device));
+        dispatch(deviceAuthErrorOccuredAction(device));
         return;
     }
+
+    dispatch(deviceAuthSuccessOccuredAction(device));
 
     if (!(params.keyset && params.keyset.keys_own && params.keyset.keys_own.enc_key
         && params.keyset.keys_own.enc_key && params.keyset.keys_own.id_key)) {
@@ -696,7 +699,7 @@ function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
                 resolve();
             });
         }).then(() => {
-            dispatch(authKeyStatusAction(id, device, BLEEventState.SUCCESS));
+            dispatch(pairingStatusAction(id, device, BLEEventState.PENDING));
         }).catch(error => {
             dispatch(showErrorDialog(error));
             dispatch(authKeyStatusAction(id, device, BLEEventState.ERROR));
@@ -734,7 +737,7 @@ function _replyLescOob(dispatch, getState, id, device, peerOob, ownOobData) {
             resolve();
         });
     }).then(() => {
-        dispatch(authKeyStatusAction(id, device, BLEEventState.SUCCESS));
+        dispatch(pairingStatusAction(id, device, BLEEventState.PENDING));
     }).catch(error => {
         dispatch(showErrorDialog(error));
         dispatch(authKeyStatusAction(id, device, BLEEventState.ERROR));
@@ -837,7 +840,7 @@ function _acceptPairing(dispatch, getState, id, device, securityParams) {
         }
     }).then(() => {
         dispatch(storeSecurityOwnParamsAction(device, securityParams));
-        dispatch(pairingStatusAction(id, device, BLEEventState.SUCCESS));
+        dispatch(pairingStatusAction(id, device, BLEEventState.PENDING));
     }).catch(() => {
         dispatch(pairingStatusAction(id, device, BLEEventState.ERROR));
     });
@@ -863,7 +866,7 @@ function _pairWithDevice(dispatch, getState, id, device, securityParams) {
         });
     }).then(() => {
         dispatch(storeSecurityOwnParamsAction(device, securityParams));
-        dispatch(pairingStatusAction(id, device, BLEEventState.SUCCESS));
+        dispatch(pairingStatusAction(id, device, BLEEventState.PENDING));
     }).catch(error => {
         dispatch(pairingStatusAction(id, device, BLEEventState.ERROR));
         dispatch(showErrorDialog(error));
@@ -1088,9 +1091,16 @@ function advertiseTimeoutAction(adapter) {
     };
 }
 
-function deviceAuthErrorOccured(device) {
+function deviceAuthErrorOccuredAction(device) {
     return {
         type: DEVICE_AUTH_ERROR_OCCURED,
+        device,
+    };
+}
+
+function deviceAuthSuccessOccuredAction(device) {
+    return {
+        type: DEVICE_AUTH_SUCCESS_OCCURED,
         device,
     };
 }

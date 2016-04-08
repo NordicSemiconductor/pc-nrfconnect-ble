@@ -30,6 +30,7 @@ export const BLEEventState = {
     INDETERMINATE: 4, // State is not determined yet, this is the start state for all events.
     SUCCESS: 5,       // Event has been processed and has succeeded
     IGNORED: 6,       // State used for events that the user has chosen to ignore
+    PENDING: 7,       // Event has been processed and is waiting to be resolved
 };
 
 export const BLEEventType = {

@@ -344,14 +344,31 @@ function authErrorOccured(state, device) {
 
     // Find given device event that has state INDETERMINATE and set it to ERROR
     const events = state.events.filter((value, index) =>
-        (value.state === BLEEventState.INDETERMINATE) &&
+        (value.state === BLEEventState.INDETERMINATE || value.state === BLEEventState.PENDING) &&
         (value.device.instanceId === device.instanceId));
 
     events.forEach(event => {
         state = updateEventStatus(state, event.id, BLEEventState.ERROR);
     });
 
-    return state;    
+    return state;
+}
+
+function authSuccessOccured(state, device) {
+    if (!device) {
+        return state;
+    }
+
+    // Find given device event that has state INDETERMINATE and set it to ERROR
+    const events = state.events.filter((value, index) =>
+        (value.state === BLEEventState.INDETERMINATE || value.state === BLEEventState.PENDING) &&
+        (value.device.instanceId === device.instanceId));
+
+    events.forEach(event => {
+        state = updateEventStatus(state, event.id, BLEEventState.SUCCESS);
+    });
+
+    return state;
 }
 
 function securityRequestTimedOut(state, device) {
@@ -393,6 +410,8 @@ export default function bleEvent(state = initialState, action)
             return updateEventStatus(state, action.id, action.status);
         case AdapterActions.DEVICE_AUTH_ERROR_OCCURED:
             return authErrorOccured(state, action.device);
+        case AdapterActions.DEVICE_AUTH_SUCCESS_OCCURED:
+            return authSuccessOccured(state, action.device);
         case AdapterActions.DEVICE_PAIRING_STATUS:
             return updateEventStatus(state, action.id, action.status);
         case AdapterActions.DEVICE_SECURITY_REQUEST_TIMEOUT:
