@@ -22,6 +22,11 @@ export const BLE_EVENT_REMOVE = 'BLE_EVENT_REMOVE';
 export const BLE_EVENT_CREATE_USER_INITIATED_CONN_PARAMS_UPDATE_EVENT = 'BLE_EVENT_CREATE_USER_INITIATED_CONN_PARAMS_UPDATE_EVENT';
 export const BLE_EVENT_CREATE_USER_INITIATED_PAIRING_EVENT = 'BLE_EVENT_CREATE_USER_INITIATED_PAIRING_EVENT';
 
+function _createUserInitiatedPairingEventAction(dispatch, getState, device) {
+    const defaultSecParams =  getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'securityParams']);
+    dispatch(createUserInitiatedPairingEventAction(device, defaultSecParams));
+}
+
 function showDialogAction(visible) {
     return {
         type: BLE_EVENT_SHOW_DIALOG,
@@ -70,10 +75,11 @@ function createUserInitiatedConnParamsUpdateEventAction(device) {
     };
 }
 
-function createUserInitiatedPairingEventAction(device) {
+function createUserInitiatedPairingEventAction(device, defaultSecParams) {
     return {
         type: BLE_EVENT_CREATE_USER_INITIATED_PAIRING_EVENT,
         device,
+        defaultSecParams,
     };
 }
 
@@ -103,9 +109,11 @@ export function clearAllEvents() {
 }
 
 export function createUserInitiatedConnParamsUpdateEvent(device) {
-    return createUserInitiatedConnParamsUpdateEventAction(device);
+    return createUserInitiatedConnParamsUpdateEvent(device);
 }
 
 export function createUserInitiatedPairingEvent(device) {
-    return createUserInitiatedPairingEventAction(device);
+    return (dispatch, getState) => {
+        return _createUserInitiatedPairingEventAction(dispatch, getState, device);
+    };
 }

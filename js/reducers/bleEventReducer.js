@@ -18,6 +18,7 @@ import * as AdapterActions from '../actions/adapterActions';
 import { BLEEventState, BLEEventType } from '../actions/common';
 
 import * as apiHelper from '../utils/api';
+import { getImmutableSecurityParameters } from '../reducers/securityReducer';
 
 import { Record, List, Map } from 'immutable';
 
@@ -112,9 +113,7 @@ function updateEventStatus(state, eventId, eventState) {
         return state;
     }
 
-    console.log(`Update event status, eventId: ${eventId}, eventState: ${eventState}, events: ${state.events}`);
     state = state.setIn(['events', eventId, 'state'], eventState);
-    console.log(`Update event status, events: ${state.events}`);
     return state;
 }
 
@@ -215,13 +214,15 @@ function createUserInitiatedConnParamsUpdateEvent(state, device) {
     return newState;
 }
 
-function securityRequest(state, device) {
-    const initialPairingParams = new PairingParameters();
+function securityRequest(state, device, secParams) {
+    console.log(`secParams: ${JSON.stringify(secParams)}`);
+    const immutableSecParams = getImmutableSecurityParameters(secParams);
+    console.log(`PairingParameters: ${JSON.stringify(immutableSecParams)}`);
 
     const event = new Event({
         type: BLEEventType.PEER_INITIATED_PAIRING,
         device: apiHelper.getImmutableDevice(device),
-        pairingParameters: initialPairingParams,
+        pairingParameters: immutableSecParams,
         id: eventIndex,
         state: BLEEventState.INDETERMINATE,
     });
@@ -318,13 +319,14 @@ function lescOobRequest(state, device, ownOobData) {
     return newState;
 }
 
-function createUserInitiatedPairingEvent(state, device) {
-    const initialPairingParams = new PairingParameters();
+function createUserInitiatedPairingEvent(state, device, defaultSecParams) {
+    const immutableSecParams = getImmutableSecurityParameters(defaultSecParams);
+    console.log(`PairingParameters: ${JSON.stringify(immutableSecParams)}`);
 
     const event = new Event({
         type: BLEEventType.USER_INITIATED_PAIRING,
         device: apiHelper.getImmutableDevice(device),
-        pairingParameters: initialPairingParams,
+        pairingParameters: immutableSecParams,
         id: eventIndex,
         state: BLEEventState.INDETERMINATE,
     });
@@ -389,13 +391,13 @@ export default function bleEvent(state = initialState, action)
         case BLEEventActions.BLE_EVENT_CREATE_USER_INITIATED_CONN_PARAMS_UPDATE_EVENT:
             return createUserInitiatedConnParamsUpdateEvent(state, action.device);
         case BLEEventActions.BLE_EVENT_CREATE_USER_INITIATED_PAIRING_EVENT:
-            return createUserInitiatedPairingEvent(state, action.device);
+            return createUserInitiatedPairingEvent(state, action.device, action.defaultSecParams);
         case BLEEventActions.BLE_EVENT_REMOVE:
             return removeEvent(state, action.eventId);
         case AdapterActions.DEVICE_CONNECTION_PARAM_UPDATE_REQUEST:
             return connectionUpdateParamRequest(state, action.device, action.requestedConnectionParams);
         case AdapterActions.DEVICE_SECURITY_REQUEST:
-            return securityRequest(state, action.device);
+            return securityRequest(state, action.device, action.params);
         case AdapterActions.DEVICE_PASSKEY_DISPLAY:
             return passkeyDisplay(state, action.device, action.matchRequest, action.passkey, action.receiveKeypress);
         case AdapterActions.DEVICE_PASSKEY_KEYPRESS_SENT:

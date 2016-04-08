@@ -336,7 +336,7 @@ function _onSecurityRequest(dispatch, getState, device, params) {
         dispatch(storeSecurityOwnParamsAction(device, defaultSecParams));
         _authenticate(dispatch, getState, device, defaultSecParams);
     } else {
-        dispatch(securityRequestAction(device));
+        dispatch(securityRequestAction(device, params));
     }
 }
 
@@ -364,7 +364,13 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
             if (selectedAdapter.security.autoAcceptPairing) {
                 _acceptPairing(dispatch, getState, -1, device, defaultSecParams);
             } else {
-                dispatch(securityRequestAction(device));
+                const secParams = {
+                    bond: peerParams.bond,
+                    mitm: peerParams.mitm,
+                    lesc: peerParams.lesc,
+                    keypress: peerParams.keypress,
+                };
+                dispatch(securityRequestAction(device, secParams));
             }
         }
     } else if (device.role === 'peripheral') {
@@ -832,7 +838,7 @@ function _acceptPairing(dispatch, getState, id, device, securityParams) {
                     reject(new Error(error.message));
                 }
 
-                logger.debug(`ReplySecParams, secParams: ${securityParams}`);
+                logger.debug(`ReplySecParams, secParams: ${JSON.stringify(securityParams)}, secKeyset: ${JSON.stringify(secKeyset)}`);
                 resolve();
             });
         } else {
@@ -1166,10 +1172,11 @@ function lescOobRequestAction(device, ownOobData) {
     };
 }
 
-function securityRequestAction(device) {
+function securityRequestAction(device, params) {
     return {
         type: DEVICE_SECURITY_REQUEST,
         device,
+        params,
     };
 }
 

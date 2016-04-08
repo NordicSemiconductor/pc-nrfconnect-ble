@@ -47,6 +47,10 @@ const SecurityParameters = Record({
     },
 });
 
+export function getImmutableSecurityParameters(params) {
+    return new SecurityParameters(params);
+}
+
 const EncryptionInfo = Record({
     ltk: List(),
     lesc: false,

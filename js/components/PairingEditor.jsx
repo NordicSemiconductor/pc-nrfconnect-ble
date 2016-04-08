@@ -25,9 +25,9 @@ export class PairingEditor extends Component {
     constructor(props) {
         super(props);
 
-        const { security } = props;
+        const { event } = props;
 
-        this.secParams = security ? security.securityParams : null;
+        this.secParams = event && event.pairingParameters ? event.pairingParameters : null;
     }
 
     handleSecParamsChange(params) {
@@ -105,7 +105,7 @@ export class PairingEditor extends Component {
                     <h4>{title}</h4>
                 </div>
                 <form className='form-horizontal'>
-                    <SecurityParamsControls onChange={secParams => this.handleSecParamsChange(secParams)} securityParams={security.securityParams} />
+                    <SecurityParamsControls onChange={secParams => this.handleSecParamsChange(secParams)} securityParams={event.pairingParameters} />
                     <div className='form-group'>
                         {cancelButton}
                         {ignoreButton}
