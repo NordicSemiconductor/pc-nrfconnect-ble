@@ -352,13 +352,21 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
     if (device.role === 'central') {
         if (device.ownPeriphInitiatedPairingPending) {
             // If pairing initiated by own peripheral, proceed directly with replySecParams
-            adapterToUse.replySecParams(device.instanceId, 0, defaultSecParams, secKeyset, error => {
+            let periphInitSecParams = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter,
+                'security', 'connectionsSecParameters', device.address, 'ownParams']);
+
+            if (!periphInitSecParams) {
+                logger.info(`Could not retrieve stored security params, using default params`);
+                periphInitSecParams = defaultSecParams;
+            }
+
+            adapterToUse.replySecParams(device.instanceId, 0, periphInitSecParams, secKeyset, error => {
                 if (error) {
                     logger.warn(`Error when calling replySecParams: ${error}`);
                 }
 
-                logger.debug(`ReplySecParams, secParams: ${defaultSecParams}`);
-                dispatch(storeSecurityOwnParamsAction(device, defaultSecParams));
+                logger.debug(`ReplySecParams, secParams: ${periphInitSecParams}`);
+                dispatch(storeSecurityOwnParamsAction(device, periphInitSecParams));
             });
         } else {
             if (selectedAdapter.security.autoAcceptPairing) {
@@ -860,8 +868,6 @@ function _pairWithDevice(dispatch, getState, id, device, securityParams) {
         if (!adapterToUse) {
             reject(new Error('No adapter selected!'));
         }
-
-        const bondInfo = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'bondStore', device.address]);
 
         adapterToUse.authenticate(device.instanceId, securityParams, error => {
             if (error) {
