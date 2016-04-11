@@ -30,8 +30,8 @@ export default class ServiceEditor extends Component{
         super(props);
     }
 
-    handleUuidSelect(event, eventKey) {
-        this._onUuidChange(eventKey);
+    _handleUuidSelect(uuid) {
+        this._onUuidChange(uuid);
     }
 
     validateUuidInput() {

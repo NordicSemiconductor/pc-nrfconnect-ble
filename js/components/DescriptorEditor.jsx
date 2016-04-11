@@ -135,8 +135,8 @@ export default class DescriptorEditor extends Component {
         this.props.onModified(false);
     }
 
-    _handleUuidSelect(event, eventKey) {
-        this.uuid = eventKey;
+    _handleUuidSelect(uuid) {
+        this.uuid = uuid;
         let uuidName = getUuidName(this.uuid);
 
         if (this.uuid !== uuidName) {
