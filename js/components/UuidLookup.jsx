@@ -14,7 +14,7 @@
 
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
-import { Dropdown, DropdownButton, MenuItem, Input } from 'react-bootstrap';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 import { uuidDefinitions } from '../utils/uuid_definitions';
 
 export default class UuidLookup extends Component {
@@ -23,7 +23,7 @@ export default class UuidLookup extends Component {
     }
 
     formatUuid(value) {
-        if (!value) return value;
+        if (!value) { return value; }
 
         if (value.length > 8) {
             return value.slice(0, 8) + '... ';

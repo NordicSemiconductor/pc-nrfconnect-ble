@@ -15,27 +15,27 @@
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 
-import { Input } from 'react-bootstrap';
-
-import UuidLookup from '../components/UuidLookup';
+import { ButtonToolbar, Button } from 'react-bootstrap';
 
 import { uuidServiceDefinitions } from '../utils/uuid_definitions';
 import { getUuidName } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
 
-const SUCCESS = 'success';
-const ERROR = 'error';
+import SetupInput from './input/SetupInput';
+import SetupUuidInput from './input/SetupUuidInput';
+import { ERROR, validateUuid } from '../utils/validateUuid';
 
 export default class ServiceEditor extends Component{
     constructor(props) {
         super(props);
     }
 
-    validateUuidInput() {
-        const uuid16regex = /^[0-9a-fA-F]{4}$/;
-        const uuid128regex = /^[0-9a-fA-F]{32}$/;
+    handleUuidSelect(event, eventKey) {
+        this._onUuidChange(eventKey);
+    }
 
-        return uuid16regex.test(this.uuid) || uuid128regex.test(this.uuid) ? SUCCESS : ERROR;
+    validateUuidInput() {
+        return validateUuid(this.uuid);
     }
 
     _onUuidChange(uuid) {
@@ -81,10 +81,6 @@ export default class ServiceEditor extends Component{
         this.props.onModified(false);
     }
 
-    handleUuidSelect(event, eventKey) {
-        this._onUuidChange(eventKey);
-    }
-
     render() {
         const {
             service,
@@ -105,31 +101,17 @@ export default class ServiceEditor extends Component{
         }
 
         return (
-        <form className='form-horizontal native-key-bindings'>
-          <div className='form-group'>
-            <label htmlFor='uuid' className='col-md-3 control-label'>Service UUID</label>
-            <div className='col-md-7'>
-              <Input type='text' className='form-control' name='uuid' value={this.uuid}
-                onChange={e => this._onUuidChange(e.target.value)} hasFeedback bsStyle={this.validateUuidInput()} />
-            </div>
-            <div className='col-md-1'>
-              <UuidLookup onSelect={(event, eventKey) => this.handleUuidSelect(event, eventKey)}
-                title={'Predefined service UUIDs'} uuidDefs={uuidServiceDefinitions} pullRight={true}/>
-            </div>
-          </div>
-          <div className='form-group'>
-            <label htmlFor='service-name' className='col-md-3 control-label'>Service name</label>
-            <div className='col-md-9'>
-              <Input type='text' className='form-control' name='service-name' value={this.name} onChange={e => this._onNameChange(e)} />
-            </div>
-          </div>
-          <div className='form-group'>
-            <div className='col-md-offset-3 col-md-9 padded-row'>
-              <button type='button' className='btn btn-primary btn-nordic' onClick={onRemoveAttribute}><i className='icon-cancel'/> Delete</button>
-              <button type='button' className='btn btn-primary btn-nordic' onClick={() => this._saveAttribute()}>Save</button>
-            </div>
-          </div>
-        </form>
+            <form className='form-horizontal native-key-bindings'>
+                <SetupUuidInput label='Service UUID' name='uuid' value={this.uuid}
+                    onChange={e => this._onUuidChange(e)} uuidDefinitions={uuidServiceDefinitions}
+                    handleSelection={uuid => this._handleUuidSelect(uuid)} />
+                <SetupInput label='Service name' type='text' name='service-name' value={this.name} onChange={e => this._onNameChange(e)} />
+                <ButtonToolbar>
+                    <div className='col-md-4' />
+                    <Button bsStyle='primary' className='btn-nordic' onClick={onRemoveAttribute}><i className='icon-cancel'/>Delete</Button>
+                    <Button bsStyle='primary' className='btn-nordic' onClick={() => this._saveAttribute()}>Save</Button>
+                </ButtonToolbar>
+            </form>
         );
     }
 }

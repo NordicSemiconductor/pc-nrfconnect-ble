@@ -40,19 +40,19 @@ export default class HexOnlyEditableField extends Component {
         There's a lot of complexity here related to keeping the caret in the right position.
     */
     _keyPressValidation(str) {
-        const _hexRegEx = /^[0-9a-fA-F\-]*$/i;
+        const _hexRegEx = /^[0-9a-fA-F\ ]*$/i;
         return _hexRegEx.test(str);
     }
 
     _formatInput(str, caretPosition) {
         caretPosition = this._calcCaretPosition(str, caretPosition);
-        let chars = str.toUpperCase().replace(/-/g, '').split('');
-        //insert dashes after every second char
+        let chars = str.toUpperCase().replace(/ /g, '').split('');
+        //insert spaces after every second char
         let inserted = 0;
         const originalLength = chars.length;
 
         for (let i = 2; i < originalLength; i += 2) {
-            chars.splice(i + inserted, 0, '-');
+            chars.splice(i + inserted, 0, ' ');
             inserted += 1;
         }
 
@@ -62,40 +62,30 @@ export default class HexOnlyEditableField extends Component {
         };
     }
 
-    _onBeforeBackspace(e) {
-        //when backspace will remove a dash, also remove the character before the dash
+    _removeSelection(e, caretModifier) {
         const selectionStart = e.target.selectionStart;
         const selectionEnd = e.target.selectionEnd;
         if (selectionStart !== selectionEnd) {
             return;
         }
 
-        const caret = selectionStart;
+        const caret = selectionStart + caretModifier;
         let str = e.target.value;
-        if (str.substr(caret - 1, 1) === '-') {
+
+        if (str.substr(caret, 1) === ' ') {
             //remove the dash - this sets the caret at end of the text
-            e.target.value = str.slice(0, caret - 1) + str.slice(caret);
+            e.target.value = str.slice(0, caret) + str.slice(caret + 1);
             //reset the caret back to before the dash, so the backspace event itself will remove the char before the dash
-            e.target.setSelectionRange(caret - 1, caret - 1);
+            e.target.setSelectionRange(caret, caret);
         }
     }
 
+    _onBeforeBackspace(e) {
+        this._removeSelection(e, -1);
+    }
+
     _onBeforeDelete(e) {
-        const selectionStart = e.target.selectionStart;
-        const selectionEnd = e.target.selectionEnd;
-        if (selectionStart !== selectionEnd) {
-            return;
-        }
-
-        const caret = selectionStart;
-        let str = e.target.value;
-
-        if (str.substr(caret, 1) === '-') {
-            //remove the dash - this sets the caret at end of the text
-            e.target.value = str.slice(0, caret) + str.slice(caret + 1);
-            //reset the caret back to after the dash, so the delete event itself will remove the char after the dash
-            e.target.setSelectionRange(caret, caret);
-        }
+        this._removeSelection(e, 0);
     }
 
     _calcCaretPosition(origValue, caretPosition) {
@@ -135,11 +125,11 @@ export default class HexOnlyEditableField extends Component {
         const valueArray = str.split('-');
         for (let value of valueArray) {
             if (value.length % 2 !== 0) {
-                return {valid: false, validationMessage: 'Please enter full bytes (pairs of hexadecimals)'};
+                return { valid: false, validationMessage: 'Please enter full bytes (pairs of hexadecimals)' };
             }
         }
 
-        return {valid: true, validationMessage: 'Valid value'};
+        return { valid: true, validationMessage: 'Valid value' };
     }
 
     _getValueArray(value) {
@@ -159,14 +149,14 @@ export default class HexOnlyEditableField extends Component {
     }
 
     render() {
-        const {value, keyPressValidation, completeValidation, formatInput, onBeforeBackspace, onBeforeDelete, ...props} = this.props; //pass along all props except these
+        const { value, keyPressValidation, completeValidation, formatInput, onBeforeBackspace, onBeforeDelete, ...props } = this.props; //pass along all props except these
 
         let parsedValue = value;
 
         if (value.constructor === Array) {
-        // Convert from array [1, 10, 16, 20] to hex string "01-0A-10-14"
+            // Convert from array [1, 10, 16, 20] to hex string "01-0A-10-14"
             const hexValueStringArray = value.map(decimalNumber => ('0' + decimalNumber.toString(16)).slice(-2));
-            parsedValue = hexValueStringArray.join('-').toUpperCase();
+            parsedValue = hexValueStringArray.join(' ').toUpperCase();
         }
 
         //formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
