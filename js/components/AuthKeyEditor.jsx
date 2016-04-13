@@ -151,19 +151,19 @@ export class AuthKeyEditor extends Component {
         }
 
         return (
-            <form className='form-horizontal'>
+            <div>
                 {digitsCreatedFormGroup}
                 {digitsTypedInFormGroup}
                 <div className='form-group'>
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-primary btn-sm btn-nordic'>OK</Button>
                 </div>
-            </form>
+            </div>
         );
     }
 
     createPasskeyRequestControls() {
         return (
-            <form className='form-horizontal'>
+            <div>
                 <div className='form-group'>
                     <label className='control-label col-sm-4'>Passkey</label>
                     <div className='col-sm-7'>
@@ -175,13 +175,13 @@ export class AuthKeyEditor extends Component {
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
                     <Button type='button' onClick={() => this.handlePasskeySubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
                 </div>
-            </form>
+            </div>
         );
     }
 
     createNumericalComparisonControls(passkey) {
         return (
-            <form className='form-horizontal'>
+            <div>
                 <div className='form-group'>
                     <label className='col-sm-4'>Passkey</label>
                     <label className='col-sm-7'>{passkey}</label>
@@ -190,13 +190,13 @@ export class AuthKeyEditor extends Component {
                     <Button type='button' onClick={() => this.handleNumericalComparisonMatch(false)} className='btn btn-default btn-sm btn-nordic'>No match</Button>
                     <Button type='button' onClick={() => this.handleNumericalComparisonMatch(true)} className='btn btn-primary btn-sm btn-nordic'>Match</Button>
                 </div>
-            </form>
+            </div>
         );
     }
 
     createLegacyOobRequestControls() {
         return (
-            <form className='form-horizontal'>
+            <div>
                 <div className='form-group'>
                     <label className='control-label col-sm-4'>Out-of-band data</label>
                     <div className='col-sm-7'>
@@ -208,7 +208,7 @@ export class AuthKeyEditor extends Component {
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
                     <Button type='button' onClick={() => this.handleOobSubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
                 </div>
-            </form>
+            </div>
         );
     }
 
@@ -219,7 +219,7 @@ export class AuthKeyEditor extends Component {
         const confirm = toHexString(event.ownOobData.c).replace(/-/g, '');
 
         return (
-            <form className='form-horizontal'>
+            <div>
                 <div className='form-group'>
                     <label className='control-label col-sm-4'>Peer random</label>
                     <div className='col-sm-7'>
@@ -249,7 +249,7 @@ export class AuthKeyEditor extends Component {
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
                     <Button type='button' onClick={() => this.handleLescOobSubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
                 </div>
-            </form>
+            </div>
         );
     }
 
@@ -275,7 +275,9 @@ export class AuthKeyEditor extends Component {
                 <div className='event-header'>
                     <h4>{title}</h4>
                 </div>
-                {controls}
+                <form className='form-horizontal' onSubmit={event => event.preventDefault()}>
+                    {controls}
+                </form>
             </div>
         );
     }
