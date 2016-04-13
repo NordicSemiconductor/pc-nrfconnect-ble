@@ -215,9 +215,7 @@ function createUserInitiatedConnParamsUpdateEvent(state, device) {
 }
 
 function securityRequest(state, device, secParams) {
-    console.log(`secParams: ${JSON.stringify(secParams)}`);
     const immutableSecParams = getImmutableSecurityParameters(secParams);
-    console.log(`PairingParameters: ${JSON.stringify(immutableSecParams)}`);
 
     const event = new Event({
         type: BLEEventType.PEER_INITIATED_PAIRING,

@@ -104,14 +104,14 @@ export class AuthKeyEditor extends Component {
         const digitsCreated = [];
         const digitsTypedIn = [];
 
-        for (let i of passkey) {
+        for (let i = 0; i < 6; i++) {
             digitsCreated.push(
-                <div className='col-sm-1'>{i}</div>
+                <div key={'digitsCreated' + i} className='col-sm-1'>{passkey[i]}</div>
             );
         }
 
         let digitsCreatedFormGroup = <div className='form-group'>
-            <label className='control-label col-sm-4' for='passkeydigits'>Passkey</label>
+            <label className='control-label col-sm-4' htmlFor='passkeydigits'>Passkey</label>
             <div className='col-sm-8 form-control-static' id='passkeydigits'>
                 {digitsCreated}
             </div>
@@ -129,20 +129,20 @@ export class AuthKeyEditor extends Component {
 
                 for (let i = 0; i < keypressCount; i++) {
                     digitsTypedIn.push(
-                        <div className='col-sm-1' style={style}>*</div>
+                        <div key={'digitsTyped' + i} className='col-sm-1' style={style}>*</div>
                     );
                 }
 
                 if (keypressCount < 6) {
                     for (let i = 0; i < 6 - keypressCount; i++) {
                         digitsTypedIn.push(
-                            <div className='col-sm-1'  style={style}>-</div>
+                            <div key={'count' + i} className='col-sm-1'  style={style}>-</div>
                         );
                     }
                 }
 
                 digitsTypedInFormGroup = <div className='form-group'>
-                    <label className='control-label col-sm-4' for='passkeytypedin'>Typed</label>
+                    <label className='control-label col-sm-4' htmlFor='passkeytypedin'>Typed</label>
                     <div className='col-sm-8 form-control-static' id='passkeytypedin'>
                         {digitsTypedIn}
                     </div>
@@ -236,13 +236,13 @@ export class AuthKeyEditor extends Component {
                     <label className='control-label col-sm-4'>Own random</label>
                     <div className='col-sm-7'>
                         <Input readOnly
-                            type='text' size={32} id='passkeyInputId' value={random} />
+                            type='text' size={32} id='randomInputId' value={random} />
                     </div>
 
                     <label className='control-label col-sm-4'>Own confirm</label>
                     <div className='col-sm-7'>
                         <Input readOnly
-                            type='text' size={32} id='passkeyInputId' value={confirm} />
+                            type='text' size={32} id='confirmInputId' value={confirm} />
                     </div>
                 </div>
                 <div className='form-group'>
