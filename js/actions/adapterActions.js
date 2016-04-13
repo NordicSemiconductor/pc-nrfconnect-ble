@@ -397,23 +397,24 @@ function _onSecInfoRequest(dispatch, getState, device, params) {
 
     const bondInfo = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'bondStore', device.address]);
 
-    if (!bondInfo) {
-        logger.info(`Received security info request, but no record found for address ${device.address}`);
-        return;
+    let encInfo;
+    let idInfo;
+
+    if (bondInfo) {
+        encInfo = bondInfo.getIn(['keys_own', 'enc_key', 'enc_info']).toJS();
+        idInfo = bondInfo.getIn(['keys_own', 'id_key', 'id_info']).toJS();
+    } else {
+        logger.info(`Peer requested encryption, but no keys are found for address ${device.address}`);
+        encInfo = null;
+        idInfo = null;
     }
 
-    const encInfo = bondInfo.getIn(['keys_own', 'enc_key', 'enc_info']);
-    const idInfo = bondInfo.getIn(['keys_own', 'id_key', 'id_info']);
-
-    const encInfoJs = encInfo.toJS();
-    const idInfoJs = idInfo.toJS();
-
-    adapterToUse.secInfoReply(device.instanceId, encInfoJs, idInfoJs, null, error => {
+    adapterToUse.secInfoReply(device.instanceId, encInfo, idInfo, null, error => {
         if (error) {
             logger.warn(`Error when calling secInfoReply: ${error}`);
         }
 
-        logger.debug(`SecInfoReply, ${JSON.stringify(encInfoJs)}, ${JSON.stringify(idInfoJs)}`);
+        logger.debug(`SecInfoReply, ${JSON.stringify(encInfo)}, ${JSON.stringify(idInfo)}`);
     });
 }
 
