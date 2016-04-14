@@ -22,6 +22,9 @@ import { SecurityParamsControls } from '../components/SecurityParamsControls';
 import { BLEEventType } from '../actions/common';
 import { toHexString } from '../utils/stringUtil';
 
+const SUCCESS = 'success';
+const ERROR = 'error';
+
 export class AuthKeyEditor extends Component {
     constructor(props) {
         super(props);
@@ -29,6 +32,8 @@ export class AuthKeyEditor extends Component {
         this.authKeyInput = '';
         this.randomInput = '';
         this.confirmInput = '';
+
+        this.validationFeedbackEnabled = false;
     }
 
     handlePasskeyChange(event) {
@@ -54,6 +59,7 @@ export class AuthKeyEditor extends Component {
         }
 
         this.authKeyInput = event.target.value;
+        this.forceUpdate();
     }
 
     handleRandomChange(event) {
@@ -67,17 +73,37 @@ export class AuthKeyEditor extends Component {
     handlePasskeySubmit() {
         const { onAuthKeySubmit } = this.props;
 
+        if (this.validatePasskeyInput(this.authKeyInput) !== SUCCESS) {
+            this.validationFeedbackEnabled = true;
+            this.forceUpdate();
+            return;
+        }
+
         onAuthKeySubmit('BLE_GAP_AUTH_KEY_TYPE_PASSKEY', this.authKeyInput);
     }
 
     handleOobSubmit() {
         const { onAuthKeySubmit } = this.props;
 
+        if (this.validateOobInput(this.authKeyInput) !== SUCCESS) {
+            this.validationFeedbackEnabled = true;
+            this.forceUpdate();
+            return;
+        }
+
         onAuthKeySubmit('BLE_GAP_AUTH_KEY_TYPE_OOB', this.authKeyInput);
     }
 
     handleLescOobSubmit() {
         const { onLescOobSubmit } = this.props;
+
+        if (this.validateOobInput(this.confirmInput) !== SUCCESS ||
+            this.validateOobInput(this.randomInput) !== SUCCESS)
+        {
+            this.validationFeedbackEnabled = true;
+            this.forceUpdate();
+            return;
+        }
 
         onLescOobSubmit({
             confirm: this.confirmInput,
@@ -98,6 +124,26 @@ export class AuthKeyEditor extends Component {
         } = this.props;
 
         onCancel();
+    }
+
+    validatePasskeyInput(value) {
+        if ((!value && value !== '')) {
+            return ERROR;
+        } else if (value.search(/^\d{6}$/) === -1) {
+            return ERROR;
+        } else {
+            return SUCCESS;
+        }
+    }
+
+    validateOobInput(value) {
+        if ((!value && value !== '')) {
+            return ERROR;
+        } else if (value.search(/^[0-9a-fA-F]{32}$/) === -1) {
+            return ERROR;
+        } else {
+            return SUCCESS;
+        }
     }
 
     createPasskeyDisplayControls(passkey, keypressEnabled, keypressStartReceived, keypressEndReceived, keypressCount) {
@@ -168,7 +214,12 @@ export class AuthKeyEditor extends Component {
                     <label className='control-label col-sm-4'>Passkey</label>
                     <div className='col-sm-7'>
                         <Input
-                            type='text' size={6} id='passkeyInputId' onChange={event => this.handlePasskeyChange(event)} />
+                            type='text' size={6} defaultValue=''
+                            id='passkeyInputId'
+                            hasFeedback={this.validationFeedbackEnabled}
+                            placeholder='Enter passkey'
+                            bsStyle={this.validatePasskeyInput(this.authKeyInput)}
+                            onChange={event => this.handlePasskeyChange(event)} />
                     </div>
                 </div>
                 <div className='form-group'>
@@ -201,7 +252,12 @@ export class AuthKeyEditor extends Component {
                     <label className='control-label col-sm-4'>Out-of-band data</label>
                     <div className='col-sm-7'>
                         <Input
-                            type='text' size={6} id='passkeyInputId' onChange={event => this.handlePasskeyChange(event)} />
+                            type='text' size={32} defaultValue=''
+                            id='oobInputId'
+                            hasFeedback={this.validationFeedbackEnabled}
+                            placeholder='Enter out-of-band data'
+                            bsStyle={this.validateOobInput(this.authKeyInput)}
+                            onChange={event => this.handlePasskeyChange(event)} />
                     </div>
                 </div>
                 <div className='form-group'>
@@ -224,13 +280,23 @@ export class AuthKeyEditor extends Component {
                     <label className='control-label col-sm-4'>Peer random</label>
                     <div className='col-sm-7'>
                         <Input
-                            type='text' size={32} id='randomInputId' onChange={event => this.handleRandomChange(event)} />
+                            type='text' size={32} defaultValue=''
+                            id='randomInputId'
+                            hasFeedback={this.validationFeedbackEnabled}
+                            placeholder='Enter out-of-band data'
+                            bsStyle={this.validateRandomInput(this.randomInput)}
+                            onChange={event => this.handleRandomChange(event)} />
                     </div>
 
                     <label className='control-label col-sm-4'>Peer confirm</label>
                     <div className='col-sm-7'>
                         <Input
-                            type='text' size={32} id='confirmInputId' onChange={event => this.handleConfirmChange(event)} />
+                            type='text' size={32} defaultValue=''
+                            id='confirmInputId'
+                            hasFeedback={this.validationFeedbackEnabled}
+                            placeholder='Enter out-of-band data'
+                            bsStyle={this.validateOobInput(this.confirmInput)}
+                            onChange={event => this.handleConfirmChange(event)} />
                     </div>
 
                     <label className='control-label col-sm-4'>Own random</label>
