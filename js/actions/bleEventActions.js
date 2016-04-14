@@ -109,7 +109,7 @@ export function clearAllEvents() {
 }
 
 export function createUserInitiatedConnParamsUpdateEvent(device) {
-    return createUserInitiatedConnParamsUpdateEvent(device);
+    return createUserInitiatedConnParamsUpdateEventAction(device);
 }
 
 export function createUserInitiatedPairingEvent(device) {
