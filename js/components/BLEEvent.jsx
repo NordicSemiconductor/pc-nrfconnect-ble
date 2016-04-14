@@ -92,7 +92,7 @@ export class BLEEvent extends Component {
             || event.type === BLEEventType.NUMERICAL_COMPARISON
             || event.type === BLEEventType.LEGACY_OOB_REQUEST
             || event.type === BLEEventType.LESC_OOB_REQUEST)
-            && (event.state === BLEEventState.INDETERMINATE || event.state === BLEEventState.PENDING)) 
+            && (event.state === BLEEventState.INDETERMINATE))
         {
             eventTimer = (<CountdownTimer ref={countDownTimerRef} seconds={EVENT_TIMEOUT_SECONDS} onTimeout={() => onTimedOut()}/>);
         }
