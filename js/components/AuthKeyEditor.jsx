@@ -197,19 +197,19 @@ export class AuthKeyEditor extends Component {
         }
 
         return (
-            <div>
+            <form className='form-horizontal' onSubmit={event => { this.handleCancel(); event.preventDefault(); }}>
                 {digitsCreatedFormGroup}
                 {digitsTypedInFormGroup}
                 <div className='form-group'>
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-primary btn-sm btn-nordic'>OK</Button>
                 </div>
-            </div>
+            </form>
         );
     }
 
     createPasskeyRequestControls() {
         return (
-            <div>
+            <form className='form-horizontal' onSubmit={event => { this.handlePasskeySubmit(); event.preventDefault(); }}>
                 <div className='form-group'>
                     <label className='control-label col-sm-4'>Passkey</label>
                     <div className='col-sm-7'>
@@ -226,13 +226,13 @@ export class AuthKeyEditor extends Component {
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
                     <Button type='button' onClick={() => this.handlePasskeySubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
                 </div>
-            </div>
+            </form>
         );
     }
 
     createNumericalComparisonControls(passkey) {
         return (
-            <div>
+            <form className='form-horizontal' onSubmit={event => { this.handleNumericalComparisonMatch(true); event.preventDefault(); }}>
                 <div className='form-group'>
                     <label className='col-sm-4'>Passkey</label>
                     <label className='col-sm-7'>{passkey}</label>
@@ -241,13 +241,13 @@ export class AuthKeyEditor extends Component {
                     <Button type='button' onClick={() => this.handleNumericalComparisonMatch(false)} className='btn btn-default btn-sm btn-nordic'>No match</Button>
                     <Button type='button' onClick={() => this.handleNumericalComparisonMatch(true)} className='btn btn-primary btn-sm btn-nordic'>Match</Button>
                 </div>
-            </div>
+            </form>
         );
     }
 
     createLegacyOobRequestControls() {
         return (
-            <div>
+            <form className='form-horizontal' onSubmit={event => { this.handleOobSubmit(); event.preventDefault(); }}>
                 <div className='form-group'>
                     <label className='control-label col-sm-4'>Out-of-band data</label>
                     <div className='col-sm-7'>
@@ -264,7 +264,7 @@ export class AuthKeyEditor extends Component {
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
                     <Button type='button' onClick={() => this.handleOobSubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
                 </div>
-            </div>
+            </form>
         );
     }
 
@@ -275,7 +275,7 @@ export class AuthKeyEditor extends Component {
         const confirm = toHexString(event.ownOobData.c).replace(/-/g, '');
 
         return (
-            <div>
+            <form className='form-horizontal' onSubmit={event => { this.handleLescOobSubmit(); event.preventDefault(); }}>
                 <div className='form-group'>
                     <label className='control-label col-sm-4'>Peer random</label>
                     <div className='col-sm-7'>
@@ -315,7 +315,7 @@ export class AuthKeyEditor extends Component {
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
                     <Button type='button' onClick={() => this.handleLescOobSubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
                 </div>
-            </div>
+            </form>
         );
     }
 
@@ -341,9 +341,7 @@ export class AuthKeyEditor extends Component {
                 <div className='event-header'>
                     <h4>{title}</h4>
                 </div>
-                <form className='form-horizontal' onSubmit={event => event.preventDefault()}>
-                    {controls}
-                </form>
+                {controls}
             </div>
         );
     }
