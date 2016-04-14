@@ -34,7 +34,7 @@ export class ConnectionSetup extends Component {
             : 'Unencrypted link';
 
         const iconClass = (device.securityLevel && (device.securityLevel > 1)) ? 'icon-lock' : 'icon-lock-open';
-        const iconBondedClass = device.bonded ? 'icon-link' : '';
+        const iconBondedClass = device.bonded ? 'icon-link' : 'icon-unlink';
         const bondedText = device.bonded ? 'Bonded' : 'Not bonded';
 
         return (
@@ -45,7 +45,8 @@ export class ConnectionSetup extends Component {
                 <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.slaveLatency} ms</span>
                 <span className='col-sm-8 col-xs-8 connection-parameter-label'>Timeout</span>
                 <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.connectionSupervisionTimeout} ms</span>
-                <span className={'col-sm-8 col-xs-8 ' + iconBondedClass}> {bondedText}</span>
+
+                <span className={'col-sm-8 col-xs-8 top-spacer ' + iconBondedClass}> {bondedText}</span>
                 <span className='col-sm-4 col-xs-4 connection-parameter-value'></span>
                 <span className={'connection-security ' + iconClass}> {securityLevelText}</span>
             </div>

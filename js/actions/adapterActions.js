@@ -499,6 +499,8 @@ function _authenticate(dispatch, getState, device, securityParams) {
 
             resolve(adapterToUse);
         });
+    }).catch(error => {
+        dispatch(showErrorDialog(error));
     });
 }
 
@@ -673,21 +675,21 @@ function _rejectPairing(dispatch, getState, id, device) {
 function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
     const adapterToUse = getState().adapter.api.selectedAdapter;
 
-    if (adapterToUse === null) {
-        reject(new Error('No adapter selected!'));
-    }
-
     // Check if we shall send keypressEnd based
     // on keypressStart has been sent previously
     const keypressStartSent = getState().bleEvent.getIn(
         [
             'events',
             id,
-            'keypressStartSent'
+            'keypressStartSent',
         ]
     );
 
     return new Promise((resolve, reject) => {
+        if (adapterToUse === null) {
+            reject(new Error('No adapter selected!'));
+        }
+
         if (keypressStartSent === true) {
             adapterToUse.notifyKeypress(device.instanceId, driver.BLE_GAP_KP_NOT_TYPE_PASSKEY_END, error => {
                 if (error) {
@@ -767,10 +769,10 @@ function _sendKeypress(dispatch, getState, eventId, device, keypressType) {
         [
             'events',
             eventId,
-            'keypressStartSent'
+            'keypressStartSent',
         ]);
 
-    if (adapterToUse == null) {
+    if (adapterToUse === null) {
         dispatch(showErrorDialog('No adapter selected!'));
         return;
     }
