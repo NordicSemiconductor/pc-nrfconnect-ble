@@ -22,6 +22,11 @@ export default class UuidLookup extends Component {
         super(props);
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        // Assuming that the content is static so it doesn't need to be updated after first rendering
+        return false;
+    }
+
     formatUuid(value) {
         if (!value) { return value; }
 
