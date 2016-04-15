@@ -361,6 +361,7 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
             adapterToUse.replySecParams(device.instanceId, 0, periphInitSecParams, secKeyset, error => {
                 if (error) {
                     logger.warn(`Error when calling replySecParams: ${error}`);
+                    dispatch(deviceAuthErrorOccuredAction(device));
                 }
 
                 logger.debug(`ReplySecParams, secParams: ${periphInitSecParams}`);
@@ -383,6 +384,7 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
         adapterToUse.replySecParams(device.instanceId, 0, null, secKeyset, error => {
             if (error) {
                 logger.warn(`Error when calling replySecParams: ${error}`);
+                dispatch(deviceAuthErrorOccuredAction(device));
             }
 
             logger.debug(`ReplySecParams, secParams: null`);
@@ -410,6 +412,7 @@ function _onSecInfoRequest(dispatch, getState, device, params) {
     adapterToUse.secInfoReply(device.instanceId, encInfo, idInfo, null, error => {
         if (error) {
             logger.warn(`Error when calling secInfoReply: ${error}`);
+            dispatch(deviceAuthErrorOccuredAction(device));
         }
 
         logger.debug(`SecInfoReply, ${JSON.stringify(encInfo)}, ${JSON.stringify(idInfo)}`);
@@ -439,6 +442,7 @@ function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequ
     adapterToUse.replyLescDhkey(device.instanceId, dhKey, error => {
         if (error) {
             logger.warn(`Error when sending LESC DH key`);
+            dispatch(deviceAuthErrorOccuredAction(device));
             return;
         }
     });
@@ -447,6 +451,7 @@ function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequ
     adapterToUse.getLescOobData(device.instanceId, publicKey, (error, ownOobData) => {
         if (error) {
             logger.warn(`Error in getLescOobData: ${error.message}`);
+            dispatch(deviceAuthErrorOccuredAction(device));
             return;
         }
 
@@ -491,6 +496,7 @@ function _authenticate(dispatch, getState, device, securityParams) {
         adapterToUse.authenticate(device.instanceId, securityParams, error => {
             if (error) {
                 reject(new Error(error.message));
+                dispatch(deviceAuthErrorOccuredAction(device));
             }
 
             resolve(adapterToUse);
