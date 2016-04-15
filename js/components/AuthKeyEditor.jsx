@@ -284,7 +284,7 @@ export class AuthKeyEditor extends Component {
                             id='randomInputId'
                             hasFeedback={this.validationFeedbackEnabled}
                             placeholder='Enter out-of-band data'
-                            bsStyle={this.validateRandomInput(this.randomInput)}
+                            bsStyle={this.validateOobInput(this.randomInput)}
                             onChange={event => this.handleRandomChange(event)} />
                     </div>
 
