@@ -71,21 +71,17 @@ import { logger } from '../logging';
 import { discoverServices } from './deviceDetailsActions';
 import { BLEEventState } from './common';
 import { showErrorDialog } from './errorDialogActions';
-import { createECDH } from 'crypto';
 import { toHexString, hexStringToArray } from '../utils/stringUtil';
 
 const _adapterFactory = api.AdapterFactory.getInstance();
 
-const adapterEcdh = createECDH('prime256v1');
-adapterEcdh.generateKeys();
 // TODO: move to security reducer?
 const secKeyset = {
     keys_own: {
         enc_key: null,
         id_key: null,
         sign_key: null,
-        pk: { pk: Array.from(adapterEcdh.getPublicKey()).slice(1),
-        },
+        pk: null,
     },
     keys_peer: {
         enc_key: null,
@@ -349,6 +345,8 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
 
     dispatch(storeSecurityPeerParamsAction(device, peerParams));
 
+    secKeyset.keys_own.pk = { pk: adapterToUse.computePublicKey() };
+
     if (device.role === 'central') {
         if (device.ownPeriphInitiatedPairingPending) {
             // If pairing initiated by own peripheral, proceed directly with replySecParams
@@ -424,7 +422,6 @@ function _onAuthKeyRequest(dispatch, getState, device, keyType) {
     const secParameters = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'connectionsSecParameters', device.address]);
     const sendKeypress = secParameters.peerParams.keypress === true && secParameters.ownParams.keypress === true;
 
-
     dispatch(authKeyRequestAction(device, keyType, sendKeypress));
 }
 
@@ -435,19 +432,18 @@ function _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey) {
 }
 
 function _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobdRequired) {
-    let peerPkHex = toHexString(peerPublicKey.pk.reverse()).replace(/-/g, '');
-    peerPkHex = peerPkHex.match(/.{64}/g).reverse().join('');
-    const dhKey = adapterEcdh.computeSecret('04' + peerPkHex, 'hex');
-
     const adapterToUse = getState().adapter.api.selectedAdapter;
-    adapterToUse.replyLescDhkey(device.instanceId, Array.from(dhKey), error => {
+
+    const dhKey = adapterToUse.computeSharedSecret(peerPublicKey);
+
+    adapterToUse.replyLescDhkey(device.instanceId, dhKey, error => {
         if (error) {
             logger.warn(`Error when sending LESC DH key`);
             return;
         }
     });
 
-    const publicKey = Array.from(adapterEcdh.getPublicKey()).slice(1);
+    const publicKey = adapterToUse.computePublicKey();
     adapterToUse.getLescOobData(device.instanceId, publicKey, (error, ownOobData) => {
         if (error) {
             logger.warn(`Error in getLescOobData: ${error.message}`);
@@ -475,8 +471,8 @@ function _onAuthStatus(dispatch, getState, device, params) {
 
     dispatch(deviceAuthSuccessOccuredAction(device));
 
-    if (!(params.keyset && params.keyset.keys_own && params.keyset.keys_own.enc_key
-        && params.keyset.keys_own.enc_key && params.keyset.keys_own.id_key)) {
+    if (!(params.keyset && params.keyset.keys_own && params.keyset.keys_own.pk &&
+          params.keyset.keys_own.enc_key && params.keyset.keys_own.id_key)) {
         return;
     }
 
@@ -499,8 +495,6 @@ function _authenticate(dispatch, getState, device, securityParams) {
 
             resolve(adapterToUse);
         });
-    }).catch(error => {
-        dispatch(showErrorDialog(error));
     });
 }
 
@@ -675,6 +669,10 @@ function _rejectPairing(dispatch, getState, id, device) {
 function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
     const adapterToUse = getState().adapter.api.selectedAdapter;
 
+    if (adapterToUse === null) {
+        reject(new Error('No adapter selected!'));
+    }
+
     // Check if we shall send keypressEnd based
     // on keypressStart has been sent previously
     const keypressStartSent = getState().bleEvent.getIn(
@@ -686,10 +684,6 @@ function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
     );
 
     return new Promise((resolve, reject) => {
-        if (adapterToUse === null) {
-            reject(new Error('No adapter selected!'));
-        }
-
         if (keypressStartSent === true) {
             adapterToUse.notifyKeypress(device.instanceId, driver.BLE_GAP_KP_NOT_TYPE_PASSKEY_END, error => {
                 if (error) {
@@ -834,6 +828,8 @@ function _acceptPairing(dispatch, getState, id, device, securityParams) {
         if (adapterToUse === null) {
             reject(new Error('No adapter selected!'));
         }
+
+        secKeyset.keys_own.pk = { pk: adapterToUse.computePublicKey() };
 
         if (device.role === 'peripheral') {
             adapterToUse.authenticate(device.instanceId, securityParams, error => {
