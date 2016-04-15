@@ -64,10 +64,12 @@ export class AuthKeyEditor extends Component {
 
     handleRandomChange(event) {
         this.randomInput = event.target.value;
+        this.forceUpdate();
     }
 
     handleConfirmChange(event) {
         this.confirmInput = event.target.value;
+        this.forceUpdate();
     }
 
     handlePasskeySubmit() {
@@ -139,6 +141,8 @@ export class AuthKeyEditor extends Component {
     validateOobInput(value) {
         if ((!value && value !== '')) {
             return ERROR;
+        } else if (value === '') {
+            return SUCCESS;
         } else if (value.search(/^[0-9a-fA-F]{32}$/) === -1) {
             return ERROR;
         } else {

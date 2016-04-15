@@ -144,7 +144,7 @@ export default class CentralDevice extends Component {
                                             eventKey='SetSecurityParams'>Security parameters...</MenuItem>);
                                         items.push(<MenuItem key='autoAcceptPairing'
                                             title='Automatically accept security requests'
-                                            eventKey='ToggleAutoAcceptPairing'><i className={iconCheckmarkPairing} />Auto accept security requests</MenuItem>);
+                                            eventKey='ToggleAutoAcceptPairing'><i className={iconCheckmarkPairing} />Auto reply security requests</MenuItem>);
                                         items.push(<MenuItem key='deleteBondInfo'
                                             title='Delete bond information'
                                             eventKey='DeleteBondInfo'>Delete bond information</MenuItem>);
