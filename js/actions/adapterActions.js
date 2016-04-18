@@ -681,7 +681,7 @@ function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
 
     // Check if we shall send keypressEnd based
     // on keypressStart has been sent previously
-    const keypressStartSent = getState().bleEvent.getIn(
+    const sendKeypress = getState().bleEvent.getIn(
         [
             'events',
             id,
@@ -690,7 +690,7 @@ function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
     );
 
     return new Promise((resolve, reject) => {
-        if (keypressStartSent === true) {
+        if (sendKeypress === true) {
             adapterToUse.notifyKeypress(device.instanceId, driver.BLE_GAP_KP_NOT_TYPE_PASSKEY_END, error => {
                 if (error) {
                     reject(new Error(error.message));
@@ -702,7 +702,9 @@ function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
             resolve();
         }
     }).then(() => {
-        dispatch(keypressSentAction(id, device, 'BLE_GAP_KP_NOT_TYPE_PASSKEY_END'));
+        if (sendKeypress === true) {
+            dispatch(keypressSentAction(id, device, 'BLE_GAP_KP_NOT_TYPE_PASSKEY_END'));
+        }
 
         return new Promise((resolve, reject) => {
             const keyTypeInt = (keyType === 'BLE_GAP_AUTH_KEY_TYPE_PASSKEY') ? 1
