@@ -81,11 +81,11 @@ export default class HexOnlyEditableField extends Component {
     }
 
     _onBeforeBackspace(e) {
-        () => this._removeSelection(e, -1)();
+        this._removeSelection(e, -1);
     }
 
     _onBeforeDelete(e) {
-        () => this._removeSelection(e, 0)();
+        this._removeSelection(e, 0);
     }
 
     _calcCaretPosition(origValue, caretPosition) {
@@ -165,8 +165,8 @@ export default class HexOnlyEditableField extends Component {
                               keyPressValidation={this._keyPressValidation}
                               completeValidation={str => this._completeValidation(str)}
                               formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
-                              onBeforeBackspace={this._onBeforeBackspace}
-                              onBeforeDelete={this._onBeforeDelete}
+                              onBeforeBackspace={e => this._onBeforeBackspace(e)}
+                              onBeforeDelete={e => this._onBeforeDelete(e)}
                               getValueArray={value => this._getValueArray(value)}
                               ref='editableField' />;
     }
