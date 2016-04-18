@@ -67,7 +67,7 @@ export default class CharacteristicEditor extends Component {
         }
 
         if (typeof value === 'string') {
-            const valueArray = value.split('-');
+            const valueArray = value.split(' ');
             return valueArray.map(value => parseInt(value, 16));
         }
 
