@@ -19,6 +19,7 @@ fi
 export YGGDRASIL_DEPLOY_DIR=../nrfconnect-deploy
 export YGGDRASIL_ELECTRON_VERSION=0.36.7
 export YGGDRASIL_ELECTRON_ARCH=x64
+#export YGGDRASIL_ELECTRON_ARCH=ia32
 
 export npm_config_runtime=electron
 export npm_config_target=$YGGDRASIL_ELECTRON_VERSION
@@ -60,11 +61,7 @@ electron-packager . $YGGDRASIL_NAME --platform=$YGGDRASIL_PLATFORM --arch=$npm_c
 cp README.md $YGGDRASIL_APP_ROOT_DIR/README.txt
 cp LICENSE $YGGDRASIL_APP_ROOT_DIR/LICENSE
 mkdir $YGGDRASIL_APP_ROOT_DIR/hex
-cp node_modules/pc-ble-driver-js/driver/hex/connectivity_115k2_sdk-10.0.0_s130-1.0.0.hex $YGGDRASIL_APP_ROOT_DIR/hex/connectivity_115k2_sdk-10.0.0_s130-1.0.0.hex
-
-if [ "$YGGDRASIL_PLATFORM" = "linux" ]; then
-  cp node_modules/pc-ble-driver-js/driver/lib/libs130_nrf51_ble_driver.so $YGGDRASIL_APP_ROOT_DIR
-fi
+cp node_modules/pc-ble-driver-js/driver/hex/connectivity_115k2_with_s13*_2.0.1.hex $YGGDRASIL_APP_ROOT_DIR/hex/
 
 pushd .
 
