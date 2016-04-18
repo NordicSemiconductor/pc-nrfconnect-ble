@@ -81,11 +81,11 @@ export default class HexOnlyEditableField extends Component {
     }
 
     _onBeforeBackspace(e) {
-        this._removeSelection(e, -1);
+        () => this._removeSelection(e, -1)();
     }
 
     _onBeforeDelete(e) {
-        this._removeSelection(e, 0);
+        () => this._removeSelection(e, 0)();
     }
 
     _calcCaretPosition(origValue, caretPosition) {
