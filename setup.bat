@@ -5,6 +5,12 @@ pushd %CD%
 echo "Removing node_modules to ensure clean build"
 rmdir /s /q node_modules
 
+echo "Node version"
+call node --version
+
+echo "NPM version"
+call npm --version
+
 echo "Installing global npm requirements"
 REM call npm install -g npm
 REM If you mess up your npm version (which may happen with 3.X series on Windows)
