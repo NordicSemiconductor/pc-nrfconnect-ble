@@ -36,7 +36,7 @@ set YGGDRASIL_VERSION=0.0.0
 
 :versionSet
 echo "Setting environment variables"
-set YGGDRASIL_DEPLOY_DIR=..\deploy
+set YGGDRASIL_DEPLOY_DIR=c:\tmp\yggdrasil-deploy
 set YGGDRASIL_ELECTRON_VERSION=0.36.7
 set YGGDRASIL_ELECTRON_ARCH=ia32
 
