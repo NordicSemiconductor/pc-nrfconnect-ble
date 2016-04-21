@@ -25,19 +25,26 @@ global.logFileDir = app.getPath('userData');
 const dialog = require('electron').dialog;
 var ipcMain = require('ipc-main');
 
-ipcMain.on('save-server-setup', function(event, arg) {
-    event.sender.send('save-server-setup-reply', dialog.showSaveDialog());
+ipcMain.on('save-server-setup', function (event, arg) {
+    event.sender.send('save-server-setup-reply', dialog.showSaveDialog({ filters: [{ name: 'nRF Connect Server Setup', extensions: ['ncs'] },
+                                                                                   { name: 'All Files', extensions: ['*'] },
+                                                                               ],
+                                                                        }));
 });
 
-ipcMain.on('load-server-setup', function(event, arg) {
-    event.sender.send('load-server-setup-reply', dialog.showOpenDialog({ properties: ['openFile']}));
+ipcMain.on('load-server-setup', function (event, arg) {
+    event.sender.send('load-server-setup-reply', dialog.showOpenDialog({ filters: [{ name: 'nRF Connect Server Setup', extensions: ['ncs'] },
+                                                                                   { name: 'All Files', extensions: ['*'] },
+                                                                                  ],
+                                                                         properties: ['openFile'],
+                                                                        }));
 });
 
-app.on('window-all-closed', function() {
+app.on('window-all-closed', function () {
     app.quit();
 });
 
-app.on('ready', function() {
+app.on('ready', function () {
     splashScreen = new BrowserWindow({
         width: 400,
         height: 244,
