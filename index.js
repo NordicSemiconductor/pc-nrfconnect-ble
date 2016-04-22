@@ -26,14 +26,14 @@ const dialog = require('electron').dialog;
 var ipcMain = require('ipc-main');
 
 ipcMain.on('save-server-setup', function (event, arg) {
-    event.sender.send('save-server-setup-reply', dialog.showSaveDialog({ filters: [{ name: 'nRF Connect Server Setup', extensions: ['ncs'] },
+    event.sender.send('save-server-setup-reply', dialog.showSaveDialog({ filters: [{ name: 'nRF Connect Server Setup', extensions: ['ncs', 'json'] },
                                                                                    { name: 'All Files', extensions: ['*'] },
                                                                                ],
                                                                         }));
 });
 
 ipcMain.on('load-server-setup', function (event, arg) {
-    event.sender.send('load-server-setup-reply', dialog.showOpenDialog({ filters: [{ name: 'nRF Connect Server Setup', extensions: ['ncs'] },
+    event.sender.send('load-server-setup-reply', dialog.showOpenDialog({ filters: [{ name: 'nRF Connect Server Setup', extensions: ['ncs', 'json'] },
                                                                                    { name: 'All Files', extensions: ['*'] },
                                                                                   ],
                                                                          properties: ['openFile'],
