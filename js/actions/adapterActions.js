@@ -274,9 +274,7 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(adapterOpenedAction(adapter));
         });
     }).catch(error => {
-        if (error) {
-            dispatch(showErrorDialog(error));
-        }
+        // Let the error event inform the user about the error.
     });
 }
 
