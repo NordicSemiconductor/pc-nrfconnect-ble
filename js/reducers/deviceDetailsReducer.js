@@ -41,7 +41,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         name: 'Device Name',
         uuid: '2A00',
         value: [0x6E, 0x52, 0x46, 0x35, 0x75], // nRF5x
-        properties: {read: true, write: true},
+        properties: {read: true, write: false},
         children: OrderedMap(),
     });
 
