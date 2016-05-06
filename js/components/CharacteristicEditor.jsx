@@ -238,18 +238,16 @@ export default class CharacteristicEditor extends Component {
                 <SetupInput label='Read permission' type='select' className='form-control' value={this.readPerm} onChange={e => this._setValueProperty('readPerm', e)}>
                     <option value='open'>No security required</option>
                     <option value='encrypt'>Encryption required, no MITM</option>
-                    <option value='encrypt mitm-protection'>Encryption and MITM required</option>
-                    <option value='signed'>Signing or encryption required, no MITM</option>
-                    <option value='signed mitm-protection'>Signing or encryption with MITM required</option>
+                    <option value='encrypt mitm-protection'>Encryption with MITM required</option>
+                    <option value='lesc'>LESC encryption with MITM required</option>
                     <option value='no_access'>No access rights specified (undefined)</option>
                 </SetupInput>
 
                 <SetupInput label='Write permission' type='select' className='form-control' value={this.writePerm} onChange={e => this._setValueProperty('writePerm', e)}>
                     <option value='open'>No security required</option>
                     <option value='encrypt'>Encryption required, no MITM</option>
-                    <option value='encrypt mitm-protection'>Encryption and MITM required</option>
-                    <option value='signed'>Signing or encryption required, no MITM</option>
-                    <option value='signed mitm-protection'>Signing or encryption with MITM required</option>
+                    <option value='encrypt mitm-protection'>Encryption with MITM required</option>
+                    <option value='lesc'>LESC encryption with MITM required</option> 
                     <option value='no_access'>No access rights specified (undefined)</option>
                 </SetupInput>
 
