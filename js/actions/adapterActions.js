@@ -264,7 +264,6 @@ function _openAdapter(dispatch, getState, adapter) {
 
             adapterToUse.open(options, error => {
                 if (error) {
-                    console.log('ERROR DURING OPEN:' + JSON.stringify(error));
                     reject(error); // Let the error event inform the user about the error.
                 } else {
                     resolve(adapterToUse);
@@ -274,6 +273,7 @@ function _openAdapter(dispatch, getState, adapter) {
             dispatch(adapterOpenedAction(adapter));
         });
     }).catch(error => {
+        getState().adapter.api.selectedAdapter = null;
         // Let the error event inform the user about the error.
     });
 }
