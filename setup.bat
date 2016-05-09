@@ -62,6 +62,7 @@ rename js\settings.json.prod settings.json
 
 echo "Copy driver"
 copy node_modules\pc-ble-driver-js\build\driver\Release\pc-ble-driver.dll node_modules\pc-ble-driver-js\build\Release\pc-ble-driver.dll
+copy node_modules\pc-ble-driver-js\build\driver\Release\pc-ble-driver.dll .
 
 echo "Copy runtime redistributable files for Visual Studio"
 copy "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT\*.dll" node_modules\pc-ble-driver-js\build\Release\
