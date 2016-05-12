@@ -22,6 +22,8 @@ import AddNewItem from './AddNewItem';
 import { Effects } from '../utils/Effects';
 import * as Colors from '../utils/colorDefinitions';
 
+import { toHexString } from '../utils/stringUtil';
+
 export default class ServiceItem extends Component {
     constructor(props) {
         super(props);
@@ -101,6 +103,7 @@ export default class ServiceItem extends Component {
             onReadDescriptor,
             onWriteDescriptor,
         } = this.props;
+
         const {
             instanceId,
             handle,
@@ -137,16 +140,19 @@ export default class ServiceItem extends Component {
         const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
         const iconStyle = children && children.size === 0 && !addNew ? { display: 'none' } : {};
         const itemIsSelected = item.instanceId === selected;
-        const handleText = item.handle ? ('Handle: ' + item.handle + ', ') : '';
-        const backgroundColor = itemIsSelected ? 'rgb(179,225,245)'
-            : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
+        const handleText = item.handle ? ('Handle: 0x' + toHexString(item.handle) + ', ') : '';
+        const backgroundColor = itemIsSelected ?
+            'rgb(179,225,245)' :
+            `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
 
         return (
             <div>
                 <div className='service-item' style={{ backgroundColor: backgroundColor }} onClick={e => this._onContentClick(e)}>
                     <div className='expand-area' onClick={e => this._onExpandAreaClick(e)}>
                         <div className='bar1' />
-                        <div className='icon-wrap'><i className={'icon-slim ' + expandIcon} style={iconStyle}></i></div>
+                        <div className='icon-wrap'>
+                            <i className={'icon-slim ' + expandIcon} style={iconStyle} />
+                        </div>
                     </div>
                     <div className='content-wrap'>
                         <div className='content'>
@@ -154,9 +160,19 @@ export default class ServiceItem extends Component {
                         </div>
                     </div>
                 </div>
-                <div style={{display: expanded ? 'block' : 'none'}}>
+                <div style={{ display: expanded ? 'block' : 'none' }}>
                     {childrenList}
-                    {addNew ? <AddNewItem key='add-new-characteristic' text='New characteristic' id={'add-btn-' + instanceId} parentInstanceId={instanceId} selected={selected} onClick={() => onAddCharacteristic(item)} bars={2} /> : null}
+                    { addNew ?
+                        <AddNewItem
+                            key='add-new-characteristic'
+                            text='New characteristic'
+                            id={'add-btn-' + instanceId}
+                            parentInstanceId={instanceId}
+                            selected={selected}
+                            onClick={() => onAddCharacteristic(item)}
+                            bars={2} /> :
+                        null
+                    }
                 </div>
             </div>
         );

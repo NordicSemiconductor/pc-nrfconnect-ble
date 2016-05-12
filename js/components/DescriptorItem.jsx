@@ -22,6 +22,8 @@ import { Effects } from '../utils/Effects';
 import { getInstanceIds } from '../utils/api';
 import * as Colors from '../utils/colorDefinitions';
 
+import { toHexString } from '../utils/stringUtil';
+
 export default class DescriptorItem extends Component {
     constructor(props) {
         super(props);
@@ -94,7 +96,7 @@ export default class DescriptorItem extends Component {
         const itemIsSelected = instanceId === selected;
         const errorText = errorMessage ? errorMessage : '';
         const hideErrorClass = (errorText === '') ? 'hide' : '';
-        const handleText = item.handle ? ('Handle: ' + item.handle + ', ') : '';
+        const handleText = item.handle ? ('Handle: 0x' + toHexString(item.handle) + ', ') : '';
         const backgroundColor = itemIsSelected ? 'rgb(179,225,245)'
             : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
 
