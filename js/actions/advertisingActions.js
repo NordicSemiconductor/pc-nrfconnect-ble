@@ -44,6 +44,8 @@ function _setAdvertisingData(dispatch, getState) {
             advData[entry.typeApi] = entry.formattedValue;
         });
 
+        advData['flags'] = ['leGeneralDiscMode', 'brEdrNotSupported'];
+
         advertising.scanResponseEntries.forEach(entry => {
             scanResp[entry.typeApi] = entry.formattedValue;
         });
