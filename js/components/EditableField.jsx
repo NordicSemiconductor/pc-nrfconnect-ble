@@ -158,7 +158,7 @@ export default class EditableField extends Component {
     }
 
     _write() {
-        const {valid, validationMessage} = this.props.completeValidation ? this.props.completeValidation(this.value) : {valid: true};
+        const { valid, validationMessage } = this.props.completeValidation ? this.props.completeValidation(this.value) : { valid: true };
         if (valid) {
             this.editing = false;
             if (this.props.onWrite) {
@@ -207,7 +207,7 @@ export default class EditableField extends Component {
         } else if (this.editing && this.props.onWrite) {
             child = <div className='editable-field-editor-wrap native-key-bindings'>
                         <div className='alert-wrap'>
-                            <div className='alert alert-danger tooltip top' style={{display: this.validationMessage == '' ? 'none' : 'block' }}>
+                            <div className='alert alert-danger tooltip top' style={{ display: this.validationMessage === '' ? 'none' : 'block' }}>
                                 <div className='tooltip-arrow'></div>
                                 {this.validationMessage}
                             </div>

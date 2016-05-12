@@ -70,11 +70,11 @@ export default class DiscoveredDevice extends Component {
 
     rewriter(value) {
         const rewrite_rules = [
-            { expr: /BLE_GAP_AD_TYPE_(.*)/, on_match: function(matches) {
+            { expr: /BLE_GAP_AD_TYPE_(.*)/, on_match: function (matches) {
                     return changeCase.pascalCase(matches[1]);
                 },
             },
-            { expr: /BLE_GAP_ADDR_TYPE_(.*)/, on_match: function(matches) {
+            { expr: /BLE_GAP_ADDR_TYPE_(.*)/, on_match: function (matches) {
                     return changeCase.pascalCase(matches[1]);
                 },
             },
@@ -95,7 +95,7 @@ export default class DiscoveredDevice extends Component {
 
         // We did not find any rules to rewrite the value, return original value
         return changeCase.camelCase(value);
-    };
+    }
 
     onButtonClick(e, device) {
         const {
@@ -173,7 +173,7 @@ export default class DiscoveredDevice extends Component {
                         <div className='adv-line'>
                             <span className='adv-label'>Flags:</span>
                             {
-                                this.currentFlags.map(function(flag, index) {
+                                this.currentFlags.map(function (flag, index) {
                                     return (<span key={index + '_3'} className='adv-value'>{flag}</span>);
                                 })
                             }
@@ -184,7 +184,7 @@ export default class DiscoveredDevice extends Component {
                         <div className='adv-line'>
                             <span className='adv-label'>Services:</span>
                             {
-                                device.services.map(function(service, index) {
+                                device.services.map(function (service, index) {
                                     return (<span key={index + '_4'} className='adv-value'>{getUuidName(service)} </span>);
                                 })
                             }
@@ -197,12 +197,12 @@ export default class DiscoveredDevice extends Component {
                         {device.address}
                     </div>;
 
-        const dirIcon = device.isExpanded ? 'icon-down-dir' : 'icon-right-dir'
+        const dirIcon = device.isExpanded ? 'icon-down-dir' : 'icon-right-dir';
 
         if (!device) {
             return (
                 <div>
-                    <h3 style={{textAlign: 'center'}}>Local dongle</h3>
+                    <h3 style={{ textAlign: 'center' }}>Local dongle</h3>
                 </div>
             );
         }
@@ -210,8 +210,8 @@ export default class DiscoveredDevice extends Component {
         return (
             <div className='device' onClick={e => onToggleExpanded(device.address)} >
                 <div className='top-bar'>
-                    <div style={{float: 'right'}}>
-                        <span style={{width: this.getRssiWidth(device.rssi) + 'px'}} className='icon-signal icon-foreground' />
+                    <div style={{ float: 'right' }}>
+                        <span style={{ width: this.getRssiWidth(device.rssi) + 'px' }} className='icon-signal icon-foreground' />
                         <span className='icon-signal icon-background' title={device.rssi + ' dBm'}/>
                     </div>
                     <div className='device-name'>{device.name || '<Unknown name>'}</div>

@@ -64,7 +64,7 @@ class ServerSetup extends Component {
 
     componentWillUpdate(nextProps, nextState) {
         if(!this.props.serverSetup) return false;
-        
+
         if (!this.props.serverSetup ||
             nextProps.serverSetup.selectedComponent !== this.props.serverSetup.selectedComponent) {
             this.modified = false;
@@ -96,7 +96,7 @@ class ServerSetup extends Component {
         }
 
         const selectedComponent = serverSetup.selectedComponent;
-        const deviceDetails = new Map({devices: new Map({'local.server': serverSetup})});
+        const deviceDetails = new Map({ devices: new Map({ 'local.server': serverSetup }) });
         let foundCurrent = false;
 
         for (let item of traverseItems(deviceDetails, true, backward)) {
@@ -124,7 +124,7 @@ class ServerSetup extends Component {
         } = this.props;
 
         const selectedComponent = serverSetup.selectedComponent;
-        const deviceDetails = new Map({devices: new Map({'local.server': serverSetup})});
+        const deviceDetails = new Map({ devices: new Map({ 'local.server': serverSetup }) });
 
         if (!selectedComponent) {
             return;

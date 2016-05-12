@@ -28,7 +28,7 @@ export default class EnumeratingAttributes extends Component {
             <div className='enumerating-items-wrap'>
                 {barList}
                 <div className='enumerating-content'>
-                    <img className='spinner center-block' src='resources/ajax-loader.gif' height='20' width='20'/>
+                    <img className='spinner center-block' src='resources/ajax-loader.gif' height='20' width='20' />
                 </div>
             </div>
         );

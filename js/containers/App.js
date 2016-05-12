@@ -56,7 +56,7 @@ class AppContainer extends Component {
 
         // Pass all the window's keydown events to the KeymapManager
         document.addEventListener('keydown', event => {
-          keymaps.handleKeyboardEvent(event);
+            keymaps.handleKeyboardEvent(event);
         });
 
         const keymapFile = remote.getGlobal('keymap');
@@ -65,29 +65,29 @@ class AppContainer extends Component {
             keymaps.loadKeymap(keymapFile);
         } else {
             keymaps.add('core', {
-                'body': {
+                body: {
                     'alt-1': 'core:connection-map',
                     'alt-2': 'core:server-setup',
                     'alt-a': 'core:toggle-advertising',
                     'alt-c': 'core:clear-scan',
                     'alt-p': 'core:select-adapter',
                     'alt-s': 'core:toggle-scan',
-                    'down' : 'core:move-down',
-                    'up'   : 'core:move-up',
-                    'left' : 'core:move-left',
-                    'right': 'core:move-right',
+                    down:   'core:move-down',
+                    up:     'core:move-up',
+                    left:   'core:move-left',
+                    right:  'core:move-right',
                     'ctrl-alt-d': 'core:toggle-debug',
-                }
+                },
             });
         }
 
         // These shall always be added
         keymaps.add('core', {
             'body .native-key-bindings': {
-                'left': 'native!',
-                'right': 'native!',
-                'up': 'native!',
-                'down': 'native!',
+                left: 'native!',
+                right: 'native!',
+                up: 'native!',
+                down: 'native!',
             },
         });
 
@@ -128,8 +128,8 @@ class AppContainer extends Component {
     }
 
     componentWillMount() {
-        (function() {
-            const throttle = function(type, name, obj) {
+        (function () {
+            const throttle = function (type, name, obj) {
                 let running = false;
                 const object = obj || window;
                 const func = () => {
@@ -138,7 +138,7 @@ class AppContainer extends Component {
                     }
 
                     running = true;
-                    requestAnimationFrame(function() {
+                    requestAnimationFrame(function () {
                         object.dispatchEvent(new CustomEvent(name));
                         running = false;
                     });
@@ -152,10 +152,8 @@ class AppContainer extends Component {
 
         // handle event
         window.addEventListener('optimizedResize', () => {
-            this.setState({windowHeight: window.innerHeight}); //document.documentElement.clientHeight;
+            this.setState({ windowHeight: window.innerHeight }); //document.documentElement.clientHeight;
         });
-
-
     }
 
     componentDidMount() {
@@ -174,8 +172,8 @@ class AppContainer extends Component {
         };
         const mainAreaHeight = layoutStyle.height - 189;
 
-        const active = selectedMainView === 'ConnectionMap' ? <DeviceDetailsContainer style={{height: mainAreaHeight}}/>
-                     : selectedMainView === 'ServerSetup'   ? <ServerSetup style={{height: mainAreaHeight}}/>
+        const active = selectedMainView === 'ConnectionMap' ? <DeviceDetailsContainer style={{ height: mainAreaHeight }}/>
+                     : selectedMainView === 'ServerSetup'   ? <ServerSetup style={{ height: mainAreaHeight }}/>
                      : null;
 
         return (
