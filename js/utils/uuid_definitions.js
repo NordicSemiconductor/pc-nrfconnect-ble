@@ -244,6 +244,7 @@ export const uuid128bitServiceDefinitions = {
     '000015301212EFDE1523785FEABCD123': 'DFU',
     '6E400001B5A3F393E0A9E50E24DCCA9E': 'UART over BLE',
     '7905F431B5CE4E99A40F4B1E122D00D0': 'ANCS',
+    'A3C875008ED34BDF8A39A01BEBEDE295': 'Eddystone Configuration Service',
 };
 
 export const uuid128bitCharacteristicDefinitions = {
@@ -254,6 +255,19 @@ export const uuid128bitCharacteristicDefinitions = {
     '9FBF120D630142D98C5825E699A21DBD': 'ANCS Notification Source',
     '69D1D8F345E149A898219BBDFDAAD9D9': 'ANCS Control Point',
     '22EAC6E924D64BB5BE44B36ACE7C7BFB': 'ANCS Data Source',
+    //Eddystone UUIDs, https://github.com/google/eddystone/tree/master/configuration-service
+    'A3C875018ED34BDF8A39A01BEBEDE295': 'Capabilities',
+    'A3C875028ED34BDF8A39A01BEBEDE295': 'Active Slot',
+    'A3C875038ED34BDF8A39A01BEBEDE295': 'Advertising Interval',
+    'A3C875048ED34BDF8A39A01BEBEDE295': 'Radio TX Power',
+    'A3C875058ED34BDF8A39A01BEBEDE295': 'Advertised TX Power',
+    'A3C875068ED34BDF8A39A01BEBEDE295': 'Lock State',
+    'A3C875078ED34BDF8A39A01BEBEDE295': 'Unlock',
+    'A3C875088ED34BDF8A39A01BEBEDE295': 'Public ECDH Key',
+    'A3C875098ED34BDF8A39A01BEBEDE295': 'EID Identity Key',
+    'A3C8750A8ED34BDF8A39A01BEBEDE295': 'ADV Slot Data',
+    'A3C8750B8ED34BDF8A39A01BEBEDE295': 'Factory Reset',
+    'A3C8750C8ED34BDF8A39A01BEBEDE295': 'Remain Connectable',
 };
 
 export const uuid128bitDescriptorDefinitions = {

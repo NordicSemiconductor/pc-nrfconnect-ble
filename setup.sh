@@ -14,7 +14,10 @@ fi
 
 if [ "$YGGDRASIL_VERSION" = "" ]; then
     export YGGDRASIL_VERSION=0.0.0
+    export YGGDRASIL_VERSION_NAME=""
 fi
+
+export YGGDRASIL_FULL_VERSION=$YGGDRASIL_VERSION$YGGDRASIL_VERSION_NAME
 
 export YGGDRASIL_DEPLOY_DIR=../nrfconnect-deploy
 export YGGDRASIL_ELECTRON_VERSION=0.36.7
@@ -56,18 +59,18 @@ mv js/settings.json.prod js/settings.json
 npm install --production
 
 lessc ./css/styles.less ./css/styles.css
-electron-packager . $YGGDRASIL_NAME --platform=$YGGDRASIL_PLATFORM --arch=$npm_config_arch --icon=$YGGDRASIL_ICON --version=$npm_config_target --overwrite --out=$YGGDRASIL_DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName="Nordic Semiconductor ASA" --version-string.LegalCopyright="Nordic Semiconductor ASA" --version-string.FileDescription="nRF Connect" --version-string.OriginalFilename="nrfconnect" --version-string.FileVersion="$YGGDRASIL_VERSION" --version-string.ProductVersion="$YGGDRASIL_VERSION" --version-string.ProductName="$YGGDRASIL_NAME" --version-string.InternalName="$YGGDRASIL_NAME"
+electron-packager . $YGGDRASIL_NAME --platform=$YGGDRASIL_PLATFORM --arch=$npm_config_arch --icon=$YGGDRASIL_ICON --version=$npm_config_target --overwrite --out=$YGGDRASIL_DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName="Nordic Semiconductor ASA" --version-string.LegalCopyright="Nordic Semiconductor ASA" --version-string.FileDescription="nRF Connect" --version-string.OriginalFilename="nrfconnect" --version-string.FileVersion="$YGGDRASIL_VERSION" --version-string.ProductVersion="$YGGDRASIL_FULL_VERSION" --version-string.ProductName="$YGGDRASIL_NAME" --version-string.InternalName="$YGGDRASIL_NAME"
 
 cp README.md $YGGDRASIL_APP_ROOT_DIR/README.txt
 cp LICENSE $YGGDRASIL_APP_ROOT_DIR/LICENSE
 mkdir $YGGDRASIL_APP_ROOT_DIR/hex
 cp node_modules/pc-ble-driver-js/driver/hex/connectivity_115k2_with_s13*_2.0.1.hex $YGGDRASIL_APP_ROOT_DIR/hex/
-mv node_modules/pc-ble-driver-js/build/Release/libpc-ble-driver.so node_modules/pc-ble-driver-js/build/Release/pc-ble-driver-js.so
+mv node_modules/pc-ble-driver-js/build/Release/libpc-ble-driver.so $YGGDRASIL_APP_ROOT_DIR/
 
 pushd .
 
 cd $YGGDRASIL_DEPLOY_DIR
-tar czf $YGGDRASIL_NAME-$YGGDRASIL_VERSION-$YGGDRASIL_PLATFORM-$npm_config_arch.tar.gz $YGGDRASIL_APP_DIR
+tar czf $YGGDRASIL_NAME-$YGGDRASIL_FULL_VERSION-$YGGDRASIL_PLATFORM-$npm_config_arch.tar.gz $YGGDRASIL_APP_DIR
 
 popd
 

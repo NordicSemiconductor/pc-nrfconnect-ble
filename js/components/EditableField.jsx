@@ -18,15 +18,14 @@ import { PropTypes } from 'react';
 
 import Component from 'react-pure-render/component';
 
-//import listensToClickOutside from 'react-onclickoutside/decorator';
+import onClickOutside  from 'react-onclickoutside';
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { Input } from 'react-bootstrap';
 
 import $ from 'jquery';
 
-//@listensToClickOutside()
-export default class EditableField extends Component {
+class EditableField extends Component {
     constructor(props) {
         super(props);
 
@@ -249,3 +248,5 @@ EditableField.propTypes = {
     showReadButton: PropTypes.bool,
     insideSelector: PropTypes.string,
 };
+
+export default onClickOutside(EditableField);
