@@ -47,7 +47,7 @@ app.on('window-all-closed', function () {
 app.on('ready', function () {
     splashScreen = new BrowserWindow({
         width: 400,
-        height: 244,
+        height: 223,
         frame: false,
         'always-on-top': true,
         'skip-taskbar': true,
