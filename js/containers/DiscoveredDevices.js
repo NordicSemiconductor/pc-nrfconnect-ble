@@ -16,12 +16,15 @@ import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Input } from 'react-bootstrap';
 
 import * as DiscoveryActions from '../actions/discoveryActions';
 import * as AdapterActions from '../actions/adapterActions';
 
 import DiscoveryButton from '../components/discoveryButton';
 import DiscoveredDevice from '../components/DiscoveredDevice';
+import SetupInput from '../components/input/SetupInput';
+import { SetupInlineCheckBox } from '../components/input/SetupCheckBox';
 
 class DiscoveredDevices extends Component {
     constructor(props) {
@@ -30,11 +33,40 @@ class DiscoveredDevices extends Component {
         const { toggleScan, clearDevicesList } = this.props;
         window.addEventListener('core:toggle-scan', () => { toggleScan(); });
         window.addEventListener('core:clear-scan', () => { clearDevicesList(); });
+        this.discoveryOptions = props.discoveryOptions.toJS();
+    }
+
+    handleIntervalChange(e) {
+        this.discoveryOptions.scanIntarval = e.target.value;
+    }
+
+    handleWindowChange(e) {
+        this.discoveryOptions.scanWindow = e.target.value;
+    }
+
+    handleTimeoutChange(e) {
+        this.discoveryOptions.scanTimeout = e.target.value;
+    }
+
+    handleCheckedChange(property, e) {
+        this.discoveryOptions[property] = e.target.checked;
+        this.props.setDiscoveryOptions(this.discoveryOptions);
+    }
+
+    handleFilterChange(e) {
+        this.discoveryOptions.filterString = e.target.value;
+        this.props.setDiscoveryOptions(this.discoveryOptions);
+    }
+
+    handleOptionsExpanded() {
+        this.discoveryOptions.expanded = !this.discoveryOptions.expanded;
+        this.props.toggleOptionsExpanded();
     }
 
     render() {
         const {
             discoveredDevices,
+            discoveryOptions,
             isScanning,
             adapterIsConnecting,
             isAdapterAvailable,
@@ -48,6 +80,19 @@ class DiscoveredDevices extends Component {
         const progressStyle = {
             visibility: isScanning ? 'visible' : 'hidden',
         };
+
+        const discoveryOptionsDiv = discoveryOptions.expanded ?
+            <div className='discovery-options'>
+                <SetupInput label='Filter' className='adv-value' defaultValue={discoveryOptions.filterString}
+                    onChange={e => this.handleFilterChange(e)} labelClassName='' wrapperClassName='' />
+                <SetupInlineCheckBox className='adv-label' label='Sort by RSSI' 
+                    defaultChecked={discoveryOptions.sortByRssi}
+                    onChange={e => this.handleCheckedChange('sortByRssi', e)}
+                    wrapperClassName='' labelClassName=''/>
+
+            </div> : '';
+
+        const dirIcon = discoveryOptions.expanded ? 'icon-down-dir' : 'icon-right-dir';
 
         return (
             <div id='discoveredDevicesContainer'>
@@ -63,6 +108,10 @@ class DiscoveredDevices extends Component {
                     <button title='Clear list (Alt+C)' onClick={() => clearDevicesList()} type='button' className='btn btn-primary btn-sm btn-nordic padded-row'>
                         <span className='icon-trash' />Clear
                     </button>
+                    <span>
+                        <i className='icon-cog' onClick={() => this.handleOptionsExpanded()}/>
+                        {discoveryOptionsDiv}
+                    </span>
                 </div>
 
                 <div style={{paddingTop: '0px'}}>
@@ -106,6 +155,7 @@ function mapStateToProps(state) {
 
     return {
         discoveredDevices: discovery.devices,
+        discoveryOptions: discovery.options,
         adapterIsConnecting: adapterIsConnecting,
         isScanning: scanning,
         isAdapterAvailable: adapterAvailable,

@@ -18,9 +18,20 @@ import * as AdapterAction from '../actions/adapterActions';
 import * as apiHelper from '../utils/api';
 import { logger } from '../logging';
 
+const DiscoveryOptions = Record({
+    expanded: false,
+    sortByRssi: false,
+    filterString: '',
+    scanInterval: 100,
+    scanWindow: 20,
+    scanTimeout: 60,
+    activeScan: true,
+});
+
 const InitialState = Record({
     devices: OrderedMap(),
     errors: List(),
+    options: new DiscoveryOptions(),
 });
 
 const initialState = new InitialState();
@@ -54,7 +65,33 @@ function deviceDiscovered(state, device) {
         newDevice = newDevice.mergeIn(['adData'], existingDevice.adData);
     }
 
-    return state.setIn(['devices', device.address], newDevice);
+    state = state.setIn(['devices', device.address], newDevice);
+
+    state = applyFilters(state);
+
+    return state;
+}
+
+function applyFilters(state) {
+    if (state.options.filterString) {
+        const filteredDevices = state.devices.filter(device => {
+            if (device.name.search(new RegExp(state.options.filterString, 'i')) >= 0) return true;
+            else if (device.address.search(new RegExp(state.options.filterString, 'i')) >= 0) return true;
+            else return false;
+        });
+        state = state.set('devices', filteredDevices);
+    }
+
+    if (state.options.sortByRssi) {
+        const orderedDevices = state.devices.sort((dev1, dev2) => {
+            if (dev1.rssi < dev2.rssi) return 1;
+            else if (dev1.rssi > dev2.rssi) return -1;
+            else return 0;
+        });
+        state = state.set('devices', orderedDevices);
+    }
+
+    return state;
 }
 
 function addError(state, error) {
@@ -87,6 +124,15 @@ function toggleExpanded(state, deviceAddress) {
     return state.updateIn(['devices', deviceAddress, 'isExpanded'], value => !value);
 }
 
+function toggleOptionsExpanded(state) {
+    return state.updateIn(['options', 'expanded'], value => !value);
+}
+
+function discoverySetOptions(state, options) {
+    state = state.set('options', new DiscoveryOptions(options));
+    return applyFilters(state);
+}
+
 export default function discovery(state = initialState, action) {
     switch (action.type) {
         case DiscoveryAction.DISCOVERY_CLEAR_LIST:
@@ -99,6 +145,10 @@ export default function discovery(state = initialState, action) {
             return scanStopped(state);
         case DiscoveryAction.DISCOVERY_TOGGLE_EXPANDED:
             return toggleExpanded(state, action.deviceAddress);
+        case DiscoveryAction.DISCOVERY_TOGGLE_OPTIONS_EXPANDED:
+            return toggleOptionsExpanded(state);
+        case DiscoveryAction.DISCOVERY_SET_OPTIONS:
+            return discoverySetOptions(state, action.options);
         case AdapterAction.DEVICE_DISCOVERED:
             return deviceDiscovered(state, action.device);
         case AdapterAction.DEVICE_CONNECT:

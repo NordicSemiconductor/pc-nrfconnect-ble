@@ -19,6 +19,8 @@ export const DISCOVERY_CLEAR_LIST = 'DISCOVERY_CLEAR_LIST';
 export const DISCOVERY_SCAN_STARTED = 'DISCOVERY_SCAN_STARTED';
 export const DISCOVERY_SCAN_STOPPED = 'DISCOVERY_SCAN_STOPPED';
 export const DISCOVERY_TOGGLE_EXPANDED = 'DISCOVERY_TOGGLE_EXPANDED';
+export const DISCOVERY_TOGGLE_OPTIONS_EXPANDED = 'DISCOVERY_TOGGLE_OPTIONS_EXPANDED';
+export const DISCOVERY_SET_OPTIONS = 'DISCOVERY_SET_OPTIONS';
 
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
@@ -107,6 +109,19 @@ function toggleExpandedAction(deviceAddress) {
     };
 }
 
+function toggleOptionsExpandedAction() {
+    return {
+        type: DISCOVERY_TOGGLE_OPTIONS_EXPANDED,
+    };
+}
+
+function setDiscoveryOptionsAction(options) {
+    return {
+        type: DISCOVERY_SET_OPTIONS,
+        options,
+    };
+}
+
 // Exported action starters
 export function clearDevicesList() {
     return dispatch => {
@@ -134,4 +149,12 @@ export function toggleScan() {
 
 export function toggleExpanded(deviceAddress) {
     return toggleExpandedAction(deviceAddress);
+}
+
+export function toggleOptionsExpanded() {
+    return toggleOptionsExpandedAction();
+}
+
+export function setDiscoveryOptions(options) {
+    return setDiscoveryOptionsAction(options);
 }
