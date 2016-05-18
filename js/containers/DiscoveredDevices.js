@@ -75,24 +75,24 @@ class DiscoveredDevices extends Component {
             connectToDevice,
             cancelConnect,
             toggleExpanded,
+            toggleOptionsExpanded,
         } = this.props;
 
         const progressStyle = {
             visibility: isScanning ? 'visible' : 'hidden',
         };
 
+        const dirIcon = discoveryOptions.expanded ? 'icon-down-dir' : 'icon-right-dir';
+
         const discoveryOptionsDiv = discoveryOptions.expanded ?
             <div className='discovery-options'>
-                <SetupInput label='Filter' className='adv-value' defaultValue={discoveryOptions.filterString}
-                    onChange={e => this.handleFilterChange(e)} labelClassName='' wrapperClassName='' />
-                <SetupInlineCheckBox className='adv-label' label='Sort by RSSI' 
+                <SetupInlineCheckBox className='adv-label' label='Sort by signal strength'
                     defaultChecked={discoveryOptions.sortByRssi}
                     onChange={e => this.handleCheckedChange('sortByRssi', e)}
-                    wrapperClassName='' labelClassName=''/>
-
+                    wrapperClassName='' labelClassName='' />
+                <SetupInput title='Filter list by device name or address' label='Filter:' className='adv-value' defaultValue={discoveryOptions.filterString}
+                    onChange={e => this.handleFilterChange(e)} labelClassName='' wrapperClassName='' placeholder='Device name or address' />
             </div> : '';
-
-        const dirIcon = discoveryOptions.expanded ? 'icon-down-dir' : 'icon-right-dir';
 
         return (
             <div id='discoveredDevicesContainer'>
@@ -108,10 +108,11 @@ class DiscoveredDevices extends Component {
                     <button title='Clear list (Alt+C)' onClick={() => clearDevicesList()} type='button' className='btn btn-primary btn-sm btn-nordic padded-row'>
                         <span className='icon-trash' />Clear
                     </button>
-                    <span>
-                        <i className='icon-cog' onClick={() => this.handleOptionsExpanded()}/>
+                    <div style={{marginTop: '3px'}}>
+                        <i style={{color: 'grey'}} className={dirIcon} onClick={toggleOptionsExpanded} /><span style={{color: 'grey', fontSize: '12px'}}>Options</span>
                         {discoveryOptionsDiv}
-                    </span>
+                    </div>
+
                 </div>
 
                 <div style={{paddingTop: '0px'}}>

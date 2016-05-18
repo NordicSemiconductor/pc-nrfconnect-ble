@@ -27,11 +27,12 @@ export const ERROR_OCCURED = 'ERROR_OCCURED';
 // Internal functions
 function _startScan(dispatch, getState) {
     return new Promise((resolve, reject) => {
+        const discoveryOptions = getState().discovery.options;
         const scanParameters = {
-            active: true,
-            interval: 100,
-            window: 20,
-            timeout: 60,
+            active: discoveryOptions.activeScan,
+            interval: discoveryOptions.scanInterval,
+            window: discoveryOptions.scanWindow,
+            timeout: discoveryOptions.scanTimeout,
         };
 
         const adapter = getState().adapter.api.selectedAdapter;
