@@ -33,19 +33,6 @@ class DiscoveredDevices extends Component {
         const { toggleScan, clearDevicesList } = this.props;
         window.addEventListener('core:toggle-scan', () => { toggleScan(); });
         window.addEventListener('core:clear-scan', () => { clearDevicesList(); });
-        this.discoveryOptions = props.discoveryOptions.toJS();
-    }
-
-    handleIntervalChange(e) {
-        this.discoveryOptions.scanIntarval = e.target.value;
-    }
-
-    handleWindowChange(e) {
-        this.discoveryOptions.scanWindow = e.target.value;
-    }
-
-    handleTimeoutChange(e) {
-        this.discoveryOptions.scanTimeout = e.target.value;
     }
 
     handleCheckedChange(property, e) {
@@ -59,7 +46,6 @@ class DiscoveredDevices extends Component {
     }
 
     handleOptionsExpanded() {
-        this.discoveryOptions.expanded = !this.discoveryOptions.expanded;
         this.props.toggleOptionsExpanded();
     }
 
@@ -77,6 +63,8 @@ class DiscoveredDevices extends Component {
             toggleExpanded,
             toggleOptionsExpanded,
         } = this.props;
+
+        this.discoveryOptions = this.props.discoveryOptions.toJS();
 
         const progressStyle = {
             visibility: isScanning ? 'visible' : 'hidden',
@@ -108,8 +96,8 @@ class DiscoveredDevices extends Component {
                     <button title='Clear list (Alt+C)' onClick={() => clearDevicesList()} type='button' className='btn btn-primary btn-sm btn-nordic padded-row'>
                         <span className='icon-trash' />Clear
                     </button>
-                    <div style={{marginTop: '3px'}}>
-                        <i style={{color: 'grey'}} className={dirIcon} onClick={toggleOptionsExpanded} /><span style={{color: 'grey', fontSize: '12px'}}>Options</span>
+                    <div className='discovery-options-expand' >
+                        <span onClick={toggleOptionsExpanded}><i className={dirIcon} />Options</span>
                         {discoveryOptionsDiv}
                     </div>
 
