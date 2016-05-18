@@ -17,6 +17,7 @@ import Component from 'react-pure-render/component';
 
 import { Dropdown, DropdownButton, MenuItem, Input } from 'react-bootstrap';
 
+import { SetupInput } from './input/SetupInput';
 import UuidLookup from '../components/UuidLookup';
 import { uuid16bitServiceDefinitions, uuid128bitServiceDefinitions } from '../utils/uuid_definitions';
 
@@ -39,6 +40,7 @@ export default class AdvertisingData extends Component {
     constructor(props) {
         super(props);
         this.value = '';
+        this.adTypeValue = '';
         this.type = null;
         this.typeApi = null;
         this.typeKey = null;
@@ -106,6 +108,9 @@ export default class AdvertisingData extends Component {
             case TX_POWER:
                 return parseInt(value);
 
+            case CUSTOM:
+                return value;
+
             default:
                 return null;
         }
@@ -126,6 +131,9 @@ export default class AdvertisingData extends Component {
 
             case TX_POWER:
                 return 'Enter TX power';
+
+            case CUSTOM:
+                return 'Enter AD data value (hex)'
 
             default:
                 return 'Enter value';
@@ -160,21 +168,36 @@ export default class AdvertisingData extends Component {
         this.emitValueChange();
     }
 
+    handleAdTypeChange(event) {
+        this.adTypeValue = event.target.value;
+        this.forceUpdate();
+        this.emitValueChange();
+    }
+
     emitValueChange() {
         const { onValueChange } = this.props;
-
-        const typeValue = {
-            typeKey: this.typeKey,
-            type: this.type,
-            typeApi: this.typeApi,
-            value: this.value,
-            formattedValue: this.formatValue(this.value, this.typeKey),
-        };
 
         if (this.validateInput() != SUCCESS) {
             onValueChange(null);
             return;
         }
+
+        if (this.typeKey === CUSTOM && this.validateAdType() != SUCCESS) {
+            onValueChange(null);
+            return;
+        }
+
+        const tempValue = (this.typeKey === CUSTOM)
+            ? (this.adTypeValue + this.value).replace(/0[xX]/g, '')
+            : this.value;
+
+        const typeValue = {
+            typeKey: this.typeKey,
+            type: this.type,
+            typeApi: this.typeApi,
+            value: tempValue,
+            formattedValue: this.formatValue(tempValue, this.typeKey),
+        };
 
         onValueChange(typeValue);
     }
@@ -195,6 +218,9 @@ export default class AdvertisingData extends Component {
 
             case TX_POWER:
                 return this.validateTxPower(this.value);
+
+            case CUSTOM:
+                return this.validateCustom(this.value);
 
             default:
                 return ERROR;
@@ -240,12 +266,37 @@ export default class AdvertisingData extends Component {
         }
     }
 
+    validateCustom(value) {
+        const regex = /^((0[xX])?[A-Fa-f0-9]{2})+$/g;
+        if (value.trim().search(regex) >= 0) {
+            return SUCCESS;
+        }
+
+        return ERROR;
+    }
+
+    validateAdType() {
+        const regex = /^(0[xX])?[A-Fa-f0-9]{2}$/g;
+        if (this.adTypeValue.trim().search(regex) >= 0) {
+            return SUCCESS;
+        }
+
+        return ERROR;
+    }
+
     render() {
         const inputDisabled = (this.type === null);
         const uuidDef = this.title.includes('16 bit') ? uuid16bitServiceDefinitions
             : this.title.includes('128 bit') ? uuid128bitServiceDefinitions
             : {};
         const uuidLookupDisabled = Object.keys(uuidDef).length === 0;
+
+        const adTypeDiv = (this.typeKey === CUSTOM) ?
+            <div>
+                <Input type='text' label='Type value' placeholder='Enter AD type value (1 byte hex)'
+                    hasFeedback defaultValue={this.adTypeValue}
+                    bsStyle={this.validateAdType()} onChange={event => this.handleAdTypeChange(event)} />
+            </div> : '';
 
         const uuidLookupDiv = !uuidLookupDisabled ?
             <span className='adv-uuid-lookup'>
@@ -266,10 +317,11 @@ export default class AdvertisingData extends Component {
                         <MenuItem eventKey='4'>{this.keyToAdvertisingType('4')}</MenuItem>
                         <MenuItem eventKey='5'>{this.keyToAdvertisingType('5')}</MenuItem>
                         <MenuItem eventKey='6'>{this.keyToAdvertisingType('6')}</MenuItem>
-                        {/*TODO: add support for custom AD: <MenuItem eventKey='7'>{this.keyToAdvertisingType('7')}</MenuItem>*/}
+                        <MenuItem eventKey='7'>{this.keyToAdvertisingType('7')}</MenuItem>
                     </DropdownButton>
                 </div>
                 <div className='adv-value-container'>
+                    {adTypeDiv}
                     <Input
                         disabled={inputDisabled}
                         type='text'
