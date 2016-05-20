@@ -32,7 +32,7 @@ export const ERROR_OCCURED = 'DEVICE_DETAILS_ERROR_OCCURED';
 
 import { getInstanceIds } from '../utils/api';
 import { showErrorDialog } from './errorDialogActions';
-import { getUuidByName } from '../utils/uuid_definitions'
+import { getUuidByName } from '../utils/uuid_definitions';
 
 function _discoverServices(dispatch, getState, device) {
     return new Promise((resolve, reject) => {

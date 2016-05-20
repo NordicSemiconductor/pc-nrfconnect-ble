@@ -17,8 +17,7 @@ import Component from 'react-pure-render/component';
 
 import { ButtonToolbar, Button } from 'react-bootstrap';
 
-import { uuidServiceDefinitions } from '../utils/uuid_definitions';
-import { getUuidName } from '../utils/uuid_definitions';
+import { getUuidName, uuidServiceDefinitions } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
 
 import SetupInput from './input/SetupInput';

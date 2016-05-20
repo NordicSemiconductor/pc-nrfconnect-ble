@@ -19,8 +19,7 @@ import { ButtonToolbar, Button } from 'react-bootstrap';
 
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 
-import { uuidCharacteristicDefinitions } from '../utils/uuid_definitions';
-import { getUuidName } from '../utils/uuid_definitions';
+import { getUuidName, uuidCharacteristicDefinitions } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
 
 import SetupInput from './input/SetupInput';
@@ -247,7 +246,7 @@ export default class CharacteristicEditor extends Component {
                     <option value='open'>No security required</option>
                     <option value='encrypt'>Encryption required, no MITM</option>
                     <option value='encrypt mitm-protection'>Encryption with MITM required</option>
-                    <option value='lesc'>LESC encryption with MITM required</option> 
+                    <option value='lesc'>LESC encryption with MITM required</option>
                     <option value='no_access'>No access rights specified (undefined)</option>
                 </SetupInput>
 

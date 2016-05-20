@@ -19,8 +19,7 @@ import { ButtonToolbar, Button } from 'react-bootstrap';
 
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 
-import { uuidDescriptorDefinitions } from '../utils/uuid_definitions';
-import { getUuidName } from '../utils/uuid_definitions';
+import { getUuidName, uuidDescriptorDefinitions } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
 
 import SetupInput from './input/SetupInput';

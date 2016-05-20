@@ -19,7 +19,7 @@
 import _ from 'underscore';
 
 import bleDriver from 'pc-ble-driver-js';
-import uuidDefinitions from './utils/uuid_definitions';
+import getUuidName from './utils/uuid_definitions';
 
 const SERVICE_UUID = '0x2800';
 const CHARACTERISTIC_UUID = '0x2803';
@@ -127,9 +127,9 @@ class Service extends Attribute {
 
         if (serviceUuid) {
             this.serviceUuid = serviceUuid;
-            this.name = uuidDefinitions[this.serviceUuid] || this.serviceUuid;
+            this.name = getUuidName(this.serviceUuid);
         } else {
-            this.name = uuidDefinitions[SERVICE_UUID];
+            this.name = getUuidName(SERVICE_UUID);
         }
 
         this.characteristics = [];
@@ -139,7 +139,7 @@ class Service extends Attribute {
 
     parseData(data, length, readOffset) {
         this.serviceUuid = this.arrayToString(data);
-        this.name = uuidDefinitions[this.serviceUuid] || this.serviceUuid;
+        this.name = getUuidName(this.serviceUuid);
     }
 
     addCharacteristic(characteristic) {
@@ -163,9 +163,9 @@ class Characteristic extends Attribute {
 
         if (characteristicUuid) {
             this.uuid = characteristicUuid;
-            this.name = uuidDefinitions[this.characteristicUuid] || this.characteristicUuid;
+            this.name = getUuidName(this.characteristicUuid);
         } else {
-            this.name = uuidDefinitions[CHARACTERISTIC_UUID];
+            this.name = getUuidName(CHARACTERISTIC_UUID);
         }
 
         this.valueHandle = valueHandle;
@@ -180,7 +180,7 @@ class Characteristic extends Attribute {
         this.properties = new Properties(data[0]);
         this.valueHandle = this.arrayToInt(data.slice(1, 3));
         this.characteristicUuid = this.arrayToString(data.slice(3));
-        this.name = uuidDefinitions[this.characteristicUuid] || this.characteristicUuid;
+        this.name = getUuidName(this.characteristicUuid);
     }
 
     addDescriptor(descriptor) {
@@ -201,7 +201,7 @@ class Descriptor extends Attribute {
         super(parent, handle);
         this.parent.addDescriptor(this);
         this.uuid = uuid;
-        this.name = uuidDefinitions[uuid] || uuid;
+        this.name = getUuidName(uuid);
         this.value = value || [];
         this.expanded = false;
     }
@@ -425,15 +425,6 @@ class GattDatabases {
         return previousCharacteristic;
     }
 
-    // TODO: What is done with 128 bit uuids?
-    uuidToName(uuid) {
-        if (uuid in uuidDefinitions) {
-            return uuidDefinitions[uuid];
-        }
-
-        return uuid;
-    }
-
     uuidIntToUuidString(uuid, type) {
         let uuidString = uuid.toString(16).toUpperCase();
 
@@ -476,7 +467,7 @@ class GattDatabases {
     }
 
     removeGattDatabase(connectionHandle) {
-        const indexOfItemToDelete = this.gattDatabases.findIndex(function(gattDatabase) {
+        const indexOfItemToDelete = this.gattDatabases.findIndex(function (gattDatabase) {
             return gattDatabase.connectionHandle === connectionHandle;
         });
 
@@ -498,4 +489,4 @@ class GattDatabases {
     }
 }
 
-module.exports = {GattDatabases, GattDatabase, Service, Characteristic, Descriptor, Properties};
+module.exports = { GattDatabases, GattDatabase, Service, Characteristic, Descriptor, Properties };

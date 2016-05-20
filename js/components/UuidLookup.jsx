@@ -15,7 +15,7 @@
 import React, { PropTypes } from 'react';
 import Component from 'react-pure-render/component';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import { uuidDefinitions } from '../utils/uuid_definitions';
+import { uuidDefinitions, getUuidName } from '../utils/uuid_definitions';
 
 export default class UuidLookup extends Component {
     constructor(props) {
@@ -57,8 +57,15 @@ export default class UuidLookup extends Component {
                         <MenuItem header key='header0'>{title}</MenuItem>
                         {
                             Object.keys(uuidDefs).map((uuid, index) => {
-                                return (<MenuItem key={index} title={'0x' + uuid + ': ' + uuidDefs[uuid]}
-                                    eventKey={uuid}>{'0x' + this.formatUuid(uuid) + ': ' + uuidDefs[uuid]}</MenuItem>);
+                                return (
+                                    <MenuItem
+                                        key={index}
+                                        title={uuid + ': ' + getUuidName(uuid)}
+                                        eventKey={uuid}
+                                    >
+                                        {this.formatUuid(uuid) + ': ' + getUuidName(uuid)}
+                                    </MenuItem>
+                                );
                             })
                         }
                     </Dropdown.Menu>
