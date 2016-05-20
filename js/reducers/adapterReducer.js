@@ -142,7 +142,7 @@ function adapterResetPerformed(state, adapter) {
     logger.info(`Reset performed on adapter ${adapter.state.port}`);
 
     const { index } = getSelectedAdapter(state);
-    if (index)
+    if (index !== undefined && index !== null)
     {
         state = state.setIn(['adapters', index, 'isServerSetupApplied'], false);
         state = state.updateIn(['adapters', index, 'connectedDevices'], connectedDevices => connectedDevices.clear());
