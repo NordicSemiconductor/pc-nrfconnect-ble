@@ -22,6 +22,7 @@ import HexOnlyEditableField from './HexOnlyEditableField';
 import { Effects } from '../utils/Effects';
 import { getInstanceIds } from '../utils/api';
 import * as Colors from '../utils/colorDefinitions';
+import { TEXT, getUuidFormat } from '../utils/uuid_definitions';
 
 import { toHexString } from '../utils/stringUtil';
 
@@ -235,6 +236,7 @@ export default class CharacteristicItem extends Component {
         const backgroundColor = itemIsSelected ?
             'rgb(179,225,245)' : //@bar1-color
             `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
+        const showText = getUuidFormat(uuid) === TEXT;
 
         return (
         <div>
@@ -263,7 +265,8 @@ export default class CharacteristicItem extends Component {
                                               onWrite={value => this._onWrite(value)}
                                               showReadButton={itemIsSelected}
                                               onRead={_onRead}
-                                              selectParent={() => this._selectComponent()} />
+                                              selectParent={() => this._selectComponent()}
+                                              showText={showText} />
                         <div className={'error-label ' + hideErrorClass}>{errorText}</div>
                     </div>
                 </div>

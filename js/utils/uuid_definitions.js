@@ -12,6 +12,9 @@
 
  'use strict';
 
+export const TEXT = 'text';
+export const NO_FORMAT = 'no format';
+
 export const uuid16bitGattDefinitions = {
     '2800': { name: 'Primary Service', },
     '2801': { name: 'Secondary Service', },
@@ -55,7 +58,7 @@ export const uuid16bitServiceDefinitions = {
 };
 
 export const uuid16bitCharacteristicDefinitions = {
-    '2A00': { name: 'Device Name', },
+    '2A00': { name: 'Device Name', format: TEXT, },
     '2A01': { name: 'Appearance', },
     '2A02': { name: 'Peripheral Privacy Flag', },
     '2A03': { name: 'Reconnection Address', },
@@ -89,7 +92,7 @@ export const uuid16bitCharacteristicDefinitions = {
     '2A26': { name: 'Firmware Revision String', },
     '2A27': { name: 'Hardware Revision String', },
     '2A28': { name: 'Software Revision String', },
-    '2A29': { name: 'Manufacturer Name String', },
+    '2A29': { name: 'Manufacturer Name String', format: TEXT, },
     '2A2A': { name: 'IEEE 11073-20601 Regulatory Certification Data List', },
     '2A2B': { name: 'Current Time', },
     '2A2C': { name: 'Magnetic Declination', },
@@ -169,16 +172,16 @@ export const uuid16bitCharacteristicDefinitions = {
     '2A84': { name: 'Aerobic Heart Rate Upper Limit', },
     '2A85': { name: 'Date of Birth', },
     '2A86': { name: 'Date of Threshold Assessment', },
-    '2A87': { name: 'Email Address', },
+    '2A87': { name: 'Email Address', format: TEXT },
     '2A88': { name: 'Fat Burn Heart Rate Lower Limit', },
     '2A89': { name: 'Fat Burn Heart Rate Upper Limit', },
-    '2A8A': { name: 'First Name', },
+    '2A8A': { name: 'First Name', format: TEXT, },
     '2A8B': { name: 'Five Zone Heart Rate Limits', },
     '2A8C': { name: 'Gender', },
     '2A8D': { name: 'Heart Rate Max', },
     '2A8E': { name: 'Height', },
     '2A8F': { name: 'Hip Circumference', },
-    '2A90': { name: 'Last Name', },
+    '2A90': { name: 'Last Name', format: TEXT, },
     '2A91': { name: 'Maximum Recommended Heart Rate', },
     '2A92': { name: 'Resting Heart Rate', },
     '2A93': { name: 'Sport Type for Aerobic and Anaerobic Thresholds', },
@@ -215,7 +218,7 @@ export const uuid16bitCharacteristicDefinitions = {
     '2AB2': { name: 'Floor Number', },
     '2AB3': { name: 'Altitude', },
     '2AB4': { name: 'Uncertainty', },
-    '2AB5': { name: 'Location Name', },
+    '2AB5': { name: 'Location Name', format: TEXT, },
 };
 
 export const uuid16bitDescriptorDefinitions = {
@@ -337,4 +340,18 @@ export function getPrettyUuid(uuid) {
     uuid = insertHyphen(uuid, 8);
 
     return uuid.toUpperCase();
+}
+
+export function getUuidFormat(uuid) {
+    let lookupUuid = uuid.toUpperCase();
+    if (lookupUuid[1] === 'X') {
+        lookupUuid = lookupUuid.slice(2);
+    }
+
+    if (uuidDefinitions[lookupUuid])
+    {
+        return uuidDefinitions[lookupUuid].format;
+    }
+
+    return NO_FORMAT;
 }

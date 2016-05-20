@@ -12,12 +12,14 @@
 
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import Component from 'react-pure-render/component';
 import * as _ from 'underscore';
 
 import EditableField from './EditableField.jsx';
+
+import { hexArrayToText, textToHexText, hexArrayToHexText } from '../utils/stringUtil';
 
 export default class HexOnlyEditableField extends Component {
     constructor(props) {
@@ -46,11 +48,23 @@ export default class HexOnlyEditableField extends Component {
         There's a lot of complexity here related to keeping the caret in the right position.
     */
     _keyPressValidation(str) {
+        if (this.props.showText)
+        {
+            return true;
+        }
+
         const _hexRegEx = /^[0-9a-fA-F\ ]*$/i;
         return _hexRegEx.test(str);
     }
 
     _formatInput(str, caretPosition) {
+        if (this.props.showText) {
+            return {
+                value: str,
+                caretPosition: caretPosition,
+            };
+        }
+
         caretPosition = this._calcCaretPosition(str, caretPosition);
         let chars = str.toUpperCase().replace(/ /g, '').split('');
         //insert spaces after every second char
@@ -128,6 +142,10 @@ export default class HexOnlyEditableField extends Component {
     }
 
     _completeValidation(str) {
+        if (this.props.showText) {
+            str = textToHexText(str);
+        }
+
         const valueArray = str.trim().split(' ');
         for (let value of valueArray) {
             if (value.length % 2 !== 0) {
@@ -139,6 +157,10 @@ export default class HexOnlyEditableField extends Component {
     }
 
     _getValueArray(value) {
+        if (this.props.showText) {
+            value = textToHexText(value);
+        }
+
         if (!this._completeValidation(value)) {
             return;
         }
@@ -155,20 +177,22 @@ export default class HexOnlyEditableField extends Component {
     }
 
     render() {
-        const { value, keyPressValidation, completeValidation, formatInput, onBeforeBackspace, onBeforeDelete, ...props } = this.props; //pass along all props except these
+        const { showText, value, keyPressValidation, completeValidation, formatInput, onBeforeBackspace, onBeforeDelete, ...props } = this.props; //pass along all props except these
 
-        let parsedValue = value;
+        let parsedValue = hexArrayToHexText(value);
+        let showValue = '';
 
-        if (value.constructor === Array) {
-            // Convert from array [1, 10, 16, 20] to hex string "01-0A-10-14"
-            const hexValueStringArray = value.map(decimalNumber => ('0' + decimalNumber.toString(16)).slice(-2));
-            parsedValue = hexValueStringArray.join(' ').toUpperCase();
+        if (!showText) {
+            showValue = parsedValue;
+        } else {
+            showValue = hexArrayToText(value);
         }
 
         //formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
         return <EditableField {...props}
-                              value={parsedValue}
-                              keyPressValidation={this._keyPressValidation}
+                              value={showValue}
+                              title={parsedValue}
+                              keyPressValidation={str => this._keyPressValidation(str)}
                               completeValidation={str => this._completeValidation(str)}
                               formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
                               onBeforeBackspace={e => this._onBeforeBackspace(e)}
@@ -177,3 +201,7 @@ export default class HexOnlyEditableField extends Component {
                               ref='editableField' />;
     }
 }
+
+EditableField.propTypes = {
+    showText: PropTypes.bool,
+};

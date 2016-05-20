@@ -15,7 +15,7 @@
 export function toHexString(value) {
     if (Array.isArray(value)) {
         return arrayToHexString(value);
-    } else if (typeof(value) === 'number') {
+    } else if (typeof (value) === 'number') {
         return intToHexString(value);
     }
 
@@ -40,4 +40,41 @@ export function hexStringToArray(hexString) {
     }
 
     return result;
+}
+
+export function hexArrayToText(value) {
+    let str = '';
+
+    for (let c in value) {
+        str += String.fromCharCode(parseInt(value[c]));
+    }
+
+    return str;
+}
+
+export function textToHexArray(value) {
+    let result = [];
+
+    for (var i = 0, l = value.length; i < l; i++) {
+        let hex = Number(value.charCodeAt(i)).toString(16);
+        result.push(hex);
+    }
+
+    return result;
+}
+
+export function textToHexText(value) {
+    return hexArrayToHexText(textToHexArray(value));
+}
+
+export function hexArrayToHexText(value) {
+    let parsedValue = value;
+
+    if (value.constructor === Array) {
+        // Convert from array [1, 10, 16, 20] to hex string "01-0A-10-14"
+        const hexValueStringArray = value.map(decimalNumber => ('0' + decimalNumber.toString(16)).slice(-2));
+        parsedValue = hexValueStringArray.join(' ').toUpperCase();
+    }
+
+    return parsedValue;
 }
