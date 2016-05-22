@@ -107,7 +107,12 @@ function deviceConnect(state, device) {
 }
 
 function deviceConnected(state, device) {
-    return state.deleteIn(['devices', device.address]);
+    state = state.setIn(['devices', device.address, 'isConnecting'], false);
+    return state.setIn(['devices', device.address, 'connected'], true);
+}
+
+function deviceDisconnected(state, device) {
+    return state.setIn(['devices', device.address, 'connected'], false);
 }
 
 function deviceConnectTimeout(state, deviceAddress) {
@@ -155,6 +160,8 @@ export default function discovery(state = initialState, action) {
             return deviceConnect(state, action.device);
         case AdapterAction.DEVICE_CONNECTED:
             return deviceConnected(state, action.device);
+        case AdapterAction.DEVICE_DISCONNECTED:
+            return deviceDisconnected(state, action.device);
         case AdapterAction.DEVICE_CONNECT_TIMEOUT:
             return deviceConnectTimeout(state, action.deviceAddress);
         case AdapterAction.DEVICE_CANCEL_CONNECT:

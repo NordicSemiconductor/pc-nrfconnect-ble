@@ -218,7 +218,7 @@ export default class DiscoveredDevice extends Component {
                 </div>
                 <div className='discovered-device-body text-small'>
                     <div className='discovered-device-address-line'>
-                        <button onClick={e => this.onButtonClick(e, device)} className='btn btn-primary btn-xs btn-nordic' disabled={!isConnecting && adapterIsConnecting}>
+                        <button onClick={e => this.onButtonClick(e, device)} className='btn btn-primary btn-xs btn-nordic' disabled={(!isConnecting && adapterIsConnecting) || device.connected}>
                             {isConnecting ? 'Cancel' : 'Connect'} <i className='icon-link'></i>
                         </button>
                         {addressDiv}
