@@ -34,7 +34,7 @@
     "less": "2.5.1",
     "moment": "2.10.6",
     "open": "0.0.5",
-    "pc-ble-driver-js": "https://github.com/NordicSemiconductor/pc-ble-driver-js.git#release/0.9.0",
+    "pc-ble-driver-js": "https://github.com/NordicSemiconductor/pc-ble-driver-js.git",
     "react": "0.14.3",
     "react-addons-linked-state-mixin": "0.14.2",
     "react-bootstrap": "0.27.3",
