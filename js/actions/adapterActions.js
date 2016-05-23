@@ -91,6 +91,12 @@ const secKeyset = {
     },
 };
 
+const attrChange = {
+    lastAttrChangeTime: process.hrtime(),
+    numAttrChanged: 0,
+    lastAttrHandleChanged: 0,
+};
+
 // Internal functions
 
 function _getAdapters(dispatch) {
@@ -179,11 +185,11 @@ function _setupListeners(dispatch, getState, adapterToUse) {
     });
 
     adapterToUse.on('characteristicValueChanged', characteristic => {
-        dispatch(attributeValueChangedAction(characteristic, characteristic.value));
+        _onAttributeValueChanged(dispatch, getState, characteristic, characteristic.valueHandle);
     });
 
     adapterToUse.on('descriptorValueChanged', descriptor => {
-        dispatch(attributeValueChangedAction(descriptor, descriptor.value));
+        _onAttributeValueChanged(dispatch, getState, descriptor, descriptor.handle);
     });
 
     adapterToUse.on('securityChanged', (device, connectionSecurity) => {
@@ -301,6 +307,23 @@ function _onDeviceConnected(dispatch, getState, device) {
 
     dispatch(deviceConnectedAction(device));
     dispatch(discoverServices(device));
+}
+
+function _onAttributeValueChanged(dispatch, getState, attribute, handle) {
+    if (attrChange.lastAttrHandleChanged === handle && process.hrtime(attrChange.lastAttrChangeTime)[1] < 500000000) {
+        attrChange.numAttrChanged += 1;
+        return;
+    }
+
+    if (attrChange.numAttrChanged > 0) {
+        logger.info(`${attrChange.numAttrChanged} attribute updates received`);
+    }
+
+    attrChange.lastAttrChangeTime = process.hrtime();
+    attrChange.lastAttrHandleChanged = handle;
+    attrChange.numAttrChanged = 0;
+
+    dispatch(attributeValueChangedAction(attribute, attribute.value));
 }
 
 function _onConnParamUpdateRequest(dispatch, getState, device, requestedConnectionParams) {
