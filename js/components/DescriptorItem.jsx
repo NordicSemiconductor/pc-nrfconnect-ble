@@ -15,7 +15,7 @@
 import React from 'react';
 
 import Component from 'react-pure-render/component';
-import { Map } from 'immutable';
+import { Map, is as ImmutableIs } from 'immutable';
 
 import HexOnlyEditableField from './HexOnlyEditableField';
 import { Effects } from '../utils/Effects';
@@ -28,6 +28,12 @@ export default class DescriptorItem extends Component {
     constructor(props) {
         super(props);
         this.backgroundColor = Colors.getColor(Colors.WHITE);
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        const update = !ImmutableIs(this.props.item.value, nextProps.item.value)
+            && !ImmutableIs(this.props.item.errorMessage, nextProps.item.errorMessage);
+        return update;
     }
 
     componentWillReceiveProps(nextProps) {

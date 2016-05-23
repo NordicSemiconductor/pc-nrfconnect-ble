@@ -15,12 +15,18 @@
 import React from 'react';
 
 import Component from 'react-pure-render/component';
+import * as _ from 'underscore';
 
 import EditableField from './EditableField.jsx';
 
 export default class HexOnlyEditableField extends Component {
     constructor(props) {
         super(props);
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        const update = !_.isEqual(this.props.value, nextProps.value);
+        return update;
     }
 
     /*
