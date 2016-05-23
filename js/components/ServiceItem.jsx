@@ -118,7 +118,7 @@ export default class ServiceItem extends Component {
 
         if (discoveringChildren) {
             childrenList.push(<EnumeratingAttributes key={'enumerating-characteristics'} bars={2} />);
-        } else if (children) {
+        } else if (children && expanded) {
             children.forEach(characteristic => {
                 childrenList.push(<CharacteristicItem key={characteristic.instanceId}
                                                       item={characteristic}
