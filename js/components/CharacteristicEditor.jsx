@@ -19,7 +19,7 @@ import { ButtonToolbar, Button } from 'react-bootstrap';
 
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 
-import { getUuidName, uuidCharacteristicDefinitions } from '../utils/uuid_definitions';
+import { getUuidName, uuidCharacteristicDefinitions, TEXT, getUuidFormat } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
 
 import SetupInput from './input/SetupInput';
@@ -208,6 +208,8 @@ export default class CharacteristicEditor extends Component {
             this.maxLength = maxLength;
         }
 
+        const showText = getUuidFormat(this.uuid) === TEXT;
+
         return (
             <form className='form-horizontal native-key-bindings'>
                 <SetupUuidInput label='Characteristic UUID' name='uuid' value={this.uuid}
@@ -216,7 +218,7 @@ export default class CharacteristicEditor extends Component {
 
                 <SetupInput label='Characteristic name' name='characteristic-name' value={this.name} onChange={e => this._setValueProperty('name', e)} />
                 <HexOnlyEditableField label='Initial value' plain={true} className='form-control' name='initial-value' value={this.value}
-                    onChange={value => this._setInitialValue(value)} labelClassName='col-md-3' wrapperClassName='col-md-9' />
+                    onChange={value => this._setInitialValue(value)} labelClassName='col-md-3' wrapperClassName='col-md-9' showText={showText} />
 
                 <SetupInputGroup label='Properties'>
                     <SetupInlineCheckBox label='Broadcast' ref='broadcast' checked={this.broadcast} onChange={e => this._setCheckedProperty('broadcast', e)} />

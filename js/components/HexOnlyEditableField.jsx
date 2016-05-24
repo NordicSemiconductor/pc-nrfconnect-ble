@@ -83,8 +83,13 @@ export default class HexOnlyEditableField extends Component {
     }
 
     _removeSelection(e, caretModifier) {
+        if (this.props.showText) {
+            return;
+        }
+
         const selectionStart = e.target.selectionStart;
         const selectionEnd = e.target.selectionEnd;
+
         if (selectionStart !== selectionEnd) {
             return;
         }
@@ -133,7 +138,7 @@ export default class HexOnlyEditableField extends Component {
         * Find where the caret would be without the dashes,
         * and map that position back to the dashed string
         */
-        const dashesBeforeCaret = origValue.substr(0, caretPosition).match(/-/g);
+        const dashesBeforeCaret = origValue.substr(0, caretPosition).match(/ /g);
         const numDashesBeforeCaret = dashesBeforeCaret === null ? 0 : dashesBeforeCaret.length;
         const caretPositionWithoutDashes = caretPosition - numDashesBeforeCaret;
         const correctNumberOfDashes = Math.floor(caretPositionWithoutDashes / 2);
@@ -176,8 +181,18 @@ export default class HexOnlyEditableField extends Component {
         return valueArray;
     }
 
+    _onChange(value) {
+        if (this.props.onChange) {
+            if (this.props.showText) {
+                value = this._getValueArray(value);
+            }
+
+            this.props.onChange(value);
+        }
+    }
+
     render() {
-        const { showText, value, keyPressValidation, completeValidation, formatInput, onBeforeBackspace, onBeforeDelete, ...props } = this.props; //pass along all props except these
+        const { showText, value, keyPressValidation, completeValidation, formatInput, onBeforeBackspace, onBeforeDelete, onChange, ...props } = this.props; //pass along all props except these
 
         let parsedValue = hexArrayToHexText(value);
         let showValue = '';
@@ -198,7 +213,9 @@ export default class HexOnlyEditableField extends Component {
                               onBeforeBackspace={e => this._onBeforeBackspace(e)}
                               onBeforeDelete={e => this._onBeforeDelete(e)}
                               getValueArray={value => this._getValueArray(value)}
-                              ref='editableField' />;
+                              onChange={value => this._onChange(value)}
+                              ref='editableField'
+                              />;
     }
 }
 

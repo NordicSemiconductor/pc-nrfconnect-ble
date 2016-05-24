@@ -33,4 +33,4 @@ var store = configureStore(initialState);
 
 const target = document.getElementById('app');
 
-ReactDOM.render(React.createElement(root, {store: store}), target);
+ReactDOM.render(React.createElement(root, { store: store }), target);

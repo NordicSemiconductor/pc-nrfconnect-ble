@@ -80,8 +80,8 @@ class EditableField extends Component {
                 }
             }
 
-            this.editing = false,
-            this.value = this.props.value, //reset textarea value
+            this.editing = false;
+            this.value = this.props.value; //reset textarea value
             this.validationMessage = '';
             this.forceUpdate();
         }
