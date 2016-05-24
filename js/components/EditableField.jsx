@@ -93,6 +93,11 @@ class EditableField extends Component {
         this.props.selectParent(e);
     }
 
+    _selectParent(e) {
+        e.stopPropagation();
+        this.props.selectParent(e);
+    }
+
     _toggleEditing(e) {
         e.stopPropagation();
 
@@ -195,6 +200,9 @@ class EditableField extends Component {
             this.value = this.props.value;
         }
 
+        const readButton = this.props.showReadButton ?
+            <div className='btn btn-primary btn-xs btn-nordic' title='Read' onClick={e => this._onReadButtonClick(e)}><i className='icon-ccw'></i></div> : null;
+
         if (this.props.plain) {
             child = <Input type='textarea' {...this.props}
                                       ref='editableTextarea'
@@ -211,7 +219,7 @@ class EditableField extends Component {
                                 {this.validationMessage}
                             </div>
                         </div>
-                        <div className='btn btn-primary btn-xs btn-nordic' title="Write" onClick={e => this._onWriteButtonClick(e)}><i className='icon-ok'></i></div>
+                        <div className='btn btn-primary btn-xs btn-nordic' title='Write' onClick={e => this._onWriteButtonClick(e)}><i className='icon-ok'></i></div>
                         <TextareaAutosize {...this.props}
                                           ref='editableTextarea'
                                           minRows={1}
@@ -220,12 +228,23 @@ class EditableField extends Component {
                                           onChange={e => this._onChange(e)}
                                           onClick={this._stopPropagation} />
                     </div>;
-        } else if (this.props.showReadButton && this.props.onRead) {
+        } else if (this.props.showReadButton && this.props.onRead && this.props.onWrite) {
             child = <div className='editable-field-editor-wrap'>
-                        <div className='btn btn-primary btn-xs btn-nordic' title="Read" onClick={e => this._onReadButtonClick(e)}><i className='icon-ccw'></i></div>
+                        <div className='btn btn-primary btn-xs btn-nordic' title='Read' onClick={e => this._onReadButtonClick(e)}><i className='icon-ccw'></i></div>
                         <div className='subtle-text editable' onClick={e => this._toggleEditing(e)}>
                             <span>{this.value || nonBreakingSpace}</span>
                         </div>
+                    </div>;
+        } else if (this.props.onRead && !this.props.onWrite) {
+            child = <div>
+                        {readButton}
+                        <div className='subtle-text'>
+                            <span>{this.value || nonBreakingSpace}</span>
+                        </div>
+                    </div>;
+        } else if (!this.props.onRead && !this.props.onWrite) {
+            child = <div className='subtle-text' title={this.props.title} onClick={e => this._selectParent(e)}>
+                        <span>{this.value || nonBreakingSpace}</span>
                     </div>;
         } else {
             child = <div className='subtle-text editable' title={this.props.title} onClick={e => this._selectParentAndToggleEditing(e)}>

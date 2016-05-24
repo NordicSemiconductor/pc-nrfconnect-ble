@@ -222,6 +222,8 @@ export default class CharacteristicItem extends Component {
         const isNotifying = this._isNotifying(this.cccdDescriptor);
         const hasNotifyProperty = properties.notify;
         const hasIndicateProperty = properties.indicate;
+        const hasReadProperty = properties.read;
+        const hasWriteProperty = properties.write || properties.write_wo_resp || properties.reliable_wr;
 
         const hasPossibleChildren = addNew || !(children && children.size === 0);
         const expandIconStyle = children && children.size === 0 && !addNew  ? { display: 'none' } : {};
@@ -262,9 +264,9 @@ export default class CharacteristicItem extends Component {
                             </div>
                         </div>
                         <HexOnlyEditableField value={value.toArray()}
-                                              onWrite={value => this._onWrite(value)}
-                                              showReadButton={itemIsSelected}
-                                              onRead={_onRead}
+                                              onWrite={(hasWriteProperty || isLocal) ? value => this._onWrite(value) : null}
+                                              showReadButton={hasReadProperty && itemIsSelected}
+                                              onRead={hasReadProperty ? _onRead : null}
                                               selectParent={() => this._selectComponent()}
                                               showText={showText} />
                         <div className={'error-label ' + hideErrorClass}>{errorText}</div>

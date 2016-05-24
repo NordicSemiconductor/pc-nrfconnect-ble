@@ -27,8 +27,10 @@ export default class HexOnlyEditableField extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        const update = !_.isEqual(this.props.value, nextProps.value);
-        return update;
+        if (!_.isEqual(this.props.value, nextProps.value)) return true;
+        if (this.props.onRead != nextProps.onRead) return true;
+        if (this.props.onWrite != nextProps.onWrite) return true;
+        return false;
     }
 
     /*
