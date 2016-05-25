@@ -156,8 +156,8 @@ function _setupListeners(dispatch, getState, adapterToUse) {
         _onDeviceConnected(dispatch, getState, device);
     });
 
-    adapterToUse.on('deviceDisconnected', device => {
-        dispatch(deviceDisconnectedAction(device));
+    adapterToUse.on('deviceDisconnected', (device, reason) => {
+        dispatch(deviceDisconnectedAction(device, reason));
     });
 
     adapterToUse.on('connectTimedOut', deviceAddress => {
@@ -984,8 +984,6 @@ function _disconnectFromDevice(dispatch, getState, device) {
                 resolve(device);
             }
         });
-    }).then(device => {
-        dispatch(deviceDisconnectedAction(device));
     }).catch(error => {
         dispatch(showErrorDialog(error));
     });
@@ -1153,10 +1151,11 @@ function deviceSecurityRequestTimedOutAction(device) {
     };
 }
 
-function deviceDisconnectedAction(device) {
+function deviceDisconnectedAction(device, reason) {
     return {
         type: DEVICE_DISCONNECTED,
         device,
+        reason,
     };
 }
 

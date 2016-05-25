@@ -208,8 +208,8 @@ function connectedDeviceUpdated(state, device) {
     return state;
 }
 
-function deviceDisconnected(state, device) {
-    logger.info(`Disconnected from device ${device.address}`);
+function deviceDisconnected(state, device, reason) {
+    logger.info(`Disconnected from device ${device.address}, reason: ${reason}`);
     const { index } = getSelectedAdapter(state);
     return state.deleteIn(['adapters', index, 'connectedDevices', device.instanceId]);
 }
@@ -361,7 +361,7 @@ export default function adapter(state = getImmutableRoot(), action) {
         case AdapterAction.DEVICE_CONNECT_CANCELED:
             return deviceConnectCanceled(state);
         case AdapterAction.DEVICE_DISCONNECTED:
-            return deviceDisconnected(state, action.device);
+            return deviceDisconnected(state, action.device, action.reason);
         case AdapterAction.DEVICE_INITIATE_PAIRING:
             return deviceInitiatePairing(state, action.device);
         case AdapterAction.DEVICE_CONNECTION_PARAM_UPDATE_STATUS:
