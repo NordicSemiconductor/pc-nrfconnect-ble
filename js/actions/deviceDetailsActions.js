@@ -75,7 +75,7 @@ function _discoverDeviceName(dispatch, getState, device, services) {
 
         reject(new Error('Could not find GAP service'));
     }).then(gapService => {
-        return _discoverCharacteristics(dispatch, getState, gapService);
+        return _discoverCharacteristicsAndDescriptors(dispatch, getState, gapService);
     }).then(characteristics => {
         for (let characteristic of characteristics) {
             if (characteristic.uuid === getUuidByName('Device Name')) {
@@ -141,10 +141,59 @@ function _discoverDescriptors(dispatch, getState, characteristic) {
         );
     }).then(descriptors => {
         dispatch(discoveredAttributesAction(characteristic, descriptors));
+        return new Promise((resolve, reject) => resolve(characteristic));
     }).catch(error => {
         console.log(error);
         dispatch(showErrorDialog(error));
     });
+}
+
+function _discoverCharacteristicsAndDescriptors(dispatch, getState, service) {
+    let retvalCharacteristics;
+    return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.selectedAdapter;
+
+        if (adapterToUse === null) {
+            reject(new Error(`No adapter selected`));
+        }
+
+        dispatch(discoveringAttributesAction(service));
+
+        adapterToUse.getCharacteristics(
+            service.instanceId,
+            (error, characteristics) => {
+                if (error) {
+                    dispatch(discoveredAttributesAction(service));
+                    reject(new Error(error.message));
+                }
+
+                resolve(characteristics);
+            }
+        );
+    }).then(characteristics => {
+        dispatch(discoveredAttributesAction(service, characteristics));
+        retvalCharacteristics = characteristics;
+        return new Promise((resolve, reject) => {
+            resolve(characteristics);
+        });
+    }).then(characteristics => {
+        let promise = Promise.resolve();
+        for (let characteristic of characteristics) {
+            promise = promise.then(() => {
+                return _getDiscoverDescriptorsPromise()(dispatch, getState, characteristic);
+            });
+        }
+
+        return promise.then();
+    }).then(() => {
+        return retvalCharacteristics;
+    }).catch(error => {
+        dispatch(showErrorDialog(error));
+    });
+}
+
+function _getDiscoverDescriptorsPromise() {
+    return _discoverDescriptors;
 }
 
 function _setAttributeExpanded(dispatch, getState, attribute, value) {
@@ -167,7 +216,7 @@ function _setAttributeExpanded(dispatch, getState, attribute, value) {
         }
     } else {
         if (!service.children && !service.expanded && !service.discoveringChildren) {
-            dispatch(discoverCharacteristics(service));
+            dispatch(discoverCharacteristicsAndDescriptors(service));
         }
     }
 
@@ -383,6 +432,12 @@ export function discoverCharacteristics(service) {
 export function discoverDescriptors(characteristic) {
     return (dispatch, getState) => {
         return _discoverDescriptors(dispatch, getState, characteristic);
+    };
+}
+
+export function discoverCharacteristicsAndDescriptors(service) {
+    return (dispatch, getState) => {
+        return _discoverCharacteristicsAndDescriptors(dispatch, getState, service);
     };
 }
 
