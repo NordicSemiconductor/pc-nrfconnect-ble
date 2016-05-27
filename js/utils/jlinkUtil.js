@@ -15,19 +15,10 @@ var regedit = require('regedit');
 
 // callback signature  (err, portName)
 function jlinkIdToPortName(jlinkId, callback) {
-    let validEntryPathsCopy;
+    getJlinkRegistryPaths((err, paths) => {
+        if (err) callback(err);
 
-    regedit.list('HKLM\\SYSTEM\\CurrentControlSet\\Enum\\USB')
-    .on('error', error => callback(error))
-    .on('data', entry => {
-        const validEntries = entry.data.keys.filter(value => value.indexOf('VID_1366') === 0);
-
-        const validEntryPaths = validEntries.map(value => `${entry.key}\\${value}`);
-
-        // Storing the array for later use since list operation will mutate the array
-        validEntryPathsCopy = validEntryPaths.slice();
-
-        regedit.list(validEntryPaths)
+        regedit.list(paths)
         .on('error', error => callback(error))
         .on('data', entry => {
             const validSubEntries = entry.data.keys.filter(value => value.indexOf(jlinkId) >= 0);
@@ -46,30 +37,49 @@ function jlinkIdToPortName(jlinkId, callback) {
 
                 const parentIdPrefix = entry.data.values.ParentIdPrefix.value;
 
-                regedit.list(validEntryPathsCopy)
-                .on('error', error => callback(error))
-                .on('data', entry => {
-                    const validEntries = entry.data.keys.filter(value => value.indexOf(parentIdPrefix) === 0);
-                    if (validEntries.length === 0) {
+                getJlinkRegistryPaths((err, paths) => {
+                    if (err) {
+                        callback(err);
                         return;
                     }
 
-                    const validSubEntryPaths = validEntries.map(value => `${entry.key}\\${value}\\Device Parameters`);
-
-                    regedit.list(validSubEntryPaths)
+                    regedit.list(paths)
                     .on('error', error => callback(error))
                     .on('data', entry => {
-
-                        if (!(entry.data.values && entry.data.values.PortName && entry.data.values.PortName.value)) {
+                        const validEntries = entry.data.keys.filter(value => value.indexOf(parentIdPrefix) === 0);
+                        if (validEntries.length === 0) {
                             return;
                         }
 
-                        const portName = entry.data.values.PortName.value;
-                        if (callback) {callback(null, portName);}
+                        const validSubEntryPaths = validEntries.map(value => `${entry.key}\\${value}\\Device Parameters`);
+
+                        regedit.list(validSubEntryPaths)
+                        .on('error', error => callback(error))
+                        .on('data', entry => {
+
+                            if (!(entry.data.values && entry.data.values.PortName && entry.data.values.PortName.value)) {
+                                return;
+                            }
+
+                            const portName = entry.data.values.PortName.value;
+                            if (callback) {callback(null, portName);}
+                        });
                     });
                 });
             });
         });
+    });
+}
+
+function getJlinkRegistryPaths(callback) {
+    regedit.list('HKLM\\SYSTEM\\CurrentControlSet\\Enum\\USB')
+    .on('error', error => callback(error, null))
+    .on('data', entry => {
+        const jlinkEntries = entry.data.keys.filter(value => value.indexOf('VID_1366') === 0);
+        const jlinkRegPaths = jlinkEntries.map(value => `${entry.key}\\${value}`);
+        if (callback) {
+            callback(null, jlinkRegPaths);
+        }
     });
 }
 
