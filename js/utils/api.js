@@ -18,6 +18,7 @@ import { api } from 'pc-ble-driver-js';
 const ImmutableAdapterState = Record({
     instanceId: null,
     port: null,
+    serialNumber: null,
     available: false,
     scanning: false,
     advertising: false,
@@ -180,6 +181,7 @@ export function getImmutableAdapterState(adapterState) {
     return new ImmutableAdapterState({
         instanceId: adapterState.instanceId,
         port: adapterState.port,
+        serialNumber: adapterState.serialNumber,
         available: adapterState.available,
         scanning: adapterState.scanning,
         advertising: adapterState.advertising,
