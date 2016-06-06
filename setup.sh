@@ -64,8 +64,7 @@ electron-packager . $YGGDRASIL_NAME --platform=$YGGDRASIL_PLATFORM --arch=$npm_c
 cp README.md $YGGDRASIL_APP_ROOT_DIR/README.txt
 cp LICENSE $YGGDRASIL_APP_ROOT_DIR/LICENSE
 mkdir $YGGDRASIL_APP_ROOT_DIR/hex
-cp node_modules/pc-ble-driver-js/driver/hex/connectivity_115k2_with_s13*_2.0.1.hex $YGGDRASIL_APP_ROOT_DIR/hex/
-mv node_modules/pc-ble-driver-js/build/Release/libpc-ble-driver.so $YGGDRASIL_APP_ROOT_DIR/
+cp node_modules/pc-ble-driver-js/pc-ble-driver/hex/*.hex $YGGDRASIL_APP_ROOT_DIR/hex/
 
 pushd .
 
