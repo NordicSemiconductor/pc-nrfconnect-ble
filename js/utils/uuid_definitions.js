@@ -343,6 +343,8 @@ export function getPrettyUuid(uuid) {
 }
 
 export function getUuidFormat(uuid) {
+    if (!uuid) return NO_FORMAT;
+
     let lookupUuid = uuid.toUpperCase();
     if (lookupUuid[1] === 'X') {
         lookupUuid = lookupUuid.slice(2);
