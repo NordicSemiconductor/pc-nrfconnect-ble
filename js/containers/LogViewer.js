@@ -18,6 +18,7 @@ import Infinite from 'react-infinite';
 import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import uuidV4 from 'uuid-v4';
 
 import * as LogActions from '../actions/logActions';
 import LogEntry from '../components/LogEntry';
@@ -59,7 +60,7 @@ class LogContainer extends Component {
                              className='infinite-log'
                              autoScroll={autoScroll}
                              >
-                 {logEntries.map(entry => <LogEntry {...{entry}} key={entry.id} />)}
+                 {logEntries.map(entry => <LogEntry {...{entry}} key={uuidV4()} />)}
             </Infinite>
         </div>);
     }
