@@ -29,7 +29,7 @@ class LogReader extends EventEmitter {
             this.stop();
         }
 
-        this.interval = setInterval(() => {
+        this.interval = setTimeout(() => {
             this.triggerUpdate();
         }, this.updateInterval);
     }
@@ -45,6 +45,12 @@ class LogReader extends EventEmitter {
         // TODO: the self.state.logEntries array as option to the query
         // TODO: and let the query implementation add directory to self.state.logEntries.
         logger.query({start: this.lastLogEntryId + 1, transport: 'db'}, (err, entries) => {
+            // Use setTimeout instead of setInterval to guarantee that query is not called
+            // too soon since that may lead to duplicate log entries.
+            this.interval = setTimeout(() => {
+                this.triggerUpdate();
+            }, this.updateInterval);
+
             if (err) {
                 this.emit('error', err);
                 return;
