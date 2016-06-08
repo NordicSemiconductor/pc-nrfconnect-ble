@@ -239,7 +239,6 @@ function attributeValueChanged(state, attribute, value, error) {
         errorMessage = formatErrorMessage(error.message);
     } else {
         const handle = attribute.valueHandle ? attribute.valueHandle : attribute.handle;
-        logger.info(`Attribute value changed, handle: ${handle}, value (0x): ${toHexString(value)}`);
     }
 
     state = state.setIn(attributeStatePath.concat('errorMessage'), errorMessage);

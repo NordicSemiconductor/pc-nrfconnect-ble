@@ -66,6 +66,7 @@ export const ERROR = 4;
 export const FATAL = 5;
 
 import Immutable from 'immutable';
+import _ from 'underscore';
 import { driver, api } from 'pc-ble-driver-js';
 import { logger } from '../logging';
 import { discoverServices } from './deviceDetailsActions';
@@ -96,6 +97,8 @@ const attrChange = {
     numAttrChanged: 0,
     lastAttrHandleChanged: 0,
 };
+
+let throttledValueChangedDispatch;
 
 // Internal functions
 
@@ -310,20 +313,15 @@ function _onDeviceConnected(dispatch, getState, device) {
 }
 
 function _onAttributeValueChanged(dispatch, getState, attribute, handle) {
-    if (attrChange.lastAttrHandleChanged === handle && process.hrtime(attrChange.lastAttrChangeTime)[1] < 500000000) {
-        attrChange.numAttrChanged += 1;
-        return;
+    logger.info(`Attribute value changed, handle: ${handle}, value (0x): ${toHexString(attribute.value)}`);
+
+    if (!throttledValueChangedDispatch) {
+        throttledValueChangedDispatch = _.throttle((attribute, value) => {
+            dispatch(attributeValueChangedAction(attribute, value));
+        }, 500);
     }
 
-    if (attrChange.numAttrChanged > 0) {
-        logger.info(`${attrChange.numAttrChanged} attribute updates received`);
-    }
-
-    attrChange.lastAttrChangeTime = process.hrtime();
-    attrChange.lastAttrHandleChanged = handle;
-    attrChange.numAttrChanged = 0;
-
-    dispatch(attributeValueChangedAction(attribute, attribute.value));
+    throttledValueChangedDispatch(attribute, attribute.value);
 }
 
 function _onConnParamUpdateRequest(dispatch, getState, device, requestedConnectionParams) {
