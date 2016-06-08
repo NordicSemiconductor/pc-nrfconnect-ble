@@ -83,10 +83,8 @@ export default class DescriptorEditor extends Component {
         this.props.onModified(true);
     }
 
-    _onUuidChange(e) {
+    _onUuidChange(uuid) {
         const _hexRegEx = /^[0-9A-F]*$/i;
-        const textarea = e.target;
-        const uuid = textarea.value;
         const valid = _hexRegEx.test(uuid);
         let caretPosition = textarea.selectionStart;
 
@@ -179,7 +177,7 @@ export default class DescriptorEditor extends Component {
         return (
             <form className='form-horizontal native-key-bindings'>
                 <SetupUuidInput label='Descriptor UUID' name='uuid' value={this.uuid}
-                    onChange={e => this._onUuidChange(e)} uuidDefinitions={uuidDescriptorDefinitions}
+                    onChange={e => this._onUuidChange(e.target.value)} uuidDefinitions={uuidDescriptorDefinitions}
                     handleSelection={uuid => this._handleUuidSelect(uuid)} />
 
                 <SetupInput label='Descriptor name' name='descriptor-name' value={this.name} onChange={e => this._setValueProperty('name', e)} />

@@ -59,7 +59,7 @@ export default class SetupUuidInput extends SetupInput {
         return <SetupInput label={label} { ...this.pros }
             hasFeedback bsStyle={this.validateUuidInput()}
             value={value}
-            onChange={e => this._onUuidChange(e)}
+            onChange={e => this._onUuidChange(e.target.value)}
             buttonAfter={uuidSelectButton} />;
     }
 }
