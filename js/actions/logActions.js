@@ -13,6 +13,7 @@
 'use strict';
 
 export const ADD_ENTRY = 'LOG_ADD_ENTRY';
+export const ADD_ENTRIES = 'LOG_ADD_ENTRIES';
 export const CLEAR_ENTRIES = 'LOG_CLEAR_ENTRIES';
 export const TOGGLE_AUTOSCROLL = 'LOG_TOGGLE_AUTOSCROLL';
 
@@ -22,8 +23,8 @@ let logReader;
 let entryCallback;
 
 function _startLogReader(dispatch) {
-    entryCallback = function(entry) {
-        dispatch(logAddEntryAction(entry));
+    entryCallback = function(entries) {
+        dispatch(logAddEntriesAction(entries));
     };
 
     if (logReader === undefined) {
@@ -45,6 +46,13 @@ function logAddEntryAction(entry) {
     return {
         type: ADD_ENTRY,
         entry,
+    };
+}
+
+function logAddEntriesAction(entries) {
+    return {
+        type: ADD_ENTRIES,
+        entries,
     };
 }
 

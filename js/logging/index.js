@@ -60,9 +60,7 @@ class LogReader extends EventEmitter {
                 return;
             }
 
-            for (let entry of entries) {
-                this.emit('entry', entry);
-            }
+            this.emit('entry', entries);
 
             // Fetch the latest id received
             this.lastLogEntryId = entries[entries.length - 1].id;

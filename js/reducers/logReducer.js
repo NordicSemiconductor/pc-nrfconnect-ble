@@ -27,10 +27,12 @@ export default function log(state = initialState, action) {
     switch (action.type) {
         case LogAction.ADD_ENTRY:
             return state.set('entries', state.entries.push(action.entry));
+        case LogAction.ADD_ENTRIES:
+            return state.set('entries', state.entries.push(...(action.entries)));
         case LogAction.CLEAR_ENTRIES:
             return state.set('entries', state.entries.clear());
         case LogAction.TOGGLE_AUTOSCROLL:
-            return state.set('autoScroll', !autoScroll);
+            return state.set('autoScroll', !state.autoScroll);
         default:
             return state;
     }
