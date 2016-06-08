@@ -27,12 +27,6 @@ export default class SetupUuidInput extends SetupInput {
         }
 
         this.uuid = uuid;
-        let uuidName = getUuidName(this.uuid);
-
-        if (this.uuid !== uuidName) {
-            this.name = uuidName;
-        }
-
         this.value = uuid;
 
         this.props.handleSelection(uuid);
@@ -56,10 +50,10 @@ export default class SetupUuidInput extends SetupInput {
                 pullRight={true}/>
         );
 
-        return <SetupInput label={label} { ...this.pros }
+        return <SetupInput label={label}
             hasFeedback bsStyle={this.validateUuidInput()}
             value={value}
-            onChange={e => this._onUuidChange(e.target.value)}
+            onChange={e => this.props.handleSelection(e.target.value)}
             buttonAfter={uuidSelectButton} />;
     }
 }
