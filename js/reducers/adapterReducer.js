@@ -309,6 +309,10 @@ function serverSetupApplied(state) {
     return state.setIn(['adapters', index, 'isServerSetupApplied'], true);
 }
 
+function adapterUpdateFirmwareRequest(state, adapter) {
+    return state.set('showProgrammingDialog', true);
+}
+
 export default function adapter(state = getImmutableRoot(), action) {
     const adapterSubReducers = combineReducers({
         deviceDetails,
@@ -352,6 +356,8 @@ export default function adapter(state = getImmutableRoot(), action) {
             return adapterScanTimeout(state, action.adapter);
         case AdapterAction.ADAPTER_ADVERTISEMENT_TIMEOUT:
             return adapterAdvertisementTimeout(state, action.adapter);
+        case AdapterAction.ADAPTER_UPDATE_FIRMWARE_REQUEST:
+            return adapterUpdateFirmwareRequest(state, action.adapter);
         case AdapterAction.ERROR_OCCURED:
             return addError(state, action.error);
         case AdapterAction.DEVICE_CONNECT:

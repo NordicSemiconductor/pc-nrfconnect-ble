@@ -21,6 +21,7 @@ import app from './appReducer';
 import advertising from './advertisingReducer';
 import bleEvent from './bleEventReducer';
 import errorDialog from './errorDialogReducer';
+import firmwareUpdate from './firmwareUpdateReducer';
 
 const rootReducer = combineReducers({
     adapter,
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
     advertising,
     bleEvent,
     errorDialog,
+    firmwareUpdate,
 });
 
 export default rootReducer;

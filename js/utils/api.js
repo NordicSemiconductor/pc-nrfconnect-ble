@@ -29,7 +29,6 @@ const ImmutableAdapterState = Record({
 });
 
 const ImmutableAdapter = Record({
-    port: null,
     state: new ImmutableAdapterState(),
     connectedDevices: Map(),
     /*Adapter sub-reducers*/

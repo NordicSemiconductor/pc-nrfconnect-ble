@@ -63,7 +63,7 @@ class ServerSetup extends Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
-        if(!this.props.serverSetup) return false;
+        if (!this.props.serverSetup) { return false; }
 
         if (!this.props.serverSetup ||
             nextProps.serverSetup.selectedComponent !== this.props.serverSetup.selectedComponent) {
@@ -316,9 +316,11 @@ class ServerSetup extends Component {
             onSaveSetup={() => {
                 ipcRenderer.send('save-server-setup', null);
             }}
+
             onLoadSetup={() => {
                 ipcRenderer.send('load-server-setup', null);
             }}
+
          />;
 
         return (

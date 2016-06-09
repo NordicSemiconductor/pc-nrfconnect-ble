@@ -22,6 +22,7 @@ export const ADAPTER_STATE_CHANGED = 'ADAPTER_STATE_CHANGED';
 export const ADAPTER_RESET_PERFORMED = 'ADAPTER_RESET_PERFORMED';
 export const ADAPTER_SCAN_TIMEOUT = 'ADAPTER_SCAN_TIMEOUT';
 export const ADAPTER_ADVERTISEMENT_TIMEOUT = 'ADAPTER_ADVERTISEMENT_TIMEOUT';
+export const ADAPTER_UPDATE_FIRMWARE_REQUEST = 'ADAPTER_UPDATE_FIRMWARE_REQUEST';
 
 export const DEVICE_DISCOVERED = 'DEVICE_DISCOVERED';
 export const DEVICE_CONNECT = 'DEVICE_CONNECT';
@@ -65,14 +66,16 @@ export const WARNING = 3;
 export const ERROR = 4;
 export const FATAL = 5;
 
-import Immutable from 'immutable';
 import _ from 'underscore';
 import { driver, api } from 'pc-ble-driver-js';
 import { logger } from '../logging';
 import { discoverServices } from './deviceDetailsActions';
 import { BLEEventState } from './common';
 import { showErrorDialog } from './errorDialogActions';
-import { toHexString, hexStringToArray } from '../utils/stringUtil';
+import { showFirmwareUpdateRequest } from './firmwareUpdateActions';
+import { hexStringToArray } from '../utils/stringUtil';
+
+import { DebugProbe } from 'pc-nrfjprog-js';
 
 const _adapterFactory = api.AdapterFactory.getInstance();
 
@@ -234,6 +237,32 @@ function _setupListeners(dispatch, getState, adapterToUse) {
     adapterToUse.on('status', status => {
         _onStatus(dispatch, getState, status);
     });
+}
+
+function _checkProgram(dispatch, getState, adapter) {
+    const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
+
+    if (adapterToUse === null) {
+        return;//reject(new Error(`Not able to find ${adapter}.`));
+    }
+
+    const probe = new DebugProbe();
+    const supportedVersion = 0;
+
+    return new Promise((resolve, reject) => {
+        probe.getVersion(parseInt(adapterToUse.state.serialNumber, 10), (err, version) => {
+            console.log(err);
+            console.log(version);
+            
+            if (version !== supportedVersion) {
+                reject();
+            } else {
+                resolve();
+            }
+        });
+    }).then(() => {
+        _openAdapter(dispatch, getState, adapter);
+    }).catch(() => dispatch(showFirmwareUpdateRequest(adapter)));
 }
 
 function _openAdapter(dispatch, getState, adapter) {
@@ -1289,9 +1318,22 @@ function storeSecurityOwnParamsAction(device, ownParams) {
     };
 }
 
+function considerUpdate(device) {
+    return {
+        type: ADAPTER_UPDATE_FIRMWARE_REQUEST,
+        device,
+    };
+}
+
 export function findAdapters() {
     return dispatch => {
         return _getAdapters(dispatch);
+    };
+}
+
+export function progamAdapter(adapter) {
+    return (dispatch, getState) => {
+        return _checkProgram(dispatch, getState, adapter);
     };
 }
 
