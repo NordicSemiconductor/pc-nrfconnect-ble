@@ -22,7 +22,6 @@ export const ADAPTER_STATE_CHANGED = 'ADAPTER_STATE_CHANGED';
 export const ADAPTER_RESET_PERFORMED = 'ADAPTER_RESET_PERFORMED';
 export const ADAPTER_SCAN_TIMEOUT = 'ADAPTER_SCAN_TIMEOUT';
 export const ADAPTER_ADVERTISEMENT_TIMEOUT = 'ADAPTER_ADVERTISEMENT_TIMEOUT';
-export const ADAPTER_UPDATE_FIRMWARE_REQUEST = 'ADAPTER_UPDATE_FIRMWARE_REQUEST';
 
 export const DEVICE_DISCOVERED = 'DEVICE_DISCOVERED';
 export const DEVICE_CONNECT = 'DEVICE_CONNECT';
@@ -240,20 +239,17 @@ function _setupListeners(dispatch, getState, adapterToUse) {
 }
 
 function _checkProgram(dispatch, getState, adapter) {
-    const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
-
-    if (adapterToUse === null) {
-        return;//reject(new Error(`Not able to find ${adapter}.`));
-    }
-
-    const probe = new DebugProbe();
-    const supportedVersion = 0;
-
     return new Promise((resolve, reject) => {
+        const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
+
+        if (adapterToUse === null) {
+            reject(new Error(`Not able to find ${adapter}.`));
+        }
+
+        const probe = new DebugProbe();
+        const supportedVersion = 0;
+
         probe.getVersion(parseInt(adapterToUse.state.serialNumber, 10), (err, version) => {
-            console.log(err);
-            console.log(version);
-            
             if (version !== supportedVersion) {
                 reject();
             } else {
@@ -262,7 +258,13 @@ function _checkProgram(dispatch, getState, adapter) {
         });
     }).then(() => {
         _openAdapter(dispatch, getState, adapter);
-    }).catch(() => dispatch(showFirmwareUpdateRequest(adapter)));
+    }).catch(err => {
+        if (err) {
+            dispatch(showErrorDialog(err));
+        } else {
+            dispatch(showFirmwareUpdateRequest(adapter));
+        }
+    });
 }
 
 function _openAdapter(dispatch, getState, adapter) {
@@ -1315,13 +1317,6 @@ function storeSecurityOwnParamsAction(device, ownParams) {
         type: DEVICE_SECURITY_STORE_OWN_PARAMS,
         device,
         ownParams,
-    };
-}
-
-function considerUpdate(device) {
-    return {
-        type: ADAPTER_UPDATE_FIRMWARE_REQUEST,
-        device,
     };
 }
 

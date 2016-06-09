@@ -16,7 +16,7 @@ export const SHOW_FIRMWARE_UPDATE_REQUEST = 'SHOW_FIRMWARE_UPDATE_REQUEST';
 export const HIDE_FIRMWARE_UPDATE_REQUEST = 'HIDE_FIRMWARE_UPDATE_REQUEST';
 export const UPDATE_FIRMWARE = 'UPDATE_FIRMWARE';
 
-import * as AdapterActions from './adapterActions';
+import { openAdapter } from './adapterActions';
 import { DebugProbe } from 'pc-nrfjprog-js';
 import { showErrorDialog } from './errorDialogActions';
 
@@ -55,7 +55,7 @@ function updateFirmwareAction(dispatch, getState, adapter) {
         });
     }).then(() => {
         dispatch(hideFirmwareUpdateRequestAction());
-        setTimeout(dispatch(AdapterActions.openAdapter(adapter)), 1000);
+        setTimeout(dispatch(openAdapter(adapter)), 1000);
     }).catch(error => {
         dispatch(hideFirmwareUpdateRequestAction());
         dispatch(showErrorDialog(error));
