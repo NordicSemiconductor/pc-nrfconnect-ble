@@ -19,10 +19,19 @@ import {Button} from 'react-bootstrap';
 
 var ConfirmationDialog = React.createClass({
     getInitialState() {
-        return { showModal: this.props.show };
+        return {
+            showModal: this.props.show,
+            showProgress: this.props.showProgress,
+        };
     },
 
     render() {
+        const progressStyle = {
+            visibility: this.props.showProgress ? 'visible' : 'hidden',
+        };
+
+        const buttonDisabled = this.props.showProgress;
+
         return (
           <div>
             <Modal show={this.props.show} onHide={this.props.onCancel}>
@@ -33,8 +42,10 @@ var ConfirmationDialog = React.createClass({
                 <p>{this.props.text}</p>
               </Modal.Body>
               <Modal.Footer>
-                <Button onClick={this.props.onOk}>OK</Button>
-                <Button onClick={this.props.onCancel}>Cancel</Button>
+                <img className='spinner' src='resources/ajax-loader.gif' height='16' width='16' style={progressStyle} />
+                &nbsp;
+                <Button onClick={this.props.onOk} disabled={buttonDisabled}>OK</Button>
+                <Button onClick={this.props.onCancel} disabled={buttonDisabled}>Cancel</Button>
               </Modal.Footer>
             </Modal>
           </div>

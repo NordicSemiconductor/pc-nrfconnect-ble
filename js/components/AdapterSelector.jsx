@@ -83,6 +83,7 @@ class AdapterSelector extends Component {
 
         const {
             showingUpdateDialog,
+            showProgress,
         } = firmwareUpdate;
 
         const adapterNodes = [];
@@ -115,6 +116,7 @@ class AdapterSelector extends Component {
                 <ConfirmationDialog show={showingUpdateDialog}
                                     onOk={updateFirmware}
                                     onCancel={continueOpenDevice}
+                                    showProgress={showProgress}
                                     text='The firmware is not updated. Do you want to update it?'/>
             </span>
         );

@@ -15,6 +15,7 @@
 export const SHOW_FIRMWARE_UPDATE_REQUEST = 'SHOW_FIRMWARE_UPDATE_REQUEST';
 export const HIDE_FIRMWARE_UPDATE_REQUEST = 'HIDE_FIRMWARE_UPDATE_REQUEST';
 export const UPDATE_FIRMWARE = 'UPDATE_FIRMWARE';
+export const SHOW_FIRMWARE_UPDATE_SPINNER = 'SHOW_FIRMWARE_UPDATE_SPINNER';
 
 import { openAdapter } from './adapterActions';
 import { DebugProbe } from 'pc-nrfjprog-js';
@@ -55,11 +56,17 @@ function updateFirmwareAction(dispatch, getState, adapter) {
         });
     }).then(() => {
         dispatch(hideFirmwareUpdateRequestAction());
-        setTimeout(dispatch(openAdapter(adapter)), 1000);
+        setTimeout(() => dispatch(openAdapter(adapter)), 1000);
     }).catch(error => {
         dispatch(hideFirmwareUpdateRequestAction());
         dispatch(showErrorDialog(error));
     });
+}
+
+function showUpdateFirmwareSpinner() {
+    return {
+        type: SHOW_FIRMWARE_UPDATE_SPINNER,
+    };
 }
 
 export function showFirmwareUpdateRequest(adapter) {
@@ -69,6 +76,7 @@ export function showFirmwareUpdateRequest(adapter) {
 export function updateFirmware() {
     return ((dispatch, getState) => {
         const adapter = getState().firmwareUpdate.adapter;
+        dispatch(showUpdateFirmwareSpinner());
         updateFirmwareAction(dispatch, getState, adapter);
     });
 }
@@ -77,6 +85,6 @@ export function continueOpenDevice() {
     return ((dispatch, getState) => {
         const adapter = getState().firmwareUpdate.adapter;
         dispatch(hideFirmwareUpdateRequestAction());
-        dispatch(AdapterActions.openAdapter(adapter));
+        dispatch(openAdapter(adapter));
     });
 }

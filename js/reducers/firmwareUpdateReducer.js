@@ -18,20 +18,18 @@ import * as FirmwareUpdateActions from '../actions/FirmwareUpdateActions';
 
 const InitialState = Record({
     showingUpdateDialog: false,
+    showProgress: false,
     adapter: null,
 });
 
 const initialState = new InitialState({
     showingUpdateDialog: false,
+    showProgress: false,
     adapter: null,
 });
 
 function firmwareUpdateRequest(state, adapter) {
     return state.merge({ showingUpdateDialog: true, adapter: adapter });
-}
-
-function firmwareUpdate(state, adapter) {
-    return state.set();
 }
 
 export default function firmwareUpdate(state = initialState, action) {
@@ -41,7 +39,9 @@ export default function firmwareUpdate(state = initialState, action) {
         case FirmwareUpdateActions.HIDE_FIRMWARE_UPDATE_REQUEST:
             return state.set('showingUpdateDialog', false);
         case FirmwareUpdateActions.UPDATE_FIRMWARE:
-            return firmwareUpdate(state, action.adapter);
+            return state.set('adapter', action.adapter);
+        case FirmwareUpdateActions.SHOW_FIRMWARE_UPDATE_SPINNER:
+            return state.set('showProgress', true);
         default:
             return state;
     }
