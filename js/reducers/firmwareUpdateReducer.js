@@ -37,7 +37,7 @@ export default function firmwareUpdate(state = initialState, action) {
         case FirmwareUpdateActions.SHOW_FIRMWARE_UPDATE_REQUEST:
             return firmwareUpdateRequest(state, action.adapter);
         case FirmwareUpdateActions.HIDE_FIRMWARE_UPDATE_REQUEST:
-            return state.set('showingUpdateDialog', false);
+            return state.merge({ showingUpdateDialog: false, showProgress: false });
         case FirmwareUpdateActions.UPDATE_FIRMWARE:
             return state.set('adapter', action.adapter);
         case FirmwareUpdateActions.SHOW_FIRMWARE_UPDATE_SPINNER:
