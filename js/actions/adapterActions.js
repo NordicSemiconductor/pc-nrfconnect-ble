@@ -238,6 +238,18 @@ function _setupListeners(dispatch, getState, adapterToUse) {
     });
 }
 
+function _checkVersion(foundVersion) {
+    if (foundVersion.Major !== 1) {
+        return false;
+    }
+
+    if (foundVersion.Minor !== 2) {
+        return false;
+    }
+
+    return true;
+}
+
 function _checkProgram(dispatch, getState, adapter) {
     return new Promise((resolve, reject) => {
         const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
@@ -247,10 +259,12 @@ function _checkProgram(dispatch, getState, adapter) {
         }
 
         const probe = new DebugProbe();
-        const supportedVersion = 0;
 
         probe.getVersion(parseInt(adapterToUse.state.serialNumber, 10), (err, version) => {
-            if (version !== supportedVersion) {
+            console.log(err);
+            console.log('Version: ' + JSON.stringify(version));
+
+            if (!_checkVersion(version)) {
                 reject();
             } else {
                 resolve();
