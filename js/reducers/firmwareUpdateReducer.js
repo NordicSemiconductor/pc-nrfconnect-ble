@@ -14,7 +14,7 @@
 
 import { Record, OrderedMap } from 'immutable';
 
-import * as FirmwareUpdateActions from '../actions/FirmwareUpdateActions';
+import * as FirmwareUpdateActions from '../actions/firmwareUpdateActions';
 
 const InitialState = Record({
     showingUpdateDialog: false,
