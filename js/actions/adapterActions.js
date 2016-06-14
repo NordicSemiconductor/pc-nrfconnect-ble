@@ -239,6 +239,10 @@ function _setupListeners(dispatch, getState, adapterToUse) {
 }
 
 function _checkVersion(foundVersion) {
+    if (!foundVersion) {
+        return false;
+    }
+
     if (foundVersion.Major !== 1) {
         return false;
     }
