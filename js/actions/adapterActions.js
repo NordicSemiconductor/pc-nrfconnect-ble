@@ -256,32 +256,47 @@ function _checkVersion(foundVersion) {
 
 function _checkProgram(dispatch, getState, adapter) {
     return new Promise((resolve, reject) => {
-        const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
-
-        if (adapterToUse === null) {
-            reject(new Error(`Not able to find ${adapter}.`));
-        }
-
-        const probe = new DebugProbe();
-
-        probe.getVersion(parseInt(adapterToUse.state.serialNumber, 10), (err, version) => {
-            console.log(err);
-            console.log('Version: ' + JSON.stringify(version));
-
-            if (!_checkVersion(version)) {
-                reject();
-            } else {
+        // Check if we already have an adapter open, if so, close it
+        if (getState().adapter.api.selectedAdapter !== null) {
+            _closeAdapter(dispatch, getState().adapter.api.selectedAdapter).then(() => {
                 resolve();
+            }).catch(error => {
+                reject(error);
+            });
+        } else {
+            resolve();
+        }
+    }).then((resolve, reject) => {
+        return new Promise((resolve, reject) => {
+            const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
+
+            if (adapterToUse === null) {
+                reject(new Error(`Not able to find ${adapter}.`));
+            }
+
+            const probe = new DebugProbe();
+
+            probe.getVersion(parseInt(adapterToUse.state.serialNumber, 10), (err, version) => {
+                console.log(err);
+                console.log('Version: ' + JSON.stringify(version));
+
+                if (!_checkVersion(version)) {
+                    reject();
+                } else {
+                    resolve();
+                }
+            });
+        }).then(() => {
+            _openAdapter(dispatch, getState, adapter);
+        }).catch(err => {
+            if (err) {
+                dispatch(showErrorDialog(err));
+            } else {
+                dispatch(showFirmwareUpdateRequest(adapter));
             }
         });
-    }).then(() => {
-        _openAdapter(dispatch, getState, adapter);
-    }).catch(err => {
-        if (err) {
-            dispatch(showErrorDialog(err));
-        } else {
-            dispatch(showFirmwareUpdateRequest(adapter));
-        }
+    }).catch(error => {
+        // Let the error event inform the user about the error.
     });
 }
 
