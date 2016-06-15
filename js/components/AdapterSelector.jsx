@@ -37,11 +37,6 @@ class AdapterSelector extends Component {
         dropDown.firstChild.click();
     }
 
-    closeProgramRequest() {
-        console.log('Are we here?');
-        FirmwareUpdateActions.hideFirmwareUpdateRequest();
-    }
-
     componentDidMount() {
         window.addEventListener('core:select-adapter', function () {
             this.focusOnComPorts();
@@ -49,25 +44,25 @@ class AdapterSelector extends Component {
     }
 
     compareAdapterNodes(nodeA, nodeB) {
-            if (!nodeA.props.eventKey || !nodeB.props.eventKey) { return 0; }
+        if (!nodeA.props.eventKey || !nodeB.props.eventKey) { return 0; }
 
-            const portA = nodeA.props.eventKey;
-            const portB = nodeB.props.eventKey;
+        const portA = nodeA.props.eventKey;
+        const portB = nodeB.props.eventKey;
 
-            // Trick: COM1 and COM10 sorts equally with regular sort, use length to differentiate them
-            if (portA.length > portB.length) { return 1; }
+        // Trick: COM1 and COM10 sorts equally with regular sort, use length to differentiate them
+        if (portA.length > portB.length) { return 1; }
 
-            if (portA.length < portB.length) { return -1; }
+        if (portA.length < portB.length) { return -1; }
 
-            // Use regulart text comparison on names of equal length
-            if (portA > portB) {
-                return 1;
-            } else if (portA < portB) {
-                return -1;
-            } else {
-                return 0;
-            }
+        // Use regulart text comparison on names of equal length
+        if (portA > portB) {
+            return 1;
+        } else if (portA < portB) {
+            return -1;
+        } else {
+            return 0;
         }
+    }
 
     render() {
         const {
@@ -78,6 +73,7 @@ class AdapterSelector extends Component {
 
         const {
             progamAdapter,
+            closeAdapter,
             firmwareUpdate,
             continueOpenDevice,
             updateFirmware,
@@ -106,6 +102,12 @@ class AdapterSelector extends Component {
         });
 
         adapterNodes.sort(this.compareAdapterNodes);
+
+        const selectedAdapter = this.props.adapter.api.selectedAdapter;
+
+        if (selectedAdapter) {
+            adapterNodes.push(<MenuItem className='btn-primary' onSelect={() => closeAdapter(selectedAdapter)} key={uuidV4()}>Close Adapter</MenuItem>);
+        }
 
         return (
             <span title='Select com port (Alt+P)'>
@@ -156,5 +158,6 @@ AdapterSelector.propTypes = {
     adapterStatus: PropTypes.string.isRequired,
     openAdapter: PropTypes.func.isRequired,
     progamAdapter: PropTypes.func.isRequired,
+    closeAdapter: PropTypes.func.isRequired,
     firmwareUpdate: PropTypes.object.isRequired,
 };
