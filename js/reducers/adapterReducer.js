@@ -33,7 +33,7 @@ import { logger } from '../logging';
 const ImmutableRoot = Record({
     api: { adapters: [], selectedAdapter: null },
     adapters: List(),
-    adapterStatus: 'Select COM port',
+    adapterStatus: DEFAULT_ADAPTER_STATUS,
     adapterIndicator: 'off',
     selectedAdapter: null, // Index of selected adapter in .adapters (not api.adapters)
     autoConnUpdate: true,
