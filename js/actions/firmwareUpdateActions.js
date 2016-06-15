@@ -44,12 +44,11 @@ function updateFirmwareAction(dispatch, getState, adapter) {
 
         const probe = new DebugProbe();
 
-        probe.program(parseInt(adapterToUse.state.serialNumber, 10), ['./hex/connectivity_115k2_with_s130_2.0.1.hex', './hex/connectivity_115k2_with_s132_2.0.1.hex'], (err, version) => {
+        probe.program(parseInt(adapterToUse.state.serialNumber, 10), ['./hex/connectivity_115k2_with_s130_2.0.1.hex', './hex/connectivity_115k2_with_s132_2.0.1.hex'], err => {
             console.log(err);
-            console.log(version);
 
             if (err) {
-                reject(new Error('Not able to program.'));
+                reject(new Error('Not able to program. Error: ' + err));
             } else {
                 resolve();
             }
