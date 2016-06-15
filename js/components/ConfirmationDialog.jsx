@@ -31,11 +31,12 @@ var ConfirmationDialog = React.createClass({
         };
 
         const buttonDisabled = this.props.showProgress;
+        const backDrop = this.props.showProgress ? 'static' : false;
 
         return (
           <div>
-            <Modal show={this.props.show} onHide={this.props.onCancel}>
-              <Modal.Header closeButton>
+            <Modal show={this.props.show} onHide={this.props.onCancel} backdrop={backDrop}>
+              <Modal.Header closeButton={!buttonDisabled}>
                 <Modal.Title>Confirm</Modal.Title>
               </Modal.Header>
               <Modal.Body>
