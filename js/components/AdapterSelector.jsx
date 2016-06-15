@@ -24,6 +24,8 @@ import * as AdapterActions from '../actions/adapterActions';
 import * as FirmwareUpdateActions from '../actions/firmwareUpdateActions';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 
+import uuidV4 from 'uuid-v4';
+
 class AdapterSelector extends Component {
     constructor(props) {
         super(props);
@@ -92,12 +94,12 @@ class AdapterSelector extends Component {
             const port = adapter.state.get('port');
             const serialnumber = adapter.state.get('serialNumber');
             const portDescription = [];
-            portDescription.push(<div>{port}</div>);
+            portDescription.push(<div className='serialPort' key={uuidV4()}>{port}</div>);
 
             if (serialnumber) {
-                portDescription.push(<div>{serialnumber}</div>);
+                portDescription.push(<div className='serialSerialnumber' key={uuidV4()}>{serialnumber}</div>);
             } else {
-                portDescription.push(<div>&nbsp;</div>);
+                portDescription.push(<div className='serialSerialnumber' key={uuidV4()}>&nbsp;</div>);
             }
 
             adapterNodes.push(<MenuItem className='btn-primary' eventKey={port} onSelect={() => progamAdapter(port)} key={i}>{portDescription}</MenuItem>);
