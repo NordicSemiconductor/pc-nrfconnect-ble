@@ -255,6 +255,8 @@ function _checkVersion(foundVersion) {
 }
 
 function _checkProgram(dispatch, getState, adapter) {
+
+
     return new Promise((resolve, reject) => {
         // Check if we already have an adapter open, if so, close it
         if (getState().adapter.api.selectedAdapter !== null) {
@@ -277,7 +279,12 @@ function _checkProgram(dispatch, getState, adapter) {
             const probe = new DebugProbe();
 
             probe.getVersion(parseInt(adapterToUse.state.serialNumber, 10), (err, version) => {
-                console.log(err);
+                if (err && err.errcode === "CouldNotLoadDLL") {
+                    logger.debug('Could not load nrfjprog DLL, disabling programming feature.')
+                    console.log(err);
+                    // Don't proceed to show firmwareupdaterequest if we were not able to read out the version
+                    resolve();
+                }
                 console.log('Version: ' + JSON.stringify(version));
 
                 if (!_checkVersion(version)) {
@@ -1359,7 +1366,7 @@ export function findAdapters() {
     };
 }
 
-export function progamAdapter(adapter) {
+export function programAdapter(adapter) {
     return (dispatch, getState) => {
         return _checkProgram(dispatch, getState, adapter);
     };
