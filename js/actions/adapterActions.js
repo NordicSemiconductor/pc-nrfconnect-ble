@@ -243,11 +243,11 @@ function _checkVersion(foundVersion) {
         return false;
     }
 
-    if (foundVersion.Major !== 1) {
+    if (foundVersion.Major < 1) {
         return false;
     }
 
-    if (foundVersion.Minor !== 2) {
+    if (foundVersion.Minor < 0) {
         return false;
     }
 
