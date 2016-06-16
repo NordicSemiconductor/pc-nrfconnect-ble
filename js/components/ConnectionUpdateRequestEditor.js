@@ -151,33 +151,6 @@ export class ConnectionUpdateRequestEditor extends Component {
         );
     }
 
-    _handleRejectConnectionParams() {
-        const {
-            event,
-            onRejectConnectionParams,
-        } = this.props;
-
-        onRejectConnectionParams(event.device);
-    }
-
-    _handleIgnoreConnectionParams() {
-        const {
-            event,
-            onIgnoreEvent,
-        } = this.props;
-
-        onIgnoreEvent(event.id);
-    }
-
-    _handleCancelUserInitiatedEvent() {
-        const {
-            event,
-            onCancelUserInitiatedEvent,
-        } = this.props;
-
-        onCancelUserInitiatedEvent(event.id);
-    }
-
     _getValidInputStyle() {
         return {
             boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6)',
@@ -195,6 +168,9 @@ export class ConnectionUpdateRequestEditor extends Component {
     render() {
         const {
             event,
+            onRejectConnectionParams,
+            onIgnoreEvent,
+            onCancelUserInitiatedEvent,
         } = this.props;
 
         const device = event.device;
@@ -207,16 +183,23 @@ export class ConnectionUpdateRequestEditor extends Component {
 
         const ignoreButton = event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE ?
             <Button type='button'
-                    onClick={() => this._handleIgnoreConnectionParams()}
+                    onClick={() => onIgnoreEvent(event.id)}
                     className='btn btn-default btn-sm btn-nordic'>
                     Ignore
             </Button> : '';
 
-        const rejectButton = event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE ?
+        const rejectButton = event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE ?
             <Button type='button'
-                    onClick={() => this._handleRejectConnectionParams()}
+                    onClick={() => onRejectConnectionParams(event.device)}
                     className='btn btn-default btn-sm btn-nordic'>
                     Reject
+            </Button> : '';
+
+        const disconnectButton = event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE ?
+            <Button type='button'
+                    onClick={() => onIgnoreEvent(event.id)}
+                    className='btn btn-default btn-sm btn-nordic'>
+                    Disconnect
             </Button> : '';
 
         const updateButton = <Button disabled={!this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid}
@@ -228,7 +211,7 @@ export class ConnectionUpdateRequestEditor extends Component {
 
         const cancelButton = event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE ?
             <Button type='button'
-                    onClick={() => this._handleCancelUserInitiatedEvent()}
+                    onClick={() => onCancelUserInitiatedEvent(event.id)}
                     className='btn btn-default btn-sm btn-nordic'>
                     Cancel
             </Button> : '';
@@ -276,6 +259,7 @@ export class ConnectionUpdateRequestEditor extends Component {
                             {cancelButton}
                             {updateButton}
                             {rejectButton}
+                            {disconnectButton}
                             {ignoreButton}
                         </div>
                     </div>

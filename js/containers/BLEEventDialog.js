@@ -64,6 +64,7 @@ export class BLEEventDialog extends Component {
         const {
             rejectDeviceConnectionParams,
             updateDeviceConnectionParams,
+            disconnectFromDevice,
             ignoreEvent,
             removeEvent,
             pairWithDevice,
@@ -76,12 +77,21 @@ export class BLEEventDialog extends Component {
             sendKeypress,
         } = this.props;
 
-        if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE || event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE) {
+        if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE || event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
             return <ConnectionUpdateRequestEditor
                 event={event}
                 onUpdate={this._handleEditorUpdate}
                 onRejectConnectionParams={device => rejectDeviceConnectionParams(event.id, device)}
                 onUpdateConnectionParams={(device, connectionParams) => updateDeviceConnectionParams(event.id, device, connectionParams)}
+                onIgnoreEvent={eventId => ignoreEvent(eventId)}
+                onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+            />;
+        } else if (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE) {
+            return <ConnectionUpdateRequestEditor
+                event={event}
+                onUpdate={this._handleEditorUpdate}
+                onRejectConnectionParams={device => disconnectFromDevice(device)}
+                onUpdateConnectionParams={() => {}}
                 onIgnoreEvent={eventId => ignoreEvent(eventId)}
                 onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
             />;
