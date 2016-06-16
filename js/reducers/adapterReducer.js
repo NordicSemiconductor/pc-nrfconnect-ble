@@ -198,6 +198,7 @@ function connectedDeviceUpdated(state, device) {
     }
 
     logger.info(`Connection parameters updated for device ${device.address}: interval ${device.minConnectionInterval}ms, timeout ${device.connectionSupervisionTimeout}ms, latency: ${device.slaveLatency}`);
+
     const { index } = getSelectedAdapter(state);
 
     const nodePath = ['adapters', index, 'connectedDevices', device.instanceId];
@@ -364,7 +365,7 @@ export default function adapter(state = getImmutableRoot(), action) {
             return deviceDisconnected(state, action.device, action.reason);
         case AdapterAction.DEVICE_INITIATE_PAIRING:
             return deviceInitiatePairing(state, action.device);
-        case AdapterAction.DEVICE_CONNECTION_PARAM_UPDATE_STATUS:
+        case AdapterAction.DEVICE_CONNECTION_PARAMS_UPDATED:
             return connectedDeviceUpdated(state, action.device);
         case AdapterAction.DEVICE_SECURITY_CHANGED:
             return deviceSecurityChanged(state, action.device, action.parameters);
