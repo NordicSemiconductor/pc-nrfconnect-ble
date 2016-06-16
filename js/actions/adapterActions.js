@@ -40,6 +40,7 @@ export const DEVICE_SECURITY_REQUEST_TIMEOUT = 'DEVICE_SECURITY_REQUEST_TIMEOUT'
 
 export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
 export const DEVICE_CONNECTION_PARAM_UPDATE_STATUS = 'DEVICE_CONNECTION_PARAM_UPDATE_STATUS';
+export const DEVICE_CONNECTION_PARAMS_UPDATED = 'DEVICE_CONNECTION_PARAMS_UPDATED'; 
 export const DEVICE_TOGGLE_AUTO_CONN_UPDATE = 'DEVICE_TOGGLE_AUTO_CONN_UPDATE';
 
 export const DEVICE_PAIRING_STATUS = 'DEVICE_PAIRING_STATUS';
@@ -406,6 +407,7 @@ function _onConnParamUpdateRequest(dispatch, getState, device, requestedConnecti
 
 function _onConnParamUpdate(dispatch, getState, device) {
     dispatch(connectionParamUpdateStatusAction(-1, device, -1));
+    dispatch(connectionParamsUpdatedAction(device));
 }
 
 function _onSecurityRequest(dispatch, getState, device, params) {
@@ -1128,12 +1130,19 @@ function adapterStateChangedAction(adapter, state) {
     };
 }
 
+function connectionParamsUpdatedAction(device) {
+    return {
+        type: DEVICE_CONNECTION_PARAMS_UPDATED,
+        device,
+    };
+}
+
 function connectionParamUpdateStatusAction(id, device, status) {
     return {
         type: DEVICE_CONNECTION_PARAM_UPDATE_STATUS,
-        id: id,
-        device: device,
-        status: status,
+        id,
+        device,
+        status,
     };
 }
 
