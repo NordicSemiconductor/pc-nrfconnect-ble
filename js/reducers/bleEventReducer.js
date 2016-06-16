@@ -92,6 +92,9 @@ function connectionUpdateParamRequest(state, device, requestedConnectionParams) 
         slaveLatency: requestedConnectionParams.slaveLatency,
     });
 
+    const type = device.role === 'central' ? BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE
+        : BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE;
+
     const event = new Event({
         type: BLEEventType.PEER_INITIATED_CONNECTION_UPDATE,
         device: apiHelper.getImmutableDevice(device),
