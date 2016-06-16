@@ -72,7 +72,7 @@ class AdapterSelector extends Component {
         } = this.props.adapter;
 
         const {
-            progamAdapter,
+            programAdapter,
             closeAdapter,
             firmwareUpdate,
             continueOpenDevice,
@@ -98,7 +98,7 @@ class AdapterSelector extends Component {
                 portDescription.push(<div className='serialSerialnumber' key={uuidV4()}>&nbsp;</div>);
             }
 
-            adapterNodes.push(<MenuItem className='btn-primary' eventKey={port} onSelect={() => progamAdapter(port)} key={i}>{portDescription}</MenuItem>);
+            adapterNodes.push(<MenuItem className='btn-primary' eventKey={port} onSelect={() => programAdapter(port)} key={i}>{portDescription}</MenuItem>);
         });
 
         adapterNodes.sort(this.compareAdapterNodes);
@@ -157,7 +157,7 @@ AdapterSelector.propTypes = {
     adapters: PropTypes.object.isRequired,
     adapterStatus: PropTypes.string.isRequired,
     openAdapter: PropTypes.func.isRequired,
-    progamAdapter: PropTypes.func.isRequired,
+    programAdapter: PropTypes.func.isRequired,
     closeAdapter: PropTypes.func.isRequired,
     firmwareUpdate: PropTypes.object.isRequired,
 };
