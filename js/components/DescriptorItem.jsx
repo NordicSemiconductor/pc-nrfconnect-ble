@@ -32,7 +32,8 @@ export default class DescriptorItem extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         const update = !ImmutableIs(this.props.item.value, nextProps.item.value)
-            && !ImmutableIs(this.props.item.errorMessage, nextProps.item.errorMessage);
+            || !ImmutableIs(this.props.item.errorMessage, nextProps.item.errorMessage)
+            || !ImmutableIs(this.props.selected, nextProps.selected);
         return update;
     }
 
