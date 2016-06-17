@@ -78,7 +78,12 @@ export class ConnectionOverlay extends Component {
 
         return (
             <div className='connection-info-button btn btn-xs btn-link' style={style}>
-                <OverlayTrigger ref='overlayTrigger' trigger={['click', 'focus']} rootClose={true} placement='left' overlay={<Popover id='pover' title='Connection Information'><ConnectionSetup device={device} closePopover={this._closeme}/></Popover>}>
+                <OverlayTrigger ref='overlayTrigger' trigger={['click', 'focus', 'hover']} rootClose={true} placement='left'
+                    overlay={
+                        <Popover id='pover' title='Connection Information'>
+                            <ConnectionSetup device={device} closePopover={this._closeme}/>
+                        </Popover>
+                    }>
                     <span>
                         <i className={'icon-encircled ' + iconClass}></i>
                     </span>
@@ -109,7 +114,12 @@ export class Connector extends Component {
         var result = [];
 
         for (let i = 0; i < lineCoordinates.length - 1; i++) {
-            result.push(<line stroke='black' strokeWidth='3' strokeLinecap='square' key={i} x1={lineCoordinates[i].x} y1={lineCoordinates[i].y} x2={lineCoordinates[i + 1].x} y2={lineCoordinates[i + 1].y}/>);
+            result.push(<line stroke='black' strokeWidth='3' strokeLinecap='square' key={i}
+                x1={lineCoordinates[i].x}
+                y1={lineCoordinates[i].y}
+                x2={lineCoordinates[i + 1].x}
+                y2={lineCoordinates[i + 1].y}
+                />);
         }
 
         return result;
@@ -117,7 +127,7 @@ export class Connector extends Component {
 
     _getConnectionOverlay(lineCoordinates) {
         const {
-            device
+            device,
         } = this.props;
 
         if (lineCoordinates.length < 2) {
@@ -141,7 +151,7 @@ export class Connector extends Component {
             posY = targetRect.height / 2;
         }
 
-        return (<ConnectionOverlay style={{position: 'absolute', left: posX - 14, top: posY - 14}} device={device}/>);
+        return (<ConnectionOverlay style={{ position: 'absolute', left: posX - 14, top: posY - 14 }} device={device}/>);
     }
 
     render() {
@@ -167,7 +177,7 @@ export class Connector extends Component {
         const connectionInfoOverlay = this._getConnectionOverlay(layoutInfo.lineCoordinates);
 
         return (<div className='connector'>
-                    <svg style={{position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height}}>
+                    <svg style={{ position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height }}>
                         {lines}
                     </svg>
                     {connectionInfoOverlay}
