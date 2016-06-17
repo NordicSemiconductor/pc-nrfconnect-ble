@@ -74,6 +74,7 @@ class AdapterSelector extends Component {
         const {
             programAdapter,
             closeAdapter,
+            closeAdapter,
             firmwareUpdate,
             continueOpenDevice,
             updateFirmware,
@@ -158,6 +159,7 @@ AdapterSelector.propTypes = {
     adapterStatus: PropTypes.string.isRequired,
     openAdapter: PropTypes.func.isRequired,
     programAdapter: PropTypes.func.isRequired,
+    closeAdapter: PropTypes.func.isRequired,
     closeAdapter: PropTypes.func.isRequired,
     firmwareUpdate: PropTypes.object.isRequired,
 };
