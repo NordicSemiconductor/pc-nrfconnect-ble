@@ -294,6 +294,12 @@ class ServerSetup extends Component {
         const services = [];
 
         children.forEach((service, i) => {
+            let canAdd = true;
+
+            if (service.instanceId === 'local.server.0' || service.instanceId === 'local.server.1') {
+                canAdd = false;
+            }
+
             services.push(
                 <ServiceItem key={i}
                              item={service}
@@ -302,7 +308,7 @@ class ServerSetup extends Component {
                              onSelected={this._onSelected}
                              onSelectAttribute={instanceId => this._onSelectComponent(instanceId)}
                              onSetAttributeExpanded={setAttributeExpanded}
-                             addNew={true}
+                             addNew={canAdd}
                              onAddCharacteristic={addNewCharacteristic}
                              onAddDescriptor={addNewDescriptor} />
             );
