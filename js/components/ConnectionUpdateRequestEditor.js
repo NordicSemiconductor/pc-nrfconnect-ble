@@ -59,8 +59,10 @@ export class ConnectionUpdateRequestEditor extends Component {
 
         if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) {
             return `Connection parameters update for device ${address}`;
-        } else {
+        } else if (event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
             return `Connection parameters update request from device ${address}`;
+        } else if (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE) {
+            return `Connection parameters updated by peer central ${address}`;
         }
     }
 
@@ -87,7 +89,8 @@ export class ConnectionUpdateRequestEditor extends Component {
                         min={CONN_INTERVAL_MIN}
                         max={CONN_INTERVAL_MAX}
                         step={CONN_INTERVAL_STEP}
-                        defaultValue={this.connectionInterval} />
+                        defaultValue={this.connectionInterval}
+                        readOnly={this.readOnly}/>
                 </div>
             </div>
         );
@@ -168,10 +171,13 @@ export class ConnectionUpdateRequestEditor extends Component {
     render() {
         const {
             event,
+            onUpdateConnectionParams,
             onRejectConnectionParams,
             onIgnoreEvent,
             onCancelUserInitiatedEvent,
         } = this.props;
+
+        this.readOnly = (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE);
 
         const device = event.device;
         const address = device.address;
@@ -181,7 +187,7 @@ export class ConnectionUpdateRequestEditor extends Component {
         const connectionSupervisionTimeoutInputStyle = this.isConnectionSupervisionTimeoutValid ?
             this._getValidInputStyle() : this._getInvalidInputStyle();
 
-        const ignoreButton = event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE ?
+        const ignoreButton = event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE ?
             <Button type='button'
                     onClick={() => onIgnoreEvent(event.id)}
                     className='btn btn-default btn-sm btn-nordic'>
@@ -197,17 +203,26 @@ export class ConnectionUpdateRequestEditor extends Component {
 
         const disconnectButton = event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE ?
             <Button type='button'
-                    onClick={() => onIgnoreEvent(event.id)}
+                    onClick={() => onRejectConnectionParams(event.device)}
                     className='btn btn-default btn-sm btn-nordic'>
                     Disconnect
             </Button> : '';
 
-        const updateButton = <Button disabled={!this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid}
+        const updateButton = event.type !== BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE ?
+            <Button disabled={!this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid}
                                     type='button'
                                     onClick={() => this._handleUpdateConnection()}
                                     className='btn btn-primary btn-sm btn-nordic'>
                                     Update
-                             </Button>;
+                             </Button> : '';
+
+        const acceptButton = event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE ?
+            <Button disabled={!this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid}
+                                    type='button'
+                                    onClick={() => onUpdateConnectionParams(event.id)}
+                                    className='btn btn-primary btn-sm btn-nordic'>
+                                    Accept
+                             </Button> : '';
 
         const cancelButton = event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE ?
             <Button type='button'
@@ -237,6 +252,7 @@ export class ConnectionUpdateRequestEditor extends Component {
                                    min={CONN_LATENCY_MIN}
                                    max={CONN_LATENCY_MAX}
                                    step={CONN_LATENCY_STEP}
+                                   readOnly={this.readOnly}
                                    />
                         </div>
                     </div>
@@ -252,14 +268,16 @@ export class ConnectionUpdateRequestEditor extends Component {
                                        min={CONN_TIMEOUT_MIN}
                                        max={CONN_TIMEOUT_MAX}
                                        step={CONN_TIMEOUT_STEP}
+                                       readOnly={this.readOnly}
                                        value={this.connectionSupervisionTimeout}/>
                             </div>
                         </div>
                         <div>
                             {cancelButton}
-                            {updateButton}
                             {rejectButton}
                             {disconnectButton}
+                            {updateButton}
+                            {acceptButton}
                             {ignoreButton}
                         </div>
                     </div>

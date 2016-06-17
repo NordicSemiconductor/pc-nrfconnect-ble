@@ -186,8 +186,8 @@ function _setupListeners(dispatch, getState, adapterToUse) {
         _onConnParamUpdateRequest(dispatch, getState, device, requestedConnectionParams);
     });
 
-    adapterToUse.on('connParamUpdate', device => {
-        _onConnParamUpdate(dispatch, getState, device);
+    adapterToUse.on('connParamUpdate', (device, connectionParams) => {
+        _onConnParamUpdate(dispatch, getState, device, connectionParams);
     });
 
     adapterToUse.on('characteristicValueChanged', characteristic => {
@@ -405,7 +405,11 @@ function _onConnParamUpdateRequest(dispatch, getState, device, requestedConnecti
     }
 }
 
-function _onConnParamUpdate(dispatch, getState, device) {
+function _onConnParamUpdate(dispatch, getState, device, connectionParams) {
+    if (device.role === 'central' && !getState().adapter.autoConnUpdate) {
+        dispatch(deviceConnParamUpdateRequestAction(device, connectionParams));
+    }
+
     dispatch(connectionParamUpdateStatusAction(-1, device, -1));
     dispatch(connectionParamsUpdatedAction(device));
 }
