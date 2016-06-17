@@ -96,7 +96,7 @@ function connectionUpdateParamRequest(state, device, requestedConnectionParams) 
         : BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE;
 
     const event = new Event({
-        type: BLEEventType.PEER_INITIATED_CONNECTION_UPDATE,
+        type,
         device: apiHelper.getImmutableDevice(device),
         requestedConnectionParams: connectionParams,
         id: eventIndex,
@@ -181,6 +181,10 @@ function deviceDisconnected(state, device) {
 
 function ignoreEvent(state, eventId) {
     return state.setIn(['events', eventId, 'state'], BLEEventState.IGNORED);
+}
+
+function acceptEvent(state, eventId) {
+    return state.setIn(['events', eventId, 'state'], BLEEventState.SUCCESS);
 }
 
 function removeEvent(state, eventId) {
@@ -389,6 +393,8 @@ export default function bleEvent(state = initialState, action)
             return selectEventId(state, action.selectedEventId);
         case BLEEventActions.BLE_EVENT_IGNORE:
             return ignoreEvent(state, action.eventId);
+        case BLEEventActions.BLE_EVENT_ACCEPT:
+            return acceptEvent(state, action.eventId);
         case BLEEventActions.BLE_EVENT_CREATE_USER_INITIATED_CONN_PARAMS_UPDATE_EVENT:
             return createUserInitiatedConnParamsUpdateEvent(state, action.device);
         case BLEEventActions.BLE_EVENT_CREATE_USER_INITIATED_PAIRING_EVENT:

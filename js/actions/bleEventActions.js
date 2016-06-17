@@ -18,6 +18,7 @@ export const BLE_EVENT_CLEAR_ALL_EVENTS = 'BLE_EVENT_CLEAR_ALL_EVENTS';
 export const BLE_EVENT_SELECT_EVENT_ID = 'BLE_EVENT_SELECT_EVENT_ID';
 export const BLE_EVENT_TIMED_OUT = 'BLE_EVENT_TIMED_OUT';
 export const BLE_EVENT_IGNORE = 'BLE_EVENT_IGNORE';
+export const BLE_EVENT_ACCEPT = 'BLE_EVENT_ACCEPT';
 export const BLE_EVENT_REMOVE = 'BLE_EVENT_REMOVE';
 export const BLE_EVENT_CREATE_USER_INITIATED_CONN_PARAMS_UPDATE_EVENT = 'BLE_EVENT_CREATE_USER_INITIATED_CONN_PARAMS_UPDATE_EVENT';
 export const BLE_EVENT_CREATE_USER_INITIATED_PAIRING_EVENT = 'BLE_EVENT_CREATE_USER_INITIATED_PAIRING_EVENT';
@@ -61,6 +62,13 @@ function ignoreEventAction(eventId) {
     };
 }
 
+function acceptEventAction(eventId) {
+    return {
+        type: BLE_EVENT_ACCEPT,
+        eventId,
+    };
+}
+
 function removeEventAction(eventId) {
     return {
         type: BLE_EVENT_REMOVE,
@@ -98,6 +106,10 @@ export function eventTimedOut(event) {
 
 export function ignoreEvent(eventId) {
     return ignoreEventAction(eventId);
+}
+
+export function acceptEvent(eventId) {
+    return acceptEventAction(eventId);
 }
 
 export function removeEvent(eventId) {

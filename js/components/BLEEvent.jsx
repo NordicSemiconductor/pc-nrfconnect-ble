@@ -31,12 +31,12 @@ export class BLEEvent extends Component {
 
         switch (eventType) {
             case BLEEventType.USER_INITIATED_CONNECTION_UPDATE:
+            case BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE:
                 return {
                     name: 'Connection update',
                     icon: (<span className='icon-link'><span className='icon-down'/></span>),
                 };
             case BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE:
-            case BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE:
                 return {
                     name: 'Connection update request',
                     icon: (<span className='icon-link'><span className='icon-up'/></span>),
@@ -88,7 +88,6 @@ export class BLEEvent extends Component {
 
         if ((event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE
             || event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE
-            || event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE
             || event.type === BLEEventType.PASSKEY_DISPLAY
             || event.type === BLEEventType.PASSKEY_REQUEST
             || event.type === BLEEventType.NUMERICAL_COMPARISON
