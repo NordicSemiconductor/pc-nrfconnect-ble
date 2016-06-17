@@ -30,7 +30,7 @@ defaultDbFile = remote.getGlobal('logFileDir') + path.sep + defaultDbFile;
 
 let id = 0; // ID is used as primary key in database
 
-const convertLevel = function(level) {
+const convertLevel = function (level) {
     /**
     * @brief Adds log entries to database and datastore
     * @details Adds log entries to database and datastore
@@ -66,7 +66,7 @@ const convertLevel = function(level) {
     }
 };
 
-const DbLogger = winston.transports.DbLogger = function(options) {
+const DbLogger = winston.transports.DbLogger = function (options) {
     this.name = 'db';
     this.level = options.level || 'info';
     this.filename = options.filename || defaultDbFile;
@@ -93,20 +93,20 @@ const DbLogger = winston.transports.DbLogger = function(options) {
         });
     });
 
-    const self = this;
+    const _this = this;
 
     function processQueue() {
-        self._queue.forEach(operation => {
-            self[operation.method].apply(self, operation.args);
+        _this._queue.forEach(operation => {
+            _this[operation.method].apply(_this, operation.args);
         });
 
-        delete self._queue;
+        delete _this._queue;
     }
 };
 
 util.inherits(DbLogger, winston.Transport);
 
-DbLogger.prototype.log = function(level, msg, meta, callback) {
+DbLogger.prototype.log = function (level, msg, meta, callback) {
     if (this.silent) {
         return callback(null, true);
     }
@@ -116,7 +116,7 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
 
         this._queue.push({
             method: 'log',
-            args: arguments
+            args: arguments,
         });
 
         return;
@@ -157,7 +157,7 @@ DbLogger.prototype.log = function(level, msg, meta, callback) {
     id++;
 };
 
-DbLogger.prototype.query = function(options, callback) {
+DbLogger.prototype.query = function (options, callback) {
     if (!this.dbReady) {
         callback(null);
         return;
@@ -166,7 +166,7 @@ DbLogger.prototype.query = function(options, callback) {
     const opt = {
         start: options.start,
         limit: options.rows,
-        sort: {id: options.order === 'desc' ? 'DESC' : 'ASC'},
+        sort: { id: options.order === 'desc' ? 'DESC' : 'ASC' },
     };
 
     const sql = `SELECT * FROM log_entries WHERE id >= ${opt.start} ORDER BY id ${opt.sort.id}`;
@@ -184,13 +184,13 @@ DbLogger.prototype.query = function(options, callback) {
             }
 
             entries.push(row);
-        }, function(err, rowCount) {
+        }, function (err, rowCount) {
             callback(null, entries);
         }
     );
 };
 
-const createLine = function(options) {
+const createLine = function (options) {
     let timestamp = options.timestamp();
 
     if (options.meta !== undefined && options.meta.timestamp !== undefined) {
@@ -223,7 +223,7 @@ const transports = [
         filename: defaultLogFile,
         level: 'debug',
         json: false,
-        timestamp: function() {
+        timestamp: function () {
             return new Date();
         },
 
@@ -238,7 +238,7 @@ try {
     transports.push(new (winston.transports.Console)({
         name: 'console',
         level: 'silly',
-        timestamp: function() {
+        timestamp: function () {
             return new Date();
         },
 
