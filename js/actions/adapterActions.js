@@ -40,7 +40,7 @@ export const DEVICE_SECURITY_REQUEST_TIMEOUT = 'DEVICE_SECURITY_REQUEST_TIMEOUT'
 
 export const DEVICE_CONNECTION_PARAM_UPDATE_REQUEST = 'DEVICE_CONNECTION_PARAM_UPDATE_REQUEST';
 export const DEVICE_CONNECTION_PARAM_UPDATE_STATUS = 'DEVICE_CONNECTION_PARAM_UPDATE_STATUS';
-export const DEVICE_CONNECTION_PARAMS_UPDATED = 'DEVICE_CONNECTION_PARAMS_UPDATED'; 
+export const DEVICE_CONNECTION_PARAMS_UPDATED = 'DEVICE_CONNECTION_PARAMS_UPDATED';
 export const DEVICE_TOGGLE_AUTO_CONN_UPDATE = 'DEVICE_TOGGLE_AUTO_CONN_UPDATE';
 
 export const DEVICE_PAIRING_STATUS = 'DEVICE_PAIRING_STATUS';
@@ -73,7 +73,7 @@ import { discoverServices } from './deviceDetailsActions';
 import { BLEEventState } from './common';
 import { showErrorDialog } from './errorDialogActions';
 import { showFirmwareUpdateRequest } from './firmwareUpdateActions';
-import { hexStringToArray } from '../utils/stringUtil';
+import { hexStringToArray, toHexString } from '../utils/stringUtil';
 
 import { DebugProbe } from 'pc-nrfjprog-js';
 
@@ -256,8 +256,6 @@ function _checkVersion(foundVersion) {
 }
 
 function _checkProgram(dispatch, getState, adapter) {
-
-
     return new Promise((resolve, reject) => {
         // Check if we already have an adapter open, if so, close it
         if (getState().adapter.api.selectedAdapter !== null) {
@@ -280,12 +278,13 @@ function _checkProgram(dispatch, getState, adapter) {
             const probe = new DebugProbe();
 
             probe.getVersion(parseInt(adapterToUse.state.serialNumber, 10), (err, version) => {
-                if (err && err.errcode === "CouldNotLoadDLL") {
-                    logger.debug('Could not load nrfjprog DLL, disabling programming feature.')
+                if (err && err.errcode === 'CouldNotLoadDLL') {
+                    logger.debug('Could not load nrfjprog DLL, disabling programming feature.');
                     console.log(err);
                     // Don't proceed to show firmwareupdaterequest if we were not able to read out the version
                     resolve();
                 }
+
                 console.log('Version: ' + JSON.stringify(version));
 
                 if (!_checkVersion(version)) {
@@ -447,7 +446,8 @@ function _onSecParamsRequest(dispatch, getState, device, peerParams) {
         if (device.ownPeriphInitiatedPairingPending) {
             // If pairing initiated by own peripheral, proceed directly with replySecParams
             let periphInitSecParams = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter,
-                'security', 'connectionsSecParameters', device.address, 'ownParams']);
+                'security', 'connectionsSecParameters', device.address, 'ownParams',
+                ]);
 
             if (!periphInitSecParams) {
                 logger.info(`Could not retrieve stored security params, using default params`);
