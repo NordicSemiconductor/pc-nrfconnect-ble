@@ -39,7 +39,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         name: 'Device Name',
         uuid: '2A00',
         value: [0x6E, 0x52, 0x46, 0x35, 0x75], // nRF5x
-        properties: {read: true, write: true},
+        properties: { read: true, write: true },
         readPerm: 'open',
         writePerm: 'open',
         maxLength: 20,
@@ -51,7 +51,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         name: 'Appearance',
         uuid: '2A01',
         value: [0x00, 0x00],
-        properties: {read: true},
+        properties: { read: true },
         readPerm: 'open',
         writePerm: 'open',
         maxLength: 20,
@@ -63,7 +63,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         name: 'Peripheral Preferred Connection Parameters',
         uuid: '2A04',
         value: [0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF], // no specific minimum/maximum interval and timeout, 0 slave latency
-        properties: {read: true},
+        properties: { read: true },
         readPerm: 'open',
         writePerm: 'open',
         maxLength: 20,
@@ -186,8 +186,9 @@ function addNewDescriptor(state, parent) {
 }
 
 function changedAttribute(state, attribute) {
-    const instanceIds = getInstanceIds(attribute.instanceId);
     const attributeStatePath = getNodeStatePath(attribute.instanceId);
+
+    console.log(JSON.stringify(attributeStatePath));
 
     if (attribute.properties) {
         attribute.properties = getImmutableProperties(attribute.properties);
@@ -198,7 +199,7 @@ function changedAttribute(state, attribute) {
 
 function removeAttribute(state) {
     const attributeStatePath = getNodeStatePath(state.selectedComponent);
-    const changedState = state.merge({selectedComponent: null, showingDeleteDialog: false});
+    const changedState = state.merge({ selectedComponent: null, showingDeleteDialog: false });
     return changedState.deleteIn(attributeStatePath);
 }
 
