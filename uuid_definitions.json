@@ -1,0 +1,15 @@
+{
+    "_comment": {"comment": ["Add UUIDs for your services, characteristics, and descriptors in this file",
+                             "The format is the UUID of the item, followed by an object containing the data",
+                             "'name' is a mandatory handle, while 'format' is optional. The only supported format is 'TEXT'.",
+                             "Store your own definitions under the correct key to ensure that they are available."
+                         ],
+                 "example": {"1234": { "name": "Example service", "format": "TEXT"}}} ,
+    "uuid16bitGattDefinitions": {},
+    "uuid16bitServiceDefinitions": {},
+    "uuid16bitCharacteristicDefinitions": {},
+    "uuid16bitDescriptorDefinitions": {},
+    "uuid128bitServiceDefinitions": {},
+    "uuid128bitCharacteristicDefinitions": {},
+    "uuid128bitDescriptorDefinitions": {}
+}

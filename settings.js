@@ -1,10 +1,12 @@
 'use strict';
 
 var app = require('app');
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var data = null;
+
 var dataFilePath = path.join(app.getPath('userData'), 'data.json');
+let uuidDefinitionsFilePath = path.join(app.getPath('userData'), 'uuid_definitions.json');
 
 function load() {
     if (data !== null) {
@@ -78,4 +80,14 @@ exports.storeLastWindow = function (lastWindowState) {
         height: bounds.height,
         maximized: lastWindowState.isMaximized(),
     });
+};
+
+exports.confirmUserUUIDsExist = function () {
+    if (!fs.existsSync(uuidDefinitionsFilePath)) {
+        fs.copy('./uuid_definitions.json', uuidDefinitionsFilePath, function (err) {
+            if (err) {
+                console.error('Could not copy uuid definitions file to ', uuidDefinitionsFilePath, ' Error: ', err);
+            }
+        });
+    }
 };

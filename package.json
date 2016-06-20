@@ -29,6 +29,7 @@
     "babel": "5.8.34",
     "bootstrap": "3.3.5",
     "change-case": "2.3.0",
+    "fs-extra": "^0.30.0",
     "immutable": "3.7.5",
     "jquery": "2.1.4",
     "less": "2.5.1",
