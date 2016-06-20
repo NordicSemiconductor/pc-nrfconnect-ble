@@ -293,7 +293,7 @@ export default class AdvertisingData extends Component {
 
         const adTypeDiv = (this.typeKey === CUSTOM) ?
             <div>
-                <Input type='text' label='Type value' placeholder='Enter AD type value (1 byte hex)'
+                <Input type='text' label='AD type value' placeholder='Enter AD type value (1 byte hex)'
                     hasFeedback defaultValue={this.adTypeValue}
                     bsStyle={this.validateAdType()} onChange={event => this.handleAdTypeChange(event)} />
             </div> : '';
