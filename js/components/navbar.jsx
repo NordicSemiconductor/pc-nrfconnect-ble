@@ -46,7 +46,7 @@ export default class NavBar extends Component {
         return (
             <div className='nav-bar'>
                 <div>
-                    <img className='nordic-logo' src='resources/NordicS_neg_ol.png' />
+                    <a href='http://www.nordicsemi.com' target='_blank'><img className='nordic-logo' src='resources/NordicS_neg_ol.png' /></a>
                 </div>
                 <div className='nav-section'>
                     <div className='padded-row'>

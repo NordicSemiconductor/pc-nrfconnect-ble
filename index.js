@@ -70,8 +70,6 @@ app.on('ready', function () {
 
     const lastWindowState = settings.loadLastWindow();
 
-    console.log(JSON.stringify(lastWindowState));
-
     mainWindow = new BrowserWindow({
         x: lastWindowState.x,
         y: lastWindowState.y,
@@ -111,6 +109,11 @@ app.on('ready', function () {
 
         mainWindow.setTitle('nRF Connect');
         mainWindow.show();
+    });
+
+    mainWindow.webContents.on('new-window', function (e, url) {
+        e.preventDefault();
+        require('shell').openExternal(url);
     });
 });
 

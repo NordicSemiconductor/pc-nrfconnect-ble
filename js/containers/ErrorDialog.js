@@ -28,7 +28,7 @@ export class ErrorDialog extends Component {
 
     _createErrorHtml(index, error) {
         const {
-            debug
+            debug,
         } = this.props;
 
         let html;
