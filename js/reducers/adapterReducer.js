@@ -12,7 +12,7 @@
 
 'use strict';
 
-const DEFAULT_ADAPTER_STATUS = 'Select com port';
+const DEFAULT_ADAPTER_STATUS = 'Select serial port';
 
 import { List, Record } from 'immutable';
 import { combineReducers } from 'redux';

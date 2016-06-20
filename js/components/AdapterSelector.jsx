@@ -110,7 +110,7 @@ class AdapterSelector extends Component {
         }
 
         return (
-            <span title='Select com port (Alt+P)'>
+            <span title='Select serial port (Alt+P)'>
                 <div className='padded-row'>
                     <DropdownButton id='navbar-dropdown' className='btn-primary btn-nordic' title={adapterStatus} ref='comPortDropdown'>
                         {adapterNodes}
