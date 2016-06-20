@@ -15,29 +15,32 @@
 var app = require('app');
 var BrowserWindow = require('browser-window');
 var Menu = require('menu');
+var settings = require('./settings');
 
 var splashScreen = null;
 var mainWindow = null;
 
 global.keymap = app.getPath('userData') + '/keymap.cson';
 global.logFileDir = app.getPath('userData');
+global.dataFileDir = app.getPath('userData');
 
 const dialog = require('electron').dialog;
 var ipcMain = require('ipc-main');
 
+var filters =  [{ name: 'nRF Connect Server Setup', extensions: ['ncs', 'json'] },
+                { name: 'All Files', extensions: ['*'] },
+               ];
+
 ipcMain.on('save-server-setup', function (event, arg) {
-    event.sender.send('save-server-setup-reply', dialog.showSaveDialog({ filters: [{ name: 'nRF Connect Server Setup', extensions: ['ncs', 'json'] },
-                                                                                   { name: 'All Files', extensions: ['*'] },
-                                                                               ],
-                                                                        }));
+    event.sender.send('save-server-setup-reply',
+        dialog.showSaveDialog({ filters: filters, }));
 });
 
 ipcMain.on('load-server-setup', function (event, arg) {
-    event.sender.send('load-server-setup-reply', dialog.showOpenDialog({ filters: [{ name: 'nRF Connect Server Setup', extensions: ['ncs', 'json'] },
-                                                                                   { name: 'All Files', extensions: ['*'] },
-                                                                                  ],
-                                                                         properties: ['openFile'],
-                                                                        }));
+    event.sender.send('load-server-setup-reply',
+        dialog.showOpenDialog({ filters: filters,
+                                properties: ['openFile'],
+                              }));
 });
 
 app.on('window-all-closed', function () {
@@ -55,16 +58,23 @@ app.on('ready', function () {
         show: false,
         transparent: true,
     });
+
     splashScreen.loadURL('file://' + __dirname + '/splashScreen.html');
-    splashScreen.on('closed', function() {
+    splashScreen.on('closed', function () {
         splashScreen = null;
     });
 
     splashScreen.show();
 
+    const lastWindowState = settings.loadLastWindow();
+
+    console.log(JSON.stringify(lastWindowState));
+
     mainWindow = new BrowserWindow({
-        width: 1024,
-        height: 800,
+        x: lastWindowState.x,
+        y: lastWindowState.y,
+        width: lastWindowState.width,
+        height: lastWindowState.height,
         //'min-width': 703,
         'min-width': 308,
         'min-height': 499,
@@ -73,8 +83,18 @@ app.on('ready', function () {
         'auto-hide-menu-bar': true,
         show: false,
     });
+
+    if (lastWindowState.maximized) {
+        mainWindow.maximize();
+    }
+
     mainWindow.loadURL('file://' + __dirname + '/index.html');
-    mainWindow.on('closed', function() {
+
+    mainWindow.on('close', function () {
+        settings.storeLastWindow(mainWindow);
+    });
+
+    mainWindow.on('closed', function () {
         console.log('windows closed');
         mainWindow = null;
         if (splashScreen) {
@@ -82,7 +102,7 @@ app.on('ready', function () {
         }
     });
 
-    mainWindow.webContents.on('did-finish-load', function() {
+    mainWindow.webContents.on('did-finish-load', function () {
         if (splashScreen) {
             splashScreen.close();
         }
@@ -93,7 +113,7 @@ app.on('ready', function () {
 });
 
 // Create menu.
-app.once('ready', function() {
+app.once('ready', function () {
     var template = [
         {
             label: '&File',
@@ -102,15 +122,15 @@ app.once('ready', function() {
                     label: '&Log file...',
                     enabled: false,
                     /*accelerator: 'CmdOrCtrl+L',*/
-                    click: function() {
+                    click: function () {
                         open(global.logFileDir + '\\log.txt');
                     },
                 },
-                {type: 'separator'},
+                { type: 'separator' },
                 {
                     label: '&Quit',
                     accelerator: 'CmdOrCtrl+Q',
-                    click: function() {
+                    click: function () {
                         app.quit();
                     },
                 },
@@ -131,7 +151,7 @@ app.once('ready', function() {
                 {
                     label: '&Reload',
                     accelerator: 'CmdOrCtrl+R',
-                    click: function(item, focusedWindow) {
+                    click: function (item, focusedWindow) {
                         if (focusedWindow) {
                             focusedWindow.reload();
                         }
@@ -140,7 +160,7 @@ app.once('ready', function() {
                 {
                     label: 'Toggle &Full Screen',
                     accelerator: process.platform == 'darwin' ? 'Ctrl+Command+F' : 'F11',
-                    click: function(item, focusedWindow) {
+                    click: function (item, focusedWindow) {
                         if (focusedWindow) {
                             focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
                         }
@@ -149,7 +169,7 @@ app.once('ready', function() {
                 {
                     label: 'Toggle &Developer Tools',
                     accelerator: process.platform == 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
-                    click: function(item, focusedWindow) {
+                    click: function (item, focusedWindow) {
                         if (focusedWindow) {
                             focusedWindow.toggleDevTools();
                         }
@@ -166,7 +186,7 @@ app.once('ready', function() {
                 {
                     label: 'Quit',
                     accelerator: 'Command+Q',
-                    click: function() {
+                    click: function () {
                         app.quit();
                     },
                 },
