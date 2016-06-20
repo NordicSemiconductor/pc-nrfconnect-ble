@@ -45,6 +45,8 @@ export default class UuidLookup extends Component {
             pullRight,
         } = this.props;
 
+        const sorted = Object.keys(uuidDefs).sort((a, b) => { return parseInt(a, 16) - parseInt(b, 16); });
+
         return (
             <div className='uuid-lookup'>
                 <Dropdown className='uuid-dropdown' id='dropdown-uuid-lookup' title={title}
@@ -56,7 +58,7 @@ export default class UuidLookup extends Component {
                     <Dropdown.Menu className='scroll-menu'>
                         <MenuItem header key='header0'>{title}</MenuItem>
                         {
-                            Object.keys(uuidDefs).map((uuid, index) => {
+                            sorted.map((uuid, index) => {
                                 return (
                                     <MenuItem
                                         key={index}
