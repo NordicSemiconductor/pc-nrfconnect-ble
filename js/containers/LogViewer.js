@@ -38,6 +38,10 @@ class LogContainer extends Component {
         window.addEventListener('core:clear-log', () => { clear(); });
     }
 
+    componentDidMount() {
+        logger.info('Ready. Select serial port to connect to adapter.');
+    }
+
     _openLogFile(path) {
         fs.exists(path, exists => {
             if (!exists) {
