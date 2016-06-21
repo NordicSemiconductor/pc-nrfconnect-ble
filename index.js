@@ -107,7 +107,7 @@ app.on('ready', function () {
             splashScreen.close();
         }
 
-        mainWindow.setTitle('nRF Connect');
+        mainWindow.setTitle('nRF Connect v1.0');
         mainWindow.show();
     });
 
