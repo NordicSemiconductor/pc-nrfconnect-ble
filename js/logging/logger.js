@@ -251,4 +251,6 @@ export const logger = new (winston.Logger)({
     transports: transports,
 });
 
-logger.info(`For a detailed log file see: ${defaultLogFile}`);
+export function getLogFilePath() {
+    return defaultLogFile;
+}

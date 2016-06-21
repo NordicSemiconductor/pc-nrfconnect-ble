@@ -19,6 +19,11 @@ import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import uuidV4 from 'uuid-v4';
+import fs from 'fs';
+import shell from 'shell';
+
+import { logger } from '../logging';
+import { getLogFilePath } from '../logging/logger';
 
 import * as LogActions from '../actions/logActions';
 import LogEntry from '../components/LogEntry';
@@ -33,6 +38,17 @@ class LogContainer extends Component {
         window.addEventListener('core:clear-log', () => { clear(); });
     }
 
+    _openLogFile(path) {
+        fs.exists(path, exists => {
+            if (!exists) {
+                logger.info(`Could not find log file at path: ${path}`);
+                return;
+            }
+
+            shell.openExternal(path);
+        });
+    }
+
     render() {
         const {
             autoScroll,
@@ -41,10 +57,15 @@ class LogContainer extends Component {
             toggleAutoScroll,
         } = this.props;
 
+        const logFilePath = getLogFilePath();
+
         return (<div className='log-wrap'>
             <div className='log-header'>
                 <div className='log-header-text'>Log</div>
                 <div className='padded-row log-header-buttons'>
+                    <button type='button' title='Open log file' className='btn btn-primary btn-xs btn-nordic' onClick={() => this._openLogFile(logFilePath)}>
+                        <span className='icon-doc-text' aria-hidden='true' />
+                    </button>
                     <button type='button' title='Clear log' className='btn btn-primary btn-xs btn-nordic' onClick={() => clear()}>
                         <span className='icon-trash' aria-hidden='true' />
                     </button>
