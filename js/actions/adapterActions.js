@@ -290,6 +290,7 @@ function _checkProgram(dispatch, getState, adapter) {
                 if (!_checkVersion(version)) {
                     reject();
                 } else {
+                    logger.info(`Connectivity firmware version ${version.Major}.${version.Minor}.${version.Patch} detected`);
                     resolve();
                 }
             });
