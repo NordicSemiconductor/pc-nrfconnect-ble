@@ -21,20 +21,7 @@ import { openAdapter } from './adapterActions';
 import { DebugProbe } from 'pc-nrfjprog-js';
 import { showErrorDialog } from './errorDialogActions';
 
-function showFirmwareUpdateRequestAction(adapter) {
-    return {
-        type: SHOW_FIRMWARE_UPDATE_REQUEST,
-        adapter,
-    };
-}
-
-function hideFirmwareUpdateRequestAction() {
-    return {
-        type: HIDE_FIRMWARE_UPDATE_REQUEST,
-    };
-}
-
-function updateFirmwareAction(dispatch, getState, adapter) {
+function _updateFirmware(dispatch, getState, adapter) {
     return new Promise((resolve, reject) => {
         const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
 
@@ -62,21 +49,36 @@ function updateFirmwareAction(dispatch, getState, adapter) {
     });
 }
 
-function showUpdateFirmwareSpinner() {
+function showFirmwareUpdateRequestAction(adapter, foundVersion, latestVersion) {
+    return {
+        type: SHOW_FIRMWARE_UPDATE_REQUEST,
+        adapter,
+        foundVersion,
+        latestVersion,
+    };
+}
+
+function hideFirmwareUpdateRequestAction() {
+    return {
+        type: HIDE_FIRMWARE_UPDATE_REQUEST,
+    };
+}
+
+function showUpdateFirmwareSpinnerAction() {
     return {
         type: SHOW_FIRMWARE_UPDATE_SPINNER,
     };
 }
 
-export function showFirmwareUpdateRequest(adapter) {
-    return showFirmwareUpdateRequestAction(adapter);
+export function showFirmwareUpdateRequest(adapter, foundVersion, latestVersion) {
+    return showFirmwareUpdateRequestAction(adapter, foundVersion, latestVersion);
 }
 
 export function updateFirmware() {
     return ((dispatch, getState) => {
         const adapter = getState().firmwareUpdate.adapter;
-        dispatch(showUpdateFirmwareSpinner());
-        updateFirmwareAction(dispatch, getState, adapter);
+        dispatch(showUpdateFirmwareSpinnerAction());
+        _updateFirmware(dispatch, getState, adapter);
     });
 }
 

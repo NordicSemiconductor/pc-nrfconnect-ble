@@ -103,6 +103,12 @@ const attrChange = {
 
 let throttledValueChangedDispatch;
 
+const latestFirmwareVersion = {
+    Major: '1',
+    Minor: '0',
+    Patch: '0',
+};
+
 // Internal functions
 
 function _getAdapters(dispatch) {
@@ -244,11 +250,11 @@ function _checkVersion(foundVersion) {
         return false;
     }
 
-    if (foundVersion.Major < 1) {
+    if (foundVersion.Major < latestFirmwareVersion.Major) {
         return false;
     }
 
-    if (foundVersion.Minor < 0) {
+    if (foundVersion.Minor < latestFirmwareVersion.Minor) {
         return false;
     }
 
@@ -283,11 +289,15 @@ function _checkProgram(dispatch, getState, adapter) {
                     console.log(err);
                     // Don't proceed to show firmwareupdaterequest if we were not able to read out the version
                     resolve();
+                    return;
                 }
 
                 console.log('Version: ' + JSON.stringify(version));
 
                 if (!_checkVersion(version)) {
+                    const versionString = version ? `${version.Major}.${version.Minor}.${version.Patch}` : null;
+                    const latestFwString = `${latestFirmwareVersion.Major}.${latestFirmwareVersion.Minor}.${latestFirmwareVersion.Patch}`;
+                    dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFwString));
                     reject();
                 } else {
                     logger.info(`Connectivity firmware version ${version.Major}.${version.Minor}.${version.Patch} detected`);
@@ -299,8 +309,6 @@ function _checkProgram(dispatch, getState, adapter) {
         }).catch(err => {
             if (err) {
                 dispatch(showErrorDialog(err));
-            } else {
-                dispatch(showFirmwareUpdateRequest(adapter));
             }
         });
     }).catch(error => {

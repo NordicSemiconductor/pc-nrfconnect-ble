@@ -20,22 +20,20 @@ const InitialState = Record({
     showingUpdateDialog: false,
     showProgress: false,
     adapter: null,
+    foundVersion: null,
+    latestVersion: null,
 });
 
-const initialState = new InitialState({
-    showingUpdateDialog: false,
-    showProgress: false,
-    adapter: null,
-});
+const initialState = new InitialState();
 
-function firmwareUpdateRequest(state, adapter) {
-    return state.merge({ showingUpdateDialog: true, adapter: adapter });
+function firmwareUpdateRequest(state, adapter, foundVersion, latestVersion) {
+    return state.merge({ showingUpdateDialog: true, adapter, foundVersion, latestVersion });
 }
 
 export default function firmwareUpdate(state = initialState, action) {
     switch (action.type) {
         case FirmwareUpdateActions.SHOW_FIRMWARE_UPDATE_REQUEST:
-            return firmwareUpdateRequest(state, action.adapter);
+            return firmwareUpdateRequest(state, action.adapter, action.foundVersion, action.latestVersion);
         case FirmwareUpdateActions.HIDE_FIRMWARE_UPDATE_REQUEST:
             return state.merge({ showingUpdateDialog: false, showProgress: false });
         case FirmwareUpdateActions.UPDATE_FIRMWARE:

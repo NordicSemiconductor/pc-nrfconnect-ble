@@ -64,6 +64,20 @@ class AdapterSelector extends Component {
         }
     }
 
+    createUpdateText(foundVersion, latestVersion) {
+        let updateText;
+
+        if (foundVersion) {
+            updateText = `Detected firmware version ${foundVersion}.`;
+        } else {
+            updateText = `No connectivity firmware was detected.`;
+        }
+
+        updateText += ` Do you want to update to version ${latestVersion}?`;
+
+        return updateText;
+    }
+
     render() {
         const {
             adapters,
@@ -82,6 +96,8 @@ class AdapterSelector extends Component {
         const {
             showingUpdateDialog,
             showProgress,
+            foundVersion,
+            latestVersion,
         } = firmwareUpdate;
 
         const adapterNodes = [];
@@ -121,7 +137,7 @@ class AdapterSelector extends Component {
                                     onOk={updateFirmware}
                                     onCancel={continueOpenDevice}
                                     showProgress={showProgress}
-                                    text='The firmware is not updated. Do you want to update it?'/>
+                                    text={this.createUpdateText(foundVersion, latestVersion)}/>
             </span>
         );
     }
