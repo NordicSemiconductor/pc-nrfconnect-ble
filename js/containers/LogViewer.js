@@ -60,7 +60,7 @@ class LogContainer extends Component {
 
             if (os.type() === 'Windows_NT') {
                 shell.openExternal(escapedPath);
-            if (os.type() === 'Darwin') {
+            } else if (os.type() === 'Darwin') {
                 childProcess.execSync(`open  ${escapedPath}`);
             } else if (os.type() === 'Linux') {
                 childProcess.execSync(`xdg-open ${escapedPath}`);
