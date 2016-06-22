@@ -104,9 +104,9 @@ const attrChange = {
 let throttledValueChangedDispatch;
 
 const latestFirmwareVersion = {
-    Major: '1',
-    Minor: '0',
-    Patch: '0',
+    major: '1',
+    minor: '0',
+    patch: '0',
 };
 
 // Internal functions
@@ -250,11 +250,11 @@ function _checkVersion(foundVersion) {
         return false;
     }
 
-    if (foundVersion.Major < latestFirmwareVersion.Major) {
+    if (foundVersion.major < latestFirmwareVersion.major) {
         return false;
     }
 
-    if (foundVersion.Minor < latestFirmwareVersion.Minor) {
+    if (foundVersion.minor < latestFirmwareVersion.minor) {
         return false;
     }
 
@@ -295,12 +295,12 @@ function _checkProgram(dispatch, getState, adapter) {
                 console.log('Version: ' + JSON.stringify(version));
 
                 if (!_checkVersion(version)) {
-                    const versionString = version ? `${version.Major}.${version.Minor}.${version.Patch}` : null;
-                    const latestFwString = `${latestFirmwareVersion.Major}.${latestFirmwareVersion.Minor}.${latestFirmwareVersion.Patch}`;
+                    const versionString = version ? `${version.major}.${version.minor}.${version.patch}` : null;
+                    const latestFwString = `${latestFirmwareVersion.major}.${latestFirmwareVersion.minor}.${latestFirmwareVersion.patch}`;
                     dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFwString));
                     reject();
                 } else {
-                    logger.info(`Connectivity firmware version ${version.Major}.${version.Minor}.${version.Patch} detected`);
+                    logger.info(`Connectivity firmware version ${version.major}.${version.minor}.${version.patch} detected`);
                     resolve();
                 }
             });
@@ -587,7 +587,7 @@ function _onAuthStatus(dispatch, getState, device, params) {
     }
 
     if (!params.bonded) {
-        logger.debug('No bonding performed, don\'t store keys');
+        logger.debug('No bonding performed, do not store keys');
         return;
     }
 
@@ -781,7 +781,7 @@ function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
     const adapterToUse = getState().adapter.api.selectedAdapter;
 
     if (adapterToUse === null) {
-        reject(new Error('No adapter selected!'));
+        dispatch(showErrorDialog(new Error('No adapter selected!')));
     }
 
     // Check if we shall send keypressEnd based

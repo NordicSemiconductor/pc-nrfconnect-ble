@@ -100,7 +100,7 @@ export default class CentralDevice extends Component {
 
         return (
             <div id={id} className='device main-device standalone' style={style}>
-                <img className='center-block' src='resources/nordic_usb_icon.png' height='41' width='16'/>
+                <img className='center-block' src='resources/nordic_usb_icon.png' height='41' width='16' title="Development kit or dongle"/>
                 <div className='device-body text-small'>
                     <div className='pull-right'>
                         <Dropdown id='connectionDropDown' onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
