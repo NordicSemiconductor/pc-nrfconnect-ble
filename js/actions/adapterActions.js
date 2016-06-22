@@ -283,7 +283,14 @@ function _checkProgram(dispatch, getState, adapter) {
 
             const probe = new DebugProbe();
 
+            let timer = setTimeout(() => {
+                reject(new Error('Could not connect to adapter. ' +
+                    'Please power cycle the device and try again.'));
+            }, 5000);
+
             probe.getVersion(parseInt(adapterToUse.state.serialNumber, 10), (err, version) => {
+                clearTimeout(timer);
+
                 if (err && err.errcode === 'CouldNotLoadDLL') {
                     logger.debug('Could not load nrfjprog DLL, disabling programming feature.');
                     console.log(err);
@@ -295,12 +302,12 @@ function _checkProgram(dispatch, getState, adapter) {
                 console.log('Version: ' + JSON.stringify(version));
 
                 if (!_checkVersion(version)) {
-                    const versionString = version ? `${version.major}.${version.minor}.${version.patch}` : null;
+                    const versionString = version ? `${version.string}` : null;
                     const latestFwString = `${latestFirmwareVersion.major}.${latestFirmwareVersion.minor}.${latestFirmwareVersion.patch}`;
                     dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFwString));
                     reject();
                 } else {
-                    logger.info(`Connectivity firmware version ${version.major}.${version.minor}.${version.patch} detected`);
+                    logger.info(`Connectivity firmware version ${version.string} detected`);
                     resolve();
                 }
             });
