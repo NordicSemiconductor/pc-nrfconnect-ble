@@ -67,6 +67,7 @@ export const ERROR = 4;
 export const FATAL = 5;
 
 import _ from 'underscore';
+import semver from 'semver';
 import { driver, api } from 'pc-ble-driver-js';
 import { logger } from '../logging';
 import { discoverServices } from './deviceDetailsActions';
@@ -103,11 +104,7 @@ const attrChange = {
 
 let throttledValueChangedDispatch;
 
-const latestFirmwareVersion = {
-    major: '1',
-    minor: '0',
-    patch: '0',
-};
+const latestFirmwareVersion = '1.0.0';
 
 // Internal functions
 
@@ -245,16 +242,12 @@ function _setupListeners(dispatch, getState, adapterToUse) {
     });
 }
 
-function _checkVersion(foundVersion) {
-    if (!foundVersion) {
+function _checkVersion(version) {
+    if (!version) {
         return false;
     }
 
-    if (foundVersion.major < latestFirmwareVersion.major) {
-        return false;
-    }
-
-    if (foundVersion.minor < latestFirmwareVersion.minor) {
+    if (semver.lt(version, latestFirmwareVersion)) {
         return false;
     }
 
@@ -293,21 +286,18 @@ function _checkProgram(dispatch, getState, adapter) {
 
                 if (err && err.errcode === 'CouldNotLoadDLL') {
                     logger.debug('Could not load nrfjprog DLL, disabling programming feature.');
-                    console.log(err);
-                    // Don't proceed to show firmwareupdaterequest if we were not able to read out the version
+                    // Don't proceed if we were not able to read out the version
                     resolve();
                     return;
                 }
 
-                console.log('Version: ' + JSON.stringify(version));
+                const versionString = version ? semver.clean(version.string) : null;
 
-                if (!_checkVersion(version)) {
-                    const versionString = version ? `${version.string}` : null;
-                    const latestFwString = `${latestFirmwareVersion.major}.${latestFirmwareVersion.minor}.${latestFirmwareVersion.patch}`;
-                    dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFwString));
+                if (!_checkVersion(versionString)) {
+                    dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFirmwareVersion));
                     reject();
                 } else {
-                    logger.info(`Connectivity firmware version ${version.string} detected`);
+                    logger.info(`Connectivity firmware version ${versionString} detected`);
                     resolve();
                 }
             });
