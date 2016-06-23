@@ -65,6 +65,7 @@ cp README.md $YGGDRASIL_APP_ROOT_DIR/README.txt
 cp LICENSE $YGGDRASIL_APP_ROOT_DIR/LICENSE
 mkdir $YGGDRASIL_APP_ROOT_DIR/hex
 cp node_modules/pc-ble-driver-js/pc-ble-driver/hex/*.hex $YGGDRASIL_APP_ROOT_DIR/hex/
+cp nrfjprog/$YGGDRASIL_PLATFORM/* $YGGDRASIL_APP_ROOT_DIR
 
 pushd .
 
