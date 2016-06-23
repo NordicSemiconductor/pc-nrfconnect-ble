@@ -1,7 +1,7 @@
 'use strict';
 
 var app = require('app');
-var fs = require('fs-extra');
+var fs = require('fs');
 var path = require('path');
 var data = null;
 
@@ -84,9 +84,11 @@ exports.storeLastWindow = function (lastWindowState) {
 
 exports.confirmUserUUIDsExist = function () {
     if (!fs.existsSync(uuidDefinitionsFilePath)) {
-        fs.copy('./uuid_definitions.json', uuidDefinitionsFilePath, function (err) {
+        var uuid_definitions = require('./uuid_definitions');
+
+        fs.writeFile(uuidDefinitionsFilePath, JSON.stringify(uuid_definitions, null, 4), function (err) {
             if (err) {
-                console.error('Could not copy uuid definitions file to ', uuidDefinitionsFilePath, ' Error: ', err);
+                console.log('An error ocurred creating the file ' + err.message);
             }
         });
     }

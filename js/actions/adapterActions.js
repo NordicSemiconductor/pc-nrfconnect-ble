@@ -350,6 +350,7 @@ function _openAdapter(dispatch, getState, adapter) {
 
             if (adapterToUse === null) {
                 reject(new Error(`Not able to find ${adapter}.`));
+                return;
             }
 
             getState().adapter.api.selectedAdapter = adapterToUse;
