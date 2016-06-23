@@ -77,6 +77,8 @@ import { hexStringToArray, toHexString } from '../utils/stringUtil';
 
 import { DebugProbe } from 'pc-nrfjprog-js';
 
+var SerialPort = require('serialport').SerialPort;
+
 const _adapterFactory = api.AdapterFactory.getInstance();
 
 // TODO: move to security reducer?
@@ -281,35 +283,44 @@ function _checkProgram(dispatch, getState, adapter) {
                 reject(new Error(`Not able to find ${adapter}.`));
             }
 
-            const probe = new DebugProbe();
+            var port = new SerialPort(adapter, {}, false);
 
-            let timer = setTimeout(() => {
-                reject(new Error('Could not connect to adapter. ' +
-                    'Please power cycle the device and try again.'));
-            }, 5000);
-
-            probe.getVersion(parseInt(adapterToUse.state.serialNumber, 10), (err, version) => {
-                clearTimeout(timer);
-
-                if (err && err.errcode === 'CouldNotLoadDLL') {
-                    logger.debug('Could not load nrfjprog DLL, disabling programming feature.');
-                    console.log(err);
-                    // Don't proceed to show firmwareupdaterequest if we were not able to read out the version
-                    resolve();
+            port.open(err => {
+                if (err) {
+                    reject(err);
                     return;
                 }
 
-                console.log('Version: ' + JSON.stringify(version));
+                port.close(err => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
 
-                if (!_checkVersion(version)) {
-                    const versionString = version ? `${version.string}` : null;
-                    const latestFwString = `${latestFirmwareVersion.major}.${latestFirmwareVersion.minor}.${latestFirmwareVersion.patch}`;
-                    dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFwString));
-                    reject();
-                } else {
-                    logger.info(`Connectivity firmware version ${version.string} detected`);
-                    resolve();
-                }
+                    const probe = new DebugProbe();
+
+                    probe.getVersion(parseInt(adapterToUse.state.serialNumber, 10), (err, version) => {
+                        if (err && err.errcode === 'CouldNotLoadDLL') {
+                            logger.debug('Could not load nrfjprog DLL, disabling programming feature.');
+                            console.log(err);
+                            // Don't proceed to show firmwareupdaterequest if we were not able to read out the version
+                            resolve();
+                            return;
+                        }
+
+                        console.log('Version: ' + JSON.stringify(version));
+
+                        if (!_checkVersion(version)) {
+                            const versionString = version ? `${version.string}` : null;
+                            const latestFwString = `${latestFirmwareVersion.major}.${latestFirmwareVersion.minor}.${latestFirmwareVersion.patch}`;
+                            dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFwString));
+                            reject();
+                        } else {
+                            logger.info(`Connectivity firmware version ${version.string} detected`);
+                            resolve();
+                        }
+                    });
+                });
             });
         }).then(() => {
             _openAdapter(dispatch, getState, adapter);
