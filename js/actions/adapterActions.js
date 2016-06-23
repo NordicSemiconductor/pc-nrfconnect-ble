@@ -67,6 +67,7 @@ export const ERROR = 4;
 export const FATAL = 5;
 
 import _ from 'underscore';
+import { SerialPort } from 'SerialPort';
 import { driver, api } from 'pc-ble-driver-js';
 import { logger } from '../logging';
 import { discoverServices } from './deviceDetailsActions';
@@ -76,8 +77,6 @@ import { showFirmwareUpdateRequest } from './firmwareUpdateActions';
 import { hexStringToArray, toHexString } from '../utils/stringUtil';
 
 import { DebugProbe } from 'pc-nrfjprog-js';
-
-var SerialPort = require('serialport').SerialPort;
 
 const _adapterFactory = api.AdapterFactory.getInstance();
 
@@ -266,71 +265,92 @@ function _checkVersion(foundVersion) {
 function _checkProgram(dispatch, getState, adapter) {
     return new Promise((resolve, reject) => {
         // Check if we already have an adapter open, if so, close it
-        if (getState().adapter.api.selectedAdapter !== null) {
-            _closeAdapter(dispatch, getState().adapter.api.selectedAdapter).then(() => {
-                resolve();
-            }).catch(error => {
-                reject(error);
-            });
-        } else {
+        if (getState().adapter.api.selectedAdapter === null) {
             resolve();
+            return;
         }
-    }).then((resolve, reject) => {
-        return new Promise((resolve, reject) => {
-            const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
 
-            if (adapterToUse === null) {
-                reject(new Error(`Not able to find ${adapter}.`));
+        _closeAdapter(dispatch, getState().adapter.api.selectedAdapter).then(() => {
+            resolve();
+        }).catch(error => {
+            reject(error);
+        });
+    }).then(() => {
+        return _validatePort(dispatch, getState, adapter);
+    }).then(adapterToUse => {
+        const serialNumber = parseInt(adapterToUse.state.serialNumber, 10);
+        return _getVersion(dispatch, getState, adapter, serialNumber);
+    }).then(() => {
+        return _openAdapter(dispatch, getState, adapter);
+    }).catch(err => {
+        if (err) {
+            dispatch(showErrorDialog(err));
+        }
+    });
+}
+
+function _validatePort(dispatch, getState, adapter) {
+    const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
+
+    return new Promise((resolve, reject) => {
+        if (adapterToUse === null) {
+            reject(new Error(`Not able to find ${adapter}.`));
+        }
+
+        const port = new SerialPort(adapter, {}, false);
+
+        port.open(err => {
+            if (err) {
+                reject(new Error(`Could not open the port. Please power cycle the device and try again.`));
+                logger.debug(`Serial port error: ${err}`);
+                return;
             }
 
-            var port = new SerialPort(adapter, {}, false);
+            resolve(port);
 
-            port.open(err => {
+        });
+    }).then(port => {
+        return new Promise((resolve, reject) => {
+            port.close(err => {
                 if (err) {
-                    reject(err);
+                    reject();
+                    logger.debug(`Serial port error: ${err}`);
                     return;
                 }
 
-                port.close(err => {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-
-                    const probe = new DebugProbe();
-
-                    probe.getVersion(parseInt(adapterToUse.state.serialNumber, 10), (err, version) => {
-                        if (err && err.errcode === 'CouldNotLoadDLL') {
-                            logger.debug('Could not load nrfjprog DLL, disabling programming feature.');
-                            console.log(err);
-                            // Don't proceed to show firmwareupdaterequest if we were not able to read out the version
-                            resolve();
-                            return;
-                        }
-
-                        console.log('Version: ' + JSON.stringify(version));
-
-                        if (!_checkVersion(version)) {
-                            const versionString = version ? `${version.string}` : null;
-                            const latestFwString = `${latestFirmwareVersion.major}.${latestFirmwareVersion.minor}.${latestFirmwareVersion.patch}`;
-                            dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFwString));
-                            reject();
-                        } else {
-                            logger.info(`Connectivity firmware version ${version.string} detected`);
-                            resolve();
-                        }
-                    });
-                });
+                resolve();
             });
-        }).then(() => {
-            _openAdapter(dispatch, getState, adapter);
-        }).catch(err => {
-            if (err) {
-                dispatch(showErrorDialog(err));
+        });
+    }).then(() => {
+        return adapterToUse;
+    });
+}
+
+function _getVersion(dispatch, getState, adapter, serialNumber) {
+    return new Promise((resolve, reject) => {
+        const probe = new DebugProbe();
+
+        probe.getVersion(serialNumber, (err, version) => {
+            if (err && err.errcode === 'CouldNotLoadDLL') {
+                logger.debug('Could not load nrfjprog DLL, disabling programming feature.');
+                console.log(err);
+                // Don't proceed to show firmwareupdaterequest if we were not able to read out the version
+                resolve();
+                return;
+            }
+
+            console.log('Version: ' + JSON.stringify(version));
+
+            if (!_checkVersion(version)) {
+                const versionString = version ? `${version.string}` : null;
+                const latestFwString = `${latestFirmwareVersion.major}.${latestFirmwareVersion.minor}.${latestFirmwareVersion.patch}`;
+                dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFwString));
+                reject();
+            } else {
+                logger.info(`Connectivity firmware version ${version.string} detected`);
+                resolve();
             }
         });
-    }).catch(error => {
-        // Let the error event inform the user about the error.
     });
 }
 
