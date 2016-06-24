@@ -263,11 +263,11 @@ function _checkProgram(dispatch, getState, adapter) {
             return;
         }
 
-            _closeAdapter(dispatch, getState().adapter.api.selectedAdapter).then(() => {
-                resolve();
-            }).catch(error => {
-                reject(error);
-            });
+        _closeAdapter(dispatch, getState().adapter.api.selectedAdapter).then(() => {
+            resolve();
+        }).catch(error => {
+            reject(error);
+        });
     }).then(() => {
         return _validatePort(dispatch, getState, adapter);
     }).then(adapterToUse => {
@@ -283,12 +283,12 @@ function _checkProgram(dispatch, getState, adapter) {
 }
 
 function _validatePort(dispatch, getState, adapter) {
-            const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
+    const adapterToUse = getState().adapter.api.adapters.find(x => { return x.state.port === adapter; });
 
     return new Promise((resolve, reject) => {
-            if (adapterToUse === null) {
-                reject(new Error(`Not able to find ${adapter}.`));
-            }
+        if (adapterToUse === null) {
+            reject(new Error(`Not able to find ${adapter}.`));
+        }
 
         const port = new SerialPort(adapter, {}, false);
 
@@ -324,24 +324,24 @@ function _getVersion(dispatch, getState, adapter, serialNumber) {
         const probe = new DebugProbe();
 
         probe.getVersion(serialNumber, (err, version) => {
-                if (err && err.errcode === 'CouldNotLoadDLL') {
-                    logger.debug('Could not load nrfjprog DLL, disabling programming feature.');
-                    // Don't proceed if we were not able to read out the version
-                    resolve();
-                    return;
-                }
+            if (err && err.errcode === 'CouldNotLoadDLL') {
+                logger.debug('Could not load nrfjprog DLL, disabling programming feature.');
+                // Don't proceed if we were not able to read out the version
+                resolve();
+                return;
+            }
 
-                const versionString = version ? semver.clean(version.string) : null;
+            const versionString = version ? semver.clean(version.string) : null;
 
-                if (!_checkVersion(versionString)) {
-                    dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFirmwareVersion));
-                    reject();
-                } else {
-                    logger.info(`Connectivity firmware version ${versionString} detected`);
-                    resolve();
-                }
-            });
+            if (!_checkVersion(versionString)) {
+                dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFirmwareVersion));
+                reject();
+            } else {
+                logger.info(`Connectivity firmware version ${versionString} detected`);
+                resolve();
+            }
         });
+    });
 }
 
 function _openAdapter(dispatch, getState, adapter) {

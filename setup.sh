@@ -36,7 +36,6 @@ case "$(uname -s)" in
     export YGGDRASIL_ICON=nrfconnect.icns
     export YGGDRASIL_NAME=nrf-connect
     export COMMANDLINE_TOOLS_FILE=nRF5x-Command-Line-Tools_8_5_0_OSX.tar
-    export COMMANDLINE_TOOLS_EXTRACT_PATTERN=*.dylib
     ;;
   Linux)
     echo 'Detected platform is Linux'
@@ -44,7 +43,6 @@ case "$(uname -s)" in
     export YGGDRASIL_ICON=nrfconnect.png
     export YGGDRASIL_NAME=nrf-connect
     export COMMANDLINE_TOOLS_FILE=nRF5x-Command-Line-Tools_8_5_0_Linux-x86_64.tar
-    export COMMANDLINE_TOOLS_EXTRACT_PATTERN=*.so.*
     ;;
   *)
     echo 'Not able to detect platform, quitting.'
@@ -69,7 +67,7 @@ cp README.md $YGGDRASIL_APP_ROOT_DIR/README.txt
 cp LICENSE $YGGDRASIL_APP_ROOT_DIR/LICENSE
 mkdir $YGGDRASIL_APP_ROOT_DIR/hex
 cp node_modules/pc-ble-driver-js/pc-ble-driver/hex/*.hex $YGGDRASIL_APP_ROOT_DIR/hex/
-tar xf nrfjprog/$COMMANDLINE_TOOLS_FILE --strip=2 --wildcards ./nrfjprog/*.txt ./nrfjprog/$COMMANDLINE_TOOLS_EXTRACT_PATTERN -C $YGGDRASIL_APP_ROOT_DIR
+tar xvf nrfjprog/$COMMANDLINE_TOOLS_FILE --strip=2 --wildcards ./nrfjprog/* -C $YGGDRASIL_APP_ROOT_DIR
 
 pushd .
 
