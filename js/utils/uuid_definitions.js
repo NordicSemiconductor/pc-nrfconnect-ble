@@ -119,16 +119,26 @@ export function getPrettyUuid(uuid) {
 }
 
 export function getUuidFormat(uuid) {
-    if (!uuid) { return Definitions.NO_FORMAT; }
+    if (!uuid) {
+        return Definitions.NO_FORMAT;
+    }
 
     let lookupUuid = uuid.toUpperCase();
+
     if (lookupUuid[1] === 'X') {
         lookupUuid = lookupUuid.slice(2);
     }
 
     if (uuidDefinitions[lookupUuid])
     {
-        return uuidDefinitions[lookupUuid].format;
+        const format = uuidDefinitions[lookupUuid].format;
+
+        if (format)
+        {
+            return format.toUpperCase();
+        }
+
+        return Definitions.NO_FORMAT;
     }
 
     return Definitions.NO_FORMAT;

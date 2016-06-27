@@ -17,8 +17,8 @@
  *
  * The default is NO_FORMAT which will present the data raw.
  */
-export const TEXT = 'text';
-export const NO_FORMAT = 'no format';
+export const TEXT = 'TEXT';
+export const NO_FORMAT = 'NO_FORMAT';
 
 export const uuid16bitGattDefinitions = {
     '2800': { name: 'Primary Service', },
