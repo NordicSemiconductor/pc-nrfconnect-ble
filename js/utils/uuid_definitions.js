@@ -29,6 +29,9 @@ catch (err) {
     console.log('Error loading user defined UUID\'s ', err);
 }
 
+export const TEXT = Definitions.TEXT;
+export const NO_FORMAT = Definitions.NO_FORMAT;
+
 export const uuid16bitDefinitions = Object.assign({},
     Definitions.uuid16bitServiceDefinitions,
     Definitions.uuid16bitCharacteristicDefinitions,
