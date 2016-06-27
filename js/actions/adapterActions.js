@@ -68,7 +68,7 @@ export const FATAL = 5;
 
 import _ from 'underscore';
 import semver from 'semver';
-import { SerialPort } from 'SerialPort';
+import { SerialPort } from 'serialPort';
 import { driver, api } from 'pc-ble-driver-js';
 import { logger } from '../logging';
 import { discoverServices } from './deviceDetailsActions';
