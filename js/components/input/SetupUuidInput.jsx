@@ -59,6 +59,6 @@ export default class SetupUuidInput extends SetupInput {
 }
 
 SetupUuidInput.propTypes = {
-    uuidDefinitions: PropTypes.object.isRequired,
+    uuidDefinitions: PropTypes.func.isRequired,
     handleSelection: PropTypes.func.isRequired,
 };

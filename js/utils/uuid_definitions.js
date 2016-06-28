@@ -13,65 +13,126 @@
  'use strict';
 
 import * as Definitions from './definitions';
-import remote from 'remote';
+import * as remote from 'remote';
 import path from 'path';
 import fs from 'fs';
-
-let dataFileDir = remote.getGlobal('dataFileDir');
-
-var data = fs.readFileSync(path.join(dataFileDir, 'uuid_definitions.json'), 'utf-8');
-var RemoteDefinitions;
-
-try {
-    RemoteDefinitions = JSON.parse(data);
-}
-catch (err) {
-    console.log('Error loading user defined UUID\'s ', err);
-}
+import { logger } from '../logging';
 
 export const TEXT = Definitions.TEXT;
 export const NO_FORMAT = Definitions.NO_FORMAT;
 
-export const uuid16bitDefinitions = Object.assign({},
-    Definitions.uuid16bitServiceDefinitions,
-    Definitions.uuid16bitCharacteristicDefinitions,
-    Definitions.uuid16bitDescriptorDefinitions,
-    Definitions.uuid16bitGattDefinitions,
-    RemoteDefinitions.uuid16bitServiceDefinitions,
-    RemoteDefinitions.uuid16bitCharacteristicDefinitions,
-    RemoteDefinitions.uuid16bitDescriptorDefinitions,
-    RemoteDefinitions.uuid16bitGattDefinitions);
+let dataFileDir = remote.getGlobal('dataFileDir');
+let uuidDefinitionsFilePath = path.join(dataFileDir, 'uuid_definitions.json');
+var RemoteDefinitions = require('./custom_definitions');
 
-export const uuid128bitDescriptorDefinitions = Object.assign({},
-    RemoteDefinitions.uuid128bitDescriptorDefinitions);
+var customsFileErrorMessageShown = false;
 
-export const uuid128bitDefinitions = Object.assign({},
-    Definitions.uuid128bitServiceDefinitions,
-    Definitions.uuid128bitCharacteristicDefinitions,
-    RemoteDefinitions.uuid128bitServiceDefinitions,
-    RemoteDefinitions.uuid128bitCharacteristicDefinitions,
-    uuid128bitDescriptorDefinitions);
+confirmUserUUIDsExist();
 
-export const uuidServiceDefinitions = Object.assign({},
-    Definitions.uuid16bitServiceDefinitions,
-    Definitions.uuid128bitServiceDefinitions,
-    RemoteDefinitions.uuid16bitServiceDefinitions,
-    RemoteDefinitions.uuid128bitServiceDefinitions);
+function loadRemote()
+{
+    var data = fs.readFileSync(uuidDefinitionsFilePath, 'utf-8');
 
-export const uuidCharacteristicDefinitions = Object.assign({},
-    Definitions.uuid16bitCharacteristicDefinitions,
-    Definitions.uuid128bitCharacteristicDefinitions,
-    RemoteDefinitions.uuid16bitCharacteristicDefinitions,
-    RemoteDefinitions.uuid128bitCharacteristicDefinitions);
+    try {
+        RemoteDefinitions = JSON.parse(data);
+    }
+    catch (err) {
+        RemoteDefinitions = require('./custom_definitions');
 
-export const uuidDescriptorDefinitions = Object.assign({},
-    Definitions.uuid16bitDescriptorDefinitions,
-    RemoteDefinitions.uuid16bitDescriptorDefinitions,
-    uuid128bitDescriptorDefinitions);
+        if (!customsFileErrorMessageShown) {
+            customsFileErrorMessageShown = true;
+            logger.info(`There is an error with the custom UUID definitions file: ${uuidDefinitionsFilePath}`);
+            console.log(`There is an error with the custom UUID definitions file: ${uuidDefinitionsFilePath}`);
+        }
+    }
+}
 
-export const uuidDefinitions = Object.assign({},
-    uuid16bitDefinitions,
-    uuid128bitDefinitions);
+export function uuid16bitServiceDefinitions() {
+    loadRemote();
+
+    return Object.assign({},
+        Definitions.uuid16bitServiceDefinitions,
+        RemoteDefinitions.uuid16bitServiceDefinitions
+    );
+}
+
+export function uuid128bitServiceDefinitions() {
+    loadRemote();
+
+    return Object.assign({},
+        Definitions.uuid128bitServiceDefinitions,
+        RemoteDefinitions.uuid128bitServiceDefinitions
+    );
+}
+
+export function uuid128bitDescriptorDefinitions() {
+    loadRemote();
+
+    return Object.assign({},
+        RemoteDefinitions.uuid128bitDescriptorDefinitions);
+}
+
+export function uuidServiceDefinitions() {
+    loadRemote();
+
+    return Object.assign({},
+        Definitions.uuid16bitServiceDefinitions,
+        Definitions.uuid128bitServiceDefinitions,
+        RemoteDefinitions.uuid16bitServiceDefinitions,
+        RemoteDefinitions.uuid128bitServiceDefinitions);
+}
+
+export function uuidCharacteristicDefinitions() {
+    loadRemote();
+
+    return Object.assign({},
+        Definitions.uuid16bitCharacteristicDefinitions,
+        Definitions.uuid128bitCharacteristicDefinitions,
+        RemoteDefinitions.uuid16bitCharacteristicDefinitions,
+        RemoteDefinitions.uuid128bitCharacteristicDefinitions);
+}
+
+export function uuidDescriptorDefinitions() {
+    loadRemote();
+
+    return Object.assign({},
+        Definitions.uuid16bitDescriptorDefinitions,
+        RemoteDefinitions.uuid16bitDescriptorDefinitions,
+        uuid128bitDescriptorDefinitions());
+}
+
+export function uuid16bitDefinitions() {
+    loadRemote();
+
+    return Object.assign({},
+        Definitions.uuid16bitServiceDefinitions,
+        Definitions.uuid16bitCharacteristicDefinitions,
+        Definitions.uuid16bitDescriptorDefinitions,
+        Definitions.uuid16bitGattDefinitions,
+        RemoteDefinitions.uuid16bitServiceDefinitions,
+        RemoteDefinitions.uuid16bitCharacteristicDefinitions,
+        RemoteDefinitions.uuid16bitDescriptorDefinitions,
+        RemoteDefinitions.uuid16bitGattDefinitions);
+}
+
+export function uuid128bitDefinitions() {
+    loadRemote();
+
+    return Object.assign({},
+        Definitions.uuid128bitServiceDefinitions,
+        Definitions.uuid128bitCharacteristicDefinitions,
+        RemoteDefinitions.uuid128bitServiceDefinitions,
+        RemoteDefinitions.uuid128bitCharacteristicDefinitions,
+        uuid128bitDescriptorDefinitions());
+}
+
+export function uuidDefinitions() {
+    loadRemote();
+
+    return Object.assign({},
+        uuid16bitDefinitions(),
+        uuid128bitDefinitions());
+}
 
 // TODO: look into using a database for storing the services UUID's. Also look into importing them from the Bluetooth pages.
 // TODO: Also look into reusing code from the Android MCP project:
@@ -83,18 +144,22 @@ export function getUuidName(uuid) {
         lookupUuid = lookupUuid.slice(2);
     }
 
-    if (uuidDefinitions[lookupUuid])
+    const uuidDefs = uuidDefinitions();
+
+    if (uuidDefs[lookupUuid])
     {
-        return uuidDefinitions[lookupUuid].name;
+        return uuidDefs[lookupUuid].name;
     }
 
     return uuid;
 }
 
 export function getUuidByName(name) {
-    for (let uuid in uuidDefinitions) {
+    const uuidDefs = uuidDefinitions();
+
+    for (let uuid in uuidDefs) {
         if (uuidDefinitions.hasOwnProperty(uuid)) {
-            if (uuidDefinitions[uuid].name === name) {
+            if (uuidDefs[uuid].name === name) {
                 return uuid;
             }
         }
@@ -129,9 +194,11 @@ export function getUuidFormat(uuid) {
         lookupUuid = lookupUuid.slice(2);
     }
 
-    if (uuidDefinitions[lookupUuid])
+    const uuidDefs = uuidDefinitions();
+
+    if (uuidDefs[lookupUuid])
     {
-        const format = uuidDefinitions[lookupUuid].format;
+        const format = uuidDefs[lookupUuid].format;
 
         if (format)
         {
@@ -142,4 +209,19 @@ export function getUuidFormat(uuid) {
     }
 
     return Definitions.NO_FORMAT;
+}
+
+function confirmUserUUIDsExist() {
+    if (!fs.existsSync(uuidDefinitionsFilePath)) {
+        var uuid_definitions = require('./custom_definitions');
+
+        fs.writeFile(uuidDefinitionsFilePath, JSON.stringify(uuid_definitions, null, 4), function (err) {
+            if (err) {
+                logger.debug('An error ocurred creating the file ' + err.message);
+                return;
+            }
+        });
+    }
+
+    logger.info(`Custom UUID definitions: ${uuidDefinitionsFilePath}`);
 }

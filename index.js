@@ -66,8 +66,6 @@ app.on('ready', function () {
 
     splashScreen.show();
 
-    settings.confirmUserUUIDsExist();
-
     const lastWindowState = settings.loadLastWindow();
 
     mainWindow = new BrowserWindow({

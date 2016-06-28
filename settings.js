@@ -6,7 +6,6 @@ var path = require('path');
 var data = null;
 
 var dataFilePath = path.join(app.getPath('userData'), 'data.json');
-let uuidDefinitionsFilePath = path.join(app.getPath('userData'), 'uuid_definitions.json');
 
 function load() {
     if (data !== null) {
@@ -80,16 +79,4 @@ exports.storeLastWindow = function (lastWindowState) {
         height: bounds.height,
         maximized: lastWindowState.isMaximized(),
     });
-};
-
-exports.confirmUserUUIDsExist = function () {
-    if (!fs.existsSync(uuidDefinitionsFilePath)) {
-        var uuid_definitions = require('./uuid_definitions');
-
-        fs.writeFile(uuidDefinitionsFilePath, JSON.stringify(uuid_definitions, null, 4), function (err) {
-            if (err) {
-                console.log('An error ocurred creating the file ' + err.message);
-            }
-        });
-    }
 };
