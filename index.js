@@ -57,6 +57,7 @@ app.on('ready', function () {
         resizable: false,
         show: false,
         transparent: true,
+        icon: './nrfconnect.png',
     });
 
     splashScreen.loadURL('file://' + __dirname + '/splashScreen.html');
@@ -82,10 +83,6 @@ app.on('ready', function () {
         show: false,
     });
 
-    if (lastWindowState.maximized) {
-        mainWindow.maximize();
-    }
-
     mainWindow.loadURL('file://' + __dirname + '/index.html');
 
     mainWindow.on('close', function () {
@@ -103,6 +100,10 @@ app.on('ready', function () {
     mainWindow.webContents.on('did-finish-load', function () {
         if (splashScreen) {
             splashScreen.close();
+        }
+
+        if (lastWindowState.maximized) {
+            mainWindow.maximize();
         }
 
         mainWindow.setTitle('nRF Connect v1.0');

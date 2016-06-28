@@ -67,6 +67,7 @@ electron-packager . $YGGDRASIL_APP_NAME --platform=$YGGDRASIL_PLATFORM --arch=$n
 
 cp README.md $YGGDRASIL_APP_ROOT_DIR/README.txt
 cp LICENSE $YGGDRASIL_APP_ROOT_DIR/LICENSE
+cp nordic_logo.png $YGGDRASIL_APP_ROOT_DIR/nordic_logo.png
 mkdir $YGGDRASIL_APP_ROOT_DIR/hex
 cp node_modules/pc-ble-driver-js/pc-ble-driver/hex/*.hex $YGGDRASIL_APP_ROOT_DIR/hex/
 tar xvf nrfjprog/$COMMANDLINE_TOOLS_FILE --strip=2 -C $YGGDRASIL_APP_ROOT_DIR
