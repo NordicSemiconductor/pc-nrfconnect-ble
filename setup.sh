@@ -35,9 +35,9 @@ case "$(uname -s)" in
     export YGGDRASIL_PLATFORM=darwin
     export YGGDRASIL_ICON=nrfconnect.icns
     export YGGDRASIL_NAME=nrf-connect
-    export YGGDRASIL_APP_NAME="nRF Connect"
+    export YGGDRASIL_APP_NAME=nRF\ Connect
     export COMMANDLINE_TOOLS_FILE=nRF5x-Command-Line-Tools_8_5_0_OSX.tar
-    export COMMANDLINE_TOOLS_EXTRACT_TARGET=
+    export COMMANDLINE_TOOLS_EXTRACT_TARGET="$YGGDRASIL_APP_NAME.app/Contents/Frameworks"
     ;;
   Linux)
     echo 'Detected platform is Linux'
@@ -46,7 +46,7 @@ case "$(uname -s)" in
     export YGGDRASIL_NAME=nrf-connect
     export YGGDRASIL_APP_NAME=nrf-connect
     export COMMANDLINE_TOOLS_FILE=nRF5x-Command-Line-Tools_8_5_0_Linux-x86_64.tar
-    export COMMANDLINE_TOOLS_EXTRACT_TARGET=nrf-connect.app/Contents/Frameworks/
+    export COMMANDLINE_TOOLS_EXTRACT_TARGET=
     ;;
   *)
     echo 'Not able to detect platform, quitting.'
@@ -73,7 +73,8 @@ electron-packager . "$YGGDRASIL_APP_NAME" --platform=$YGGDRASIL_PLATFORM --arch=
 cp README.md "$YGGDRASIL_APP_ROOT_DIR/README.txt"
 cp LICENSE "$YGGDRASIL_APP_ROOT_DIR/LICENSE"
 cp nordic_logo.png "$YGGDRASIL_APP_ROOT_DIR/nordic_logo.png"
-tar xvf nrfjprog/$COMMANDLINE_TOOLS_FILE --strip=2 -C "$YGGDRASIL_APP_ROOT_DIR/$COMMANDLINE_TOOLS_EXTRACT_TARGET"
+tar xvf nrfjprog/$COMMANDLINE_TOOLS_FILE --strip=2 -C $YGGDRASIL_DEPLOY_DIR
+mv "$YGGDRASIL_DEPLOY_DIR/lib"* "$YGGDRASIL_APP_ROOT_DIR/$COMMANDLINE_TOOLS_EXTRACT_TARGET"
 
 pushd .
 
