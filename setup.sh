@@ -46,7 +46,7 @@ case "$(uname -s)" in
     export YGGDRASIL_NAME=nrf-connect
     export YGGDRASIL_APP_NAME=nrf-connect
     export COMMANDLINE_TOOLS_FILE=nRF5x-Command-Line-Tools_8_5_0_Linux-x86_64.tar
-    export COMMANDLINE_TOOLS_EXTRACT_TARGET=nrf-connect.app/Contents/Frameworks/nrfjprog.framework/
+    export COMMANDLINE_TOOLS_EXTRACT_TARGET=nrf-connect.app/Contents/Frameworks/
     ;;
   *)
     echo 'Not able to detect platform, quitting.'
@@ -65,7 +65,7 @@ mv js/settings.json.prod js/settings.json
 npm install --production
 
 lessc ./css/styles.less ./css/styles.css
-electron-packager . $YGGDRASIL_APP_NAME --platform=$YGGDRASIL_PLATFORM --arch=$npm_config_arch --icon=$YGGDRASIL_ICON --version=$npm_config_target --overwrite --out=$YGGDRASIL_DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName="Nordic Semiconductor ASA" --version-string.LegalCopyright="Nordic Semiconductor ASA" --version-string.FileDescription="nRF Connect" --version-string.OriginalFilename="nrfconnect" --version-string.FileVersion="$YGGDRASIL_VERSION" --version-string.ProductVersion="$YGGDRASIL_FULL_VERSION" --version-string.ProductName="$YGGDRASIL_NAME" --version-string.InternalName="$YGGDRASIL_NAME"
+electron-packager . "$YGGDRASIL_APP_NAME" --platform=$YGGDRASIL_PLATFORM --arch=$npm_config_arch --icon=$YGGDRASIL_ICON --version=$npm_config_target --overwrite --out=$YGGDRASIL_DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName="Nordic Semiconductor ASA" --version-string.LegalCopyright="Nordic Semiconductor ASA" --version-string.FileDescription="nRF Connect" --version-string.OriginalFilename="nrfconnect" --version-string.FileVersion="$YGGDRASIL_VERSION" --version-string.ProductVersion="$YGGDRASIL_FULL_VERSION" --version-string.ProductName="$YGGDRASIL_NAME" --version-string.InternalName="$YGGDRASIL_NAME"
 
 cp README.md $YGGDRASIL_APP_ROOT_DIR/README.txt
 cp LICENSE $YGGDRASIL_APP_ROOT_DIR/LICENSE
