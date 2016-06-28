@@ -333,12 +333,12 @@ function _getVersion(dispatch, getState, adapter, serialNumber) {
 
         probe.getVersion(serialNumber, (err, version) => {
             if (err && err.errcode === 'CouldNotLoadDLL') {
-                logger.debug('Could not load nrfjprog DLL, disabling programming feature.');
+                logger.info('Could not load nrfjprog DLL, firmware detection and programming will not be available.');
                 // Don't proceed if we were not able to read out the version
                 resolve();
                 return;
             } else if (err && err.errcode === 'CouldNotConnectToDevice') {
-                logger.info('Could not connect to debug probe, disabling programming feature.')
+                logger.info('Could not connect to debug probe, firmware detection and programming will not be available.')
                 resolve()
                 return;
             }
