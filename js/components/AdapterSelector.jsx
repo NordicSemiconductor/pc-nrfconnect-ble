@@ -103,13 +103,15 @@ class AdapterSelector extends Component {
         const adapterNodes = [];
 
         adapters.forEach((adapter, i) => {
-            const port = adapter.state.get('port');
-            const serialnumber = adapter.state.get('serialNumber');
+            const { port, serialNumber } = adapter.state;
             const portDescription = [];
             portDescription.push(<div className='serialPort' key={uuidV4()}>{port}</div>);
 
-            if (serialnumber) {
-                portDescription.push(<div className='serialSerialnumber' key={uuidV4()}>{serialnumber}</div>);
+            // Remove leading zeros and truncate long (DAPLINK) serial numbers
+            const cleanSerial = serialNumber ? serialNumber.replace(/^0+/, '').substring(0, 10) : serialNumber;
+
+            if (cleanSerial) {
+                portDescription.push(<div className='serialSerialnumber' key={uuidV4()}>{cleanSerial}</div>);
             } else {
                 portDescription.push(<div className='serialSerialnumber' key={uuidV4()}>&nbsp;</div>);
             }
