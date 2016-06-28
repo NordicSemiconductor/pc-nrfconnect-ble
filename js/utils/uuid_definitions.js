@@ -42,7 +42,6 @@ function loadRemote()
         if (!customsFileErrorMessageShown) {
             customsFileErrorMessageShown = true;
             logger.info(`There is an error with the custom UUID definitions file: ${uuidDefinitionsFilePath}`);
-            console.log(`There is an error with the custom UUID definitions file: ${uuidDefinitionsFilePath}`);
         }
     }
 }
