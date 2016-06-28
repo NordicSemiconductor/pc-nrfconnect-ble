@@ -151,6 +151,14 @@ function _setupListeners(dispatch, getState, adapterToUse) {
         dispatch(showErrorDialog(new Error(message)));
     });
 
+    adapterToUse.on('warning', warning => {
+        if (warning.message.includes('not supported')) {
+            logger.warn(warning.message);
+        } else {
+            logger.info(warning.message);
+        }
+    });
+
     adapterToUse.on('logMessage', _onLogMessage);
 
     // Listen to adapter changes
@@ -328,6 +336,10 @@ function _getVersion(dispatch, getState, adapter, serialNumber) {
                 logger.debug('Could not load nrfjprog DLL, disabling programming feature.');
                 // Don't proceed if we were not able to read out the version
                 resolve();
+                return;
+            } else if (err && err.errcode === 'CouldNotConnectToDevice') {
+                logger.info('Could not connect to debug probe, disabling programming feature.')
+                resolve()
                 return;
             }
 
