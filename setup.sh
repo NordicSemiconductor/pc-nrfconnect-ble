@@ -54,7 +54,7 @@ case "$(uname -s)" in
     ;;
 esac
 
-export YGGDRASIL_APP_DIR="$YGGDRASIL_APP_NAMEYGGDRASIL_APP_NAME-$YGGDRASIL_PLATFORM-$npm_config_arch"
+export YGGDRASIL_APP_DIR="$YGGDRASIL_APP_NAME-$YGGDRASIL_PLATFORM-$npm_config_arch"
 export YGGDRASIL_APP_ROOT_DIR="$YGGDRASIL_DEPLOY_DIR/$YGGDRASIL_APP_DIR"
 
 rm -rf node_modules
