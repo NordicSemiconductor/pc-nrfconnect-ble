@@ -54,8 +54,8 @@ case "$(uname -s)" in
     ;;
 esac
 
-export YGGDRASIL_APP_DIR=$YGGDRASIL_NAME-$YGGDRASIL_PLATFORM-$npm_config_arch
-export YGGDRASIL_APP_ROOT_DIR=$YGGDRASIL_DEPLOY_DIR/$YGGDRASIL_APP_DIR
+export YGGDRASIL_APP_DIR="$YGGDRASIL_APP_NAMEYGGDRASIL_APP_NAME-$YGGDRASIL_PLATFORM-$npm_config_arch"
+export YGGDRASIL_APP_ROOT_DIR="$YGGDRASIL_DEPLOY_DIR/$YGGDRASIL_APP_DIR"
 
 rm -rf node_modules
 
@@ -70,14 +70,14 @@ cp node_modules/pc-ble-driver-js/pc-ble-driver/hex/*.hex ./hex/
 lessc ./css/styles.less ./css/styles.css
 electron-packager . "$YGGDRASIL_APP_NAME" --platform=$YGGDRASIL_PLATFORM --arch=$npm_config_arch --icon=$YGGDRASIL_ICON --version=$npm_config_target --overwrite --out=$YGGDRASIL_DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName="Nordic Semiconductor ASA" --version-string.LegalCopyright="Nordic Semiconductor ASA" --version-string.FileDescription="nRF Connect" --version-string.OriginalFilename="nrfconnect" --version-string.FileVersion="$YGGDRASIL_VERSION" --version-string.ProductVersion="$YGGDRASIL_FULL_VERSION" --version-string.ProductName="$YGGDRASIL_NAME" --version-string.InternalName="$YGGDRASIL_NAME"
 
-cp README.md $YGGDRASIL_APP_ROOT_DIR/README.txt
-cp LICENSE $YGGDRASIL_APP_ROOT_DIR/LICENSE
-cp nordic_logo.png $YGGDRASIL_APP_ROOT_DIR/nordic_logo.png
-tar xvf nrfjprog/$COMMANDLINE_TOOLS_FILE --strip=2 -C $YGGDRASIL_APP_ROOT_DIR/$COMMANDLINE_TOOLS_EXTRACT_TARGET
+cp README.md "$YGGDRASIL_APP_ROOT_DIR/README.txt"
+cp LICENSE "$YGGDRASIL_APP_ROOT_DIR/LICENSE"
+cp nordic_logo.png "$YGGDRASIL_APP_ROOT_DIR/nordic_logo.png"
+tar xvf nrfjprog/$COMMANDLINE_TOOLS_FILE --strip=2 -C "$YGGDRASIL_APP_ROOT_DIR/$COMMANDLINE_TOOLS_EXTRACT_TARGET"
 
 pushd .
 
-cd $YGGDRASIL_DEPLOY_DIR
+cd "$YGGDRASIL_DEPLOY_DIR"
 tar czf $YGGDRASIL_NAME-$YGGDRASIL_FULL_VERSION-$YGGDRASIL_PLATFORM-$npm_config_arch.tar.gz $YGGDRASIL_APP_DIR
 
 popd
