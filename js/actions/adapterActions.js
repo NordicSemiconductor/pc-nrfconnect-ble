@@ -337,9 +337,13 @@ function _getVersion(dispatch, getState, adapter, serialNumber) {
                 // Don't proceed if we were not able to read out the version
                 resolve();
                 return;
-            } else if (err && err.errcode === 'CouldNotConnectToDevice') {
-                logger.info('Could not connect to debug probe, firmware detection and programming will not be available.')
-                resolve()
+            } else if (err && (err.errcode === 'CouldNotConnectToDevice' || err.errcode === 'CouldNotOpenDevice')) {
+                logger.info('Could not connect to debug probe, firmware detection and programming will not be available.');
+                resolve();
+                return;
+            } else if (err) {
+                logger.info('Could not connect to debug probe, firmware detection and programming will not be available.');
+                resolve();
                 return;
             }
 
@@ -413,6 +417,7 @@ function _onDeviceConnected(dispatch, getState, device) {
 
     if (!adapterToUse) {
         logger.warn('No adapter');
+        return;
     }
 
     const bondInfo = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'bondStore', device.address]);
