@@ -22,6 +22,8 @@ import * as AppActions from '../actions/appActions';
 import * as AdvertisingActions from '../actions/advertisingActions';
 import * as ErrorActions from '../actions/errorDialogActions';
 
+import SplitPane from 'react-split-pane';
+
 import DeviceDetailsContainer from './DeviceDetails';
 import ServerSetup from './ServerSetup';
 
@@ -180,17 +182,22 @@ class AppContainer extends Component {
             <div id='main-area-wrapper'>
                 <NavBar onChangeMainView={view => selectMainView(view)} view={selectedMainView} ref='navBar' />
                 <div className='main-layout' style={layoutStyle}>
-                    <div>
-                        <div>
+                <SplitPane
+                    split='vertical'
+                    minSize={200}
+                    maxSize={400}
+                    primary='second'>
+                    <SplitPane split='horizontal'
+                        minSize={200}
+                        maxSize={-200}
+                        primary='second'>
                             {active}
-                        </div>
-                        <div>
                             <LogViewer/>
-                        </div>
-                    </div>
+                    </SplitPane>
                     <div>
                         <DiscoveredDevices/>
                     </div>
+                    </SplitPane>
                 </div>
                 <BLEEventDialog/>
                 <ErrorDialog/>

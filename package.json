@@ -44,6 +44,7 @@
     "react-onclickoutside": "5.1.0",
     "react-pure-render": "1.0.2",
     "react-redux": "4.0.0",
+    "react-split-pane": "0.1.42",
     "react-textarea-autosize": "2.5.4",
     "redux": "3.0.4",
     "redux-logger": "2.0.4",
