@@ -341,7 +341,7 @@ function _getVersion(dispatch, getState, adapter, serialNumber) {
                 logger.info('Could not connect to debug probe, firmware detection and programming will not be available.');
                 resolve();
                 return;
-            } else if (err) {
+            } else if (err && err.errcode !== 'WrongMagicNumber') { // Wrong Magic Number is not an actual error for us, so we should continue execution
                 logger.info('Could not connect to debug probe, firmware detection and programming will not be available.');
                 resolve();
                 return;
