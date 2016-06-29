@@ -74,13 +74,6 @@ const DbLogger = winston.transports.DbLogger = function (options) {
     this.dbReady = false;
     this._queue = [];
 
-    try {
-        fs.unlinkSync(this.filename);
-    } catch (err) {
-        // Log to console.log because we may not have a valid logger if we get here.
-        console.log(`Error removing file ${this.filename}. Error is ${err}`);
-    }
-
     this.db = new sqlite3.Database(this.filename);
 
     this.db.serialize(() => {
