@@ -157,7 +157,7 @@ export function getUuidByName(name) {
     const uuidDefs = uuidDefinitions();
 
     for (let uuid in uuidDefs) {
-        if (uuidDefinitions.hasOwnProperty(uuid)) {
+        if (uuidDefs.hasOwnProperty(uuid)) {
             if (uuidDefs[uuid].name === name) {
                 return uuid;
             }
