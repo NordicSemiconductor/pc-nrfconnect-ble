@@ -119,8 +119,6 @@ app.on('ready', function () {
 
 // Create menu.
 app.once('ready', function () {
-    console.log('App path: ' + app.getAppPath());
-
     var template = [
         {
             label: '&File',
