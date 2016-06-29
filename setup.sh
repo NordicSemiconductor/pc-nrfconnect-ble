@@ -57,12 +57,12 @@ esac
 export YGGDRASIL_APP_DIR="$YGGDRASIL_APP_NAME-$YGGDRASIL_PLATFORM-$npm_config_arch"
 export YGGDRASIL_APP_ROOT_DIR="$YGGDRASIL_DEPLOY_DIR/$YGGDRASIL_APP_DIR"
 
-#rm -rf node_modules
+rm -rf node_modules
 
 mv js/settings.json js/settings.json.dev
 mv js/settings.json.prod js/settings.json
 
-#npm install --production
+npm install --production
 
 mkdir ./hex
 cp node_modules/pc-ble-driver-js/pc-ble-driver/hex/*.hex ./hex/
