@@ -17,6 +17,8 @@ export const HIDE_FIRMWARE_UPDATE_REQUEST = 'HIDE_FIRMWARE_UPDATE_REQUEST';
 export const UPDATE_FIRMWARE = 'UPDATE_FIRMWARE';
 export const SHOW_FIRMWARE_UPDATE_SPINNER = 'SHOW_FIRMWARE_UPDATE_SPINNER';
 
+import path from 'path';
+import { remote } from 'electron';
 import { openAdapter } from './adapterActions';
 import { DebugProbe } from 'pc-nrfjprog-js';
 import { showErrorDialog } from './errorDialogActions';
@@ -31,7 +33,12 @@ function _updateFirmware(dispatch, getState, adapter) {
 
         const probe = new DebugProbe();
 
-        probe.program(parseInt(adapterToUse.state.serialNumber, 10), ['./hex/connectivity_115k2_with_s130_2.0.1.hex', './hex/connectivity_115k2_with_s132_2.0.1.hex'], err => {
+        const appPath = remote.getGlobal('appPath');
+
+        const pathHexS130 = path.resolve(appPath, './hex/connectivity_115k2_with_s130_2.0.1.hex');
+        const pathHexS132 = path.resolve(appPath, './hex/connectivity_115k2_with_s132_2.0.1.hex');
+
+        probe.program(parseInt(adapterToUse.state.serialNumber, 10), [pathHexS130, pathHexS132], err => {
             console.log(err);
 
             if (err) {

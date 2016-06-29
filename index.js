@@ -23,6 +23,7 @@ var mainWindow = null;
 global.keymap = app.getPath('userData') + '/keymap.cson';
 global.logFileDir = app.getPath('userData');
 global.dataFileDir = app.getPath('userData');
+global.appPath = app.getAppPath();
 
 const dialog = require('electron').dialog;
 var ipcMain = require('ipc-main');
@@ -118,6 +119,8 @@ app.on('ready', function () {
 
 // Create menu.
 app.once('ready', function () {
+    console.log('App path: ' + app.getAppPath());
+
     var template = [
         {
             label: '&File',
