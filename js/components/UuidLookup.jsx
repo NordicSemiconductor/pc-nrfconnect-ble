@@ -23,8 +23,7 @@ export default class UuidLookup extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        // Assuming that the content is static so it doesn't need to be updated after first rendering
-        return false;
+        return !(JSON.stringify(this.props.uuidDefs) === JSON.stringify(nextProps.uuidDefs));
     }
 
     formatUuid(value) {
@@ -45,7 +44,7 @@ export default class UuidLookup extends Component {
             pullRight,
         } = this.props;
 
-        const sorted = Object.keys(uuidDefs()).sort((a, b) => { return parseInt(a, 16) - parseInt(b, 16); });
+        const sorted = Object.keys(uuidDefs).sort((a, b) => { return parseInt(a, 16) - parseInt(b, 16); });
 
         return (
             <div className='uuid-lookup'>
@@ -80,7 +79,7 @@ export default class UuidLookup extends Component {
 UuidLookup.propTypes = {
     title: PropTypes.string,
     onSelect: PropTypes.func.isRequired,
-    uuidDefs: PropTypes.func.isRequired,
+    uuidDefs: PropTypes.object.isRequired,
     pullRight: PropTypes.bool,
 };
 

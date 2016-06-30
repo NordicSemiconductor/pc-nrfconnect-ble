@@ -37,7 +37,7 @@ export default class SetupUuidInput extends SetupInput {
         this._onUuidChange(eventKey);
     }
 
-    render () {
+    render() {
         const {
             label,
             uuidDefinitions,
@@ -46,7 +46,7 @@ export default class SetupUuidInput extends SetupInput {
 
         const uuidSelectButton = (
             <UuidLookup onSelect={(event, eventKey) => this._handleUuidSelect(event, eventKey)}
-                title={'Predefined ' + label + 's'} uuidDefs={uuidDefinitions}
+                title={'Predefined ' + label + 's'} uuidDefs={uuidDefinitions()}
                 pullRight={true}/>
         );
 

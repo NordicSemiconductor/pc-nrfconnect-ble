@@ -286,8 +286,8 @@ export default class AdvertisingData extends Component {
 
     render() {
         const inputDisabled = (this.type === null);
-        const uuidDef = this.title.includes('16 bit') ? uuid16bitServiceDefinitions
-            : this.title.includes('128 bit') ? uuid128bitServiceDefinitions
+        const uuidDef = this.title.includes('16 bit') ? uuid16bitServiceDefinitions()
+            : this.title.includes('128 bit') ? uuid128bitServiceDefinitions()
             : {};
         const uuidLookupDisabled = Object.keys(uuidDef).length === 0;
 
