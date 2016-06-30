@@ -41,7 +41,6 @@ function loadRemote()
 
         if (!customsFileErrorMessageShown) {
             customsFileErrorMessageShown = true;
-            logger.info(`There is an error with the custom UUID definitions file: ${uuidDefinitionsFilePath}`);
         }
     }
 }
@@ -222,5 +221,5 @@ function confirmUserUUIDsExist() {
         });
     }
 
-    logger.info(`Custom UUID definitions: ${uuidDefinitionsFilePath}`);
+    logger.info(`Application data folder: ${path.dirname(uuidDefinitionsFilePath)}`);
 }
