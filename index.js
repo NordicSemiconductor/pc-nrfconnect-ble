@@ -16,6 +16,7 @@ var app = require('app');
 var BrowserWindow = require('browser-window');
 var Menu = require('menu');
 var settings = require('./settings');
+var os = require('os');
 
 var splashScreen = null;
 var mainWindow = null;
@@ -23,7 +24,12 @@ var mainWindow = null;
 global.keymap = app.getPath('userData') + '/keymap.cson';
 global.logFileDir = app.getPath('userData');
 global.dataFileDir = app.getPath('userData');
-global.appPath = app.getAppPath();
+
+if (os.type === 'Windows_NT') {
+    global.appPath = app.getPath('exe');
+} else {
+    global.appPath = app.getAppPath();
+}
 
 const dialog = require('electron').dialog;
 var ipcMain = require('ipc-main');
