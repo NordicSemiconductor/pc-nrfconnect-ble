@@ -332,30 +332,32 @@ function _getVersion(dispatch, getState, adapter, serialNumber) {
         const probe = new DebugProbe();
 
         probe.getVersion(serialNumber, (err, version) => {
-            if (err && err.errcode === 'CouldNotLoadDLL') {
-                logger.info('Could not load nrfjprog DLL, firmware detection and programming will not be available.');
-                // Don't proceed if we were not able to read out the version
-                resolve();
-                return;
-            } else if (err && (err.errcode === 'CouldNotConnectToDevice' || err.errcode === 'CouldNotOpenDevice')) {
-                logger.info('Could not connect to debug probe, firmware detection and programming will not be available.');
-                resolve();
-                return;
-            } else if (err && err.errcode !== 'WrongMagicNumber') { // Wrong Magic Number is not an actual error for us, so we should continue execution
-                logger.info('Could not connect to debug probe, firmware detection and programming will not be available.');
-                resolve();
-                return;
-            }
+            setTimeout(() => {
+                if (err && err.errcode === 'CouldNotLoadDLL') {
+                    logger.info('Could not load nrfjprog DLL, firmware detection and programming will not be available.');
+                    // Don't proceed if we were not able to read out the version
+                    resolve();
+                    return;
+                } else if (err && (err.errcode === 'CouldNotConnectToDevice' || err.errcode === 'CouldNotOpenDevice')) {
+                    logger.info('Could not connect to debug probe, firmware detection and programming will not be available.');
+                    resolve();
+                    return;
+                } else if (err && err.errcode !== 'WrongMagicNumber') { // Wrong Magic Number is not an actual error for us, so we should continue execution
+                    logger.info('Could not connect to debug probe, firmware detection and programming will not be available.');
+                    resolve();
+                    return;
+                }
 
-            const versionString = version ? semver.clean(version.string) : null;
+                const versionString = version ? semver.clean(version.string) : null;
 
-            if (!_checkVersion(versionString)) {
-                dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFirmwareVersion));
-                reject();
-            } else {
-                logger.info(`Connectivity firmware version ${versionString} detected`);
-                resolve();
-            }
+                if (!_checkVersion(versionString)) {
+                    dispatch(showFirmwareUpdateRequest(adapter, versionString, latestFirmwareVersion));
+                    reject();
+                } else {
+                    logger.info(`Connectivity firmware version ${versionString} detected`);
+                    resolve();
+                }
+            }, 500);
         });
     });
 }
