@@ -58,7 +58,7 @@ app.on('ready', function () {
         resizable: false,
         show: false,
         transparent: true,
-        icon: './nrfconnect.png',
+        icon: __dirname + '/nrfconnect.png',
     });
 
     splashScreen.loadURL('file://' + __dirname + '/splashScreen.html');
@@ -79,7 +79,7 @@ app.on('ready', function () {
         'min-width': 308,
         'min-height': 499,
         frame: true,
-        icon: './nrfconnect.png',
+        icon: __dirname + '/nrfconnect.png',
         'auto-hide-menu-bar': true,
         show: false,
     });
