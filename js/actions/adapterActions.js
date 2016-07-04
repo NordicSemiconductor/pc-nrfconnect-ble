@@ -425,8 +425,20 @@ function _onDeviceConnected(dispatch, getState, device) {
     const bondInfo = getState().adapter.getIn(['adapters', getState().adapter.selectedAdapter, 'security', 'bondStore', device.address]);
 
     if (device.role === 'peripheral' && bondInfo) {
-        const encInfo = bondInfo.getIn(['keys_peer', 'enc_key', 'enc_info']).toJS();
-        const masterId = bondInfo.getIn(['keys_peer', 'enc_key', 'master_id']).toJS();
+        const isLesc = bondInfo.getIn(['keys_own', 'enc_key', 'enc_info', 'lesc']);
+
+        let encInfo;
+        let masterId;
+
+        if (isLesc)
+        {
+            encInfo = bondInfo.getIn(['keys_own', 'enc_key', 'enc_info']).toJS();
+            masterId = bondInfo.getIn(['keys_own', 'enc_key', 'master_id']).toJS();
+        } else {
+            encInfo = bondInfo.getIn(['keys_peer', 'enc_key', 'enc_info']).toJS();
+            masterId = bondInfo.getIn(['keys_peer', 'enc_key', 'master_id']).toJS();
+        }
+
         adapterToUse.encrypt(device.instanceId, masterId, encInfo, error => {
             if (error) {
                 logger.warn(`Encrypt procedure failed: ${error}`);
