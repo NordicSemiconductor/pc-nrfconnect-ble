@@ -31,9 +31,8 @@ confirmUserUUIDsExist();
 
 function loadRemote()
 {
-    var data = fs.readFileSync(uuidDefinitionsFilePath, 'utf-8');
-
     try {
+        const data = fs.readFileSync(uuidDefinitionsFilePath, 'utf-8');
         RemoteDefinitions = JSON.parse(data);
     }
     catch (err) {
@@ -41,6 +40,8 @@ function loadRemote()
 
         if (!customsFileErrorMessageShown) {
             customsFileErrorMessageShown = true;
+            logger.info(`There is an error with the custom UUID definitions file: ${uuidDefinitionsFilePath}`);
+            logger.debug(`There is an error with the custom UUID definitions file: ${uuidDefinitionsFilePath}` + 'Error: ' + err);
         }
     }
 }
