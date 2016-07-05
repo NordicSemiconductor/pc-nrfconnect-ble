@@ -133,20 +133,25 @@ export function uuidDefinitions() {
         uuid128bitDefinitions());
 }
 
+function getLookupUUID(uuid) {
+    let lookupUuid = uuid.toUpperCase();
+
+    if (lookupUuid[1] === 'X') {
+        lookupUuid = lookupUuid.slice(2);
+    }
+
+    return lookupUuid.replace(/-/g, '');
+}
+
 // TODO: look into using a database for storing the services UUID's. Also look into importing them from the Bluetooth pages.
 // TODO: Also look into reusing code from the Android MCP project:
 // TODO: http://projecttools.nordicsemi.no/stash/projects/APPS-ANDROID/repos/nrf-master-control-panel/browse/app/src/main/java/no/nordicsemi/android/mcp/database/init
 // TODO: http://projecttools.nordicsemi.no/stash/projects/APPS-ANDROID/repos/nrf-master-control-panel/browse/app/src/main/java/no/nordicsemi/android/mcp/database/DatabaseHelper.java
 export function getUuidName(uuid) {
-    let lookupUuid = uuid.toUpperCase();
-    if (lookupUuid[1] === 'X') {
-        lookupUuid = lookupUuid.slice(2);
-    }
-
+    const lookupUuid = getLookupUUID(uuid);
     const uuidDefs = uuidDefinitions();
 
-    if (uuidDefs[lookupUuid])
-    {
+    if (uuidDefs[lookupUuid]) {
         return uuidDefs[lookupUuid].name;
     }
 
@@ -187,20 +192,14 @@ export function getUuidFormat(uuid) {
         return Definitions.NO_FORMAT;
     }
 
-    let lookupUuid = uuid.toUpperCase();
-
-    if (lookupUuid[1] === 'X') {
-        lookupUuid = lookupUuid.slice(2);
-    }
+    const lookupUuid = getLookupUUID(uuid);
 
     const uuidDefs = uuidDefinitions();
 
-    if (uuidDefs[lookupUuid])
-    {
+    if (uuidDefs[lookupUuid]) {
         const format = uuidDefs[lookupUuid].format;
 
-        if (format)
-        {
+        if (format) {
             return format.toUpperCase();
         }
 
