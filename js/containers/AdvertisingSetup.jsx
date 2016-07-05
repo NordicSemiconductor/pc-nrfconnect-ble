@@ -33,7 +33,7 @@ class AdvertisingSetup extends Component {
     }
 
     _prepareValue() {
-        if (!this.typeValue) return;
+        if (!this.typeValue) { return; }
 
         this.id++;
         this.typeValue.id = this.id;
@@ -129,7 +129,7 @@ class AdvertisingSetup extends Component {
 }
 
 function mapStateToProps(state) {
-    const {advertising} = state;
+    const { advertising } = state;
 
     return {
         advertising: advertising,

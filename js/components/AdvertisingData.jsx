@@ -31,7 +31,8 @@ const INCOMPLETE_16_UUIDS = '3';
 const COMPLETE_128_UUIDS = '4';
 const INCOMPLETE_128_UUIDS = '5';
 const TX_POWER = '6';
-const CUSTOM = '7';
+const FLAGS = '7';
+const CUSTOM = '8';
 
 const UUID_TYPE_16 = 0;
 const UUID_TYPE_128 = 1;
@@ -64,6 +65,8 @@ export default class AdvertisingData extends Component {
                 return 'UUID 128 bit more available';
             case TX_POWER:
                 return 'TX power level';
+            case FLAGS:
+                return 'Flags';
             case CUSTOM:
                 return 'Custom AD type';
         }
@@ -85,6 +88,8 @@ export default class AdvertisingData extends Component {
                 return 'incompleteListOf128BitServiceUuids';
             case TX_POWER:
                 return 'txPowerLevel';
+            case FLAGS:
+                return 'flags';
             case CUSTOM:
                 return 'custom';
             default:
@@ -111,6 +116,11 @@ export default class AdvertisingData extends Component {
             case CUSTOM:
                 return value;
 
+            case FLAGS:
+                //TODO: FIX
+                console.log(value.split(',').filter(Boolean));
+                return value.split(',').filter(Boolean);
+
             default:
                 return null;
         }
@@ -133,7 +143,10 @@ export default class AdvertisingData extends Component {
                 return 'Enter TX power';
 
             case CUSTOM:
-                return 'Enter AD data value (hex)'
+                return 'Enter AD data value (hex)';
+
+            case FLAGS:
+                return 'Choose flags';
 
             default:
                 return 'Enter value';
@@ -174,6 +187,21 @@ export default class AdvertisingData extends Component {
         this.emitValueChange();
     }
 
+    setCheckedProperty(property, event) {
+        const checked = event.target.checked;
+
+        if (checked) {
+            let valueList = this.value.split(',');
+            valueList.push(property);
+            this.value = valueList.join(',');
+        } else {
+            this.value = this.value.replace(property, '').split(',').filter(Boolean).join(',');
+        }
+
+        this.forceUpdate();
+        this.emitValueChange();
+    }
+
     emitValueChange() {
         const { onValueChange } = this.props;
 
@@ -187,9 +215,9 @@ export default class AdvertisingData extends Component {
             return;
         }
 
-        const tempValue = (this.typeKey === CUSTOM)
-            ? (this.adTypeValue + this.value).replace(/0[xX]/g, '')
-            : this.value;
+        const tempValue = (this.typeKey === CUSTOM) ?
+            (this.adTypeValue + this.value).replace(/0[xX]/g, '') :
+            this.value;
 
         const typeValue = {
             typeKey: this.typeKey,
@@ -221,6 +249,10 @@ export default class AdvertisingData extends Component {
 
             case CUSTOM:
                 return this.validateCustom(this.value);
+
+            case FLAGS:
+                //TODO: Fix
+                return SUCCESS;
 
             default:
                 return ERROR;
@@ -290,6 +322,8 @@ export default class AdvertisingData extends Component {
             : this.title.includes('128 bit') ? uuid128bitServiceDefinitions()
             : {};
         const uuidLookupDisabled = Object.keys(uuidDef).length === 0;
+        const showInput = (this.typeKey !== FLAGS);
+        const showFlags = (this.typeKey === FLAGS);
 
         const adTypeDiv = (this.typeKey === CUSTOM) ?
             <div>
@@ -302,6 +336,31 @@ export default class AdvertisingData extends Component {
             <span className='adv-uuid-lookup'>
                 <UuidLookup onSelect={(event, eventKey) => this.handleUuidSelect(event, eventKey)} title={'Predefined service UUIDs'} uuidDefs={uuidDef} />
             </span> : '';
+
+        const inputDiv = showInput ?
+            <Input
+                disabled={inputDisabled}
+                type='text'
+                id='value'
+                ref='advDataValue'
+                value={this.value}
+                label='Value'
+                hasFeedback
+                placeholder={this.placeholderText}
+                bsStyle={this.validateInput()}
+                onChange={event => this.handleChange(event)}>
+            </Input> :
+            '';
+
+        const flagsLookupSpan = showFlags ?
+            <span>
+                <Input type='checkbox' label='Limited Discovery Mode' ref='leLimitedDiscMode' checked={this.value.indexOf('leLimitedDiscMode') !== -1} onChange={e => this.setCheckedProperty('leLimitedDiscMode', e)} />
+                <Input type='checkbox' label='General Discovery Mode' ref='leGeneralDiscMode' checked={this.value.indexOf('leGeneralDiscMode') !== -1} onChange={e => this.setCheckedProperty('leGeneralDiscMode', e)} />
+                <Input type='checkbox' label='Edr Not Supported' ref='brEdrNotSupported' checked={this.value.indexOf('brEdrNotSupported') !== -1} onChange={e => this.setCheckedProperty('brEdrNotSupported', e)} />
+                <Input type='checkbox' label='BR Edr Controller' ref='leBrEdrController' checked={this.value.indexOf('leBrEdrController') !== -1} onChange={e => this.setCheckedProperty('leBrEdrController', e)} />
+                <Input type='checkbox' label='BR Edr Host' ref='leBrEdrHost' checked={this.value.indexOf('leBrEdrHost') !== -1} onChange={e => this.setCheckedProperty('leBrEdrHost', e)} />
+            </span> :
+            '';
 
         return (
             <div>
@@ -318,21 +377,13 @@ export default class AdvertisingData extends Component {
                         <MenuItem eventKey='5'>{this.keyToAdvertisingType('5')}</MenuItem>
                         <MenuItem eventKey='6'>{this.keyToAdvertisingType('6')}</MenuItem>
                         <MenuItem eventKey='7'>{this.keyToAdvertisingType('7')}</MenuItem>
+                        <MenuItem eventKey='8'>{this.keyToAdvertisingType('8')}</MenuItem>
                     </DropdownButton>
                 </div>
                 <div className='adv-value-container'>
                     {adTypeDiv}
-                    <Input
-                        disabled={inputDisabled}
-                        type='text'
-                        id='value'
-                        ref='advDataValue'
-                        value={this.value}
-                        label='Value'
-                        hasFeedback
-                        placeholder={this.placeholderText}
-                        bsStyle={this.validateInput()}
-                        onChange={event => this.handleChange(event)} />
+                    {inputDiv}
+                    {flagsLookupSpan}
                 </div>
                 {uuidLookupDiv}
             </div>
