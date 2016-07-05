@@ -23,8 +23,7 @@ var splashScreen = null;
 var mainWindow = null;
 
 global.keymap = app.getPath('userData') + '/keymap.cson';
-global.logFileDir = app.getPath('userData');
-global.dataFileDir = app.getPath('userData');
+global.userDataDir = app.getPath('userData');
 
 if (os.type() === 'Windows_NT') {
     global.appPath = path.dirname(app.getPath('exe'));

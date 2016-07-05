@@ -21,27 +21,29 @@ import { logger } from '../logging';
 export const TEXT = Definitions.TEXT;
 export const NO_FORMAT = Definitions.NO_FORMAT;
 
-let dataFileDir = remote.getGlobal('dataFileDir');
-let uuidDefinitionsFilePath = path.join(dataFileDir, 'uuid_definitions.json');
-var RemoteDefinitions = require('./custom_definitions');
+let userDataDir = remote.getGlobal('userDataDir');
+let uuidDefinitionsFilePath = path.join(userDataDir, 'uuid_definitions.json');
+let RemoteDefinitions = require('./custom_definitions');
 
-var customsFileErrorMessageShown = false;
+let customsFileErrorMessageShown = false;
 
 confirmUserUUIDsExist();
 
 function loadRemote()
 {
+    let data;
+
     try {
-        const data = fs.readFileSync(uuidDefinitionsFilePath, 'utf-8');
+        data = fs.readFileSync(uuidDefinitionsFilePath, 'utf-8');
         RemoteDefinitions = JSON.parse(data);
     }
     catch (err) {
         RemoteDefinitions = require('./custom_definitions');
 
-        if (!customsFileErrorMessageShown) {
+        if (!customsFileErrorMessageShown && data !== '') {
             customsFileErrorMessageShown = true;
-            logger.info(`There is an error with the custom UUID definitions file: ${uuidDefinitionsFilePath}`);
-            logger.debug(`There is an error with the custom UUID definitions file: ${uuidDefinitionsFilePath}` + 'Error: ' + err);
+            logger.info(`There was an error parsing the custom UUID definitions file: ${uuidDefinitionsFilePath}`);
+            logger.debug(`UUID definitions file error: ${err}`);
         }
     }
 }
@@ -107,11 +109,9 @@ export function uuid16bitDefinitions() {
         Definitions.uuid16bitServiceDefinitions,
         Definitions.uuid16bitCharacteristicDefinitions,
         Definitions.uuid16bitDescriptorDefinitions,
-        Definitions.uuid16bitGattDefinitions,
         RemoteDefinitions.uuid16bitServiceDefinitions,
         RemoteDefinitions.uuid16bitCharacteristicDefinitions,
-        RemoteDefinitions.uuid16bitDescriptorDefinitions,
-        RemoteDefinitions.uuid16bitGattDefinitions);
+        RemoteDefinitions.uuid16bitDescriptorDefinitions);
 }
 
 export function uuid128bitDefinitions() {
@@ -223,4 +223,8 @@ function confirmUserUUIDsExist() {
     }
 
     logger.info(`Application data folder: ${path.dirname(uuidDefinitionsFilePath)}`);
+}
+
+export function getUuidDefinitionsFilePath() {
+    return uuidDefinitionsFilePath;
 }

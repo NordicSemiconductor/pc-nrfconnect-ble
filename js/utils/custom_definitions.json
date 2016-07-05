@@ -1,15 +1,28 @@
 {
-    "_comment": {"comment": ["Add UUIDs for your services, characteristics, and descriptors in this file",
-                             "The format is the UUID of the item, followed by an object containing the data",
-                             "'name' is a mandatory handle, while 'format' is optional. The only supported format is 'TEXT'.",
-                             "Store your own definitions under the correct key to ensure that they are available."
-                         ],
-                 "example": {"1234": { "name": "Example service", "format": "TEXT"}}} ,
-    "uuid16bitGattDefinitions": {},
-    "uuid16bitServiceDefinitions": {},
-    "uuid16bitCharacteristicDefinitions": {},
-    "uuid16bitDescriptorDefinitions": {},
-    "uuid128bitServiceDefinitions": {},
-    "uuid128bitCharacteristicDefinitions": {},
-    "uuid128bitDescriptorDefinitions": {}
+    "_comment": {"comment": ["Add UUIDs for your services, characteristics, and descriptors in this file.",
+                             "The format is the UUID of the item, followed by an object containing the data.",
+                             "'name' is a mandatory handle, while 'format' is optional.",
+                             "Currently the only supported format is 'TEXT', default is 'NO_FORMAT'.",
+                             "The application must be reloaded to access changes in this file."]},
+
+    "uuid16bitServiceDefinitions": {
+    },
+
+    "uuid16bitCharacteristicDefinitions": {
+        "9991": {"name": "Example1"},
+        "9993": {"name": "Example2", "format": "TEXT"}
+    },
+
+    "uuid16bitDescriptorDefinitions": {
+    },
+
+    "uuid128bitServiceDefinitions": {
+        "55443322110099887766554433221100": {"name": "Example3"}
+    },
+
+    "uuid128bitCharacteristicDefinitions": {
+    },
+
+    "uuid128bitDescriptorDefinitions": {
+    }
 }

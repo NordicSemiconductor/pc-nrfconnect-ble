@@ -147,6 +147,7 @@ class DeviceDetailsContainer extends Component {
             toggleAutoAcceptPairing,
             deleteBondInfo,
             security,
+            openCustomUuidFile,
         } = this.props;
 
         const elemWidth = 250;
@@ -176,6 +177,7 @@ class DeviceDetailsContainer extends Component {
                                               onToggleAutoAcceptPairing={toggleAutoAcceptPairing}
                                               onDeleteBondInfo={deleteBondInfo}
                                               security={security}
+                                              onOpenCustomUuidFile={openCustomUuidFile}
                                               />
         );
 
@@ -268,4 +270,5 @@ DeviceDetailsContainer.propTypes = {
     toggleAutoAcceptPairing: PropTypes.func.isRequired,
     deleteBondInfo: PropTypes.func.isRequired,
     showSecurityParamsDialog: PropTypes.func.isRequired,
+    openCustomUuidFile: PropTypes.func.isRequired,
 };

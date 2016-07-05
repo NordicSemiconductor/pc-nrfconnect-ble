@@ -19,13 +19,10 @@ import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import uuidV4 from 'uuid-v4';
-import fs from 'fs';
-import os from 'os';
-import shell from 'shell';
-import childProcess from 'child_process';
 
 import { logger } from '../logging';
 import { getLogFilePath } from '../logging/logger';
+import { openFileInDefaultApplication } from '../utils/fileUtil';
 
 import * as LogActions from '../actions/logActions';
 import LogEntry from '../components/LogEntry';
@@ -45,25 +42,9 @@ class LogContainer extends Component {
     }
 
     _openLogFile(path) {
-        fs.exists(path, exists => {
-            if (!exists) {
-                logger.info(`Could not find log file at path: ${path}`);
-                return;
-            }
-
-            const escapedPath = path.replace(/ /g, '\\ ');
-
-            // Could not find a method that works on all three platforms:
-            // * shell.openExternal works on Windows but not on OSX
-            // * open (node-open) works on OSX but not on Windows
-            // * childProcess.execSync works on OSX but not on Windows
-
-            if (os.type() === 'Windows_NT') {
-                shell.openExternal(escapedPath);
-            } else if (os.type() === 'Darwin') {
-                childProcess.execSync(`open  ${escapedPath}`);
-            } else if (os.type() === 'Linux') {
-                childProcess.execSync(`xdg-open ${escapedPath}`);
+        openFileInDefaultApplication(path, err => {
+            if (err) {
+                logger.info(err);
             }
         });
     }

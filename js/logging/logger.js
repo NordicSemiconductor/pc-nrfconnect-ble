@@ -25,8 +25,8 @@ let defaultLogFile = filePrefix + '-log.txt';
 let defaultDbFile = filePrefix + '-logger.db';
 
 // Need to retrieve logFileDir from index.js since we do not have access to app.getPath in this file
-defaultLogFile = remote.getGlobal('logFileDir') + path.sep + defaultLogFile;
-defaultDbFile = remote.getGlobal('logFileDir') + path.sep + defaultDbFile;
+defaultLogFile = remote.getGlobal('userDataDir') + path.sep + defaultLogFile;
+defaultDbFile = remote.getGlobal('userDataDir') + path.sep + defaultDbFile;
 
 let id = 0; // ID is used as primary key in database
 

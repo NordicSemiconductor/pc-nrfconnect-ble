@@ -31,8 +31,10 @@ export const COMPLETED_READING_ATTRIBUTE = 'DEVICE_DETAILS_COMPLETED_READING_ATT
 export const ERROR_OCCURED = 'DEVICE_DETAILS_ERROR_OCCURED';
 
 import { getInstanceIds } from '../utils/api';
+import { openFileInDefaultApplication } from '../utils/fileUtil';
 import { showErrorDialog } from './errorDialogActions';
-import { getUuidByName } from '../utils/uuid_definitions';
+import { getUuidByName, getUuidDefinitionsFilePath } from '../utils/uuid_definitions';
+import { logger } from '../logging';
 
 function _discoverServices(dispatch, getState, device) {
     return new Promise((resolve, reject) => {
@@ -337,6 +339,15 @@ function _writeDescriptor(dispatch, getState, descriptor, value) {
     });
 }
 
+function _openCustomUuidFile(dispatch, getState) {
+    const path = getUuidDefinitionsFilePath();
+    openFileInDefaultApplication(path, err => {
+        if (err) {
+            logger.info(err);
+        }
+    });
+}
+
 function selectComponentAction(component) {
     return {
         type: SELECT_COMPONENT,
@@ -469,4 +480,10 @@ export function writeDescriptor(descriptor, value) {
     return (dispatch, getState) => {
         return _writeDescriptor(dispatch, getState, descriptor, value);
     };
+}
+
+export function openCustomUuidFile() {
+    return (dispatch, getState) => {
+        return _openCustomUuidFile(dispatch, getState);
+    }
 }

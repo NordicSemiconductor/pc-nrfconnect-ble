@@ -66,6 +66,7 @@ export default class DeviceDetailsView extends Component {
                 onToggleAutoAcceptPairing,
                 onDeleteBondInfo,
                 onSetSecurityParams,
+                onOpenCustomUuidFile,
                 security,
             } = this.props;
 
@@ -83,6 +84,7 @@ export default class DeviceDetailsView extends Component {
                                           onToggleAutoAcceptPairing={onToggleAutoAcceptPairing}
                                           onDeleteBondInfo={onDeleteBondInfo}
                                           onSetSecurityParams={onSetSecurityParams}
+                                          onOpenCustomUuidFile={onOpenCustomUuidFile}
                                           security={security} />
             );
 
@@ -217,4 +219,5 @@ DeviceDetailsView.propTypes = {
     onToggleAutoAcceptPairing: PropTypes.func,
     onDeleteBondInfo: PropTypes.func,
     onShowSecurityParamsDialog: PropTypes.func,
+    onOpenCustomUuidFile: PropTypes.func,
 };

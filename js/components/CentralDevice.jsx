@@ -34,6 +34,7 @@ export default class CentralDevice extends Component {
             onToggleAutoAcceptPairing,
             onDeleteBondInfo,
             onShowSecurityParamsDialog,
+            onOpenCustomUuidFile,
         } = this.props;
 
         switch (eventKey) {
@@ -61,6 +62,9 @@ export default class CentralDevice extends Component {
             case 'SetSecurityParams':
                 onShowSecurityParamsDialog();
                 break;
+            case 'OpenCustomUuidFile':
+                onOpenCustomUuidFile();
+                break;
             default:
                 console.log('Unknown eventKey received: ' + eventKey);
         }
@@ -80,6 +84,7 @@ export default class CentralDevice extends Component {
             onToggleAutoAcceptPairing,
             onDeleteBondInfo,
             onShowSecurityParamsDialog,
+            onOpenCustomUuidFile,
             security,
         } = this.props;
 
@@ -150,6 +155,14 @@ export default class CentralDevice extends Component {
                                             eventKey='DeleteBondInfo'>Delete bond information</MenuItem>);
                                     }
 
+                                    if (onOpenCustomUuidFile !== undefined) {
+                                        items.push(<MenuItem key='dividerOpenUuidFile' divider />);
+                                        items.push(<MenuItem key='headerOpenUuidFile' header>Custom UUID definitions</MenuItem>);
+                                        items.push(<MenuItem key='openUuidFile'
+                                            title='Open custom UUID definitions file in default text editor'
+                                            eventKey='OpenCustomUuidFile'>Open UUID definitions file</MenuItem>);
+                                    }
+
                                     return items;
                                 })()}
                             </Dropdown.Menu>
@@ -183,4 +196,5 @@ CentralDevice.propTypes = {
     onToggleAutoConnUpdate: PropTypes.func,
     onToggleAutoAcceptPairing: PropTypes.func,
     onDeleteBondInfo: PropTypes.func,
+    onOpenCustomUuidFile: PropTypes.func,
 };

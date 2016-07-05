@@ -241,7 +241,7 @@ export class ConnectionUpdateRequestEditor extends Component {
                         {this._createConnectionIntervalControl()}
                     </div>
                     <div className='form-group'>
-                        <label className='control-label col-sm-7' htmlFor={'latency_' + address}>Latency (ms)</label>
+                        <label className='control-label col-sm-7' htmlFor={'latency_' + address}>Slave latency</label>
                         <div className='col-sm-5'>
                             <Input style={slaveLatencyStyle}
                                    id={'latency_' + address}
@@ -258,7 +258,7 @@ export class ConnectionUpdateRequestEditor extends Component {
                     </div>
                     <div className='form-group'>
                         <div>
-                            <label className='control-label col-sm-7' htmlFor={'timeout_' + address}>Timeout (ms)</label>
+                            <label className='control-label col-sm-7' htmlFor={'timeout_' + address}>Connection supervision timeout (ms)</label>
                             <div className='col-sm-5'>
                                 <Input style={connectionSupervisionTimeoutInputStyle}
                                        id={'timeout_' + address}
