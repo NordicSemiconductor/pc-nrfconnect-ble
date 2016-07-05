@@ -27,9 +27,12 @@ export default class HexOnlyEditableField extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (!_.isEqual(this.props.value, nextProps.value)) return true;
-        if (this.props.onRead != nextProps.onRead) return true;
-        if (this.props.onWrite != nextProps.onWrite) return true;
+        if (!_.isEqual(this.props.value, nextProps.value)) { return true; }
+
+        if (this.props.onRead != nextProps.onRead) { return true; }
+
+        if (this.props.onWrite != nextProps.onWrite) { return true; }
+
         return false;
     }
 
@@ -194,10 +197,25 @@ export default class HexOnlyEditableField extends Component {
     }
 
     render() {
-        const { showText, value, keyPressValidation, completeValidation, formatInput, onBeforeBackspace, onBeforeDelete, onChange, ...props } = this.props; //pass along all props except these
+        const { showText,
+            value,
+            keyPressValidation,
+            completeValidation,
+            formatInput,
+            onBeforeBackspace,
+            onBeforeDelete,
+            onChange,
+            title,
+            ...props,
+        } = this.props; //pass along all props except these
 
         let parsedValue = hexArrayToHexText(value);
+        let titleValue = parsedValue;
         let showValue = '';
+
+        if (title) {
+            titleValue = title + ', ' + titleValue;
+        }
 
         if (!showText) {
             showValue = parsedValue;
@@ -208,7 +226,7 @@ export default class HexOnlyEditableField extends Component {
         //formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
         return <EditableField {...props}
                               value={showValue}
-                              title={parsedValue}
+                              title={titleValue}
                               keyPressValidation={str => this._keyPressValidation(str)}
                               completeValidation={str => this._completeValidation(str)}
                               formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
