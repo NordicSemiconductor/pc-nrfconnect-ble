@@ -269,7 +269,7 @@ function discoveredDeviceName(state, device, value) {
 function addError(state, error) {
     if (error.message === undefined) {
         console.log(`Error does not contain a message! Something is wrong!`);
-        return;
+        return state;
     }
 
     logger.error(error.message);
