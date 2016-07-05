@@ -15,7 +15,6 @@
 import winston from 'winston';
 import util from 'util';
 import sqlite3 from'sqlite3';
-import fs from 'fs';
 import remote from 'remote';
 import path from 'path';
 
@@ -195,14 +194,6 @@ const createLine = function (options) {
 
     return `${timestamp.toISOString()} ${level} ${message}`;
 };
-
-// Delete the log file for now so that it easier to debug
-try {
-    fs.unlinkSync(defaultLogFile);
-} catch (err) {
-    // Log to console.log because we may not have a valid logger if we get here.
-    console.log(`Error removing file ${defaultLogFile}. Error is ${err}`);
-}
 
 const transports = [
     new (winston.transports.DbLogger)({
