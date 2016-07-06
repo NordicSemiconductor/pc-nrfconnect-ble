@@ -13,32 +13,29 @@
  'use strict';
 
 import fs from 'fs';
-import remote from 'remote';
-import path from 'path';
 import os from 'os';
 import shell from 'shell';
 import childProcess from 'child_process';
-import { logger } from '../logging';
 
 export function openFileInDefaultApplication(filePath, callback) {
     fs.exists(filePath, exists => {
         if (!exists) {
-            if (callback) callback(new Error(`Could not find file at path: ${filePath}`));
+            if (callback) {
+                callback(new Error(`Could not find file at path: ${filePath}`));
+            }
+
             return;
         }
 
         const escapedPath = filePath.replace(/ /g, '\\ ');
 
         // Could not find a method that works on all three platforms:
-        // * shell.openExternal works on Windows but not on OSX
-        // * open (node-open) works on OSX but not on Windows
+        // * shell.openItem works on Windows and Linux but not on OSX
         // * childProcess.execSync works on OSX but not on Windows
-        if (os.type() === 'Windows_NT') {
-            shell.openExternal(escapedPath);
-        } else if (os.type() === 'Darwin') {
+        if (os.type() === 'Darwin') {
             childProcess.execSync(`open  ${escapedPath}`);
-        } else if (os.type() === 'Linux') {
-            childProcess.execSync(`xdg-open ${escapedPath}`);
+        } else {
+            shell.openItem(escapedPath);
         }
     });
 }
