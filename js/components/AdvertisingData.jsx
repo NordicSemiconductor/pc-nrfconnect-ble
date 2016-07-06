@@ -193,6 +193,7 @@ export default class AdvertisingData extends Component {
         if (checked) {
             let valueList = this.value.split(',');
             valueList.push(property);
+            valueList = valueList.filter(Boolean);
             this.value = valueList.join(',');
         } else {
             this.value = this.value.replace(property, '').split(',').filter(Boolean).join(',');
