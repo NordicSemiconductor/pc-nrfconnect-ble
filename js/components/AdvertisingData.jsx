@@ -187,17 +187,10 @@ export default class AdvertisingData extends Component {
         this.emitValueChange();
     }
 
-    setCheckedProperty(property, event) {
-        const checked = event.target.checked;
+    setSelectedFlag(event) {
+        const flag = event.target.value;
 
-        if (checked) {
-            let valueList = this.value.split(',');
-            valueList.push(property);
-            valueList = valueList.filter(Boolean);
-            this.value = valueList.join(',');
-        } else {
-            this.value = this.value.replace(property, '').split(',').filter(Boolean).join(',');
-        }
+        this.value = flag + ',brEdrNotSupported';
 
         this.forceUpdate();
         this.emitValueChange();
@@ -349,18 +342,24 @@ export default class AdvertisingData extends Component {
                 hasFeedback
                 placeholder={this.placeholderText}
                 bsStyle={this.validateInput()}
-                onChange={event => this.handleChange(event)}>
-            </Input> :
+                onChange={event => this.handleChange(event)} /> :
             '';
 
+        if (showFlags && this.value === '') {
+            setImmediate(() => this.setSelectedFlag({ target: { value: 'leLimitedDiscMode' } }));
+            return <div />;
+        }
+
         const flagsLookupSpan = showFlags ?
-            <span>
-                <Input type='checkbox' label='Limited Discovery Mode' ref='leLimitedDiscMode' checked={this.value.indexOf('leLimitedDiscMode') !== -1} onChange={e => this.setCheckedProperty('leLimitedDiscMode', e)} />
-                <Input type='checkbox' label='General Discovery Mode' ref='leGeneralDiscMode' checked={this.value.indexOf('leGeneralDiscMode') !== -1} onChange={e => this.setCheckedProperty('leGeneralDiscMode', e)} />
-                <Input type='checkbox' label='Edr Not Supported' ref='brEdrNotSupported' checked={this.value.indexOf('brEdrNotSupported') !== -1} onChange={e => this.setCheckedProperty('brEdrNotSupported', e)} />
-                <Input type='checkbox' label='BR Edr Controller' ref='leBrEdrController' checked={this.value.indexOf('leBrEdrController') !== -1} onChange={e => this.setCheckedProperty('leBrEdrController', e)} />
-                <Input type='checkbox' label='BR Edr Host' ref='leBrEdrHost' checked={this.value.indexOf('leBrEdrHost') !== -1} onChange={e => this.setCheckedProperty('leBrEdrHost', e)} />
-            </span> :
+            <Input
+                label='Flag'
+                type='select'
+                className='form-control'
+                value={this.value.split(',')[0]}
+                onChange={event => this.setSelectedFlag(event)} >
+                <option type='checkbox' value='leLimitedDiscMode'>Limited Discovery Mode</option>
+                <option type='checkbox' value='leGeneralDiscMode'>General Discovery Mode</option>
+            </Input> :
             '';
 
         return (
