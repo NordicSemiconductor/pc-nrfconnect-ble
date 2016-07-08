@@ -28,7 +28,7 @@ import { toHexString } from '../utils/stringUtil';
 export default class AttributeItem extends Component {
     constructor(props) {
         super(props);
-        this.backgroundColor = Colors.getColor(Colors.WHITE);
+        this.backgroundColor = Colors.getColor('brand-base');
         this.bars = 0;
         this.expandable = true;
         this.attributeType = '';
@@ -58,8 +58,8 @@ export default class AttributeItem extends Component {
             this.animation.stop();
         }
 
-        const fromColor = Colors.getColor(Colors.SOFT_BLUE);
-        const toColor = Colors.getColor(Colors.WHITE);
+        const fromColor = Colors.getColor('brand-primary');
+        const toColor = Colors.getColor('brand-base');
         this.animation = Effects.blink(this, 'backgroundColor', fromColor, toColor);
     }
 

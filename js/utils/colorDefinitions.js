@@ -12,21 +12,46 @@
 
  'use strict';
 
+var less = require('less');
+import * as fs from 'fs';
+
 export const BLUE = 'blue';
 export const SOFT_BLUE = 'soft_blue';
 export const WHITE = 'white';
 
-const colors = {
-    blue: { r: 179, g: 225, b: 245 },
-    soft_blue: { r: 215, g:235, b: 244 },
-    white: { r: 255, g: 255, b: 255 },
-};
+var colors = null;
 
 export function getColor(color) {
-    const colorObject = colors[color];
-    if (!colorObject) {
-        return;
-    }
+    return new Promise((resolve, reject) => {
+        if (colors === null) {
+            resolve();
+            return;
+        }
 
-    return Object.assign({}, colorObject);
+        reject();
+    }).this(() => {
+        const data = fs.readFileSync('css/colordefinitions.less');
+        console.log('About to parse');
+
+        less.render(data.toString(), (error, root) => {
+            console.log(root);
+
+            if (error) {
+                return;
+            }
+
+            colors = root.css;
+            return root.css;
+        });
+    }).catch(() => {}).then(() => {
+        console.log('COLORS: ' + JSON.stringify(colors));
+        const colorObject = colors[color];
+        if (!colorObject) {
+            console.log('Failed');
+            return;
+        }
+
+        console.log('Success');
+        return Object.assign({}, colorObject);
+    });
 }
