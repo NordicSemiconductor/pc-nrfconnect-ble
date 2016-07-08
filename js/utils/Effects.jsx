@@ -23,9 +23,9 @@ import TWEEN from 'tween.js';
 // this.animation = Effects.blink(this, 'backgroundColor', blue, white);
 
 var Effects = {
-    blink(reactElement, property, fromColor, toColor, options) {
+    blink(reactElement, property, fromColor, toColor, opts) {
         this.ensureAnimationLoopStarted();
-        var options = options || {};
+        var options = opts || {};
         var duration = options.duration || 2000;
         var easing = options.easing || TWEEN.Easing.Linear.None;
         return new TWEEN.Tween(fromColor)
@@ -38,17 +38,17 @@ var Effects = {
             .start();
     },
 
-    ensureAnimationLoopStarted: (function() {
+    ensureAnimationLoopStarted: (function () {
         //closure trickery to make it impossible to start animationLoop twice
         var animationLoopStarted = false;
-        return function() {
+        return function () {
             if (!animationLoopStarted) {
                 animationLoopStarted = true;
 
-                function animationLoop(time) {
+                var animationLoop = function (time) {
                     requestAnimationFrame(animationLoop);
                     TWEEN.update(time);
-                }
+                };
 
                 animationLoop();
             }
@@ -56,4 +56,4 @@ var Effects = {
     })(),
 };
 
-module.exports = {Effects};
+module.exports = { Effects };
