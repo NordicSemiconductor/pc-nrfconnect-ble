@@ -12,46 +12,28 @@
 
  'use strict';
 
-var less = require('less');
-import * as fs from 'fs';
+import remote from 'remote';
+import { logger } from '../logging';
 
-export const BLUE = 'blue';
-export const SOFT_BLUE = 'soft_blue';
-export const WHITE = 'white';
-
-var colors = null;
+var colors;
 
 export function getColor(color) {
-    return new Promise((resolve, reject) => {
-        if (colors === null) {
-            resolve();
-            return;
+    if (!colors) {
+        colors = remote.getGlobal('colors');
+
+        if (!colors) {
+            logger.debug('Failed loading colors');
+            return Object.assign({}, '#00FFFF');
         }
+    }
 
-        reject();
-    }).this(() => {
-        const data = fs.readFileSync('css/colordefinitions.less');
-        console.log('About to parse');
+    console.log(colors);
 
-        less.render(data.toString(), (error, root) => {
-            console.log(root);
+    const colorObject = colors[color];
+    if (!colorObject) {
+        logger.debug('Color ' + color + ' is not defined');
+        return Object.assign({}, '#00FFFF');
+    }
 
-            if (error) {
-                return;
-            }
-
-            colors = root.css;
-            return root.css;
-        });
-    }).catch(() => {}).then(() => {
-        console.log('COLORS: ' + JSON.stringify(colors));
-        const colorObject = colors[color];
-        if (!colorObject) {
-            console.log('Failed');
-            return;
-        }
-
-        console.log('Success');
-        return Object.assign({}, colorObject);
-    });
+    return Object.assign({}, colorObject);
 }
