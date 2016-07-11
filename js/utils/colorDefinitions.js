@@ -36,15 +36,11 @@ export function getColor(color) {
         }
     }
 
-    console.log(colors);
-
     const colorObject = colors[color];
     if (!colorObject) {
         logger.debug('Color ' + color + ' is not defined');
         return hexToRGB('#00FFFF');
     }
-
-    console.log('ColorObject: ' + colorObject);
 
     return hexToRGB(colorObject);
 }
