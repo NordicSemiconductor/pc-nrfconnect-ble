@@ -25,7 +25,7 @@ import * as Colors from '../utils/colorDefinitions';
 import { getInstanceIds } from '../utils/api';
 import { toHexString } from '../utils/stringUtil';
 
-const CCCD_UUID = '2902';
+export const CCCD_UUID = '2902';
 
 export default class AttributeItem extends Component {
     constructor(props) {
@@ -135,12 +135,7 @@ export default class AttributeItem extends Component {
     }
 
     renderContent(children) {
-        return (
-            <div className='content'>
-                {this.renderName()}
-                {children}
-            </div>
-        );
+        return null;
     }
 
     getChildren() {
@@ -149,7 +144,6 @@ export default class AttributeItem extends Component {
         } = this.props;
 
         const {
-            expanded,
             children,
             discoveringChildren,
         } = item;
@@ -158,7 +152,7 @@ export default class AttributeItem extends Component {
 
         if (discoveringChildren) {
             childrenList.push(<EnumeratingAttributes key={'enumerating-' + this.childAttributeType} bars={this.bars + 1} />);
-        } else if (children && expanded) {
+        } else if (children) {
             childrenList.push(this.renderChildren());
         }
 
@@ -184,6 +178,7 @@ export default class AttributeItem extends Component {
             barList.push(<div key={'bar' + (i + 1)} className={'bar' + (i + 1)} />);
         }
 
+        const content = this.renderContent(null);
         const childrenList = this.getChildren();
 
         const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
@@ -197,8 +192,6 @@ export default class AttributeItem extends Component {
         const backgroundColor = itemIsSelected ?
             '' :
             `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
-
-        const content = this.renderContent(null);
 
         return (
             <div>

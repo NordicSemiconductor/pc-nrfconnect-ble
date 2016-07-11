@@ -25,6 +25,15 @@ export default class ServiceItem extends AttributeItem {
         this.childAttributeType = 'characteristic';
     }
 
+    renderContent(children) {
+        return (
+            <div className='content'>
+                {this.renderName()}
+                {children}
+            </div>
+        );
+    }
+
     renderChildren() {
         const {
             item,

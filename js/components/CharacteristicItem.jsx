@@ -13,7 +13,7 @@
 'use strict';
 
 import React from 'react';
-import AttributeItem from './AttributeItem';
+import AttributeItem, { CCCD_UUID } from './AttributeItem';
 
 import DescriptorItem from './DescriptorItem';
 import HexOnlyEditableField from './HexOnlyEditableField';
@@ -70,7 +70,7 @@ export default class CharacteristicItem extends AttributeItem {
             return;
         }
 
-        return children.find(child => child.uuid === this.CCCD_UUID);
+        return children.find(child => child.uuid === CCCD_UUID);
     }
 
     _isNotifying(cccdDescriptor) {
