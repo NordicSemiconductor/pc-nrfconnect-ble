@@ -22,8 +22,6 @@ import { TEXT, getUuidFormat } from '../utils/uuid_definitions';
 const NOTIFY = 1;
 const INDICATE = 2;
 
-const CCCD_UUID = '2902';
-
 export default class CharacteristicItem extends AttributeItem {
     constructor(props) {
         super(props);
@@ -63,16 +61,6 @@ export default class CharacteristicItem extends AttributeItem {
         this.props.onWriteDescriptor(this.cccdDescriptor, value);
     }
 
-    _childChanged() {
-        if (this.props.onChange) {
-            this.props.onChange();
-        }
-
-        if (!this.props.item.expanded) {
-            this._blink();
-        }
-    }
-
     _onWrite(value) {
         this.props.onWrite(this.props.item, value);
     }
@@ -82,7 +70,7 @@ export default class CharacteristicItem extends AttributeItem {
             return;
         }
 
-        return children.find(child => child.uuid === CCCD_UUID);
+        return children.find(child => child.uuid === this.CCCD_UUID);
     }
 
     _isNotifying(cccdDescriptor) {

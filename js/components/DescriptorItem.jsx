@@ -37,16 +37,14 @@ export default class DescriptorItem extends AttributeItem {
         return update;
     }
 
-    _isCCCDAttribute() {
-        return this.props.item.uuid === '2902';
-    }
-
     renderContent() {
         const {
             item,
             selected,
         } = this.props;
+
         const {
+            uuid,
             instanceId,
             value,
             errorMessage,
@@ -57,7 +55,7 @@ export default class DescriptorItem extends AttributeItem {
             this.props.onRead(this.props.item);
         };
 
-        const isCCCD = this._isCCCDAttribute();
+        const isCCCD = this._isCCCDAttribute(uuid);
         const _onWrite = isLocal && isCCCD ? undefined : value => {
             this.props.onWrite(this.props.item, value);
         };

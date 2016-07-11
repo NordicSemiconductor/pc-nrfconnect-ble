@@ -25,6 +25,8 @@ import * as Colors from '../utils/colorDefinitions';
 import { getInstanceIds } from '../utils/api';
 import { toHexString } from '../utils/stringUtil';
 
+const CCCD_UUID = '2902';
+
 export default class AttributeItem extends Component {
     constructor(props) {
         super(props);
@@ -48,6 +50,10 @@ export default class AttributeItem extends Component {
     }
 
     _childChanged() {
+        if (this.props.onChange) {
+            this.props.onChange();
+        }
+
         if (!this.props.item.expanded) {
             this._blink();
         }
@@ -79,6 +85,10 @@ export default class AttributeItem extends Component {
     _isLocalAttribute() {
         const instanceIds = getInstanceIds(this.props.item.instanceId);
         return instanceIds.device === 'local.server';
+    }
+
+    _isCCCDAttribute(uuid) {
+        return uuid === CCCD_UUID;
     }
 
     renderChildren() {
