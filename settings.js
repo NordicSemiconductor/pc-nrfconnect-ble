@@ -103,6 +103,8 @@ exports.loadColorScheme = function (callback) {
             definitions = definitions.replace(/,/g, '\",\"');
             definitions = definitions.replace(/:/g, '\":\"');
 
+            const cssObj = Object.assign({}, JSON.parse(definitions));
+
             callback(undefined, cssObj);
         });
     });

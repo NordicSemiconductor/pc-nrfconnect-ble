@@ -97,8 +97,11 @@ export default class CharacteristicItem extends AttributeItem {
             uuid,
             properties,
             value,
+            children,
             errorMessage,
         } = item;
+
+        this.cccdDescriptor = this._findCccdDescriptor(children);
 
         const isLocal = this._isLocalAttribute();
         const hasCccd = this.cccdDescriptor !== undefined;

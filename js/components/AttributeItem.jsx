@@ -37,6 +37,24 @@ export default class AttributeItem extends Component {
         this.childAttributeType = '';
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (this.props.item.value != nextProps.item.value) {
+            if (this.props.onChange) {
+                this.props.onChange();
+            }
+
+            this._blink();
+        }
+    }
+
+    componentWillUnmount() {
+        if (!this.animation) {
+            return;
+        }
+
+        this.animation.stop();
+    }
+
     _onContentClick(e) {
         e.stopPropagation();
         if (this.props.onSelectAttribute) {
@@ -67,6 +85,12 @@ export default class AttributeItem extends Component {
         const fromColor = Colors.getColor('brand-primary');
         const toColor = Colors.getColor('brand-base');
         this.animation = Effects.blink(this, 'backgroundColor', fromColor, toColor);
+    }
+
+    _selectComponent() {
+        if (this.props.onSelectAttribute) {
+            this.props.onSelectAttribute(this.props.instanceId);
+        }
     }
 
     onAddAttribute(item) {
@@ -167,14 +191,18 @@ export default class AttributeItem extends Component {
         const itemIsSelected = item.instanceId === selected;
 
         const backgroundClass = itemIsSelected ?
-            'brand-background' : //@bar1-color
-            `backgroundColor: rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
+            'brand-background' :
+            'neutral-background';//@bar1-color
+
+        const backgroundColor = itemIsSelected ?
+            '' :
+            `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
 
         const content = this.renderContent(null);
 
         return (
             <div>
-                <div className={this.attributeType + '-item ' + backgroundClass} onClick={e => this._onContentClick(e)}>
+                <div className={this.attributeType + '-item ' + backgroundClass} style={{ backgroundColor }} onClick={e => this._onContentClick(e)}>
                     <div className='expand-area' onClick={e => this._onExpandAreaClick(e)}>
                         {barList}
                         <div className='icon-wrap'>

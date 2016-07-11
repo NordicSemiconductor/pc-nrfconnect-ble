@@ -17,13 +17,22 @@ import { logger } from '../logging';
 
 var colors;
 
+function hexToRGB(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+    } : null;
+}
+
 export function getColor(color) {
     if (!colors) {
         colors = remote.getGlobal('colors');
 
         if (!colors) {
             logger.debug('Failed loading colors');
-            return Object.assign({}, '#00FFFF');
+            return hexToRGB('#00FFFF');
         }
     }
 
@@ -32,8 +41,10 @@ export function getColor(color) {
     const colorObject = colors[color];
     if (!colorObject) {
         logger.debug('Color ' + color + ' is not defined');
-        return Object.assign({}, '#00FFFF');
+        return hexToRGB('#00FFFF');
     }
 
-    return Object.assign({}, colorObject);
+    console.log('ColorObject: ' + colorObject);
+
+    return hexToRGB(colorObject);
 }
