@@ -32,14 +32,14 @@ export function getColor(color) {
 
         if (!colors) {
             logger.debug('Failed loading colors');
-            return hexToRGB('#00FFFF');
+            return hexToRGB('#FF0000');
         }
     }
 
     const colorObject = colors[color];
     if (!colorObject) {
         logger.debug('Color ' + color + ' is not defined');
-        return hexToRGB('#00FFFF');
+        return hexToRGB('#FF0000');
     }
 
     return hexToRGB(colorObject);
