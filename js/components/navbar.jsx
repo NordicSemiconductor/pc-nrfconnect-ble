@@ -46,7 +46,7 @@ export default class NavBar extends Component {
         return (
             <div className='nav-bar'>
                 <div>
-                    <a href='http://www.nordicsemi.com/nRFConnect' target='_blank'><img className='nordic-logo' src='resources/NordicS_neg_ol.png' /></a>
+                    <a href='http://www.nordicsemi.com/nRFConnect' target='_blank'><img className='nrfconnect-logo' src='resources/NordicS_neg_ol.png' /></a>
                 </div>
                 <div className='nav-section'>
                     <div className='padded-row'>
