@@ -135,6 +135,15 @@ function setAttributeExpanded(state, attribute, value) {
     return state.setIn(expandedStatePath, value);
 }
 
+function addNewAttribute(state, newAttribute, oldAttribute = undefined) {
+    if (oldAttribute) {
+        newAttribute = newAttribute.merge(cloneLoadedObject(oldAttribute));
+    }
+
+    const newStatePath = getNodeStatePath(newAttribute.instanceId);
+    return state.setIn(newStatePath, newAttribute);
+}
+
 function createNewService() {
     return getImmutableService({
         instanceId: deviceInstanceId + '.' + serviceInstanceIdCounter++,
@@ -144,13 +153,7 @@ function createNewService() {
 }
 
 function addNewService(state, oldService = undefined) {
-    let newService = createNewService();
-    if (oldService) {
-        newService = newService.merge(cloneLoadedObject(oldService));
-    }
-
-    const newServiceStatePath = getNodeStatePath(newService.instanceId);
-    return state.setIn(newServiceStatePath, newService);
+    return addNewAttribute(state, createNewService(), oldService);
 }
 
 function createNewCharacteristic(parent) {
@@ -166,13 +169,7 @@ function createNewCharacteristic(parent) {
 }
 
 function addNewCharacteristic(state, parent, oldCharacteristic = undefined) {
-    let newCharacteristic = createNewCharacteristic(parent);
-    if (oldCharacteristic) {
-        newCharacteristic = newCharacteristic.merge(cloneLoadedObject(oldCharacteristic));
-    }
-
-    const newCharacteristicStatePath = getNodeStatePath(newCharacteristic.instanceId);
-    return state.setIn(newCharacteristicStatePath, newCharacteristic);
+    return addNewAttribute(state, createNewCharacteristic(parent), oldCharacteristic);
 }
 
 function createNewDescriptor(parent) {
@@ -188,13 +185,7 @@ function createNewDescriptor(parent) {
 }
 
 function addNewDescriptor(state, parent, oldDescriptor = undefined) {
-    let newDescriptor = createNewDescriptor(parent);
-    if (oldDescriptor) {
-        newDescriptor = newDescriptor.merge(cloneLoadedObject(oldDescriptor));
-    }
-
-    const newDescriptorStatePath = getNodeStatePath(newDescriptor.instanceId);
-    return state.setIn(newDescriptorStatePath, newDescriptor);
+    return addNewAttribute(state, createNewDescriptor(parent), oldDescriptor);
 }
 
 function changedAttribute(state, attribute) {
