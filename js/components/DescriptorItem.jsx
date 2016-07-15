@@ -47,26 +47,25 @@ export default class DescriptorItem extends AttributeItem {
             uuid,
             instanceId,
             value,
-            errorMessage,
         } = item;
 
         const isLocal = this._isLocalAttribute();
-        const _onRead = isLocal ? undefined : () => {
-            this.props.onRead(this.props.item);
-        };
-
         const isCCCD = this._isCCCDAttribute(uuid);
-        const _onWrite = isLocal && isCCCD ? undefined : value => {
-            this.props.onWrite(this.props.item, value);
-        };
+        const isLocalCCCD = isLocal && isCCCD;
+
+        const _onRead = !isLocal ?
+            () => this._onRead() :
+            undefined;
+
+        const _onWrite = !isLocalCCCD ?
+            value => this._onWrite(value) :
+            null;
 
         const itemIsSelected = instanceId === selected;
-        const errorText = errorMessage ? errorMessage : '';
-        const hideErrorClass = (errorText === '') ? 'hide' : '';
 
         const valueList = [];
 
-        if (isLocal && isCCCD && Map.isMap(value)) {
+        if (isLocalCCCD && Map.isMap(value)) {
             value.forEach((cccdValue, deviceInstanceId) => {
                 const address = getInstanceIds(deviceInstanceId).address;
                 valueList.push((
@@ -94,7 +93,7 @@ export default class DescriptorItem extends AttributeItem {
             <div className='content'>
                 {this.renderName()}
                 {valueList}
-                <div className={'error-label ' + hideErrorClass}>{errorText}</div>
+                {this.renderError()}
             </div>
         );
     }

@@ -61,10 +61,6 @@ export default class CharacteristicItem extends AttributeItem {
         this.props.onWriteDescriptor(this.cccdDescriptor, value);
     }
 
-    _onWrite(value) {
-        this.props.onWrite(this.props.item, value);
-    }
-
     _findCccdDescriptor(children) {
         if (!children) {
             return;
@@ -98,28 +94,24 @@ export default class CharacteristicItem extends AttributeItem {
             properties,
             value,
             children,
-            errorMessage,
         } = item;
 
         this.cccdDescriptor = this._findCccdDescriptor(children);
 
         const isLocal = this._isLocalAttribute();
-        const hasCccd = this.cccdDescriptor !== undefined;
+        const isNotifying = this._isNotifying(this.cccdDescriptor);
         const itemIsSelected = item.instanceId === selected;
 
+        const hasCccd = this.cccdDescriptor !== undefined;
         const hasReadProperty = properties.read;
         const hasWriteProperty = properties.write || properties.write_wo_resp || properties.reliable_wr;
         const hasNotifyProperty = properties.notify;
         const hasIndicateProperty = properties.indicate;
-
-        const isNotifying = this._isNotifying(this.cccdDescriptor);
+        const hasNotifyOrIndicateProperty = hasNotifyProperty || hasIndicateProperty;
 
         const toggleNotificationsText = hasCccd ? 'Toggle notifications' : 'Toggle notifications (CCCD not discovered)';
-        const notifyIconStyle = !isLocal && (hasNotifyProperty || hasIndicateProperty) ? {} : { display: 'none' };
-        const notifyIcon = (isNotifying && (hasNotifyProperty || hasIndicateProperty)) ? 'icon-stop' : 'icon-play';
-
-        const errorText = errorMessage ? errorMessage : '';
-        const hideErrorClass = (errorText === '') ? 'hide' : '';
+        const notifyIconStyle = !isLocal && hasNotifyOrIndicateProperty ? {} : { display: 'none' };
+        const notifyIcon = (isNotifying && hasNotifyOrIndicateProperty) ? 'icon-stop' : 'icon-play';
 
         const showText = getUuidFormat(uuid) === TEXT;
 
@@ -133,9 +125,13 @@ export default class CharacteristicItem extends AttributeItem {
             });
         }
 
-        const _onRead = isLocal ? undefined : () => {
-            this.props.onRead(this.props.item);
-        };
+        const _onRead = (hasReadProperty && !isLocal) ?
+            () => this._onRead() :
+            undefined;
+
+        const _onWrite = (hasWriteProperty || isLocal) ?
+            value => this._onWrite(value) :
+            null;
 
         return (
             <div className='content'>
@@ -153,12 +149,12 @@ export default class CharacteristicItem extends AttributeItem {
                     </div>
                 </div>
                 <HexOnlyEditableField value={value.toArray()}
-                                      onWrite={(hasWriteProperty || isLocal) ? value => this._onWrite(value) : null}
+                                      onWrite={_onWrite}
                                       showReadButton={hasReadProperty && itemIsSelected}
-                                      onRead={hasReadProperty ? _onRead : null}
+                                      onRead={_onRead}
                                       selectParent={() => this._selectComponent()}
                                       showText={showText} />
-                <div className={'error-label ' + hideErrorClass}>{errorText}</div>
+                {this.renderError()}
             </div>
         );
     }

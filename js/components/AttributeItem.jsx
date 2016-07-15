@@ -33,12 +33,12 @@ export default class AttributeItem extends Component {
         this.backgroundColor = Colors.getColor('brand-base');
         this.bars = 0;
         this.expandable = true;
-        this.attributeType = '';
-        this.childAttributeType = '';
+        this.attributeType = 'attribute';
+        this.childAttributeType = 'service';
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.item.value != nextProps.item.value) {
+        if (this.props.item.value !== nextProps.item.value) {
             if (this.props.onChange) {
                 this.props.onChange();
             }
@@ -57,9 +57,7 @@ export default class AttributeItem extends Component {
 
     _onContentClick(e) {
         e.stopPropagation();
-        if (this.props.onSelectAttribute) {
-            this.props.onSelectAttribute(this.props.item.instanceId);
-        }
+        this._selectComponent();
     }
 
     _onExpandAreaClick(e) {
@@ -89,7 +87,7 @@ export default class AttributeItem extends Component {
 
     _selectComponent() {
         if (this.props.onSelectAttribute) {
-            this.props.onSelectAttribute(this.props.instanceId);
+            this.props.onSelectAttribute(this.props.item.instanceId);
         }
     }
 
@@ -115,6 +113,14 @@ export default class AttributeItem extends Component {
         return uuid === CCCD_UUID;
     }
 
+    _onWrite(value) {
+        this.props.onWrite(this.props.item, value);
+    }
+
+    _onRead() {
+        this.props.onRead(this.props.item);
+    }
+
     renderChildren() {
         return null;
     }
@@ -134,6 +140,21 @@ export default class AttributeItem extends Component {
         return <div className={this.attributeType + '-name truncate-text'} title={handleText + 'UUID: ' + uuid}>{name}</div>;
     }
 
+    renderError() {
+        const {
+            item,
+        } = this.props;
+
+        const {
+            errorMessage,
+        } = item;
+
+        const errorText = errorMessage ? errorMessage : '';
+        const hideErrorClass = (errorText === '') ? 'hide' : '';
+
+        return <div className={'error-label ' + hideErrorClass}>{errorText}</div>;
+    }
+
     renderContent(children) {
         return null;
     }
@@ -144,15 +165,16 @@ export default class AttributeItem extends Component {
         } = this.props;
 
         const {
-            children,
+            expanded,
             discoveringChildren,
+            children,
         } = item;
 
         const childrenList = [];
 
         if (discoveringChildren) {
             childrenList.push(<EnumeratingAttributes key={'enumerating-' + this.childAttributeType} bars={this.bars + 1} />);
-        } else if (children) {
+        } else if (children && expanded) {
             childrenList.push(this.renderChildren());
         }
 
@@ -210,7 +232,7 @@ export default class AttributeItem extends Component {
                     {childrenList}
                     { addNew ?
                         <AddNewItem
-                            key={'add-new-' + this.attributeType}
+                            key={'add-new-' + this.childAttributeType}
                             text={'New ' + this.childAttributeType}
                             id={'add-btn-' + instanceId}
                             parentInstanceId={instanceId}
