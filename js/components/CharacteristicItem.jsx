@@ -172,19 +172,14 @@ export default class CharacteristicItem extends AttributeItem {
             children,
         } = item;
 
-        const childrenList = [];
-
-        children.forEach(descriptor => {
-            childrenList.push(<DescriptorItem key={descriptor.instanceId}
-                                              item={descriptor}
-                                              selected={selected}
-                                              onSelectAttribute={onSelectAttribute}
-                                              onChange={() => this._childChanged()}
-                                              onRead={onReadDescriptor}
-                                              onWrite={onWriteDescriptor} />
-            );
-        });
-
-        return childrenList;
+        return children.map(descriptor =>
+                    <DescriptorItem key={descriptor.instanceId}
+                            item={descriptor}
+                            selected={selected}
+                            onSelectAttribute={onSelectAttribute}
+                            onChange={() => this._childChanged()}
+                            onRead={onReadDescriptor}
+                            onWrite={onWriteDescriptor} />
+                    );
     }
 }

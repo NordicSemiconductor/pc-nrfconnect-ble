@@ -53,25 +53,21 @@ export default class ServiceItem extends AttributeItem {
             children,
         } = item;
 
-        const childrenList = [];
-
-        children.forEach(characteristic => {
-            childrenList.push(<CharacteristicItem key={characteristic.instanceId}
-                                                  item={characteristic}
-                                                  selectOnClick={selectOnClick}
-                                                  selected={selected}
-                                                  onSelectAttribute={onSelectAttribute}
-                                                  onSetAttributeExpanded={onSetAttributeExpanded}
-                                                  onRead={onReadCharacteristic}
-                                                  onWrite={onWriteCharacteristic}
-                                                  onReadDescriptor={onReadDescriptor}
-                                                  onWriteDescriptor={onWriteDescriptor}
-                                                  onChange={() => this._childChanged()}
-                                                  addNew={addNew}
-                                                  onAddDescriptor={onAddDescriptor} />
+        return children.map(characteristic =>
+                        <CharacteristicItem
+                                key={characteristic.instanceId}
+                                item={characteristic}
+                                selectOnClick={selectOnClick}
+                                selected={selected}
+                                onSelectAttribute={onSelectAttribute}
+                                onSetAttributeExpanded={onSetAttributeExpanded}
+                                onRead={onReadCharacteristic}
+                                onWrite={onWriteCharacteristic}
+                                onReadDescriptor={onReadDescriptor}
+                                onWriteDescriptor={onWriteDescriptor}
+                                onChange={() => this._childChanged()}
+                                addNew={addNew}
+                                onAddDescriptor={onAddDescriptor} />
             );
-        });
-
-        return childrenList;
     }
 }
