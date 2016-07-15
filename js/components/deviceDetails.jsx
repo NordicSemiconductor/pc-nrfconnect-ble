@@ -27,17 +27,52 @@ export default class DeviceDetailsView extends Component {
         super(props);
     }
 
-    render() {
+    renderChildren(instanceId) {
+        const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
+
+        if (deviceDetail.discoveringChildren) {
+            return <EnumeratingAttributes bars={1} />;
+        }
+
         const {
-            adapter,
-            device,
-            selected, // instanceId for the selected component
+            selected,
             onSelectComponent,
             onSetAttributeExpanded,
             onReadCharacteristic,
             onWriteCharacteristic,
             onReadDescriptor,
             onWriteDescriptor,
+        } = this.props;
+
+        const children = deviceDetail.get('children');
+        if (children) {
+            const childrenLIst = children.map(service =>
+                <ServiceItem key={service.instanceId}
+                        item={service}
+                        selectOnClick={true}
+                        selected={selected}
+                        onSelectAttribute={onSelectComponent}
+                        onSetAttributeExpanded={onSetAttributeExpanded}
+                        onReadCharacteristic={onReadCharacteristic}
+                        onWriteCharacteristic={onWriteCharacteristic}
+                        onReadDescriptor={onReadDescriptor}
+                        onWriteDescriptor={onWriteDescriptor} />
+            );
+
+            return <div className="service-items-wrap">
+                    {childrenLIst}
+                </div>;
+        }
+
+        return undefined;
+    }
+
+    render() {
+        const {
+            adapter,
+            device,
+            selected, // instanceId for the selected component
+            onSelectComponent,
         } = this.props;
 
         const {
@@ -96,41 +131,12 @@ export default class DeviceDetailsView extends Component {
                 );
             }
 
-            const deviceDetail = this.props.deviceDetails.devices.get('local.server');
-
-            if (!deviceDetail) {
-                return (
-                    <div className="local-server device-details-view" id={instanceId + '_details'} style={this.props.style}>
-                        {localDevice}
-                    </div>
-                );
-            }
-
-            const children = deviceDetail.get('children');
-            const childrenList = [];
-
-            if (children) {
-                children.forEach(service => {
-                    childrenList.push(<ServiceItem key={service.instanceId}
-                                                   item={service}
-                                                   selectOnClick={true}
-                                                   selected={selected}
-                                                   onSelectAttribute={onSelectComponent}
-                                                   onSetAttributeExpanded={onSetAttributeExpanded}
-                                                   onReadCharacteristic={onReadCharacteristic}
-                                                   onWriteCharacteristic={onWriteCharacteristic}
-                                                   onReadDescriptor={onReadDescriptor}
-                                                   onWriteDescriptor={onWriteDescriptor} />
-                    );
-                });
-            }
+            const services = this.renderChildren('local.server');
 
             return (
                 <div className="local-server device-details-view" id={instanceId + '_details'} style={this.props.style}>
                     {localDevice}
-                    <div className="service-items-wrap">
-                        {childrenList}
-                    </div>
+                    {services}
                 </div>
             );
         }
@@ -158,42 +164,14 @@ export default class DeviceDetailsView extends Component {
                                                   onPair={() => onPairWithDevice(device)}
                                                   onConnectionParamsUpdate={() => onUpdateDeviceConnectionParams(device)}/>);
 
-        if (deviceDetail && deviceDetail.discoveringChildren) {
-            return (
-                <div className="device-details-view" id={instanceId + '_details'} style={this.props.style}>
-                    {connectedDevice}
-                    <EnumeratingAttributes bars={1} />
-                </div>
-            );
-        } else {
-            const children = deviceDetail.get('children');
-            const childrenList = [];
+        const services = this.renderChildren(instanceId);
 
-            if (children) {
-                children.forEach(service => {
-                    childrenList.push(<ServiceItem key={service.instanceId}
-                                                   item={service}
-                                                   selectOnClick={true}
-                                                   selected={selected}
-                                                   onSelectAttribute={onSelectComponent}
-                                                   onSetAttributeExpanded={onSetAttributeExpanded}
-                                                   onReadCharacteristic={onReadCharacteristic}
-                                                   onWriteCharacteristic={onWriteCharacteristic}
-                                                   onReadDescriptor={onReadDescriptor}
-                                                   onWriteDescriptor={onWriteDescriptor} />
-                    );
-                });
-            }
-
-            return (
-                <div className="remote-server device-details-view" id={instanceId + '_details'} style={this.props.style}>
-                    {connectedDevice}
-                    <div className="service-items-wrap">
-                        {childrenList}
-                    </div>
-                </div>
-            );
-        }
+        return (
+            <div className="remote-server device-details-view" id={instanceId + '_details'} style={this.props.style}>
+                {connectedDevice}
+                {services}
+            </div>
+        );
     }
 }
 
