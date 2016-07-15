@@ -207,9 +207,9 @@ class DeviceDetailsContainer extends Component {
 
         // TODO: Fix better solution to right padding of scroll area than div box with border
         return (<div className='device-details-container' style={this.props.style}>
-                    <div style={{width: width}}>
+                    <div style={{ width: width }}>
                         {detailDevices}
-                        <div style={{borderColor: 'transparent', borderLeftWidth: '20px', borderRightWidth: '0px', borderStyle: 'solid'}} />
+                        <div style={{ borderColor: 'transparent', borderLeftWidth: '20px', borderRightWidth: '0px', borderStyle: 'solid' }} />
                     </div>
                 </div>);
     }

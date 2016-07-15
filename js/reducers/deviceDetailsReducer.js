@@ -118,13 +118,11 @@ function getNodeStatePath(instanceId) {
 
 function discoveringAttributes(state, parent) {
     const parentStatePath = getNodeStatePath(parent.instanceId);
-    console.log('Start discover: ' + parent.instanceId);
     return state.setIn(parentStatePath.concat('discoveringChildren'), true);
 }
 
 function discoveredAttributes(state, parent, attributes) {
     const parentStatePath = getNodeStatePath(parent.instanceId);
-    console.log('Done discover: ' + parent.instanceId);
     state = state.setIn(parentStatePath.concat('discoveringChildren'), false);
 
     if (!attributes) {

@@ -485,5 +485,5 @@ export function writeDescriptor(descriptor, value) {
 export function openCustomUuidFile() {
     return (dispatch, getState) => {
         return _openCustomUuidFile(dispatch, getState);
-    }
+    };
 }
