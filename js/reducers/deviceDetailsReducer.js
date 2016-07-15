@@ -41,7 +41,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         name: 'Device Name',
         uuid: '2A00',
         value: [0x6E, 0x52, 0x46, 0x35, 0x75], // nRF5x
-        properties: {read: true, write: false},
+        properties: { read: true, write: false },
         children: OrderedMap(),
     });
 
@@ -50,7 +50,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         name: 'Appearance',
         uuid: '2A01',
         value: [0x00, 0x00],
-        properties: {read: true},
+        properties: { read: true },
         children: OrderedMap(),
     });
 
@@ -59,7 +59,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
         name: 'Peripheral Preferred Connection Parameters',
         uuid: '2A04',
         value: [0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF], // no specific minimum/maximum interval and timeout, 0 slave latency
-        properties: {read: true},
+        properties: { read: true },
         children: OrderedMap(),
     });
 
@@ -92,10 +92,10 @@ function getInitialLocalServer() {
     localServerChildren = localServerChildren.set(gapService.instanceId, gapService);
     localServerChildren = localServerChildren.set(gattService.instanceId, gattService);
 
-    return new DeviceDetail({children: localServerChildren});
+    return new DeviceDetail({ children: localServerChildren });
 }
 
-const initialState = new InitialState({selectedComponent: null, devices: OrderedMap({'local.server': getInitialLocalServer()})});
+const initialState = new InitialState({ selectedComponent: null, devices: OrderedMap({ 'local.server': getInitialLocalServer() }) });
 
 function getNodeStatePath(instanceId) {
     const nodeInstanceIds = getInstanceIds(instanceId);
@@ -118,11 +118,13 @@ function getNodeStatePath(instanceId) {
 
 function discoveringAttributes(state, parent) {
     const parentStatePath = getNodeStatePath(parent.instanceId);
+    console.log('Start discover: ' + parent.instanceId);
     return state.setIn(parentStatePath.concat('discoveringChildren'), true);
 }
 
 function discoveredAttributes(state, parent, attributes) {
     const parentStatePath = getNodeStatePath(parent.instanceId);
+    console.log('Done discover: ' + parent.instanceId);
     state = state.setIn(parentStatePath.concat('discoveringChildren'), false);
 
     if (!attributes) {
@@ -237,8 +239,6 @@ function attributeValueChanged(state, attribute, value, error) {
     let errorMessage = '';
     if (error) {
         errorMessage = formatErrorMessage(error.message);
-    } else {
-        const handle = attribute.valueHandle ? attribute.valueHandle : attribute.handle;
     }
 
     state = state.setIn(attributeStatePath.concat('errorMessage'), errorMessage);
@@ -260,7 +260,7 @@ function attributeValueChanged(state, attribute, value, error) {
 }
 
 function appliedServerSetup(state, services) {
-    let localDeviceDetails = new DeviceDetail({children: new OrderedMap()});
+    let localDeviceDetails = new DeviceDetail({ children: new OrderedMap() });
 
     for (let service of services) {
         service.name = getUuidName(service.uuid);
