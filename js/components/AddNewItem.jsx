@@ -26,10 +26,9 @@ var AddNewItem = React.createClass({
 
     render: function () {
         let bars = _.times(this.props.bars, i => <div className={'bar' + (i + 1)} key={i}></div>);
-        let selectedId = this.props.selected && this.props.selected._addBtnId;
-        let backgroundStyle = this.props.id === selectedId ? 'brand-background' : 'neutral-background';
+
         return (
-            <div className='add-new' style={{ backgroundStyle }} onClick={this.props.onClick}>
+            <div className='add-new' onClick={this.props.onClick}>
                 {bars}
                 <div className='content-wrap'>
                     <div className='content padded-row'>
