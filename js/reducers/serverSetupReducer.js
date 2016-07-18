@@ -135,6 +135,15 @@ function setAttributeExpanded(state, attribute, value) {
     return state.setIn(expandedStatePath, value);
 }
 
+function addNewAttribute(state, newAttribute, oldAttribute = undefined) {
+    if (oldAttribute) {
+        newAttribute = newAttribute.merge(cloneLoadedObject(oldAttribute));
+    }
+
+    const newStatePath = getNodeStatePath(newAttribute.instanceId);
+    return state.setIn(newStatePath, newAttribute);
+}
+
 function createNewService() {
     return getImmutableService({
         instanceId: deviceInstanceId + '.' + serviceInstanceIdCounter++,
@@ -143,10 +152,8 @@ function createNewService() {
     });
 }
 
-function addNewService(state) {
-    const newService = createNewService();
-    const newServiceStatePath = getNodeStatePath(newService.instanceId);
-    return state.setIn(newServiceStatePath, newService);
+function addNewService(state, oldService = undefined) {
+    return addNewAttribute(state, createNewService(), oldService);
 }
 
 function createNewCharacteristic(parent) {
@@ -161,10 +168,8 @@ function createNewCharacteristic(parent) {
     });
 }
 
-function addNewCharacteristic(state, parent) {
-    const newCharacteristic = createNewCharacteristic(parent);
-    const newCharacteristicStatePath = getNodeStatePath(newCharacteristic.instanceId);
-    return state.setIn(newCharacteristicStatePath, newCharacteristic);
+function addNewCharacteristic(state, parent, oldCharacteristic = undefined) {
+    return addNewAttribute(state, createNewCharacteristic(parent), oldCharacteristic);
 }
 
 function createNewDescriptor(parent) {
@@ -179,10 +184,8 @@ function createNewDescriptor(parent) {
     });
 }
 
-function addNewDescriptor(state, parent) {
-    const newDescriptor = createNewDescriptor(parent);
-    const newDescriptorStatePath = getNodeStatePath(newDescriptor.instanceId);
-    return state.setIn(newDescriptorStatePath, newDescriptor);
+function addNewDescriptor(state, parent, oldDescriptor = undefined) {
+    return addNewAttribute(state, createNewDescriptor(parent), oldDescriptor);
 }
 
 function changedAttribute(state, attribute) {
@@ -203,12 +206,12 @@ function removeAttribute(state) {
     return changedState.deleteIn(attributeStatePath);
 }
 
-function cloneLoadedObject(service) {
+function cloneLoadedObject(attribute) {
     let retval = {};
 
-    for (let entry in service) {
-        if (service.hasOwnProperty(entry) && entry !== 'children' && entry !== 'instanceId') {
-            retval[entry] = service[entry];
+    for (let entry in attribute) {
+        if (attribute.hasOwnProperty(entry) && entry !== 'children' && entry !== 'instanceId') {
+            retval[entry] = attribute[entry];
         }
     }
 
@@ -221,36 +224,22 @@ function cloneLoadedObject(service) {
 
 function loadSetup(state, setup) {
     if (setup && setup.children) {
-        const services = Object.keys(setup.children);
-
         let newState = new InitialState();
         newState = newState.setIn(['children'], OrderedMap());
 
-        for (let service of services) {
-            const _service = setup.children[service];
-            let newService = createNewService();
+        serviceInstanceIdCounter = 0;
+        characteristicInstanceIdCounter = 0;
+        descriptorInstanceIdCounter = 0;
 
-            newService = newService.merge(cloneLoadedObject(_service));
-            newState = newState.setIn(getNodeStatePath(newService.instanceId), newService);
-
-            const characteristics = Object.keys(_service.children);
-
-            for (let characteristic of characteristics) {
-                const _characteristic = _service.children[characteristic];
-
-                const descriptors = Object.keys(_characteristic.children);
-                let newCharacteristic = createNewCharacteristic(newService);
-                newCharacteristic = newCharacteristic.merge(cloneLoadedObject(_characteristic));
-                newState = newState.setIn(getNodeStatePath(newCharacteristic.instanceId), newCharacteristic);
-
-                for (let descriptor of descriptors) {
-                    const _descriptor = _characteristic.children[descriptor];
-                    let newDescriptor = createNewDescriptor(newCharacteristic);
-                    newDescriptor = newDescriptor.merge(cloneLoadedObject(_descriptor));
-                    newState = newState.setIn(getNodeStatePath(newDescriptor.instanceId), newDescriptor);
-                }
-            }
-        }
+        Object.values(setup.children).map(service => {
+            newState = addNewService(newState, service);
+            Object.values(service.children).map(characteristic => {
+                newState = addNewCharacteristic(newState, service, characteristic);
+                Object.values(characteristic.children).map(descriptor => {
+                    newState = addNewDescriptor(newState, characteristic, descriptor);
+                });
+            });
+        });
 
         // Only update the children data, everything else that is stored we ignore
         state = state.setIn(['selectedComponent'], null);

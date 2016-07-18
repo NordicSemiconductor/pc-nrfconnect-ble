@@ -156,10 +156,14 @@ function _setAttributeExpanded(dispatch, getState, attribute, value) {
     dispatch(selectComponentAction(attribute.instanceId));
 }
 
-function _addNewCharacteristic(dispatch, getState, parent) {
+function _parentIsGAPorGATT(parent) {
     const parentInstanceIds = getInstanceIds(parent.instanceId);
 
-    if (parentInstanceIds.service === 'local.server.0' || parentInstanceIds.service === 'local.server.1') {
+    return (parentInstanceIds.service === 'local.server.0' || parentInstanceIds.service === 'local.server.1');
+}
+
+function _addNewCharacteristic(dispatch, getState, parent) {
+    if (_parentIsGAPorGATT(parent)) {
         // Not allowed to add characteristics under the GAP and GATT services.
         return;
     }
@@ -168,9 +172,7 @@ function _addNewCharacteristic(dispatch, getState, parent) {
 }
 
 function _addNewDescriptor(dispatch, getState, parent) {
-    const parentInstanceIds = getInstanceIds(parent.instanceId);
-
-    if (parentInstanceIds.service === 'local.server.0' || parentInstanceIds.service === 'local.server.1') {
+    if (_parentIsGAPorGATT(parent)) {
         // Not allowed to add descriptors under the GAP and GATT services.
         return;
     }

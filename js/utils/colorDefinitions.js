@@ -12,21 +12,35 @@
 
  'use strict';
 
-export const BLUE = 'blue';
-export const SOFT_BLUE = 'soft_blue';
-export const WHITE = 'white';
+import remote from 'remote';
+import { logger } from '../logging';
 
-const colors = {
-    blue: { r: 179, g: 225, b: 245 },
-    soft_blue: { r: 215, g:235, b: 244 },
-    white: { r: 255, g: 255, b: 255 },
-};
+var colors;
+
+function hexToRGB(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+    } : null;
+}
 
 export function getColor(color) {
-    const colorObject = colors[color];
-    if (!colorObject) {
-        return;
+    if (!colors) {
+        colors = remote.getGlobal('colors');
+
+        if (!colors) {
+            logger.debug('Failed loading colors');
+            return hexToRGB('#FF0000');
+        }
     }
 
-    return Object.assign({}, colorObject);
+    const colorObject = colors[color];
+    if (!colorObject) {
+        logger.debug('Color ' + color + ' is not defined');
+        return hexToRGB('#FF0000');
+    }
+
+    return hexToRGB(colorObject);
 }

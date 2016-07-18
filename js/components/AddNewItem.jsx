@@ -16,7 +16,7 @@ import _ from 'underscore';
 import React from 'react';
 
 var AddNewItem = React.createClass({
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps: function (nextProps) {
         //if we're selected through keyboard navigation, we need to make sure we're visible
         let selectedId = nextProps.selected && nextProps.selected._addBtnId;
         if (nextProps.id === selectedId && nextProps.onRequestVisibility) {
@@ -24,12 +24,11 @@ var AddNewItem = React.createClass({
         }
     },
 
-    render: function() {
+    render: function () {
         let bars = _.times(this.props.bars, i => <div className={'bar' + (i + 1)} key={i}></div>);
-        let selectedId = this.props.selected && this.props.selected._addBtnId;
-        let backgroundColor = this.props.id === selectedId ? 'rgb(179,225,245)' : 'rgb(255,255,255)';
+
         return (
-            <div className='add-new' style={{backgroundColor: backgroundColor}} onClick={this.props.onClick}>
+            <div className='add-new' onClick={this.props.onClick}>
                 {bars}
                 <div className='content-wrap'>
                     <div className='content padded-row'>

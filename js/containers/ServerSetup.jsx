@@ -293,27 +293,25 @@ class ServerSetup extends Component {
                                                                 onValidationError={error => showErrorDialog(error)} />
                      : <div className='nothing-selected' />;
 
-        const services = [];
-
-        children.forEach((service, i) => {
+        const services = children.map((service, i) => {
             let canAdd = true;
 
             if (service.instanceId === 'local.server.0' || service.instanceId === 'local.server.1') {
                 canAdd = false;
             }
 
-            services.push(
-                <ServiceItem key={i}
-                             item={service}
-                             selectOnClick={true}
-                             selected={selectedComponent}
-                             onSelected={this._onSelected}
-                             onSelectAttribute={instanceId => this._onSelectComponent(instanceId)}
-                             onSetAttributeExpanded={setAttributeExpanded}
-                             addNew={canAdd}
-                             onAddCharacteristic={addNewCharacteristic}
-                             onAddDescriptor={addNewDescriptor} />
-            );
+            return <ServiceItem
+                            key={i}
+                            item={service}
+                            selectOnClick={true}
+                            selected={selectedComponent}
+                            onSelected={this._onSelected}
+                            onSelectAttribute={instanceId => this._onSelectComponent(instanceId)}
+                            onSetAttributeExpanded={setAttributeExpanded}
+                            addNew={canAdd}
+                            onAddCharacteristic={addNewCharacteristic}
+                            onAddDescriptor={addNewDescriptor} />
+            ;
         });
 
         const btnTitle = selectedAdapter.isServerSetupApplied ? 'Server setup can be applied only once between resets' : '';

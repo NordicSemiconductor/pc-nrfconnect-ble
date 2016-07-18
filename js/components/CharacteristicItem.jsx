@@ -13,72 +13,21 @@
 'use strict';
 
 import React from 'react';
-import Component from 'react-pure-render/component';
+import AttributeItem, { CCCD_UUID } from './AttributeItem';
 
-import EnumeratingAttributes from './EnumeratingAttributes';
 import DescriptorItem from './DescriptorItem';
-import AddNewItem from './AddNewItem';
 import HexOnlyEditableField from './HexOnlyEditableField';
-import { Effects } from '../utils/Effects';
-import { getInstanceIds } from '../utils/api';
-import * as Colors from '../utils/colorDefinitions';
 import { TEXT, getUuidFormat } from '../utils/uuid_definitions';
-
-import { toHexString } from '../utils/stringUtil';
 
 const NOTIFY = 1;
 const INDICATE = 2;
 
-const CCCD_UUID = '2902';
-
-export default class CharacteristicItem extends Component {
+export default class CharacteristicItem extends AttributeItem {
     constructor(props) {
         super(props);
-        this.backgroundColor = Colors.getColor(Colors.WHITE);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.item.value !== nextProps.item.value) {
-            if (this.props.onChange) {
-                this.props.onChange();
-            }
-
-            this._blink();
-        }
-    }
-
-    componentWillUnmount() {
-        if (!this.animation) {
-            return;
-        }
-
-        this.animation.stop();
-    }
-
-    _blink() {
-        if (this.animation) {
-            this.animation.stop();
-        }
-
-        const fromColor = Colors.getColor(Colors.SOFT_BLUE);
-        const toColor = Colors.getColor(Colors.WHITE);
-        this.animation = Effects.blink(this, 'backgroundColor', fromColor, toColor);
-    }
-
-    _selectComponent() {
-        if (this.props.onSelectAttribute) {
-            this.props.onSelectAttribute(this.props.item.instanceId);
-        }
-    }
-
-    _onContentClick(e) {
-        e.stopPropagation();
-        this._selectComponent();
-    }
-
-    _onExpandAreaClick(e) {
-        e.stopPropagation();
-        this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
+        this.bars = 2;
+        this.attributeType = 'characteristic';
+        this.childAttributeType = 'descriptor';
     }
 
     _onToggleNotify(e) {
@@ -112,36 +61,12 @@ export default class CharacteristicItem extends Component {
         this.props.onWriteDescriptor(this.cccdDescriptor, value);
     }
 
-    _childChanged() {
-        if (this.props.onChange) {
-            this.props.onChange();
-        }
-
-        if (!this.props.item.expanded) {
-            this._blink();
-        }
-    }
-
-    _addDescriptor() {
-        // TODO: Add descriptor
-        //this.props.addDescriptor(this.props.item);
-    }
-
-    _onWrite(value) {
-        this.props.onWrite(this.props.item, value);
-    }
-
     _findCccdDescriptor(children) {
         if (!children) {
             return;
         }
 
         return children.find(child => child.uuid === CCCD_UUID);
-    }
-
-    _isLocalAttribute() {
-        const instanceIds = getInstanceIds(this.props.item.instanceId);
-        return instanceIds.device === 'local.server';
     }
 
     _isNotifying(cccdDescriptor) {
@@ -158,32 +83,37 @@ export default class CharacteristicItem extends Component {
         return ((valueArray[0] & (NOTIFY | INDICATE)) > 0);
     }
 
-    render() {
+    renderContent() {
         const {
             item,
             selected,
-            addNew,
-            selectOnClick,
-            onAddDescriptor,
-            onSelectAttribute,
-            onReadDescriptor,
-            onWriteDescriptor,
-            onToggleNotify,
         } = this.props;
 
         const {
-            instanceId,
-            handle,
             uuid,
-            name,
             properties,
             value,
-            expanded,
-            notifying,
-            discoveringChildren,
             children,
-            errorMessage,
         } = item;
+
+        this.cccdDescriptor = this._findCccdDescriptor(children);
+
+        const isLocal = this._isLocalAttribute();
+        const isNotifying = this._isNotifying(this.cccdDescriptor);
+        const itemIsSelected = item.instanceId === selected;
+
+        const hasCccd = this.cccdDescriptor !== undefined;
+        const hasReadProperty = properties.read;
+        const hasWriteProperty = properties.write || properties.write_wo_resp || properties.reliable_wr;
+        const hasNotifyProperty = properties.notify;
+        const hasIndicateProperty = properties.indicate;
+        const hasNotifyOrIndicateProperty = hasNotifyProperty || hasIndicateProperty;
+
+        const toggleNotificationsText = hasCccd ? 'Toggle notifications' : 'Toggle notifications (CCCD not discovered)';
+        const notifyIconStyle = !isLocal && hasNotifyOrIndicateProperty ? {} : { display: 'none' };
+        const notifyIcon = (isNotifying && hasNotifyOrIndicateProperty) ? 'icon-stop' : 'icon-play';
+
+        const showText = getUuidFormat(uuid) === TEXT;
 
         const propertyList = [];
 
@@ -195,98 +125,61 @@ export default class CharacteristicItem extends Component {
             });
         }
 
-        const childrenList = [];
+        const _onRead = (hasReadProperty && !isLocal) ?
+            () => this._onRead() :
+            undefined;
 
-        if (discoveringChildren) {
-            childrenList.push(<EnumeratingAttributes key={'enumerating-descriptor'} bars={3} />);
-        } else if (children && expanded) {
-            children.forEach(descriptor => {
-                childrenList.push(<DescriptorItem key={descriptor.instanceId}
-                                                  item={descriptor}
-                                                  selected={selected}
-                                                  onSelectAttribute={onSelectAttribute}
-                                                  onChange={() => this._childChanged()}
-                                                  onRead={onReadDescriptor}
-                                                  onWrite={onWriteDescriptor} />
-                );
-            });
-        }
-
-        const isLocal = this._isLocalAttribute();
-        const _onRead = isLocal ? undefined : () => {
-            this.props.onRead(this.props.item);
-        };
-
-        this.cccdDescriptor = this._findCccdDescriptor(children);
-        const hasCccd = this.cccdDescriptor !== undefined;
-        const isNotifying = this._isNotifying(this.cccdDescriptor);
-        const hasNotifyProperty = properties.notify;
-        const hasIndicateProperty = properties.indicate;
-        const hasReadProperty = properties.read;
-        const hasWriteProperty = properties.write || properties.write_wo_resp || properties.reliable_wr;
-
-        const hasPossibleChildren = addNew || !(children && children.size === 0);
-        const expandIconStyle = children && children.size === 0 && !addNew  ? { display: 'none' } : {};
-        const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
-        const notifyIcon = (isNotifying && (hasNotifyProperty || hasIndicateProperty)) ? 'icon-stop' : 'icon-play';
-        const notifyIconStyle = !isLocal && (hasNotifyProperty || hasIndicateProperty) ? {} : { display: 'none' };
-        const itemIsSelected = item.instanceId === selected;
-        const errorText = errorMessage ? errorMessage : '';
-        const hideErrorClass = (errorText === '') ? 'hide' : '';
-        const handleText = item.declarationHandle ? ('Handle: 0x' + toHexString(item.declarationHandle) + ', ') : '';
-        const toggleNotificationsText = hasCccd ? 'Toggle notifications' : 'Toggle notifications (CCCD not discovered)';
-        const backgroundColor = itemIsSelected ?
-            'rgb(179,225,245)' : //@bar1-color
-            `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
-        const showText = getUuidFormat(uuid) === TEXT;
+        const _onWrite = (hasWriteProperty || isLocal) ?
+            value => this._onWrite(value) :
+            null;
 
         return (
-        <div>
-            <div className='characteristic-item' style={{ backgroundColor: backgroundColor }} onClick={e => this._onContentClick(e)} ref='item'>
-                <div className='expand-area' onClick={hasPossibleChildren ? e => this._onExpandAreaClick(e) : null}>
-                    <div className='bar1' />
-                    <div className='bar2' />
-                    <div className='icon-wrap'><i className={'icon-slim ' + expandIcon} style={expandIconStyle}></i></div>
+            <div className='content'>
+                <div className='btn btn-primary btn-xs btn-nordic btn-notify'
+                    title={toggleNotificationsText}
+                    disabled={!hasCccd}
+                    style={notifyIconStyle}
+                    onClick={e => this._onToggleNotify(e)}>
+                    <i className={notifyIcon} />
                 </div>
-                <div className='content-wrap'>
-                    <div className='content'>
-                        <div className='btn btn-primary btn-xs btn-nordic btn-notify'
-                            title={toggleNotificationsText}
-                            disabled={!hasCccd}
-                            style={notifyIconStyle}
-                            onClick={e => this._onToggleNotify(e)}>
-                            <i className={notifyIcon} />
-                        </div>
-                        <div>
-                            <div className='truncate-text' title={handleText + 'UUID: ' + uuid}>{name}</div>
-                            <div className='flag-line'>
-                                {propertyList}
-                            </div>
-                        </div>
-                        <HexOnlyEditableField value={value.toArray()}
-                                              onWrite={(hasWriteProperty || isLocal) ? value => this._onWrite(value) : null}
-                                              showReadButton={hasReadProperty && itemIsSelected}
-                                              onRead={hasReadProperty ? _onRead : null}
-                                              selectParent={() => this._selectComponent()}
-                                              showText={showText} />
-                        <div className={'error-label ' + hideErrorClass}>{errorText}</div>
+                <div>
+                    {this.renderName()}
+                    <div className='flag-line'>
+                        {propertyList}
                     </div>
                 </div>
+                <HexOnlyEditableField value={value.toArray()}
+                                      onWrite={_onWrite}
+                                      showReadButton={hasReadProperty && itemIsSelected}
+                                      onRead={_onRead}
+                                      selectParent={() => this._selectComponent()}
+                                      showText={showText} />
+                {this.renderError()}
             </div>
-            <div style={{ display: expanded ? 'block' : 'none' }}>
-                {childrenList}
-                { addNew ?
-                    <AddNewItem
-                        key={'add-new-descriptor'}
-                        text='New descriptor'
-                        id={'add-btn-' + instanceId}
-                        parentInstanceId={instanceId}
-                        selected={selected}
-                        onClick={() => onAddDescriptor(item)}
-                        bars={3} /> :
-                    null }
-            </div>
-        </div>
         );
+    }
+
+    renderChildren() {
+        const {
+            item,
+            selected,
+            onSelectAttribute,
+            onReadDescriptor,
+            onWriteDescriptor,
+        } = this.props;
+
+        const {
+            children,
+        } = item;
+
+        return children.map(descriptor =>
+                    <DescriptorItem key={descriptor.instanceId}
+                            item={descriptor}
+                            selected={selected}
+                            onSelectAttribute={onSelectAttribute}
+                            onChange={() => this._childChanged()}
+                            onRead={onReadDescriptor}
+                            onWrite={onWriteDescriptor} />
+                    );
     }
 }

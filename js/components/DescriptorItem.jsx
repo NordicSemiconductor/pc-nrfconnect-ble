@@ -14,103 +14,58 @@
 
 import React from 'react';
 
-import Component from 'react-pure-render/component';
+import AttributeItem from './AttributeItem';
 import { Map, is as ImmutableIs } from 'immutable';
 
 import HexOnlyEditableField from './HexOnlyEditableField';
-import { Effects } from '../utils/Effects';
 import { getInstanceIds } from '../utils/api';
-import * as Colors from '../utils/colorDefinitions';
 
-import { toHexString } from '../utils/stringUtil';
-
-export default class DescriptorItem extends Component {
+export default class DescriptorItem extends AttributeItem {
     constructor(props) {
         super(props);
-        this.backgroundColor = Colors.getColor(Colors.WHITE);
+        this.bars = 3;
+        this.expandable = false;
+        this.attributeType = 'descriptor';
+        this.childAttributeType = '';
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        const update = !ImmutableIs(this.props.item.value, nextProps.item.value)
-            || !ImmutableIs(this.props.item.errorMessage, nextProps.item.errorMessage)
-            || !ImmutableIs(this.props.selected, nextProps.selected)
-            || !ImmutableIs(this.props.item.name, nextProps.item.name);
+        const update = !ImmutableIs(this.props.item.value, nextProps.item.value) ||
+            !ImmutableIs(this.props.item.errorMessage, nextProps.item.errorMessage) ||
+            !ImmutableIs(this.props.selected, nextProps.selected) ||
+            !ImmutableIs(this.props.item.name, nextProps.item.name);
         return update;
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.item.value !== nextProps.item.value) {
-            if (this.props.onChange) {
-                this.props.onChange();
-            }
-
-            this._blink();
-        }
-    }
-
-    _blink() {
-        if (this.animation) {
-            this.animation.stop();
-        }
-
-        const fromColor = Colors.getColor(Colors.SOFT_BLUE);
-        const toColor = Colors.getColor(Colors.WHITE);
-        this.animation = Effects.blink(this, 'backgroundColor', fromColor, toColor);
-    }
-
-    _selectComponent() {
-        if (this.props.onSelectAttribute) {
-            this.props.onSelectAttribute(this.props.item.instanceId);
-        }
-    }
-
-    _onContentClick(e) {
-        e.stopPropagation();
-        this._selectComponent();
-    }
-
-    _isLocalAttribute() {
-        const instanceIds = getInstanceIds(this.props.item.instanceId);
-        return instanceIds.device === 'local.server';
-    }
-
-    _isCCCDAttribute() {
-        return this.props.item.uuid === '2902';
-    }
-
-    render() {
+    renderContent() {
         const {
             item,
             selected,
         } = this.props;
+
         const {
-            instanceId,
             uuid,
-            name,
+            instanceId,
             value,
-            errorMessage,
         } = item;
 
         const isLocal = this._isLocalAttribute();
-        const _onRead = isLocal ? undefined : () => {
-            this.props.onRead(this.props.item);
-        };
+        const isCCCD = this._isCCCDAttribute(uuid);
+        const isLocalCCCD = isLocal && isCCCD;
 
-        const isCCCD = this._isCCCDAttribute();
-        const _onWrite = isLocal && isCCCD ? undefined : value => {
-            this.props.onWrite(this.props.item, value);
-        };
+        const _onRead = !isLocal ?
+            () => this._onRead() :
+            undefined;
+
+        const _onWrite = !isLocalCCCD ?
+            value => this._onWrite(value) :
+            null;
 
         const itemIsSelected = instanceId === selected;
-        const errorText = errorMessage ? errorMessage : '';
-        const hideErrorClass = (errorText === '') ? 'hide' : '';
-        const handleText = item.handle ? ('Handle: 0x' + toHexString(item.handle) + ', ') : '';
-        const backgroundColor = itemIsSelected ? 'rgb(179,225,245)'
-            : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
 
         const valueList = [];
 
-        if (isLocal && isCCCD && Map.isMap(value)) {
+        if (isLocalCCCD && Map.isMap(value)) {
             value.forEach((cccdValue, deviceInstanceId) => {
                 const address = getInstanceIds(deviceInstanceId).address;
                 valueList.push((
@@ -135,17 +90,10 @@ export default class DescriptorItem extends Component {
         }
 
         return (
-            <div className='descriptor-item' style={{ backgroundColor: backgroundColor }} onClick={e => this._onContentClick(e)}>
-                <div className='bar1' />
-                <div className='bar2' />
-                <div className='bar3' />
-                <div className='content-wrap'>
-                    <div className='content'>
-                        <div className='truncate-text' title={handleText + 'UUID: ' + uuid}>{name}</div>
-                        {valueList}
-                        <div className={'error-label ' + hideErrorClass}>{errorText}</div>
-                    </div>
-                </div>
+            <div className='content'>
+                {this.renderName()}
+                {valueList}
+                {this.renderError()}
             </div>
         );
     }
