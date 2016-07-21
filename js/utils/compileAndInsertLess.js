@@ -26,9 +26,9 @@ function insertStyles(cssPath) {
 
 var stylesCssPath = process.resourcesPath + '/app/css/styles.css';
 
-fs.stat(stylesCssPath, function(err, stats) {
+fs.stat(stylesCssPath, function (err, stats) {
     if (err) {
-        compileLess('css/styles.less', 'css/styles.css', function(err) {
+        compileLess('css/styles.less', 'css/styles.css', function (err) {
             if (err) {
                 console.error('Error compiling LESS: ' + err);
             } else {
