@@ -28,7 +28,8 @@ If you would like to help fixing issues or otherwise contribute to the code base
 ## Dependencies
 To build this project you will need to install the following tools:
 
-* Node.js (>=6.0.0)
+* Node.js (>=4.4.7)
+* npm (>=3.7.0)
 * CMake (>=2.8.12)
 * A C/C++ toolchain (see [Building Boost](#building-boost) for description of toolchain requirements)
 
@@ -44,7 +45,7 @@ Before building nRF Connect you will need to have Boost installed and some of it
 Note: Make sure you have built the Boost libraries for the architecture (32 or 64-bit) required by your Node installation.
 
 ## Environment variables
-to build against the correct Electron version you will need to set the following environment variables with the corresponding values:
+To build against the correct Electron version you will need to set the following environment variables with the corresponding values:
 
     npm_config_runtime=electron
     npm_config_target=0.36.7
@@ -60,19 +61,24 @@ When the procedure has completed successfully you can run the application by run
 
     `npm start`
 
-## Creating packages
-Scripts are available to create release packages. Different artifacts will be created depending on the type of operating system:
+## Creating release packages
+Scripts have been included in the reop to create release packages. Different artifacts will be created depending on the type of operating system:
 
 * Windows: an nsis installer will be created
 * macOS: an app bundle will be created and added in a tar.gz archive
-* Ubuntu Linux: the application files will be put in a tar.gz archive
+* Ubuntu Linux: the application files will be added in a tar.gz archive
 
-From the command line, on Windows run `setup.bat`, and on macOS and Ubuntu Linux run `sudo ./setup.sh`. The build scripts will set the required environment variables, build nRF Connect and put the created artifacts to a folder next to the repo: `../nrfconnect-deploy/`.  
+From the command line, run  
+
+* `setup.bat` on Windows
+* `sudo ./setup.sh` on macOS and Ubuntu Linux
+
+The build scripts will set the required environment variables, build nRF Connect and put the created artifacts to a folder next to the repo: `../nrfconnect-deploy/`.  
 
 Since the build scripts delete the cache folder *node_modules* and reinstalls in production mode it can be a good idea to run the scripts from a separate repository clone folder.
 
 # Related projects
-nRF Connect relies on other components that live in their own GitHub repositories:
+nRF Connect builds on top of other sub components that live in their own GitHub repositories:
 
 * [pc-ble-driver-js](https://github.com/NordicSemiconductor/pc-ble-driver-js)
 * [pc-ble-driver](https://github.com/NordicSemiconductor/pc-ble-driver)
@@ -83,4 +89,3 @@ See the [license file](https://github.com/NordicSemiconductor/pc-yggdrasil) for 
 # Feedback
 * Ask questions on [DevZone Questions](devzone.nordicsemi.com)
 * File code related issues on [GitHub Issues](https://github.com/NordicSemiconductor/pc-yggdrasil/issues)
-* Register with [Nordic Semiconductor Support Team](https://www.nordicsemi.com/eng/Support-Community/Contact-Support-Team) for direct support
