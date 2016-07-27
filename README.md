@@ -77,6 +77,9 @@ The build scripts will set the required environment variables, build nRF Connect
 
 Since the build scripts delete the cache folder *node_modules* and reinstalls in production mode it can be a good idea to run the scripts from a separate repository clone folder.
 
+## Color scheme
+The main colors used in nRF Connect are defined in the file css/brand.less. The colors defined in the source code base have been modified from the colors used in the official release builds of nRF Connect. This has been done to differentiate the Nordic releases from other source code builds. Please feel free to modify the color definitions to your own liking.
+
 # Related projects
 nRF Connect builds on top of other sub components that live in their own GitHub repositories:
 
