@@ -1,11 +1,11 @@
 # nRF Connect
-[![License](https://img.shields.io/pypi/l/pc-ble-driver-py.svg)](https://github.com/NordicSemiconductor/pc-yggdrasil/LICENSE)
+[![License](https://img.shields.io/badge/license-Modified%20BSD%20License-blue.svg)](https://github.com/NordicSemiconductor/pc-yggdrasil/blob/master/LICENSE)
 
 nRF Connect is a cross-platform tool that enables testing and development with Bluetooth low energy (previously called Bluetooth Smart). It allows easy setup of connections with other devices and use these connections for reading and writing to the external nodes.
 
 The application is designed to be used together with the nRF52 DK, nRF51 DK, or the nRF51 Dongle, running a specific connectivity application.
 
-<img src="http://developer.nordicsemi.com/.pc-tools/nrf-connect/1.0.0/screenshot.png" />  
+![nRF Connect screenshot](http://developer.nordicsemi.com/.pc-tools/nrf-connect/1.0.0/screenshot.png)
 <center>*nRF Connect screenshot*</center>
 
 # Installation
@@ -44,16 +44,8 @@ Before building nRF Connect you will need to have Boost installed and some of it
 
 Note: Make sure you have built the Boost libraries for the architecture (32 or 64-bit) required by your Node installation.
 
-## Environment variables
-To build against the correct Electron version you will need to set the following environment variables with the corresponding values:
-
-    npm_config_runtime=electron
-    npm_config_target=0.36.7
-    npm_config_disturl=https://atom.io/download/atom-shell
-    npm_config_arch=<ia32 OR x64>
-
 ## Compiling
-When all required tools and environment varialbles have been installed and set, you are ready to start the compilation. Run the following command from the command line, standing in the root folder of the repository:
+When all required tools and environment variables have been installed and set, you are ready to start the compilation. Run the following command from the command line, standing in the root folder of the repository:
 
     `npm install`
 
@@ -77,7 +69,7 @@ The build scripts will set the required environment variables, build nRF Connect
 
 Since the build scripts delete the cache folder *node_modules* and reinstalls in production mode it can be a good idea to run the scripts from a separate repository clone folder.
 
-## Color scheme
+## Color definitions
 The main colors used in nRF Connect are defined in the file css/brand.less. The colors defined in the source code base have been modified from the colors used in the official release builds of nRF Connect. This has been done to differentiate the Nordic releases from other source code builds. Please feel free to modify the color definitions to your own liking.
 
 # Related projects
