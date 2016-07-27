@@ -5,8 +5,7 @@ nRF Connect is a cross-platform tool that enables testing and development with B
 
 The application is designed to be used together with the nRF52 DK, nRF51 DK, or the nRF51 Dongle, running a specific connectivity application.
 
-![nRF Connect screenshot](http://developer.nordicsemi.com/.pc-tools/nrf-connect/1.0.0/screenshot.png)
-<center>*nRF Connect screenshot*</center>
+![nRF Connect screenshot](https://pbs.twimg.com/media/Cnoc_1OWIAAObOE.png:small)
 
 # Installation
 To install the application you can download binaries from the [nRF Connect product page](http://www.nordicsemi.com/eng/Products/Bluetooth-low-energy/nRF-Connect-for-desktop) on Nordic Semiconductor web pages.
@@ -47,11 +46,11 @@ Note: Make sure you have built the Boost libraries for the architecture (32 or 6
 ## Compiling
 When all required tools and environment variables have been installed and set, you are ready to start the compilation. Run the following command from the command line, standing in the root folder of the repository:
 
-    `npm install`
+    npm install
 
 When the procedure has completed successfully you can run the application by running:
 
-    `npm start`
+    npm start
 
 ## Creating release packages
 Scripts have been included in the reop to create release packages. Different artifacts will be created depending on the type of operating system:
