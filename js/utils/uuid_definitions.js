@@ -13,7 +13,7 @@
  'use strict';
 
 import * as Definitions from './definitions';
-import * as remote from 'remote';
+import {remote} from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { logger } from '../logging';

@@ -15,7 +15,7 @@
 import winston from 'winston';
 import util from 'util';
 import sqlite3 from'sqlite3';
-import remote from 'remote';
+import {remote} from 'electron';
 import path from 'path';
 
 let filePrefix = new Date().toISOString().replace(/:/gi, '_');

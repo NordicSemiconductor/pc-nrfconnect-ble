@@ -14,7 +14,7 @@
 
 import fs from 'fs';
 import os from 'os';
-import shell from 'shell';
+import {shell} from 'electron';
 import childProcess from 'child_process';
 
 export function openFileInDefaultApplication(filePath, callback) {

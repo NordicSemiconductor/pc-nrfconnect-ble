@@ -12,9 +12,10 @@
 
  'use strict';
 
-var app = require('app');
-var BrowserWindow = require('browser-window');
-var Menu = require('menu');
+var electron = require('electron');
+var app = electron.app;
+var BrowserWindow = electron.BrowserWindow;
+var Menu = electron.Menu;
 var settings = require('./settings');
 var os = require('os');
 var path = require('path');
@@ -42,8 +43,8 @@ settings.loadColorScheme((error, colors) => {
     global.colors = colors;
 });
 
-const dialog = require('electron').dialog;
-var ipcMain = require('ipc-main');
+const dialog = electron.dialog;
+var ipcMain = electron.ipcMain;
 
 var filters =  [{ name: 'nRF Connect Server Setup', extensions: ['ncs', 'json'] },
                 { name: 'All Files', extensions: ['*'] },

@@ -38,7 +38,7 @@ import { findAdapters } from '../actions/adapterActions';
 import KeymapManager from 'atom-keymap';
 
 const keymaps = new KeymapManager();
-import remote from 'remote';
+import {remote} from 'electron';
 import fs from 'fs';
 
 let toggleAdvertisingHandle;
