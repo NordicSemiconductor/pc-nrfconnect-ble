@@ -13,11 +13,9 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
-
 import AdvertisingListEntry from './AdvertisingListEntry';
 
-export default class AdvertisingList extends Component {
+export default class AdvertisingList extends React.PureComponent {
     constructor(props) {
         super(props);
     }

@@ -13,7 +13,6 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -34,7 +33,7 @@ const IO_CAPS_KEYBOARD_ONLY = 2;
 const IO_CAPS_NONE = 3;
 const IO_CAPS_KEYBOARD_DISPLAY = 4;
 
-export class SecurityParamsDialog extends Component {
+export class SecurityParamsDialog extends React.PureComponent {
     constructor(props) {
         super(props);
 

@@ -13,11 +13,10 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import { uuidDefinitions, getUuidName } from '../utils/uuid_definitions';
 
-export default class UuidLookup extends Component {
+export default class UuidLookup extends React.PureComponent {
     constructor(props) {
         super(props);
     }

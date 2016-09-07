@@ -16,8 +16,6 @@ import React from 'react';
 
 import EnumeratingAttributes from './EnumeratingAttributes';
 
-import Component from 'react-pure-render/component';
-
 import AddNewItem from './AddNewItem';
 import { Effects } from '../utils/Effects';
 import * as Colors from '../utils/colorDefinitions';
@@ -27,7 +25,7 @@ import { toHexString } from '../utils/stringUtil';
 
 export const CCCD_UUID = '2902';
 
-export default class AttributeItem extends Component {
+export default class AttributeItem extends React.PureComponent {
     constructor(props) {
         super(props);
         this.backgroundColor = Colors.getColor('brand-base');

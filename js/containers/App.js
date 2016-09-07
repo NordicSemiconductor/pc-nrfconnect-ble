@@ -14,7 +14,6 @@
 
 import React, { PropTypes } from 'react';
 
-import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -44,7 +43,7 @@ import fs from 'fs';
 let toggleAdvertisingHandle;
 let toggleDebugHandle;
 
-class AppContainer extends Component {
+class AppContainer extends React.PureComponent {
     constructor(props) {
         super(props);
 

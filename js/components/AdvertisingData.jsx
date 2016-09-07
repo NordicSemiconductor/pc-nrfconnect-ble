@@ -13,7 +13,6 @@
  'use strict';
 
 import React, {PropTypes} from 'react';
-import Component from 'react-pure-render/component';
 
 import { Dropdown, DropdownButton, MenuItem, Input } from 'react-bootstrap';
 
@@ -36,7 +35,7 @@ const CUSTOM = '7';
 const UUID_TYPE_16 = 0;
 const UUID_TYPE_128 = 1;
 
-export default class AdvertisingData extends Component {
+export default class AdvertisingData extends React.PureComponent {
     constructor(props) {
         super(props);
         this.value = '';

@@ -12,9 +12,9 @@
 
  'use strict';
 
-import Component from 'react-pure-render/component';
+import React from 'react';
 
-export default class Root extends Component {
+export default class Root extends React.PureComponent {
     render() {
         return;
     }

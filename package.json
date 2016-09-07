@@ -47,7 +47,6 @@
     "react-dom": "15.3.1",
     "react-infinite": "NordicSemiconductor/react-infinite#upgrade-to-react-15",
     "react-onclickoutside": "5.5.0",
-    "react-pure-render": "1.0.2",
     "react-redux": "4.4.5",
     "react-textarea-autosize": "4.0.5",
     "redux": "3.6.0",

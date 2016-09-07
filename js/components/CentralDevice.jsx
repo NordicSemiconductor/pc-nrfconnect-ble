@@ -13,13 +13,12 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import AdvertisingSetup from '../containers/AdvertisingSetup';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 
-export default class CentralDevice extends Component {
+export default class CentralDevice extends React.PureComponent {
     constructor(props) {
         super(props);
     }

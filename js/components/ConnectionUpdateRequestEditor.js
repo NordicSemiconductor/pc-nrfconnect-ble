@@ -13,7 +13,6 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import { Input, Button } from 'react-bootstrap';
 
@@ -33,7 +32,7 @@ const CONN_LATENCY_STEP = 1;
 // One concept is essential:
 //  If the user sets an connectionInterval we force that value to the SoftDevice
 //  by setting both maxConnectionInterval and minConnection interval to that value.
-export class ConnectionUpdateRequestEditor extends Component {
+export class ConnectionUpdateRequestEditor extends React.PureComponent {
     constructor(props) {
         super(props);
 

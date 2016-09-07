@@ -13,7 +13,6 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import { Label } from 'react-bootstrap';
 import { Input } from 'react-bootstrap';
@@ -26,7 +25,7 @@ const IO_CAPS_KEYBOARD_ONLY = 2;
 const IO_CAPS_NONE = 3;
 const IO_CAPS_KEYBOARD_DISPLAY = 4;
 
-export class SecurityParamsControls extends Component {
+export class SecurityParamsControls extends React.PureComponent {
     constructor(props) {
         super(props);
 

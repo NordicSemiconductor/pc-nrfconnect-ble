@@ -14,14 +14,13 @@
 
 import React, { PropTypes } from 'react';
 
-import Component from 'react-pure-render/component';
 import * as _ from 'underscore';
 
 import EditableField from './EditableField.jsx';
 
 import { hexArrayToText, textToHexText, hexArrayToHexText } from '../utils/stringUtil';
 
-export default class HexOnlyEditableField extends Component {
+export default class HexOnlyEditableField extends React.PureComponent {
     constructor(props) {
         super(props);
     }

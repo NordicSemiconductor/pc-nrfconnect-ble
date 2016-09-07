@@ -13,7 +13,6 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Input } from 'react-bootstrap';
@@ -26,7 +25,7 @@ import DiscoveredDevice from '../components/DiscoveredDevice';
 import SetupInput from '../components/input/SetupInput';
 import { SetupInlineCheckBox } from '../components/input/SetupCheckBox';
 
-class DiscoveredDevices extends Component {
+class DiscoveredDevices extends React.PureComponent {
     constructor(props) {
         super(props);
 

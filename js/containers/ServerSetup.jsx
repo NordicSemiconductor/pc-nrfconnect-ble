@@ -14,7 +14,6 @@
 
 import React, { PropTypes } from 'react';
 
-import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
@@ -39,7 +38,7 @@ import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigati
 let loadServerSetupReplyHandle;
 let saveServerSetupReplyHandle;
 
-class ServerSetup extends Component {
+class ServerSetup extends React.PureComponent {
     constructor(props) {
         super(props);
 

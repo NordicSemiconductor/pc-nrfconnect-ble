@@ -13,14 +13,13 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import { CountdownTimer } from '../components/CountdownTimer';
 import { BLEEventState, BLEEventType } from './../actions/common';
 
 const EVENT_TIMEOUT_SECONDS = 30;
 
-export class BLEEvent extends Component {
+export class BLEEvent extends React.PureComponent {
     constructor(props) {
         super(props);
         this.countDownTimerRef = 'counter-' + this.props.event.id;

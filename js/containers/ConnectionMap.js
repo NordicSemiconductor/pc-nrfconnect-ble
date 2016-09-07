@@ -13,7 +13,6 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -25,7 +24,7 @@ import * as AdapterActions from '../actions/adapterActions';
 import * as AdvertisingActions from '../actions/advertisingActions';
 import * as BLEEventActions from '../actions/bleEventActions';
 
-class ConnectionMap extends Component {
+class ConnectionMap extends React.PureComponent {
     constructor(props) {
         super(props);
     }

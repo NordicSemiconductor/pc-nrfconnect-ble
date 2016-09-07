@@ -14,15 +14,13 @@
 
 import React, { PropTypes } from 'react';
 
-import Component from 'react-pure-render/component';
-
 import ConnectedDevice from './ConnectedDevice';
 import CentralDevice from './CentralDevice';
 import EnumeratingAttributes from './EnumeratingAttributes';
 
 import ServiceItem from './ServiceItem';
 
-export default class DeviceDetailsView extends Component {
+export default class DeviceDetailsView extends React.PureComponent {
     constructor(props) {
         super(props);
     }

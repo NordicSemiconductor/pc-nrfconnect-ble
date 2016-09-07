@@ -13,7 +13,6 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import { ButtonToolbar, Button } from 'react-bootstrap';
 
@@ -28,7 +27,7 @@ import SetupInputGroup from './input/SetupInputGroup';
 import SetupUuidInput from './input/SetupUuidInput';
 import { ERROR, SUCCESS, validateUuid } from '../utils/validateUuid';
 
-export default class CharacteristicEditor extends Component {
+export default class CharacteristicEditor extends React.PureComponent {
     //mixins: [ReactLinkedStateMixin],
     constructor(props) {
         super(props);

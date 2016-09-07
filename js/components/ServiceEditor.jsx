@@ -13,18 +13,16 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import { ButtonToolbar, Button } from 'react-bootstrap';
 
 import { getUuidName, uuidServiceDefinitions } from '../utils/uuid_definitions';
-import { ValidationError } from '../common/Errors';
 
 import SetupInput from './input/SetupInput';
 import SetupUuidInput from './input/SetupUuidInput';
 import { ERROR, validateUuid } from '../utils/validateUuid';
 
-export default class ServiceEditor extends Component{
+export default class ServiceEditor extends React.PureComponent {
     constructor(props) {
         super(props);
     }

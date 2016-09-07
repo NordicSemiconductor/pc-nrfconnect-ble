@@ -13,11 +13,10 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import {Button} from 'react-bootstrap';
 
-export default class AdvertisingListEntry extends Component {
+export default class AdvertisingListEntry extends React.PureComponent {
     constructor(props) {
         super(props);
     }

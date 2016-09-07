@@ -13,7 +13,6 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import moment from 'moment';
 
@@ -36,7 +35,7 @@ function entryClassName(entry) {
     }
 }
 
-export default class LogEntry extends Component {
+export default class LogEntry extends React.PureComponent {
     constructor(props) {
         super(props);
     }

@@ -13,7 +13,6 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import { Button } from 'react-bootstrap';
 
@@ -21,7 +20,7 @@ import { SecurityParamsControls } from '../components/SecurityParamsControls';
 
 import { BLEEventType } from '../actions/common';
 
-export class PairingEditor extends Component {
+export class PairingEditor extends React.PureComponent {
     constructor(props) {
         super(props);
 

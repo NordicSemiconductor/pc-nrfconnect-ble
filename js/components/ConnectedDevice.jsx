@@ -14,7 +14,6 @@
 
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import Component from 'react-pure-render/component';
 
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
@@ -23,7 +22,7 @@ import { Connector } from './Connector';
 const WINDOW_WIDTH_OFFSET = 375;
 const THROTTLE_TIMEOUT = 100;
 
-export default class ConnectedDevice extends Component {
+export default class ConnectedDevice extends React.PureComponent {
     constructor(props) {
         super(props);
         this.boundResizeListener = this._resizeThrottler.bind(this);
