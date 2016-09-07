@@ -42,15 +42,14 @@ export default class LogEntry extends React.PureComponent {
 
     render() {
         const {
-            entry,
-            key,
+            entry
         } = this.props;
 
         var className = 'log-entry ' + entryClassName(entry);
         var time = moment(new Date(entry.time)).format('HH:mm:ss.SSSS');
 
         return (
-            <div className={className} key={key}>
+            <div className={className}>
                 <div className='time'>{time}</div>
                 <div className='message'>{entry.message}</div>
             </div>
