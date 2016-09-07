@@ -35,7 +35,7 @@ export default function configureStore(initialState) {
     } else {
         const logger = createLogger({
             collapsed: true,
-            transformer: state => {
+            stateTransformer: state => {
                 var newState = {};
 
                 for (var i of Object.keys(state)) {
