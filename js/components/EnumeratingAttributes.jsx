@@ -14,9 +14,7 @@
 
 import React from 'react';
 
-import Component from 'react-pure-render/component';
-
-export default class EnumeratingAttributes extends Component {
+export default class EnumeratingAttributes extends React.PureComponent {
     render() {
         const barList = [];
 

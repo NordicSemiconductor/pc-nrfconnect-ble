@@ -15,7 +15,6 @@
 import React, { PropTypes } from 'react';
 import Infinite from 'react-infinite';
 
-import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import uuidV4 from 'uuid-v4';
@@ -27,7 +26,7 @@ import { openFileInDefaultApplication } from '../utils/fileUtil';
 import * as LogActions from '../actions/logActions';
 import LogEntry from '../components/LogEntry';
 
-class LogContainer extends Component {
+class LogContainer extends React.PureComponent {
     constructor(props) {
         super(props);
         this.props.startReading();

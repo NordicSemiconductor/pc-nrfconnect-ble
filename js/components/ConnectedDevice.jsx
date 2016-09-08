@@ -14,7 +14,6 @@
 
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import Component from 'react-pure-render/component';
 
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
@@ -23,7 +22,7 @@ import { Connector } from './Connector';
 const WINDOW_WIDTH_OFFSET = 375;
 const THROTTLE_TIMEOUT = 100;
 
-export default class ConnectedDevice extends Component {
+export default class ConnectedDevice extends React.PureComponent {
     constructor(props) {
         super(props);
         this.boundResizeListener = this._resizeThrottler.bind(this);
@@ -113,7 +112,7 @@ export default class ConnectedDevice extends Component {
                 <div className='device-body text-small' >
                     <div>
                         <div className='pull-right'>
-                            <Dropdown pullRight={pullRight} id='connectionDropDown' onClick={() => this._onResize()} onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
+                            <Dropdown pullRight={pullRight} id='connectionDropDown' onClick={() => this._onResize()} onSelect={(eventKey, event) => { this._onSelect(event, eventKey); }}>
                                 <Dropdown.Toggle noCaret>
                                     <span className='icon-cog' aria-hidden='true' />
                                 </Dropdown.Toggle>

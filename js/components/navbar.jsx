@@ -13,11 +13,10 @@
 'use strict';
 
 import React from 'react';
-import Component from 'react-pure-render/component';
 
 import AdapterSelector from './AdapterSelector';
 
-export default class NavBar extends Component {
+export default class NavBar extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {

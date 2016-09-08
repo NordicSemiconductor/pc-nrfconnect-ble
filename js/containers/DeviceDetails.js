@@ -14,7 +14,6 @@
 
 import React, { PropTypes } from 'react';
 
-import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -29,7 +28,7 @@ import DeviceDetailsView from '../components/deviceDetails';
 import { getInstanceIds } from '../utils/api';
 import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
 
-class DeviceDetailsContainer extends Component {
+class DeviceDetailsContainer extends React.PureComponent {
     constructor(props) {
         super(props);
 

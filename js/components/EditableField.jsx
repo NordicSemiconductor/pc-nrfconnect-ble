@@ -12,27 +12,17 @@
 
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { PropTypes } from 'react';
-
-import Component from 'react-pure-render/component';
-
 import onClickOutside  from 'react-onclickoutside';
 import TextareaAutosize from 'react-textarea-autosize';
 
-import { Input } from 'react-bootstrap';
+import TextArea from './input/TextArea';
 
 import $ from 'jquery';
 
-class EditableField extends Component {
-    constructor(props) {
-        super(props);
+export default onClickOutside(React.createClass({
 
-        this.editing = false;
-        this.value = this.props.value;
-        this.validationMessage = '';
-    }
     /*
     Produces some text that changes into a textarea when clicked, OR if plain={true}, it simply produces a textarea.
     Exposes various events for validation and formatting.
@@ -85,18 +75,18 @@ class EditableField extends Component {
             this.validationMessage = '';
             this.forceUpdate();
         }
-    }
+    },
 
     _selectParentAndToggleEditing(e) {
         e.stopPropagation();
         this._toggleEditing(e);
         this.props.selectParent(e);
-    }
+    },
 
     _selectParent(e) {
         e.stopPropagation();
         this.props.selectParent(e);
-    }
+    },
 
     _toggleEditing(e) {
         e.stopPropagation();
@@ -105,7 +95,7 @@ class EditableField extends Component {
             this.editing = !this.editing;
             this.forceUpdate();
         }
-    }
+    },
 
     _onChange(e) {
         const textarea = e.target;
@@ -132,7 +122,7 @@ class EditableField extends Component {
         if (this.props.onChange) {
             this.props.onChange(this.value);
         }
-    }
+    },
 
     _onKeyDown(e) {
         if (e.key === 'Backspace' && this.props.onBeforeBackspace) {
@@ -147,19 +137,19 @@ class EditableField extends Component {
             this._write();
             e.preventDefault();
         }
-    }
+    },
 
     _onWriteButtonClick(e) {
         e.stopPropagation();
         this._write();
-    }
+    },
 
     _onReadButtonClick(e) {
         const { onRead } = this.props;
 
         e.stopPropagation();
         this._read();
-    }
+    },
 
     _write() {
         const { valid, validationMessage } = this.props.completeValidation ? this.props.completeValidation(this.value) : { valid: true };
@@ -171,15 +161,21 @@ class EditableField extends Component {
         } else {
             this.validationMessage = validationMessage;
         }
-    }
+    },
 
     _read() {
         this.props.onRead();
-    }
+    },
 
     _stopPropagation(e) {
         e.stopPropagation();
-    }
+    },
+
+    componentDidMount() {
+        this.editing = false;
+        this.value = this.props.value;
+        this.validationMessage = '';
+    },
 
     componentDidUpdate(prevProps, prevState) {
         if (this.editing) {
@@ -188,7 +184,7 @@ class EditableField extends Component {
             textarea.focus();
             textarea.setSelectionRange(caretPosition, caretPosition);
         }
-    }
+    },
 
     render() {
         const nonBreakingSpace = '\u00A0';
@@ -204,9 +200,9 @@ class EditableField extends Component {
             <div className='btn btn-primary btn-xs btn-nordic' title='Read' onClick={e => this._onReadButtonClick(e)}><i className='icon-ccw'></i></div> : null;
 
         if (this.props.plain) {
-            child = <Input type='textarea' {...this.props}
-                                      ref='editableTextarea'
-                                      minRows={1}
+            child = <TextArea ref='editableTextarea'
+                                      label={this.props.label}
+                                      title={this.props.title}
                                       onKeyDown={e => this._onKeyDown(e)}
                                       value={this.props.value}
                                       onChange={e => this._onChange(e)}
@@ -220,10 +216,10 @@ class EditableField extends Component {
                             </div>
                         </div>
                         <div className='btn btn-primary btn-xs btn-nordic' title='Write' onClick={e => this._onWriteButtonClick(e)}><i className='icon-ok'></i></div>
-                        <TextareaAutosize {...this.props}
-                                          ref='editableTextarea'
+                        <TextareaAutosize ref='editableTextarea'
                                           minRows={1}
                                           onKeyDown={e => this._onKeyDown(e)}
+                                          title={this.props.title}
                                           value={this.value}
                                           onChange={e => this._onChange(e)}
                                           onClick={this._stopPropagation} />
@@ -257,15 +253,13 @@ class EditableField extends Component {
                 {child}
             </div>
         );
+    },
+
+    propTypes: {
+        value: PropTypes.string.isRequired,
+        onWrite: PropTypes.func,
+        onRead: PropTypes.func,
+        showReadButton: PropTypes.bool,
+        insideSelector: PropTypes.string,
     }
-}
-
-EditableField.propTypes = {
-    value: PropTypes.string.isRequired,
-    onWrite: PropTypes.func,
-    onRead: PropTypes.func,
-    showReadButton: PropTypes.bool,
-    insideSelector: PropTypes.string,
-};
-
-export default onClickOutside(EditableField);
+}));

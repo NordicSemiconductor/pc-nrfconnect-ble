@@ -13,7 +13,6 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 import { getUuidName } from '../utils/uuid_definitions';
 import { toHexString } from '../utils/stringUtil';
 import changeCase from 'change-case';
@@ -24,7 +23,7 @@ const RSSI_WIDTH_MID = Math.round(RSSI_WIDTH_MAX * 0.6);
 const RSSI_WIDTH_LOW = Math.round(RSSI_WIDTH_MAX * 0.4);
 const RSSI_WIDTH_MIN = Math.round(RSSI_WIDTH_MAX * 0.2);
 
-export default class DiscoveredDevice extends Component {
+export default class DiscoveredDevice extends React.PureComponent {
     constructor(props) {
         super(props);
 

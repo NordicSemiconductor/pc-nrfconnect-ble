@@ -13,13 +13,12 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import AdvertisingSetup from '../containers/AdvertisingSetup';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 
-export default class CentralDevice extends Component {
+export default class CentralDevice extends React.PureComponent {
     constructor(props) {
         super(props);
     }
@@ -108,7 +107,7 @@ export default class CentralDevice extends Component {
                 <img className='center-block' src='resources/nordic_usb_icon.png' height='41' width='16' title="Development kit or dongle"/>
                 <div className='device-body text-small'>
                     <div className='pull-right'>
-                        <Dropdown id='connectionDropDown' onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
+                        <Dropdown id='connectionDropDown' onSelect={(eventKey, event) => { this._onSelect(event, eventKey); }}>
                             <Dropdown.Toggle noCaret>
                                 <span className='icon-cog' aria-hidden='true' />
                             </Dropdown.Toggle>

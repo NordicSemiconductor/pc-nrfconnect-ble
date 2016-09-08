@@ -13,7 +13,6 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import { Button, Input } from 'react-bootstrap';
 
@@ -25,7 +24,7 @@ import { toHexString } from '../utils/stringUtil';
 const SUCCESS = 'success';
 const ERROR = 'error';
 
-export class AuthKeyEditor extends Component {
+export class AuthKeyEditor extends React.PureComponent {
     constructor(props) {
         super(props);
 

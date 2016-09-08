@@ -13,7 +13,6 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,7 +28,7 @@ import { AuthKeyEditor } from '../components/AuthKeyEditor';
 import * as BLEEventActions from '../actions/bleEventActions';
 import * as AdapterActions from '../actions/adapterActions';
 
-export class BLEEventDialog extends Component {
+export class BLEEventDialog extends React.PureComponent {
     constructor(props) {
         super(props);
     }

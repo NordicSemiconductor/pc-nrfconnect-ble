@@ -13,7 +13,6 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import moment from 'moment';
 
@@ -36,22 +35,21 @@ function entryClassName(entry) {
     }
 }
 
-export default class LogEntry extends Component {
+export default class LogEntry extends React.PureComponent {
     constructor(props) {
         super(props);
     }
 
     render() {
         const {
-            entry,
-            key,
+            entry
         } = this.props;
 
         var className = 'log-entry ' + entryClassName(entry);
         var time = moment(new Date(entry.time)).format('HH:mm:ss.SSSS');
 
         return (
-            <div className={className} key={key}>
+            <div className={className}>
                 <div className='time'>{time}</div>
                 <div className='message'>{entry.message}</div>
             </div>

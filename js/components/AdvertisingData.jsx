@@ -13,11 +13,10 @@
  'use strict';
 
 import React, {PropTypes} from 'react';
-import Component from 'react-pure-render/component';
 
-import { Dropdown, DropdownButton, MenuItem, Input } from 'react-bootstrap';
+import { Dropdown, DropdownButton, MenuItem } from 'react-bootstrap';
+import TextInput from './input/TextInput';
 
-import { SetupInput } from './input/SetupInput';
 import UuidLookup from '../components/UuidLookup';
 import { uuid16bitServiceDefinitions, uuid128bitServiceDefinitions } from '../utils/uuid_definitions';
 
@@ -36,7 +35,7 @@ const CUSTOM = '7';
 const UUID_TYPE_16 = 0;
 const UUID_TYPE_128 = 1;
 
-export default class AdvertisingData extends Component {
+export default class AdvertisingData extends React.PureComponent {
     constructor(props) {
         super(props);
         this.value = '';
@@ -293,9 +292,9 @@ export default class AdvertisingData extends Component {
 
         const adTypeDiv = (this.typeKey === CUSTOM) ?
             <div>
-                <Input type='text' label='AD type value' placeholder='Enter AD type value (1 byte hex)'
-                    hasFeedback defaultValue={this.adTypeValue}
-                    bsStyle={this.validateAdType()} onChange={event => this.handleAdTypeChange(event)} />
+                <TextInput label='AD type value' placeholder='Enter AD type value (1 byte hex)'
+                    hasFeedback defaultValue={this.adTypeValue} labelClassName='' wrapperClassName='col-md-12'
+                    validationState={this.validateAdType()} onChange={event => this.handleAdTypeChange(event)} />
             </div> : '';
 
         const uuidLookupDiv = !uuidLookupDisabled ?
@@ -309,7 +308,7 @@ export default class AdvertisingData extends Component {
                     <div className='type-label'>AD type</div>
                     <DropdownButton className='adv-dropdown' title={this.title}
                             id='dropdown-adv' label='Type'
-                            onSelect={(event, eventKey) => this.handleSelect(event, eventKey)}>
+                            onSelect={(eventKey, event) => this.handleSelect(event, eventKey)}>
                         <MenuItem eventKey='0'>{this.keyToAdvertisingType('0')}</MenuItem>
                         <MenuItem eventKey='1'>{this.keyToAdvertisingType('1')}</MenuItem>
                         <MenuItem eventKey='2'>{this.keyToAdvertisingType('2')}</MenuItem>
@@ -322,16 +321,17 @@ export default class AdvertisingData extends Component {
                 </div>
                 <div className='adv-value-container'>
                     {adTypeDiv}
-                    <Input
+                    <TextInput
                         disabled={inputDisabled}
-                        type='text'
                         id='value'
                         ref='advDataValue'
                         value={this.value}
                         label='Value'
                         hasFeedback
                         placeholder={this.placeholderText}
-                        bsStyle={this.validateInput()}
+                        validationState={this.validateInput()}
+                        labelClassName=''
+                        wrapperClassName='col-md-12'
                         onChange={event => this.handleChange(event)} />
                 </div>
                 {uuidLookupDiv}

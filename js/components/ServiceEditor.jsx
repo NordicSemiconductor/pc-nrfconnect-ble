@@ -13,18 +13,16 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import { ButtonToolbar, Button } from 'react-bootstrap';
+import UuidInput from './input/UuidInput';
+import TextInput from './input/TextInput';
 
 import { getUuidName, uuidServiceDefinitions } from '../utils/uuid_definitions';
-import { ValidationError } from '../common/Errors';
 
-import SetupInput from './input/SetupInput';
-import SetupUuidInput from './input/SetupUuidInput';
 import { ERROR, validateUuid } from '../utils/validateUuid';
 
-export default class ServiceEditor extends Component{
+export default class ServiceEditor extends React.PureComponent {
     constructor(props) {
         super(props);
     }
@@ -101,10 +99,10 @@ export default class ServiceEditor extends Component{
 
         return (
             <form className='form-horizontal native-key-bindings'>
-                <SetupUuidInput label='Service UUID' name='uuid' value={this.uuid}
+                <UuidInput label='Service UUID' name='uuid' value={this.uuid}
                     onChange={e => this._onUuidChange(e)} uuidDefinitions={uuidServiceDefinitions}
                     handleSelection={uuid => this._handleUuidSelect(uuid)} />
-                <SetupInput label='Service name' type='text' name='service-name' value={this.name} onChange={e => this._onNameChange(e)} />
+                <TextInput label='Service name' name='service-name' value={this.name} onChange={e => this._onNameChange(e)} />
                 <ButtonToolbar>
                     <div className='col-md-4' />
                     <Button bsStyle='primary' className='btn-nordic' onClick={onRemoveAttribute}><i className='icon-cancel'/>Delete</Button>

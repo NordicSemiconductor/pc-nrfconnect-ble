@@ -12,7 +12,7 @@
 
  'use strict';
 
-import remote from 'remote';
+import {remote} from 'electron';
 import { logger } from '../logging';
 
 var colors;

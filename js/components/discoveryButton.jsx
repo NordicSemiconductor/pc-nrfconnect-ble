@@ -13,9 +13,8 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
-export default class DiscoveryButton extends Component {
+export default class DiscoveryButton extends React.PureComponent {
     constructor(props) {
         super(props);
     }

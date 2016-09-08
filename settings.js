@@ -1,6 +1,6 @@
 'use strict';
 
-var app = require('app');
+var app = require('electron').app;
 var fs = require('fs');
 var path = require('path');
 var data = null;

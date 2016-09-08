@@ -13,23 +13,20 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
-import { ButtonToolbar, Button } from 'react-bootstrap';
+import { ButtonToolbar, Button, Checkbox, InputGroup } from 'react-bootstrap';
+import TextInput from './input/TextInput';
+import UuidInput from './input/UuidInput';
+import SelectList from './input/SelectList';
 
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 
 import { getUuidName, uuidDescriptorDefinitions } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
 
-import SetupInput from './input/SetupInput';
-import { SetupInlineCheckBox } from './input/SetupCheckBox';
-import SetupInputGroup from './input/SetupInputGroup';
-import SetupUuidInput from './input/SetupUuidInput';
-
 import { ERROR, SUCCESS, validateUuid } from '../utils/validateUuid';
 
-export default class DescriptorEditor extends Component {
+export default class DescriptorEditor extends React.PureComponent {
     constructor(props) {
         super(props);
     }
@@ -176,37 +173,37 @@ export default class DescriptorEditor extends Component {
 
         return (
             <form className='form-horizontal native-key-bindings'>
-                <SetupUuidInput label='Descriptor UUID' name='uuid' value={this.uuid}
+                <UuidInput label='Descriptor UUID' name='uuid' value={this.uuid}
                     onChange={e => this._onUuidChange(e.target.value)} uuidDefinitions={uuidDescriptorDefinitions}
                     handleSelection={uuid => this._handleUuidSelect(uuid)} />
 
-                <SetupInput label='Descriptor name' name='descriptor-name' value={this.name} onChange={e => this._setValueProperty('name', e)} />
+                <TextInput label='Descriptor name' name='descriptor-name' value={this.name} onChange={e => this._setValueProperty('name', e)} />
                 <HexOnlyEditableField label='Initial value' plain={true} className='form-control' name='initial-value' value={this.value}
                     onChange={value => this._setInitialValue(value)} labelClassName='col-md-3' wrapperClassName='col-md-9' />
 
-                <SetupInput label='Read permission' type='select' className='form-control' value={this.readPerm} onChange={e => this._setValueProperty('readPerm', e)}>
+                <SelectList label='Read permission' type='select' className='form-control' value={this.readPerm} onChange={e => this._setValueProperty('readPerm', e)}>
                     <option value='open'>No security required</option>
                     <option value='encrypt'>Encryption required, no MITM</option>
                     <option value='encrypt mitm-protection'>Encryption and MITM required</option>
                     <option value='signed'>Signing or encryption required, no MITM</option>
                     <option value='signed mitm-protection'>Signing or encryption with MITM required</option>
                     <option value='no_access'>No access rights specified (undefined)</option>
-                </SetupInput>
+                </SelectList>
 
-                <SetupInput label='Write permission' type='select' className='form-control' value={this.writePerm} onChange={e => this._setValueProperty('writePerm', e)}>
+                <SelectList label='Write permission' type='select' className='form-control' value={this.writePerm} onChange={e => this._setValueProperty('writePerm', e)}>
                     <option value='open'>No security required</option>
                     <option value='encrypt'>Encryption required, no MITM</option>
                     <option value='encrypt mitm-protection'>Encryption and MITM required</option>
                     <option value='signed'>Signing or encryption required, no MITM</option>
                     <option value='signed mitm-protection'>Signing or encryption with MITM required</option>
                     <option value='no_access'>No access rights specified (undefined)</option>
-                </SetupInput>
+                </SelectList>
 
-                <SetupInputGroup label='Max length'>
-                    <SetupInlineCheckBox label='Fixed length' ref='fixedLength' checked={this.fixedLength} onChange={e => this._setCheckedProperty('fixedLength', e)} />
-                    <SetupInput type='number' min='0' max={this.fixedLength ? '510' : '512'} name='max-length' ref='maxLength' value={this.maxLength}
+                <InputGroup label='Max length'>
+                    <Checkbox ref='fixedLength' checked={this.fixedLength} onChange={e => this._setCheckedProperty('fixedLength', e)}>Fixed length</Checkbox>
+                    <TextInput type='number' min='0' max={this.fixedLength ? '510' : '512'} name='max-length' ref='maxLength' value={this.maxLength}
                         onChange={e => this._setValueProperty('maxLength', e)} />
-                </SetupInputGroup>
+                </InputGroup>
 
                 <ButtonToolbar>
                     <div className='col-md-4' />

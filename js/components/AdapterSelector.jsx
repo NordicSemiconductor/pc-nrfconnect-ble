@@ -14,7 +14,6 @@
 
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -26,7 +25,7 @@ import ConfirmationDialog from '../components/ConfirmationDialog';
 
 import uuidV4 from 'uuid-v4';
 
-class AdapterSelector extends Component {
+class AdapterSelector extends React.PureComponent {
     constructor(props) {
         super(props);
     }

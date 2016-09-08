@@ -13,7 +13,6 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -26,7 +25,7 @@ import AdvertisingData from '../components/AdvertisingData';
 
 import * as AdvertisingActions from '../actions/advertisingActions';
 
-class AdvertisingSetup extends Component {
+class AdvertisingSetup extends React.PureComponent {
     constructor(props) {
         super(props);
         this.id = 0;

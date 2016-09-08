@@ -13,12 +13,11 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 
 import layoutStrategies from '../common/layoutStrategies';
 
-export class ConnectionSetup extends Component {
+export class ConnectionSetup extends React.PureComponent {
     constructor(props) {
         super(props);
     }
@@ -58,7 +57,7 @@ ConnectionSetup.propTypes = {
     device: PropTypes.object.isRequired,
 };
 
-export class ConnectionOverlay extends Component {
+export class ConnectionOverlay extends React.PureComponent {
     constructor(props) {
         super(props);
     }
@@ -98,7 +97,7 @@ ConnectionOverlay.propTypes = {
     device: PropTypes.object.isRequired,
 };
 
-export class Connector extends Component {
+export class Connector extends React.PureComponent {
     constructor(props) {
         super(props);
     }

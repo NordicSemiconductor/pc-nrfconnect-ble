@@ -13,11 +13,10 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import { uuidDefinitions, getUuidName } from '../utils/uuid_definitions';
 
-export default class UuidLookup extends Component {
+export default class UuidLookup extends React.PureComponent {
     constructor(props) {
         super(props);
     }
@@ -49,7 +48,7 @@ export default class UuidLookup extends Component {
         return (
             <div className='uuid-lookup'>
                 <Dropdown className='uuid-dropdown' id='dropdown-uuid-lookup' title={title}
-                    onSelect={(event, eventKey) => onSelect(event, eventKey)}
+                    onSelect={(eventKey, event) => onSelect(event, eventKey)}
                     pullRight={pullRight}>
                     <Dropdown.Toggle noCaret>
                         <span className='icon-search' aria-hidden='true' />

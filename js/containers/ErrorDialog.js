@@ -13,7 +13,6 @@
  'use strict';
 
 import React, { PropTypes } from 'react';
-import Component from 'react-pure-render/component';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -21,7 +20,7 @@ import { bindActionCreators } from 'redux';
 import * as ErrorActions from '../actions/errorDialogActions';
 import { Modal, Button } from 'react-bootstrap';
 
-export class ErrorDialog extends Component {
+export class ErrorDialog extends React.PureComponent {
     constructor(props) {
         super(props);
     }
