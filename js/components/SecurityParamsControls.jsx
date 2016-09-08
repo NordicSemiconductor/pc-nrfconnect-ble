@@ -87,7 +87,7 @@ export class SecurityParamsControls extends React.PureComponent {
                     <label className='control-label col-sm-4'>IO capabilities</label>
                     <div className='col-sm-7'>
                         <DropdownButton title={this.ioCapsTitle} key='ioCapsDropdownKey'
-                            id='ioCapsDropdownId' onSelect={(event, eventKey) => this.onIoCapsSelect(event, eventKey)}>
+                            id='ioCapsDropdownId' onSelect={(eventKey, event) => this.onIoCapsSelect(event, eventKey)}>
                             <MenuItem eventKey={IO_CAPS_DISPLAY_ONLY}>{this.keyToIoCapsText(IO_CAPS_DISPLAY_ONLY)}</MenuItem>
                             <MenuItem eventKey={IO_CAPS_DISPLAY_YESNO}>{this.keyToIoCapsText(IO_CAPS_DISPLAY_YESNO)}</MenuItem>
                             <MenuItem eventKey={IO_CAPS_KEYBOARD_ONLY}>{this.keyToIoCapsText(IO_CAPS_KEYBOARD_ONLY)}</MenuItem>

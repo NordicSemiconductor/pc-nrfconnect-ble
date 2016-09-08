@@ -308,7 +308,7 @@ export default class AdvertisingData extends React.PureComponent {
                     <div className='type-label'>AD type</div>
                     <DropdownButton className='adv-dropdown' title={this.title}
                             id='dropdown-adv' label='Type'
-                            onSelect={(event, eventKey) => this.handleSelect(event, eventKey)}>
+                            onSelect={(eventKey, event) => this.handleSelect(event, eventKey)}>
                         <MenuItem eventKey='0'>{this.keyToAdvertisingType('0')}</MenuItem>
                         <MenuItem eventKey='1'>{this.keyToAdvertisingType('1')}</MenuItem>
                         <MenuItem eventKey='2'>{this.keyToAdvertisingType('2')}</MenuItem>

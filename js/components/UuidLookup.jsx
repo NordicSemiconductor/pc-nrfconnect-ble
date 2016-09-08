@@ -48,7 +48,7 @@ export default class UuidLookup extends React.PureComponent {
         return (
             <div className='uuid-lookup'>
                 <Dropdown className='uuid-dropdown' id='dropdown-uuid-lookup' title={title}
-                    onSelect={(event, eventKey) => onSelect(event, eventKey)}
+                    onSelect={(eventKey, event) => onSelect(event, eventKey)}
                     pullRight={pullRight}>
                     <Dropdown.Toggle noCaret>
                         <span className='icon-search' aria-hidden='true' />

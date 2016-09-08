@@ -112,7 +112,7 @@ export default class ConnectedDevice extends React.PureComponent {
                 <div className='device-body text-small' >
                     <div>
                         <div className='pull-right'>
-                            <Dropdown pullRight={pullRight} id='connectionDropDown' onClick={() => this._onResize()} onSelect={(event, eventKey) => { this._onSelect(event, eventKey); }}>
+                            <Dropdown pullRight={pullRight} id='connectionDropDown' onClick={() => this._onResize()} onSelect={(eventKey, event) => { this._onSelect(event, eventKey); }}>
                                 <Dropdown.Toggle noCaret>
                                     <span className='icon-cog' aria-hidden='true' />
                                 </Dropdown.Toggle>
