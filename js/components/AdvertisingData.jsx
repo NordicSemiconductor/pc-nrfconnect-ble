@@ -14,9 +14,9 @@
 
 import React, {PropTypes} from 'react';
 
-import { Dropdown, DropdownButton, MenuItem, Input } from 'react-bootstrap';
+import { Dropdown, DropdownButton, MenuItem } from 'react-bootstrap';
+import TextInput from './input/TextInput';
 
-import { SetupInput } from './input/SetupInput';
 import UuidLookup from '../components/UuidLookup';
 import { uuid16bitServiceDefinitions, uuid128bitServiceDefinitions } from '../utils/uuid_definitions';
 
@@ -292,9 +292,9 @@ export default class AdvertisingData extends React.PureComponent {
 
         const adTypeDiv = (this.typeKey === CUSTOM) ?
             <div>
-                <Input type='text' label='AD type value' placeholder='Enter AD type value (1 byte hex)'
-                    hasFeedback defaultValue={this.adTypeValue}
-                    bsStyle={this.validateAdType()} onChange={event => this.handleAdTypeChange(event)} />
+                <TextInput label='AD type value' placeholder='Enter AD type value (1 byte hex)'
+                    hasFeedback defaultValue={this.adTypeValue} labelClassName='' wrapperClassName='col-md-12'
+                    validationState={this.validateAdType()} onChange={event => this.handleAdTypeChange(event)} />
             </div> : '';
 
         const uuidLookupDiv = !uuidLookupDisabled ?
@@ -321,16 +321,17 @@ export default class AdvertisingData extends React.PureComponent {
                 </div>
                 <div className='adv-value-container'>
                     {adTypeDiv}
-                    <Input
+                    <TextInput
                         disabled={inputDisabled}
-                        type='text'
                         id='value'
                         ref='advDataValue'
                         value={this.value}
                         label='Value'
                         hasFeedback
                         placeholder={this.placeholderText}
-                        bsStyle={this.validateInput()}
+                        validationState={this.validateInput()}
+                        labelClassName=''
+                        wrapperClassName='col-md-12'
                         onChange={event => this.handleChange(event)} />
                 </div>
                 {uuidLookupDiv}

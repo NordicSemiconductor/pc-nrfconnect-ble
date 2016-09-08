@@ -14,17 +14,17 @@
 
 import React, { PropTypes } from 'react';
 
-import { ButtonToolbar, Button } from 'react-bootstrap';
+import { ButtonToolbar, Button, Checkbox } from 'react-bootstrap';
+import TextInput from './input/TextInput';
+import UuidInput from './input/UuidInput';
+import SelectList from './input/SelectList';
+import LabeledInputGroup from './input/LabeledInputGroup';
 
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
 
 import { getUuidName, uuidCharacteristicDefinitions, TEXT, getUuidFormat } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
 
-import SetupInput from './input/SetupInput';
-import { SetupInlineCheckBox } from './input/SetupCheckBox';
-import SetupInputGroup from './input/SetupInputGroup';
-import SetupUuidInput from './input/SetupUuidInput';
 import { ERROR, SUCCESS, validateUuid } from '../utils/validateUuid';
 
 export default class CharacteristicEditor extends React.PureComponent {
@@ -211,51 +211,52 @@ export default class CharacteristicEditor extends React.PureComponent {
 
         return (
             <form className='form-horizontal native-key-bindings'>
-                <SetupUuidInput label='Characteristic UUID' name='uuid' value={this.uuid}
+                <UuidInput label='Characteristic UUID' name='uuid' value={this.uuid}
                     onChange={e => this._onUuidChange(e)} uuidDefinitions={uuidCharacteristicDefinitions}
                     handleSelection={uuid => this._handleUuidSelect(uuid)} />
 
-                <SetupInput label='Characteristic name' name='characteristic-name' value={this.name} onChange={e => this._setValueProperty('name', e)} />
+                <TextInput label='Characteristic name' name='characteristic-name' value={this.name} onChange={e => this._setValueProperty('name', e)} />
                 <HexOnlyEditableField label='Initial value' plain={true} className='form-control' name='initial-value' value={this.value}
-                    onChange={value => this._setInitialValue(value)} labelClassName='col-md-3' wrapperClassName='col-md-9' showText={showText} />
+                    onChange={value => this._setInitialValue(value)} showText={showText} />
 
-                <SetupInputGroup label='Properties'>
-                    <SetupInlineCheckBox label='Broadcast' ref='broadcast' checked={this.broadcast} onChange={e => this._setCheckedProperty('broadcast', e)} />
-                    <SetupInlineCheckBox label='Read' ref='read' checked={this.read} onChange={e => this._setCheckedProperty('read', e)} />
-                    <SetupInlineCheckBox label='Write without response' ref='writeWithoutResponse' checked={this.write_wo_resp} onChange={e => this._setCheckedProperty('write_wo_resp', e)} />
-                    <SetupInlineCheckBox label='Write' ref='write' checked={this.write} onChange={e => this._setCheckedProperty('write', e)} />
-                    <SetupInlineCheckBox label='Notify' ref='notify' checked={this.notify} onChange={e => this._setCheckedProperty('notify', e)} />
-                    <SetupInlineCheckBox label='Indicate' ref='indicate' checked={this.indicate} onChange={e => this._setCheckedProperty('indicate', e)} />
-                    <SetupInlineCheckBox label='Authenticated signed write' ref='authenticatedSignedWrites' checked={this.auth_signed_wr}
-                        onChange={e => this._setCheckedProperty('auth_signed_wr', e)} />
-                </SetupInputGroup>
+                <LabeledInputGroup label='Properties'>
+                    <Checkbox ref='broadcast' checked={this.broadcast} onChange={e => this._setCheckedProperty('broadcast', e)}>Broadcast</Checkbox>
+                    <Checkbox ref='read' checked={this.read} onChange={e => this._setCheckedProperty('read', e)}>Read</Checkbox>
+                    <Checkbox ref='writeWithoutResponse' checked={this.write_wo_resp} onChange={e => this._setCheckedProperty('write_wo_resp', e)}>Write without response</Checkbox>
+                    <Checkbox ref='write' checked={this.write} onChange={e => this._setCheckedProperty('write', e)}>Write</Checkbox>
+                    <Checkbox ref='notify' checked={this.notify} onChange={e => this._setCheckedProperty('notify', e)}>Notify</Checkbox>
+                    <Checkbox ref='indicate' checked={this.indicate} onChange={e => this._setCheckedProperty('indicate', e)}>Indicate</Checkbox>
+                    <Checkbox ref='authenticatedSignedWrites' checked={this.auth_signed_wr} onChange={e => this._setCheckedProperty('auth_signed_wr', e)}>
+                        Authenticated signed write
+                    </Checkbox>
+                </LabeledInputGroup>
 
-                <SetupInputGroup label='Extended Properties'>
-                    <SetupInlineCheckBox label='Reliable write' ref='reliableWrite' checked={this.reliable_wr} onChange={e => this._setCheckedProperty('reliable_wr', e)} />
-                    <SetupInlineCheckBox label='Write auxiliary' ref='writeAuxiliary' checked={this.wr_aux} onChange={e => this._setCheckedProperty('wr_aux', e)} />
-                </SetupInputGroup>
+                <LabeledInputGroup label='Extended Properties'>
+                    <Checkbox ref='reliableWrite' checked={this.reliable_wr} onChange={e => this._setCheckedProperty('reliable_wr', e)}>Reliable write</Checkbox>
+                    <Checkbox ref='writeAuxiliary' checked={this.wr_aux} onChange={e => this._setCheckedProperty('wr_aux', e)}>Write auxiliary</Checkbox>
+                </LabeledInputGroup>
 
-                <SetupInput label='Read permission' type='select' className='form-control' value={this.readPerm} onChange={e => this._setValueProperty('readPerm', e)}>
+                <SelectList label='Read permission' type='select' className='form-control' value={this.readPerm} onChange={e => this._setValueProperty('readPerm', e)}>
                     <option value='open'>No security required</option>
                     <option value='encrypt'>Encryption required, no MITM</option>
                     <option value='encrypt mitm-protection'>Encryption with MITM required</option>
                     <option value='lesc'>LESC encryption with MITM required</option>
                     <option value='no_access'>No access rights specified (undefined)</option>
-                </SetupInput>
+                </SelectList>
 
-                <SetupInput label='Write permission' type='select' className='form-control' value={this.writePerm} onChange={e => this._setValueProperty('writePerm', e)}>
+                <SelectList label='Write permission' type='select' className='form-control' value={this.writePerm} onChange={e => this._setValueProperty('writePerm', e)}>
                     <option value='open'>No security required</option>
                     <option value='encrypt'>Encryption required, no MITM</option>
                     <option value='encrypt mitm-protection'>Encryption with MITM required</option>
                     <option value='lesc'>LESC encryption with MITM required</option>
                     <option value='no_access'>No access rights specified (undefined)</option>
-                </SetupInput>
+                </SelectList>
 
-                <SetupInputGroup label='Max length'>
-                    <SetupInlineCheckBox label='Fixed length' ref='fixedLength' checked={this.fixedLength} onChange={e => this._setCheckedProperty('fixedLength', e)} />
-                    <SetupInput type='number' min='0' max={this.fixedLength ? '510' : '512'} name='max-length' ref='maxLength' value={this.maxLength}
+                <LabeledInputGroup label='Max length'>
+                    <Checkbox ref='fixedLength' checked={this.fixedLength} onChange={e => this._setCheckedProperty('fixedLength', e)}>Fixed length</Checkbox>
+                    <TextInput inline type='number' min='0' max={this.fixedLength ? '510' : '512'} name='max-length' ref='maxLength' value={this.maxLength}
                         onChange={e => this._setValueProperty('maxLength', e)} />
-                </SetupInputGroup>
+                </LabeledInputGroup>
 
                 <ButtonToolbar>
                     <div className='col-md-4' />

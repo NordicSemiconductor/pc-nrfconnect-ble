@@ -17,11 +17,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { Modal } from 'react-bootstrap';
-import { Label } from 'react-bootstrap';
-import { Input } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
-import { DropdownButton } from 'react-bootstrap';
-import { MenuItem } from 'react-bootstrap';
 
 import { SecurityParamsControls } from '../components/SecurityParamsControls';
 

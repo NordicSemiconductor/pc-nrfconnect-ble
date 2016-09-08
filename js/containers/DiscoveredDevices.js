@@ -15,15 +15,14 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Input } from 'react-bootstrap';
 
 import * as DiscoveryActions from '../actions/discoveryActions';
 import * as AdapterActions from '../actions/adapterActions';
 
 import DiscoveryButton from '../components/discoveryButton';
 import DiscoveredDevice from '../components/DiscoveredDevice';
-import SetupInput from '../components/input/SetupInput';
-import { SetupInlineCheckBox } from '../components/input/SetupCheckBox';
+import TextInput from '../components/input/TextInput';
+import { FormGroup, Checkbox } from 'react-bootstrap';
 
 class DiscoveredDevices extends React.PureComponent {
     constructor(props) {
@@ -73,12 +72,14 @@ class DiscoveredDevices extends React.PureComponent {
 
         const discoveryOptionsDiv = discoveryOptions.expanded ?
             <div className='discovery-options'>
-                <SetupInlineCheckBox className='adv-label' label='Sort by signal strength'
+                <Checkbox className='adv-label'
                     defaultChecked={discoveryOptions.sortByRssi}
-                    onChange={e => this.handleCheckedChange('sortByRssi', e)}
-                    wrapperClassName='' labelClassName='' />
-                <SetupInput title='Filter list by device name or address' label='Filter:' className='adv-value' defaultValue={discoveryOptions.filterString}
-                    onChange={e => this.handleFilterChange(e)} labelClassName='' wrapperClassName='' placeholder='Device name or address' />
+                    onChange={e => this.handleCheckedChange('sortByRssi', e)}>
+                    Sort by signal strength
+                </Checkbox>
+                <TextInput inline title='Filter list by device name or address' label='Filter:' className='adv-value'
+                           defaultValue={discoveryOptions.filterString} onChange={e => this.handleFilterChange(e)}
+                           labelClassName='' wrapperClassName='' placeholder='Device name or address' />
             </div> : '';
 
         return (

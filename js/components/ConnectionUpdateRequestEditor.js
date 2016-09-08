@@ -14,7 +14,8 @@
 
 import React, { PropTypes } from 'react';
 
-import { Input, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import TextInput from './input/TextInput'
 
 import { BLEEventType } from '../actions/common';
 
@@ -81,10 +82,10 @@ export class ConnectionUpdateRequestEditor extends React.PureComponent {
                 <label className='control-label col-sm-7'
                        htmlFor={'interval_' + address}>Connection Interval (ms) {range}</label>
                 <div className='col-sm-5'>
-                    <Input id={'interval_' + address}
-                        type='number'
+                    <TextInput id={'interval_' + address}
                         className='form-control nordic-form-control'
                         onChange={_event => this._handleConnectionIntervalChange(_event) }
+                        type='number'
                         min={CONN_INTERVAL_MIN}
                         max={CONN_INTERVAL_MAX}
                         step={CONN_INTERVAL_STEP}
@@ -242,7 +243,7 @@ export class ConnectionUpdateRequestEditor extends React.PureComponent {
                     <div className='form-group'>
                         <label className='control-label col-sm-7' htmlFor={'latency_' + address}>Slave latency</label>
                         <div className='col-sm-5'>
-                            <Input style={slaveLatencyStyle}
+                            <TextInput style={slaveLatencyStyle}
                                    id={'latency_' + address}
                                    className='form-control nordic-form-control'
                                    onChange={_event => this._handleSlaveLatencyChange(_event)}
@@ -259,7 +260,7 @@ export class ConnectionUpdateRequestEditor extends React.PureComponent {
                         <div>
                             <label className='control-label col-sm-7' htmlFor={'timeout_' + address}>Connection supervision timeout (ms)</label>
                             <div className='col-sm-5'>
-                                <Input style={connectionSupervisionTimeoutInputStyle}
+                                <TextInput style={connectionSupervisionTimeoutInputStyle}
                                        id={'timeout_' + address}
                                        className='form-control nordic-form-control'
                                        onChange={_event => this._handleConnectionSupervisionTimeoutChange(_event)}

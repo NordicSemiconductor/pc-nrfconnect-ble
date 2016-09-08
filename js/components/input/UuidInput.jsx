@@ -2,13 +2,13 @@
 
 import React, { PropTypes } from 'react';
 
-import SetupInput from './SetupInput';
 import UuidLookup from '../UuidLookup';
+import TextInput from './TextInput';
 
 import { getUuidName } from '../../utils/uuid_definitions';
 import { validateUuid } from '../../utils/validateUuid';
 
-export default class SetupUuidInput extends SetupInput {
+export default class UuidInput extends React.PureComponent {
     constructor(props) {
         super(props);
         this.uuid = this.props.value;
@@ -50,15 +50,15 @@ export default class SetupUuidInput extends SetupInput {
                 pullRight={true}/>
         );
 
-        return <SetupInput label={label}
-            hasFeedback bsStyle={this.validateUuidInput()}
+        return <TextInput label={label}
+            hasFeedback validationState={this.validateUuidInput()}
             value={value}
             onChange={e => this.props.handleSelection(e.target.value)}
             buttonAfter={uuidSelectButton} />;
     }
 }
 
-SetupUuidInput.propTypes = {
+UuidInput.propTypes = {
     uuidDefinitions: PropTypes.func.isRequired,
     handleSelection: PropTypes.func.isRequired,
 };

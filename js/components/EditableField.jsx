@@ -17,7 +17,7 @@ import ReactDOM from 'react-dom';
 import onClickOutside  from 'react-onclickoutside';
 import TextareaAutosize from 'react-textarea-autosize';
 
-import { Input } from 'react-bootstrap';
+import TextArea from './input/TextArea';
 
 import $ from 'jquery';
 
@@ -200,9 +200,9 @@ export default onClickOutside(React.createClass({
             <div className='btn btn-primary btn-xs btn-nordic' title='Read' onClick={e => this._onReadButtonClick(e)}><i className='icon-ccw'></i></div> : null;
 
         if (this.props.plain) {
-            child = <Input type='textarea' {...this.props}
-                                      ref='editableTextarea'
-                                      minRows={1}
+            child = <TextArea ref='editableTextarea'
+                                      label={this.props.label}
+                                      title={this.props.title}
                                       onKeyDown={e => this._onKeyDown(e)}
                                       value={this.props.value}
                                       onChange={e => this._onChange(e)}
@@ -216,10 +216,10 @@ export default onClickOutside(React.createClass({
                             </div>
                         </div>
                         <div className='btn btn-primary btn-xs btn-nordic' title='Write' onClick={e => this._onWriteButtonClick(e)}><i className='icon-ok'></i></div>
-                        <TextareaAutosize {...this.props}
-                                          ref='editableTextarea'
+                        <TextareaAutosize ref='editableTextarea'
                                           minRows={1}
                                           onKeyDown={e => this._onKeyDown(e)}
+                                          title={this.props.title}
                                           value={this.value}
                                           onChange={e => this._onChange(e)}
                                           onClick={this._stopPropagation} />

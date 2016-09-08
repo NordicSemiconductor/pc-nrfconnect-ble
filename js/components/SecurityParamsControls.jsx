@@ -14,10 +14,7 @@
 
 import React, { PropTypes } from 'react';
 
-import { Label } from 'react-bootstrap';
-import { Input } from 'react-bootstrap';
-import { DropdownButton } from 'react-bootstrap';
-import { MenuItem } from 'react-bootstrap';
+import { DropdownButton, MenuItem, Checkbox } from 'react-bootstrap';
 
 const IO_CAPS_DISPLAY_ONLY = 0;
 const IO_CAPS_DISPLAY_YESNO = 1;
@@ -102,31 +99,37 @@ export class SecurityParamsControls extends React.PureComponent {
                 <div className='form-group'>
                     <label className='control-label col-sm-4'>Authentication</label>
                     <div className='col-sm-7'>
-                        <Input standalone type='checkbox' label='Enable LE Secure Connection pairing'
-                            defaultChecked={this.enableLesc}
-                            onChange={event => this.handleCheckboxChange('enableLesc', event.target.checked)} />
-                        <Input standalone type='checkbox' label='Enable MITM protection'
-                            defaultChecked={this.enableMitm}
-                            onChange={event => this.handleCheckboxChange('enableMitm', event.target.checked)} />
-                        <Input standalone type='checkbox' label='Enable OOB data'
-                            defaultChecked={this.enableOob}
-                            onChange={event => this.handleCheckboxChange('enableOob', event.target.checked)} />
+                        <Checkbox defaultChecked={this.enableLesc}
+                            onChange={event => this.handleCheckboxChange('enableLesc', event.target.checked)}>
+                            Enable LE Secure Connection pairing
+                        </Checkbox>
+                        <Checkbox defaultChecked={this.enableMitm}
+                            onChange={event => this.handleCheckboxChange('enableMitm', event.target.checked)}>
+                            Enable MITM protection
+                        </Checkbox>
+                        <Checkbox defaultChecked={this.enableOob}
+                            onChange={event => this.handleCheckboxChange('enableOob', event.target.checked)}>
+                            Enable OOB data
+                        </Checkbox>
                     </div>
                 </div>
                 <div className='form-group'>
                     <label className='control-label col-sm-4'>Keypress notifications</label>
                     <div className='col-sm-7'>
-                        <Input standalone type='checkbox' label='Enable keypress notifications'
-                            defaultChecked={this.enableKeypress}
-                            onChange={event => this.handleCheckboxChange('enableKeypress', event.target.checked)} />
+                        <Checkbox defaultChecked={this.enableKeypress}
+                            onChange={event => this.handleCheckboxChange('enableKeypress', event.target.checked)}>
+                            Enable keypress notifications
+                        </Checkbox>
                     </div>
                 </div>
                 <div className='form-group'>
                     <label className='control-label col-sm-4'>Bonding</label>
                     <div className='col-sm-7'>
-                        <Input standalone type='checkbox' label='Perform bonding'
+                        <Checkbox
                             defaultChecked={this.performBonding}
-                            onChange={event => this.handleCheckboxChange('performBonding', event.target.checked)} />
+                            onChange={event => this.handleCheckboxChange('performBonding', event.target.checked)}>
+                            Perform bonding
+                        </Checkbox>
                     </div>
                 </div>
             </div>
