@@ -62,12 +62,13 @@ rm -rf node_modules
 mv js/settings.json js/settings.json.dev
 mv js/settings.json.prod js/settings.json
 
-npm install --production
+npm install
+npm run build
+npm prune --production
 
 mkdir ./hex
 cp node_modules/pc-ble-driver-js/pc-ble-driver/hex/*.hex ./hex/
 
-lessc ./css/styles.less ./css/styles.css
 electron-packager . "$YGGDRASIL_APP_NAME" --platform=$YGGDRASIL_PLATFORM --arch=$npm_config_arch --icon=$YGGDRASIL_ICON --version=$npm_config_target --overwrite --out=$YGGDRASIL_DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName="Nordic Semiconductor ASA" --version-string.LegalCopyright="Nordic Semiconductor ASA" --version-string.FileDescription="nRF Connect" --version-string.OriginalFilename="nrfconnect" --version-string.FileVersion="$YGGDRASIL_VERSION" --version-string.ProductVersion="$YGGDRASIL_FULL_VERSION" --version-string.ProductName="$YGGDRASIL_NAME" --version-string.InternalName="$YGGDRASIL_NAME"
 
 cp LICENSE "$YGGDRASIL_APP_ROOT_DIR/LICENSE"

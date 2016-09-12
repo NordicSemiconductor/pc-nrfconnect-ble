@@ -3,8 +3,6 @@
     <head>
         <meta charset='UTF-8'/>
         <title>nRF Connect</title>
-
-        <script src='js/utils/compileAndInsertLess.js'></script> <!--will include css/styles.css-->
     </head>
     <body>
         <div>
@@ -18,7 +16,12 @@
                 // module.exports = {};
             } catch(e) {}
         </script>
-
-        <script src='js/index.js'></script>
+        <script>
+            (function() {
+                const script = document.createElement('script');
+                script.src = process.env.ENV === 'development' ? 'http://localhost:9000/dist/bundle.js' : './dist/bundle.js';
+                document.write(script.outerHTML);
+            }());
+        </script>
     </body>
 </html>

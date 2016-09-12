@@ -12,10 +12,9 @@
 
 'use strict';
 
-require('babel-core/register');
 require('babel-polyfill');
 
-var settings = require('./js/settings');
+var settings = require('./settings.json');
 
 if (!settings || settings.production === undefined || settings.production === null || settings.production === true) {
     process.env.NODE_ENV = 'production';
@@ -23,15 +22,22 @@ if (!settings || settings.production === undefined || settings.production === nu
     process.env.NODE_ENV = 'development';
 }
 
-var ReactDOM = require('react-dom');
 var React = require('react');
+var renderReact = require('react-dom').render;
 
-var root = require('./js/containers/Root');
-
-var configureStore = require('./js/store/configureStore');
+var configureStore = require('./store/configureStore');
 var initialState = window.__INITIAL_STATE__ || {};
 var store = configureStore(initialState);
 
-const target = document.getElementById('app');
+let App = require('./containers/Root');
+const render = (Component) => {
+    renderReact(<Component store={store} />, document.getElementById('app'));
+};
+render(App);
 
-ReactDOM.render(React.createElement(root, { store: store }), target);
+if (module.hot) {
+    module.hot.accept('./containers/Root', function() {
+        let newApp = require('./containers/Root');
+        render(newApp);
+    });
+}

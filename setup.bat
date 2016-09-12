@@ -51,10 +51,9 @@ set npm_config_arch=%YGGDRASIL_ELECTRON_ARCH%
 set npm_config_disturl=https://atom.io/download/atom-shell
 
 echo "Install production"
-call npm install --production
-
-echo "Run less"
-call lessc ./css/styles.less ./css/styles.css
+call npm install
+call npm run build
+call npm prune --production
 
 echo "Setting up release settings"
 rename js\settings.json settings.json.dev
