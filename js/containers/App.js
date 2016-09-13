@@ -12,6 +12,8 @@
 
 'use strict';
 
+import '../../css/styles.less';
+
 import React, { PropTypes } from 'react';
 
 import { bindActionCreators } from 'redux';
@@ -157,7 +159,7 @@ class AppContainer extends React.PureComponent {
 
     componentDidMount() {
         // Trigger things off by starting to get adapters
-        store.dispatch(findAdapters());
+        this.props.findAdapters();
     }
 
     render() {
@@ -202,19 +204,17 @@ function mapStateToProps(state) {
     const { app } = state;
 
     return {
-        selectedMainView: app.selectedMainView,
+        selectedMainView: app.selectedMainView
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    let retval = Object.assign(
-            {},
+    return Object.assign(
+            {findAdapters: () => dispatch(findAdapters())},
             bindActionCreators(AppActions, dispatch),
             bindActionCreators(AdvertisingActions, dispatch),
             bindActionCreators(ErrorActions, dispatch)
     );
-
-    return retval;
 }
 
 export default connect(

@@ -80,32 +80,3 @@ exports.storeLastWindow = function (lastWindowState) {
         maximized: lastWindowState.isMaximized(),
     });
 };
-
-const less = require('less');
-
-exports.loadColorScheme = function (callback) {
-    fs.readFile('css/colordefinitions.less', { encoding: 'utf-8' }, function (err1, data) {
-        if (err1) {
-            return callback(err1);
-        }
-
-        less.render(data.toString(), function (err2, output) {
-            if (err2) {
-                return callback(err2);
-            }
-
-            let definitions = output.css.slice(1);
-            definitions = definitions.replace(/;/g, ',');
-            definitions = definitions.replace(/\s/g, '');
-            definitions = definitions.replace('colordefinitions', '');
-            definitions = definitions.replace(/,}/g, '\"}');
-            definitions = definitions.replace(/{/g, '{\"');
-            definitions = definitions.replace(/,/g, '\",\"');
-            definitions = definitions.replace(/:/g, '\":\"');
-
-            const cssObj = Object.assign({}, JSON.parse(definitions));
-
-            callback(undefined, cssObj);
-        });
-    });
-};

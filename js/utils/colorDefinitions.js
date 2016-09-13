@@ -14,33 +14,47 @@
 
 import {remote} from 'electron';
 import { logger } from '../logging';
+import '../../css/colordefinitions.less';
 
-var colors;
+const CSS_CLASS_PREFIX = 'colordefinition';
+const FALLBACK_COLOR = {r: 255, g: 0, b: 0};
 
-function hexToRGB(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-    } : null;
+const colors = initColors(findColorDefinitionRules());
+
+function initColors(rules) {
+    let colors = {};
+    rules.forEach(rule => {
+        const regex = new RegExp(`.${CSS_CLASS_PREFIX}-(.*)`);
+        let key = regex.exec(rule.selectorText)[1];
+        colors[key] = rule.style['color'];
+    });
+    return colors;
+}
+
+function findColorDefinitionRules() {
+    let rules = [];
+    for (let i = 0; i < document.styleSheets.length; i++) {
+        let cssRules = document.styleSheets[i].cssRules;
+        for (let j = 0; j < cssRules.length; j++) {
+            let rule = cssRules[j];
+            if (rule.selectorText && rule.selectorText.indexOf(CSS_CLASS_PREFIX) !== -1) {
+                rules.push(rule);
+            }
+        }
+    }
+    return rules;
 }
 
 export function getColor(color) {
-    if (!colors) {
-        colors = remote.getGlobal('colors');
-
-        if (!colors) {
-            logger.debug('Failed loading colors');
-            return hexToRGB('#FF0000');
-        }
-    }
-
-    const colorObject = colors[color];
-    if (!colorObject) {
+    const rgbString = colors[color];
+    if (!rgbString) {
         logger.debug('Color ' + color + ' is not defined');
-        return hexToRGB('#FF0000');
+        return FALLBACK_COLOR;
     }
-
-    return hexToRGB(colorObject);
+    const rgbArray = rgbString.replace(/[^\d,]/g, '').split(',');
+    return {
+        r: rgbArray[0],
+        g: rgbArray[1],
+        b: rgbArray[2]
+    }
 }

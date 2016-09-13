@@ -41,7 +41,7 @@ set YGGDRASIL_FULL_VERSION=%YGGDRASIL_VERSION%%YGGDRASIL_VERSION_NAME%
 
 echo "Setting environment variables"
 set YGGDRASIL_DEPLOY_DIR=c:\tmp\yggdrasil-deploy
-set YGGDRASIL_ELECTRON_VERSION=0.36.7
+set YGGDRASIL_ELECTRON_VERSION=1.2.8
 set YGGDRASIL_ELECTRON_ARCH=ia32
 
 echo "Setting up electron information"
@@ -51,10 +51,9 @@ set npm_config_arch=%YGGDRASIL_ELECTRON_ARCH%
 set npm_config_disturl=https://atom.io/download/atom-shell
 
 echo "Install production"
-call npm install --production
-
-echo "Run less"
-call lessc ./css/styles.less ./css/styles.css
+call npm install
+call npm run build
+call npm prune --production
 
 echo "Setting up release settings"
 rename js\settings.json settings.json.dev

@@ -32,17 +32,6 @@ if (os.type() === 'Windows_NT') {
     global.appPath = app.getAppPath();
 }
 
-global.colors = undefined;
-
-settings.loadColorScheme((error, colors) => {
-    if (error) {
-        console.log('Error loading colorscheme: ' + error);
-        return;
-    }
-
-    global.colors = colors;
-});
-
 const dialog = electron.dialog;
 var ipcMain = electron.ipcMain;
 
