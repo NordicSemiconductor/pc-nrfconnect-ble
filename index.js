@@ -120,7 +120,7 @@ app.on('ready', function () {
 
     mainWindow.webContents.on('new-window', function (e, url) {
         e.preventDefault();
-        require('shell').openExternal(url);
+        electron.shell.openExternal(url);
     });
 });
 
