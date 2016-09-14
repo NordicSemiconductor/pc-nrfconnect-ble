@@ -15,6 +15,7 @@ fs.readdirSync('node_modules')
     });
 
 var config = {
+    devtool: 'source-map',
     entry: [
         'webpack-hot-middleware/client?path=http://localhost:9000/__webpack_hmr',
         './js/index',
