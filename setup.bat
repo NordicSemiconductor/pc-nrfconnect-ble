@@ -67,8 +67,6 @@ call electron-packager ./ nrf-connect --platform=win32 --arch=%YGGDRASIL_ELECTRO
 copy yggdrasil_installer.nsi %YGGDRASIL_DEPLOY_DIR%
 copy nrfconnect.ico %YGGDRASIL_DEPLOY_DIR%
 copy LICENSE %YGGDRASIL_DEPLOY_DIR%\nrf-connect-win32-ia32\LICENSE
-mkdir %YGGDRASIL_DEPLOY_DIR%\nrf-connect-win32-ia32\hex
-copy node_modules\pc-ble-driver-js\pc-ble-driver\hex\connectivity_115k2_with_s13*_2.0.1.hex %YGGDRASIL_DEPLOY_DIR%\nrf-connect-win32-ia32\hex\
 
 cd %YGGDRASIL_DEPLOY_DIR%
 
