@@ -12,14 +12,6 @@
 
 require('babel-polyfill');
 
-var settings = require('./settings.json');
-
-if (!settings || settings.production === undefined || settings.production === null || settings.production === true) {
-    process.env.NODE_ENV = 'production';
-} else {
-    process.env.NODE_ENV = 'development';
-}
-
 var React = require('react');
 var renderReact = require('react-dom').render;
 var Root = require('./containers/Root');

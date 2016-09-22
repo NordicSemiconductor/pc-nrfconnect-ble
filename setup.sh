@@ -59,8 +59,6 @@ export YGGDRASIL_APP_ROOT_DIR="$YGGDRASIL_DEPLOY_DIR/$YGGDRASIL_APP_DIR"
 
 rm -rf node_modules
 
-mv js/settings.json js/settings.json.dev
-mv js/settings.json.prod js/settings.json
 
 npm install
 npm run build
@@ -81,6 +79,3 @@ cd "$YGGDRASIL_DEPLOY_DIR"
 tar czf $YGGDRASIL_NAME-$YGGDRASIL_FULL_VERSION-$YGGDRASIL_PLATFORM-$npm_config_arch.tar.gz "$YGGDRASIL_APP_DIR"
 
 popd
-
-mv js/settings.json js/settings.json.prod
-mv js/settings.json.dev js/settings.json

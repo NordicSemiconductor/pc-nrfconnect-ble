@@ -55,10 +55,6 @@ call npm install
 call npm run build
 call npm prune --production
 
-echo "Setting up release settings"
-rename js\settings.json settings.json.dev
-rename js\settings.json.prod settings.json
-
 echo "Copy driver"
 copy node_modules\pc-ble-driver-js\build\driver\Release\pc-ble-driver.dll node_modules\pc-ble-driver-js\build\Release\pc-ble-driver.dll
 
@@ -93,8 +89,5 @@ if ["%SIGNTOOL_PATH%"] == [""] goto cleanup
 
 :cleanup
 popd
-
-rename js\settings.json settings.json.prod
-rename js\settings.json.dev settings.json
 
 echo "Finished"
