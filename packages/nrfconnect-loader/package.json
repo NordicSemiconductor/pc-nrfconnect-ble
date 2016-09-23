@@ -9,11 +9,15 @@
   "main": "index.js",
   "scripts": {
     "start": "../../node_modules/.bin/concurrently -k \"node ../../server.js\" \"../../node_modules/.bin/cross-env LOADER_ENV=development ../../node_modules/.bin/electron .\"",
-    "build": "../../node_modules/.bin/webpack --config ../../webpack.config.production.js"
+    "build": "../../node_modules/.bin/webpack --config ../../webpack.config.production.js",
+    "test": "../../node_modules/.bin/cross-env BABEL_DISABLE_CACHE=1 ../../node_modules/.bin/jest js/"
   },
   "author": "Nordic Semiconductor ASA",
   "license": "Proprietary",
   "devDependencies": {
+    "enzyme": "2.4.1",
+    "react-addons-test-utils": "15.3.1",
+    "react-test-renderer": "15.3.1",
     "redux-devtools": "3.3.1",
     "redux-devtools-dock-monitor": "1.1.1",
     "redux-devtools-log-monitor": "1.0.11"
