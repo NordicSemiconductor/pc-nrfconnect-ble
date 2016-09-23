@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='UTF-8'/>
+        <title>nRF Connect</title>
+    </head>
+    <body>
+        <div>
+            <div id='app'></div>
+        </div>
+
+        <script>
+            try {
+                $ = jQuery = module.exports;
+                // If you want module.exports to be empty, uncomment:
+                // module.exports = {};
+            } catch(e) {}
+        </script>
+        <script>
+            (function() {
+                const script = document.createElement('script');
+                script.src = process.env.LOADER_ENV === 'development' ? 'http://localhost:9000/dist/bundle.js' : './dist/bundle.js';
+                document.write(script.outerHTML);
+            }());
+        </script>
+    </body>
+</html>

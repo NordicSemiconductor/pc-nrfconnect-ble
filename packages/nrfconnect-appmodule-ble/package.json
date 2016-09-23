@@ -1,0 +1,58 @@
+{
+  "name": "nrfconnect-appmodule-ble",
+  "version": "1.0.0",
+  "description": "A natural first choice for BLE development",
+  "homepage": "http://infocenter.nordicsemi.com/nrf-connect/ble",
+  "main": "index.js",
+  "author": "Nordic Semiconductor ASA",
+  "license": "Proprietary",
+  "scripts": {
+    "start": "../../node_modules/.bin/concurrently -k \"node ../../server.js\" \"../../node_modules/.bin/cross-env ENV=development ../../node_modules/.bin/electron .\"",
+    "build": "../../node_modules/.bin/webpack --config ../../webpack.config.production.js",
+    "test": "../../node_modules/.bin/cross-env BABEL_DISABLE_CACHE=1 jest js/"
+  },
+  "config": {
+    "title": "Bluetooth Low Energy (BLE)",
+    "icon": "resources/icon.png"
+  },
+  "devDependencies": {
+    "redux-devtools": "3.3.1",
+    "redux-devtools-dock-monitor": "1.1.1",
+    "redux-devtools-log-monitor": "1.0.11"
+  },
+  "dependencies": {
+    "atom-keymap": "6.3.2",
+    "babel-polyfill": "6.13.0",
+    "bootstrap": "3.3.7",
+    "change-case": "3.0.0",
+    "immutable": "3.8.1",
+    "jquery": "3.1.0",
+    "less": "2.7.1",
+    "moment": "2.14.1",
+    "nrfconnect-core": "1.0.0",
+    "open": "0.0.5",
+    "pc-ble-driver-js": "https://github.com/NordicSemiconductor/pc-ble-driver-js.git#v0.9.0",
+    "pc-nrfjprog-js": "https://github.com/NordicSemiconductor/pc-nrfjprog-js.git#v0.3.0",
+    "react": "15.3.1",
+    "react-addons-linked-state-mixin": "15.3.1",
+    "react-bootstrap": "0.30.3",
+    "react-dom": "15.3.1",
+    "react-infinite": "NordicSemiconductor/react-infinite#upgrade-to-react-15",
+    "react-onclickoutside": "5.5.0",
+    "react-redux": "4.4.5",
+    "react-textarea-autosize": "4.0.5",
+    "redux": "3.6.0",
+    "redux-logger": "2.6.1",
+    "redux-promise-middleware": "4.0.0",
+    "redux-storage": "4.1.1",
+    "redux-thunk": "2.1.0",
+    "semver": "5.3.0",
+    "serialport": "^3.1.2",
+    "sqlite3": "3.1.4",
+    "tween.js": "16.3.5",
+    "underscore": "1.8.3",
+    "util": "0.10.3",
+    "uuid-v4": "0.1.0",
+    "winston": "2.2.0"
+  }
+}
