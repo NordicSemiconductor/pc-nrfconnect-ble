@@ -24,7 +24,9 @@ var ipcMain = electron.ipcMain;
 
 ipcMain.on('load-appmodule', function (event, name) {
     require(name);
-    loaderWindow.close();
+    if (loaderWindow) {
+        loaderWindow.close();
+    }
 });
 
 app.on('ready', function () {

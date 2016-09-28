@@ -38,16 +38,27 @@ class AppContainer extends React.PureComponent {
     }
 
     render() {
+        const { appmodules, onAppmoduleSelected } = this.props;
+
+        if (appmodules.size === 1) {
+            loadAppmodule(appmodules.first().name);
+            return null;
+        }
+
         return (
             <div>
                 <AppmoduleLoader
-                    appmodules={this.props.appmodules}
-                    onAppmoduleSelected={this.props.onAppmoduleSelected}
+                    appmodules={appmodules}
+                    onAppmoduleSelected={onAppmoduleSelected}
                 />
                 <ErrorDialog/>
             </div>
         );
     }
+}
+
+function loadAppmodule(name) {
+    ipcRenderer.send('load-appmodule', name);
 }
 
 function mapStateToProps(state) {
