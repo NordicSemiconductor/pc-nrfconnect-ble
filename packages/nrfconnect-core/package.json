@@ -11,25 +11,34 @@
     "test": "../../node_modules/.bin/cross-env BABEL_DISABLE_CACHE=1 ../../node_modules/.bin/jest js/",
     "clean": "../../node_modules/.bin/rimraf node_modules"
   },
-  "main": "dist/nrfconnect-core.min.js",
+  "main": "js/loader.js",
   "author": "Nordic Semiconductor ASA",
   "license": "Proprietary",
   "devDependencies": {
-    "enzyme": "2.4.1",
-    "react-addons-test-utils": "15.3.1",
-    "react-test-renderer": "15.3.1",
-    "redux-devtools": "3.3.1",
-    "redux-devtools-dock-monitor": "1.1.1",
-    "redux-devtools-log-monitor": "1.0.11"
-  },
-  "dependencies": {
     "bootstrap": "3.3.7",
+    "enzyme": "2.4.1",
     "react": "15.3.2",
+    "react-addons-test-utils": "15.3.1",
     "react-bootstrap": "0.30.3",
     "react-dom": "15.3.1",
     "react-redux": "4.4.5",
+    "react-test-renderer": "15.3.1",
     "redux": "3.6.0",
+    "redux-devtools": "3.3.1",
+    "redux-devtools-dock-monitor": "1.1.1",
+    "redux-devtools-log-monitor": "1.0.11",
     "redux-logger": "2.6.1",
     "redux-thunk": "2.1.0"
+  },
+  "peerDependencies": {
+    "react": "^15.3.0",
+    "bootstrap": "^3.3.0",
+    "react-bootstrap": "^0.30.3",
+    "redux": "^3.6.0",
+    "redux-devtools": "^3.3.1",
+    "redux-devtools-dock-monitor": "^1.1.1",
+    "redux-devtools-log-monitor": "^1.0.11",
+    "redux-logger": "^2.6.1",
+    "redux-thunk": "^2.1.0"
   }
 }
