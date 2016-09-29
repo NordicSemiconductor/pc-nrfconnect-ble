@@ -58,6 +58,26 @@ The application needs to be able to load nrfjprog libraries. This is currently n
 
     tar xf nrfjprog/nRF5x-Command-Line-Tools_8_5_0_Linux-x86_64.tar --strip-components=2 -C node_modules/electron-prebuilt/dist
 
+## Working with appmodules
+
+This project is split into multiple [appmodules](doc/README.md) inside the `packages` directory. When running `npm start` from the root directory, the appmodule loader will be started. When choosing an appmodule, a *pre-built version* of that appmodule will be loaded. If you modify the code, it will not have any effect unless you `npm run build` the appmodule and restart the application.
+
+When working with appmodules it is normally recommended to navigate to the appmodule directory before running `npm start`. When doing this, the application will hot-reload any changes that are made to the code, providing instant feedback during development.
+
+    cd packages/nrfconnect-appmodule-ble
+    npm start
+
+## Testing
+
+Unit testing of all packages can be performed by running:
+
+    npm test
+
+Testing of individual packages can be done by navigating to the package directory before running `npm test`:
+
+    cd packages/nrfconnect-appmodule-ble
+    npm test
+
 ## Creating release packages
 Scripts have been included in the reop to create release packages. Different artifacts will be created depending on the type of operating system:
 
@@ -75,7 +95,7 @@ The build scripts will set the required environment variables, build nRF Connect
 Since the build scripts delete the cache folder *node_modules* and reinstalls in production mode it can be a good idea to run the scripts from a separate repository clone folder.
 
 ## Color definitions
-The main colors used in nRF Connect are defined in the file css/brand.less. The colors defined in the source code base have been modified from the colors used in the official release builds of nRF Connect. This has been done to differentiate the Nordic releases from other source code builds. Please feel free to modify the color definitions to your own liking.
+The main colors used in nRF Connect are defined in the file [packages/nrfconnect-core/css/brand.less](packages/nrfconnect-core/css/brand.less). The colors defined in the source code base have been modified from the colors used in the official release builds of nRF Connect. This has been done to differentiate the Nordic releases from other source code builds. Please feel free to modify the color definitions to your own liking.
 
 # Related projects
 nRF Connect builds on top of other sub components that live in their own GitHub repositories:
