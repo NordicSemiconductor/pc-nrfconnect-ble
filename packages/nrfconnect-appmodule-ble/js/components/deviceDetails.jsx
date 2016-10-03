@@ -17,7 +17,6 @@ import React, { PropTypes } from 'react';
 import ConnectedDevice from './ConnectedDevice';
 import CentralDevice from './CentralDevice';
 import EnumeratingAttributes from './EnumeratingAttributes';
-
 import ServiceItem from './ServiceItem';
 
 export default class DeviceDetailsView extends React.PureComponent {
@@ -32,6 +31,17 @@ export default class DeviceDetailsView extends React.PureComponent {
             return <EnumeratingAttributes bars={1} />;
         }
 
+        const children = deviceDetail.get('children');
+        if (children) {
+            return <div className="service-items-wrap">
+                    {children.map(service => this.createServiceItem(service))}
+                </div>;
+        }
+
+        return undefined;
+    }
+
+    createServiceItem(service) {
         const {
             selected,
             onSelectComponent,
@@ -42,27 +52,17 @@ export default class DeviceDetailsView extends React.PureComponent {
             onWriteDescriptor,
         } = this.props;
 
-        const children = deviceDetail.get('children');
-        if (children) {
-            const childrenLIst = children.map(service =>
-                <ServiceItem key={service.instanceId}
-                        item={service}
-                        selectOnClick={true}
-                        selected={selected}
-                        onSelectAttribute={onSelectComponent}
-                        onSetAttributeExpanded={onSetAttributeExpanded}
-                        onReadCharacteristic={onReadCharacteristic}
-                        onWriteCharacteristic={onWriteCharacteristic}
-                        onReadDescriptor={onReadDescriptor}
-                        onWriteDescriptor={onWriteDescriptor} />
-            );
 
-            return <div className="service-items-wrap">
-                    {childrenLIst}
-                </div>;
-        }
-
-        return undefined;
+        return <ServiceItem key={service.instanceId}
+                     item={service}
+                     selectOnClick={true}
+                     selected={selected}
+                     onSelectAttribute={onSelectComponent}
+                     onSetAttributeExpanded={onSetAttributeExpanded}
+                     onReadCharacteristic={onReadCharacteristic}
+                     onWriteCharacteristic={onWriteCharacteristic}
+                     onReadDescriptor={onReadDescriptor}
+                     onWriteDescriptor={onWriteDescriptor} />;
     }
 
     render() {

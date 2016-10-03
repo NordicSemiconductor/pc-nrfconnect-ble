@@ -12,12 +12,28 @@
 
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import AttributeItem from './AttributeItem';
 import CharacteristicItem from './CharacteristicItem';
 
 export default class ServiceItem extends AttributeItem {
+    static propTypes = {
+        item: PropTypes.object.isRequired,
+        selected: PropTypes.string,
+        button: PropTypes.shape({
+            icon: PropTypes.string,
+            onClick: PropTypes.func
+        }),
+        onAddDescriptor: PropTypes.func,
+        onSelectAttribute: PropTypes.func,
+        onSetAttributeExpanded: PropTypes.func,
+        onReadCharacteristic: PropTypes.func,
+        onWriteCharacteristic: PropTypes.func,
+        onReadDescriptor: PropTypes.func,
+        onWriteDescriptor: PropTypes.func,
+    };
+
     constructor(props) {
         super(props);
         this.bars = 1;
@@ -26,9 +42,16 @@ export default class ServiceItem extends AttributeItem {
     }
 
     renderContent(children) {
+        const { button } = this.props;
+
         return (
             <div className='content'>
                 {this.renderName()}
+                {button &&
+                    <button className="btn btn-primary btn-nordic" onClick={() => button.onClick()}>
+                        <img src={button.icon} />
+                    </button>
+                }
                 {children}
             </div>
         );

@@ -1,0 +1,91 @@
+exports[`test renders correctly with button 1`] = `
+<div>
+  <div
+    className="service-item neutral-background"
+    onClick={[Function]}
+    style={
+      Object {
+        "backgroundColor": "rgb(255, 255, 255)",
+      }
+    }>
+    <div
+      className="expand-area"
+      onClick={[Function]}>
+      <div
+        className="bar1" />
+      <div
+        className="icon-wrap">
+        <i
+          className="icon-slim icon-right-dir"
+          style={Object {}} />
+      </div>
+    </div>
+    <div
+      className="content-wrap">
+      <div
+        className="content">
+        <div
+          className="service-name truncate-text"
+          title="UUID: service-uuid-1">
+          Service Name
+        </div>
+        <button
+          className="btn btn-primary btn-nordic"
+          onClick={[Function]}>
+          <img
+            src="path/to/icon.png" />
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    style={
+      Object {
+        "display": "none",
+      }
+    } />
+</div>
+`;
+
+exports[`test renders correctly with no button 1`] = `
+<div>
+  <div
+    className="service-item neutral-background"
+    onClick={[Function]}
+    style={
+      Object {
+        "backgroundColor": "rgb(255, 255, 255)",
+      }
+    }>
+    <div
+      className="expand-area"
+      onClick={[Function]}>
+      <div
+        className="bar1" />
+      <div
+        className="icon-wrap">
+        <i
+          className="icon-slim icon-right-dir"
+          style={Object {}} />
+      </div>
+    </div>
+    <div
+      className="content-wrap">
+      <div
+        className="content">
+        <div
+          className="service-name truncate-text"
+          title="UUID: service-uuid-1">
+          Service Name
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    style={
+      Object {
+        "display": "none",
+      }
+    } />
+</div>
+`;
