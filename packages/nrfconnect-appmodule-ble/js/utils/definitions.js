@@ -60,6 +60,7 @@ export const uuid16bitServiceDefinitions = {
     '1820': { name: 'Internet Protocol Support', },
     '1821': { name: 'Indoor Positioning', },
     '1822': { name: 'Pulse Oximeter', },
+    'FE59': { name: 'Secure DFU'},
 };
 
 export const uuid16bitCharacteristicDefinitions = {
@@ -243,15 +244,17 @@ export const uuid16bitDescriptorDefinitions = {
 };
 
 export const uuid128bitServiceDefinitions = {
-    '000015301212EFDE1523785FEABCD123': { name: 'DFU', },
+    '000015301212EFDE1523785FEABCD123': { name: 'Legacy DFU', },
     '6E400001B5A3F393E0A9E50E24DCCA9E': { name: 'UART over BLE', },
     '7905F431B5CE4E99A40F4B1E122D00D0': { name: 'ANCS', },
     'A3C875008ED34BDF8A39A01BEBEDE295': { name: 'Eddystone Configuration Service', },
 };
 
 export const uuid128bitCharacteristicDefinitions = {
-    '000015311212EFDE1523785FEABCD123': { name: 'DFU Control Point', },
-    '000015321212EFDE1523785FEABCD123': { name: 'DFU Packet', },
+    '8EC90001F3154F609FB8838830DAEA50': { name: 'Secure DFU Control Point', },
+    '8EC90002F3154F609FB8838830DAEA50': { name: 'Secure DFU Packet', },
+    '000015311212EFDE1523785FEABCD123': { name: 'Legacy DFU Control Point', },
+    '000015321212EFDE1523785FEABCD123': { name: 'Legacy DFU Packet', },
     '6E400002B5A3F393E0A9E50E24DCCA9E': { name: 'UART RX', },
     '6E400003B5A3F393E0A9E50E24DCCA9E': { name: 'UART TX', },
     '9FBF120D630142D98C5825E699A21DBD': { name: 'ANCS Notification Source', },
