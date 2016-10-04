@@ -22,8 +22,10 @@ import * as AdvertisingActions from '../actions/advertisingActions';
 import * as AdapterActions from '../actions/adapterActions';
 import * as BLEEventActions from '../actions/bleEventActions';
 import * as SecurityActions from '../actions/securityActions';
+import * as DfuActions from '../actions/dfuActions';
 
 import DeviceDetailsView from '../components/deviceDetails';
+import DfuDialog from './DfuDialog';
 
 import { getInstanceIds } from '../utils/api';
 import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
@@ -147,6 +149,7 @@ class DeviceDetailsContainer extends React.PureComponent {
             deleteBondInfo,
             security,
             openCustomUuidFile,
+            showDfuDialog,
         } = this.props;
 
         const elemWidth = 250;
@@ -187,6 +190,7 @@ class DeviceDetailsContainer extends React.PureComponent {
                                                   device={device}
                                                   selected={selectedComponent}
                                                   deviceDetails={deviceDetails}
+                                                  onShowDfuDialog={showDfuDialog}
                                                   onSelectComponent={selectComponent}
                                                   onSetAttributeExpanded={setAttributeExpanded}
                                                   onReadCharacteristic={readCharacteristic}
@@ -205,12 +209,17 @@ class DeviceDetailsContainer extends React.PureComponent {
         const width = (perDevice * detailDevices.length);
 
         // TODO: Fix better solution to right padding of scroll area than div box with border
-        return (<div className='device-details-container' style={this.props.style}>
+        return (
+            <div>
+                <div className='device-details-container' style={this.props.style}>
                     <div style={{ width: width }}>
                         {detailDevices}
                         <div style={{ borderColor: 'transparent', borderLeftWidth: '20px', borderRightWidth: '0px', borderStyle: 'solid' }} />
                     </div>
-                </div>);
+                </div>
+                <DfuDialog />
+            </div>
+        );
     }
 }
 
@@ -243,6 +252,7 @@ function mapDispatchToProps(dispatch) {
             bindActionCreators(AdapterActions, dispatch),
             bindActionCreators(BLEEventActions, dispatch),
             bindActionCreators(SecurityActions, dispatch),
+            bindActionCreators(DfuActions, dispatch),
         );
 
     return retval;

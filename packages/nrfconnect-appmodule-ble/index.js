@@ -57,3 +57,11 @@ ipcMain.on('load-server-setup', function (event, arg) {
             properties: ['openFile'],
         }));
 });
+
+ipcMain.on('choose-file-dialog', function (event, filters) {
+    event.sender.send('choose-file-dialog-reply', dialog.showOpenDialog({
+        title: 'Choose file',
+        filters: filters,
+        properties: ['openFile']
+    }));
+});

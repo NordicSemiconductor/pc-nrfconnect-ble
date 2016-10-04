@@ -18,10 +18,12 @@ import ConnectedDevice from './ConnectedDevice';
 import CentralDevice from './CentralDevice';
 import EnumeratingAttributes from './EnumeratingAttributes';
 import ServiceItem from './ServiceItem';
+import { getUuidByName } from '../utils/uuid_definitions';
 
 export default class DeviceDetailsView extends React.PureComponent {
     constructor(props) {
         super(props);
+        this.dfuUuid = getUuidByName('Secure DFU');
     }
 
     renderChildren(instanceId) {
@@ -63,6 +65,17 @@ export default class DeviceDetailsView extends React.PureComponent {
                      onWriteCharacteristic={onWriteCharacteristic}
                      onReadDescriptor={onReadDescriptor}
                      onWriteDescriptor={onWriteDescriptor} />;
+    }
+
+    _hasDfuService(instanceId) {
+        const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
+        if (!deviceDetail.discoveringChildren) {
+            const services = deviceDetail.get('children');
+            if (services) {
+                return services.some(service => service.uuid === this.dfuUuid);
+            }
+        }
+        return false;
     }
 
     render() {
@@ -143,9 +156,14 @@ export default class DeviceDetailsView extends React.PureComponent {
             onDisconnectFromDevice,
             onPairWithDevice,
             onUpdateDeviceConnectionParams,
+            onShowDfuDialog,
         } = this.props;
 
         const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
+        const isDfuSupported = this._hasDfuService(instanceId);
+        const onClickDfu = () => {
+            onShowDfuDialog(device);
+        };
 
         if (!deviceDetail) {
             return <div/>;
@@ -157,6 +175,8 @@ export default class DeviceDetailsView extends React.PureComponent {
                                                   device={device}
                                                   selected={selected}
                                                   layout="vertical"
+                                                  isDfuSupported={isDfuSupported}
+                                                  onClickDfu={onClickDfu}
                                                   onSelectComponent={onSelectComponent}
                                                   onDisconnect={() => onDisconnectFromDevice(device)}
                                                   onPair={() => onPairWithDevice(device)}
