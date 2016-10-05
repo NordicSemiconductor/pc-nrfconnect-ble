@@ -12,15 +12,15 @@
 
  'use strict';
 
-var electron = require('electron');
-var app = electron.app;
-var BrowserWindow = electron.BrowserWindow;
+let electron = require('electron');
+let app = electron.app;
+let BrowserWindow = electron.BrowserWindow;
 require('nrfconnect-core/index');
 
-var splashScreen = null;
-var loaderWindow = null;
+let splashScreen = null;
+let loaderWindow = null;
 
-var ipcMain = electron.ipcMain;
+let ipcMain = electron.ipcMain;
 
 ipcMain.on('load-appmodule', function (event, name) {
     require(name);

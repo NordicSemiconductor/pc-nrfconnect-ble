@@ -10,8 +10,8 @@
  *
  */
 
-var electron = require('electron');
-var core = require('nrfconnect-core/index');
+let electron = require('electron');
+let core = require('nrfconnect-core/index');
 
 // Support both immediate and delayed initialization
 if (electron.app.isReady()) {

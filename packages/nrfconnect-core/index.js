@@ -14,11 +14,11 @@
 
 const VERSION = '1.0';
 
-var os = require('os');
-var fs = require('fs');
-var electron = require('electron');
-var app = electron.app;
-var settings = require('./settings');
+let os = require('os');
+let fs = require('fs');
+let electron = require('electron');
+let app = electron.app;
+let settings = require('./settings');
 
 global.keymap = app.getPath('userData') + '/keymap.cson';
 global.userDataDir = app.getPath('userData');
@@ -44,7 +44,7 @@ function createBrowserWindow(options) {
         minHeight: 499,
         show: false
     }, options);
-    var browserWindow = new electron.BrowserWindow(mergedOptions);
+    let browserWindow = new electron.BrowserWindow(mergedOptions);
 
     browserWindow.loadURL(options.url);
 
@@ -67,7 +67,7 @@ function createBrowserWindow(options) {
             _createDefaultMenu();
         }
 
-        var title = 'nRF Connect v' + VERSION;
+        let title = 'nRF Connect v' + VERSION;
         if (options.title) {
             title += ' - ' + options.title;
         }
@@ -79,7 +79,7 @@ function createBrowserWindow(options) {
 }
 
 function _createDefaultMenu() {
-    var template = [
+    let template = [
         {
             label: '&File',
             submenu: [
@@ -150,8 +150,8 @@ function _createDefaultMenu() {
         });
     }
 
-    var Menu = electron.Menu;
-    var menu = Menu.buildFromTemplate(template);
+    let Menu = electron.Menu;
+    let menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
 }
 

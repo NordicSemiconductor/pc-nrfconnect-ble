@@ -12,11 +12,11 @@
 
  'use strict';
 
-var electron = require('electron');
-var ipcMain = electron.ipcMain;
-var dialog = electron.dialog;
-var shell = electron.shell;
-var core = require('nrfconnect-core/index');
+let electron = require('electron');
+let ipcMain = electron.ipcMain;
+let dialog = electron.dialog;
+let shell = electron.shell;
+let core = require('nrfconnect-core/index');
 
 if (electron.app.isReady()) {
     initBrowserWindow();
@@ -41,7 +41,7 @@ function initBrowserWindow() {
     });
 }
 
-var filters =  [
+let filters =  [
     { name: 'nRF Connect Server Setup', extensions: ['ncs', 'json'] },
     { name: 'All Files', extensions: ['*'] },
 ];
