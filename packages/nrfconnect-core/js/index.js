@@ -3,6 +3,7 @@ const actions = {
 };
 
 const components = {
+    Spinner: require('./components/Spinner'),
     LabeledInputGroup: require('./components/input/LabeledInputGroup'),
     SelectList: require('./components/input/SelectList'),
     TextArea: require('./components/input/TextArea'),

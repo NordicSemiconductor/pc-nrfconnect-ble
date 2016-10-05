@@ -21,9 +21,8 @@ import * as AdapterActions from '../actions/adapterActions';
 
 import DiscoveryButton from '../components/discoveryButton';
 import DiscoveredDevice from '../components/DiscoveredDevice';
-import { TextInput } from 'nrfconnect-core';
+import { TextInput, Spinner } from 'nrfconnect-core';
 import { FormGroup, Checkbox } from 'react-bootstrap';
-import spinnerImage from 'nrfconnect-core/resources/ajax-loader.gif';
 
 class DiscoveredDevices extends React.PureComponent {
     constructor(props) {
@@ -65,10 +64,6 @@ class DiscoveredDevices extends React.PureComponent {
 
         this.discoveryOptions = this.props.discoveryOptions.toJS();
 
-        const progressStyle = {
-            visibility: isScanning ? 'visible' : 'hidden',
-        };
-
         const dirIcon = discoveryOptions.expanded ? 'icon-down-dir' : 'icon-right-dir';
 
         const discoveryOptionsDiv = discoveryOptions.expanded ?
@@ -88,7 +83,7 @@ class DiscoveredDevices extends React.PureComponent {
                 <div>
                     <h4>
                         Discovered devices
-                        <img className='spinner' src={spinnerImage} height='16' width='16' style={progressStyle} />
+                        <Spinner visible={isScanning} />
                     </h4>
                 </div>
 

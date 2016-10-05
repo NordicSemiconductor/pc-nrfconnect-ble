@@ -14,7 +14,7 @@
 
 import React from 'react';
 
-import spinnerImage from 'nrfconnect-core/resources/ajax-loader.gif';
+import { Spinner } from 'nrfconnect-core';
 
 export default class EnumeratingAttributes extends React.PureComponent {
     render() {
@@ -28,7 +28,7 @@ export default class EnumeratingAttributes extends React.PureComponent {
             <div className='enumerating-items-wrap'>
                 {barList}
                 <div className='enumerating-content'>
-                    <img className='spinner center-block' src={spinnerImage} height='20' width='20' />
+                    <Spinner className="spinner center-block" size="20" />
                 </div>
             </div>
         );
