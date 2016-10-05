@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'/>
+    <title>nRF Connect</title>
+</head>
+<body>
+<div>
+    <div id='app'></div>
+</div>
+
+<script>
+    (function() {
+        const script = document.createElement('script');
+        script.src = process.env.NODE_ENV === 'development' ? 'http://localhost:9000/dist/bundle.js' : './dist/bundle.js';
+        document.write(script.outerHTML);
+    }());
+</script>
+</body>
+</html>

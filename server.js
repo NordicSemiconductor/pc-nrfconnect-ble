@@ -39,4 +39,8 @@ function ifPortAvailable(port, runFn) {
     server.listen(port);
 }
 
+process.on('SIGINT', function () {
+    process.exit();
+});
+
 ifPortAvailable(PORT, () => startHotReloadServer());

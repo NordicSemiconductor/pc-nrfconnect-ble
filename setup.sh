@@ -57,19 +57,12 @@ esac
 export YGGDRASIL_APP_DIR="$YGGDRASIL_APP_NAME-$YGGDRASIL_PLATFORM-$npm_config_arch"
 export YGGDRASIL_APP_ROOT_DIR="$YGGDRASIL_DEPLOY_DIR/$YGGDRASIL_APP_DIR"
 
-rm -rf node_modules
-
-mv js/settings.json js/settings.json.dev
-mv js/settings.json.prod js/settings.json
-
-npm install
+npm run clean
+npm run bootstrap
 npm run build
 npm prune --production
 
-mkdir ./hex
-cp node_modules/pc-ble-driver-js/pc-ble-driver/hex/*.hex ./hex/
-
-electron-packager . "$YGGDRASIL_APP_NAME" --platform=$YGGDRASIL_PLATFORM --arch=$npm_config_arch --icon=$YGGDRASIL_ICON --version=$npm_config_target --overwrite --out=$YGGDRASIL_DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName="Nordic Semiconductor ASA" --version-string.LegalCopyright="Nordic Semiconductor ASA" --version-string.FileDescription="nRF Connect" --version-string.OriginalFilename="nrfconnect" --version-string.FileVersion="$YGGDRASIL_VERSION" --version-string.ProductVersion="$YGGDRASIL_FULL_VERSION" --version-string.ProductName="$YGGDRASIL_NAME" --version-string.InternalName="$YGGDRASIL_NAME"
+electron-packager packages/nrfconnect-loader "$YGGDRASIL_APP_NAME" --platform=$YGGDRASIL_PLATFORM --arch=$npm_config_arch --icon=$YGGDRASIL_ICON --version=$npm_config_target --overwrite --out=$YGGDRASIL_DEPLOY_DIR --app-version=$YGGDRASIL_VERSION --version-string.CompanyName="Nordic Semiconductor ASA" --version-string.LegalCopyright="Nordic Semiconductor ASA" --version-string.FileDescription="nRF Connect" --version-string.OriginalFilename="nrfconnect" --version-string.FileVersion="$YGGDRASIL_VERSION" --version-string.ProductVersion="$YGGDRASIL_FULL_VERSION" --version-string.ProductName="$YGGDRASIL_NAME" --version-string.InternalName="$YGGDRASIL_NAME"
 
 cp LICENSE "$YGGDRASIL_APP_ROOT_DIR/LICENSE"
 tar xvf nrfjprog/$COMMANDLINE_TOOLS_FILE --strip=2 -C $YGGDRASIL_DEPLOY_DIR
@@ -81,6 +74,3 @@ cd "$YGGDRASIL_DEPLOY_DIR"
 tar czf $YGGDRASIL_NAME-$YGGDRASIL_FULL_VERSION-$YGGDRASIL_PLATFORM-$npm_config_arch.tar.gz "$YGGDRASIL_APP_DIR"
 
 popd
-
-mv js/settings.json js/settings.json.prod
-mv js/settings.json.dev js/settings.json
