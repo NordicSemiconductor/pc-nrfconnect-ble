@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { FormGroup, ControlLabel, FormControl, InputGroup } from 'react-bootstrap';
 
-class TextInput extends React.PureComponent {
+class SelectList extends React.PureComponent {
     static propTypes = {
         id: PropTypes.string,
         label: PropTypes.string.isRequired,
@@ -32,4 +32,4 @@ class TextInput extends React.PureComponent {
     }
 }
 
-export default TextInput;
+export default SelectList;
