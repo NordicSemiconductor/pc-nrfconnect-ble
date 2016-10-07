@@ -22,6 +22,7 @@ import * as AdapterActions from '../actions/adapterActions';
 import DiscoveryButton from '../components/discoveryButton';
 import DiscoveredDevice from '../components/DiscoveredDevice';
 import { TextInput, Spinner } from 'nrfconnect-core';
+import spinnerImage from 'nrfconnect-core/resources/ajax-loader.gif';
 import { FormGroup, Checkbox } from 'react-bootstrap';
 
 class DiscoveredDevices extends React.PureComponent {
@@ -83,7 +84,7 @@ class DiscoveredDevices extends React.PureComponent {
                 <div>
                     <h4>
                         Discovered devices
-                        <Spinner visible={isScanning} />
+                        <Spinner image={spinnerImage} visible={isScanning} />
                     </h4>
                 </div>
 

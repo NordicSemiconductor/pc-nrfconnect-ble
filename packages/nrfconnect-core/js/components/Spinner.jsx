@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import spinnerImage from '../../resources/ajax-loader.gif';
 
 export default class Spinner extends React.PureComponent {
     static propTypes = {
+        image: PropTypes.string.isRequired,
         size: PropTypes.number,
         visible: PropTypes.bool,
         className: PropTypes.string
@@ -15,13 +15,13 @@ export default class Spinner extends React.PureComponent {
     };
 
     render() {
-        const { size, visible, className } = this.props;
+        const { image, size, visible, className } = this.props;
         const style = {
             visibility: visible ? 'visible' : 'hidden'
         };
 
         return (
-            <img className={className} src={spinnerImage} height={size} width={size} style={style} />
+            <img className={className} src={image} height={size} width={size} style={style} />
         );
     }
 }

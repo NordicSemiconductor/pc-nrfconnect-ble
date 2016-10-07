@@ -17,6 +17,7 @@ import React from 'react';
 import {Modal} from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
 import {Spinner} from 'nrfconnect-core';
+import spinnerImage from 'nrfconnect-core/resources/ajax-loader.gif';
 
 var ConfirmationDialog = React.createClass({
     getInitialState() {
@@ -40,7 +41,7 @@ var ConfirmationDialog = React.createClass({
                 <p>{this.props.text}</p>
               </Modal.Body>
               <Modal.Footer>
-                <Spinner visible={this.props.showProgress} />
+                <Spinner image={spinnerImage} visible={this.props.showProgress} />
                 &nbsp;
                 <Button onClick={this.props.onOk} disabled={buttonDisabled}>OK</Button>
                 <Button onClick={this.props.onCancel} disabled={buttonDisabled}>Cancel</Button>
