@@ -22,12 +22,7 @@ let settings = require('./settings');
 
 global.keymap = app.getPath('userData') + '/keymap.cson';
 global.userDataDir = app.getPath('userData');
-
-if (os.type() === 'Windows_NT') {
-    global.appPath = path.dirname(app.getPath('exe'));
-} else {
-    global.appPath = app.getAppPath();
-}
+global.appPath = app.getAppPath();
 
 app.on('window-all-closed', function () {
     app.quit();
