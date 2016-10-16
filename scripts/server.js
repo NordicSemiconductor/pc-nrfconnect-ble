@@ -2,7 +2,7 @@ let express = require('express');
 let webpack = require('webpack');
 let webpackDevMiddleware = require('webpack-dev-middleware');
 let webpackHotMiddleware = require('webpack-hot-middleware');
-let config = require('./webpack.config.development');
+let config = require('../webpack.config.development');
 let net = require('net');
 let server = net.createServer();
 

@@ -1,7 +1,7 @@
 const path = require('path');
 const spawn = require('child_process').spawn;
 
-const serverCommand = 'node ../../server.js';
+const serverCommand = 'node ../../scripts/server.js';
 const electronCommand = ['..', '..', 'node_modules', '.bin', 'electron .'].join(path.sep);
 
 // We have only one hot-reloading development server process. When starting the
