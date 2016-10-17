@@ -22,7 +22,7 @@
     "redux-devtools-log-monitor": "1.0.11"
   },
   "dependencies": {
-    "atom-keymap": "6.3.2",
+    "atom-keymap": "7.0.5",
     "babel-polyfill": "6.13.0",
     "bootstrap": "3.3.7",
     "change-case": "3.0.0",
