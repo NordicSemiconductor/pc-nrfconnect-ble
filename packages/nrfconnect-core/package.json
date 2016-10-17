@@ -7,9 +7,9 @@
     "url": "https://github.com/NordicSemiconductor/pc-yggdrasil.git"
   },
   "scripts": {
-    "build": "../../node_modules/.bin/webpack --config webpack.config.js",
-    "test": "../../node_modules/.bin/cross-env BABEL_DISABLE_CACHE=1 ../../node_modules/.bin/jest js/",
-    "clean": "../../node_modules/.bin/rimraf node_modules"
+    "build": "node ../../scripts/build.js webpack.config.js",
+    "test": "node ../../scripts/test.js",
+    "clean": "node ../../scripts/clean.js"
   },
   "main": "js/loader.js",
   "author": "Nordic Semiconductor ASA",
