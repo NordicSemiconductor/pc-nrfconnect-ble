@@ -49,8 +49,7 @@ set npm_config_disturl=https://atom.io/download/atom-shell
 
 echo "Install production"
 call npm run clean
-call npm run bootstrap
-call npm run build
+call npm install
 call npm prune --production
 
 echo "Copy driver"
