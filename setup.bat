@@ -49,18 +49,14 @@ set npm_config_disturl=https://atom.io/download/atom-shell
 
 echo "Install production"
 call npm run clean
-call npm run bootstrap
-call npm run build
+call npm install
 call npm prune --production
 
-echo "Copy driver"
-copy node_modules\pc-ble-driver-js\build\driver\Release\pc-ble-driver.dll node_modules\pc-ble-driver-js\build\Release\pc-ble-driver.dll
-
 echo "Copy runtime redistributable files for Visual Studio"
-copy "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT\*.dll" node_modules\pc-ble-driver-js\build\Release\
+copy "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT\*.dll" packages\nrfconnect-appmodule-ble\node_modules\pc-ble-driver-js\build\Release\
 
 echo "Packaging"
-call electron-packager nrfconnect-loader nrf-connect --platform=win32 --arch=%YGGDRASIL_ELECTRON_ARCH% --version=%YGGDRASIL_ELECTRON_VERSION% --overwrite --out=%YGGDRASIL_DEPLOY_DIR% --icon=nrfconnect.ico --app-version=%YGGDRASIL_VERSION% --version-string.CompanyName="Nordic Semiconductor" --version-string.LegalCopyright="Nordic Semiconductor" --version-string.FileDescription="nRF Connect" --version-string.OriginalFilename="nrf-connect.exe" --version-string.FileVersion=%YGGDRASIL_VERSION% --version-string.ProductVersion=%YGGDRASIL_FULL_VERSION% --version-string.ProductName="nRF Connect" --version-string.InternalName="nRF Connect" --asar
+call electron-packager packages\nrfconnect-loader nrf-connect --platform=win32 --arch=%YGGDRASIL_ELECTRON_ARCH% --version=%YGGDRASIL_ELECTRON_VERSION% --overwrite --out=%YGGDRASIL_DEPLOY_DIR% --icon=nrfconnect.ico --app-version=%YGGDRASIL_VERSION% --version-string.CompanyName="Nordic Semiconductor" --version-string.LegalCopyright="Nordic Semiconductor" --version-string.FileDescription="nRF Connect" --version-string.OriginalFilename="nrf-connect.exe" --version-string.FileVersion=%YGGDRASIL_VERSION% --version-string.ProductVersion=%YGGDRASIL_FULL_VERSION% --version-string.ProductName="nRF Connect" --version-string.InternalName="nRF Connect" --asar
 
 copy yggdrasil_installer.nsi %YGGDRASIL_DEPLOY_DIR%
 copy nrfconnect.ico %YGGDRASIL_DEPLOY_DIR%
