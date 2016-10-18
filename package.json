@@ -11,7 +11,7 @@
     "start": "cd packages/nrfconnect-loader && npm start",
     "build": "lerna run build",
     "postinstall": "npm run bootstrap && npm run build",
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap --concurrency 1",
     "updated": "lerna updated",
     "test": "lerna run test",
     "clean": "npm install lerna rimraf && lerna run clean && rimraf \"node_modules/!(rimraf|.bin)\""
