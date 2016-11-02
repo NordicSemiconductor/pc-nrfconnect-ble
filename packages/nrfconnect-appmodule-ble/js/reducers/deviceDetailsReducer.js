@@ -233,6 +233,9 @@ function attributeValueChanged(state, attribute, value, error) {
     }
 
     const attributeStatePath = getNodeStatePath(attribute.instanceId);
+    if (!state.hasIn(attributeStatePath)) {
+        return state;
+    }
 
     let errorMessage = '';
     if (error) {
