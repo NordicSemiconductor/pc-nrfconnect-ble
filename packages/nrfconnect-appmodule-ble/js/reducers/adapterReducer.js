@@ -14,7 +14,7 @@
 
 const DEFAULT_ADAPTER_STATUS = 'Select serial port';
 
-import { List, Record } from 'immutable';
+import { List, Set, Record } from 'immutable';
 import { combineReducers } from 'redux';
 
 import * as apiHelper from '../utils/api';
@@ -37,6 +37,7 @@ const ImmutableRoot = Record({
     adapterIndicator: 'off',
     selectedAdapter: null, // Index of selected adapter in .adapters (not api.adapters)
     autoConnUpdate: true,
+    ignoredDeviceAddresses: Set(),
     errors: List(),
 });
 
@@ -235,6 +236,14 @@ function deviceSecurityChanged(state, device, parameters) {
     return state;
 }
 
+function disableDeviceEvents(state, deviceAddress) {
+    return state.set('ignoredDeviceAddresses', state.ignoredDeviceAddresses.add(deviceAddress));
+}
+
+function enableDeviceEvents(state, deviceAddress) {
+    return state.set('ignoredDeviceAddresses', state.ignoredDeviceAddresses.remove(deviceAddress));
+}
+
 function bondStoreUpdated(state) {
     const { index } = getSelectedAdapter(state);
 
@@ -373,6 +382,10 @@ export default function adapter(state = getImmutableRoot(), action) {
             return toggleAutoConnUpdate(state);
         case AdapterAction.DEVICE_ADD_BOND_INFO:
             return addBondInfo(state, action.device, action.parameters);
+        case AdapterAction.DEVICE_DISABLE_EVENTS:
+            return disableDeviceEvents(state, action.deviceAddress);
+        case AdapterAction.DEVICE_ENABLE_EVENTS:
+            return enableDeviceEvents(state, action.deviceAddress);
         case SecurityActions.SECURITY_DELETE_BOND_INFO:
             return deleteBondInfo(state);
         case DeviceDetailsActions.DISCOVERED_DEVICE_NAME:
