@@ -79,7 +79,7 @@ Testing of individual packages can be done by navigating to the package director
     npm test
 
 ## Creating release packages
-Scripts have been included in the reop to create release packages. Different artifacts will be created depending on the type of operating system:
+Scripts have been included in the repo to create release packages. Different artifacts will be created depending on the type of operating system:
 
 * Windows: an nsis installer will be created
 * macOS: an app bundle will be created and added in a tar.gz archive
