@@ -50,6 +50,7 @@ set npm_config_disturl=https://atom.io/download/atom-shell
 echo "Install production"
 call npm run clean
 call npm install
+call npm test
 call npm prune --production
 
 echo "Copy runtime redistributable files for Visual Studio"
