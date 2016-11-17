@@ -17,6 +17,7 @@
   "devDependencies": {
     "bootstrap": "3.3.7",
     "enzyme": "2.4.1",
+    "immutable": "3.8.1",
     "react": "15.3.2",
     "react-addons-test-utils": "15.3.1",
     "react-bootstrap": "0.30.3",
@@ -33,6 +34,7 @@
   "peerDependencies": {
     "react": "^15.3.0",
     "bootstrap": "^3.3.0",
+    "immutable": "^3.8.1",
     "react-bootstrap": "^0.30.3",
     "redux": "^3.6.0",
     "redux-devtools": "^3.3.1",
