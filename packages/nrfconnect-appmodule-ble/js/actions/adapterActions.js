@@ -72,7 +72,7 @@ export const FATAL = 5;
 import _ from 'underscore';
 import semver from 'semver';
 import { SerialPort } from 'serialport';
-import { driver, api } from 'pc-ble-driver-js';
+import { api } from 'pc-ble-driver-js';
 import { logger } from '../logging';
 import { discoverServices } from './deviceDetailsActions';
 import { BLEEventState } from './common';
@@ -878,6 +878,7 @@ function _rejectPairing(dispatch, getState, id, device) {
 
 function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
     const adapterToUse = getState().adapter.api.selectedAdapter;
+    const driver = adapterToUse.driver;
 
     if (adapterToUse === null) {
         dispatch(showErrorDialog(new Error('No adapter selected!')));
@@ -970,6 +971,7 @@ function _replyLescOob(dispatch, getState, id, device, peerOob, ownOobData) {
 
 function _sendKeypress(dispatch, getState, eventId, device, keypressType) {
     const adapterToUse = getState().adapter.api.selectedAdapter;
+    const driver = adapterToUse.driver;
 
     const keypressStartSent = getState().bleEvent.getIn(
         [

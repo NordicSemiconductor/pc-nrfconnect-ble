@@ -34,7 +34,7 @@
     "less": "2.7.1",
     "moment": "2.14.1",
     "nrfconnect-core": "1.0.0",
-    "pc-ble-driver-js": "https://github.com/NordicSemiconductor/pc-ble-driver-js.git#8e8fb2c",
+    "pc-ble-driver-js": "https://github.com/NordicSemiconductor/pc-ble-driver-js.git#e73f113",
     "pc-nrfjprog-js": "https://github.com/NordicSemiconductor/pc-nrfjprog-js.git#v0.3.0",
     "react": "15.3.1",
     "react-bootstrap": "0.30.3",
