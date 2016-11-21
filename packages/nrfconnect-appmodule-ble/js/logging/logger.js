@@ -215,10 +215,16 @@ const transports = [
     }),
 ];
 
-try {
-    //Test to find out if the application is running without stdout console
-    process.stdout.write('');
+const isConsoleAvailable = () => {
+    try {
+        process.stdout.write('');
+    } catch (error) {
+        return false;
+    }
+    return true;
+};
 
+if (process.env.NODE_ENV === 'development' && isConsoleAvailable()) {
     transports.push(new (winston.transports.Console)({
         name: 'console',
         level: 'silly',
@@ -228,8 +234,7 @@ try {
 
         formatter: createLine,
     }));
-
-} catch (exception) {}
+}
 
 export const logger = new (winston.Logger)({
     transports: transports,
