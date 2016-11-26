@@ -12,7 +12,7 @@
     "test": "node ../../scripts/test.js",
     "clean": "node ../../scripts/clean.js",
     "linkup": "node ../../scripts/linkup.js",
-    "postinstall": "yarn run linkup"
+    "postinstall": "npm install pc-ble-driver-js && yarn run linkup"
   },
   "config": {
     "title": "Bluetooth Low Energy (BLE)",
