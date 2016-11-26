@@ -29,6 +29,7 @@ To build this project you will need to install the following tools:
 
 * Node.js (>=4.4.7)
 * npm (>=3.7.0)
+* yarn (>=0.17.9)
 * CMake (>=2.8.12)
 * A C/C++ toolchain (see [Building Boost](#building-boost) for description of toolchain requirements)
 
@@ -46,11 +47,11 @@ Note: Make sure you have built the Boost libraries for the architecture (32 or 6
 ## Compiling
 When all required tools and environment variables have been installed and set, you are ready to start the compilation. Run the following command from the command line, standing in the root folder of the repository:
 
-    npm install
+    yarn install
 
 When the procedure has completed successfully you can run the application by running:
 
-    npm start
+    yarn start
 
 ### Additional step for Linux users
 
@@ -60,23 +61,23 @@ The application needs to be able to load nrfjprog libraries. This is currently n
 
 ## Working with appmodules
 
-This project is split into multiple [appmodules](doc/README.md) inside the `packages` directory. When running `npm start` from the root directory, the appmodule loader will be started. When choosing an appmodule, a *pre-built version* of that appmodule will be loaded. If you modify the code, it will not have any effect unless you `npm run build` the appmodule and restart the application.
+This project is split into multiple [appmodules](doc/README.md) inside the `packages` directory. When running `yarn start` from the root directory, the appmodule loader will be started. When choosing an appmodule, a *pre-built version* of that appmodule will be loaded. If you modify the code, it will not have any effect unless you `yarn run build` the appmodule and restart the application.
 
-When working with appmodules it is normally recommended to navigate to the appmodule directory before running `npm start`. When doing this, the application will hot-reload any changes that are made to the code, providing instant feedback during development.
+When working with appmodules it is normally recommended to navigate to the appmodule directory before running `yarn start`. When doing this, the application will hot-reload any changes that are made to the code, providing instant feedback during development.
 
     cd packages/nrfconnect-appmodule-ble
-    npm start
+    yarn start
 
 ## Testing
 
 Unit testing of all packages can be performed by running:
 
-    npm test
+    yarn test
 
-Testing of individual packages can be done by navigating to the package directory before running `npm test`:
+Testing of individual packages can be done by navigating to the package directory before running `yarn test`:
 
     cd packages/nrfconnect-appmodule-ble
-    npm test
+    yarn test
 
 ## Creating release packages
 Scripts have been included in the repo to create release packages. Different artifacts will be created depending on the type of operating system:

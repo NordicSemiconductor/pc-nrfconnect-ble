@@ -10,7 +10,9 @@
     "start": "node ../../scripts/start.js",
     "build": "node ../../scripts/build.js ../../webpack.config.production.js",
     "test": "node ../../scripts/test.js",
-    "clean": "node ../../scripts/clean.js"
+    "clean": "node ../../scripts/clean.js",
+    "linkup": "node ../../scripts/linkup.js",
+    "postinstall": "yarn run linkup"
   },
   "config": {
     "title": "Bluetooth Low Energy (BLE)",
@@ -30,7 +32,6 @@
     "jquery": "3.1.0",
     "less": "2.7.1",
     "moment": "2.14.1",
-    "nrfconnect-core": "1.0.0",
     "open": "0.0.5",
     "pc-ble-driver-js": "https://github.com/NordicSemiconductor/pc-ble-driver-js.git#v0.9.0",
     "pc-nrfjprog-js": "https://github.com/NordicSemiconductor/pc-nrfjprog-js.git#v0.3.0",
@@ -55,5 +56,8 @@
     "util": "0.10.3",
     "uuid-v4": "0.1.0",
     "winston": "2.2.0"
-  }
+  },
+  "links": [
+    "nrfconnect-core"
+  ]
 }

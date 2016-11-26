@@ -10,7 +10,9 @@
     "start": "node ../../scripts/start.js",
     "build": "node ../../scripts/build.js ../../webpack.config.production.js",
     "test": "node ../../scripts/test.js",
-    "clean": "node ../../scripts/clean.js"
+    "clean": "node ../../scripts/clean.js",
+    "linkup": "node ../../scripts/linkup.js",
+    "postinstall": "yarn run linkup"
   },
   "config": {
     "title": "Sample",
@@ -28,13 +30,15 @@
     "bootstrap": "3.3.7",
     "babel-polyfill": "6.13.0",
     "immutable": "3.8.1",
-    "nrfconnect-core": "1.0.0",
     "react": "15.3.2",
     "react-bootstrap": "0.30.3",
     "react-dom": "15.3.1",
     "react-redux": "4.4.5",
     "redux": "3.6.0"
   },
+  "links": [
+    "nrfconnect-core"
+  ],
   "jest": {
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.jsx?$",
     "moduleFileExtensions": [

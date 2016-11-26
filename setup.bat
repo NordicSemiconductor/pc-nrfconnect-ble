@@ -15,6 +15,7 @@ REM follow these instructions https://www.npmjs.com/package/npm-windows-upgrade)
 call npm install -g node-gyp
 call npm install -g electron-packager
 call npm install -g less
+call npm install -g yarn
 
 echo "Setting up Visual Studio environment"
 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
@@ -48,10 +49,9 @@ set npm_config_arch=%YGGDRASIL_ELECTRON_ARCH%
 set npm_config_disturl=https://atom.io/download/atom-shell
 
 echo "Install production"
-call npm run clean
-call npm install
-call npm test
-call npm prune --production
+call yarn run clean
+call yarn install
+call yarn test
 
 echo "Copy runtime redistributable files for Visual Studio"
 copy "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT\*.dll" packages\nrfconnect-appmodule-ble\node_modules\pc-ble-driver-js\build\Release\

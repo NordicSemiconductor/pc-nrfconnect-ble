@@ -11,7 +11,9 @@
     "start": "node ../../scripts/start.js --loader",
     "build": "node ../../scripts/build.js ../../webpack.config.production.js",
     "test": "node ../../scripts/test.js",
-    "clean": "node ../../scripts/clean.js"
+    "clean": "node ../../scripts/clean.js",
+    "linkup": "node ../../scripts/linkup.js",
+    "postinstall": "yarn run linkup"
   },
   "author": "Nordic Semiconductor ASA",
   "license": "Proprietary",
@@ -31,9 +33,6 @@
     "jquery": "3.1.0",
     "less": "2.7.1",
     "moment": "2.14.1",
-    "nrfconnect-core": "1.0.0",
-    "nrfconnect-appmodule-ble": "1.0.0",
-    "nrfconnect-appmodule-sample": "0.0.1",
     "open": "0.0.5",
     "react": "15.3.2",
     "react-addons-linked-state-mixin": "15.3.1",
@@ -56,6 +55,11 @@
     "uuid-v4": "0.1.0",
     "winston": "2.2.0"
   },
+  "links": [
+    "nrfconnect-appmodule-ble",
+    "nrfconnect-appmodule-sample",
+    "nrfconnect-core"
+  ],
   "appmodules": [
     "nrfconnect-appmodule-ble",
     "nrfconnect-appmodule-sample"

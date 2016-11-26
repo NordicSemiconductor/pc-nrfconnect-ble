@@ -6,3 +6,4 @@ dist
 log.txt
 css/styles.css
 tags
+yarn-error.log
