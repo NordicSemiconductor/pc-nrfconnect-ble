@@ -1,3 +1,14 @@
+/*
+ * Starts a webpack development server that does HMR (hot module
+ * replacement) when source code is edited. The development server is
+ * running on http://localhost:9000.
+ *
+ * Intended to be started together with an Electron process, which loads
+ * the application in development mode. When in development mode, the app
+ * should load content from http://localhost:9000 instead of using the
+ * filesystem directly.
+ */
+
 let express = require('express');
 let webpack = require('webpack');
 let webpackDevMiddleware = require('webpack-dev-middleware');

@@ -2,9 +2,11 @@
  * Runs a yarn command for all projects in the packages directory.
  * Usage: node run-recursive.js <yarn-arguments>
  *
- * Examples:
- * node run-recursive.js install
- * node run-recursive.js run clean
+ * Example usage in the top-level package.json:
+ * "scripts": {
+ *   "build": "node scripts/run-recursive.js run build",
+ *   "clean": "node scripts/run-recursive.js run clean"
+ * }
  */
 
 const fs = require('fs');

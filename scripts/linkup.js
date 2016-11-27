@@ -4,20 +4,18 @@
  * local dependencies. NB: Make sure to replace links with real dependencies in
  * package.json before publishing to npm.
  *
- * Usage:
- * cd packages/some-package && node ../../scripts/linkup.js
- *
- * Example package.json:
- * {
- *   ...
- *   "links": [
- *     "nrfconnect-foo",
- *     "nrfconnect-bar"
- *   ]
- *   ...
+ * Example usage in package.json:
+ * "scripts": {
+ *   "linkup": "node ../../scripts/linkup.js"
  * }
  *
- * Will produce symlinks:
+ * This links configuration in package.json:
+ * "links": [
+ *   "nrfconnect-foo",
+ *   "nrfconnect-bar"
+ * ]
+ *
+ * ...will produce symlinks:
  * ./node_modules/nrfconnect-foo -> ../packages/nrfconnect-foo
  * ./node_modules/nrfconnect-bar -> ../packages/nrfconnect-bar
  */
