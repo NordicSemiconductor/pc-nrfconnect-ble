@@ -179,6 +179,50 @@ browserWindow.webContents.on('new-window', function (e, url) {
 });
 ```
 
+### Local dependencies
+
+Dependencies are normally specified in the `dependencies` section of an
+appmodule's `package.json`. These dependencies are pulled down from the public
+npm registry, or from other Git repositories. This is fine for dependencies
+that have been made public, but that is not always the case. You may want to
+depend on a local package in `packages/` that is not published, or has some
+changes that has not been published yet.
+
+Local dependencies are symlinks in `node_modules`, managed by
+[yarn link](https://yarnpkg.com/en/docs/cli/link). If it is a short-term
+thing, and you are the only developer working on it, then it might be easiest
+to just run `yarn link` manually as described in the yarn documentation.
+
+In other cases, however, local dependencies can be more long-lived. Let us say
+that you are working on some big new feature that involves changes to
+nrfconnect-core, nrfconnect-loader, and an appmodule. Manually linking things
+with `yarn link` can be cumbersome, especially if multiple developers are
+working on the feature. In this case, you probably want to configure local
+dependencies using the `links` section in `package.json` instead.
+
+This project has a task (`yarn run linkup`) that is automatically executed
+right after `yarn install`. The task reads the `links` section in
+`package.json` and runs `yarn link` to set up local dependencies. F.ex. if
+you want to add module-foo as a local dependency in module-bar, then you can
+add the following to module-bar's `package.json`:
+
+```
+"links": [
+  "module-foo"
+]
+```
+
+The next time you run `yarn install`, a symlink to the `packages/module-foo`
+directory will be added in module-bar's `node_modules`. Alternatively, running
+`yarn run linkup` will add the symlink without performing the install step. You
+can now make changes to module-foo, build it with `yarn run build`, and the
+changes will then be available for module-bar.
+
+One important thing to note about local dependencies is that they do of course
+not work outside this project. Before publishing to the npm registry, make
+sure that all local dependencies are moved from the `links` section to the
+`dependencies` section in `package.json`.
+
 ### Remaining work
 
 The following work is planned, but not completed yet:
