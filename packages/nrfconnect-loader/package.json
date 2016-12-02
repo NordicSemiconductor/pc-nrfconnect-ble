@@ -44,11 +44,9 @@
     "nrfconnect-appmodule-sample"
   ],
   "jest": {
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.jsx?$",
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json"
-    ]
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+    }
   }
 }

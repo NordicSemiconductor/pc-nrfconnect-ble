@@ -20,7 +20,6 @@
 
 const spawn = require('./spawn');
 
-const sourceDirectory = 'js';
-const args = [sourceDirectory].concat(process.argv.slice(2));
+const args = process.argv.slice(2);
 
-spawn('jest', args, { BABEL_DISABLE_CACHE: 1 });
+spawn('jest', args);
