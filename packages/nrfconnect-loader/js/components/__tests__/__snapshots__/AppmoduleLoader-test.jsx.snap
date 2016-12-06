@@ -8,7 +8,7 @@ exports[`test renders correctly 1`] = `
         target="_blank">
         <img
           className="appmodule-loader-logo"
-          src="0de65e70408b48e404a43aef9d424408.png" />
+          src="test-file-stub" />
       </a>
     </div>
     <div

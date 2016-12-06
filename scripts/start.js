@@ -1,3 +1,15 @@
+/*
+ * Starts the application in development mode. This involves starting
+ * a webpack development server, plus an Electron process that loads
+ * content from the development server. This allows hot-reloading of
+ * modules when code is edited.
+ *
+ * Example usage in package.json:
+ * "scripts": {
+ *   "start": "node ../../scripts/start.js"
+ * }
+ */
+
 const spawn = require('./spawn');
 
 // We have only one hot-reloading development server process. When starting the

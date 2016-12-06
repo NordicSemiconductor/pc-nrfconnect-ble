@@ -40,5 +40,5 @@ if (peerDeps) {
     }
 }
 //Now export the library components
-module.exports = require('../dist/nrfconnect-core.min.js');
+module.exports = require('../dist/nrfconnect-core.js');
 m._load = originalLoad;
