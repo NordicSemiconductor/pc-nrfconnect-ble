@@ -12,7 +12,7 @@
 
  'use strict';
 
-const VERSION = '1.0';
+const VERSION = '1.1';
 
 let os = require('os');
 let fs = require('fs');
