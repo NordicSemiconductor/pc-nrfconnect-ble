@@ -1,14 +1,23 @@
-import fs from 'fs';
-import { remote } from 'electron';
+const fs = require('fs');
+const remote = require('electron').remote;
 
-const APP_PATH = remote.getGlobal('appPath');
+const APP_PATH = getAppPath();
 
-export function getAppmoduleDirectories() {
+// Get appPath global variable either through electron remote (if
+// running in browser), or directly if we are in the main process.
+function getAppPath() {
+    if (remote) {
+        return remote.getGlobal('appPath');
+    }
+    return global.appPath;
+}
+
+function getAppmoduleDirectories() {
     const packageJson = require('../../package.json');
     return packageJson.appmodules;
 }
 
-export function getAppmodules() {
+function getAppmodules() {
     const appmoduleDirectories = getAppmoduleDirectories();
     return appmoduleDirectories.map(directory => {
         const contents = fs.readFileSync(`${APP_PATH}/node_modules/${directory}/package.json`);
@@ -26,3 +35,8 @@ function createAppmoduleConfig(packageJson) {
         icon: `${APP_PATH}/node_modules/${packageJson.name}/${packageJson.config.icon}`,
     };
 }
+
+module.exports = {
+    getAppmoduleDirectories,
+    getAppmodules,
+};
