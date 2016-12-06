@@ -28,6 +28,25 @@ app.on('window-all-closed', function () {
     app.quit();
 });
 
+function createSplashScreen() {
+    let splashScreen = new electron.BrowserWindow({
+        width: 400,
+        height: 223,
+        frame: false,
+        alwaysOnTop: true,
+        skipTaskbar: true,
+        resizable: false,
+        show: false,
+        transparent: true
+    });
+    splashScreen.loadURL('file://' + __dirname + '/resources/splashScreen.html');
+    splashScreen.on('closed', function () {
+        splashScreen = null;
+    });
+    splashScreen.show();
+    return splashScreen;
+}
+
 function createBrowserWindow(options) {
     const lastWindowState = settings.loadLastWindow();
     const mergedOptions = Object.assign({
@@ -40,6 +59,11 @@ function createBrowserWindow(options) {
         show: false
     }, options);
     let browserWindow = new electron.BrowserWindow(mergedOptions);
+
+    let splashScreen;
+    if (options.splashScreen) {
+        splashScreen = createSplashScreen();
+    }
 
     browserWindow.loadURL(options.url);
 
@@ -54,6 +78,10 @@ function createBrowserWindow(options) {
     });
 
     browserWindow.webContents.on('did-finish-load', function () {
+        if (splashScreen && !splashScreen.isDestroyed()) {
+            splashScreen.close();
+        }
+
         if (lastWindowState.maximized) {
             browserWindow.maximize();
         }
