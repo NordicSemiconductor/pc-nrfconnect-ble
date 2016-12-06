@@ -13,6 +13,14 @@
  'use strict';
 
 const core = require('nrfconnect-core/index');
+const appmoduleRepo = require('./js/utils/appmoduleRepository');
+const appmodules = appmoduleRepo.getAppmodules();
+
+// If only one appmodule, then just load that
+if (appmodules.length === 1) {
+    require(appmodules[0].name);
+    return;
+}
 
 const electron = require('electron');
 const ipcMain = electron.ipcMain;
