@@ -9,12 +9,12 @@
   "main": "index.js",
   "scripts": {
     "start": "cd packages/nrfconnect-loader && npm start",
-    "build": "lerna run build",
+    "build": "node scripts/run-all.js run build",
     "postinstall": "npm run bootstrap && npm run build",
     "bootstrap": "lerna bootstrap --concurrency 1",
     "updated": "lerna updated",
-    "test": "lerna run test",
-    "clean": "npm install lerna rimraf && lerna run clean && rimraf \"node_modules/!(rimraf|.bin)\""
+    "test": "node scripts/run-all.js run test",
+    "clean": "npm install lerna rimraf && node scripts/run-all.js run clean && rimraf \"node_modules/!(rimraf|.bin)\""
   },
   "author": "Nordic Semiconductor ASA",
   "license": "Proprietary",
