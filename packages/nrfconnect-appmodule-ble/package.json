@@ -51,5 +51,11 @@
     "util": "0.10.3",
     "uuid-v4": "0.1.0",
     "winston": "2.2.0"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$": "<rootDir>/../../test/fileMock.js",
+      "\\.(css|less)$": "<rootDir>/../../test/styleMock.js"
+    }
   }
 }

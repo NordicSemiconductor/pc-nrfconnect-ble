@@ -38,11 +38,9 @@
     "redux-thunk": "2.1.0"
   },
   "jest": {
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.jsx?$",
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json"
-    ]
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$": "<rootDir>/../../test/fileMock.js",
+      "\\.(css|less)$": "<rootDir>/../../test/styleMock.js"
+    }
   }
 }
