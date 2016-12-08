@@ -203,8 +203,8 @@ class AppContainer extends Component {
                         minSize={100}
                         defaultSize={0}
                         primary='second'
-                        split='horizontal'
-                        style={{}}>
+                        split='horizontal'                       
+                        >
                         <div  >
                             <PageViewContainer />
                         </div>
