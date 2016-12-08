@@ -1,0 +1,31 @@
+{
+    "_comment": {"comment": ["Add UUIDs for your services, characteristics, and descriptors in this file.",
+                             "The format is the UUID of the item, followed by an object containing the data.",
+                             "'name' is a mandatory handle, while 'format' is optional.",
+                             "Currently the only supported format is 'TEXT', default is 'NO_FORMAT'.",
+                             "The application must be reloaded to access changes in this file."]},
+
+    "uuid16bitServiceDefinitions": {
+        "180D": {"name": "Heart Rate"}
+    },
+
+    "uuid16bitCharacteristicDefinitions": {
+        "2A37": {"name": "Heart Rate Measurement"},
+        "2A29": {"name": "Manufacturer Name String", "format": "TEXT"}
+    },
+
+    "uuid16bitDescriptorDefinitions": {
+    },
+
+    "uuid128bitServiceDefinitions": {
+        "6E400001B5A3F393E0A9E50E24DCCA9E": {"name": "UART over BLE"}
+    },
+
+    "uuid128bitCharacteristicDefinitions": {
+        "6E400002B5A3F393E0A9E50E24DCCA9E": {"name": "UART RX"},
+        "6E400003B5A3F393E0A9E50E24DCCA9E": {"name": "UART TX"}
+    },
+
+    "uuid128bitDescriptorDefinitions": {
+    }
+}

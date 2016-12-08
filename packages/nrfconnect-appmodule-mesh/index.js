@@ -26,8 +26,22 @@ function initBrowserWindow() {
     const packageJson = require('./package.json');
     core.createBrowserWindow({
         title: packageJson.config.title,
-        url: 'file://' + __dirname + '/index.html',
+        url: 'file://' + __dirname + '/meshIndex.html',
         icon: __dirname + '/' + packageJson.config.icon,
-        menu: true
+        menu: false,
+        
     });
 }
+
+// Be sure rtt_logger.exe processes were killed.
+electron.app.on('before-quit', function (e) {
+    if (os.platform() !== 'win32') {
+        killProcessWithName('rtt-logger');
+        killProcessWithName('pc-nrfutil');
+        killProcessWithName('nRF5-multi-prog');
+    } else {
+        killProcessWithNameWindows('rtt');
+        killProcessWithNameWindows('pc-nrfutil');
+        killProcessWithNameWindows('nRF5-multi-prog');
+    }
+});

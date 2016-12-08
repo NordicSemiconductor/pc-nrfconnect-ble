@@ -10,10 +10,29 @@
  *
  */
 
-export const INCREMENT_COUNTER = 'APP_INCREMENT_COUNTER';
+'use strict';
 
-export function incrementCounterAction() {
+export const SELECT_MAIN_VIEW = 'APP_SELECT_MAIN_VIEW';
+export const RESIZE_RIGHT_SIDE_BAR = 'RESIZE_RIGHT_SIDE_BAR';
+
+function selectMainViewAction(view) {
     return {
-        type: INCREMENT_COUNTER
+        type: SELECT_MAIN_VIEW,
+        view: view,
     };
+}
+
+function _resizeRightSideBar() {
+    return {
+        type: RESIZE_RIGHT_SIDE_BAR
+    };
+}
+
+export function selectMainView(view) {
+    return selectMainViewAction(view);
+}
+
+
+export function toggleRightSideBar() {
+    return _resizeRightSideBar();
 }

@@ -10,18 +10,43 @@
  *
  */
 
+// 'use strict';
+
+// require('babel/register');
+
+// var settings = require('./js/settings');
+
+// if (!settings || settings.production === undefined || settings.production === null || settings.production === true) {
+//     process.env.NODE_ENV = 'production';
+// } else {
+//     process.env.NODE_ENV = 'development';
+// }
+
+// var ReactDOM = require('react-dom');
+// var React = require('react');
+
+// var root = require('./js/containers/Root');
+
+// var configureStore = require('./js/store/configureStore');
+// var initialState = window.__INITIAL_STATE__ || {};
+// var store = configureStore(initialState);
+
+// const target = document.getElementById('app');
+
+// ReactDOM.render(React.createElement(root, { store: store }), target);
+
 require('babel-polyfill');
 
 var React = require('react');
 var renderReact = require('react-dom').render;
-var Root = require('./containers/Root');
+var Root = require('./containers/mesh/MeshRoot');
 
 var configureStore = require('nrfconnect-core').configureStore;
-var rootReducer = require('./reducers');
+var rootReducer =require('./reducers/mesh/meshIndex');
 var initialState = window.__INITIAL_STATE__ || {};
 var store = configureStore(initialState, rootReducer);
 
-let App = require('./containers/Root');
+let App = require('./containers/mesh/MeshRoot');
 const render = (Component) => {
     renderReact(<Component store={store} />, document.getElementById('app'));
 };
@@ -29,10 +54,10 @@ render(App);
 
 // Webpack hot module replacement (HMR)
 if (module.hot) {
-    module.hot.accept('./reducers', () =>
-        store.replaceReducer(require('./reducers'))
+    module.hot.accept('./reducers/mesh/meshIndex', () =>
+        store.replaceReducer(require('./reducers/mesh/meshIndex'))
     );
-    module.hot.accept('./containers/Root', function() {
-        render(require('./containers/Root'));
+    module.hot.accept('./containers/mesh/MeshRoot', function() {
+        render(require('./containers/mesh/MeshRoot'));
     });
 }

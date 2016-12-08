@@ -10,12 +10,32 @@
  *
  */
 
+'use strict';
+
 import { combineReducers } from 'redux';
 
+import adapter from './adapterReducer';
+import discovery from './discoveryReducer';
 import app from './appReducer';
+import log from './logReducer';
+import advertising from './advertisingReducer';
+import bleEvent from './bleEventReducer';
+import errorDialog from './errorDialogReducer';
+import firmwareUpdate from './firmwareUpdateReducer';
+import meshMain from './mesh/meshMain';
+import logger from './loggerReducer';
 
 const rootReducer = combineReducers({
-    app
+    adapter,
+    discovery,
+    log,
+    logger,
+    app,
+    advertising,
+    bleEvent,
+    errorDialog,
+    firmwareUpdate,
+    meshMain,
 });
 
 export default rootReducer;

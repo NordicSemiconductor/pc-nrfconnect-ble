@@ -12,20 +12,32 @@
 
 'use strict';
 
-import { Record, List } from 'immutable';
+import { Record } from 'immutable';
 
 import * as AppActions from '../actions/appActions';
 
 const InitialState = Record({
-    countValue: 0
+    selectedMainView: 'ConnectionMap',
+    sizeOfRightPane: 300,
+    isRightSideBarCollapsed: false,
 });
 
 const initialState = new InitialState();
+function toggleRightSideSize(state) {
+    if (!state.get('isRightSideBarCollapsed')) {
+        return state.set('sizeOfRightPane', 5)
+                    .set('isRightSideBarCollapsed', true);
+    }
+    return state.set('sizeOfRightPane', 300)
+                .set('isRightSideBarCollapsed', false);
+}
 
-export default function (state = initialState, action) {
+export default function app(state = initialState, action) {
     switch (action.type) {
-        case AppActions.INCREMENT_COUNTER:
-            return state.update('countValue', value => value + 1);
+        case AppActions.SELECT_MAIN_VIEW:
+            return state.set('selectedMainView', action.view);
+        case AppActions.RESIZE_RIGHT_SIDE_BAR:
+            return toggleRightSideSize(state)
         default:
             return state;
     }
