@@ -33,8 +33,8 @@ function _updateFirmware(dispatch, getState, adapter) {
         const probe = new DebugProbe();
 
         const projectDir = _getProjectDirectory();
-        const pathHexS130 = projectDir + require('file!pc-ble-driver-js/pc-ble-driver/hex/connectivity_115k2_with_s130_2.0.1.hex');
-        const pathHexS132 = projectDir + require('file!pc-ble-driver-js/pc-ble-driver/hex/connectivity_115k2_with_s132_2.0.1.hex');
+        const pathHexS130 = projectDir + require('file!pc-ble-driver-js/pc-ble-driver/hex/sd_api_v2/connectivity_1.0.1_115k2_with_s130_2.0.1.hex');
+        const pathHexS132 = projectDir + require('file!pc-ble-driver-js/pc-ble-driver/hex/sd_api_v3/connectivity_1.0.1_115k2_with_s132_3.0.hex');
 
         probe.program(parseInt(adapterToUse.state.serialNumber, 10), [pathHexS130, pathHexS132], err => {
             console.log(err);

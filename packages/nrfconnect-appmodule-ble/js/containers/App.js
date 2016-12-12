@@ -33,7 +33,6 @@ import ErrorDialog from '../containers/ErrorDialog';
 
 import LogViewer from './LogViewer';
 import DiscoveredDevices from './DiscoveredDevices';
-import ConnectionMap from './ConnectionMap';
 
 import { findAdapters } from '../actions/adapterActions';
 

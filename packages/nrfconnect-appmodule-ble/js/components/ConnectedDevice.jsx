@@ -15,9 +15,11 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 
-import { Dropdown, MenuItem } from 'react-bootstrap';
+import { Dropdown, MenuItem, Button } from 'react-bootstrap';
 
 import { Connector } from './Connector';
+
+import dfuIcon from '../../resources/dfu_icon.png';
 
 const WINDOW_WIDTH_OFFSET = 375;
 const THROTTLE_TIMEOUT = 100;
@@ -30,7 +32,10 @@ export default class ConnectedDevice extends React.PureComponent {
 
     componentDidMount() {
         window.addEventListener('resize', this.boundResizeListener);
-        this.boundingRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
+        const domNode = ReactDOM.findDOMNode(this);
+        if (domNode) {
+            this.boundingRect = domNode.getBoundingClientRect();
+        }
     }
 
     componentWillUnmount() {
@@ -93,6 +98,7 @@ export default class ConnectedDevice extends React.PureComponent {
             id,
             sourceId,
             layout,
+            isDfuSupported,
         } = this.props;
 
         const role = device.role === 'central' ? 'Central' : 'Peripheral';
@@ -112,14 +118,20 @@ export default class ConnectedDevice extends React.PureComponent {
                 <div className='device-body text-small' >
                     <div>
                         <div className='pull-right'>
+                            {
+                                isDfuSupported ?
+                                    <Button id='dfuButton' bsStyle='primary' className='btn-nordic btn-xs' title="Start Secure DFU" onClick={this.props.onClickDfu}>
+                                        <img src={dfuIcon} className="icon-dfu-button" />
+                                    </Button> : null
+                            }
                             <Dropdown pullRight={pullRight} id='connectionDropDown' onClick={() => this._onResize()} onSelect={(eventKey, event) => { this._onSelect(event, eventKey); }}>
                                 <Dropdown.Toggle noCaret>
                                     <span className='icon-cog' aria-hidden='true' />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu pullRight={pullRight}>
-                                    <MenuItem eventKey='Update'>Update connection...</MenuItem>
-                                    <MenuItem eventKey='Pair'>Pair...</MenuItem>
-                                    <MenuItem eventKey='Disconnect'>Disconnect</MenuItem>
+                                    <MenuItem id='updateConnectionMenuItem' eventKey='Update'>Update connection...</MenuItem>
+                                    <MenuItem id='pairMenuItem' eventKey='Pair'>Pair...</MenuItem>
+                                    <MenuItem id='disconnectMenuItem' eventKey='Disconnect'>Disconnect</MenuItem>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
@@ -148,6 +160,8 @@ ConnectedDevice.propTypes = {
     device: PropTypes.object.isRequired,
     sourceId: PropTypes.string.isRequired,
     layout: PropTypes.string.isRequired,
+    isDfuSupported: PropTypes.bool,
+    onClickDfu: PropTypes.func,
     onDisconnect: PropTypes.func.isRequired,
     onPair: PropTypes.func.isRequired,
     onConnectionParamsUpdate: PropTypes.func.isRequired,

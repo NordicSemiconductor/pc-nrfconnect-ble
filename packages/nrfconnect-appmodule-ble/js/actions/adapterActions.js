@@ -55,6 +55,9 @@ export const DEVICE_PASSKEY_KEYPRESS_SENT = 'DEVICE_PASSKEY_KEYPRESS_SENT';
 export const DEVICE_SECURITY_STORE_PEER_PARAMS = 'DEVICE_SECURITY_STORE_PEER_PARAMS';
 export const DEVICE_SECURITY_STORE_OWN_PARAMS = 'DEVICE_SECURITY_STORE_OWN_PARAMS';
 
+export const DEVICE_DISABLE_EVENTS = 'DEVICE_DISABLE_EVENTS';
+export const DEVICE_ENABLE_EVENTS = 'DEVICE_ENABLE_EVENTS';
+
 export const ERROR_OCCURED = 'ERROR_OCCURED';
 
 export const ATTRIBUTE_VALUE_CHANGED = 'ADAPTER_ATTRIBUTE_VALUE_CHANGED';
@@ -69,7 +72,7 @@ export const FATAL = 5;
 import _ from 'underscore';
 import semver from 'semver';
 import { SerialPort } from 'serialport';
-import { driver, api } from 'pc-ble-driver-js';
+import { api } from 'pc-ble-driver-js';
 import { logger } from '../logging';
 import { discoverServices } from './deviceDetailsActions';
 import { BLEEventState } from './common';
@@ -167,15 +170,21 @@ function _setupListeners(dispatch, getState, adapterToUse) {
     });
 
     adapterToUse.on('deviceDiscovered', device => {
-        dispatch(deviceDiscoveredAction(device));
+        _handleDeviceEvent(device, getState, () => {
+            dispatch(deviceDiscoveredAction(device));
+        });
     });
 
     adapterToUse.on('deviceConnected', device => {
-        _onDeviceConnected(dispatch, getState, device);
+        _handleDeviceEvent(device, getState, () => {
+            _onDeviceConnected(dispatch, getState, device);
+        });
     });
 
     adapterToUse.on('deviceDisconnected', (device, reason) => {
-        dispatch(deviceDisconnectedAction(device, reason));
+        _handleDeviceEvent(device, getState, () => {
+            dispatch(deviceDisconnectedAction(device, reason));
+        });
     });
 
     adapterToUse.on('connectTimedOut', deviceAddress => {
@@ -191,15 +200,21 @@ function _setupListeners(dispatch, getState, adapterToUse) {
     });
 
     adapterToUse.on('securityRequestTimedOut', device => {
-        dispatch(deviceSecurityRequestTimedOutAction(device));
+        _handleDeviceEvent(device, getState, () => {
+            dispatch(deviceSecurityRequestTimedOutAction(device));
+        });
     });
 
     adapterToUse.on('connParamUpdateRequest', (device, requestedConnectionParams) => {
-        _onConnParamUpdateRequest(dispatch, getState, device, requestedConnectionParams);
+        _handleDeviceEvent(device, getState, () => {
+            _onConnParamUpdateRequest(dispatch, getState, device, requestedConnectionParams);
+        });
     });
 
     adapterToUse.on('connParamUpdate', (device, connectionParams) => {
-        _onConnParamUpdate(dispatch, getState, device, connectionParams);
+        _handleDeviceEvent(device, getState, () => {
+            _onConnParamUpdate(dispatch, getState, device, connectionParams);
+        });
     });
 
     adapterToUse.on('characteristicValueChanged', characteristic => {
@@ -211,44 +226,68 @@ function _setupListeners(dispatch, getState, adapterToUse) {
     });
 
     adapterToUse.on('securityChanged', (device, connectionSecurity) => {
-        dispatch(securityChangedAction(device, connectionSecurity));
+        _handleDeviceEvent(device, getState, () => {
+            dispatch(securityChangedAction(device, connectionSecurity));
+        });
     });
 
     adapterToUse.on('securityRequest', (device, params) => {
-        _onSecurityRequest(dispatch, getState, device, params);
+        _handleDeviceEvent(device, getState, () => {
+            _onSecurityRequest(dispatch, getState, device, params);
+        });
     });
 
     adapterToUse.on('secParamsRequest', (device, peerParams) => {
-        _onSecParamsRequest(dispatch, getState, device, peerParams);
+        _handleDeviceEvent(device, getState, () => {
+            _onSecParamsRequest(dispatch, getState, device, peerParams);
+        });
     });
 
     adapterToUse.on('secInfoRequest', (device, params) => {
-        _onSecInfoRequest(dispatch, getState, device, params);
+        _handleDeviceEvent(device, getState, () => {
+            _onSecInfoRequest(dispatch, getState, device, params);
+        });
     });
 
     adapterToUse.on('authKeyRequest', (device, keyType) => {
-        _onAuthKeyRequest(dispatch, getState, device, keyType);
+        _handleDeviceEvent(device, getState, () => {
+            _onAuthKeyRequest(dispatch, getState, device, keyType);
+        });
     });
 
     adapterToUse.on('passkeyDisplay', (device, matchRequest, passkey) => {
-        _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey);
+        _handleDeviceEvent(device, getState, () => {
+            _onPasskeyDisplay(dispatch, getState, device, matchRequest, passkey);
+        });
     });
 
     adapterToUse.on('lescDhkeyRequest', (device, peerPublicKey, oobDataRequired) => {
-        _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobDataRequired);
+        _handleDeviceEvent(device, getState, () => {
+            _onLescDhkeyRequest(dispatch, getState, device, peerPublicKey, oobDataRequired);
+        });
     });
 
     adapterToUse.on('keyPressed', (device, keypressType) => {
-        _onKeyPressed(dispatch, getState, device, keypressType);
+        _handleDeviceEvent(device, getState, () => {
+            _onKeyPressed(dispatch, getState, device, keypressType);
+        });
     });
 
     adapterToUse.on('authStatus', (device, params) => {
-        _onAuthStatus(dispatch, getState, device, params);
+        _handleDeviceEvent(device, getState, () => {
+            _onAuthStatus(dispatch, getState, device, params);
+        });
     });
 
     adapterToUse.on('status', status => {
         _onStatus(dispatch, getState, status);
     });
+}
+
+function _handleDeviceEvent(device, getState, handleFn) {
+    if (!getState().adapter.ignoredDeviceAddresses.has(device.address)) {
+        handleFn();
+    }
 }
 
 function _checkVersion(version) {
@@ -839,6 +878,7 @@ function _rejectPairing(dispatch, getState, id, device) {
 
 function _replyAuthKey(dispatch, getState, id, device, keyType, key) {
     const adapterToUse = getState().adapter.api.selectedAdapter;
+    const driver = adapterToUse.driver;
 
     if (adapterToUse === null) {
         dispatch(showErrorDialog(new Error('No adapter selected!')));
@@ -931,6 +971,7 @@ function _replyLescOob(dispatch, getState, id, device, peerOob, ownOobData) {
 
 function _sendKeypress(dispatch, getState, eventId, device, keypressType) {
     const adapterToUse = getState().adapter.api.selectedAdapter;
+    const driver = adapterToUse.driver;
 
     const keypressStartSent = getState().bleEvent.getIn(
         [
@@ -1442,6 +1483,20 @@ function storeSecurityOwnParamsAction(device, ownParams) {
     };
 }
 
+function disableDeviceEventsAction(deviceAddress) {
+    return {
+        type: DEVICE_DISABLE_EVENTS,
+        deviceAddress,
+    };
+}
+
+function enableDeviceEventsAction(deviceAddress) {
+    return {
+        type: DEVICE_ENABLE_EVENTS,
+        deviceAddress,
+    };
+}
+
 export function findAdapters() {
     return dispatch => {
         return _getAdapters(dispatch);
@@ -1544,4 +1599,12 @@ export function rejectDeviceConnectionParams(id, device) {
 
 export function toggleAutoConnUpdate() {
     return toggleAutoConnUpdateAction();
+}
+
+export function disableDeviceEvents(deviceAddress) {
+    return disableDeviceEventsAction(deviceAddress);
+}
+
+export function enableDeviceEvents(deviceAddress) {
+    return enableDeviceEventsAction(deviceAddress);
 }

@@ -260,7 +260,7 @@
   > div:nth-child(2) { //device details
     box-shadow: inset 0px 5px 6px -5px gray;
     background-color: white;
-    width: 260px;
+    min-width: 260px;
     border-top: 1px solid gray;
     border-left: 1px solid gray;
     overflow-y: auto;
@@ -385,6 +385,16 @@
     }
     .device-body {
       padding: 4px 10px 10px 10px;
+
+      .btn-nordic {
+        float: left;
+        margin-left: 10px;
+      }
+
+      .icon-dfu-button {
+        width: 20px;
+        height: 20px;
+      }
 
       .icon-wifi {
         margin-right: 4px;
@@ -686,6 +696,8 @@
 
 .service-name {
   font-size: 12px;
+  line-height: 32px;
+  float: left;
 }
 
 .server-setup {
@@ -905,6 +917,10 @@
         margin-right: 5px;
         float: right;
         font-size: 12px;
+        > img {
+          width: 32px;
+          height: 32px;
+        }
       }
       textarea {
         //border: 0;

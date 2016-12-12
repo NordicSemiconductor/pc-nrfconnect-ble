@@ -1,0 +1,214 @@
+exports[`test renders correctly with DFU support 1`] = `
+<div
+  className="device standalone"
+  id="connected-device-id"
+  style={
+    Object {
+      "opacity": 1,
+    }
+  }>
+  <div
+    className="top-bar">
+    <div
+      className="flag-line" />
+  </div>
+  <div
+    className="device-body text-small">
+    <div>
+      <div
+        className="pull-right">
+        <button
+          className="btn-nordic btn-xs btn btn-primary"
+          disabled={false}
+          id="dfuButton"
+          onClick={[Function]}
+          title="Start Secure DFU"
+          type="button">
+          <img
+            className="icon-dfu-button"
+            src="test-file-stub" />
+        </button>
+        <div
+          className="dropdown btn-group"
+          onClick={[Function]}>
+          <button
+            aria-expanded={false}
+            aria-haspopup={true}
+            className="dropdown-toggle btn btn-default"
+            disabled={false}
+            id="connectionDropDown"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+            role="button"
+            type="button">
+            <span
+              aria-hidden="true"
+              className="icon-cog" />
+          </button>
+          <ul
+            aria-labelledby="connectionDropDown"
+            className="dropdown-menu"
+            role="menu">
+            <li
+              className=""
+              role="presentation"
+              style={undefined}>
+              <a
+                href=""
+                id="updateConnectionMenuItem"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+                role="menuitem"
+                tabIndex="-1">
+                Update connection...
+              </a>
+            </li>
+            <li
+              className=""
+              role="presentation"
+              style={undefined}>
+              <a
+                href=""
+                id="pairMenuItem"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+                role="menuitem"
+                tabIndex="-1">
+                Pair...
+              </a>
+            </li>
+            <li
+              className=""
+              role="presentation"
+              style={undefined}>
+              <a
+                href=""
+                id="disconnectMenuItem"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+                role="menuitem"
+                tabIndex="-1">
+                Disconnect
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div
+        className="role-flag pull-right">
+        Peripheral
+      </div>
+      <strong>
+        Device Name
+      </strong>
+    </div>
+    <div
+      className="address-text">
+      Device Address
+    </div>
+  </div>
+  <div />
+</div>
+`;
+
+exports[`test renders correctly without DFU support 1`] = `
+<div
+  className="device standalone"
+  id="connected-device-id"
+  style={
+    Object {
+      "opacity": 1,
+    }
+  }>
+  <div
+    className="top-bar">
+    <div
+      className="flag-line" />
+  </div>
+  <div
+    className="device-body text-small">
+    <div>
+      <div
+        className="pull-right">
+        <div
+          className="dropdown btn-group"
+          onClick={[Function]}>
+          <button
+            aria-expanded={false}
+            aria-haspopup={true}
+            className="dropdown-toggle btn btn-default"
+            disabled={false}
+            id="connectionDropDown"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+            role="button"
+            type="button">
+            <span
+              aria-hidden="true"
+              className="icon-cog" />
+          </button>
+          <ul
+            aria-labelledby="connectionDropDown"
+            className="dropdown-menu"
+            role="menu">
+            <li
+              className=""
+              role="presentation"
+              style={undefined}>
+              <a
+                href=""
+                id="updateConnectionMenuItem"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+                role="menuitem"
+                tabIndex="-1">
+                Update connection...
+              </a>
+            </li>
+            <li
+              className=""
+              role="presentation"
+              style={undefined}>
+              <a
+                href=""
+                id="pairMenuItem"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+                role="menuitem"
+                tabIndex="-1">
+                Pair...
+              </a>
+            </li>
+            <li
+              className=""
+              role="presentation"
+              style={undefined}>
+              <a
+                href=""
+                id="disconnectMenuItem"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+                role="menuitem"
+                tabIndex="-1">
+                Disconnect
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div
+        className="role-flag pull-right">
+        Peripheral
+      </div>
+      <strong>
+        Device Name
+      </strong>
+    </div>
+    <div
+      className="address-text">
+      Device Address
+    </div>
+  </div>
+  <div />
+</div>
+`;
