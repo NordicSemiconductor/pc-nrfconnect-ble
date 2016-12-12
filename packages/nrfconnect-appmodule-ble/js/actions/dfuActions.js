@@ -155,6 +155,71 @@ function updateProgressAction(progressInfo) {
     };
 }
 
+function _disconnectFromDevice(adapter, deviceAddress) {
+    const device = _getDeviceByAddress(adapter, deviceAddress);
+    if (!device) {
+        return Promise.resolve();
+    }
+    return new Promise((resolve, reject) => {
+        adapter.disconnect(device.instanceId, error => {
+            if (error) {
+                reject(new Error(error.message));
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+function _getDeviceByAddress(adapter, address) {
+    const devices = adapter.getDevices();
+    const foundDeviceId = Object.keys(devices).find(deviceId => {
+        return devices[deviceId].address === address;
+    });
+    return devices[foundDeviceId];
+}
+
+function _setupListeners(dispatch, dfu) {
+    dfu.on('transferStart', fileName => {
+        dispatch(transferFileStartedAction(fileName));
+    });
+    dfu.on('transferComplete', fileName => {
+        dispatch(transferFileCompletedAction(fileName));
+    });
+    dfu.on('progressUpdate', progress => {
+        dispatch(updateProgressAction(progress));
+    });
+    dfu.on('logMessage', _onLogMessage);
+}
+
+function _removeListeners(dfu) {
+    dfu.removeAllListeners('transferStart');
+    dfu.removeAllListeners('transferComplete');
+    dfu.removeAllListeners('progressUpdate');
+    dfu.removeAllListeners('logMessage');
+}
+
+function _onLogMessage(severity, message) {
+    switch (severity) {
+        case TRACE:
+        case DEBUG:
+            logger.debug(message);
+            break;
+        case INFO:
+            logger.info(message);
+            break;
+        case WARNING:
+            logger.warn(message);
+            break;
+        case ERROR:
+        case FATAL:
+            logger.error(message);
+            break;
+        default:
+            logger.warn(`Log message of unknown severity ${severity} received: ${message}`);
+    }
+}
+
 export function showDfuDialog(device) {
     return (dispatch, getState) => {
         const dfu = new api.Dfu('BLE', {
@@ -254,69 +319,4 @@ export function stopDfu() {
         dispatch(abortDfuAction());
         getState().dfu.api.dfu.abort();
     };
-}
-
-function _disconnectFromDevice(adapter, deviceAddress) {
-    const device = _getDeviceByAddress(adapter, deviceAddress);
-    if (!device) {
-        return Promise.resolve();
-    }
-    return new Promise((resolve, reject) => {
-        adapter.disconnect(device.instanceId, error => {
-            if (error) {
-                reject(new Error(error.message));
-            } else {
-                resolve();
-            }
-        });
-    });
-}
-
-function _getDeviceByAddress(adapter, address) {
-    const devices = adapter.getDevices();
-    const foundDeviceId = Object.keys(devices).find(deviceId => {
-        return devices[deviceId].address === address;
-    });
-    return devices[foundDeviceId];
-}
-
-function _setupListeners(dispatch, dfu) {
-    dfu.on('transferStart', fileName => {
-        dispatch(transferFileStartedAction(fileName));
-    });
-    dfu.on('transferComplete', fileName => {
-        dispatch(transferFileCompletedAction(fileName));
-    });
-    dfu.on('progressUpdate', progress => {
-        dispatch(updateProgressAction(progress));
-    });
-    dfu.on('logMessage', _onLogMessage);
-}
-
-function _removeListeners(dfu) {
-    dfu.removeAllListeners('transferStart');
-    dfu.removeAllListeners('transferComplete');
-    dfu.removeAllListeners('progressUpdate');
-    dfu.removeAllListeners('logMessage');
-}
-
-function _onLogMessage(severity, message) {
-    switch (severity) {
-        case TRACE:
-        case DEBUG:
-            logger.debug(message);
-            break;
-        case INFO:
-            logger.info(message);
-            break;
-        case WARNING:
-            logger.warn(message);
-            break;
-        case ERROR:
-        case FATAL:
-            logger.error(message);
-            break;
-        default:
-            logger.warn(`Log message of unknown severity ${severity} received: ${message}`);
-    }
 }
