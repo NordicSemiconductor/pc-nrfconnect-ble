@@ -1,3 +1,5 @@
+jest.mock('pc-ble-driver-js', () => {});
+
 import React from 'react';
 import { mount } from 'enzyme';
 import { getImmutableDevice } from '../../utils/api';

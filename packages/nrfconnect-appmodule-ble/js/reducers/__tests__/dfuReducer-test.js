@@ -10,6 +10,10 @@ jest.mock('../../utils/fileUtil', () => {});
 jest.mock('../../utils/uuid_definitions', () => {});
 jest.mock('../../actions/firmwareUpdateActions', () => {});
 jest.mock('pc-nrfjprog-js', () => {});
+jest.mock('pc-ble-driver-js', () => {
+	return { api: { AdapterFactory: { getInstance: () => {} } } };
+});
+jest.mock('serialport', () => {});
 
 
 import reducer from '../dfuReducer';

@@ -9,6 +9,7 @@ jest.mock('../../utils/colorDefinitions', () => {
     };
 });
 jest.mock('../../utils/uuid_definitions', () => {});
+jest.mock('pc-ble-driver-js', () => {});
 
 import React from 'react';
 import renderer from 'react-test-renderer';

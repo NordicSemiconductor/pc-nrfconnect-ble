@@ -1,6 +1,7 @@
 // Have to mock react-dom due to bug: https://github.com/facebook/react/issues/7386
 // Can be removed after upgrade to react 15.4.0.
 jest.mock('react-dom');
+jest.mock('pc-ble-driver-js', () => {});
 
 import React from 'react';
 import renderer from 'react-test-renderer';
