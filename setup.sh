@@ -36,7 +36,7 @@ case "$(uname -s)" in
   Darwin)
     echo 'Detected platform is OS X'
     export YGGDRASIL_PLATFORM=darwin
-    export YGGDRASIL_ICON=nrfconnect.icns
+    export YGGDRASIL_ICON=packages/nrfconnect-loader/resources/icon.icns
     export YGGDRASIL_NAME=nrf-connect
     export YGGDRASIL_APP_NAME=nRF\ Connect
     export COMMANDLINE_TOOLS_FILE=nRF5x-Command-Line-Tools_8_5_0_OSX.tar
@@ -45,7 +45,7 @@ case "$(uname -s)" in
   Linux)
     echo 'Detected platform is Linux'
     export YGGDRASIL_PLATFORM=linux
-    export YGGDRASIL_ICON=nrfconnect.png
+    export YGGDRASIL_ICON=packages/nrfconnect-loader/resources/icon.png
     export YGGDRASIL_NAME=nrf-connect
     export YGGDRASIL_APP_NAME=nrf-connect
     export COMMANDLINE_TOOLS_FILE=nRF5x-Command-Line-Tools_8_5_0_Linux-x86_64.tar
