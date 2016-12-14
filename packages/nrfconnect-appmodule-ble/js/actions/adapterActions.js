@@ -108,7 +108,7 @@ const attrChange = {
 
 let throttledValueChangedDispatch;
 
-const latestFirmwareVersion = '1.0.0';
+const latestFirmwareVersion = '1.0.1';
 
 // Internal functions
 
