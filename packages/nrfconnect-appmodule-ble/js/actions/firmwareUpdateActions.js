@@ -21,6 +21,7 @@ import { remote } from 'electron';
 import { openAdapter } from './adapterActions';
 import { DebugProbe } from 'pc-nrfjprog-js';
 import { showErrorDialog } from './errorDialogActions';
+import firmwareDefinitions from '../utils/firmwareDefinitions';
 
 function _updateFirmware(dispatch, getState, adapter) {
     return new Promise((resolve, reject) => {
@@ -30,15 +31,9 @@ function _updateFirmware(dispatch, getState, adapter) {
             reject(new Error(`Not able to find ${adapter}.`));
         }
 
+        const serialNumber = parseInt(adapterToUse.state.serialNumber, 10);
         const probe = new DebugProbe();
-
-        const projectDir = _getProjectDirectory();
-        const pathHexS130 = projectDir + require('file!pc-ble-driver-js/pc-ble-driver/hex/sd_api_v2/connectivity_1.0.1_115k2_with_s130_2.0.1.hex');
-        const pathHexS132 = projectDir + require('file!pc-ble-driver-js/pc-ble-driver/hex/sd_api_v3/connectivity_1.0.1_115k2_with_s132_3.0.hex');
-
-        probe.program(parseInt(adapterToUse.state.serialNumber, 10), [pathHexS130, pathHexS132], err => {
-            console.log(err);
-
+        probe.program(serialNumber, firmwareDefinitions, err => {
             if (err) {
                 reject(new Error('Not able to program. Error: ' + err));
             } else {
@@ -52,11 +47,6 @@ function _updateFirmware(dispatch, getState, adapter) {
         dispatch(hideFirmwareUpdateRequestAction());
         dispatch(showErrorDialog(error));
     });
-}
-
-function _getProjectDirectory() {
-    // pathname is /path/to/index.html, but we want just the directory
-    return location.pathname.replace(/[^\/]*$/, '');
 }
 
 function showFirmwareUpdateRequestAction(adapter, foundVersion, latestVersion) {
