@@ -14,11 +14,14 @@
 
 const VERSION = '1.1';
 
-let os = require('os');
-let fs = require('fs');
-let electron = require('electron');
-let app = electron.app;
-let settings = require('./settings');
+const os = require('os');
+const fs = require('fs');
+const path = require('path');
+const electron = require('electron');
+const app = electron.app;
+const settings = require('./settings');
+
+app.setPath('userData', app.getPath('appData') + path.sep + 'nrfconnect');
 
 global.keymap = app.getPath('userData') + '/keymap.cson';
 global.userDataDir = app.getPath('userData');
