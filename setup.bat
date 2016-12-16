@@ -53,7 +53,7 @@ call npm install
 REM The npm test process hangs from time to time on Windows. Disabling tests on
 REM Windows until we have a solution. Tests are still run on Linux and OSX.
 REM call npm test
-call npm prune --production
+call npm run prune-production
 
 echo "Copy runtime redistributable files for Visual Studio"
 copy "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x86\Microsoft.VC140.CRT\*.dll" packages\nrfconnect-appmodule-ble\node_modules\pc-ble-driver-js\build\Release\
