@@ -14,7 +14,7 @@
 
 import React from 'react';
 
-import logo from 'nrfconnect-core/resources/nrfconnect_neg.png';
+import logo from 'nrfconnect-core/resources/nordiclogo_neg.png';
 import AdapterSelector from './AdapterSelector';
 
 export default class NavBar extends React.PureComponent {
