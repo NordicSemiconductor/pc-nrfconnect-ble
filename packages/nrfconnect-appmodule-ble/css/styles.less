@@ -636,9 +636,11 @@
 .log-wrap {
   background-color: @background-color;
   .infinite-log {
+    position: relative;
     overflow-x: auto !important;
     background-color: white;
     > div {
+      position: absolute;
       display: table;
       min-width: 100%;
     }
