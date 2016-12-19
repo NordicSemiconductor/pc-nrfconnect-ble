@@ -250,11 +250,11 @@ function loadSetup(state, setup) {
         let newState = new InitialState();
         newState = newState.setIn(['children'], OrderedMap());
 
-        Object.values(setup.children).map(service => {
+        getObjectValues(setup.children).map(service => {
             newState = addNewService(newState, service);
-            Object.values(service.children).map(characteristic => {
+            getObjectValues(service.children).map(characteristic => {
                 newState = addNewCharacteristic(newState, service, characteristic);
-                Object.values(characteristic.children).map(descriptor => {
+                getObjectValues(characteristic.children).map(descriptor => {
                     newState = addNewDescriptor(newState, characteristic, descriptor);
                 });
             });
@@ -264,6 +264,12 @@ function loadSetup(state, setup) {
         state = state.setIn(['selectedComponent'], null);
         return state.setIn(['children'], newState.children);
     }
+}
+
+function getObjectValues(obj) {
+    return Object.keys(obj).map(key => {
+        return obj[key];
+    });
 }
 
 export default function deviceDetails(state = initialState, action) {
