@@ -19,11 +19,11 @@ const fs = require('fs');
 const path = require('path');
 const electron = require('electron');
 const app = electron.app;
+
+app.setPath('userData', path.join(app.getPath('appData'), 'nrfconnect'));
 const settings = require('./settings');
 
-app.setPath('userData', app.getPath('appData') + path.sep + 'nrfconnect');
-
-global.keymap = app.getPath('userData') + '/keymap.cson';
+global.keymap = path.join(app.getPath('userData'), 'keymap.cson');
 global.userDataDir = app.getPath('userData');
 global.appPath = app.getAppPath();
 
