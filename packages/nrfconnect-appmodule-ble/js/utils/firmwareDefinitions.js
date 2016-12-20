@@ -19,10 +19,15 @@
  * filecontent: Boolean specifying if the values of 0 and 1 are actual firmware
  *              content or filesystem paths (true if content, false if paths)
  */
-const firmwareDefinitions = {
+
+export const firmwareDefinitions115k2 = {
     0: require('raw!pc-ble-driver-js/pc-ble-driver/hex/sd_api_v2/connectivity_1.1.0_115k2_with_s130_2.0.1.hex'),
     1: require('raw!pc-ble-driver-js/pc-ble-driver/hex/sd_api_v3/connectivity_1.1.0_115k2_with_s132_3.0.hex'),
     filecontent: true,
 };
 
-export default firmwareDefinitions;
+export const firmwareDefinitions1m = {
+    0: require('raw!pc-ble-driver-js/pc-ble-driver/hex/sd_api_v2/connectivity_1.1.0_1m_with_s130_2.0.1.hex'),
+    1: require('raw!pc-ble-driver-js/pc-ble-driver/hex/sd_api_v3/connectivity_1.1.0_1m_with_s132_3.0.hex'),
+    filecontent: true,
+};

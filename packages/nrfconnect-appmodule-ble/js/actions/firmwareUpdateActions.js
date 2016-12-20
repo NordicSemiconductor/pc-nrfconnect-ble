@@ -17,11 +17,11 @@ export const HIDE_FIRMWARE_UPDATE_REQUEST = 'HIDE_FIRMWARE_UPDATE_REQUEST';
 export const UPDATE_FIRMWARE = 'UPDATE_FIRMWARE';
 export const SHOW_FIRMWARE_UPDATE_SPINNER = 'SHOW_FIRMWARE_UPDATE_SPINNER';
 
+import os from 'os';
 import { remote } from 'electron';
 import { openAdapter } from './adapterActions';
 import { DebugProbe } from 'pc-nrfjprog-js';
 import { showErrorDialog } from './errorDialogActions';
-import firmwareDefinitions from '../utils/firmwareDefinitions';
 
 function _updateFirmware(dispatch, getState, adapter) {
     return new Promise((resolve, reject) => {
@@ -31,21 +31,39 @@ function _updateFirmware(dispatch, getState, adapter) {
             reject(new Error(`Not able to find ${adapter}.`));
         }
 
-        const serialNumber = parseInt(adapterToUse.state.serialNumber, 10);
-        const probe = new DebugProbe();
-        probe.program(serialNumber, firmwareDefinitions, err => {
-            if (err) {
-                reject(new Error('Not able to program. Error: ' + err));
-            } else {
-                resolve();
-            }
-        });
+        _loadFirmwareDefinitions()
+            .then(firmwareDefinitions => {
+                const serialNumber = parseInt(adapterToUse.state.serialNumber, 10);
+                const probe = new DebugProbe();
+                probe.program(serialNumber, firmwareDefinitions, err => {
+                    if (err) {
+                        reject(new Error('Not able to program. Error: ' + err));
+                    } else {
+                        resolve();
+                    }
+                });
+            });
     }).then(() => {
         dispatch(hideFirmwareUpdateRequestAction());
         setTimeout(() => dispatch(openAdapter(adapter)), 1000);
     }).catch(error => {
         dispatch(hideFirmwareUpdateRequestAction());
         dispatch(showErrorDialog(error));
+    });
+}
+
+function _loadFirmwareDefinitions() {
+    return new Promise(resolve => {
+        // Using webpack code splitting to create a separate bundle, so that firmware
+        // data can be loaded on demand.
+        require.ensure(['../utils/firmwareDefinitions'], function (require) {
+            const definitions = require('../utils/firmwareDefinitions');
+            if (os.type() === 'Darwin') {
+                resolve(definitions.firmwareDefinitions115k2);
+            } else {
+                resolve(definitions.firmwareDefinitions1m);
+            }
+        }, 'firmware');
     });
 }
 
