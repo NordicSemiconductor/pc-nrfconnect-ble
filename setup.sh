@@ -39,7 +39,7 @@ case "$(uname -s)" in
     export YGGDRASIL_ICON=packages/nrfconnect-loader/resources/icon.icns
     export YGGDRASIL_NAME=nrf-connect
     export YGGDRASIL_APP_NAME=nRF\ Connect
-    export COMMANDLINE_TOOLS_FILE=nRF5x-Command-Line-Tools_8_5_0_OSX.tar
+    export COMMANDLINE_TOOLS_FILE=nRF5x-Command-Line-Tools_9_2_1_OSX.tar
     export COMMANDLINE_TOOLS_EXTRACT_TARGET="$YGGDRASIL_APP_NAME.app/Contents/Frameworks"
     ;;
   Linux)
@@ -48,7 +48,7 @@ case "$(uname -s)" in
     export YGGDRASIL_ICON=packages/nrfconnect-loader/resources/icon.png
     export YGGDRASIL_NAME=nrf-connect
     export YGGDRASIL_APP_NAME=nrf-connect
-    export COMMANDLINE_TOOLS_FILE=nRF5x-Command-Line-Tools_8_5_0_Linux-x86_64.tar
+    export COMMANDLINE_TOOLS_FILE=nRF5x-Command-Line-Tools_9_2_1_Linux-x86_64.tar
     export COMMANDLINE_TOOLS_EXTRACT_TARGET=
     ;;
   *)

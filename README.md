@@ -56,7 +56,7 @@ When the procedure has completed successfully you can run the application by run
 
 The application needs to be able to load nrfjprog libraries. This is currently not working properly for Linux users. The temporary workaround for this is to put the nrfjprog libraries in the same directory as the electron binary in node_modules:
 
-    tar xf nrfjprog/nRF5x-Command-Line-Tools_8_5_0_Linux-x86_64.tar --strip-components=2 -C node_modules/electron-prebuilt/dist
+    tar xf nrfjprog/nRF5x-Command-Line-Tools_*_Linux-x86_64.tar --strip-components=2 -C node_modules/electron-prebuilt/dist
 
 ## Working with appmodules
 
