@@ -114,13 +114,13 @@ export default class CharacteristicEditor extends React.PureComponent {
         const changedProperties = {
             broadcast: this.broadcast,
             read: this.read,
-            write_wo_resp: this.write_wo_resp,
+            writeWoResp: this.writeWoResp,
             write: this.write,
             notify: this.notify,
             indicate: this.indicate,
-            auth_signed_wr: this.auth_signed_wr,
-            reliable_wr: this.reliable_wr,
-            wr_aux: this.wr_aux,
+            authSignedWr: this.authSignedWr,
+            reliableWr: this.reliableWr,
+            wrAux: this.wrAux,
         };
 
         const changedCharacteristic = {
@@ -173,13 +173,13 @@ export default class CharacteristicEditor extends React.PureComponent {
         const {
             broadcast,
             read,
-            write_wo_resp,
+            writeWoResp,
             write,
             notify,
             indicate,
-            auth_signed_wr,
-            reliable_wr,
-            wr_aux,
+            authSignedWr,
+            reliableWr,
+            wrAux,
         } = properties;
 
         if (this.saved || this.instanceId !== instanceId) {
@@ -191,13 +191,13 @@ export default class CharacteristicEditor extends React.PureComponent {
 
             this.broadcast = broadcast;
             this.read = read;
-            this.write_wo_resp = write_wo_resp;
+            this.writeWoResp = writeWoResp;
             this.write = write;
             this.notify = notify;
             this.indicate = indicate;
-            this.auth_signed_wr = auth_signed_wr;
-            this.reliable_wr = reliable_wr;
-            this.wr_aux = wr_aux;
+            this.authSignedWr = authSignedWr;
+            this.reliableWr = reliableWr;
+            this.wrAux = wrAux;
 
             this.readPerm = readPerm;
             this.writePerm = writePerm;
@@ -220,18 +220,18 @@ export default class CharacteristicEditor extends React.PureComponent {
                 <LabeledInputGroup label='Properties'>
                     <Checkbox ref='broadcast' checked={this.broadcast} onChange={e => this._setCheckedProperty('broadcast', e)}>Broadcast</Checkbox>
                     <Checkbox ref='read' checked={this.read} onChange={e => this._setCheckedProperty('read', e)}>Read</Checkbox>
-                    <Checkbox ref='writeWithoutResponse' checked={this.write_wo_resp} onChange={e => this._setCheckedProperty('write_wo_resp', e)}>Write without response</Checkbox>
+                    <Checkbox ref='writeWithoutResponse' checked={this.writeWoResp} onChange={e => this._setCheckedProperty('writeWoResp', e)}>Write without response</Checkbox>
                     <Checkbox ref='write' checked={this.write} onChange={e => this._setCheckedProperty('write', e)}>Write</Checkbox>
                     <Checkbox ref='notify' checked={this.notify} onChange={e => this._setCheckedProperty('notify', e)}>Notify</Checkbox>
                     <Checkbox ref='indicate' checked={this.indicate} onChange={e => this._setCheckedProperty('indicate', e)}>Indicate</Checkbox>
-                    <Checkbox ref='authenticatedSignedWrites' checked={this.auth_signed_wr} onChange={e => this._setCheckedProperty('auth_signed_wr', e)}>
+                    <Checkbox ref='authenticatedSignedWrites' checked={this.authSignedWr} onChange={e => this._setCheckedProperty('authSignedWr', e)}>
                         Authenticated signed write
                     </Checkbox>
                 </LabeledInputGroup>
 
                 <LabeledInputGroup label='Extended Properties'>
-                    <Checkbox ref='reliableWrite' checked={this.reliable_wr} onChange={e => this._setCheckedProperty('reliable_wr', e)}>Reliable write</Checkbox>
-                    <Checkbox ref='writeAuxiliary' checked={this.wr_aux} onChange={e => this._setCheckedProperty('wr_aux', e)}>Write auxiliary</Checkbox>
+                    <Checkbox ref='reliableWrite' checked={this.reliableWr} onChange={e => this._setCheckedProperty('reliableWr', e)}>Reliable write</Checkbox>
+                    <Checkbox ref='writeAuxiliary' checked={this.wrAux} onChange={e => this._setCheckedProperty('wrAux', e)}>Write auxiliary</Checkbox>
                 </LabeledInputGroup>
 
                 <SelectList label='Read permission' type='select' className='form-control' value={this.readPerm} onChange={e => this._setValueProperty('readPerm', e)}>

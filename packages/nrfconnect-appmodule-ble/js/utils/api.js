@@ -66,13 +66,13 @@ const ImmutableDevice = Record({
 const ImmutableProperties = Record({
     broadcast: false,
     read: false,
-    write_wo_resp: false,
+    writeWoResp: false,
     write: false,
     notify: false,
     indicate: false,
-    auth_signed_wr: false,
-    reliable_wr: false,
-    wr_aux: false,
+    authSignedWr: false,
+    reliableWr: false,
+    wrAux: false,
 });
 
 const ImmutableService = Record({
@@ -229,13 +229,13 @@ export function getImmutableProperties(properties) {
     return new ImmutableProperties({
         broadcast: properties.broadcast,
         read: properties.read,
-        write_wo_resp: properties.write_wo_resp,
+        writeWoResp: properties.writeWoResp ? properties.writeWoResp : properties.write_wo_resp,
         write: properties.write,
         notify: properties.notify,
         indicate: properties.indicate,
-        auth_signed_wr: properties.auth_signed_wr,
-        reliable_wr: properties.reliable_wr,
-        wr_aux: properties.wr_aux,
+        authSignedWr: properties.authSignedWr ? properties.authSignedWr : properties.auth_signed_wr,
+        reliableWr: properties.reliableWr ? properties.reliableWr : properties.reliable_wr,
+        wrAux: properties.wrAux ? properties.wrAux : properties.wr_aux,
     });
 }
 

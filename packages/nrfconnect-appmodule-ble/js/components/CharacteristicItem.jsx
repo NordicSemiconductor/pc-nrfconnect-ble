@@ -104,7 +104,7 @@ export default class CharacteristicItem extends AttributeItem {
 
         const hasCccd = this.cccdDescriptor !== undefined;
         const hasReadProperty = properties.read;
-        const hasWriteProperty = properties.write || properties.write_wo_resp || properties.reliable_wr;
+        const hasWriteProperty = properties.write || properties.writeWoResp || properties.reliableWr;
         const hasNotifyProperty = properties.notify;
         const hasIndicateProperty = properties.indicate;
         const hasNotifyOrIndicateProperty = hasNotifyProperty || hasIndicateProperty;

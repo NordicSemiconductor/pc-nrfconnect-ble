@@ -355,13 +355,23 @@ function _loadServerSetup(dispatch, files) {
         try {
             const filename = files[0];
             const setup = readFileSync(filename);
+
             const setupObj = JSON.parse(setup);
 
             if (!setupObj) {
                 throw new Error('Illegal format on server setup file.');
             }
 
-            dispatch(loadAction(setupObj));
+            // Replace underscored names for backward compatibility of setup files
+            const setupObjString = JSON.stringify(setupObj)
+                .replace(/"write_wo_resp"/g, '"writeWoResp"')
+                .replace(/"auth_signed_wr"/g, '"authSignedWr"')
+                .replace(/"reliable_wr"/g, '"reliableWr"')
+                .replace(/"wr_aux"/g, '"wrAux"');
+
+            const setupObjModified = JSON.parse(setupObjString);
+
+            dispatch(loadAction(setupObjModified));
             logger.info(`Server setup loaded from ${filename}.`);
         } catch (e) {
             dispatch(showErrorDialog(e));
