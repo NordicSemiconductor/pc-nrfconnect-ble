@@ -218,7 +218,7 @@ export class AuthKeyEditor extends React.PureComponent {
                     id='passkeyInputId'
                     hasFeedback={this.validationFeedbackEnabled}
                     placeholder='Enter passkey'
-                    bsStyle={this.validatePasskeyInput(this.authKeyInput)}
+                    validationState={this.validatePasskeyInput(this.authKeyInput)}
                     onChange={event => this.handlePasskeyChange(event)} />
                 <div className='form-group'>
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
@@ -252,7 +252,7 @@ export class AuthKeyEditor extends React.PureComponent {
                     id='oobInputId'
                     hasFeedback={this.validationFeedbackEnabled}
                     placeholder='Enter out-of-band data'
-                    bsStyle={this.validateOobInput(this.authKeyInput)}
+                    validationState={this.validateOobInput(this.authKeyInput)}
                     onChange={event => this.handlePasskeyChange(event)} />
                 <div className='form-group'>
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
@@ -276,7 +276,7 @@ export class AuthKeyEditor extends React.PureComponent {
                     id='randomInputId'
                     hasFeedback={this.validationFeedbackEnabled}
                     placeholder='Enter out-of-band data'
-                    bsStyle={this.validateOobInput(this.randomInput)}
+                    validationState={this.validateOobInput(this.randomInput)}
                     onChange={event => this.handleRandomChange(event)} />
                 <TextInput
                     label='Peer confirm'
@@ -284,7 +284,7 @@ export class AuthKeyEditor extends React.PureComponent {
                     id='confirmInputId'
                     hasFeedback={this.validationFeedbackEnabled}
                     placeholder='Enter out-of-band data'
-                    bsStyle={this.validateOobInput(this.confirmInput)}
+                    validationState={this.validateOobInput(this.confirmInput)}
                     onChange={event => this.handleConfirmChange(event)} />
                 <TextInput
                     readOnly
