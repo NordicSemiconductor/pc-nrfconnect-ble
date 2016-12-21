@@ -29,7 +29,7 @@ export default class EnumeratingAttributes extends React.PureComponent {
             <div className='enumerating-items-wrap'>
                 {barList}
                 <div className='enumerating-content'>
-                    <Spinner image={spinnerImage} className="spinner center-block" size={20} />
+                    <Spinner image={spinnerImage} visible={true} className="spinner center-block" size={20} />
                 </div>
             </div>
         );
