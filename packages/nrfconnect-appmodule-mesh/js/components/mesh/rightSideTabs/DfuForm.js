@@ -64,16 +64,11 @@ class DfuForm extends Component {
             showCustomFileAct,
             hideCustomFileAct,
         } = this.props;
-
+        console.log(file);
         const noComs = devices.length === 0;
+        
         if (noComs) {
             devices.push('No devices found.')
-        }
-
-        this.showF = false;
-        // Hack default value for selection box
-        if (device.value === '') {
-            device.onChange(devices[0]);
         }
 
         const altPrograms = [
