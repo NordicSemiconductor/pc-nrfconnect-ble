@@ -65,10 +65,11 @@ class LogContainer extends Component {
         const logFilePath = getLogFilePath();
 
         return (<div className='log-wrap'>
-            <div className='log-header'>
+            <div className='log-header-mesh'>
 
-                <div className='log-header-text'>Log</div>
-                <div className='padded-row log-header-buttons'>
+                <div className='log-header-text-mesh'>Log</div>
+                <div className='padded-row log-header-buttons-mesh'>
+                    
                     <button type='button' title='Open log file' className='btn btn-primary btn-xs btn-nordic' onClick={() => this._openLogFile(logFilePath)}>
                         <span className='icon-doc-text' aria-hidden='true' />
                     </button>
