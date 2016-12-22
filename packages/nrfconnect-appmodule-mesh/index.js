@@ -29,7 +29,6 @@ function initBrowserWindow() {
         url: 'file://' + __dirname + '/meshIndex.html',
         icon: __dirname + '/' + packageJson.config.icon,
         menu: false,
-        
     });
 }
 
