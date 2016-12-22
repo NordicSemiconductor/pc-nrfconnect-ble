@@ -513,7 +513,14 @@ function _onDeviceConnected(dispatch, getState, device) {
 }
 
 function _onAttributeValueChanged(dispatch, getState, attribute, handle) {
-    logger.info(`Attribute value changed, handle: ${handle}, value (0x): ${toHexString(attribute.value)}`);
+    let val;
+    if (Array.isArray(attribute.value)) {
+        val = attribute.value;
+    } else if (attribute.value) {
+        val = attribute.value[Object.keys(attribute.value)[0]];
+    }
+
+    logger.info(`Attribute value changed, handle: ${handle}, value (0x): ${toHexString(val)}`);
 
     if (!throttledValueChangedDispatch) {
         throttledValueChangedDispatch = _.throttle((attribute, value) => {
