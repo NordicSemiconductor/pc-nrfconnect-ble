@@ -93,7 +93,7 @@ const jProg = ({device}) => {
 // Dirtyfix to get SNR together with COM
 const jProg52 = ({device}) => {
     let snr = device.split("@")[1]
-
+    //return ['--jdll', 'C:\\Program Files (x86)\\SEGGER\\JLink_V510n\\JLinkARM.dll', '--reset', '--snr', snr,'--family',  'NRF52']
     return ['--reset', '--snr', snr, '--family', 'NRF52']
 }
 
