@@ -20,6 +20,8 @@ import Component from 'react-pure-render/component';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
+var pjson = require('./../../../../package.json');
+
 
 class AboutContainer extends Component {
     constructor(props) {
@@ -33,7 +35,7 @@ class AboutContainer extends Component {
 
         
         return (
-            <p> version : 0.1.1 </p>
+            <p> Version: {pjson.version} </p>
         );
     }
 }
