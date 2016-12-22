@@ -140,6 +140,12 @@ export function removePartOfLog() {
 //     }
 // }
 
+// export function receiveLog(data) {
+//     return dispatch => {
+//         dispatch(log(data))
+//     }
+// }
+
 
 // Data stream -> [line1, line2, ...]
 const lines = data => String(data)
@@ -148,7 +154,9 @@ const lines = data => String(data)
     .filter(line => line.length > 0);
 
 export function spawnLogger() {
+
     return dispatch => {
+
         // Actually spawn the logger
         const filename = getExecutablePath('rtt-logger')
         const rttLogger = childProcess.spawn(filename, ['--reset'])
@@ -164,14 +172,14 @@ export function spawnLogger() {
         rttLogger.on('close', code => {
             if (code === 0) {
                 const msg = 'rttlogger closed successfully';
-                receiveLog([`\t\t\t${msg}`])(dispatch);
+                // receiveLog([`\t\t\t${msg}`])(dispatch);
                 logger.info(msg)
             } else {
                 const msg = `rttlogger closed with error code ${code}`;
-                receiveLog([`\t\t\t${msg}`])(dispatch);
+                // receiveLog([`\t\t\t${msg}`])(dispatch);
                 logger.info(msg)
             }
-            dispatch(logKill());
+            // dispatch(logKill());
         })
         //dispatch(logSpawn(rttLogger))
     }

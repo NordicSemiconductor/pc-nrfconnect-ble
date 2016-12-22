@@ -64,9 +64,7 @@ class DfuForm extends Component {
             showCustomFileAct,
             hideCustomFileAct,
         } = this.props;
-        console.log(file);
         const noComs = devices.length === 0;
-        
         if (noComs) {
             devices.push('No devices found.')
         }
