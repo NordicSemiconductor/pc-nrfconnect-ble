@@ -130,11 +130,18 @@ export default class AttributeItem extends React.PureComponent {
 
         const {
             handle,
+            valueHandle,
             uuid,
             name,
         } = item;
 
-        const handleText = handle ? ('Handle: 0x' + toHexString(handle) + ', ') : '';
+        let handleText = '';
+        if (handle) {
+            handleText = `Handle: 0x${toHexString(handle)}, `;
+        } else if (valueHandle) {
+            handleText = `Value handle: 0x${toHexString(valueHandle)}, `;
+        }
+
         return <div className={this.attributeType + '-name truncate-text'} title={handleText + 'UUID: ' + uuid}>{name}</div>;
     }
 

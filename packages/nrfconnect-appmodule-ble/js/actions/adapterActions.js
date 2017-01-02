@@ -520,7 +520,7 @@ function _onAttributeValueChanged(dispatch, getState, attribute, handle) {
         val = attribute.value[Object.keys(attribute.value)[0]];
     }
 
-    logger.info(`Attribute value changed, handle: ${handle}, value (0x): ${toHexString(val)}`);
+    logger.info(`Attribute value changed, handle: 0x${toHexString(handle)}, value (0x): ${toHexString(val)}`);
 
     if (!throttledValueChangedDispatch) {
         throttledValueChangedDispatch = _.throttle((attribute, value) => {
