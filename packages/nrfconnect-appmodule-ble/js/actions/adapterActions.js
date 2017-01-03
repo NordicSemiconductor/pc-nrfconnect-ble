@@ -218,6 +218,12 @@ function _setupListeners(dispatch, getState, adapterToUse) {
         });
     });
 
+    adapterToUse.on('attMtuChanged', (device, mtu) => {
+        _handleDeviceEvent(device, getState, () => {
+            _onAttMtuChanged(dispatch, getState, device, mtu);
+        });
+    });
+
     adapterToUse.on('characteristicValueChanged', characteristic => {
         _onAttributeValueChanged(dispatch, getState, characteristic, characteristic.valueHandle);
     });
@@ -547,6 +553,10 @@ function _onConnParamUpdate(dispatch, getState, device, connectionParams) {
 
     dispatch(connectionParamUpdateStatusAction(-1, device, -1));
     dispatch(connectionParamsUpdatedAction(device));
+}
+
+function _onAttMtuChanged(dispatch, getState, device, mtu) {
+    logger.info(`ATT MTU changed, new value is ${mtu}`);
 }
 
 function _onSecurityRequest(dispatch, getState, device, params) {
