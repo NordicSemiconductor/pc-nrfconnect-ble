@@ -137,10 +137,8 @@ export class AuthKeyEditor extends React.PureComponent {
     }
 
     validateOobInput(value) {
-        if ((!value && value !== '')) {
+        if (!value) {
             return ERROR;
-        } else if (value === '') {
-            return SUCCESS;
         } else if (value.search(/^[0-9a-fA-F]{32}$/) === -1) {
             return ERROR;
         } else {
