@@ -152,6 +152,7 @@ function _createDefaultMenu() {
                 {
                     label: 'Toggle &Developer Tools',
                     accelerator: process.platform == 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+                    visible: false,
                     click: function (item, focusedWindow) {
                         if (focusedWindow) {
                             focusedWindow.toggleDevTools();
