@@ -59,7 +59,8 @@ function createBrowserWindow(options) {
         height: lastWindowState.height,
         minWidth: 308,
         minHeight: 499,
-        show: false
+        show: false,
+        autoHideMenuBar: true,
     }, options);
     let browserWindow = new electron.BrowserWindow(mergedOptions);
 
