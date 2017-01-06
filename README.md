@@ -20,7 +20,7 @@ nRF Connect currently supports the following operating systems:
 A [Getting started guide](http://infocenter.nordicsemi.com/topic/com.nordic.infocenter.tools/dita/tools/nRF_Connect/nRF_Connect_intro.html?cp=4_2) is available on the nRF Connect product pages. 
 
 # Contributing
-If you would like to help fixing issues or otherwise contribute to the code base, please see the [Contribution guidelines (TODO: create doc and insert link)]() document.
+We are currently working on a Contributor License Agreement (CLA), which will allow third party contributions to this project. We do not accept pull requests for the time being, but feel free to file code related issues on [GitHub Issues](https://github.com/NordicSemiconductor/pc-yggdrasil/issues).
 
 # Compiling from source
 
