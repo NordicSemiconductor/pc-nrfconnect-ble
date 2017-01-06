@@ -27,7 +27,7 @@ We are currently working on a Contributor License Agreement (CLA), which will al
 ## Dependencies
 To build this project you will need to install the following tools:
 
-* Node.js (>=4.4.7)
+* Node.js (>=6.9)
 * npm (>=3.7.0)
 * CMake (>=2.8.12)
 * A C/C++ toolchain (see [Building Boost](#building-boost) for description of toolchain requirements)
