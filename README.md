@@ -76,6 +76,8 @@ This will put the nrfjprog libraries in the same directory as the electron binar
 
 ## Working with appmodules
 
+**Note: The appmodule architecture is being reviewed, and may change in near future.**
+
 This project is split into multiple [appmodules](doc/README.md) inside the `packages` directory. When running `npm start` from the root directory, the appmodule loader will be started. When choosing an appmodule, a *pre-built version* of that appmodule will be loaded. If you modify the code, it will not have any effect unless you `npm run build` the appmodule and restart the application.
 
 When working with appmodules it is normally recommended to navigate to the appmodule directory before running `npm start`. When doing this, the application will hot-reload any changes that are made to the code, providing instant feedback during development.

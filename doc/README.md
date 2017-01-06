@@ -2,6 +2,13 @@
 
 ## Application Modules (appmodules) 
 
+### Important notice
+
+**The modularization of nRF Connect is still work in progress. Please be aware that
+this architecture may change significantly in near future.**
+
+### Introduction
+
 nRF Connect is modularized into application modules (appmodules). Each
 appmodule provides a certain set of features. The appmodules are developed
 independently, but may share some common components and resources from the core
@@ -182,6 +189,7 @@ browserWindow.webContents.on('new-window', function (e, url) {
 ### Remaining work
 
 The following work is planned, but not completed yet:
+- Reduce the time it takes to build the project.
 - Ability to go back to the loader after having selected an appmodule.
 - Mechanism for remembering which appmodule the user has selected, so that it can be loaded by default the next time the application starts.
 - Online update mechanism for appmodules.
