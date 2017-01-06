@@ -52,11 +52,27 @@ When the procedure has completed successfully you can run the application by run
 
     npm start
 
-### Additional step for Linux users
+## Firmware detection and programming
 
-The application needs to be able to load nrfjprog libraries. This is currently not working properly for Linux users. The temporary workaround for this is to put the nrfjprog libraries in the same directory as the electron binary in node_modules:
+When starting the application and opening an adapter, it will try to detect firmware version and upgrade the firmware if needed. In order for this to work, nRF Connect must be able to load nrfjprog libraries. If you see the message *Could not load nrfjprog DLL* in log at startup, then follow the steps below.
 
-    tar xf nrfjprog/nRF5x-Command-Line-Tools_8_5_0_Linux-x86_64.tar --strip-components=2 -C node_modules/electron-prebuilt/dist
+### Windows
+
+Download and install the latest [nRF5x-Command-Line-Tools](https://www.nordicsemi.com/eng/nordic/Products/nRF51822/nRF5x-Command-Line-Tools-Win32/33444), and restart nRF Connect. The nrfjprog libraries will then be loaded from registry.
+
+### Linux and macOS
+
+nRF5x-Command-Line-Tools for Linux and macOS are included in the nrfjprog directory in this repository. In the nRF Connect release artifacts for Linux and macOS, these are set up automatically. However, during development this manual step is required:
+
+Linux:
+
+    tar xf nrfjprog/nRF5x-Command-Line-Tools_*_Linux-x86_64.tar --strip-components=2 -C node_modules/electron-prebuilt/dist
+
+macOS:
+
+    tar xf nrfjprog/nRF5x-Command-Line-Tools_*_OSX.tar --strip-components=2 -C node_modules/electron-prebuilt/dist
+
+This will put the nrfjprog libraries in the same directory as the electron binary in node_modules, so that the application finds them.
 
 ## Working with appmodules
 
