@@ -125,5 +125,5 @@ nRF Connect builds on top of other sub components that live in their own GitHub 
 See the [license file](LICENSE) for details.
 
 # Feedback
-* Ask questions on [DevZone Questions](devzone.nordicsemi.com)
+* Ask questions on [DevZone Questions](https://devzone.nordicsemi.com)
 * File code related issues on [GitHub Issues](https://github.com/NordicSemiconductor/pc-yggdrasil/issues)
