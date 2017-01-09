@@ -1,5 +1,5 @@
 # nRF Connect
-[![License](https://img.shields.io/badge/license-Modified%20BSD%20License-blue.svg)](https://github.com/NordicSemiconductor/pc-yggdrasil/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-Modified%20BSD%20License-blue.svg)](LICENSE)
 
 nRF Connect is a cross-platform tool that enables testing and development with Bluetooth low energy (previously called Bluetooth Smart). It allows easy setup of connections with other devices and use these connections for reading and writing to the external nodes.
 
@@ -122,7 +122,7 @@ nRF Connect builds on top of other sub components that live in their own GitHub 
 * [pc-ble-driver](https://github.com/NordicSemiconductor/pc-ble-driver)
 
 # License
-See the [license file](https://github.com/NordicSemiconductor/pc-yggdrasil) for details.
+See the [license file](LICENSE) for details.
 
 # Feedback
 * Ask questions on [DevZone Questions](devzone.nordicsemi.com)
