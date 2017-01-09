@@ -61,7 +61,7 @@ call electron-packager packages\nrfconnect-loader nrf-connect --platform=win32 -
 
 copy yggdrasil_installer.nsi %YGGDRASIL_DEPLOY_DIR%
 copy nrfconnect.ico %YGGDRASIL_DEPLOY_DIR%
-copy LICENSE %YGGDRASIL_DEPLOY_DIR%\nrf-connect-win32-ia32\LICENSE
+copy packages\nrfconnect-loader\LICENSE %YGGDRASIL_DEPLOY_DIR%\nrf-connect-win32-ia32\LICENSE
 
 cd %YGGDRASIL_DEPLOY_DIR%
 
