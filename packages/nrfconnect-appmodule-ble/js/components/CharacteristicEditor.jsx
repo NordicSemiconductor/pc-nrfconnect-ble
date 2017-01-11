@@ -52,8 +52,7 @@ import { ValidationError } from '../common/Errors';
 
 import { ERROR, SUCCESS, validateUuid } from '../utils/validateUuid';
 
-export default class CharacteristicEditor extends React.PureComponent {
-    //mixins: [ReactLinkedStateMixin],
+export default class CharacteristicEditor extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -212,23 +211,23 @@ export default class CharacteristicEditor extends React.PureComponent {
         if (this.saved || this.instanceId !== instanceId) {
             this.saved = false;
             this.instanceId = instanceId;
-            this.uuid = uuid;
+            this.uuid = uuid || '';
             this.name = name;
             this.value = value.toArray();
 
-            this.broadcast = broadcast;
-            this.read = read;
-            this.writeWoResp = writeWoResp;
-            this.write = write;
-            this.notify = notify;
-            this.indicate = indicate;
-            this.authSignedWr = authSignedWr;
-            this.reliableWr = reliableWr;
-            this.wrAux = wrAux;
+            this.broadcast = broadcast === true;
+            this.read = read === true;
+            this.writeWoResp = writeWoResp === true;
+            this.write = write === true;
+            this.notify = notify === true;
+            this.indicate = indicate === true;
+            this.authSignedWr = authSignedWr === true;
+            this.reliableWr = reliableWr === true;
+            this.wrAux = wrAux === true;
 
             this.readPerm = readPerm;
             this.writePerm = writePerm;
-            this.fixedLength = fixedLength;
+            this.fixedLength = fixedLength === true;
             this.maxLength = maxLength;
         }
 

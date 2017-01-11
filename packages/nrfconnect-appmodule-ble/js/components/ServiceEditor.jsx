@@ -47,6 +47,7 @@ import UuidInput from './input/UuidInput';
 
 import { getUuidName, uuidServiceDefinitions } from '../utils/uuid_definitions';
 
+import { ValidationError } from '../common/Errors';
 import { ERROR, validateUuid } from '../utils/validateUuid';
 
 export default class ServiceEditor extends React.PureComponent {
@@ -120,7 +121,7 @@ export default class ServiceEditor extends React.PureComponent {
         if (this.saved || this.instanceId !== instanceId) {
             this.saved = false;
             this.instanceId = instanceId;
-            this.uuid = uuid;
+            this.uuid = uuid || '';
             this.name = name;
         }
 

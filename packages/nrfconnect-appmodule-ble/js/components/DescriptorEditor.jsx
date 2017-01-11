@@ -187,13 +187,13 @@ export default class DescriptorEditor extends React.PureComponent {
         if (this.saved || this.instanceId !== instanceId) {
             this.saved = false;
             this.instanceId = instanceId;
-            this.uuid = uuid;
+            this.uuid = uuid || '';
             this.name = name;
             this.value = value.toArray();
 
             this.readPerm = readPerm;
             this.writePerm = writePerm;
-            this.fixedLength = fixedLength;
+            this.fixedLength = fixedLength === true;
             this.maxLength = maxLength;
         }
 
