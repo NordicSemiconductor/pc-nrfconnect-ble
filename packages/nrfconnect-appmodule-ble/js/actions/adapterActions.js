@@ -329,7 +329,7 @@ function _checkVersion(version) {
         return false;
     }
 
-    // Require higher that or equal to version, but disallow increment in major version number
+    // Require higher than or equal to version, but disallow increment in major version number
     const versionRule = '^' + latestFirmwareVersion;
     if (!semver.satisfies(version, versionRule)) {
         return false;
