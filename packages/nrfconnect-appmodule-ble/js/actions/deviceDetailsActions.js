@@ -291,7 +291,7 @@ function _writeCharacteristic(dispatch, getState, characteristic, value) {
         let ack;
         if (characteristic.properties.write === true) {
             ack = true;
-        } else if (characteristic.properties.write_wo_resp === true) {
+        } else if (characteristic.properties.writeWoResp === true) {
             ack = false;
         } else {
             ack = true;

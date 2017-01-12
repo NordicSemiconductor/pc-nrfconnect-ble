@@ -14,6 +14,7 @@
     "bootstrap": "lerna bootstrap --concurrency 1",
     "updated": "lerna updated",
     "test": "jest",
+    "prune-production": "node scripts/run-all.js prune --production",
     "clean": "npm install lerna rimraf && node scripts/run-all.js run clean && rimraf \"node_modules/!(rimraf|.bin)\""
   },
   "author": "Nordic Semiconductor ASA",
@@ -40,6 +41,7 @@
     "lerna": "2.0.0-beta.30",
     "less": "^2.7.1",
     "less-loader": "2.2.3",
+    "raw-loader": "0.5.1",
     "rimraf": "^2.5.4",
     "style-loader": "0.13.1",
     "webpack": "1.13.2",

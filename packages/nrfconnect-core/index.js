@@ -39,21 +39,43 @@
 
  'use strict';
 
-const VERSION = '1.0';
+const VERSION = '1.1';
 
-let os = require('os');
-let fs = require('fs');
-let electron = require('electron');
-let app = electron.app;
-let settings = require('./settings');
+const os = require('os');
+const fs = require('fs');
+const path = require('path');
+const electron = require('electron');
+const app = electron.app;
 
-global.keymap = app.getPath('userData') + '/keymap.cson';
+app.setPath('userData', path.join(app.getPath('appData'), 'nrfconnect'));
+const settings = require('./settings');
+
+global.keymap = path.join(app.getPath('userData'), 'keymap.cson');
 global.userDataDir = app.getPath('userData');
 global.appPath = app.getAppPath();
 
 app.on('window-all-closed', function () {
     app.quit();
 });
+
+function createSplashScreen() {
+    let splashScreen = new electron.BrowserWindow({
+        width: 400,
+        height: 223,
+        frame: false,
+        alwaysOnTop: true,
+        skipTaskbar: true,
+        resizable: false,
+        show: false,
+        transparent: true
+    });
+    splashScreen.loadURL('file://' + __dirname + '/resources/splashScreen.html');
+    splashScreen.on('closed', function () {
+        splashScreen = null;
+    });
+    splashScreen.show();
+    return splashScreen;
+}
 
 function createBrowserWindow(options) {
     const lastWindowState = settings.loadLastWindow();
@@ -64,9 +86,15 @@ function createBrowserWindow(options) {
         height: lastWindowState.height,
         minWidth: 308,
         minHeight: 499,
-        show: false
+        show: false,
+        autoHideMenuBar: true,
     }, options);
     let browserWindow = new electron.BrowserWindow(mergedOptions);
+
+    let splashScreen;
+    if (options.splashScreen) {
+        splashScreen = createSplashScreen();
+    }
 
     browserWindow.loadURL(options.url);
 
@@ -81,6 +109,10 @@ function createBrowserWindow(options) {
     });
 
     browserWindow.webContents.on('did-finish-load', function () {
+        if (splashScreen && !splashScreen.isDestroyed()) {
+            splashScreen.close();
+        }
+
         if (lastWindowState.maximized) {
             browserWindow.maximize();
         }
@@ -147,6 +179,7 @@ function _createDefaultMenu() {
                 {
                     label: 'Toggle &Developer Tools',
                     accelerator: process.platform == 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+                    visible: false,
                     click: function (item, focusedWindow) {
                         if (focusedWindow) {
                             focusedWindow.toggleDevTools();

@@ -56,10 +56,10 @@ if (electron.app.isReady()) {
 function initBrowserWindow() {
     const packageJson = require('./package.json');
     const browserWindow = core.createBrowserWindow({
-        title: packageJson.config.title,
         url: 'file://' + __dirname + '/index.html',
         icon: __dirname + '/' + packageJson.config.icon,
-        menu: true
+        menu: true,
+        splashScreen: true,
     });
 
     browserWindow.webContents.on('new-window', function (e, url) {

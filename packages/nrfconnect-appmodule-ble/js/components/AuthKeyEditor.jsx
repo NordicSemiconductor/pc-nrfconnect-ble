@@ -41,9 +41,8 @@
 
 import React, { PropTypes } from 'react';
 
-import { Button, Input } from 'react-bootstrap';
-
-import { SecurityParamsControls } from '../components/SecurityParamsControls';
+import { Button } from 'react-bootstrap';
+import { TextInput } from 'nrfconnect-core';
 
 import { BLEEventType } from '../actions/common';
 import { toHexString } from '../utils/stringUtil';
@@ -165,10 +164,8 @@ export class AuthKeyEditor extends React.PureComponent {
     }
 
     validateOobInput(value) {
-        if ((!value && value !== '')) {
+        if (!value) {
             return ERROR;
-        } else if (value === '') {
-            return SUCCESS;
         } else if (value.search(/^[0-9a-fA-F]{32}$/) === -1) {
             return ERROR;
         } else {
@@ -240,18 +237,14 @@ export class AuthKeyEditor extends React.PureComponent {
     createPasskeyRequestControls() {
         return (
             <form className='form-horizontal' onSubmit={event => { this.handlePasskeySubmit(); event.preventDefault(); }}>
-                <div className='form-group'>
-                    <label className='control-label col-sm-4'>Passkey</label>
-                    <div className='col-sm-7'>
-                        <Input
-                            type='text' size={6} defaultValue=''
-                            id='passkeyInputId'
-                            hasFeedback={this.validationFeedbackEnabled}
-                            placeholder='Enter passkey'
-                            bsStyle={this.validatePasskeyInput(this.authKeyInput)}
-                            onChange={event => this.handlePasskeyChange(event)} />
-                    </div>
-                </div>
+                <TextInput
+                    label='Passkey'
+                    defaultValue=''
+                    id='passkeyInputId'
+                    hasFeedback={this.validationFeedbackEnabled}
+                    placeholder='Enter passkey'
+                    validationState={this.validatePasskeyInput(this.authKeyInput)}
+                    onChange={event => this.handlePasskeyChange(event)} />
                 <div className='form-group'>
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
                     <Button type='button' onClick={() => this.handlePasskeySubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
@@ -278,18 +271,14 @@ export class AuthKeyEditor extends React.PureComponent {
     createLegacyOobRequestControls() {
         return (
             <form className='form-horizontal' onSubmit={event => { this.handleOobSubmit(); event.preventDefault(); }}>
-                <div className='form-group'>
-                    <label className='control-label col-sm-4'>Out-of-band data</label>
-                    <div className='col-sm-7'>
-                        <Input
-                            type='text' size={32} defaultValue=''
-                            id='oobInputId'
-                            hasFeedback={this.validationFeedbackEnabled}
-                            placeholder='Enter out-of-band data'
-                            bsStyle={this.validateOobInput(this.authKeyInput)}
-                            onChange={event => this.handlePasskeyChange(event)} />
-                    </div>
-                </div>
+                <TextInput
+                    label='Out-of-band data'
+                    defaultValue=''
+                    id='oobInputId'
+                    hasFeedback={this.validationFeedbackEnabled}
+                    placeholder='Enter out-of-band data'
+                    validationState={this.validateOobInput(this.authKeyInput)}
+                    onChange={event => this.handlePasskeyChange(event)} />
                 <div className='form-group'>
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
                     <Button type='button' onClick={() => this.handleOobSubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
@@ -306,41 +295,32 @@ export class AuthKeyEditor extends React.PureComponent {
 
         return (
             <form className='form-horizontal' onSubmit={event => { this.handleLescOobSubmit(); event.preventDefault(); }}>
-                <div className='form-group'>
-                    <label className='control-label col-sm-4'>Peer random</label>
-                    <div className='col-sm-7'>
-                        <Input
-                            type='text' size={32} defaultValue=''
-                            id='randomInputId'
-                            hasFeedback={this.validationFeedbackEnabled}
-                            placeholder='Enter out-of-band data'
-                            bsStyle={this.validateOobInput(this.randomInput)}
-                            onChange={event => this.handleRandomChange(event)} />
-                    </div>
-
-                    <label className='control-label col-sm-4'>Peer confirm</label>
-                    <div className='col-sm-7'>
-                        <Input
-                            type='text' size={32} defaultValue=''
-                            id='confirmInputId'
-                            hasFeedback={this.validationFeedbackEnabled}
-                            placeholder='Enter out-of-band data'
-                            bsStyle={this.validateOobInput(this.confirmInput)}
-                            onChange={event => this.handleConfirmChange(event)} />
-                    </div>
-
-                    <label className='control-label col-sm-4'>Own random</label>
-                    <div className='col-sm-7'>
-                        <Input readOnly
-                            type='text' size={32} id='randomInputId' value={random} />
-                    </div>
-
-                    <label className='control-label col-sm-4'>Own confirm</label>
-                    <div className='col-sm-7'>
-                        <Input readOnly
-                            type='text' size={32} id='confirmInputId' value={confirm} />
-                    </div>
-                </div>
+                <TextInput
+                    label='Peer random'
+                    defaultValue=''
+                    id='randomInputId'
+                    hasFeedback={this.validationFeedbackEnabled}
+                    placeholder='Enter out-of-band data'
+                    validationState={this.validateOobInput(this.randomInput)}
+                    onChange={event => this.handleRandomChange(event)} />
+                <TextInput
+                    label='Peer confirm'
+                    defaultValue=''
+                    id='confirmInputId'
+                    hasFeedback={this.validationFeedbackEnabled}
+                    placeholder='Enter out-of-band data'
+                    validationState={this.validateOobInput(this.confirmInput)}
+                    onChange={event => this.handleConfirmChange(event)} />
+                <TextInput
+                    readOnly
+                    label='Own random'
+                    id='randomInputId'
+                    value={random} />
+                <TextInput
+                    readOnly
+                    label='Own confirm'
+                    id='confirmInputId'
+                    value={confirm} />
                 <div className='form-group'>
                     <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
                     <Button type='button' onClick={() => this.handleLescOobSubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>

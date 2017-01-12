@@ -130,16 +130,25 @@ function clearList(state) {
 }
 
 function deviceConnect(state, device) {
-    return state.setIn(['devices', device.address, 'isConnecting'], true);
+    if (state.devices.get(device.address)) {
+        return state.setIn(['devices', device.address, 'isConnecting'], true);
+    }
+    return state;
 }
 
 function deviceConnected(state, device) {
-    state = state.setIn(['devices', device.address, 'isConnecting'], false);
-    return state.setIn(['devices', device.address, 'connected'], true);
+    if (state.devices.get(device.address)) {
+        state = state.setIn(['devices', device.address, 'isConnecting'], false);
+        return state.setIn(['devices', device.address, 'connected'], true);
+    }
+    return state;
 }
 
 function deviceDisconnected(state, device) {
-    return state.setIn(['devices', device.address, 'connected'], false);
+    if (state.devices.get(device.address)) {
+        return state.setIn(['devices', device.address, 'connected'], false);
+    }
+    return state;
 }
 
 function deviceConnectTimeout(state, deviceAddress) {
