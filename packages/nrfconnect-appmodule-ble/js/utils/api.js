@@ -256,12 +256,12 @@ export function getImmutableProperties(properties) {
     return new ImmutableProperties({
         broadcast: properties.broadcast,
         read: properties.read,
-        writeWoResp: properties.writeWoResp ? properties.writeWoResp : properties.write_wo_resp,
+        writeWoResp: properties.writeWoResp || properties.write_wo_resp,
         write: properties.write,
         notify: properties.notify,
         indicate: properties.indicate,
-        authSignedWr: properties.authSignedWr ? properties.authSignedWr : properties.auth_signed_wr,
-        reliableWr: properties.reliableWr ? properties.reliableWr : properties.reliable_wr,
+        authSignedWr: properties.authSignedWr || properties.auth_signed_wr,
+        reliableWr: properties.reliableWr || properties.reliable_wr,
         wrAux: properties.wrAux ? properties.wrAux : properties.wr_aux,
     });
 }
