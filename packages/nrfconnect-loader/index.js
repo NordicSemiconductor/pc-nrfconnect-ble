@@ -39,15 +39,21 @@
 
  'use strict';
 
-let electron = require('electron');
-let app = electron.app;
-let BrowserWindow = electron.BrowserWindow;
-require('nrfconnect-core/index');
+const core = require('nrfconnect-core/index');
+const appmoduleRepo = require('./js/utils/appmoduleRepository');
+const appmodules = appmoduleRepo.getAppmodules();
 
-let splashScreen = null;
+// If only one appmodule, then just load that
+if (appmodules.length === 1) {
+    require(appmodules[0].name);
+    return;
+}
+
+const electron = require('electron');
+const ipcMain = electron.ipcMain;
+const app = electron.app;
+
 let loaderWindow = null;
-
-let ipcMain = electron.ipcMain;
 
 ipcMain.on('load-appmodule', function (event, name) {
     require(name);
@@ -57,54 +63,16 @@ ipcMain.on('load-appmodule', function (event, name) {
 });
 
 app.on('ready', function () {
-    splashScreen = new BrowserWindow({
-        width: 400,
-        height: 223,
-        frame: false,
-        alwaysOnTop: true,
-        skipTaskbar: true,
-        resizable: false,
-        show: false,
-        transparent: true
-    });
-
-    splashScreen.loadURL('file://' + __dirname + '/resources/splashScreen.html');
-    splashScreen.on('closed', function () {
-        splashScreen = null;
-    });
-
-    splashScreen.show();
-
-    loaderWindow = new BrowserWindow({
+    loaderWindow = core.createBrowserWindow({
         width: 500,
         height: 370,
         resizable: false,
-        show: false,
+        keepWindowSettings: false,
+        splashScreen: true,
+        url: 'file://' + __dirname + '/index.html',
         icon: __dirname + '/resources/icon.png',
     });
+
     // Remove this to enable menu and Chrome devtools
     loaderWindow.setMenu(null);
-
-    loaderWindow.loadURL('file://' + __dirname + '/index.html');
-
-    loaderWindow.on('closed', function () {
-        loaderWindow = null;
-        if (splashScreen) {
-            splashScreen.close();
-        }
-    });
-
-    loaderWindow.webContents.on('did-finish-load', function () {
-        if (splashScreen) {
-            splashScreen.close();
-        }
-
-        loaderWindow.setTitle('nRF Connect v1.0');
-        loaderWindow.show();
-    });
-
-    loaderWindow.webContents.on('new-window', function (e, url) {
-        e.preventDefault();
-        electron.shell.openExternal(url);
-    });
 });

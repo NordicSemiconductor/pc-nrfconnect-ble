@@ -41,8 +41,8 @@
 
 import React, { PropTypes } from 'react';
 
-import { ButtonToolbar, Button, Checkbox, InputGroup } from 'react-bootstrap';
-import { TextInput, SelectList } from 'nrfconnect-core';
+import { ButtonToolbar, Button, Checkbox } from 'react-bootstrap';
+import { TextInput, SelectList, LabeledInputGroup } from 'nrfconnect-core';
 import UuidInput from './input/UuidInput';
 
 import HexOnlyEditableField from './HexOnlyEditableField.jsx';
@@ -187,13 +187,13 @@ export default class DescriptorEditor extends React.PureComponent {
         if (this.saved || this.instanceId !== instanceId) {
             this.saved = false;
             this.instanceId = instanceId;
-            this.uuid = uuid;
+            this.uuid = uuid || '';
             this.name = name;
             this.value = value.toArray();
 
             this.readPerm = readPerm;
             this.writePerm = writePerm;
-            this.fixedLength = fixedLength;
+            this.fixedLength = fixedLength === true;
             this.maxLength = maxLength;
         }
 
@@ -225,11 +225,11 @@ export default class DescriptorEditor extends React.PureComponent {
                     <option value='no_access'>No access rights specified (undefined)</option>
                 </SelectList>
 
-                <InputGroup label='Max length'>
+                <LabeledInputGroup label='Max length'>
                     <Checkbox ref='fixedLength' checked={this.fixedLength} onChange={e => this._setCheckedProperty('fixedLength', e)}>Fixed length</Checkbox>
-                    <TextInput type='number' min='0' max={this.fixedLength ? '510' : '512'} name='max-length' ref='maxLength' value={this.maxLength}
+                    <TextInput inline type='number' min='0' max={this.fixedLength ? '510' : '512'} name='max-length' ref='maxLength' value={this.maxLength}
                         onChange={e => this._setValueProperty('maxLength', e)} />
-                </InputGroup>
+                </LabeledInputGroup>
 
                 <ButtonToolbar>
                     <div className='col-md-4' />

@@ -121,6 +121,7 @@ configured by passing in a set of options:
 | `url`                       | Yes       | -              | Path to the html file that should be loaded in the browser window. |
 | `title`                     | No        | nRF Connect vX | The title that should be visible in the window title bar. |
 | `keepWindowSettings`        | No        | `true`         | If `true`, the window size and maximized status is kept and reused next time the window is opened. |
+| `splashScreen`              | No        | `false`        | If `true`, an nRF Connect splash screen is shown while the window is loading. |
 | *standard Electron option*  | -         | -              | Any standard option from the [Electron BrowserWindow API](https://github.com/electron/electron/blob/master/docs/api/browser-window.md) |
 
 Example usage:

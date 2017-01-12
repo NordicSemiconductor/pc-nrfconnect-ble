@@ -207,7 +207,7 @@ function completedReadingAttribute(state, attribute, value, error) {
         errorMessage = formatErrorMessage(error.message);
     } else {
         const handle = attribute.valueHandle ? attribute.valueHandle : attribute.handle;
-        logger.info(`Attribute value read, handle: ${handle}, value (0x): ${toHexString(value)}`);
+        logger.info(`Attribute value read, handle: 0x${toHexString(handle)}, value (0x): ${toHexString(value)}`);
     }
 
     state = state.setIn(attributeStatePath.concat('errorMessage'), errorMessage);
@@ -231,7 +231,7 @@ function completedWritingAttribute(state, attribute, value, error) {
         errorMessage = formatErrorMessage(error.message);
     } else {
         const handle = attribute.valueHandle ? attribute.valueHandle : attribute.handle;
-        logger.info(`Attribute value written, handle: ${handle}, value (0x): ${toHexString(value)}`);
+        logger.info(`Attribute value written, handle: 0x${toHexString(handle)}, value (0x): ${toHexString(value)}`);
     }
 
     state = state.setIn(attributeStatePath.concat('errorMessage'), errorMessage);

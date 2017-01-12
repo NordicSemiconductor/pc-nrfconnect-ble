@@ -260,7 +260,7 @@
   > div:nth-child(2) { //device details
     box-shadow: inset 0px 5px 6px -5px gray;
     background-color: white;
-    min-width: 260px;
+    width: 260px;
     border-top: 1px solid gray;
     border-left: 1px solid gray;
     overflow-y: auto;
@@ -452,6 +452,7 @@
 
   > .dropdown-toggle {
     min-width: 143px;
+    padding-right: 20px;
 
     > .caret {
       position: absolute;
@@ -636,9 +637,11 @@
 .log-wrap {
   background-color: @background-color;
   .infinite-log {
+    position: relative;
     overflow-x: auto !important;
     background-color: white;
     > div {
+      position: absolute;
       display: table;
       min-width: 100%;
     }

@@ -98,6 +98,7 @@ export const FATAL = 5;
 
 import _ from 'underscore';
 import semver from 'semver';
+import os from 'os';
 import { SerialPort } from 'serialport';
 import { api } from 'pc-ble-driver-js';
 import { logger } from '../logging';
@@ -135,7 +136,7 @@ const attrChange = {
 
 let throttledValueChangedDispatch;
 
-const latestFirmwareVersion = '1.0.0';
+const latestFirmwareVersion = '1.1.0';
 
 // Internal functions
 
@@ -244,6 +245,12 @@ function _setupListeners(dispatch, getState, adapterToUse) {
         });
     });
 
+    adapterToUse.on('attMtuChanged', (device, mtu) => {
+        _handleDeviceEvent(device, getState, () => {
+            _onAttMtuChanged(dispatch, getState, device, mtu);
+        });
+    });
+
     adapterToUse.on('characteristicValueChanged', characteristic => {
         _onAttributeValueChanged(dispatch, getState, characteristic, characteristic.valueHandle);
     });
@@ -322,7 +329,9 @@ function _checkVersion(version) {
         return false;
     }
 
-    if (semver.lt(version, latestFirmwareVersion)) {
+    // Require higher than or equal to version, but disallow increment in major version number
+    const versionRule = '^' + latestFirmwareVersion;
+    if (!semver.satisfies(version, versionRule)) {
         return false;
     }
 
@@ -347,8 +356,8 @@ function _checkProgram(dispatch, getState, adapter) {
     }).then(adapterToUse => {
         const serialNumber = parseInt(adapterToUse.state.serialNumber, 10);
         return _getVersion(dispatch, getState, adapter, serialNumber);
-    }).then(() => {
-        return _openAdapter(dispatch, getState, adapter);
+    }).then(versionInfo => {
+        return _openAdapter(dispatch, getState, adapter, versionInfo);
     }).catch(err => {
         if (err) {
             dispatch(showErrorDialog(err));
@@ -421,14 +430,29 @@ function _getVersion(dispatch, getState, adapter, serialNumber) {
                     reject();
                 } else {
                     logger.info(`Connectivity firmware version ${versionString} detected`);
-                    resolve();
+                    logger.debug(`Connectivity firmware info: sdBleApiVersion: ${version.sdBleApiVersion}, baudRate: ${version.baudRate}, transportType: ${version.transportType}`);
+                    resolve(version);
                 }
             }, 500);
         });
     });
 }
 
-function _openAdapter(dispatch, getState, adapter) {
+function _getBaudRate(versionInfo) {
+    const defaultBaudRate = os.type() === 'Darwin' ? 115200 : 1000000;
+
+    if (!versionInfo || !versionInfo.baudRate) {
+        return defaultBaudRate;
+    }
+
+    if (versionInfo.baudRate < 0 && versionInfo.baudRate > 1000000) {
+        return defaultBaudRate;
+    }
+
+    return versionInfo.baudRate;
+}
+
+function _openAdapter(dispatch, getState, adapter, versionInfo) {
     return new Promise((resolve, reject) => {
         // Check if we already have an adapter open, if so, close it
         if (getState().adapter.api.selectedAdapter !== null) {
@@ -440,10 +464,13 @@ function _openAdapter(dispatch, getState, adapter) {
         } else {
             resolve();
         }
-    }).then((resolve, reject) => {
+    }).then(() => {
+        const baudRate = _getBaudRate(versionInfo);
+        return Promise.resolve(baudRate);
+    }).then(baudRate => {
         return new Promise((resolve, reject) => {
             const options = {
-                baudRate: 115200,
+                baudRate: baudRate,
                 parity: 'none',
                 flowControl: 'none',
                 eventInterval: 10,
@@ -519,7 +546,14 @@ function _onDeviceConnected(dispatch, getState, device) {
 }
 
 function _onAttributeValueChanged(dispatch, getState, attribute, handle) {
-    logger.info(`Attribute value changed, handle: ${handle}, value (0x): ${toHexString(attribute.value)}`);
+    let val;
+    if (Array.isArray(attribute.value)) {
+        val = attribute.value;
+    } else if (attribute.value) {
+        val = attribute.value[Object.keys(attribute.value)[0]];
+    }
+
+    logger.info(`Attribute value changed, handle: 0x${toHexString(handle)}, value (0x): ${toHexString(val)}`);
 
     if (!throttledValueChangedDispatch) {
         throttledValueChangedDispatch = _.throttle((attribute, value) => {
@@ -546,6 +580,10 @@ function _onConnParamUpdate(dispatch, getState, device, connectionParams) {
 
     dispatch(connectionParamUpdateStatusAction(-1, device, -1));
     dispatch(connectionParamsUpdatedAction(device));
+}
+
+function _onAttMtuChanged(dispatch, getState, device, mtu) {
+    logger.info(`ATT MTU changed, new value is ${mtu}`);
 }
 
 function _onSecurityRequest(dispatch, getState, device, params) {

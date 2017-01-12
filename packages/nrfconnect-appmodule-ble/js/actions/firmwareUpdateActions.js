@@ -44,6 +44,7 @@ export const HIDE_FIRMWARE_UPDATE_REQUEST = 'HIDE_FIRMWARE_UPDATE_REQUEST';
 export const UPDATE_FIRMWARE = 'UPDATE_FIRMWARE';
 export const SHOW_FIRMWARE_UPDATE_SPINNER = 'SHOW_FIRMWARE_UPDATE_SPINNER';
 
+import os from 'os';
 import { remote } from 'electron';
 import { openAdapter } from './adapterActions';
 import { DebugProbe } from 'pc-nrfjprog-js';
@@ -57,21 +58,18 @@ function _updateFirmware(dispatch, getState, adapter) {
             reject(new Error(`Not able to find ${adapter}.`));
         }
 
-        const probe = new DebugProbe();
-
-        const projectDir = _getProjectDirectory();
-        const pathHexS130 = projectDir + require('file!pc-ble-driver-js/pc-ble-driver/hex/sd_api_v2/connectivity_1.0.1_115k2_with_s130_2.0.1.hex');
-        const pathHexS132 = projectDir + require('file!pc-ble-driver-js/pc-ble-driver/hex/sd_api_v3/connectivity_1.0.1_115k2_with_s132_3.0.hex');
-
-        probe.program(parseInt(adapterToUse.state.serialNumber, 10), [pathHexS130, pathHexS132], err => {
-            console.log(err);
-
-            if (err) {
-                reject(new Error('Not able to program. Error: ' + err));
-            } else {
-                resolve();
-            }
-        });
+        _loadFirmwareDefinitions()
+            .then(firmwareDefinitions => {
+                const serialNumber = parseInt(adapterToUse.state.serialNumber, 10);
+                const probe = new DebugProbe();
+                probe.program(serialNumber, firmwareDefinitions, err => {
+                    if (err) {
+                        reject(new Error('Not able to program. Error: ' + err));
+                    } else {
+                        resolve();
+                    }
+                });
+            });
     }).then(() => {
         dispatch(hideFirmwareUpdateRequestAction());
         setTimeout(() => dispatch(openAdapter(adapter)), 1000);
@@ -81,9 +79,19 @@ function _updateFirmware(dispatch, getState, adapter) {
     });
 }
 
-function _getProjectDirectory() {
-    // pathname is /path/to/index.html, but we want just the directory
-    return location.pathname.replace(/[^\/]*$/, '');
+function _loadFirmwareDefinitions() {
+    return new Promise(resolve => {
+        // Using webpack code splitting to create a separate bundle, so that firmware
+        // data can be loaded on demand.
+        require.ensure(['../utils/firmwareDefinitions'], function (require) {
+            const definitions = require('../utils/firmwareDefinitions');
+            if (os.type() === 'Darwin') {
+                resolve(definitions.firmwareDefinitions115k2);
+            } else {
+                resolve(definitions.firmwareDefinitions1m);
+            }
+        }, 'firmware');
+    });
 }
 
 function showFirmwareUpdateRequestAction(adapter, foundVersion, latestVersion) {

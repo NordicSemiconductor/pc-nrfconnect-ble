@@ -56,11 +56,10 @@ const InitialState = Record({
 });
 
 const deviceInstanceId = 'local.server';
-let serviceInstanceIdCounter = 0;
-let characteristicInstanceIdCounter = 0;
-let descriptorInstanceIdCounter = 0;
 
 function getInitialGapServiceCharacteristics(gapInstanceId) {
+    let characteristicInstanceIdCounter = 0;
+
     const deviceNameCharacteristic = getImmutableCharacteristic({
         instanceId: gapInstanceId + '.' + characteristicInstanceIdCounter++,
         name: 'Device Name',
@@ -106,10 +105,7 @@ function getInitialGapServiceCharacteristics(gapInstanceId) {
 }
 
 function getInitialServices() {
-    serviceInstanceIdCounter = 0;
-    characteristicInstanceIdCounter = 0;
-    descriptorInstanceIdCounter = 0;
-
+    let serviceInstanceIdCounter = 0;
     const gapInstanceId = deviceInstanceId + '.' + serviceInstanceIdCounter++;
 
     const gapService = getImmutableService({
@@ -171,21 +167,22 @@ function addNewAttribute(state, newAttribute, oldAttribute = undefined) {
     return state.setIn(newStatePath, newAttribute);
 }
 
-function createNewService() {
+function createNewService(serviceInstanceId) {
     return getImmutableService({
-        instanceId: deviceInstanceId + '.' + serviceInstanceIdCounter++,
+        instanceId: deviceInstanceId + '.' + serviceInstanceId,
         name: 'New Service',
         children: OrderedMap(),
     });
 }
 
 function addNewService(state, oldService = undefined) {
-    return addNewAttribute(state, createNewService(), oldService);
+    const serviceInstanceId = getNextAvailableInstanceId(state);
+    return addNewAttribute(state, createNewService(serviceInstanceId), oldService);
 }
 
-function createNewCharacteristic(parent) {
+function createNewCharacteristic(parent, characteristicInstanceId) {
     return getImmutableCharacteristic({
-        instanceId: parent.instanceId + '.' + characteristicInstanceIdCounter++,
+        instanceId: parent.instanceId + '.' + characteristicInstanceId,
         name: 'New Characteristic',
         readPerm: 'open',
         writePerm: 'open',
@@ -196,12 +193,13 @@ function createNewCharacteristic(parent) {
 }
 
 function addNewCharacteristic(state, parent, oldCharacteristic = undefined) {
-    return addNewAttribute(state, createNewCharacteristic(parent), oldCharacteristic);
+    const characteristicInstanceId = getNextAvailableInstanceId(state);
+    return addNewAttribute(state, createNewCharacteristic(parent, characteristicInstanceId), oldCharacteristic);
 }
 
-function createNewDescriptor(parent) {
+function createNewDescriptor(parent, descriptorInstanceId) {
     return getImmutableDescriptor({
-        instanceId: parent.instanceId + '.' + descriptorInstanceIdCounter++,
+        instanceId: parent.instanceId + '.' + descriptorInstanceId,
         name: 'New Descriptor',
         readPerm: 'open',
         writePerm: 'open',
@@ -212,13 +210,12 @@ function createNewDescriptor(parent) {
 }
 
 function addNewDescriptor(state, parent, oldDescriptor = undefined) {
-    return addNewAttribute(state, createNewDescriptor(parent), oldDescriptor);
+    const descriptorInstanceId = getNextAvailableInstanceId(state);
+    return addNewAttribute(state, createNewDescriptor(parent, descriptorInstanceId), oldDescriptor);
 }
 
 function changedAttribute(state, attribute) {
     const attributeStatePath = getNodeStatePath(attribute.instanceId);
-
-    console.log(JSON.stringify(attributeStatePath));
 
     if (attribute.properties) {
         attribute.properties = getImmutableProperties(attribute.properties);
@@ -237,7 +234,7 @@ function cloneLoadedObject(attribute) {
     let retval = {};
 
     for (let entry in attribute) {
-        if (attribute.hasOwnProperty(entry) && entry !== 'children' && entry !== 'instanceId') {
+        if (attribute.hasOwnProperty(entry) && entry !== 'children') {
             retval[entry] = attribute[entry];
         }
     }
@@ -249,20 +246,42 @@ function cloneLoadedObject(attribute) {
     return retval;
 }
 
+function getNextAvailableInstanceId(state) {
+    let maxId = 0;
+    state.get('children').map(service => {
+        maxId = Math.max(maxId, parseServiceInstanceId(service));
+        service.get('children').map(characteristic => {
+            maxId = Math.max(maxId, parseCharacteristicInstanceId(characteristic));
+            characteristic.get('children').map(descriptor => {
+                maxId = Math.max(maxId, parseDescriptorInstanceId(descriptor));
+            });
+        });
+    });
+    return maxId + 1;
+}
+
+function parseServiceInstanceId(service) {
+    return parseInt(service.get('instanceId').split('.')[2]);
+}
+
+function parseCharacteristicInstanceId(characteristic) {
+    return parseInt(characteristic.get('instanceId').split('.')[3]);
+}
+
+function parseDescriptorInstanceId(descriptor) {
+    return parseInt(descriptor.get('instanceId').split('.')[4]);
+}
+
 function loadSetup(state, setup) {
     if (setup && setup.children) {
         let newState = new InitialState();
         newState = newState.setIn(['children'], OrderedMap());
 
-        serviceInstanceIdCounter = 0;
-        characteristicInstanceIdCounter = 0;
-        descriptorInstanceIdCounter = 0;
-
-        Object.values(setup.children).map(service => {
+        getObjectValues(setup.children).map(service => {
             newState = addNewService(newState, service);
-            Object.values(service.children).map(characteristic => {
+            getObjectValues(service.children).map(characteristic => {
                 newState = addNewCharacteristic(newState, service, characteristic);
-                Object.values(characteristic.children).map(descriptor => {
+                getObjectValues(characteristic.children).map(descriptor => {
                     newState = addNewDescriptor(newState, characteristic, descriptor);
                 });
             });
@@ -272,6 +291,12 @@ function loadSetup(state, setup) {
         state = state.setIn(['selectedComponent'], null);
         return state.setIn(['children'], newState.children);
     }
+}
+
+function getObjectValues(obj) {
+    return Object.keys(obj).map(key => {
+        return obj[key];
+    });
 }
 
 export default function deviceDetails(state = initialState, action) {
