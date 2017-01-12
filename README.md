@@ -1,5 +1,5 @@
 # nRF Connect
-[![License](https://img.shields.io/badge/license-Modified%20BSD%20License-blue.svg)](https://github.com/NordicSemiconductor/pc-yggdrasil/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-Modified%20BSD%20License-blue.svg)](LICENSE)
 
 nRF Connect is a cross-platform tool that enables testing and development with Bluetooth low energy (previously called Bluetooth Smart). It allows easy setup of connections with other devices and use these connections for reading and writing to the external nodes.
 
@@ -20,14 +20,14 @@ nRF Connect currently supports the following operating systems:
 A [Getting started guide](http://infocenter.nordicsemi.com/topic/com.nordic.infocenter.tools/dita/tools/nRF_Connect/nRF_Connect_intro.html?cp=4_2) is available on the nRF Connect product pages. 
 
 # Contributing
-If you would like to help fixing issues or otherwise contribute to the code base, please see the [Contribution guidelines (TODO: create doc and insert link)]() document.
+We are currently working on a Contributor License Agreement (CLA), which will allow third party contributions to this project. We do not accept pull requests for the time being, but feel free to file code related issues on [GitHub Issues](https://github.com/NordicSemiconductor/pc-yggdrasil/issues).
 
 # Compiling from source
 
 ## Dependencies
 To build this project you will need to install the following tools:
 
-* Node.js (>=4.4.7)
+* Node.js (>=6.9)
 * npm (>=3.7.0)
 * CMake (>=2.8.12)
 * A C/C++ toolchain (see [Building Boost](#building-boost) for description of toolchain requirements)
@@ -52,13 +52,31 @@ When the procedure has completed successfully you can run the application by run
 
     npm start
 
-### Additional step for Linux users
+## Firmware detection and programming
 
-The application needs to be able to load nrfjprog libraries. This is currently not working properly for Linux users. The temporary workaround for this is to put the nrfjprog libraries in the same directory as the electron binary in node_modules:
+When starting the application and opening an adapter, it will try to detect firmware version and upgrade the firmware if needed. In order for this to work, nRF Connect must be able to load nrfjprog libraries. If you see the message *Could not load nrfjprog DLL* in log at startup, then follow the steps below.
+
+### Windows
+
+Download and install the latest [nRF5x-Command-Line-Tools](https://www.nordicsemi.com/eng/nordic/Products/nRF51822/nRF5x-Command-Line-Tools-Win32/33444), and restart nRF Connect. The nrfjprog libraries will then be loaded from registry.
+
+### Linux and macOS
+
+nRF5x-Command-Line-Tools for Linux and macOS are included in the nrfjprog directory in this repository. In the nRF Connect release artifacts for Linux and macOS, these are set up automatically. However, during development this manual step is required:
+
+Linux:
 
     tar xf nrfjprog/nRF5x-Command-Line-Tools_*_Linux-x86_64.tar --strip-components=2 -C node_modules/electron-prebuilt/dist
 
+macOS:
+
+    tar xf nrfjprog/nRF5x-Command-Line-Tools_*_OSX.tar --strip-components=2 -C node_modules/electron-prebuilt/dist
+
+This will put the nrfjprog libraries in the same directory as the electron binary in node_modules, so that the application finds them.
+
 ## Working with appmodules
+
+**Note: The appmodule architecture is being reviewed, and may change in near future.**
 
 This project is split into multiple [appmodules](doc/README.md) inside the `packages` directory. When running `npm start` from the root directory, the appmodule loader will be started. When choosing an appmodule, a *pre-built version* of that appmodule will be loaded. If you modify the code, it will not have any effect unless you `npm run build` the appmodule and restart the application.
 
@@ -104,8 +122,8 @@ nRF Connect builds on top of other sub components that live in their own GitHub 
 * [pc-ble-driver](https://github.com/NordicSemiconductor/pc-ble-driver)
 
 # License
-See the [license file](https://github.com/NordicSemiconductor/pc-yggdrasil) for details.
+See the [license file](LICENSE) for details.
 
 # Feedback
-* Ask questions on [DevZone Questions](devzone.nordicsemi.com)
+* Ask questions on [DevZone Questions](https://devzone.nordicsemi.com)
 * File code related issues on [GitHub Issues](https://github.com/NordicSemiconductor/pc-yggdrasil/issues)
