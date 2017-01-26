@@ -63,22 +63,24 @@ const service = getImmutableService({
     children: []
 });
 
-it('renders correctly with no button', () => {
-    const tree = renderer.create(
-        <ServiceItem item={service} />
-    ).toJSON();
+describe('ServiceItem', () => {
+    it('should render correctly with no button', () => {
+        const tree = renderer.create(
+            <ServiceItem item={service} />
+        ).toJSON();
 
-    expect(tree).toMatchSnapshot();
-});
+        expect(tree).toMatchSnapshot();
+    });
 
-it('renders correctly with button', () => {
-    const button = {
-        onClick: () => {},
-        icon: 'path/to/icon.png'
-    };
-    const tree = renderer.create(
-        <ServiceItem item={service} button={button} />
-    ).toJSON();
+    it('should render correctly with button', () => {
+        const button = {
+            onClick: () => {},
+            icon: 'path/to/icon.png'
+        };
+        const tree = renderer.create(
+            <ServiceItem item={service} button={button} />
+        ).toJSON();
 
-    expect(tree).toMatchSnapshot();
+        expect(tree).toMatchSnapshot();
+    });
 });

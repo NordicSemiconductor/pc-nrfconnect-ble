@@ -44,70 +44,72 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import DfuEditor from '../DfuEditor';
 
-it('renders with default props', () => {
-    expect(renderComponent({})).toMatchSnapshot();
-});
+describe('DfuEditor', () => {
+    it('should render with default props', () => {
+        expect(renderComponent({})).toMatchSnapshot();
+    });
 
-it('renders with file path', () => {
-    expect(renderComponent({
-        filePath: '/path/to/file'
-    })).toMatchSnapshot();
-});
+    it('should render with file path', () => {
+        expect(renderComponent({
+            filePath: '/path/to/file'
+        })).toMatchSnapshot();
+    });
 
-it('renders with file path and package info', () => {
-    expect(renderComponent({
-        filePath: '/path/to/file',
-        packageInfo: {
-            application: {
-                'bin_file': 'dfu.bin',
-                'dat_file': 'dfu.dat',
+    it('should render with file path and package info', () => {
+        expect(renderComponent({
+            filePath: '/path/to/file',
+            packageInfo: {
+                application: {
+                    'bin_file': 'dfu.bin',
+                    'dat_file': 'dfu.dat',
+                }
             }
-        }
-    })).toMatchSnapshot();
-});
+        })).toMatchSnapshot();
+    });
 
-it('renders with file path, package info, and dfu in progress', () => {
-    expect(renderComponent({
-        filePath: '/path/to/file',
-        packageInfo: {
-            application: {
-                'bin_file': 'dfu.bin',
-                'dat_file': 'dfu.dat',
-            }
-        },
-        isStarted: true,
-        percentCompleted: 10,
-        status: 'In progress'
-    })).toMatchSnapshot();
-});
+    it('should render with file path, package info, and dfu in progress', () => {
+        expect(renderComponent({
+            filePath: '/path/to/file',
+            packageInfo: {
+                application: {
+                    'bin_file': 'dfu.bin',
+                    'dat_file': 'dfu.dat',
+                }
+            },
+            isStarted: true,
+            percentCompleted: 10,
+            status: 'In progress'
+        })).toMatchSnapshot();
+    });
 
-it('renders stopping', () => {
-    expect(renderComponent({
-        filePath: '/path/to/file',
-        packageInfo: {
-            application: {
-                'bin_file': 'dfu.bin',
-                'dat_file': 'dfu.dat',
-            }
-        },
-        isStarted: true,
-        isStopping: true,
-        percentCompleted: 10
-    })).toMatchSnapshot();
-});
+    it('should render stopping', () => {
+        expect(renderComponent({
+            filePath: '/path/to/file',
+            packageInfo: {
+                application: {
+                    'bin_file': 'dfu.bin',
+                    'dat_file': 'dfu.dat',
+                }
+            },
+            isStarted: true,
+            isStopping: true,
+            percentCompleted: 10
+        })).toMatchSnapshot();
+    });
 
-it('renders with dfu completed', () => {
-    expect(renderComponent({
-        filePath: '/path/to/file',
-        packageInfo: {
-            application: {
-                'bin_file': 'dfu.bin',
-                'dat_file': 'dfu.dat',
-            }
-        },
-        isStarted: false,
-        isCompleted: true
-    })).toMatchSnapshot();
+    it('should render with dfu completed', () => {
+        expect(renderComponent({
+            filePath: '/path/to/file',
+            packageInfo: {
+                application: {
+                    'bin_file': 'dfu.bin',
+                    'dat_file': 'dfu.dat',
+                }
+            },
+            isStarted: false,
+            isCompleted: true
+        })).toMatchSnapshot();
+    });
 });
 
 function renderComponent(props) {

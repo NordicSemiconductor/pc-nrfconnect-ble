@@ -37,6 +37,7 @@
     "express": "4.14.0",
     "file-loader": "0.9.0",
     "jest": "17.0.2",
+    "jest-bamboo-formatter": "0.0.3",
     "json-loader": "0.5.4",
     "lerna": "2.0.0-beta.30",
     "less": "^2.7.1",
@@ -53,6 +54,7 @@
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$": "<rootDir>/test/fileMock.js",
       "\\.(css|less)$": "<rootDir>/test/styleMock.js"
-    }
+    },
+    "testResultsProcessor": "node_modules/jest-bamboo-formatter"
   }
 }
