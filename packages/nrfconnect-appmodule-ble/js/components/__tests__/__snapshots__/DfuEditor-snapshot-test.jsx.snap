@@ -1,4 +1,4 @@
-exports[`test renders stopping 1`] = `
+exports[`DfuEditor should render stopping 1`] = `
 <form
   className="form-horizontal native-key-bindings">
   <div
@@ -98,7 +98,7 @@ exports[`test renders stopping 1`] = `
 </form>
 `;
 
-exports[`test renders with default props 1`] = `
+exports[`DfuEditor should render with default props 1`] = `
 <form
   className="form-horizontal native-key-bindings">
   <div
@@ -155,7 +155,7 @@ exports[`test renders with default props 1`] = `
 </form>
 `;
 
-exports[`test renders with dfu completed 1`] = `
+exports[`DfuEditor should render with dfu completed 1`] = `
 <form
   className="form-horizontal native-key-bindings">
   <div
@@ -259,7 +259,7 @@ exports[`test renders with dfu completed 1`] = `
 </form>
 `;
 
-exports[`test renders with file path 1`] = `
+exports[`DfuEditor should render with file path 1`] = `
 <form
   className="form-horizontal native-key-bindings">
   <div
@@ -312,7 +312,7 @@ exports[`test renders with file path 1`] = `
 </form>
 `;
 
-exports[`test renders with file path and package info 1`] = `
+exports[`DfuEditor should render with file path and package info 1`] = `
 <form
   className="form-horizontal native-key-bindings">
   <div
@@ -382,7 +382,7 @@ exports[`test renders with file path and package info 1`] = `
 </form>
 `;
 
-exports[`test renders with file path, package info, and dfu in progress 1`] = `
+exports[`DfuEditor should render with file path, package info, and dfu in progress 1`] = `
 <form
   className="form-horizontal native-key-bindings">
   <div

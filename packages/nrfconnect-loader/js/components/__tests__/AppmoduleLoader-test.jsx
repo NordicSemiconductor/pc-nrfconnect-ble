@@ -62,10 +62,12 @@ const appmodules = List.of(
     })
 );
 
-it('renders correctly', () => {
-    const tree = renderer.create(
-        <AppmoduleLoader appmodules={appmodules} onAppmoduleSelected={() => {}} />
-    ).toJSON();
+describe('AppmoduleLoader', () => {
+    it('should render correctly', () => {
+        const tree = renderer.create(
+            <AppmoduleLoader appmodules={appmodules} onAppmoduleSelected={() => {}} />
+        ).toJSON();
 
-    expect(tree).toMatchSnapshot();
+        expect(tree).toMatchSnapshot();
+    });
 });

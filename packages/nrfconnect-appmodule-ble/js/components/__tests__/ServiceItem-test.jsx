@@ -52,12 +52,14 @@ import { mount } from 'enzyme';
 import { getImmutableService } from '../../utils/api';
 import ServiceItem from '../ServiceItem';
 
-it('calls button action when button is clicked', () => {
-    const button = {
-        onClick: jest.fn()
-    };
-    const wrapper = mount(<ServiceItem item={getImmutableService({})} button={button} />);
-    wrapper.find('button').simulate('click');
+describe('ServiceItem', () => {
+    it('should call button action when button is clicked', () => {
+        const button = {
+            onClick: jest.fn()
+        };
+        const wrapper = mount(<ServiceItem item={getImmutableService({})} button={button} />);
+        wrapper.find('button').simulate('click');
 
-    expect(button.onClick).toBeCalled();
+        expect(button.onClick).toBeCalled();
+    });
 });

@@ -1,4 +1,4 @@
-exports[`test renders correctly with button 1`] = `
+exports[`ServiceItem should render correctly with button 1`] = `
 <div>
   <div
     className="service-item neutral-background"
@@ -47,7 +47,7 @@ exports[`test renders correctly with button 1`] = `
 </div>
 `;
 
-exports[`test renders correctly with no button 1`] = `
+exports[`ServiceItem should render correctly with no button 1`] = `
 <div>
   <div
     className="service-item neutral-background"

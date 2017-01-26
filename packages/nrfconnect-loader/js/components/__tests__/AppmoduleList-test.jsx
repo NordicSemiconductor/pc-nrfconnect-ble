@@ -51,11 +51,13 @@ const appmodules = List.of(getImmutableAppmodule({
     icon: 'resources/ble-icon.png'
 }));
 
-it('calls onAppmoduleSelected when appmodule is clicked', () => {
-    const onAppmoduleSelectedMock = jest.fn();
-    const wrapper = mount(<AppmoduleList appmodules={appmodules} onAppmoduleSelected={onAppmoduleSelectedMock} />);
+describe('AppmoduleList', () => {
+    it('should call onAppmoduleSelected when appmodule is clicked', () => {
+        const onAppmoduleSelectedMock = jest.fn();
+        const wrapper = mount(<AppmoduleList appmodules={appmodules} onAppmoduleSelected={onAppmoduleSelectedMock} />);
 
-    wrapper.find(AppmoduleListItem).simulate('click');
+        wrapper.find(AppmoduleListItem).simulate('click');
 
-    expect(onAppmoduleSelectedMock).toBeCalled();
+        expect(onAppmoduleSelectedMock).toBeCalled();
+    });
 });

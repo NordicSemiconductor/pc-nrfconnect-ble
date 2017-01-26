@@ -53,36 +53,39 @@ const device = getImmutableDevice({
     name: 'Device Name',
 });
 
-it('renders correctly without DFU support', () => {
-    const tree = renderer.create(
-        <ConnectedDevice
-            device={device}
-            id='connected-device-id'
-            sourceId='source-id'
-            layout='vertical'
-            onConnectionParamsUpdate={() => {}}
-            onDisconnect={() => {}}
-            onPair={() => {}}
-        />
-    ).toJSON();
+describe('ConnectedDevice', () => {
+    it('should render correctly without DFU support', () => {
+        const tree = renderer.create(
+            <ConnectedDevice
+                device={device}
+                id='connected-device-id'
+                sourceId='source-id'
+                layout='vertical'
+                onConnectionParamsUpdate={() => {}}
+                onDisconnect={() => {}}
+                onPair={() => {}}
+            />
+        ).toJSON();
 
-    expect(tree).toMatchSnapshot();
+        expect(tree).toMatchSnapshot();
+    });
+
+    it('should render correctly with DFU support', () => {
+        const tree = renderer.create(
+            <ConnectedDevice
+                device={device}
+                id='connected-device-id'
+                sourceId='source-id'
+                layout='vertical'
+                isDfuSupported={true}
+                onClickDfu={() => {}}
+                onConnectionParamsUpdate={() => {}}
+                onDisconnect={() => {}}
+                onPair={() => {}}
+            />
+        ).toJSON();
+
+        expect(tree).toMatchSnapshot();
+    });
 });
 
-it('renders correctly with DFU support', () => {
-    const tree = renderer.create(
-        <ConnectedDevice
-            device={device}
-            id='connected-device-id'
-            sourceId='source-id'
-            layout='vertical'
-            isDfuSupported={true}
-            onClickDfu={() => {}}
-            onConnectionParamsUpdate={() => {}}
-            onDisconnect={() => {}}
-            onPair={() => {}}
-        />
-    ).toJSON();
-
-    expect(tree).toMatchSnapshot();
-});
