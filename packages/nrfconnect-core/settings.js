@@ -39,12 +39,13 @@
 
 'use strict';
 
-var app = require('electron').app;
-var fs = require('fs');
-var path = require('path');
-var data = null;
+const app = require('electron').app;
+const fs = require('fs');
+const path = require('path');
 
-var filePath = path.join(app.getPath('userData'), 'settings.json');
+let data = null;
+
+const filePath = path.join(app.getPath('userData'), 'settings.json');
 
 function parseSettingsFile() {
     if (!fs.existsSync(filePath)) {
@@ -74,15 +75,15 @@ function save() {
     fs.writeFileSync(filePath, JSON.stringify(data));
 }
 
-exports.set = function (key, value) {
+exports.set = (key, value) => {
     load();
     data[key] = value;
     save();
 };
 
-exports.get = function (key) {
+exports.get = key => {
     load();
-    var value = null;
+    let value = null;
 
     if (key in data) {
         value = data[key];
@@ -91,7 +92,7 @@ exports.get = function (key) {
     return value;
 };
 
-exports.unset = function (key) {
+exports.unset = key => {
     load();
     if (key in data) {
         delete data[key];
@@ -99,8 +100,8 @@ exports.unset = function (key) {
     }
 };
 
-exports.loadLastWindow = function () {
-    var lastWindowState = this.get('lastWindowState');
+exports.loadLastWindow = () => {
+    let lastWindowState = this.get('lastWindowState');
 
     if (lastWindowState === null) {
         lastWindowState = {
@@ -113,8 +114,8 @@ exports.loadLastWindow = function () {
     return lastWindowState;
 };
 
-exports.storeLastWindow = function (lastWindowState) {
-    var bounds = lastWindowState.getBounds();
+exports.storeLastWindow = lastWindowState => {
+    const bounds = lastWindowState.getBounds();
 
     this.set('lastWindowState', {
         x: bounds.x,
