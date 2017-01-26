@@ -44,29 +44,34 @@ var fs = require('fs');
 var path = require('path');
 var data = null;
 
-var dataFilePath = path.join(app.getPath('userData'), 'settings.json');
+var filePath = path.join(app.getPath('userData'), 'settings.json');
+
+function parseSettingsFile() {
+    if (!fs.existsSync(filePath)) {
+        return {};
+    }
+    try {
+        return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    } catch (err) {
+        console.log('Could not load settings. Reason: ', err);
+    }
+    return {};
+}
 
 function load() {
     if (data !== null) {
         return;
     }
-
-    if (!fs.existsSync(dataFilePath)) {
+    const settings = parseSettingsFile();
+    if (settings && typeof settings === 'object') {
+        data = settings;
+    } else {
         data = {};
-        return;
-    }
-
-    try {
-        data = JSON.parse(fs.readFileSync(dataFilePath, 'utf-8'));
-    }
-    catch (err) {
-        console.log('Could not load settings. Reason: ', err);
-        data = null;
     }
 }
 
 function save() {
-    fs.writeFileSync(dataFilePath, JSON.stringify(data));
+    fs.writeFileSync(filePath, JSON.stringify(data));
 }
 
 exports.set = function (key, value) {
