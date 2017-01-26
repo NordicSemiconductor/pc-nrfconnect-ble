@@ -39,45 +39,51 @@
 
 'use strict';
 
-var app = require('electron').app;
-var fs = require('fs');
-var path = require('path');
-var data = null;
+const app = require('electron').app;
+const fs = require('fs');
+const path = require('path');
 
-var dataFilePath = path.join(app.getPath('userData'), 'settings.json');
+let data = null;
+
+const filePath = path.join(app.getPath('userData'), 'settings.json');
+
+function parseSettingsFile() {
+    if (!fs.existsSync(filePath)) {
+        return {};
+    }
+    try {
+        return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    } catch (err) {
+        console.log('Could not load settings. Reason: ', err);
+    }
+    return {};
+}
 
 function load() {
     if (data !== null) {
         return;
     }
-
-    if (!fs.existsSync(dataFilePath)) {
+    const settings = parseSettingsFile();
+    if (settings && typeof settings === 'object') {
+        data = settings;
+    } else {
         data = {};
-        return;
-    }
-
-    try {
-        data = JSON.parse(fs.readFileSync(dataFilePath, 'utf-8'));
-    }
-    catch (err) {
-        console.log('Could not load settings. Reason: ', err);
-        data = null;
     }
 }
 
 function save() {
-    fs.writeFileSync(dataFilePath, JSON.stringify(data));
+    fs.writeFileSync(filePath, JSON.stringify(data));
 }
 
-exports.set = function (key, value) {
+exports.set = (key, value) => {
     load();
     data[key] = value;
     save();
 };
 
-exports.get = function (key) {
+exports.get = key => {
     load();
-    var value = null;
+    let value = null;
 
     if (key in data) {
         value = data[key];
@@ -86,7 +92,7 @@ exports.get = function (key) {
     return value;
 };
 
-exports.unset = function (key) {
+exports.unset = key => {
     load();
     if (key in data) {
         delete data[key];
@@ -94,8 +100,8 @@ exports.unset = function (key) {
     }
 };
 
-exports.loadLastWindow = function () {
-    var lastWindowState = this.get('lastWindowState');
+exports.loadLastWindow = () => {
+    let lastWindowState = this.get('lastWindowState');
 
     if (lastWindowState === null) {
         lastWindowState = {
@@ -108,8 +114,8 @@ exports.loadLastWindow = function () {
     return lastWindowState;
 };
 
-exports.storeLastWindow = function (lastWindowState) {
-    var bounds = lastWindowState.getBounds();
+exports.storeLastWindow = lastWindowState => {
+    const bounds = lastWindowState.getBounds();
 
     this.set('lastWindowState', {
         x: bounds.x,
