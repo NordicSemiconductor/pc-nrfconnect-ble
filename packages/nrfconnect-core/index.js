@@ -39,7 +39,7 @@
 
  'use strict';
 
-const VERSION = '1.1';
+const VERSION = '1.1.1';
 
 const os = require('os');
 const fs = require('fs');
