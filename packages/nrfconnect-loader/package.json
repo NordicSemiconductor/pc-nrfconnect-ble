@@ -1,6 +1,6 @@
 {
   "name": "nrfconnect-loader",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Appmodule loader for nRF Connect",
   "repository": {
     "type": "git",
@@ -28,8 +28,8 @@
     "bootstrap": "3.3.7",
     "immutable": "3.8.1",
     "less": "2.7.1",
-    "nrfconnect-core": "1.1.0",
-    "nrfconnect-appmodule-ble": "1.1.0",
+    "nrfconnect-core": "1.1.1",
+    "nrfconnect-appmodule-ble": "1.1.1",
     "react": "15.3.2",
     "react-bootstrap": "0.30.3",
     "react-dom": "15.3.1",
