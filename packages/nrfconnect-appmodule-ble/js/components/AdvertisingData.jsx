@@ -254,7 +254,7 @@ export default class AdvertisingData extends React.PureComponent {
     }
 
     validateLocalNameString(value) {
-        if (value.length === 0 || value.length > 23) {
+        if (value.length === 0 || value.length > 29) {
             return ERROR;
         } else {
             return SUCCESS;
