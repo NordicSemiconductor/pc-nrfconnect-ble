@@ -38,6 +38,7 @@
  */
 
 /* eslint react/prop-types: off */
+/* eslint react/require-default-props: off */
 /* eslint jsx-a11y/no-static-element-interactions: off */
 
 'use strict';

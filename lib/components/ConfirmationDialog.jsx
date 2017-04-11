@@ -39,43 +39,53 @@
 
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import { Modal, Button } from 'react-bootstrap';
 import Spinner from './Spinner';
 import spinnerImage from '../../resources/ajax-loader.gif';
 
-var ConfirmationDialog = React.createClass({
-    getInitialState() {
-        return {
-            showModal: this.props.show,
-            showProgress: this.props.showProgress,
-        };
-    },
+const ConfirmationDialog = props => {
+    const {
+        text,
+        show,
+        showProgress,
+        onCancel,
+        onOk,
+    } = props;
+    const buttonDisabled = showProgress;
+    const backDrop = showProgress ? 'static' : false;
 
-    render() {
-        const buttonDisabled = this.props.showProgress;
-        const backDrop = this.props.showProgress ? 'static' : false;
-
-        return (
-          <div>
-            <Modal show={this.props.show} onHide={this.props.onCancel} backdrop={backDrop}>
-              <Modal.Header closeButton={!buttonDisabled}>
-                <Modal.Title>Confirm</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <p>{this.props.text}</p>
-              </Modal.Body>
-              <Modal.Footer>
-                <Spinner image={spinnerImage} visible={this.props.showProgress} />
-                &nbsp;
-                <Button onClick={this.props.onOk} disabled={buttonDisabled}>OK</Button>
-                <Button onClick={this.props.onCancel} disabled={buttonDisabled}>Cancel</Button>
-              </Modal.Footer>
+    return (
+        <div>
+            <Modal show={show} onHide={onCancel} backdrop={backDrop}>
+                <Modal.Header closeButton={!buttonDisabled}>
+                    <Modal.Title>Confirm</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>{text}</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Spinner image={spinnerImage} visible={showProgress} />
+                    &nbsp;
+                    <Button onClick={onOk} disabled={buttonDisabled}>OK</Button>
+                    <Button onClick={onCancel} disabled={buttonDisabled}>Cancel</Button>
+                </Modal.Footer>
             </Modal>
-          </div>
-        );
-    },
-});
+        </div>
+    );
+};
 
-module.exports = ConfirmationDialog;
+ConfirmationDialog.propTypes = {
+    text: PropTypes.string.isRequired,
+    show: PropTypes.bool.isRequired,
+    showProgress: PropTypes.bool,
+    onCancel: PropTypes.func.isRequired,
+    onOk: PropTypes.func.isRequired,
+};
+
+ConfirmationDialog.defaultProps = {
+    showProgress: false,
+};
+
+export default ConfirmationDialog;
