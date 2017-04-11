@@ -37,6 +37,9 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint jsx-a11y/label-has-for: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -49,28 +52,8 @@ const IO_CAPS_KEYBOARD_ONLY = 2;
 const IO_CAPS_NONE = 3;
 const IO_CAPS_KEYBOARD_DISPLAY = 4;
 
-export class SecurityParamsControls extends React.PureComponent {
-    constructor(props) {
-        super(props);
-
-        this.ioCaps = props.securityParams.io_caps;
-        this.enableLesc = props.securityParams.lesc;
-        this.enableMitm = props.securityParams.mitm;
-        this.enableOob = props.securityParams.oob;
-        this.enableKeypress = props.securityParams.keypress;
-        this.performBonding = props.securityParams.bond;
-
-        this.ioCapsTitle = this.keyToIoCapsText(this.ioCaps);
-    }
-
-    onIoCapsSelect(event, eventKey) {
-        this.ioCaps = parseInt(eventKey);
-        this.ioCapsTitle = this.keyToIoCapsText(this.ioCaps);
-        this.handleChange();
-        this.forceUpdate();
-    }
-
-    keyToIoCapsText(key) {
+class SecurityParamsControls extends React.PureComponent {
+    static keyToIoCapsText(key) {
         switch (key) {
             case IO_CAPS_DISPLAY_ONLY:
                 return 'Display, no keyboard';
@@ -86,7 +69,30 @@ export class SecurityParamsControls extends React.PureComponent {
 
             case IO_CAPS_KEYBOARD_DISPLAY:
                 return 'Keyboard and display';
+
+            default:
+                return '';
         }
+    }
+
+    constructor(props) {
+        super(props);
+
+        this.ioCaps = props.securityParams.io_caps;
+        this.enableLesc = props.securityParams.lesc;
+        this.enableMitm = props.securityParams.mitm;
+        this.enableOob = props.securityParams.oob;
+        this.enableKeypress = props.securityParams.keypress;
+        this.performBonding = props.securityParams.bond;
+
+        this.ioCapsTitle = this.keyToIoCapsText(this.ioCaps);
+    }
+
+    onIoCapsSelect(event, eventKey) {
+        this.ioCaps = parseInt(eventKey, 10);
+        this.ioCapsTitle = this.keyToIoCapsText(this.ioCaps);
+        this.handleChange();
+        this.forceUpdate();
     }
 
     handleCheckboxChange(variableName, checked) {
@@ -110,51 +116,74 @@ export class SecurityParamsControls extends React.PureComponent {
     render() {
         return (
             <div>
-                <div className='form-group'>
-                    <label className='control-label col-sm-4'>IO capabilities</label>
-                    <div className='col-sm-7'>
-                        <DropdownButton title={this.ioCapsTitle} key='ioCapsDropdownKey'
-                            id='ioCapsDropdownId' onSelect={(eventKey, event) => this.onIoCapsSelect(event, eventKey)}>
-                            <MenuItem eventKey={IO_CAPS_DISPLAY_ONLY}>{this.keyToIoCapsText(IO_CAPS_DISPLAY_ONLY)}</MenuItem>
-                            <MenuItem eventKey={IO_CAPS_DISPLAY_YESNO}>{this.keyToIoCapsText(IO_CAPS_DISPLAY_YESNO)}</MenuItem>
-                            <MenuItem eventKey={IO_CAPS_KEYBOARD_ONLY}>{this.keyToIoCapsText(IO_CAPS_KEYBOARD_ONLY)}</MenuItem>
-                            <MenuItem eventKey={IO_CAPS_NONE}>{this.keyToIoCapsText(IO_CAPS_NONE)}</MenuItem>
-                            <MenuItem eventKey={IO_CAPS_KEYBOARD_DISPLAY}>{this.keyToIoCapsText(IO_CAPS_KEYBOARD_DISPLAY)}</MenuItem>
+                <div className="form-group">
+                    <label className="control-label col-sm-4">IO capabilities</label>
+                    <div className="col-sm-7">
+                        <DropdownButton
+                            title={this.ioCapsTitle}
+                            key="ioCapsDropdownKey"
+                            id="ioCapsDropdownId"
+                            onSelect={(eventKey, event) => this.onIoCapsSelect(event, eventKey)}
+                        >
+                            <MenuItem eventKey={IO_CAPS_DISPLAY_ONLY}>
+                                {this.keyToIoCapsText(IO_CAPS_DISPLAY_ONLY)}
+                            </MenuItem>
+                            <MenuItem eventKey={IO_CAPS_DISPLAY_YESNO}>
+                                {this.keyToIoCapsText(IO_CAPS_DISPLAY_YESNO)}
+                            </MenuItem>
+                            <MenuItem eventKey={IO_CAPS_KEYBOARD_ONLY}>
+                                {this.keyToIoCapsText(IO_CAPS_KEYBOARD_ONLY)}
+                            </MenuItem>
+                            <MenuItem eventKey={IO_CAPS_NONE}>
+                                {this.keyToIoCapsText(IO_CAPS_NONE)}
+                            </MenuItem>
+                            <MenuItem eventKey={IO_CAPS_KEYBOARD_DISPLAY}>
+                                {this.keyToIoCapsText(IO_CAPS_KEYBOARD_DISPLAY)}
+                            </MenuItem>
                         </DropdownButton>
                     </div>
                 </div>
-                <div className='form-group'>
-                    <label className='control-label col-sm-4'>Authentication</label>
-                    <div className='col-sm-7'>
-                        <Checkbox defaultChecked={this.enableLesc}
-                            onChange={event => this.handleCheckboxChange('enableLesc', event.target.checked)}>
+                <div className="form-group">
+                    <label className="control-label col-sm-4">Authentication</label>
+                    <div className="col-sm-7">
+                        <Checkbox
+                            defaultChecked={this.enableLesc}
+                            onChange={event => this.handleCheckboxChange('enableLesc', event.target.checked)}
+                        >
                             Enable LE Secure Connection pairing
                         </Checkbox>
-                        <Checkbox defaultChecked={this.enableMitm}
-                            onChange={event => this.handleCheckboxChange('enableMitm', event.target.checked)}>
+                        <Checkbox
+                            defaultChecked={this.enableMitm}
+                            onChange={event => this.handleCheckboxChange('enableMitm', event.target.checked)}
+                        >
                             Enable MITM protection
                         </Checkbox>
-                        <Checkbox defaultChecked={this.enableOob}
-                            onChange={event => this.handleCheckboxChange('enableOob', event.target.checked)}>
+                        <Checkbox
+                            defaultChecked={this.enableOob}
+                            onChange={event => this.handleCheckboxChange('enableOob', event.target.checked)}
+                        >
                             Enable OOB data
                         </Checkbox>
                     </div>
                 </div>
-                <div className='form-group'>
-                    <label className='control-label col-sm-4'>Keypress notifications</label>
-                    <div className='col-sm-7'>
-                        <Checkbox defaultChecked={this.enableKeypress}
-                            onChange={event => this.handleCheckboxChange('enableKeypress', event.target.checked)}>
+                <div className="form-group">
+                    <label className="control-label col-sm-4">Keypress notifications</label>
+                    <div className="col-sm-7">
+                        <Checkbox
+                            defaultChecked={this.enableKeypress}
+                            onChange={event => this.handleCheckboxChange('enableKeypress', event.target.checked)}
+                        >
                             Enable keypress notifications
                         </Checkbox>
                     </div>
                 </div>
-                <div className='form-group'>
-                    <label className='control-label col-sm-4'>Bonding</label>
-                    <div className='col-sm-7'>
+                <div className="form-group">
+                    <label className="control-label col-sm-4">Bonding</label>
+                    <div className="col-sm-7">
                         <Checkbox
                             defaultChecked={this.performBonding}
-                            onChange={event => this.handleCheckboxChange('performBonding', event.target.checked)}>
+                            onChange={event => this.handleCheckboxChange('performBonding', event.target.checked)}
+                        >
                             Perform bonding
                         </Checkbox>
                     </div>
@@ -166,5 +195,7 @@ export class SecurityParamsControls extends React.PureComponent {
 
 SecurityParamsControls.propTypes = {
     onChange: PropTypes.func.isRequired,
-    securityParams: PropTypes.object,
+    securityParams: PropTypes.object.isRequired,
 };
+
+export default SecurityParamsControls;

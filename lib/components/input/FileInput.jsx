@@ -37,6 +37,8 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/require-default-props: off */
+
 import React, { PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import TextInput from './TextInput';
@@ -75,6 +77,7 @@ FileInput.propTypes = {
     onChooseClicked: PropTypes.func,
     buttonDisabled: PropTypes.bool,
     value: PropTypes.string,
+    onChange: PropTypes.func,
 };
 
 export default FileInput;

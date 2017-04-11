@@ -37,6 +37,10 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/require-default-props: off */
+/* eslint react/forbid-prop-types: off */
+/* eslint react/prop-types: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';

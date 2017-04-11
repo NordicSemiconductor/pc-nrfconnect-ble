@@ -194,8 +194,6 @@ class EditableField extends React.Component {
     }
 
     LonReadButtonClick(e) {
-        const { onRead } = this.props;
-
         e.stopPropagation();
         this.Lread();
     }
@@ -335,7 +333,7 @@ class EditableField extends React.Component {
     }
 }
 
-onClickOutside.propTypes = {
+EditableField.propTypes = {
     value: PropTypes.string.isRequired,
     onWrite: PropTypes.func,
     onRead: PropTypes.func,

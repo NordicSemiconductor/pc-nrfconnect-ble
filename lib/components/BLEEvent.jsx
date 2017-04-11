@@ -37,16 +37,23 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint jsx-a11y/no-static-element-interactions: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
 
-import { CountdownTimer } from '../components/CountdownTimer';
+import CountdownTimer from '../components/CountdownTimer';
 import { BLEEventState, BLEEventType } from './../actions/common';
 
 const EVENT_TIMEOUT_SECONDS = 30;
 
 class BLEEvent extends React.PureComponent {
+    static LonExpandAreaClick() {
+        console.log('TODO: implement me! I did not exist earlier either...');
+    }
+
     LgetEventInfo() {
         const eventType = this.props.event.type;
 
@@ -178,10 +185,6 @@ class BLEEvent extends React.PureComponent {
             };
         }
         return {};
-    }
-
-    static LonExpandAreaClick() {
-        console.log('TODO: implement me! I did not exist earlier either...');
     }
 
     stopCounter() {

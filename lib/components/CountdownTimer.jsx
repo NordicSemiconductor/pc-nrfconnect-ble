@@ -41,14 +41,26 @@
 
 import React, { PropTypes, Component } from 'react';
 
-export class CountdownTimer extends Component {
+class CountdownTimer extends Component {
     constructor(props) {
         super(props);
         this.secondsRemaining = props.seconds;
     }
 
-    _tick() {
-        this.secondsRemaining = --this.secondsRemaining;
+    componentDidMount() {
+        this.interval = setInterval(() => this.Ltick(), 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
+    cancelTimer() {
+        clearInterval(this.intervalId);
+    }
+
+    Ltick() {
+        this.secondsRemaining -= 1;
         this.forceUpdate();
 
         if (this.secondsRemaining <= 0) {
@@ -60,22 +72,10 @@ export class CountdownTimer extends Component {
         }
     }
 
-    cancelTimer() {
-        clearInterval(this.intervalId);
-    }
-
-    componentDidMount() {
-        this.interval = setInterval(() => this._tick(), 1000);
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.interval);
-    }
-
     render() {
-        const content = this.secondsRemaining ? this.secondsRemaining : '';
+        const content = this.secondsRemaining || '';
         return (
-            <div className='countdown-timer'> {content} </div>
+            <div className="countdown-timer"> {content} </div>
         );
     }
 }
@@ -84,3 +84,5 @@ CountdownTimer.propTypes = {
     seconds: PropTypes.number.isRequired,
     onTimeout: PropTypes.func.isRequired,
 };
+
+export default CountdownTimer;

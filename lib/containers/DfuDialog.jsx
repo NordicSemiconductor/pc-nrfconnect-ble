@@ -38,6 +38,7 @@
  */
 
 /* eslint react/forbid-prop-types: off */
+/* eslint react/prop-types: off */
 
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
@@ -180,11 +181,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return Object.assign({},
-        bindActionCreators(DfuActions, dispatch)
+        bindActionCreators(DfuActions, dispatch),
     );
 }
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(DfuDialog);

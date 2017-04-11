@@ -43,7 +43,7 @@
 
 import React, { PropTypes } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import { uuidDefinitions, getUuidName } from '../utils/uuid_definitions';
+import { getUuidName } from '../utils/uuid_definitions';
 
 class UuidLookup extends React.PureComponent {
     static formatUuid(value) {
@@ -85,9 +85,9 @@ class UuidLookup extends React.PureComponent {
                     <Dropdown.Menu className="scroll-menu">
                         <MenuItem header key="header0">{title}</MenuItem>
                         {
-                            sorted.map((uuid, index) => (
+                            sorted.map(uuid => (
                                 <MenuItem
-                                    key={index}
+                                    key={uuid}
                                     title={`${uuid}: ${getUuidName(uuid)}`}
                                     eventKey={uuid}
                                 >

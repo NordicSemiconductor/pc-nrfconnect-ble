@@ -37,26 +37,21 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint react/require-default-props: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Modal, Button } from 'react-bootstrap';
 
-import { Modal } from 'react-bootstrap';
-import { Button } from 'react-bootstrap';
-
-import { SecurityParamsControls } from '../components/SecurityParamsControls';
+import SecurityParamsControls from '../components/SecurityParamsControls';
 
 import * as SecurityActions from '../actions/securityActions';
 
-const IO_CAPS_DISPLAY_ONLY = 0;
-const IO_CAPS_DISPLAY_YESNO = 1;
-const IO_CAPS_KEYBOARD_ONLY = 2;
-const IO_CAPS_NONE = 3;
-const IO_CAPS_KEYBOARD_DISPLAY = 4;
-
-export class SecurityParamsDialog extends React.PureComponent {
+class SecurityParamsDialog extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -88,7 +83,6 @@ export class SecurityParamsDialog extends React.PureComponent {
 
     render() {
         const {
-            onCancel,
             security,
         } = this.props;
 
@@ -97,22 +91,34 @@ export class SecurityParamsDialog extends React.PureComponent {
         }
 
         return (
-            <Modal className='' show={security.showingSecurityDialog} onHide={() => {}}>
+            <Modal className="" show={security.showingSecurityDialog} onHide={() => {}}>
                 <Modal.Header>
                     <Modal.Title>Security parameters</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form className='form-horizontal'>
-                        <SecurityParamsControls onChange={secParams => this.handleSecParamsChange(secParams)} securityParams={security.securityParams} />
+                    <form className="form-horizontal">
+                        <SecurityParamsControls
+                            onChange={secParams => this.handleSecParamsChange(secParams)}
+                            securityParams={security.securityParams}
+                        />
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <div className='form-group'>
-                        <Button type='button' onClick={() => this.handleApplyParams()}
-                            className='btn btn-primary btn-sm btn-nordic'>Apply</Button>
-                        <Button type='button'
-                                onClick={() => this.handleCancel()}
-                                className='btn btn-default btn-sm btn-nordic'>Cancel</Button>
+                    <div className="form-group">
+                        <Button
+                            type="button"
+                            onClick={() => this.handleApplyParams()}
+                            className="btn btn-primary btn-sm btn-nordic"
+                        >
+                            Apply
+                        </Button>
+                        <Button
+                            type="button"
+                            onClick={() => this.handleCancel()}
+                            className="btn btn-default btn-sm btn-nordic"
+                        >
+                            Cancel
+                        </Button>
                     </div>
                 </Modal.Footer>
             </Modal>
@@ -137,9 +143,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    let retval = Object.assign(
+    const retval = Object.assign(
         {},
-        bindActionCreators(SecurityActions, dispatch)
+        bindActionCreators(SecurityActions, dispatch),
     );
 
     return retval;
@@ -147,7 +153,7 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(SecurityParamsDialog);
 
 SecurityParamsDialog.propTypes = {

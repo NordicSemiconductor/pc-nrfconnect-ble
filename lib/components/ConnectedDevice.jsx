@@ -37,11 +37,11 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-
 import { Dropdown, MenuItem, Button } from 'react-bootstrap';
 
 import { Connector } from './Connector';
@@ -51,41 +51,39 @@ import dfuIcon from '../../resources/dfu_icon.png';
 const WINDOW_WIDTH_OFFSET = 375;
 const THROTTLE_TIMEOUT = 100;
 
-export default class ConnectedDevice extends React.PureComponent {
+class ConnectedDevice extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.boundResizeListener = this._resizeThrottler.bind(this);
+        this.boundResizeListener = this.LresizeThrottler.bind(this);
     }
 
     componentDidMount() {
         window.addEventListener('resize', this.boundResizeListener);
-        const domNode = ReactDOM.findDOMNode(this);
-        if (domNode) {
-            this.boundingRect = domNode.getBoundingClientRect();
-        }
+        this.boundingRect = this.node.getBoundingClientRect();
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.boundResizeListener);
     }
 
-    _resizeThrottler() {
+    LresizeThrottler() {
         if (this.resizeTimeout) {
             return;
         }
 
         this.resizeTimeout = setTimeout(() => {
             this.resizeTimeout = null;
-            this._onResize();
+            this.LonResize();
         }, THROTTLE_TIMEOUT);
     }
 
-    _onResize() {
+    LonResize() {
         if (!this.boundingRect) {
             return;
         }
 
-        const isCurrentlyBelow = window.innerWidth < (this.boundingRect.right + WINDOW_WIDTH_OFFSET);
+        const isCurrentlyBelow =
+            window.innerWidth < (this.boundingRect.right + WINDOW_WIDTH_OFFSET);
         const hasChanged = isCurrentlyBelow !== this.belowWidthThreshold;
 
         if (!hasChanged) {
@@ -96,7 +94,7 @@ export default class ConnectedDevice extends React.PureComponent {
         this.forceUpdate();
     }
 
-    _onSelect(event, eventKey) {
+    LonSelect(event, eventKey) {
         const {
             onDisconnect,
             onPair,
@@ -115,7 +113,7 @@ export default class ConnectedDevice extends React.PureComponent {
                 onPair();
                 break;
             default:
-                console.log('Unknown eventKey received: ' + eventKey);
+                console.log('Unknown eventKey received:', eventKey);
         }
     }
 
@@ -134,38 +132,59 @@ export default class ConnectedDevice extends React.PureComponent {
             opacity: device.connected === true ? 1.0 : 0.5,
         };
 
-        const pullRight = this.belowWidthThreshold ? true : false;
+        const pullRight = !!this.belowWidthThreshold;
 
         return (
-            <div id={id} className='device standalone' style={style}>
-                <div className='top-bar'>
-                    <div className='flag-line'></div>
+            <div
+                ref={node => (this.node = node)}
+                id={id}
+                className="device standalone"
+                style={style}
+            >
+                <div className="top-bar">
+                    <div className="flag-line" />
                 </div>
 
-                <div className='device-body text-small' >
+                <div className="device-body text-small">
                     <div>
-                        <div className='pull-right'>
-                            {
-                                isDfuSupported ?
-                                    <Button id='dfuButton' bsStyle='primary' className='btn-nordic btn-xs' title="Start Secure DFU" onClick={this.props.onClickDfu}>
-                                        <img src={dfuIcon} className="icon-dfu-button" />
-                                    </Button> : null
+                        <div className="pull-right">
+                            { isDfuSupported &&
+                                <Button
+                                    id="dfuButton"
+                                    bsStyle="primary"
+                                    className="btn-nordic btn-xs"
+                                    title="Start Secure DFU"
+                                    onClick={this.props.onClickDfu}
+                                >
+                                    <img src={dfuIcon} className="icon-dfu-button" alt="" />
+                                </Button>
                             }
-                            <Dropdown pullRight={pullRight} id='connectionDropDown' onClick={() => this._onResize()} onSelect={(eventKey, event) => { this._onSelect(event, eventKey); }}>
+                            <Dropdown
+                                pullRight={pullRight}
+                                id="connectionDropDown"
+                                onClick={() => this.LonResize()}
+                                onSelect={(eventKey, event) => { this.LonSelect(event, eventKey); }}
+                            >
                                 <Dropdown.Toggle noCaret>
-                                    <span className='icon-cog' aria-hidden='true' />
+                                    <span className="icon-cog" aria-hidden="true" />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu pullRight={pullRight}>
-                                    <MenuItem id='updateConnectionMenuItem' eventKey='Update'>Update connection...</MenuItem>
-                                    <MenuItem id='pairMenuItem' eventKey='Pair'>Pair...</MenuItem>
-                                    <MenuItem id='disconnectMenuItem' eventKey='Disconnect'>Disconnect</MenuItem>
+                                    <MenuItem id="updateConnectionMenuItem" eventKey="Update">
+                                        Update connection...
+                                    </MenuItem>
+                                    <MenuItem id="pairMenuItem" eventKey="Pair">
+                                        Pair...
+                                    </MenuItem>
+                                    <MenuItem id="disconnectMenuItem" eventKey="Disconnect">
+                                        Disconnect
+                                    </MenuItem>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
-                        <div className='role-flag pull-right'>{role}</div>
+                        <div className="role-flag pull-right">{role}</div>
                         <strong>{device.name ? device.name : '<Unknown>'}</strong>
                     </div>
-                    <div className='address-text'>{device.address}</div>
+                    <div className="address-text">{device.address}</div>
                 </div>
                 <Connector sourceId={sourceId} targetId={id} device={device} layout={layout} />
             </div>
@@ -187,9 +206,11 @@ ConnectedDevice.propTypes = {
     device: PropTypes.object.isRequired,
     sourceId: PropTypes.string.isRequired,
     layout: PropTypes.string.isRequired,
-    isDfuSupported: PropTypes.bool,
-    onClickDfu: PropTypes.func,
+    isDfuSupported: PropTypes.bool.isRequired,
+    onClickDfu: PropTypes.func.isRequired,
     onDisconnect: PropTypes.func.isRequired,
     onPair: PropTypes.func.isRequired,
     onConnectionParamsUpdate: PropTypes.func.isRequired,
 };
+
+export default ConnectedDevice;

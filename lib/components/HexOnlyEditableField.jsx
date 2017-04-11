@@ -37,114 +37,20 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/prop-types: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
 
 import * as _ from 'lodash';
 
-import EditableField from './EditableField.jsx';
+import EditableField from './EditableField';
 
 import { hexArrayToText, textToHexText, hexArrayToHexText } from '../utils/stringUtil';
 
-export default class HexOnlyEditableField extends React.PureComponent {
-    constructor(props) {
-        super(props);
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        if (!_.isEqual(this.props.value, nextProps.value)) { return true; }
-
-        if (this.props.onRead != nextProps.onRead) { return true; }
-
-        if (this.props.onWrite != nextProps.onWrite) { return true; }
-
-        return false;
-    }
-
-    /*
-        Produces some text that changes into a textarea when clicked (like EditableField).
-        The textarea only accepts hexadecimal characters.
-        The input is automatically formatted into pairs of characters (bytes), like so: AB-D2-C1.
-
-        Usage:
-        <HexOnlyEditableField value={value} />
-
-        Where _value_ is the text that should turn editable.
-        It also accepts all props that EditableField accepts, except
-        keyPressValidation, completeValidation, onBackspace and formatInput
-
-        This component wraps EditableField, so see that component for info on how the dataflow etc works.
-
-        There's a lot of complexity here related to keeping the caret in the right position.
-    */
-    _keyPressValidation(str) {
-        if (this.props.showText)
-        {
-            return true;
-        }
-
-        const _hexRegEx = /^[0-9a-fA-F\ ]*$/i;
-        return _hexRegEx.test(str);
-    }
-
-    _formatInput(str, caretPosition) {
-        if (this.props.showText) {
-            return {
-                value: str,
-                caretPosition: caretPosition,
-            };
-        }
-
-        caretPosition = this._calcCaretPosition(str, caretPosition);
-        let chars = str.toUpperCase().replace(/ /g, '').split('');
-        //insert spaces after every second char
-        let inserted = 0;
-        const originalLength = chars.length;
-
-        for (let i = 2; i < originalLength; i += 2) {
-            chars.splice(i + inserted, 0, ' ');
-            inserted += 1;
-        }
-
-        return {
-            value: chars.join(''),
-            caretPosition: caretPosition,
-        };
-    }
-
-    _removeSelection(e, caretModifier) {
-        if (this.props.showText) {
-            return;
-        }
-
-        const selectionStart = e.target.selectionStart;
-        const selectionEnd = e.target.selectionEnd;
-
-        if (selectionStart !== selectionEnd) {
-            return;
-        }
-
-        const caret = selectionStart + caretModifier;
-        let str = e.target.value;
-
-        if (str.substr(caret, 1) === ' ') {
-            //remove the dash - this sets the caret at end of the text
-            e.target.value = str.slice(0, caret) + str.slice(caret + 1);
-            //reset the caret back to before the dash, so the backspace event itself will remove the char before the dash
-            e.target.setSelectionRange(caret, caret);
-        }
-    }
-
-    _onBeforeBackspace(e) {
-        this._removeSelection(e, -1);
-    }
-
-    _onBeforeDelete(e) {
-        this._removeSelection(e, 0);
-    }
-
-    _calcCaretPosition(origValue, caretPosition) {
+class HexOnlyEditableField extends React.PureComponent {
+    static LcalcCaretPosition(origValue, caretPosition) {
         /*
         * Replacing the textarea contents places the caret at the end.
         * We need to place the caret back where it should be.
@@ -173,17 +79,114 @@ export default class HexOnlyEditableField extends React.PureComponent {
         const numDashesBeforeCaret = dashesBeforeCaret === null ? 0 : dashesBeforeCaret.length;
         const caretPositionWithoutDashes = caretPosition - numDashesBeforeCaret;
         const correctNumberOfDashes = Math.floor(caretPositionWithoutDashes / 2);
-        caretPosition = caretPositionWithoutDashes + correctNumberOfDashes;
-        return caretPosition;
+        return caretPositionWithoutDashes + correctNumberOfDashes;
     }
 
-    _completeValidation(str) {
-        if (this.props.showText) {
-            str = textToHexText(str);
+    shouldComponentUpdate(nextProps) {
+        if (!_.isEqual(this.props.value, nextProps.value)) {
+            return true;
         }
 
-        const valueArray = str.trim().split(' ');
-        for (let value of valueArray) {
+        if (this.props.onRead !== nextProps.onRead) {
+            return true;
+        }
+
+        if (this.props.onWrite !== nextProps.onWrite) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /*
+        Produces some text that changes into a textarea when clicked (like EditableField).
+        The textarea only accepts hexadecimal characters.
+        The input is automatically formatted into pairs of characters (bytes), like so: AB-D2-C1.
+
+        Usage:
+        <HexOnlyEditableField value={value} />
+
+        Where _value_ is the text that should turn editable.
+        It also accepts all props that EditableField accepts, except
+        keyPressValidation, completeValidation, onBackspace and formatInput
+
+        This component wraps EditableField, so see that component for info
+        on how the dataflow etc works.
+
+        There's a lot of complexity here related to keeping the caret in the right position.
+    */
+    LkeyPressValidation(str) {
+        if (this.props.showText) {
+            return true;
+        }
+
+        const hexRegEx = /^[0-9a-fA-F ]*$/i;
+        return hexRegEx.test(str);
+    }
+
+    LformatInput(str, caretPosition) {
+        if (this.props.showText) {
+            return {
+                value: str,
+                caretPosition,
+            };
+        }
+
+        const caretPos = this.LcalcCaretPosition(str, caretPosition);
+        const chars = str.toUpperCase().replace(/ /g, '').split('');
+        // insert spaces after every second char
+        let inserted = 0;
+        const originalLength = chars.length;
+
+        for (let i = 2; i < originalLength; i += 2) {
+            chars.splice(i + inserted, 0, ' ');
+            inserted += 1;
+        }
+
+        return {
+            value: chars.join(''),
+            caretPosition: caretPos,
+        };
+    }
+
+    LremoveSelection(e, caretModifier) {
+        if (this.props.showText) {
+            return;
+        }
+
+        const selectionStart = e.target.selectionStart;
+        const selectionEnd = e.target.selectionEnd;
+
+        if (selectionStart !== selectionEnd) {
+            return;
+        }
+
+        const caret = selectionStart + caretModifier;
+        const str = e.target.value;
+
+        if (str.substr(caret, 1) === ' ') {
+            // remove the dash - this sets the caret at end of the text
+            e.target.value = str.slice(0, caret) + str.slice(caret + 1);
+            // reset the caret back to before the dash, so the backspace
+            // event itself will remove the char before the dash
+            e.target.setSelectionRange(caret, caret);
+        }
+    }
+
+    LonBeforeBackspace(e) {
+        this.LremoveSelection(e, -1);
+    }
+
+    LonBeforeDelete(e) {
+        this.LremoveSelection(e, 0);
+    }
+
+    LcompleteValidation(str) {
+        const s = this.props.showText ? textToHexText(str) : str;
+
+        const valueArray = s.trim().split(' ');
+        for (let i = 0; i < valueArray.length; i += 1) {
+            const value = valueArray[i];
             if (value.length % 2 !== 0) {
                 return { valid: false, validationMessage: 'Please enter full bytes (pairs of hexadecimals)' };
             }
@@ -192,38 +195,37 @@ export default class HexOnlyEditableField extends React.PureComponent {
         return { valid: true, validationMessage: 'Valid value' };
     }
 
-    _getValueArray(value) {
+    LgetValueArray(val) {
+        let value = val;
         if (this.props.showText) {
             value = textToHexText(value);
         }
 
-        if (!this._completeValidation(value)) {
-            return;
+        if (!this.LcompleteValidation(value)) {
+            return undefined;
         }
 
-        let valueArray = [];
+        const valueArray = [];
 
         for (let i = 0; i < value.length; i += 3) {
-            let slice = value.substring(i, i + 2);
-            let parsedInt = parseInt(slice, 16);
+            const slice = value.substring(i, i + 2);
+            const parsedInt = parseInt(slice, 16);
             valueArray.push(parsedInt);
         }
 
         return valueArray;
     }
 
-    _onChange(value) {
+    LonChange(value) {
         if (this.props.onChange) {
-            if (this.props.showText) {
-                value = this._getValueArray(value);
-            }
-
-            this.props.onChange(value);
+            const v = this.props.showText ? this.LgetValueArray(value) : value;
+            this.props.onChange(v);
         }
     }
 
     render() {
-        const { showText,
+        const {
+            showText,
             value,
             keyPressValidation,
             completeValidation,
@@ -232,15 +234,15 @@ export default class HexOnlyEditableField extends React.PureComponent {
             onBeforeDelete,
             onChange,
             title,
-            ...props,
-        } = this.props; //pass along all props except these
+            ...props
+        } = this.props; // pass along all props except these
 
-        let parsedValue = hexArrayToHexText(value);
+        const parsedValue = hexArrayToHexText(value);
         let titleValue = parsedValue;
         let showValue = '';
 
         if (title) {
-            titleValue = title + ', ' + titleValue;
+            titleValue = `${title}, ${titleValue}`;
         }
 
         if (!showText) {
@@ -249,21 +251,26 @@ export default class HexOnlyEditableField extends React.PureComponent {
             showValue = hexArrayToText(value);
         }
 
-        //formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
-        return <EditableField {...props}
-                              value={showValue}
-                              title={titleValue}
-                              keyPressValidation={str => this._keyPressValidation(str)}
-                              completeValidation={str => this._completeValidation(str)}
-                              formatInput={(str, caretPosition) => this._formatInput(str, caretPosition)}
-                              onBeforeBackspace={e => this._onBeforeBackspace(e)}
-                              onBeforeDelete={e => this._onBeforeDelete(e)}
-                              getValueArray={value => this._getValueArray(value)}
-                              onChange={value => this._onChange(value)}
-              />;
+        // formatInput={(str, caretPosition) => this.LformatInput(str, caretPosition)}
+        return (
+            <EditableField
+                {...props}
+                value={showValue}
+                title={titleValue}
+                keyPressValidation={str => this.LkeyPressValidation(str)}
+                completeValidation={str => this.LcompleteValidation(str)}
+                formatInput={(str, caretPosition) => this.LformatInput(str, caretPosition)}
+                onBeforeBackspace={e => this.LonBeforeBackspace(e)}
+                onBeforeDelete={e => this.LonBeforeDelete(e)}
+                getValueArray={val => this.LgetValueArray(val)}
+                onChange={val => this.LonChange(val)}
+            />
+        );
     }
 }
 
-EditableField.propTypes = {
-    showText: PropTypes.bool,
+HexOnlyEditableField.propTypes = {
+    showText: PropTypes.bool.isRequired,
 };
+
+export default HexOnlyEditableField;

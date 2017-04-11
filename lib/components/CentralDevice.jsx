@@ -37,6 +37,9 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/require-default-props: off */
+/* eslint react/prop-types: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -45,12 +48,8 @@ import { Dropdown, MenuItem } from 'react-bootstrap';
 import AdvertisingSetup from '../containers/AdvertisingSetup';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 
-export default class CentralDevice extends React.PureComponent {
-    constructor(props) {
-        super(props);
-    }
-
-    _onSelect(event, eventKey) {
+class CentralDevice extends React.PureComponent {
+    LonSelect(event, eventKey) {
         const {
             onToggleAdvertising,
             onShowSetupDialog,
@@ -92,7 +91,7 @@ export default class CentralDevice extends React.PureComponent {
                 onOpenCustomUuidFile();
                 break;
             default:
-                console.log('Unknown eventKey received: ' + eventKey);
+                console.log('Unknown eventKey received:', eventKey);
         }
     }
 
@@ -108,7 +107,6 @@ export default class CentralDevice extends React.PureComponent {
             onToggleAutoConnUpdate,
             autoConnUpdate,
             onToggleAutoAcceptPairing,
-            onDeleteBondInfo,
             onShowSecurityParamsDialog,
             onOpenCustomUuidFile,
             security,
@@ -129,77 +127,130 @@ export default class CentralDevice extends React.PureComponent {
         const iconCheckmarkConnUpdate = autoConnUpdate ? 'icon-ok' : '';
         const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'icon-ok' : '';
 
+        const dropDownMenuItems = (() => {
+            const items = [];
+
+            if (onToggleAdvertising !== undefined) {
+                items.push(<MenuItem key="advHeader" header>Advertising</MenuItem>);
+                if (advertising !== undefined) {
+                    items.push(
+                        <MenuItem key="setup" eventKey="AdvertisingSetup">
+                            Advertising setup...
+                        </MenuItem>,
+                    );
+                }
+
+                items.push(
+                    <MenuItem key="advertising" eventKey="ToggleAdvertising">
+                        {advMenuText} <span className="subtler-text">(Alt+A)</span>
+                    </MenuItem>,
+                );
+            }
+
+            if (onLoadSetup !== undefined) {
+                items.push(<MenuItem key="load" eventKey="LoadSetup">Load setup...</MenuItem>);
+            }
+
+            if (onSaveSetup !== undefined) {
+                items.push(<MenuItem key="save" eventKey="SaveSetup">Save setup...</MenuItem>);
+            }
+
+            if (onToggleAutoConnUpdate !== undefined) {
+                items.push(<MenuItem key="dividerConnUpdate" divider />);
+                items.push(<MenuItem key="connUpdateHeader" header>Connection update</MenuItem>);
+                items.push(
+                    <MenuItem
+                        key="autoConnUpdate"
+                        title="Automatically accept connection update requests"
+                        eventKey="ToggleAutoConnUpdate"
+                    >
+                        <i className={iconCheckmarkConnUpdate} />Auto accept update requests
+                    </MenuItem>,
+                );
+            }
+
+            if (onToggleAutoAcceptPairing !== undefined &&
+                onShowSecurityParamsDialog !== undefined) {
+                items.push(<MenuItem key="dividerSecurity" divider />);
+                items.push(<MenuItem key="securityHeader" header>Security</MenuItem>);
+                items.push(
+                    <MenuItem
+                        key="setSecurityParams"
+                        title="Configure security parameters related to pairing"
+                        eventKey="SetSecurityParams"
+                    >
+                        Security parameters...
+                    </MenuItem>,
+                );
+                items.push(
+                    <MenuItem
+                        key="autoAcceptPairing"
+                        title="Automatically accept security requests"
+                        eventKey="ToggleAutoAcceptPairing"
+                    >
+                        <i className={iconCheckmarkPairing} />Auto reply security requests
+                    </MenuItem>,
+                );
+                items.push(
+                    <MenuItem
+                        key="deleteBondInfo"
+                        title="Delete bond information"
+                        eventKey="DeleteBondInfo"
+                    >
+                        Delete bond information
+                    </MenuItem>,
+                );
+            }
+
+            if (onOpenCustomUuidFile !== undefined) {
+                items.push(<MenuItem key="dividerOpenUuidFile" divider />);
+                items.push(
+                    <MenuItem key="headerOpenUuidFile" header>Custom UUID definitions</MenuItem>,
+                );
+                items.push(
+                    <MenuItem
+                        key="openUuidFile"
+                        title="Open custom UUID definitions file in default text editor"
+                        eventKey="OpenCustomUuidFile"
+                    >
+                        Open UUID definitions file
+                    </MenuItem>,
+                );
+            }
+
+            return items;
+        })();
+
         return (
-            <div id={id} className='device main-device standalone' style={style}>
-                <img className='center-block' src='resources/nordic_usb_icon.png' height='41' width='16' title="Development kit or dongle"/>
-                <div className='device-body text-small'>
-                    <div className='pull-right'>
-                        <Dropdown id='connectionDropDown' onSelect={(eventKey, event) => { this._onSelect(event, eventKey); }}>
+            <div id={id} className="device main-device standalone" style={style}>
+                <img
+                    className="center-block"
+                    src="resources/nordic_usb_icon.png"
+                    height={41}
+                    width={16}
+                    title="Development kit or dongle"
+                    alt=""
+                />
+                <div className="device-body text-small">
+                    <div className="pull-right">
+                        <Dropdown
+                            id="connectionDropDown"
+                            onSelect={(eventKey, event) => { this.LonSelect(event, eventKey); }}
+                        >
                             <Dropdown.Toggle noCaret>
-                                <span className='icon-cog' aria-hidden='true' />
+                                <span className="icon-cog" aria-hidden="true" />
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                {(() => {
-                                    const items = [];
-
-                                    if (onToggleAdvertising !== undefined) {
-                                        items.push(<MenuItem key='advHeader' header>Advertising</MenuItem>);
-                                        if (advertising !== undefined) {
-                                            items.push(<MenuItem key='setup' eventKey='AdvertisingSetup'>Advertising setup...</MenuItem>);
-                                        }
-
-                                        items.push(<MenuItem key='advertising' eventKey='ToggleAdvertising'>{advMenuText} <span className='subtler-text'>(Alt+A)</span></MenuItem>);
-                                    }
-
-                                    if (onLoadSetup !== undefined) {
-                                        items.push(<MenuItem key='load' eventKey='LoadSetup'>Load setup...</MenuItem>);
-                                    }
-
-                                    if (onSaveSetup !== undefined) {
-                                        items.push(<MenuItem key='save' eventKey='SaveSetup'>Save setup...</MenuItem>);
-                                    }
-
-                                    if (onToggleAutoConnUpdate !== undefined) {
-                                        items.push(<MenuItem key='dividerConnUpdate' divider />);
-                                        items.push(<MenuItem key='connUpdateHeader' header>Connection update</MenuItem>);
-                                        items.push(<MenuItem key='autoConnUpdate'
-                                            title='Automatically accept connection update requests'
-                                            eventKey='ToggleAutoConnUpdate'><i className={iconCheckmarkConnUpdate} />Auto accept update requests</MenuItem>);
-                                    }
-
-                                    if (onToggleAutoAcceptPairing !== undefined && onShowSecurityParamsDialog !== undefined) {
-                                        items.push(<MenuItem key='dividerSecurity' divider />);
-                                        items.push(<MenuItem key='securityHeader' header>Security</MenuItem>);
-                                        items.push(<MenuItem key='setSecurityParams'
-                                            title='Configure security parameters related to pairing'
-                                            eventKey='SetSecurityParams'>Security parameters...</MenuItem>);
-                                        items.push(<MenuItem key='autoAcceptPairing'
-                                            title='Automatically accept security requests'
-                                            eventKey='ToggleAutoAcceptPairing'><i className={iconCheckmarkPairing} />Auto reply security requests</MenuItem>);
-                                        items.push(<MenuItem key='deleteBondInfo'
-                                            title='Delete bond information'
-                                            eventKey='DeleteBondInfo'>Delete bond information</MenuItem>);
-                                    }
-
-                                    if (onOpenCustomUuidFile !== undefined) {
-                                        items.push(<MenuItem key='dividerOpenUuidFile' divider />);
-                                        items.push(<MenuItem key='headerOpenUuidFile' header>Custom UUID definitions</MenuItem>);
-                                        items.push(<MenuItem key='openUuidFile'
-                                            title='Open custom UUID definitions file in default text editor'
-                                            eventKey='OpenCustomUuidFile'>Open UUID definitions file</MenuItem>);
-                                    }
-
-                                    return items;
-                                })()}
+                                { dropDownMenuItems }
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
                     <div>
-                        <div className='role-flag pull-right'>Adapter</div>
+                        <div className="role-flag pull-right">Adapter</div>
                         <strong>{name}</strong>
                     </div>
-                    <div className='address-text'>{address}</div>
-                    <div className={'icon-wifi ' + iconOpacity} aria-hidden='true' title={advIconTitle} style={progressStyle} />
+                    <div className="address-text">{address}</div>
+                    <div className={`icon-wifi ${iconOpacity}`} aria-hidden="true" title={advIconTitle} style={progressStyle} />
                     <AdvertisingSetup />
                     <SecurityParamsDialog />
                 </div>
@@ -218,9 +269,11 @@ CentralDevice.propTypes = {
     onSaveSetup: PropTypes.func,
     onLoadSetup: PropTypes.func,
     autoConnUpdate: PropTypes.bool,
-    autoAcceptPairing: PropTypes.bool,
+    // autoAcceptPairing: PropTypes.bool,
     onToggleAutoConnUpdate: PropTypes.func,
     onToggleAutoAcceptPairing: PropTypes.func,
     onDeleteBondInfo: PropTypes.func,
     onOpenCustomUuidFile: PropTypes.func,
 };
+
+export default CentralDevice;

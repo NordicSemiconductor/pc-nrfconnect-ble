@@ -37,6 +37,9 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/prop-types: off */
+/* eslint jsx-a11y/no-static-element-interactions: off */
+
 'use strict';
 
 import React from 'react';
@@ -52,7 +55,19 @@ import { toHexString } from '../utils/stringUtil';
 
 export const CCCD_UUID = '2902';
 
-export default class AttributeItem extends React.PureComponent {
+class AttributeItem extends React.PureComponent {
+    static isCCCDAttribute(uuid) {
+        return uuid === CCCD_UUID;
+    }
+
+    static renderChildren() {
+        return null;
+    }
+
+    static renderContent() {
+        return null;
+    }
+
     constructor(props) {
         super(props);
         this.backgroundColor = Colors.getColor('brand-base');
@@ -68,7 +83,7 @@ export default class AttributeItem extends React.PureComponent {
                 this.props.onChange();
             }
 
-            this._blink();
+            this.Lblink();
         }
     }
 
@@ -78,42 +93,6 @@ export default class AttributeItem extends React.PureComponent {
         }
 
         this.animation.stop();
-    }
-
-    _onContentClick(e) {
-        e.stopPropagation();
-        this._selectComponent();
-    }
-
-    _onExpandAreaClick(e) {
-        e.stopPropagation();
-        this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
-    }
-
-    _childChanged() {
-        if (this.props.onChange) {
-            this.props.onChange();
-        }
-
-        if (!this.props.item.expanded) {
-            this._blink();
-        }
-    }
-
-    _blink() {
-        if (this.animation) {
-            this.animation.stop();
-        }
-
-        const fromColor = Colors.getColor('brand-primary');
-        const toColor = Colors.getColor('brand-base');
-        this.animation = Effects.blink(this, 'backgroundColor', fromColor, toColor);
-    }
-
-    _selectComponent() {
-        if (this.props.onSelectAttribute) {
-            this.props.onSelectAttribute(this.props.item.instanceId);
-        }
     }
 
     onAddAttribute(item) {
@@ -129,25 +108,90 @@ export default class AttributeItem extends React.PureComponent {
         }
     }
 
-    _isLocalAttribute() {
+    getChildren() {
+        const {
+            item,
+        } = this.props;
+
+        const {
+            expanded,
+            discoveringChildren,
+            children,
+        } = item;
+
+        const childrenList = [];
+
+        if (discoveringChildren) {
+            childrenList.push(<EnumeratingAttributes key={`enumerating-${this.childAttributeType}`} bars={this.bars + 1} />);
+        } else if (children && expanded) {
+            childrenList.push(this.renderChildren());
+        }
+
+        return childrenList;
+    }
+
+    LonContentClick(e) {
+        e.stopPropagation();
+        this.LselectComponent();
+    }
+
+    LonExpandAreaClick(e) {
+        e.stopPropagation();
+        this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
+    }
+
+    LchildChanged() {
+        if (this.props.onChange) {
+            this.props.onChange();
+        }
+
+        if (!this.props.item.expanded) {
+            this.Lblink();
+        }
+    }
+
+    Lblink() {
+        if (this.animation) {
+            this.animation.stop();
+        }
+
+        const fromColor = Colors.getColor('brand-primary');
+        const toColor = Colors.getColor('brand-base');
+        this.animation = Effects.blink(this, 'backgroundColor', fromColor, toColor);
+    }
+
+    LselectComponent() {
+        if (this.props.onSelectAttribute) {
+            this.props.onSelectAttribute(this.props.item.instanceId);
+        }
+    }
+
+    isLocalAttribute() {
         const instanceIds = getInstanceIds(this.props.item.instanceId);
         return instanceIds.device === 'local.server';
     }
 
-    _isCCCDAttribute(uuid) {
-        return uuid === CCCD_UUID;
-    }
-
-    _onWrite(value) {
+    LonWrite(value) {
         this.props.onWrite(this.props.item, value);
     }
 
-    _onRead() {
+    LonRead() {
         this.props.onRead(this.props.item);
     }
 
-    renderChildren() {
-        return null;
+    renderError() {
+        const {
+            item,
+        } = this.props;
+
+        const {
+            errorMessage,
+        } = item;
+
+        const errorText = errorMessage || '';
+        const hideErrorClass = (errorText === '') ? 'hide' : '';
+
+        return <div className={`error-label ${hideErrorClass}`}>{errorText}</div>;
     }
 
     renderName() {
@@ -169,48 +213,7 @@ export default class AttributeItem extends React.PureComponent {
             handleText = `Value handle: 0x${toHexString(valueHandle)}, `;
         }
 
-        return <div className={this.attributeType + '-name truncate-text'} title={handleText + 'UUID: ' + uuid}>{name}</div>;
-    }
-
-    renderError() {
-        const {
-            item,
-        } = this.props;
-
-        const {
-            errorMessage,
-        } = item;
-
-        const errorText = errorMessage ? errorMessage : '';
-        const hideErrorClass = (errorText === '') ? 'hide' : '';
-
-        return <div className={'error-label ' + hideErrorClass}>{errorText}</div>;
-    }
-
-    renderContent(children) {
-        return null;
-    }
-
-    getChildren() {
-        const {
-            item,
-        } = this.props;
-
-        const {
-            expanded,
-            discoveringChildren,
-            children,
-        } = item;
-
-        const childrenList = [];
-
-        if (discoveringChildren) {
-            childrenList.push(<EnumeratingAttributes key={'enumerating-' + this.childAttributeType} bars={this.bars + 1} />);
-        } else if (children && expanded) {
-            childrenList.push(this.renderChildren());
-        }
-
-        return childrenList;
+        return <div className={`${this.attributeType}-name truncate-text`} title={`${handleText}UUID: ${uuid}`}>{name}</div>;
     }
 
     render() {
@@ -228,8 +231,8 @@ export default class AttributeItem extends React.PureComponent {
 
         const barList = [];
 
-        for (let i = 0; i < this.bars; i++) {
-            barList.push(<div key={'bar' + (i + 1)} className={'bar' + (i + 1)} />);
+        for (let i = 0; i < this.bars; i += 1) {
+            barList.push(<div key={`bar${i + 1}`} className={`bar${i + 1}`} />);
         }
 
         const content = this.renderContent(null);
@@ -241,7 +244,7 @@ export default class AttributeItem extends React.PureComponent {
 
         const backgroundClass = itemIsSelected ?
             'brand-background' :
-            'neutral-background';//@bar1-color
+            'neutral-background'; // @bar1-color
 
         const backgroundColor = itemIsSelected ?
             '' :
@@ -249,32 +252,38 @@ export default class AttributeItem extends React.PureComponent {
 
         return (
             <div>
-                <div className={this.attributeType + '-item ' + backgroundClass} style={{ backgroundColor }} onClick={e => this._onContentClick(e)}>
-                    <div className='expand-area' onClick={e => this._onExpandAreaClick(e)}>
+                <div
+                    className={`${this.attributeType}-item ${backgroundClass}`}
+                    style={{ backgroundColor }}
+                    onClick={e => this.LonContentClick(e)}
+                >
+                    <div className="expand-area" onClick={e => this.LonExpandAreaClick(e)}>
                         {barList}
-                        <div className='icon-wrap'>
-                            <i className={'icon-slim ' + expandIcon} style={iconStyle} />
+                        <div className="icon-wrap">
+                            <i className={`icon-slim ${expandIcon}`} style={iconStyle} />
                         </div>
                     </div>
-                    <div className='content-wrap'>
+                    <div className="content-wrap">
                         {content}
                     </div>
                 </div>
                 <div style={{ display: expanded ? 'block' : 'none' }}>
                     {childrenList}
-                    { addNew ?
+                    { addNew &&
                         <AddNewItem
-                            key={'add-new-' + this.childAttributeType}
-                            text={'New ' + this.childAttributeType}
-                            id={'add-btn-' + instanceId}
+                            key={`add-new-${this.childAttributeType}`}
+                            text={`New ${this.childAttributeType}`}
+                            id={`add-btn-${instanceId}`}
                             parentInstanceId={instanceId}
                             selected={selected}
                             onClick={() => this.onAddAttribute(item)}
-                            bars={this.bars + 1} /> :
-                        null
+                            bars={this.bars + 1}
+                        />
                     }
                 </div>
             </div>
         );
     }
 }
+
+export default AttributeItem;

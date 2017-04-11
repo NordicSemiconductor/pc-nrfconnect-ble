@@ -41,25 +41,25 @@ import React, { PropTypes } from 'react';
 import { FormGroup, ControlLabel, ProgressBar, InputGroup } from 'react-bootstrap';
 
 const ProgressBarInput = props => {
-    const { id, label, progressLabel, labelClassName, wrapperClassName, status } = props;
+    const { label, progressLabel, labelClassName, wrapperClassName, status, now } = props;
     return (
-        <FormGroup controlId={id}>
+        <FormGroup>
             {
                 label && <ControlLabel className={labelClassName}>{label}</ControlLabel>
             }
             <InputGroup className={wrapperClassName}>
                 { status && <p>{status}</p>}
-                <ProgressBar label={progressLabel} {...props} />
+                <ProgressBar label={progressLabel} now={now} {...props} />
             </InputGroup>
         </FormGroup>
     );
 };
 
 ProgressBarInput.propTypes = {
-    id: PropTypes.string,
-    label: PropTypes.string,
-    status: PropTypes.string,
-    progressLabel: PropTypes.string,
+    label: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    progressLabel: PropTypes.string.isRequired,
+    now: PropTypes.number.isRequired,
     labelClassName: PropTypes.string,
     wrapperClassName: PropTypes.string,
 };
