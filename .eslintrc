@@ -1,4 +1,5 @@
 {
+    "root": true,
     "extends": [
         "eslint:recommended",
         "airbnb"
@@ -33,7 +34,9 @@
             "as-needed"
         ],
         "strict": "off",
-        "no-console": "off"
+        "no-console": "off",
+        "valid-jsdoc": 2,
+        "import/no-extraneous-dependencies": 0
     },
     "no-undef": 1,
     "no-unused-vars": 1,
@@ -41,6 +44,10 @@
         "react"
     ],
     "env": {
-        "es6": true
+        "es6": true,
+        "browser": true,
+        "node": true,
+        "jasmine": true,
+        "jest": true
     }
 }

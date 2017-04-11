@@ -4,6 +4,6 @@ vendor
 dist
 *.db
 log.txt
-css/styles.css
 tags
 jest.json
+npm-debug.log
