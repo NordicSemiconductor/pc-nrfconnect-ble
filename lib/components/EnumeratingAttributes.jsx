@@ -39,26 +39,36 @@
 
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import Spinner from './Spinner';
 import spinnerImage from '../../resources/ajax-loader.gif';
 
-export default class EnumeratingAttributes extends React.PureComponent {
-    render() {
-        const barList = [];
+const EnumeratingAttributes = props => {
+    const barList = [];
 
-        for (let i = 0; i < this.props.bars; i++) {
-            barList.push(<div key={'bar' + (i + 1)} className={'bar' + (i + 1)} />);
-        }
-
-        return (
-            <div className='enumerating-items-wrap'>
-                {barList}
-                <div className='enumerating-content'>
-                    <Spinner image={spinnerImage} visible={true} className="spinner center-block" size={20} />
-                </div>
-            </div>
-        );
+    for (let i = 0; i < props.bars; i += 1) {
+        const key = `bar${i + 1}`;
+        barList.push(<div key={key} className={key} />);
     }
-}
+
+    return (
+        <div className="enumerating-items-wrap">
+            {barList}
+            <div className="enumerating-content">
+                <Spinner
+                    image={spinnerImage}
+                    visible
+                    className="spinner center-block"
+                    size={20}
+                />
+            </div>
+        </div>
+    );
+};
+
+EnumeratingAttributes.propTypes = {
+    bars: PropTypes.number.isRequired,
+};
+
+export default EnumeratingAttributes;

@@ -44,10 +44,9 @@ import React, { PropTypes } from 'react';
 import UuidLookup from '../UuidLookup';
 import TextInput from './TextInput';
 
-import { getUuidName } from '../../utils/uuid_definitions';
 import { validateUuid } from '../../utils/validateUuid';
 
-export default class UuidInput extends React.PureComponent {
+class UuidInput extends React.PureComponent {
     constructor(props) {
         super(props);
         this.uuid = this.props.value;
@@ -57,9 +56,9 @@ export default class UuidInput extends React.PureComponent {
         return validateUuid(this.uuid);
     }
 
-    _onUuidChange(uuid) {
-        const _hexRegEx = /^[0-9A-F]*$/i;
-        const valid = _hexRegEx.test(uuid);
+    LonUuidChange(uuid) {
+        const hexRegEx = /^[0-9A-F]*$/i;
+        const valid = hexRegEx.test(uuid);
 
         if (!valid) {
             return;
@@ -72,8 +71,8 @@ export default class UuidInput extends React.PureComponent {
         this.forceUpdate();
     }
 
-    _handleUuidSelect(event, eventKey) {
-        this._onUuidChange(eventKey);
+    LhandleUuidSelect(event, eventKey) {
+        this.LonUuidChange(eventKey);
     }
 
     render() {
@@ -84,20 +83,31 @@ export default class UuidInput extends React.PureComponent {
         } = this.props;
 
         const uuidSelectButton = (
-            <UuidLookup onSelect={(event, eventKey) => this._handleUuidSelect(event, eventKey)}
-                title={'Predefined ' + label + 's'} uuidDefs={uuidDefinitions()}
-                pullRight={true}/>
+            <UuidLookup
+                onSelect={(event, eventKey) => this.LhandleUuidSelect(event, eventKey)}
+                title={`Predefined ${label}s`}
+                uuidDefs={uuidDefinitions()}
+                pullRight
+            />
         );
 
-        return <TextInput label={label}
-            hasFeedback validationState={this.validateUuidInput()}
-            value={value}
-            onChange={e => this.props.handleSelection(e.target.value)}
-            buttonAfter={uuidSelectButton} />;
+        return (
+            <TextInput
+                label={label}
+                hasFeedback validationState={this.validateUuidInput()}
+                value={value}
+                onChange={e => this.props.handleSelection(e.target.value)}
+                buttonAfter={uuidSelectButton}
+            />
+        );
     }
 }
 
 UuidInput.propTypes = {
+    label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
     uuidDefinitions: PropTypes.func.isRequired,
     handleSelection: PropTypes.func.isRequired,
 };
+
+export default UuidInput;

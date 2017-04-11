@@ -37,6 +37,9 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint react/require-default-props: off */
+
 import React, { PropTypes } from 'react';
 import { FormGroup, ControlLabel, ButtonToolbar } from 'react-bootstrap';
 
@@ -60,18 +63,36 @@ import DfuThroughputGraph from './DfuThroughputGraph';
  */
 function createPackageInfoString(packageInfo) {
     return Object.keys(packageInfo).reduce((prevType, type) => {
-        const valueString = Object.keys(packageInfo[type]).reduce((prevValue, value) => {
-            return prevValue + '\n  ' + value + ': ' + packageInfo[type][value];
-        }, '');
-        return prevType + type + ':' + valueString + '\n';
+        const valueString = Object.keys(packageInfo[type]).reduce((prevValue, value) => (
+            `${prevValue}\n  ${value}: ${packageInfo[type][value]}`
+        ), '');
+        return `${prevType}${type}:${valueString}\n`;
     }, '');
 }
 
 class DfuEditor extends React.PureComponent {
+    getPercentCompleted() {
+        return this.props.isCompleted ? 100 : this.props.percentCompleted;
+    }
+
+    getStatus() {
+        if (this.props.isCompleted) {
+            return 'Completed';
+        } else if (this.props.isStopping) {
+            return 'Stopping...';
+        }
+        let status = this.props.status;
+        const fileNameBeingTransferred = this.props.fileNameBeingTransferred;
+        if (fileNameBeingTransferred) {
+            status += ` ${fileNameBeingTransferred}`;
+        }
+        return `${status}...`;
+    }
+
     renderPackageInfo() {
         return (
             <ReadOnlyField
-                label='Package info'
+                label="Package info"
                 value={createPackageInfoString(this.props.packageInfo)}
             />
         );
@@ -81,7 +102,7 @@ class DfuEditor extends React.PureComponent {
         const percentCompleted = this.getPercentCompleted();
         return (
             <ProgressBarInput
-                label='Progress'
+                label="Progress"
                 status={this.getStatus()}
                 now={percentCompleted}
                 progressLabel={`${percentCompleted}%`}
@@ -104,24 +125,6 @@ class DfuEditor extends React.PureComponent {
         return null;
     }
 
-    getStatus() {
-        if (this.props.isCompleted) {
-            return 'Completed';
-        } else if (this.props.isStopping) {
-            return 'Stopping...';
-        }
-        let status = this.props.status;
-        const fileNameBeingTransferred = this.props.fileNameBeingTransferred;
-        if (fileNameBeingTransferred) {
-            status += ' ' + fileNameBeingTransferred;
-        }
-        return status + '...';
-    }
-
-    getPercentCompleted() {
-        return this.props.isCompleted ? 100 : this.props.percentCompleted;
-    }
-
     render() {
         const {
             onChooseFile,
@@ -135,12 +138,12 @@ class DfuEditor extends React.PureComponent {
         } = this.props;
 
         return (
-            <form className='form-horizontal native-key-bindings'>
+            <form className="form-horizontal native-key-bindings">
                 <div className="col-md-12">
                     <FileInput
                         readOnly
                         buttonDisabled={isStarted || isCompleted}
-                        label='Zip file'
+                        label="Zip file"
                         value={filePath}
                         onChooseClicked={onChooseFile}
                     />
@@ -149,11 +152,12 @@ class DfuEditor extends React.PureComponent {
                     { isStarted || isCompleted ? this.renderGraph() : null }
                 </div>
                 <ButtonToolbar>
-                    <div style={filePath && !isCompleted ? {} : {display: 'none'}}>
+                    <div style={filePath && !isCompleted ? {} : { display: 'none' }}>
                         <DfuButton
                             dfuInProgress={isStarted}
                             disabled={isStopping}
-                            onClick={isStarted ? onStopDfu : onStartDfu}/>
+                            onClick={isStarted ? onStopDfu : onStartDfu}
+                        />
                     </div>
                 </ButtonToolbar>
             </form>

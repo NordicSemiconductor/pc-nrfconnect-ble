@@ -37,6 +37,9 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint react/prop-types: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -47,22 +50,18 @@ import SelectList from './input/SelectList';
 import LabeledInputGroup from './input/LabeledInputGroup';
 import UuidInput from './input/UuidInput';
 
-import HexOnlyEditableField from './HexOnlyEditableField.jsx';
+import HexOnlyEditableField from './HexOnlyEditableField';
 
 import { getUuidName, uuidCharacteristicDefinitions, TEXT, getUuidFormat } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
 
 import { ERROR, SUCCESS, validateUuid } from '../utils/validateUuid';
 
-export default class CharacteristicEditor extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
+class CharacteristicEditor extends React.Component {
     validateValueLength() {
-        const maxLength = parseInt(this.maxLength);
+        const maxLength = parseInt(this.maxLength, 10);
         const fixedLength = this.fixedLength;
-        const value = this._parseValueProperty(this.value);
+        const value = this.LparseValueProperty(this.value);
 
         if (maxLength > 510 && fixedLength === true) { return ERROR; }
 
@@ -73,52 +72,52 @@ export default class CharacteristicEditor extends React.Component {
         return SUCCESS;
     }
 
-    _setCheckedProperty(property, e) {
+    LsetCheckedProperty(property, e) {
         this[property] = e.target.checked;
         this.forceUpdate();
         this.props.onModified(true);
     }
 
-    _setValueProperty(property, e) {
+    LsetValueProperty(property, e) {
         this[property] = e.target.value;
         this.forceUpdate();
         this.props.onModified(true);
     }
 
-    _parseValueProperty(value) {
+    LparseValueProperty(value) {
         if (value.length === 0) {
             return [];
         }
 
         if (typeof value === 'string') {
             const valueArray = value.split(' ');
-            return valueArray.map(value => parseInt(value, 16));
+            return valueArray.map(val => parseInt(val, 16));
         }
 
         return this.value;
     }
 
-    _setInitialValue(value) {
+    LsetInitialValue(value) {
         this.value = value;
         this.forceUpdate();
         this.props.onModified(true);
     }
 
-    _onUuidChange(e) {
-        const _hexRegEx = /^[0-9A-F]*$/i;
+    LonUuidChange(e) {
+        const hexRegEx = /^[0-9A-F]*$/i;
         const textarea = e.target;
         const uuid = textarea.value;
-        const valid = _hexRegEx.test(uuid);
+        const valid = hexRegEx.test(uuid);
         let caretPosition = textarea.selectionStart;
 
         if (!valid) {
-            caretPosition--;
+            caretPosition -= 1;
             this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
             return;
         }
 
         this.uuid = uuid;
-        let uuidName = getUuidName(this.uuid);
+        const uuidName = getUuidName(this.uuid);
 
         if (this.uuid !== uuidName) {
             this.name = uuidName;
@@ -128,7 +127,7 @@ export default class CharacteristicEditor extends React.Component {
         this.props.onModified(true);
     }
 
-    _saveAttribute() {
+    LsaveAttribute() {
         if (validateUuid(this.uuid) === ERROR) {
             this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
@@ -155,12 +154,12 @@ export default class CharacteristicEditor extends React.Component {
             instanceId: this.props.characteristic.instanceId,
             uuid: this.uuid.toUpperCase().trim(),
             name: this.name,
-            value: this._parseValueProperty(this.value),
+            value: this.LparseValueProperty(this.value),
             properties: changedProperties,
             readPerm: this.readPerm,
             writePerm: this.writePerm,
             fixedLength: this.fixedLength,
-            maxLength: parseInt(this.maxLength),
+            maxLength: parseInt(this.maxLength, 10),
         };
 
         this.props.onSaveChangedAttribute(changedCharacteristic);
@@ -168,9 +167,9 @@ export default class CharacteristicEditor extends React.Component {
         this.props.onModified(false);
     }
 
-    _handleUuidSelect(uuid) {
+    LhandleUuidSelect(uuid) {
         this.uuid = uuid;
-        let uuidName = getUuidName(this.uuid);
+        const uuidName = getUuidName(this.uuid);
 
         if (this.uuid !== uuidName) {
             this.name = uuidName;
@@ -236,58 +235,91 @@ export default class CharacteristicEditor extends React.Component {
         const showText = getUuidFormat(this.uuid) === TEXT;
 
         return (
-            <form className='form-horizontal native-key-bindings'>
-                <UuidInput label='Characteristic UUID' name='uuid' value={this.uuid}
-                    onChange={e => this._onUuidChange(e)} uuidDefinitions={uuidCharacteristicDefinitions}
-                    handleSelection={uuid => this._handleUuidSelect(uuid)} />
+            <form className="form-horizontal native-key-bindings">
+                <UuidInput
+                    label="Characteristic UUID"
+                    name="uuid"
+                    value={this.uuid}
+                    onChange={e => this.LonUuidChange(e)}
+                    uuidDefinitions={uuidCharacteristicDefinitions}
+                    handleSelection={uuid2 => this.LhandleUuidSelect(uuid2)}
+                />
 
-                <TextInput label='Characteristic name' name='characteristic-name' value={this.name} onChange={e => this._setValueProperty('name', e)} />
-                <HexOnlyEditableField label='Initial value' plain={true} className='form-control' name='initial-value' value={this.value}
-                    onChange={value => this._setInitialValue(value)} showText={showText} />
+                <TextInput
+                    label="Characteristic name"
+                    name="characteristic-name"
+                    value={this.name}
+                    onChange={e => this.LsetValueProperty('name', e)}
+                />
+                <HexOnlyEditableField
+                    label="Initial value"
+                    plain
+                    className="form-control"
+                    name="initial-value"
+                    value={this.value}
+                    onChange={val => this.LsetInitialValue(val)}
+                    showText={showText}
+                />
 
-                <LabeledInputGroup label='Properties'>
-                    <Checkbox checked={this.broadcast} onChange={e => this._setCheckedProperty('broadcast', e)}>Broadcast</Checkbox>
-                    <Checkbox checked={this.read} onChange={e => this._setCheckedProperty('read', e)}>Read</Checkbox>
-                    <Checkbox checked={this.writeWoResp} onChange={e => this._setCheckedProperty('writeWoResp', e)}>Write without response</Checkbox>
-                    <Checkbox checked={this.write} onChange={e => this._setCheckedProperty('write', e)}>Write</Checkbox>
-                    <Checkbox checked={this.notify} onChange={e => this._setCheckedProperty('notify', e)}>Notify</Checkbox>
-                    <Checkbox checked={this.indicate} onChange={e => this._setCheckedProperty('indicate', e)}>Indicate</Checkbox>
-                    <Checkbox checked={this.authSignedWr} onChange={e => this._setCheckedProperty('authSignedWr', e)}>
+                <LabeledInputGroup label="Properties">
+                    <Checkbox checked={this.broadcast} onChange={e => this.LsetCheckedProperty('broadcast', e)}>Broadcast</Checkbox>
+                    <Checkbox checked={this.read} onChange={e => this.LsetCheckedProperty('read', e)}>Read</Checkbox>
+                    <Checkbox checked={this.writeWoResp} onChange={e => this.LsetCheckedProperty('writeWoResp', e)}>Write without response</Checkbox>
+                    <Checkbox checked={this.write} onChange={e => this.LsetCheckedProperty('write', e)}>Write</Checkbox>
+                    <Checkbox checked={this.notify} onChange={e => this.LsetCheckedProperty('notify', e)}>Notify</Checkbox>
+                    <Checkbox checked={this.indicate} onChange={e => this.LsetCheckedProperty('indicate', e)}>Indicate</Checkbox>
+                    <Checkbox checked={this.authSignedWr} onChange={e => this.LsetCheckedProperty('authSignedWr', e)}>
                         Authenticated signed write
                     </Checkbox>
                 </LabeledInputGroup>
 
-                <LabeledInputGroup label='Extended Properties'>
-                    <Checkbox checked={this.reliableWr} onChange={e => this._setCheckedProperty('reliableWr', e)}>Reliable write</Checkbox>
-                    <Checkbox checked={this.wrAux} onChange={e => this._setCheckedProperty('wrAux', e)}>Write auxiliary</Checkbox>
+                <LabeledInputGroup label="Extended Properties">
+                    <Checkbox checked={this.reliableWr} onChange={e => this.LsetCheckedProperty('reliableWr', e)}>Reliable write</Checkbox>
+                    <Checkbox checked={this.wrAux} onChange={e => this.LsetCheckedProperty('wrAux', e)}>Write auxiliary</Checkbox>
                 </LabeledInputGroup>
 
-                <SelectList label='Read permission' type='select' className='form-control' value={this.readPerm} onChange={e => this._setValueProperty('readPerm', e)}>
-                    <option value='open'>No security required</option>
-                    <option value='encrypt'>Encryption required, no MITM</option>
-                    <option value='encrypt mitm-protection'>Encryption with MITM required</option>
-                    <option value='lesc'>LESC encryption with MITM required</option>
-                    <option value='no_access'>No access rights specified (undefined)</option>
+                <SelectList label="Read permission" type="select" className="form-control" value={this.readPerm} onChange={e => this.LsetValueProperty('readPerm', e)}>
+                    <option value="open">No security required</option>
+                    <option value="encrypt">Encryption required, no MITM</option>
+                    <option value="encrypt mitm-protection">Encryption with MITM required</option>
+                    <option value="lesc">LESC encryption with MITM required</option>
+                    <option value="no_access">No access rights specified (undefined)</option>
                 </SelectList>
 
-                <SelectList label='Write permission' type='select' className='form-control' value={this.writePerm} onChange={e => this._setValueProperty('writePerm', e)}>
-                    <option value='open'>No security required</option>
-                    <option value='encrypt'>Encryption required, no MITM</option>
-                    <option value='encrypt mitm-protection'>Encryption with MITM required</option>
-                    <option value='lesc'>LESC encryption with MITM required</option>
-                    <option value='no_access'>No access rights specified (undefined)</option>
+                <SelectList label="Write permission" type="select" className="form-control" value={this.writePerm} onChange={e => this.LsetValueProperty('writePerm', e)}>
+                    <option value="open">No security required</option>
+                    <option value="encrypt">Encryption required, no MITM</option>
+                    <option value="encrypt mitm-protection">Encryption with MITM required</option>
+                    <option value="lesc">LESC encryption with MITM required</option>
+                    <option value="no_access">No access rights specified (undefined)</option>
                 </SelectList>
 
-                <LabeledInputGroup label='Max length'>
-                    <Checkbox checked={this.fixedLength} onChange={e => this._setCheckedProperty('fixedLength', e)}>Fixed length</Checkbox>
-                    <TextInput inline type='number' min='0' max={this.fixedLength ? '510' : '512'} name='max-length' value={this.maxLength}
-                        onChange={e => this._setValueProperty('maxLength', e)} />
+                <LabeledInputGroup label="Max length">
+                    <Checkbox checked={this.fixedLength} onChange={e => this.LsetCheckedProperty('fixedLength', e)}>Fixed length</Checkbox>
+                    <TextInput
+                        inline
+                        type="number"
+                        min={0}
+                        max={this.fixedLength ? 510 : 512}
+                        name="max-length"
+                        value={this.maxLength}
+                        onChange={e => this.LsetValueProperty('maxLength', e)}
+                    />
                 </LabeledInputGroup>
 
                 <ButtonToolbar>
-                    <div className='col-md-4' />
-                    <Button bsStyle='primary' className='btn-nordic' onClick={onRemoveAttribute}><i className='icon-cancel'/>Delete</Button>
-                    <Button bsStyle='primary' className='btn-nordic' onClick={() => this._saveAttribute()}>Save</Button>
+                    <div className="col-md-4" />
+                    <Button bsStyle="primary" className="btn-nordic" onClick={onRemoveAttribute}>
+                        <i className="icon-cancel" />
+                        Delete
+                    </Button>
+                    <Button
+                        bsStyle="primary"
+                        className="btn-nordic"
+                        onClick={() => this.LsaveAttribute()}
+                    >
+                        Save
+                    </Button>
                 </ButtonToolbar>
             </form>
         );
@@ -300,3 +332,5 @@ CharacteristicEditor.propTypes = {
     onSaveChangedAttribute: PropTypes.func.isRequired,
     onValidationError: PropTypes.func.isRequired,
 };
+
+export default CharacteristicEditor;

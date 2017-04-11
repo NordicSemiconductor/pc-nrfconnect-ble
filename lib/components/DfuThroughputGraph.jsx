@@ -37,6 +37,8 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/prop-types: off */
+
 import React, { PropTypes } from 'react';
 import sizeMe from 'react-sizeme';
 import { LineChart } from 'react-d3-components';

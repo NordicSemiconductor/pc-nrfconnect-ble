@@ -37,15 +37,14 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
-import { Modal } from 'react-bootstrap';
-import { Button } from 'react-bootstrap';
-import { Label } from 'react-bootstrap';
+import { Modal, Button, Label } from 'react-bootstrap';
 
 import AdvertisingList from '../components/AdvertisingList';
 import AdvertisingData from '../components/AdvertisingData';
@@ -58,16 +57,18 @@ class AdvertisingSetup extends React.PureComponent {
         this.id = 0;
     }
 
-    _prepareValue() {
-        if (!this.typeValue) return;
+    LprepareValue() {
+        if (!this.typeValue) {
+            return undefined;
+        }
 
-        this.id++;
+        this.id += 1;
         this.typeValue.id = this.id;
         return Object.assign({}, this.typeValue);
     }
 
     addToAdvData() {
-        const newValue = this._prepareValue();
+        const newValue = this.LprepareValue();
 
         if (!newValue || newValue.value === '') {
             return;
@@ -77,7 +78,7 @@ class AdvertisingSetup extends React.PureComponent {
     }
 
     addToScanResponse() {
-        const newValue = this._prepareValue();
+        const newValue = this.LprepareValue();
 
         if (!newValue || newValue.value === '') {
             return;
@@ -105,12 +106,9 @@ class AdvertisingSetup extends React.PureComponent {
             tempAdvDataEntries,
             tempScanRespEntries,
             show,
-            addAdvEntry,
             deleteAdvData,
-            addScanRsp,
             setAdvdataStatus,
             deleteScanRsp,
-            showSetupDialog,
             hideSetupDialog,
         } = this.props;
 
@@ -121,32 +119,47 @@ class AdvertisingSetup extends React.PureComponent {
                         <Modal.Title>Advertising setup</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <AdvertisingData onValueChange={value => this.handleValueChange(value)}/>
+                        <AdvertisingData onValueChange={value => this.handleValueChange(value)} />
                         <div className="adv-row">
                             <div className="adv-col adv-pkt">
                                 <Button
                                     className="btn-add btn-primary btn-nordic icon-plus"
-                                    onClick={() => this.addToAdvData()}>{' Add to advertising data'}</Button>
+                                    onClick={() => this.addToAdvData()}
+                                >
+                                    {' Add to advertising data'}
+                                </Button>
                                 <AdvertisingList
                                     title="Advertising data"
                                     onDelete={deleteAdvData}
-                                    advEntries={tempAdvDataEntries}/>
+                                    advEntries={tempAdvDataEntries}
+                                />
                             </div>
                             <div className="adv-col scan-rsp-pkt">
                                 <Button
                                     className="btn-add btn-primary btn-nordic icon-plus"
-                                    onClick={() => this.addToScanResponse()}>{' Add to scan response'}</Button>
+                                    onClick={() => this.addToScanResponse()}
+                                >
+                                    {' Add to scan response'}
+                                </Button>
                                 <AdvertisingList
                                     title="Scan response data"
                                     onDelete={deleteScanRsp}
-                                    advEntries={tempScanRespEntries}/>
+                                    advEntries={tempScanRespEntries}
+                                />
                             </div>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <Label className="error-label" bsStyle="danger">{setAdvdataStatus}</Label>
-                        <Button className="btn-primary btn-nordic" onClick={() => this.handleApply()}>Apply</Button>
-                        <Button className="btn-primary btn-nordic" onClick={hideSetupDialog}>Close</Button>
+                        <Button
+                            className="btn-primary btn-nordic"
+                            onClick={() => this.handleApply()}
+                        >
+                            Apply
+                        </Button>
+                        <Button className="btn-primary btn-nordic" onClick={hideSetupDialog}>
+                            Close
+                        </Button>
                     </Modal.Footer>
                 </Modal>
             </div>
@@ -167,9 +180,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    let retval = Object.assign(
+    const retval = Object.assign(
         {},
-        bindActionCreators(AdvertisingActions, dispatch)
+        bindActionCreators(AdvertisingActions, dispatch),
     );
 
     return retval;
@@ -177,7 +190,7 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(AdvertisingSetup);
 
 AdvertisingSetup.propTypes = {
@@ -187,11 +200,11 @@ AdvertisingSetup.propTypes = {
     addAdvEntry: PropTypes.func.isRequired,
     applyChanges: PropTypes.func.isRequired,
     setAdvertisingData: PropTypes.func.isRequired,
-    advertising: PropTypes.object.isRequired,
+    // advertising: PropTypes.object.isRequired,
     setAdvdataStatus: PropTypes.string.isRequired,
     deleteAdvData: PropTypes.func.isRequired,
     addScanRsp: PropTypes.func.isRequired,
     deleteScanRsp: PropTypes.func.isRequired,
-    showSetupDialog: PropTypes.func.isRequired,
+    // showSetupDialog: PropTypes.func.isRequired,
     hideSetupDialog: PropTypes.func.isRequired,
 };

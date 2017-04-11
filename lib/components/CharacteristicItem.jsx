@@ -37,6 +37,9 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint no-bitwise: ["error", { "allow": ["&", "|"] }] */
+/* eslint jsx-a11y/no-static-element-interactions: off */
+
 'use strict';
 
 import React from 'react';
@@ -49,7 +52,29 @@ import { TEXT, getUuidFormat } from '../utils/uuid_definitions';
 const NOTIFY = 1;
 const INDICATE = 2;
 
-export default class CharacteristicItem extends AttributeItem {
+class CharacteristicItem extends AttributeItem {
+    static LfindCccdDescriptor(children) {
+        if (!children) {
+            return undefined;
+        }
+
+        return children.find(child => child.uuid === CCCD_UUID);
+    }
+
+    static LisNotifying(cccdDescriptor) {
+        if (!cccdDescriptor) {
+            return false;
+        }
+
+        const valueArray = cccdDescriptor.value.toArray();
+
+        if (valueArray.length < 2) {
+            return false;
+        }
+
+        return ((valueArray[0] & (NOTIFY | INDICATE)) > 0);
+    }
+
     constructor(props) {
         super(props);
         this.bars = 2;
@@ -57,10 +82,10 @@ export default class CharacteristicItem extends AttributeItem {
         this.childAttributeType = 'descriptor';
     }
 
-    _onToggleNotify(e) {
+    LonToggleNotify(e) {
         e.stopPropagation();
 
-        const isNotifying = this._isNotifying(this.cccdDescriptor);
+        const isNotifying = this.LisNotifying(this.cccdDescriptor);
         const hasNotifyProperty = this.props.item.properties.notify;
         const hasIndicateProperty = this.props.item.properties.indicate;
 
@@ -88,28 +113,6 @@ export default class CharacteristicItem extends AttributeItem {
         this.props.onWriteDescriptor(this.cccdDescriptor, value);
     }
 
-    _findCccdDescriptor(children) {
-        if (!children) {
-            return;
-        }
-
-        return children.find(child => child.uuid === CCCD_UUID);
-    }
-
-    _isNotifying(cccdDescriptor) {
-        if (!cccdDescriptor) {
-            return false;
-        }
-
-        const valueArray = cccdDescriptor.value.toArray();
-
-        if (valueArray.length < 2) {
-            return false;
-        }
-
-        return ((valueArray[0] & (NOTIFY | INDICATE)) > 0);
-    }
-
     renderContent() {
         const {
             item,
@@ -123,15 +126,16 @@ export default class CharacteristicItem extends AttributeItem {
             children,
         } = item;
 
-        this.cccdDescriptor = this._findCccdDescriptor(children);
+        this.cccdDescriptor = this.LfindCccdDescriptor(children);
 
-        const isLocal = this._isLocalAttribute();
-        const isNotifying = this._isNotifying(this.cccdDescriptor);
+        const isLocal = this.isLocalAttribute();
+        const isNotifying = this.LisNotifying(this.cccdDescriptor);
         const itemIsSelected = item.instanceId === selected;
 
         const hasCccd = this.cccdDescriptor !== undefined;
         const hasReadProperty = properties.read;
-        const hasWriteProperty = properties.write || properties.writeWoResp || properties.reliableWr;
+        const hasWriteProperty =
+            properties.write || properties.writeWoResp || properties.reliableWr;
         const hasNotifyProperty = properties.notify;
         const hasIndicateProperty = properties.indicate;
         const hasNotifyOrIndicateProperty = hasNotifyProperty || hasIndicateProperty;
@@ -147,40 +151,47 @@ export default class CharacteristicItem extends AttributeItem {
         if (properties) {
             properties.forEach((propertyValue, property) => {
                 if (propertyValue) {
-                    propertyList.push(<div key={property} className='device-flag'>{property}</div>);
+                    const key = property;
+                    propertyList.push(
+                        <div key={key} className="device-flag">{property}</div>,
+                    );
                 }
             });
         }
 
-        const _onRead = (hasReadProperty && !isLocal) ?
-            () => this._onRead() :
+        const LonRead = (hasReadProperty && !isLocal) ?
+            () => this.LonRead() :
             undefined;
 
-        const _onWrite = (hasWriteProperty || isLocal) ?
-            value => this._onWrite(value) :
+        const LonWrite = (hasWriteProperty || isLocal) ?
+            val => this.LonWrite(val) :
             null;
 
         return (
-            <div className='content'>
-                <div className='btn btn-primary btn-xs btn-nordic btn-notify'
+            <div className="content">
+                <div
+                    className="btn btn-primary btn-xs btn-nordic btn-notify"
                     title={toggleNotificationsText}
                     disabled={!hasCccd}
                     style={notifyIconStyle}
-                    onClick={e => this._onToggleNotify(e)}>
+                    onClick={e => this.LonToggleNotify(e)}
+                >
                     <i className={notifyIcon} />
                 </div>
                 <div>
                     {this.renderName()}
-                    <div className='flag-line'>
+                    <div className="flag-line">
                         {propertyList}
                     </div>
                 </div>
-                <HexOnlyEditableField value={value.toArray()}
-                                      onWrite={_onWrite}
-                                      showReadButton={hasReadProperty && itemIsSelected}
-                                      onRead={_onRead}
-                                      selectParent={() => this._selectComponent()}
-                                      showText={showText} />
+                <HexOnlyEditableField
+                    value={value.toArray()}
+                    onWrite={LonWrite}
+                    showReadButton={hasReadProperty && itemIsSelected}
+                    onRead={LonRead}
+                    selectParent={() => this.LselectComponent()}
+                    showText={showText}
+                />
                 {this.renderError()}
             </div>
         );
@@ -199,14 +210,18 @@ export default class CharacteristicItem extends AttributeItem {
             children,
         } = item;
 
-        return children.map(descriptor =>
-                    <DescriptorItem key={descriptor.instanceId}
-                            item={descriptor}
-                            selected={selected}
-                            onSelectAttribute={onSelectAttribute}
-                            onChange={() => this._childChanged()}
-                            onRead={onReadDescriptor}
-                            onWrite={onWriteDescriptor} />
-                    );
+        return children.map(descriptor => (
+            <DescriptorItem
+                key={descriptor.instanceId}
+                item={descriptor}
+                selected={selected}
+                onSelectAttribute={onSelectAttribute}
+                onChange={() => this.LchildChanged()}
+                onRead={onReadDescriptor}
+                onWrite={onWriteDescriptor}
+            />
+        ));
     }
 }
+
+export default CharacteristicItem;

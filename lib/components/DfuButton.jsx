@@ -70,7 +70,7 @@ const DfuButton = props => {
 DfuButton.propTypes = {
     dfuInProgress: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
+    disabled: PropTypes.bool.isRequired,
 };
 
 export default DfuButton;

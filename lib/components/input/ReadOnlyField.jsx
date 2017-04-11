@@ -41,9 +41,9 @@ import React, { PropTypes } from 'react';
 import { FormGroup, ControlLabel, InputGroup } from 'react-bootstrap';
 
 const ReadOnlyField = props => {
-    const { id, label, labelClassName, wrapperClassName, value } = props;
+    const { label, labelClassName, wrapperClassName, value } = props;
     return (
-        <FormGroup controlId={id}>
+        <FormGroup>
             {
                 label && <ControlLabel className={labelClassName}>{label}</ControlLabel>
             }
@@ -55,8 +55,7 @@ const ReadOnlyField = props => {
 };
 
 ReadOnlyField.propTypes = {
-    id: PropTypes.string,
-    label: PropTypes.string,
+    label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     labelClassName: PropTypes.string,
     wrapperClassName: PropTypes.string,

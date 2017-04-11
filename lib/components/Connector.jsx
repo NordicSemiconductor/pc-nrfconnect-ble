@@ -37,6 +37,9 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint react/no-multi-comp: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -44,74 +47,90 @@ import { Popover, OverlayTrigger } from 'react-bootstrap';
 
 import layoutStrategies from '../common/layoutStrategies';
 
-export class ConnectionSetup extends React.PureComponent {
-    constructor(props) {
-        super(props);
+export const ConnectionSetup = props => {
+    const {
+        device,
+    } = props;
+
+    let securityLevelText;
+    switch (device.securityLevel) {
+        case 2:
+            securityLevelText = 'Unauthenticated encrypted link';
+            break;
+        case 3:
+            securityLevelText = 'Authenticated encrypted link';
+            break;
+        case 4:
+            securityLevelText = 'LESC authenticated encrypted link';
+            break;
+        default:
+            securityLevelText = 'Unencrypted link';
     }
 
-    render() {
-        const {
-            device,
-        } = this.props;
+    const iconClass = (device.securityLevel && (device.securityLevel > 1)) ? 'icon-lock' : 'icon-lock-open';
+    const iconBondedClass = device.bonded ? 'icon-link' : 'icon-unlink';
+    const bondedText = device.bonded ? 'Bonded' : 'Not bonded';
 
-        const securityLevelText = (device.securityLevel === 2) ? 'Unauthenticated encrypted link'
-            : (device.securityLevel === 3) ? 'Authenticated encrypted link'
-            : (device.securityLevel === 4) ? 'LESC authenticated encrypted link'
-            : 'Unencrypted link';
+    return (
+        <div className="connection-parameters">
+            <span className="col-sm-8 col-xs-8 connection-parameter-label">
+                Connection Interval
+            </span>
+            <span className="col-sm-4 col-xs-4 connection-parameter-value">
+                {device.maxConnectionInterval} ms
+            </span>
+            <span className="col-sm-8 col-xs-8 connection-parameter-label">Slave latency</span>
+            <span className="col-sm-4 col-xs-4 connection-parameter-value">
+                {device.slaveLatency} ms
+            </span>
+            <span className="col-sm-8 col-xs-8 connection-parameter-label">Timeout</span>
+            <span className="col-sm-4 col-xs-4 connection-parameter-value">
+                {device.connectionSupervisionTimeout} ms
+            </span>
 
-        const iconClass = (device.securityLevel && (device.securityLevel > 1)) ? 'icon-lock' : 'icon-lock-open';
-        const iconBondedClass = device.bonded ? 'icon-link' : 'icon-unlink';
-        const bondedText = device.bonded ? 'Bonded' : 'Not bonded';
-
-        return (
-            <div className='connection-parameters'>
-                <span className='col-sm-8 col-xs-8 connection-parameter-label'>Connection Interval</span>
-                <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.maxConnectionInterval} ms</span>
-                <span className='col-sm-8 col-xs-8 connection-parameter-label'>Slave latency</span>
-                <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.slaveLatency} ms</span>
-                <span className='col-sm-8 col-xs-8 connection-parameter-label'>Timeout</span>
-                <span className='col-sm-4 col-xs-4 connection-parameter-value'>{device.connectionSupervisionTimeout} ms</span>
-
-                <span className={'col-sm-8 col-xs-8 top-spacer ' + iconBondedClass}> {bondedText}</span>
-                <span className='col-sm-4 col-xs-4 connection-parameter-value'></span>
-                <span className={'connection-security ' + iconClass}> {securityLevelText}</span>
-            </div>
-        );
-    }
-}
+            <span className={`col-sm-8 col-xs-8 top-spacer ${iconBondedClass}`}> {bondedText}</span>
+            <span className="col-sm-4 col-xs-4 connection-parameter-value" />
+            <span className={`connection-security ${iconClass}`}> {securityLevelText}</span>
+        </div>
+    );
+};
 
 ConnectionSetup.propTypes = {
     device: PropTypes.object.isRequired,
 };
 
 export class ConnectionOverlay extends React.PureComponent {
-    constructor(props) {
-        super(props);
-    }
-
-    _closeme() {
+    Lcloseme() {
         this.overlayTrigger.hide();
     }
-
     render() {
         const {
             style,
             device,
         } = this.props;
 
-        const iconClass = (device.securityLevel && (device.securityLevel > 1)) ? 'icon-lock'
+        const iconClass = (device.securityLevel && (device.securityLevel > 1))
+            ? 'icon-lock'
             : 'icon-lock-open';
 
         return (
-            <div className='connection-info-button btn btn-xs btn-link' style={style}>
-                <OverlayTrigger ref={overlayTrigger => { this.overlayTrigger = overlayTrigger; }} trigger={['click', 'focus', 'hover']} rootClose={true} placement='left'
+            <div className="connection-info-button btn btn-xs btn-link" style={style}>
+                <OverlayTrigger
+                    ref={overlayTrigger => { this.overlayTrigger = overlayTrigger; }}
+                    trigger={['click', 'focus', 'hover']}
+                    rootClose
+                    placement="left"
                     overlay={
-                        <Popover id='pover' title='Connection Information'>
-                            <ConnectionSetup device={device} closePopover={this._closeme}/>
+                        <Popover id="pover" title="Connection Information">
+                            <ConnectionSetup
+                                device={device}
+                                closePopover={this.Lcloseme()}
+                            />
                         </Popover>
-                    }>
+                    }
+                >
                     <span>
-                        <i className={'icon-encircled ' + iconClass}></i>
+                        <i className={`icon-encircled ${iconClass}`} />
                     </span>
                 </OverlayTrigger>
             </div>
@@ -125,8 +144,26 @@ ConnectionOverlay.propTypes = {
 };
 
 export class Connector extends React.PureComponent {
-    constructor(props) {
-        super(props);
+
+    static LgenerateLines(lineCoordinates) {
+        const result = [];
+
+        for (let i = 0; i < lineCoordinates.length - 1; i += 1) {
+            result.push(
+                <line
+                    stroke="black"
+                    strokeWidth="3"
+                    strokeLinecap="square"
+                    key={i}
+                    x1={lineCoordinates[i].x}
+                    y1={lineCoordinates[i].y}
+                    x2={lineCoordinates[i + 1].x}
+                    y2={lineCoordinates[i + 1].y}
+                />,
+            );
+        }
+
+        return result;
     }
 
     componentDidMount() {
@@ -136,28 +173,13 @@ export class Connector extends React.PureComponent {
         this.forceUpdate();
     }
 
-    _generateLines(lineCoordinates) {
-        var result = [];
-
-        for (let i = 0; i < lineCoordinates.length - 1; i++) {
-            result.push(<line stroke='black' strokeWidth='3' strokeLinecap='square' key={i}
-                x1={lineCoordinates[i].x}
-                y1={lineCoordinates[i].y}
-                x2={lineCoordinates[i + 1].x}
-                y2={lineCoordinates[i + 1].y}
-                />);
-        }
-
-        return result;
-    }
-
-    _getConnectionOverlay(lineCoordinates) {
+    LgetConnectionOverlay(lineCoordinates) {
         const {
             device,
         } = this.props;
 
         if (lineCoordinates.length < 2) {
-            return;
+            return null;
         }
 
         const pointA = lineCoordinates[lineCoordinates.length - 2];
@@ -177,7 +199,7 @@ export class Connector extends React.PureComponent {
             posY = targetRect.height / 2;
         }
 
-        return (<ConnectionOverlay style={{ position: 'absolute', left: posX - 14, top: posY - 14 }} device={device}/>);
+        return (<ConnectionOverlay style={{ position: 'absolute', left: posX - 14, top: posY - 14 }} device={device} />);
     }
 
     render() {
@@ -191,7 +213,7 @@ export class Connector extends React.PureComponent {
         const targetElement = document.getElementById(targetId);
 
         if (!sourceElement || !targetElement) {
-            return (<div/>);
+            return (<div />);
         }
 
         const sourceRect = sourceElement.getBoundingClientRect();
@@ -199,15 +221,17 @@ export class Connector extends React.PureComponent {
 
         const layoutInfo = layoutStrategies(layout)(sourceRect, targetRect, 3);
         const connectorBox = layoutInfo.boundingBox;
-        const lines = this._generateLines(layoutInfo.lineCoordinates);
-        const connectionInfoOverlay = this._getConnectionOverlay(layoutInfo.lineCoordinates);
+        const lines = this.LgenerateLines(layoutInfo.lineCoordinates);
+        const connectionInfoOverlay = this.LgetConnectionOverlay(layoutInfo.lineCoordinates);
 
-        return (<div className='connector'>
-                    <svg style={{ position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height }}>
-                        {lines}
-                    </svg>
-                    {connectionInfoOverlay}
-                </div>);
+        return (
+            <div className="connector">
+                <svg style={{ position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height }}>
+                    {lines}
+                </svg>
+                {connectionInfoOverlay}
+            </div>
+        );
     }
 }
 

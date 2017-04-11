@@ -40,14 +40,14 @@
 'use strict';
 
 import React from 'react';
+import { Map, is as ImmutableIs } from 'immutable';
 
 import AttributeItem from './AttributeItem';
-import { Map, is as ImmutableIs } from 'immutable';
 
 import HexOnlyEditableField from './HexOnlyEditableField';
 import { getInstanceIds } from '../utils/api';
 
-export default class DescriptorItem extends AttributeItem {
+class DescriptorItem extends AttributeItem {
     constructor(props) {
         super(props);
         this.bars = 3;
@@ -56,7 +56,7 @@ export default class DescriptorItem extends AttributeItem {
         this.childAttributeType = '';
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps) {
         const update = !ImmutableIs(this.props.item.value, nextProps.item.value) ||
             !ImmutableIs(this.props.item.errorMessage, nextProps.item.errorMessage) ||
             !ImmutableIs(this.props.selected, nextProps.selected) ||
@@ -76,16 +76,16 @@ export default class DescriptorItem extends AttributeItem {
             value,
         } = item;
 
-        const isLocal = this._isLocalAttribute();
-        const isCCCD = this._isCCCDAttribute(uuid);
+        const isLocal = this.isLocalAttribute();
+        const isCCCD = this.isCCCDAttribute(uuid);
         const isLocalCCCD = isLocal && isCCCD;
 
-        const _onRead = !isLocal ?
-            () => this._onRead() :
+        const LonRead = !isLocal ?
+            () => this.LonRead() :
             undefined;
 
-        const _onWrite = !isLocalCCCD ?
-            value => this._onWrite(value) :
+        const LonWrite = !isLocalCCCD ?
+            val => this.LonWrite(val) :
             null;
 
         const itemIsSelected = instanceId === selected;
@@ -95,29 +95,34 @@ export default class DescriptorItem extends AttributeItem {
         if (isLocalCCCD && Map.isMap(value)) {
             value.forEach((cccdValue, deviceInstanceId) => {
                 const address = getInstanceIds(deviceInstanceId).address;
-                valueList.push((
-                    <HexOnlyEditableField key={instanceId + '-' + deviceInstanceId}
-                                          title={'CCCD value for device: ' + address}
-                                          value={cccdValue.toArray()}
-                                          onWrite={_onWrite}
-                                          onRead={_onRead}
-                                          showReadButton={itemIsSelected}
-                                          selectParent={() => this._selectComponent()} />
-                ));
+                const key = `${instanceId}-${deviceInstanceId}`;
+                valueList.push(
+                    <HexOnlyEditableField
+                        key={key}
+                        title={`CCCD value for device: ${address}`}
+                        value={cccdValue.toArray()}
+                        onWrite={LonWrite}
+                        onRead={LonRead}
+                        showReadButton={itemIsSelected}
+                        selectParent={() => this.LselectComponent()}
+                    />,
+                );
             });
         } else {
-            valueList.push((
-                <HexOnlyEditableField key={instanceId}
-                                      value={value.toArray()}
-                                      onWrite={_onWrite}
-                                      onRead={_onRead}
-                                      showReadButton={itemIsSelected}
-                                      selectParent={() => this._selectComponent()} />
-            ));
+            valueList.push(
+                <HexOnlyEditableField
+                    key={instanceId}
+                    value={value.toArray()}
+                    onWrite={LonWrite}
+                    onRead={LonRead}
+                    showReadButton={itemIsSelected}
+                    selectParent={() => this.LselectComponent()}
+                />,
+            );
         }
 
         return (
-            <div className='content'>
+            <div className="content">
                 {this.renderName()}
                 {valueList}
                 {this.renderError()}
@@ -125,3 +130,5 @@ export default class DescriptorItem extends AttributeItem {
         );
     }
 }
+
+export default DescriptorItem;
