@@ -111,7 +111,6 @@ UuidLookup.propTypes = {
 
 UuidLookup.defaultProps = {
     title: 'Predefined UUIDs',
-    uuidDefs: uuidDefinitions(),
     pullRight: false,
 };
 
