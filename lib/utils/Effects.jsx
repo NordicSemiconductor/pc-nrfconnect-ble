@@ -39,6 +39,8 @@
 
 'use strict';
 
+/* eslint no-param-reassign: off */
+
 import TWEEN from 'tween.js';
 
 // Usage:
@@ -49,12 +51,12 @@ import TWEEN from 'tween.js';
 // var white = {r: 255, g: 255, b: 255};
 // this.animation = Effects.blink(this, 'backgroundColor', blue, white);
 
-var Effects = {
-    blink(reactElement, property, fromColor, toColor, options) {
+const Effects = {
+    blink(reactElement, property, fromColor, toColor, opts) {
         this.ensureAnimationLoopStarted();
-        options = options || {};
-        var duration = options.duration || 2000;
-        var easing = options.easing || TWEEN.Easing.Linear.None;
+        const options = opts || {};
+        const duration = options.duration || 2000;
+        const easing = options.easing || TWEEN.Easing.Linear.None;
         return new TWEEN.Tween(fromColor)
             .to(toColor, duration)
             .easing(easing)
@@ -65,22 +67,22 @@ var Effects = {
             .start();
     },
 
-    ensureAnimationLoopStarted: (function () {
-        //closure trickery to make it impossible to start animationLoop twice
-        var animationLoopStarted = false;
-        return function () {
+    ensureAnimationLoopStarted: ((() => {
+        // closure trickery to make it impossible to start animationLoop twice
+        let animationLoopStarted = false;
+        return (() => {
             if (!animationLoopStarted) {
                 animationLoopStarted = true;
 
-                const animationLoop = function (time) {
+                const animationLoop = time => {
                     requestAnimationFrame(animationLoop);
                     TWEEN.update(time);
                 };
 
                 animationLoop();
             }
-        };
-    })(),
+        });
+    })()),
 };
 
 module.exports = { Effects };

@@ -50,7 +50,25 @@ import { toHexString } from '../utils/stringUtil';
 const SUCCESS = 'success';
 const ERROR = 'error';
 
-export class AuthKeyEditor extends React.PureComponent {
+class AuthKeyEditor extends React.PureComponent {
+    static validatePasskeyInput(value) {
+        if ((!value && value !== '')) {
+            return ERROR;
+        } else if (value.search(/^\d{6}$/) === -1) {
+            return ERROR;
+        }
+        return SUCCESS;
+    }
+
+    static validateOobInput(value) {
+        if (!value) {
+            return ERROR;
+        } else if (value.search(/^[0-9a-fA-F]{32}$/) === -1) {
+            return ERROR;
+        }
+        return SUCCESS;
+    }
+
     constructor(props) {
         super(props);
 
@@ -63,22 +81,20 @@ export class AuthKeyEditor extends React.PureComponent {
 
     handlePasskeyChange(event) {
         const { onKeypress } = this.props;
-        let _event = this.props.event;
+        const e = this.props.event;
 
-        if (_event.sendKeypressEnabled === true) {
-            let newCount = event.target.value.length - this.authKeyInput.length;
+        if (e.sendKeypressEnabled === true) {
+            const newCount = event.target.value.length - this.authKeyInput.length;
 
             if (event.target.value.length === 0 && this.authKeyInput.length > 1) {
                 onKeypress('BLE_GAP_KP_NOT_TYPE_PASSKEY_CLEAR');
-            } else {
-                if (newCount > 0) {
-                    for (let i = 0; i < newCount; i++) {
-                        onKeypress('BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_IN');
-                    }
-                } else if (newCount < 0) {
-                    for (let i = 0; i < Math.abs(newCount); i++) {
-                        onKeypress('BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_OUT');
-                    }
+            } else if (newCount > 0) {
+                for (let i = 0; i < newCount; i += 1) {
+                    onKeypress('BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_IN');
+                }
+            } else if (newCount < 0) {
+                for (let i = 0; i < Math.abs(newCount); i += 1) {
+                    onKeypress('BLE_GAP_KP_NOT_TYPE_PASSKEY_DIGIT_OUT');
                 }
             }
         }
@@ -125,8 +141,7 @@ export class AuthKeyEditor extends React.PureComponent {
         const { onLescOobSubmit } = this.props;
 
         if (this.validateOobInput(this.confirmInput) !== SUCCESS ||
-            this.validateOobInput(this.randomInput) !== SUCCESS)
-        {
+            this.validateOobInput(this.randomInput) !== SUCCESS) {
             this.validationFeedbackEnabled = true;
             this.forceUpdate();
             return;
@@ -146,31 +161,10 @@ export class AuthKeyEditor extends React.PureComponent {
 
     handleCancel() {
         const {
-            event,
             onCancel,
         } = this.props;
 
         onCancel();
-    }
-
-    validatePasskeyInput(value) {
-        if ((!value && value !== '')) {
-            return ERROR;
-        } else if (value.search(/^\d{6}$/) === -1) {
-            return ERROR;
-        } else {
-            return SUCCESS;
-        }
-    }
-
-    validateOobInput(value) {
-        if (!value) {
-            return ERROR;
-        } else if (value.search(/^[0-9a-fA-F]{32}$/) === -1) {
-            return ERROR;
-        } else {
-            return SUCCESS;
-        }
     }
 
     createPasskeyDisplayControls(passkey, keypressEnabled, keypressStartReceived, keypressEndReceived, keypressCount) {
@@ -363,3 +357,5 @@ AuthKeyEditor.propTypes = {
     onAuthKeySubmit: PropTypes.func,
     onNumericalComparisonMatch:  PropTypes.func,
 };
+
+export default AuthKeyEditor;

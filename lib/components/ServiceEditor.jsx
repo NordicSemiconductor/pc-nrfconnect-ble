@@ -37,6 +37,9 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint react/prop-types: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -47,32 +50,28 @@ import UuidInput from './input/UuidInput';
 
 import { getUuidName, uuidServiceDefinitions } from '../utils/uuid_definitions';
 
-import { ValidationError } from '../common/Errors';
+import { ValidationError } from '../common/Errors';
 import { ERROR, validateUuid } from '../utils/validateUuid';
 
-export default class ServiceEditor extends React.PureComponent {
-    constructor(props) {
-        super(props);
-    }
-
-    _handleUuidSelect(uuid) {
-        this._onUuidChange(uuid);
+class ServiceEditor extends React.PureComponent {
+    LhandleUuidSelect(uuid) {
+        this.LonUuidChange(uuid);
     }
 
     validateUuidInput() {
         return validateUuid(this.uuid);
     }
 
-    _onUuidChange(uuid) {
-        const _hexRegEx = /^[0-9A-F]*$/i;
-        const valid = _hexRegEx.test(uuid);
+    LonUuidChange(uuid) {
+        const hexRegEx = /^[0-9A-F]*$/i;
+        const valid = hexRegEx.test(uuid);
 
         if (!valid) {
             return;
         }
 
         this.uuid = uuid;
-        let uuidName = getUuidName(this.uuid);
+        const uuidName = getUuidName(this.uuid);
 
         if (this.uuid !== uuidName) {
             this.name = uuidName;
@@ -83,13 +82,13 @@ export default class ServiceEditor extends React.PureComponent {
         this.forceUpdate();
     }
 
-    _onNameChange(e) {
+    LonNameChange(e) {
         this.name = e.target.value;
         this.props.onModified(true);
         this.forceUpdate();
     }
 
-    _saveAttribute() {
+    LsaveAttribute() {
         if (this.validateUuidInput() === ERROR) {
             this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
@@ -126,15 +125,34 @@ export default class ServiceEditor extends React.PureComponent {
         }
 
         return (
-            <form className='form-horizontal native-key-bindings'>
-                <UuidInput label='Service UUID' name='uuid' value={this.uuid}
-                    onChange={e => this._onUuidChange(e)} uuidDefinitions={uuidServiceDefinitions}
-                    handleSelection={uuid => this._handleUuidSelect(uuid)} />
-                <TextInput label='Service name' name='service-name' value={this.name} onChange={e => this._onNameChange(e)} />
+            <form className="form-horizontal native-key-bindings">
+                <UuidInput
+                    label="Service UUID"
+                    name="uuid"
+                    value={this.uuid}
+                    onChange={e => this.LonUuidChange(e)}
+                    uuidDefinitions={uuidServiceDefinitions}
+                    handleSelection={uuid2 => this.LhandleUuidSelect(uuid2)}
+                />
+                <TextInput
+                    label="Service name"
+                    name="service-name"
+                    value={this.name}
+                    onChange={e => this.LonNameChange(e)}
+                />
                 <ButtonToolbar>
-                    <div className='col-md-4' />
-                    <Button bsStyle='primary' className='btn-nordic' onClick={onRemoveAttribute}><i className='icon-cancel'/>Delete</Button>
-                    <Button bsStyle='primary' className='btn-nordic' onClick={() => this._saveAttribute()}>Save</Button>
+                    <div className="col-md-4" />
+                    <Button bsStyle="primary" className="btn-nordic" onClick={onRemoveAttribute}>
+                        <i className="icon-cancel" />
+                        Delete
+                    </Button>
+                    <Button
+                        bsStyle="primary"
+                        className="btn-nordic"
+                        onClick={() => this.LsaveAttribute()}
+                    >
+                        Save
+                    </Button>
                 </ButtonToolbar>
             </form>
         );
@@ -147,3 +165,5 @@ ServiceEditor.propTypes = {
     onSaveChangedAttribute: PropTypes.func.isRequired,
     onValidationError: PropTypes.func.isRequired,
 };
+
+export default ServiceEditor;

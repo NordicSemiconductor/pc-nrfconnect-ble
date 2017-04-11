@@ -37,35 +37,43 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/prop-types: off */
+/* eslint jsx-a11y/no-static-element-interactions: off */
+/* eslint no-underscore-dangle: off */
+
 'use strict';
 
 import _ from 'lodash';
 import React from 'react';
 
-var AddNewItem = React.createClass({
-    componentWillReceiveProps: function (nextProps) {
-        //if we're selected through keyboard navigation, we need to make sure we're visible
-        let selectedId = nextProps.selected && nextProps.selected._addBtnId;
+class AddNewItem extends React.PureComponent {
+    componentWillReceiveProps(nextProps) {
+        // if we're selected through keyboard navigation, we need to make sure we're visible
+
+        // btw: this _addBtnId can't be found anywhere, probably obsolete
+        const selectedId = nextProps.selected && nextProps.selected._addBtnId;
         if (nextProps.id === selectedId && nextProps.onRequestVisibility) {
             nextProps.onRequestVisibility();
         }
-    },
+    }
 
-    render: function () {
-        let bars = _.times(this.props.bars, i => <div className={'bar' + (i + 1)} key={i}></div>);
+    render() {
+        const bars = _.times(this.props.bars, i => <div className={`bar${i + 1}`} key={i} />);
 
         return (
-            <div className='add-new' onClick={this.props.onClick}>
+            <div className="add-new" onClick={this.props.onClick}>
                 {bars}
-                <div className='content-wrap'>
-                    <div className='content padded-row'>
-                        <span className='icon-wrap'><i className='icon-slim icon-plus-circled'></i></span>
+                <div className="content-wrap">
+                    <div className="content padded-row">
+                        <span className="icon-wrap">
+                            <i className="icon-slim icon-plus-circled" />
+                        </span>
                         <span>{this.props.text}</span>
                     </div>
                 </div>
             </div>
         );
-    },
-});
+    }
+}
 
-module.exports = AddNewItem;
+export default AddNewItem;
