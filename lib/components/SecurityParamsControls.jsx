@@ -52,29 +52,29 @@ const IO_CAPS_KEYBOARD_ONLY = 2;
 const IO_CAPS_NONE = 3;
 const IO_CAPS_KEYBOARD_DISPLAY = 4;
 
-class SecurityParamsControls extends React.PureComponent {
-    static keyToIoCapsText(key) {
-        switch (key) {
-            case IO_CAPS_DISPLAY_ONLY:
-                return 'Display, no keyboard';
+function keyToIoCapsText(key) {
+    switch (key) {
+        case IO_CAPS_DISPLAY_ONLY:
+            return 'Display, no keyboard';
 
-            case IO_CAPS_DISPLAY_YESNO:
-                return 'Display and yes no entry';
+        case IO_CAPS_DISPLAY_YESNO:
+            return 'Display and yes no entry';
 
-            case IO_CAPS_KEYBOARD_ONLY:
-                return 'Keyboard, no display';
+        case IO_CAPS_KEYBOARD_ONLY:
+            return 'Keyboard, no display';
 
-            case IO_CAPS_NONE:
-                return 'No keyboard, no display';
+        case IO_CAPS_NONE:
+            return 'No keyboard, no display';
 
-            case IO_CAPS_KEYBOARD_DISPLAY:
-                return 'Keyboard and display';
+        case IO_CAPS_KEYBOARD_DISPLAY:
+            return 'Keyboard and display';
 
-            default:
-                return '';
-        }
+        default:
+            return '';
     }
+}
 
+class SecurityParamsControls extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -85,12 +85,12 @@ class SecurityParamsControls extends React.PureComponent {
         this.enableKeypress = props.securityParams.keypress;
         this.performBonding = props.securityParams.bond;
 
-        this.ioCapsTitle = this.keyToIoCapsText(this.ioCaps);
+        this.ioCapsTitle = keyToIoCapsText(this.ioCaps);
     }
 
     onIoCapsSelect(event, eventKey) {
         this.ioCaps = parseInt(eventKey, 10);
-        this.ioCapsTitle = this.keyToIoCapsText(this.ioCaps);
+        this.ioCapsTitle = keyToIoCapsText(this.ioCaps);
         this.handleChange();
         this.forceUpdate();
     }
@@ -126,19 +126,19 @@ class SecurityParamsControls extends React.PureComponent {
                             onSelect={(eventKey, event) => this.onIoCapsSelect(event, eventKey)}
                         >
                             <MenuItem eventKey={IO_CAPS_DISPLAY_ONLY}>
-                                {this.keyToIoCapsText(IO_CAPS_DISPLAY_ONLY)}
+                                {keyToIoCapsText(IO_CAPS_DISPLAY_ONLY)}
                             </MenuItem>
                             <MenuItem eventKey={IO_CAPS_DISPLAY_YESNO}>
-                                {this.keyToIoCapsText(IO_CAPS_DISPLAY_YESNO)}
+                                {keyToIoCapsText(IO_CAPS_DISPLAY_YESNO)}
                             </MenuItem>
                             <MenuItem eventKey={IO_CAPS_KEYBOARD_ONLY}>
-                                {this.keyToIoCapsText(IO_CAPS_KEYBOARD_ONLY)}
+                                {keyToIoCapsText(IO_CAPS_KEYBOARD_ONLY)}
                             </MenuItem>
                             <MenuItem eventKey={IO_CAPS_NONE}>
-                                {this.keyToIoCapsText(IO_CAPS_NONE)}
+                                {keyToIoCapsText(IO_CAPS_NONE)}
                             </MenuItem>
                             <MenuItem eventKey={IO_CAPS_KEYBOARD_DISPLAY}>
-                                {this.keyToIoCapsText(IO_CAPS_KEYBOARD_DISPLAY)}
+                                {keyToIoCapsText(IO_CAPS_KEYBOARD_DISPLAY)}
                             </MenuItem>
                         </DropdownButton>
                     </div>

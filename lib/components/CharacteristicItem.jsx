@@ -52,29 +52,29 @@ import { TEXT, getUuidFormat } from '../utils/uuid_definitions';
 const NOTIFY = 1;
 const INDICATE = 2;
 
+function LfindCccdDescriptor(children) {
+    if (!children) {
+        return undefined;
+    }
+
+    return children.find(child => child.uuid === CCCD_UUID);
+}
+
+function LisNotifying(cccdDescriptor) {
+    if (!cccdDescriptor) {
+        return false;
+    }
+
+    const valueArray = cccdDescriptor.value.toArray();
+
+    if (valueArray.length < 2) {
+        return false;
+    }
+
+    return ((valueArray[0] & (NOTIFY | INDICATE)) > 0);
+}
+
 class CharacteristicItem extends AttributeItem {
-    static LfindCccdDescriptor(children) {
-        if (!children) {
-            return undefined;
-        }
-
-        return children.find(child => child.uuid === CCCD_UUID);
-    }
-
-    static LisNotifying(cccdDescriptor) {
-        if (!cccdDescriptor) {
-            return false;
-        }
-
-        const valueArray = cccdDescriptor.value.toArray();
-
-        if (valueArray.length < 2) {
-            return false;
-        }
-
-        return ((valueArray[0] & (NOTIFY | INDICATE)) > 0);
-    }
-
     constructor(props) {
         super(props);
         this.bars = 2;
@@ -85,7 +85,7 @@ class CharacteristicItem extends AttributeItem {
     LonToggleNotify(e) {
         e.stopPropagation();
 
-        const isNotifying = this.LisNotifying(this.cccdDescriptor);
+        const isNotifying = LisNotifying(this.cccdDescriptor);
         const hasNotifyProperty = this.props.item.properties.notify;
         const hasIndicateProperty = this.props.item.properties.indicate;
 
@@ -126,10 +126,10 @@ class CharacteristicItem extends AttributeItem {
             children,
         } = item;
 
-        this.cccdDescriptor = this.LfindCccdDescriptor(children);
+        this.cccdDescriptor = LfindCccdDescriptor(children);
 
         const isLocal = this.isLocalAttribute();
-        const isNotifying = this.LisNotifying(this.cccdDescriptor);
+        const isNotifying = LisNotifying(this.cccdDescriptor);
         const itemIsSelected = item.instanceId === selected;
 
         const hasCccd = this.cccdDescriptor !== undefined;

@@ -37,6 +37,11 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint react/prop-types: off */
+/* eslint react/require-default-props: off */
+/* eslint jsx-a11y/label-has-for: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -50,25 +55,25 @@ import { toHexString } from '../utils/stringUtil';
 const SUCCESS = 'success';
 const ERROR = 'error';
 
+function validatePasskeyInput(value) {
+    if ((!value && value !== '')) {
+        return ERROR;
+    } else if (value.search(/^\d{6}$/) === -1) {
+        return ERROR;
+    }
+    return SUCCESS;
+}
+
+function validateOobInput(value) {
+    if (!value) {
+        return ERROR;
+    } else if (value.search(/^[0-9a-fA-F]{32}$/) === -1) {
+        return ERROR;
+    }
+    return SUCCESS;
+}
+
 class AuthKeyEditor extends React.PureComponent {
-    static validatePasskeyInput(value) {
-        if ((!value && value !== '')) {
-            return ERROR;
-        } else if (value.search(/^\d{6}$/) === -1) {
-            return ERROR;
-        }
-        return SUCCESS;
-    }
-
-    static validateOobInput(value) {
-        if (!value) {
-            return ERROR;
-        } else if (value.search(/^[0-9a-fA-F]{32}$/) === -1) {
-            return ERROR;
-        }
-        return SUCCESS;
-    }
-
     constructor(props) {
         super(props);
 
@@ -116,7 +121,7 @@ class AuthKeyEditor extends React.PureComponent {
     handlePasskeySubmit() {
         const { onAuthKeySubmit } = this.props;
 
-        if (this.validatePasskeyInput(this.authKeyInput) !== SUCCESS) {
+        if (validatePasskeyInput(this.authKeyInput) !== SUCCESS) {
             this.validationFeedbackEnabled = true;
             this.forceUpdate();
             return;
@@ -128,7 +133,7 @@ class AuthKeyEditor extends React.PureComponent {
     handleOobSubmit() {
         const { onAuthKeySubmit } = this.props;
 
-        if (this.validateOobInput(this.authKeyInput) !== SUCCESS) {
+        if (validateOobInput(this.authKeyInput) !== SUCCESS) {
             this.validationFeedbackEnabled = true;
             this.forceUpdate();
             return;
@@ -140,8 +145,8 @@ class AuthKeyEditor extends React.PureComponent {
     handleLescOobSubmit() {
         const { onLescOobSubmit } = this.props;
 
-        if (this.validateOobInput(this.confirmInput) !== SUCCESS ||
-            this.validateOobInput(this.randomInput) !== SUCCESS) {
+        if (validateOobInput(this.confirmInput) !== SUCCESS ||
+            validateOobInput(this.randomInput) !== SUCCESS) {
             this.validationFeedbackEnabled = true;
             this.forceUpdate();
             return;
@@ -167,62 +172,88 @@ class AuthKeyEditor extends React.PureComponent {
         onCancel();
     }
 
-    createPasskeyDisplayControls(passkey, keypressEnabled, keypressStartReceived, keypressEndReceived, keypressCount) {
+    createPasskeyDisplayControls(
+        passkey,
+        keypressEnabled,
+        keypressStartReceived,
+        keypressEndReceived,
+        keypressCount,
+    ) {
         const digitsCreated = [];
         const digitsTypedIn = [];
 
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 6; i += 1) {
             digitsCreated.push(
-                <div key={'digitsCreated' + i} className='col-sm-1'>{passkey[i]}</div>
+                <div key={`digitsCreated${i}`} className="col-sm-1">{passkey[i]}</div>,
             );
         }
 
-        let digitsCreatedFormGroup = <div className='form-group'>
-            <label className='control-label col-sm-4' htmlFor='passkeydigits'>Passkey</label>
-            <div className='col-sm-8 form-control-static' id='passkeydigits'>
-                {digitsCreated}
+        const digitsCreatedFormGroup = (
+            <div className="form-group">
+                <label className="control-label col-sm-4" htmlFor="passkeydigits">Passkey</label>
+                <div className="col-sm-8 form-control-static" id="passkeydigits">
+                    {digitsCreated}
+                </div>
             </div>
-        </div>;
+        );
 
         let digitsTypedInFormGroup = '';
 
         if (keypressEnabled) {
             if (keypressCount !== undefined) {
-                let style = {
-                    backgroundColor: keypressCount > 0 ?
-                                        (keypressCount == 6 ? 'green' : 'yellow')
-                                        : 'red',
+                const style = {
+                    backgroundColor: 'red',
                 };
+                if (keypressCount > 0) {
+                    if (keypressCount === 6) {
+                        style.backgroundColor = 'green';
+                    } else {
+                        style.backgroundColor = 'yellow';
+                    }
+                }
 
-                for (let i = 0; i < keypressCount; i++) {
+                for (let i = 0; i < keypressCount; i += 1) {
                     digitsTypedIn.push(
-                        <div key={'digitsTyped' + i} className='col-sm-1' style={style}>*</div>
+                        <div key={`digitsTyped${i}`} className="col-sm-1" style={style}>*</div>,
                     );
                 }
 
                 if (keypressCount < 6) {
-                    for (let i = 0; i < 6 - keypressCount; i++) {
+                    for (let i = 0; i < 6 - keypressCount; i += 1) {
                         digitsTypedIn.push(
-                            <div key={'count' + i} className='col-sm-1'  style={style}>-</div>
+                            <div key={`count${i}`} className="col-sm-1" style={style}>-</div>,
                         );
                     }
                 }
 
-                digitsTypedInFormGroup = <div className='form-group'>
-                    <label className='control-label col-sm-4' htmlFor='passkeytypedin'>Typed</label>
-                    <div className='col-sm-8 form-control-static' id='passkeytypedin'>
-                        {digitsTypedIn}
+                digitsTypedInFormGroup = (
+                    <div className="form-group">
+                        <label className="control-label col-sm-4" htmlFor="passkeytypedin">
+                            Typed
+                        </label>
+                        <div className="col-sm-8 form-control-static" id="passkeytypedin">
+                            {digitsTypedIn}
+                        </div>
                     </div>
-                </div>;
+                );
             }
         }
 
         return (
-            <form className='form-horizontal' onSubmit={event => { this.handleCancel(); event.preventDefault(); }}>
+            <form
+                className="form-horizontal"
+                onSubmit={event => { this.handleCancel(); event.preventDefault(); }}
+            >
                 {digitsCreatedFormGroup}
                 {digitsTypedInFormGroup}
-                <div className='form-group'>
-                    <Button type='button' onClick={() => this.handleCancel()} className='btn btn-primary btn-sm btn-nordic'>OK</Button>
+                <div className="form-group">
+                    <Button
+                        type="button"
+                        onClick={() => this.handleCancel()}
+                        className="btn btn-primary btn-sm btn-nordic"
+                    >
+                        OK
+                    </Button>
                 </div>
             </form>
         );
@@ -230,18 +261,34 @@ class AuthKeyEditor extends React.PureComponent {
 
     createPasskeyRequestControls() {
         return (
-            <form className='form-horizontal' onSubmit={event => { this.handlePasskeySubmit(); event.preventDefault(); }}>
+            <form
+                className="form-horizontal"
+                onSubmit={event => { this.handlePasskeySubmit(); event.preventDefault(); }}
+            >
                 <TextInput
-                    label='Passkey'
-                    defaultValue=''
-                    id='passkeyInputId'
+                    label="Passkey"
+                    defaultValue=""
+                    id="passkeyInputId"
                     hasFeedback={this.validationFeedbackEnabled}
-                    placeholder='Enter passkey'
-                    validationState={this.validatePasskeyInput(this.authKeyInput)}
-                    onChange={event => this.handlePasskeyChange(event)} />
-                <div className='form-group'>
-                    <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
-                    <Button type='button' onClick={() => this.handlePasskeySubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
+                    placeholder="Enter passkey"
+                    validationState={validatePasskeyInput(this.authKeyInput)}
+                    onChange={event => this.handlePasskeyChange(event)}
+                />
+                <div className="form-group">
+                    <Button
+                        type="button"
+                        onClick={() => this.handleCancel()}
+                        className="btn btn-default btn-sm btn-nordic"
+                    >
+                        Ignore
+                    </Button>
+                    <Button
+                        type="button"
+                        onClick={() => this.handlePasskeySubmit()}
+                        className="btn btn-primary btn-sm btn-nordic"
+                    >
+                        Submit
+                    </Button>
                 </div>
             </form>
         );
@@ -249,14 +296,31 @@ class AuthKeyEditor extends React.PureComponent {
 
     createNumericalComparisonControls(passkey) {
         return (
-            <form className='form-horizontal' onSubmit={event => { this.handleNumericalComparisonMatch(true); event.preventDefault(); }}>
-                <div className='form-group'>
-                    <label className='col-sm-4'>Passkey</label>
-                    <label className='col-sm-7'>{passkey}</label>
+            <form
+                className="form-horizontal"
+                onSubmit={event => {
+                    this.handleNumericalComparisonMatch(true); event.preventDefault();
+                }}
+            >
+                <div className="form-group">
+                    <label className="col-sm-4">Passkey</label>
+                    <label className="col-sm-7">{passkey}</label>
                 </div>
-                <div className='form-group'>
-                    <Button type='button' onClick={() => this.handleNumericalComparisonMatch(false)} className='btn btn-default btn-sm btn-nordic'>No match</Button>
-                    <Button type='button' onClick={() => this.handleNumericalComparisonMatch(true)} className='btn btn-primary btn-sm btn-nordic'>Match</Button>
+                <div className="form-group">
+                    <Button
+                        type="button"
+                        onClick={() => this.handleNumericalComparisonMatch(false)}
+                        className="btn btn-default btn-sm btn-nordic"
+                    >
+                        No match
+                    </Button>
+                    <Button
+                        type="button"
+                        onClick={() => this.handleNumericalComparisonMatch(true)}
+                        className="btn btn-primary btn-sm btn-nordic"
+                    >
+                        Match
+                    </Button>
                 </div>
             </form>
         );
@@ -264,18 +328,34 @@ class AuthKeyEditor extends React.PureComponent {
 
     createLegacyOobRequestControls() {
         return (
-            <form className='form-horizontal' onSubmit={event => { this.handleOobSubmit(); event.preventDefault(); }}>
+            <form
+                className="form-horizontal"
+                onSubmit={event => { this.handleOobSubmit(); event.preventDefault(); }}
+            >
                 <TextInput
-                    label='Out-of-band data'
-                    defaultValue=''
-                    id='oobInputId'
+                    label="Out-of-band data"
+                    defaultValue=""
+                    id="oobInputId"
                     hasFeedback={this.validationFeedbackEnabled}
-                    placeholder='Enter out-of-band data'
-                    validationState={this.validateOobInput(this.authKeyInput)}
-                    onChange={event => this.handlePasskeyChange(event)} />
-                <div className='form-group'>
-                    <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
-                    <Button type='button' onClick={() => this.handleOobSubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
+                    placeholder="Enter out-of-band data"
+                    validationState={validateOobInput(this.authKeyInput)}
+                    onChange={event => this.handlePasskeyChange(event)}
+                />
+                <div className="form-group">
+                    <Button
+                        type="button"
+                        onClick={() => this.handleCancel()}
+                        className="btn btn-default btn-sm btn-nordic"
+                    >
+                        Ignore
+                    </Button>
+                    <Button
+                        type="button"
+                        onClick={() => this.handleOobSubmit()}
+                        className="btn btn-primary btn-sm btn-nordic"
+                    >
+                        Submit
+                    </Button>
                 </div>
             </form>
         );
@@ -288,36 +368,55 @@ class AuthKeyEditor extends React.PureComponent {
         const confirm = toHexString(event.ownOobData.c).replace(/-/g, '');
 
         return (
-            <form className='form-horizontal' onSubmit={event => { this.handleLescOobSubmit(); event.preventDefault(); }}>
+            <form
+                className="form-horizontal"
+                onSubmit={event2 => { this.handleLescOobSubmit(); event2.preventDefault(); }}
+            >
                 <TextInput
-                    label='Peer random'
-                    defaultValue=''
-                    id='randomInputId'
+                    label="Peer random"
+                    defaultValue=""
+                    id="randomInputId"
                     hasFeedback={this.validationFeedbackEnabled}
-                    placeholder='Enter out-of-band data'
-                    validationState={this.validateOobInput(this.randomInput)}
-                    onChange={event => this.handleRandomChange(event)} />
+                    placeholder="Enter out-of-band data"
+                    validationState={validateOobInput(this.randomInput)}
+                    onChange={event2 => this.handleRandomChange(event2)}
+                />
                 <TextInput
-                    label='Peer confirm'
-                    defaultValue=''
-                    id='confirmInputId'
+                    label="Peer confirm"
+                    defaultValue=""
+                    id="confirmInputId"
                     hasFeedback={this.validationFeedbackEnabled}
-                    placeholder='Enter out-of-band data'
-                    validationState={this.validateOobInput(this.confirmInput)}
-                    onChange={event => this.handleConfirmChange(event)} />
+                    placeholder="Enter out-of-band data"
+                    validationState={validateOobInput(this.confirmInput)}
+                    onChange={event2 => this.handleConfirmChange(event2)}
+                />
                 <TextInput
                     readOnly
-                    label='Own random'
-                    id='randomInputId'
-                    value={random} />
+                    label="Own random"
+                    id="randomInputId"
+                    value={random}
+                />
                 <TextInput
                     readOnly
-                    label='Own confirm'
-                    id='confirmInputId'
-                    value={confirm} />
-                <div className='form-group'>
-                    <Button type='button' onClick={() => this.handleCancel()} className='btn btn-default btn-sm btn-nordic'>Ignore</Button>
-                    <Button type='button' onClick={() => this.handleLescOobSubmit()} className='btn btn-primary btn-sm btn-nordic'>Submit</Button>
+                    label="Own confirm"
+                    id="confirmInputId"
+                    value={confirm}
+                />
+                <div className="form-group">
+                    <Button
+                        type="button"
+                        onClick={() => this.handleCancel()}
+                        className="btn btn-default btn-sm btn-nordic"
+                    >
+                        Ignore
+                    </Button>
+                    <Button
+                        type="button"
+                        onClick={() => this.handleLescOobSubmit()}
+                        className="btn btn-primary btn-sm btn-nordic"
+                    >
+                        Submit
+                    </Button>
                 </div>
             </form>
         );
@@ -326,23 +425,41 @@ class AuthKeyEditor extends React.PureComponent {
     render() {
         const { event } = this.props;
 
-        const title = (event.type === BLEEventType.PASSKEY_DISPLAY) ? 'Passkey display'
-            : (event.type === BLEEventType.PASSKEY_REQUEST) ? 'Passkey request'
-            : (event.type === BLEEventType.NUMERICAL_COMPARISON) ? 'Numerical comparison'
-            : (event.type === BLEEventType.LEGACY_OOB_REQUEST) ? 'Out-of-band data request'
-            : (event.type === BLEEventType.LESC_OOB_REQUEST) ? 'Out-of-band data request'
-            : '';
-
-        const controls = (event.type === BLEEventType.PASSKEY_DISPLAY) ? this.createPasskeyDisplayControls(event.authKeyParams.passkey, event.receiveKeypressEnabled, event.keypressStartReceived, event.keypressEndReceived, event.keypressCount)
-            : (event.type === BLEEventType.PASSKEY_REQUEST) ? this.createPasskeyRequestControls()
-            : (event.type === BLEEventType.NUMERICAL_COMPARISON) ? this.createNumericalComparisonControls(event.authKeyParams.passkey)
-            : (event.type === BLEEventType.LEGACY_OOB_REQUEST) ? this.createLegacyOobRequestControls()
-            : (event.type === BLEEventType.LESC_OOB_REQUEST) ? this.createLescOobRequestControls()
-            : '';
+        let title = '';
+        let controls = '';
+        switch (event.type) {
+            case BLEEventType.PASSKEY_DISPLAY:
+                title = 'Passkey display';
+                controls = this.createPasskeyDisplayControls(
+                    event.authKeyParams.passkey,
+                    event.receiveKeypressEnabled,
+                    event.keypressStartReceived,
+                    event.keypressEndReceived,
+                    event.keypressCount,
+                );
+                break;
+            case BLEEventType.PASSKEY_REQUEST:
+                title = 'Passkey request';
+                controls = this.createPasskeyRequestControls();
+                break;
+            case BLEEventType.NUMERICAL_COMPARISON:
+                title = 'Numerical comparison';
+                controls = this.createNumericalComparisonControls(event.authKeyParams.passkey);
+                break;
+            case BLEEventType.LEGACY_OOB_REQUEST:
+                title = 'Out-of-band data request';
+                controls = this.createLegacyOobRequestControls();
+                break;
+            case BLEEventType.LESC_OOB_REQUEST:
+                title = 'Out-of-band data request';
+                controls = this.createLescOobRequestControls();
+                break;
+            default:
+        }
 
         return (
             <div>
-                <div className='event-header'>
+                <div className="event-header">
                     <h4>{title}</h4>
                 </div>
                 {controls}
@@ -355,7 +472,7 @@ AuthKeyEditor.propTypes = {
     event: PropTypes.object.isRequired,
     onKeypress: PropTypes.func,
     onAuthKeySubmit: PropTypes.func,
-    onNumericalComparisonMatch:  PropTypes.func,
+    onNumericalComparisonMatch: PropTypes.func,
 };
 
 export default AuthKeyEditor;

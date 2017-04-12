@@ -56,17 +56,6 @@ import { toHexString } from '../utils/stringUtil';
 export const CCCD_UUID = '2902';
 
 class AttributeItem extends React.PureComponent {
-    static isCCCDAttribute(uuid) {
-        return uuid === CCCD_UUID;
-    }
-
-    static renderChildren() {
-        return null;
-    }
-
-    static renderContent() {
-        return null;
-    }
 
     constructor(props) {
         super(props);
@@ -177,6 +166,14 @@ class AttributeItem extends React.PureComponent {
 
     LonRead() {
         this.props.onRead(this.props.item);
+    }
+
+    renderContent() { // eslint-disable-line class-methods-use-this
+        return null;
+    }
+
+    renderChildren() { // eslint-disable-line class-methods-use-this
+        return null;
     }
 
     renderError() {

@@ -37,6 +37,10 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint react/prop-types: off */
+/* eslint jsx-a11y/no-static-element-interactions: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -50,6 +54,73 @@ const RSSI_WIDTH_MID = Math.round(RSSI_WIDTH_MAX * 0.6);
 const RSSI_WIDTH_LOW = Math.round(RSSI_WIDTH_MAX * 0.4);
 const RSSI_WIDTH_MIN = Math.round(RSSI_WIDTH_MAX * 0.2);
 
+function getRssiWidth(rssi) {
+    let rssiWidth;
+    if (rssi < -100) {
+        rssiWidth = RSSI_WIDTH_MIN;
+    } else if (rssi < -80) {
+        rssiWidth = RSSI_WIDTH_LOW;
+    } else if (rssi < -60) {
+        rssiWidth = RSSI_WIDTH_MID;
+    } else if (rssi < -45) {
+        rssiWidth = RSSI_WIDTH_HIGH;
+    } else {
+        rssiWidth = RSSI_WIDTH_MAX;
+    }
+
+    return rssiWidth;
+}
+
+function getAdvTypeText(advType) {
+    if (!advType) {
+        return undefined;
+    }
+
+    if (advType.includes('ADV_IND')) {
+        return 'Connectable undirected';
+    } else if (advType.includes('ADV_DIRECT')) {
+        return 'Connectable directed';
+    } else if (advType.includes('ADV_SCAN')) {
+        return 'Scannable undirected';
+    } else if (advType.includes('NONCONN_IND')) {
+        return 'Non connectable undirected';
+    }
+
+    return undefined;
+}
+
+function rewriter(value) {
+    const rewriteRules = [
+        {
+            expr: /BLE_GAP_AD_TYPE_(.*)/,
+            on_match: function onMatch(matches) {
+                return changeCase.pascalCase(matches[1]);
+            },
+        },
+        {
+            expr: /BLE_GAP_ADDR_TYPE_(.*)/,
+            on_match: function onMatch(matches) {
+                return changeCase.pascalCase(matches[1]);
+            },
+        },
+    ];
+
+    try {
+        for (let i = 0; i < rewriteRules.length; i += 1) {
+            const rule = rewriteRules[i];
+            if (rule.expr.test(value)) {
+                return rule.on_match(rule.expr.exec(value));
+            }
+        }
+    } catch (err) {
+        // Log to console.log because we may not have a valid logger if we get here.
+        console.log(err);
+    }
+
+    // We did not find any rules to rewrite the value, return original value
+    return changeCase.camelCase(value);
+}
+
 class DiscoveredDevice extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -57,70 +128,6 @@ class DiscoveredDevice extends React.PureComponent {
         this.currentAdvType = undefined;
         this.currentFlags = undefined;
         this.currentServices = undefined;
-    }
-
-    getRssiWidth(rssi) {
-        let rssiWidth;
-        if (rssi < -100) {
-            rssiWidth = RSSI_WIDTH_MIN;
-        } else if (rssi < -80) {
-            rssiWidth = RSSI_WIDTH_LOW;
-        } else if (rssi < -60) {
-            rssiWidth = RSSI_WIDTH_MID;
-        } else if (rssi < -45) {
-            rssiWidth = RSSI_WIDTH_HIGH;
-        } else {
-            rssiWidth = RSSI_WIDTH_MAX;
-        }
-
-        return rssiWidth;
-    }
-
-    getAdvTypeText(advType) {
-        if (!advType) {
-            return;
-        }
-
-        if (advType.includes('ADV_IND')) {
-            return 'Connectable undirected';
-        } else if (advType.includes('ADV_DIRECT')) {
-            return 'Connectable directed';
-        } else if (advType.includes('ADV_SCAN')) {
-            return 'Scannable undirected';
-        } else if (advType.includes('NONCONN_IND')) {
-            return 'Non connectable undirected';
-        }
-
-        return;
-    }
-
-    rewriter(value) {
-        const rewrite_rules = [
-            { expr: /BLE_GAP_AD_TYPE_(.*)/, on_match: function (matches) {
-                    return changeCase.pascalCase(matches[1]);
-                },
-            },
-            { expr: /BLE_GAP_ADDR_TYPE_(.*)/, on_match: function (matches) {
-                    return changeCase.pascalCase(matches[1]);
-                },
-            },
-        ];
-
-        try {
-            for (let rewrite_rule in rewrite_rules) {
-                const rule = rewrite_rules[rewrite_rule];
-
-                if (rule.expr.test(value)) {
-                    return rule.on_match(rule.expr.exec(value));
-                }
-            }
-        } catch (err) {
-            // Log to console.log because we may not have a valid logger if we get here.
-            console.log(err);
-        }
-
-        // We did not find any rules to rewrite the value, return original value
-        return changeCase.camelCase(value);
     }
 
     onButtonClick(e, device) {
@@ -167,61 +174,74 @@ class DiscoveredDevice extends React.PureComponent {
                 this.currentServices = device.services;
             }
 
-            adDataDiv =
+            adDataDiv = (
                 <div>
-                 {
-                    device.adData
-                    .filterNot((value, key) => key.includes('BIT_SERVICE') || key.includes('_FLAGS') || key.includes('LOCAL_NAME'))
-                    .map((value, key) => {
-                        return (
-                        <div className='adv-line'>
-                            <span key={key + '_1'} className='adv-label'>{this.rewriter(key)}: </span>
-                            <span key={key + '_2'} className='adv-value'>{toHexString(value)} </span>
-                        </div>);
-                    })
-                }
-                </div>;
-
-            advTypeDiv = this.currentAdvType ?
-                <div className='adv-line'>
-                    <span className='adv-label'>Advertising type:</span>
-                    <span className='adv-value'>{this.getAdvTypeText(this.currentAdvType)} </span>
+                    {
+                        device.adData
+                        .filterNot((value, key) => key.includes('BIT_SERVICE') || key.includes('_FLAGS') || key.includes('LOCAL_NAME'))
+                        .map((value, key) => {
+                            const key1 = `${key}_1`;
+                            const key2 = `${key}_2`;
+                            return (
+                                <div className="adv-line">
+                                    <span key={key1} className="adv-label">
+                                        {rewriter(key)}: </span>
+                                    <span key={key2} className="adv-value">
+                                        {toHexString(value)} </span>
+                                </div>
+                            );
+                        })
+                    }
                 </div>
-                : '';
+            );
 
-            addressTypeDiv =
-                <div className='adv-line'>
-                    <span className='adv-label'>Address type: </span>
-                    <span className='adv-value'>{this.rewriter(device.addressType)} </span>
-                </div>;
+            advTypeDiv = this.currentAdvType
+                ? (
+                    <div className="adv-line">
+                        <span className="adv-label">Advertising type:</span>
+                        <span className="adv-value">
+                            {getAdvTypeText(this.currentAdvType)} </span>
+                    </div>
+                ) : '';
 
-            flagsDiv = this.currentFlags && this.currentFlags.size > 0 ?
-                        <div className='adv-line'>
-                            <span className='adv-label'>Flags:</span>
-                            {
-                                this.currentFlags.map(function (flag, index) {
-                                    return (<span key={index + '_3'} className='adv-value'>{flag}</span>);
-                                })
-                            }
-                        </div>
-                        : '';
+            addressTypeDiv = (
+                <div className="adv-line">
+                    <span className="adv-label">Address type: </span>
+                    <span className="adv-value">{rewriter(device.addressType)} </span>
+                </div>
+            );
 
-            servicesDiv = this.currentServices && this.currentServices.size > 0 ?
-                        <div className='adv-line'>
-                            <span className='adv-label'>Services:</span>
-                            {
-                                device.services.map(function (service, index) {
-                                    return (<span key={index + '_4'} className='adv-value'>{getUuidName(service)} </span>);
-                                })
-                            }
-                        </div>
-                        : '';
+            flagsDiv = this.currentFlags && this.currentFlags.size > 0
+                ? (
+                    <div className="adv-line">
+                        <span className="adv-label">Flags:</span>
+                        {
+                            this.currentFlags.map((flag, index) => {
+                                const key = `${index}_3`;
+                                return (<span key={key} className="adv-value">{flag}</span>);
+                            })
+                        }
+                    </div>
+                ) : '';
 
+            servicesDiv = this.currentServices && this.currentServices.size > 0
+                ? (
+                    <div className="adv-line">
+                        <span className="adv-label">Services:</span>
+                        {
+                            device.services.map((service, index) => {
+                                const key = `${index}_4`;
+                                return (
+                                    <span key={key} className="adv-value">
+                                        {getUuidName(service)} </span>
+                                );
+                            })
+                        }
+                    </div>
+                ) : '';
         }
 
-        addressDiv = <div className='address-text'>
-                        {device.address}
-                    </div>;
+        addressDiv = <div className="address-text">{device.address}</div>;
 
         const dirIcon = device.isExpanded ? 'icon-down-dir' : 'icon-right-dir';
 
@@ -234,23 +254,29 @@ class DiscoveredDevice extends React.PureComponent {
         }
 
         return (
-            <div className='device' onClick={e => onToggleExpanded(device.address)} >
-                <div className='top-bar'>
+            <div className="device" onClick={() => onToggleExpanded(device.address)} >
+                <div className="top-bar">
                     <div style={{ float: 'right' }}>
-                        <span style={{ width: this.getRssiWidth(device.rssi) + 'px' }} className='icon-signal icon-foreground' />
-                        <span className='icon-signal icon-background' title={device.rssi + ' dBm'}/>
+                        <span style={{ width: `${getRssiWidth(device.rssi)}px` }} className="icon-signal icon-foreground" />
+                        <span className="icon-signal icon-background" title={`${device.rssi} dBm`} />
                     </div>
-                    <div className='device-name'>{device.name || '<Unknown name>'}</div>
+                    <div className="device-name">{device.name || '<Unknown name>'}</div>
                 </div>
-                <div className='discovered-device-body text-small'>
-                    <div className='discovered-device-address-line'>
-                        <button onClick={e => this.onButtonClick(e, device)} className='btn btn-primary btn-xs btn-nordic' disabled={(!isConnecting && adapterIsConnecting) || device.connected}>
-                            {isConnecting ? 'Cancel' : 'Connect'} <i className='icon-link'></i>
+                <div className="discovered-device-body text-small">
+                    <div className="discovered-device-address-line">
+                        <button
+                            onClick={e => this.onButtonClick(e, device)}
+                            className="btn btn-primary btn-xs btn-nordic"
+                            disabled={(!isConnecting && adapterIsConnecting) || device.connected}
+                        >
+                            {isConnecting ? 'Cancel' : 'Connect'} <i className="icon-link" />
                         </button>
                         {addressDiv}
                     </div>
                     <div>
-                        <span className={'adv-details'}><i className={dirIcon}/>Details</span>
+                        <span className="adv-details">
+                            <i className={dirIcon} />Details
+                        </span>
                         {addressTypeDiv}
                         {advTypeDiv}
                         {servicesDiv}
@@ -265,8 +291,10 @@ class DiscoveredDevice extends React.PureComponent {
 
 DiscoveredDevice.propTypes = {
     device: PropTypes.object.isRequired,
-    adapterIsConnecting: PropTypes.bool.isRequired, // If adapter is currently connecting to a device
-    isConnecting: PropTypes.bool.isRequired, // If adapter is currently connecting to this device
+    // If adapter is currently connecting to a device
+    adapterIsConnecting: PropTypes.bool.isRequired,
+    // If adapter is currently connecting to this device
+    isConnecting: PropTypes.bool.isRequired,
     onConnect: PropTypes.func.isRequired,
     onCancelConnect: PropTypes.func.isRequired,
 };

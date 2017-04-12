@@ -37,6 +37,9 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint react/prop-types: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -47,7 +50,7 @@ import SecurityParamsControls from '../components/SecurityParamsControls';
 
 import { BLEEventType } from '../actions/common';
 
-export class PairingEditor extends React.PureComponent {
+class PairingEditor extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -61,78 +64,95 @@ export class PairingEditor extends React.PureComponent {
     }
 
     handlePair() {
-        const {
-            event,
-            onPair,
-        } = this.props;
-
-        onPair(this.secParams);
+        this.props.onPair(this.secParams);
     }
 
     handleAccept() {
-        const {
-            event,
-            onAccept,
-        } = this.props;
-
-        onAccept(this.secParams);
+        this.props.onAccept(this.secParams);
     }
 
     handleReject() {
-        const {
-            event,
-            onReject,
-        } = this.props;
-
-        onReject();
+        this.props.onReject();
     }
 
     handleCancel() {
-        const {
-            onCancel,
-        } = this.props;
-
-        onCancel();
+        this.props.onCancel();
     }
 
     render() {
         const {
             event,
-            onCancel,
-            security,
         } = this.props;
 
         const title = (event.type === BLEEventType.PEER_INITIATED_PAIRING) ? 'Pairing requested'
             : 'User initiated pairing';
 
-        const cancelButton = (event.type === BLEEventType.USER_INITIATED_PAIRING) ?
-            <Button type='button' onClick={() => this.handleCancel()}
-                    className='btn btn-default btn-sm btn-nordic'>Cancel</Button> : '';
+        const cancelButton = (event.type === BLEEventType.USER_INITIATED_PAIRING)
+            ? (
+                <Button
+                    type="button"
+                    onClick={() => this.handleCancel()}
+                    className="btn btn-default btn-sm btn-nordic"
+                >
+                    Cancel
+                </Button>
+            ) : '';
 
-        const pairButton = (event.type === BLEEventType.USER_INITIATED_PAIRING) ?
-            <Button type='button' onClick={() => this.handlePair()}
-                className='btn btn-primary btn-sm btn-nordic'>Pair</Button> : '';
+        const pairButton = (event.type === BLEEventType.USER_INITIATED_PAIRING)
+            ? (
+                <Button
+                    type="button"
+                    onClick={() => this.handlePair()}
+                    className="btn btn-primary btn-sm btn-nordic"
+                >
+                    Pair
+                </Button>
+            ) : '';
 
-        const acceptButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING) ?
-            <Button type='button' onClick={() => this.handleAccept()}
-                className='btn btn-primary btn-sm btn-nordic'>Accept</Button> : '';
+        const acceptButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING)
+            ? (
+                <Button
+                    type="button"
+                    onClick={() => this.handleAccept()}
+                    className="btn btn-primary btn-sm btn-nordic"
+                >
+                    Accept
+                </Button>
+            ) : '';
 
-        const rejectButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING) ?
-            <Button type='button' onClick={() => this.handleReject()}
-                className='btn btn-default btn-sm btn-nordic'>Reject</Button> : '';
+        const rejectButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING)
+            ? (
+                <Button
+                    type="button"
+                    onClick={() => this.handleReject()}
+                    className="btn btn-default btn-sm btn-nordic"
+                >
+                    Reject
+                </Button>
+            ) : '';
 
-        const ignoreButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING) ?
-            <Button type='button' onClick={() => this.handleCancel()}
-                className='btn btn-default btn-sm btn-nordic'>Ignore</Button> : '';
+        const ignoreButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING)
+            ? (
+                <Button
+                    type="button"
+                    onClick={() => this.handleCancel()}
+                    className="btn btn-default btn-sm btn-nordic"
+                >
+                    Ignore
+                </Button>
+            ) : '';
 
         return (
             <div>
-                <div className='event-header'>
+                <div className="event-header">
                     <h4>{title}</h4>
                 </div>
-                <form className='form-horizontal'>
-                    <SecurityParamsControls onChange={secParams => this.handleSecParamsChange(secParams)} securityParams={event.pairingParameters} />
-                    <div className='form-group'>
+                <form className="form-horizontal">
+                    <SecurityParamsControls
+                        onChange={secParams => this.handleSecParamsChange(secParams)}
+                        securityParams={event.pairingParameters}
+                    />
+                    <div className="form-group">
                         {cancelButton}
                         {ignoreButton}
                         {pairButton}
@@ -148,3 +168,5 @@ export class PairingEditor extends React.PureComponent {
 PairingEditor.propTypes = {
     event: PropTypes.object.isRequired,
 };
+
+export default PairingEditor;

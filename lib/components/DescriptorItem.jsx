@@ -42,10 +42,15 @@
 import React from 'react';
 import { Map, is as ImmutableIs } from 'immutable';
 
-import AttributeItem from './AttributeItem';
+import AttributeItem, { CCCD_UUID } from './AttributeItem';
 
 import HexOnlyEditableField from './HexOnlyEditableField';
 import { getInstanceIds } from '../utils/api';
+
+function isCCCDAttribute(uuid) {
+    return uuid === CCCD_UUID;
+}
+
 
 class DescriptorItem extends AttributeItem {
     constructor(props) {
@@ -77,7 +82,7 @@ class DescriptorItem extends AttributeItem {
         } = item;
 
         const isLocal = this.isLocalAttribute();
-        const isCCCD = this.isCCCDAttribute(uuid);
+        const isCCCD = isCCCDAttribute(uuid);
         const isLocalCCCD = isLocal && isCCCD;
 
         const LonRead = !isLocal ?
