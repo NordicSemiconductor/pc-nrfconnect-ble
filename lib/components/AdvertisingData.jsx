@@ -1,40 +1,37 @@
-/* Copyright (c) 2016, Nordic Semiconductor ASA
+/* Copyright (c) 2015 - 2017, Nordic Semiconductor ASA
  *
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Use in source and binary forms, redistribution in binary form only, with
+ * or without modification, are permitted provided that the following conditions
+ * are met:
  *
- *   1. Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * 1. Redistributions in binary form, except as embedded into a Nordic
+ *    Semiconductor ASA integrated circuit in a product or a software update for
+ *    such product, must reproduce the above copyright notice, this list of
+ *    conditions and the following disclaimer in the documentation and/or other
+ *    materials provided with the distribution.
  *
- *   2. Redistributions in binary form, except as embedded into a Nordic
- *   Semiconductor ASA integrated circuit in a product or a software update for
- *   such product, must reproduce the above copyright notice, this list of
- *   conditions and the following disclaimer in the documentation and/or other
- *   materials provided with the distribution.
+ * 2. Neither the name of Nordic Semiconductor ASA nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
  *
- *   3. Neither the name of Nordic Semiconductor ASA nor the names of its
- *   contributors may be used to endorse or promote products derived from this
- *   software without specific prior written permission.
+ * 3. This software, with or without modification, must only be used with a Nordic
+ *    Semiconductor ASA integrated circuit.
  *
- *   4. This software, with or without modification, must only be used with a
- *   Nordic Semiconductor ASA integrated circuit.
- *
- *   5. Any software provided in binary form under this license must not be
- *   reverse engineered, decompiled, modified and/or disassembled.
- *
+ * 4. Any software provided in binary form under this license must not be reverse
+ *    engineered, decompiled, modified and/or disassembled.
  *
  * THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
- * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+ * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 'use strict';
@@ -62,147 +59,146 @@ const CUSTOM = '7';
 const UUID_TYPE_16 = 0;
 const UUID_TYPE_128 = 1;
 
-class AdvertisingData extends React.PureComponent {
-    static keyToAdvertisingType(key) {
-        switch (key) {
-            case COMPLETE_LOCAL_NAME:
-                return 'Complete local name';
-            case SHORTENED_LOCAL_NAME:
-                return 'Shortened local name';
-            case COMPLETE_16_UUIDS:
-                return 'UUID 16 bit complete list';
-            case INCOMPLETE_16_UUIDS:
-                return 'UUID 16 bit more available';
-            case COMPLETE_128_UUIDS:
-                return 'UUID 128 bit complete list';
-            case INCOMPLETE_128_UUIDS:
-                return 'UUID 128 bit more available';
-            case TX_POWER:
-                return 'TX power level';
-            case CUSTOM:
-                return 'Custom AD type';
-            default:
-                return 'unknown';
-        }
+function keyToAdvertisingType(key) {
+    switch (key) {
+        case COMPLETE_LOCAL_NAME:
+            return 'Complete local name';
+        case SHORTENED_LOCAL_NAME:
+            return 'Shortened local name';
+        case COMPLETE_16_UUIDS:
+            return 'UUID 16 bit complete list';
+        case INCOMPLETE_16_UUIDS:
+            return 'UUID 16 bit more available';
+        case COMPLETE_128_UUIDS:
+            return 'UUID 128 bit complete list';
+        case INCOMPLETE_128_UUIDS:
+            return 'UUID 128 bit more available';
+        case TX_POWER:
+            return 'TX power level';
+        case CUSTOM:
+            return 'Custom AD type';
+        default:
+            return 'unknown';
+    }
+}
+
+function keyToApiAdvType(key) {
+    switch (key) {
+        case COMPLETE_LOCAL_NAME:
+            return 'completeLocalName';
+        case SHORTENED_LOCAL_NAME:
+            return 'shortenedLocalName';
+        case COMPLETE_16_UUIDS:
+            return 'completeListOf16BitServiceUuids';
+        case INCOMPLETE_16_UUIDS:
+            return 'incompleteListOf16BitServiceUuids';
+        case COMPLETE_128_UUIDS:
+            return 'completeListOf128BitServiceUuids';
+        case INCOMPLETE_128_UUIDS:
+            return 'incompleteListOf128BitServiceUuids';
+        case TX_POWER:
+            return 'txPowerLevel';
+        case CUSTOM:
+            return 'custom';
+        default:
+            return 'unknown';
+    }
+}
+
+function formatValue(value, key) {
+    switch (key) {
+        case COMPLETE_LOCAL_NAME:
+        case SHORTENED_LOCAL_NAME:
+            return value;
+
+        case COMPLETE_16_UUIDS:
+        case INCOMPLETE_16_UUIDS:
+        case COMPLETE_128_UUIDS:
+        case INCOMPLETE_128_UUIDS:
+            // Create array of uuid text strings
+            return value.replace(' ', '').split(',');
+
+        case TX_POWER:
+            return parseInt(value, 10);
+
+        case CUSTOM:
+            return value;
+
+        default:
+            return null;
+    }
+}
+
+function getPlaceholderText(key) {
+    switch (key) {
+        case COMPLETE_LOCAL_NAME:
+        case SHORTENED_LOCAL_NAME:
+            return 'Enter local name';
+
+        case COMPLETE_16_UUIDS:
+        case INCOMPLETE_16_UUIDS:
+        case COMPLETE_128_UUIDS:
+        case INCOMPLETE_128_UUIDS:
+            // Create array of uuid text strings
+            return 'Enter UUID(s)';
+
+        case TX_POWER:
+            return 'Enter TX power';
+
+        case CUSTOM:
+            return 'Enter AD data value (hex)';
+
+        default:
+            return 'Enter value';
+    }
+}
+
+function validateLocalNameString(value) {
+    if (value.length === 0 || value.length > 29) {
+        return ERROR;
+    }
+    return SUCCESS;
+}
+
+function validateUuid(value, uuidType) {
+    const cleanedUuidArray = value.replace(/0[xX]/g, '').replace('-', '').split(',');
+    let regex;
+    switch (uuidType) {
+        case UUID_TYPE_16:
+            regex = /^[0-9a-fA-F]{4}$/;
+            break;
+        case UUID_TYPE_128:
+            regex = /^[0-9a-fA-F]{32}$/;
+            break;
+        default:
+            return ERROR;
     }
 
-    static keyToApiAdvType(key) {
-        switch (key) {
-            case COMPLETE_LOCAL_NAME:
-                return 'completeLocalName';
-            case SHORTENED_LOCAL_NAME:
-                return 'shortenedLocalName';
-            case COMPLETE_16_UUIDS:
-                return 'completeListOf16BitServiceUuids';
-            case INCOMPLETE_16_UUIDS:
-                return 'incompleteListOf16BitServiceUuids';
-            case COMPLETE_128_UUIDS:
-                return 'completeListOf128BitServiceUuids';
-            case INCOMPLETE_128_UUIDS:
-                return 'incompleteListOf128BitServiceUuids';
-            case TX_POWER:
-                return 'txPowerLevel';
-            case CUSTOM:
-                return 'custom';
-            default:
-                return 'unknown';
-        }
-    }
-
-    static formatValue(value, key) {
-        switch (key) {
-            case COMPLETE_LOCAL_NAME:
-            case SHORTENED_LOCAL_NAME:
-                return value;
-
-            case COMPLETE_16_UUIDS:
-            case INCOMPLETE_16_UUIDS:
-            case COMPLETE_128_UUIDS:
-            case INCOMPLETE_128_UUIDS:
-                // Create array of uuid text strings
-                return value.replace(' ', '').split(',');
-
-            case TX_POWER:
-                return parseInt(value, 10);
-
-            case CUSTOM:
-                return value;
-
-            default:
-                return null;
-        }
-    }
-
-    static getPlaceholderText(key) {
-        switch (key) {
-            case COMPLETE_LOCAL_NAME:
-            case SHORTENED_LOCAL_NAME:
-                return 'Enter local name';
-
-            case COMPLETE_16_UUIDS:
-            case INCOMPLETE_16_UUIDS:
-            case COMPLETE_128_UUIDS:
-            case INCOMPLETE_128_UUIDS:
-                // Create array of uuid text strings
-                return 'Enter UUID(s)';
-
-            case TX_POWER:
-                return 'Enter TX power';
-
-            case CUSTOM:
-                return 'Enter AD data value (hex)';
-
-            default:
-                return 'Enter value';
-        }
-    }
-
-    static validateLocalNameString(value) {
-        if (value.length === 0 || value.length > 29) {
+    for (let i = 0; i < cleanedUuidArray.length; i += 1) {
+        if (cleanedUuidArray[i].trim().search(regex) < 0) {
             return ERROR;
         }
+    }
+
+    return SUCCESS;
+}
+
+function validateTxPower(value) {
+    if (value >= -127 && value <= 127 && value !== '') {
         return SUCCESS;
     }
+    return ERROR;
+}
 
-    static validateUuid(value, uuidType) {
-        const cleanedUuidArray = value.replace(/0[xX]/g, '').replace('-', '').split(',');
-        let regex;
-        switch (uuidType) {
-            case UUID_TYPE_16:
-                regex = /^[0-9a-fA-F]{4}$/;
-                break;
-            case UUID_TYPE_128:
-                regex = /^[0-9a-fA-F]{32}$/;
-                break;
-            default:
-                return ERROR;
-        }
-
-        for (let i = 0; i < cleanedUuidArray.length; i += 1) {
-            if (cleanedUuidArray[i].trim().search(regex) < 0) {
-                return ERROR;
-            }
-        }
-
+function validateCustom(value) {
+    const regex = /^((0[xX])?[A-Fa-f0-9]{2})+$/g;
+    if (value.trim().search(regex) >= 0) {
         return SUCCESS;
     }
+    return ERROR;
+}
 
-    static validateTxPower(value) {
-        if (value >= -127 && value <= 127 && value !== '') {
-            return SUCCESS;
-        }
-        return ERROR;
-    }
-
-    static validateCustom(value) {
-        const regex = /^((0[xX])?[A-Fa-f0-9]{2})+$/g;
-        if (value.trim().search(regex) >= 0) {
-            return SUCCESS;
-        }
-
-        return ERROR;
-    }
-
+class AdvertisingData extends React.PureComponent {
     constructor(props) {
         super(props);
         this.value = '';
@@ -212,6 +208,11 @@ class AdvertisingData extends React.PureComponent {
         this.typeKey = null;
         this.title = 'Select data type';
         this.placeholderText = 'Select data type';
+
+        this.handleSelect = this.handleSelect.bind(this);
+        this.handleUuidSelect = this.handleUuidSelect.bind(this);
+        this.handleAdTypeChange = this.handleAdTypeChange.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     handleUuidSelect(event, eventKey) {
@@ -224,15 +225,15 @@ class AdvertisingData extends React.PureComponent {
         this.emitValueChange();
     }
 
-    handleSelect(event, eventKey) {
+    handleSelect(eventKey) {
         this.value = '';
         this.typeKey = eventKey;
-        this.title = this.keyToAdvertisingType(eventKey);
-        this.placeholderText = this.getPlaceholderText(eventKey);
+        this.title = keyToAdvertisingType(eventKey);
+        this.placeholderText = getPlaceholderText(eventKey);
         this.forceUpdate();
 
-        this.type = this.keyToAdvertisingType(this.typeKey);
-        this.typeApi = this.keyToApiAdvType(this.typeKey);
+        this.type = keyToAdvertisingType(this.typeKey);
+        this.typeApi = keyToApiAdvType(this.typeKey);
         this.emitValueChange();
     }
 
@@ -270,7 +271,7 @@ class AdvertisingData extends React.PureComponent {
             type: this.type,
             typeApi: this.typeApi,
             value: tempValue,
-            formattedValue: this.formatValue(tempValue, this.typeKey),
+            formattedValue: formatValue(tempValue, this.typeKey),
         };
 
         onValueChange(typeValue);
@@ -280,21 +281,21 @@ class AdvertisingData extends React.PureComponent {
         switch (this.typeKey) {
             case COMPLETE_LOCAL_NAME:
             case SHORTENED_LOCAL_NAME:
-                return this.validateLocalNameString(this.value);
+                return validateLocalNameString(this.value);
 
             case COMPLETE_16_UUIDS:
             case INCOMPLETE_16_UUIDS:
-                return this.validateUuid(this.value, UUID_TYPE_16);
+                return validateUuid(this.value, UUID_TYPE_16);
 
             case COMPLETE_128_UUIDS:
             case INCOMPLETE_128_UUIDS:
-                return this.validateUuid(this.value, UUID_TYPE_128);
+                return validateUuid(this.value, UUID_TYPE_128);
 
             case TX_POWER:
-                return this.validateTxPower(this.value);
+                return validateTxPower(this.value);
 
             case CUSTOM:
-                return this.validateCustom(this.value);
+                return validateCustom(this.value);
 
             default:
                 return ERROR;
@@ -330,7 +331,7 @@ class AdvertisingData extends React.PureComponent {
                     labelClassName=""
                     wrapperClassName="col-md-12"
                     validationState={this.validateAdType()}
-                    onChange={event => this.handleAdTypeChange(event)}
+                    onChange={this.handleAdTypeChange}
                 />
             </div>
         ) : '';
@@ -338,7 +339,7 @@ class AdvertisingData extends React.PureComponent {
         const uuidLookupDiv = !uuidLookupDisabled ? (
             <span className="adv-uuid-lookup">
                 <UuidLookup
-                    onSelect={(event, eventKey) => this.handleUuidSelect(event, eventKey)}
+                    onSelect={this.handleUuidSelect}
                     title="Predefined service UUIDs"
                     uuidDefs={uuidDef}
                 />
@@ -354,16 +355,16 @@ class AdvertisingData extends React.PureComponent {
                         title={this.title}
                         id="dropdown-adv"
                         label="Type"
-                        onSelect={(eventKey, event) => this.handleSelect(event, eventKey)}
+                        onSelect={this.handleSelect}
                     >
-                        <MenuItem eventKey="0">{this.keyToAdvertisingType('0')}</MenuItem>
-                        <MenuItem eventKey="1">{this.keyToAdvertisingType('1')}</MenuItem>
-                        <MenuItem eventKey="2">{this.keyToAdvertisingType('2')}</MenuItem>
-                        <MenuItem eventKey="3">{this.keyToAdvertisingType('3')}</MenuItem>
-                        <MenuItem eventKey="4">{this.keyToAdvertisingType('4')}</MenuItem>
-                        <MenuItem eventKey="5">{this.keyToAdvertisingType('5')}</MenuItem>
-                        <MenuItem eventKey="6">{this.keyToAdvertisingType('6')}</MenuItem>
-                        <MenuItem eventKey="7">{this.keyToAdvertisingType('7')}</MenuItem>
+                        <MenuItem eventKey="0">{keyToAdvertisingType('0')}</MenuItem>
+                        <MenuItem eventKey="1">{keyToAdvertisingType('1')}</MenuItem>
+                        <MenuItem eventKey="2">{keyToAdvertisingType('2')}</MenuItem>
+                        <MenuItem eventKey="3">{keyToAdvertisingType('3')}</MenuItem>
+                        <MenuItem eventKey="4">{keyToAdvertisingType('4')}</MenuItem>
+                        <MenuItem eventKey="5">{keyToAdvertisingType('5')}</MenuItem>
+                        <MenuItem eventKey="6">{keyToAdvertisingType('6')}</MenuItem>
+                        <MenuItem eventKey="7">{keyToAdvertisingType('7')}</MenuItem>
                     </DropdownButton>
                 </div>
                 <div className="adv-value-container">
@@ -378,7 +379,7 @@ class AdvertisingData extends React.PureComponent {
                         validationState={this.validateInput()}
                         labelClassName=""
                         wrapperClassName="col-md-12"
-                        onChange={event => this.handleChange(event)}
+                        onChange={this.handleChange}
                     />
                 </div>
                 {uuidLookupDiv}

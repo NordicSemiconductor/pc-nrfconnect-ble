@@ -52,23 +52,22 @@ const MARGIN = {
     right: 0,
 };
 
+function createGraphData(kbpsPoints, averageKbpsPoints) {
+    return [{
+        label: 'average kB/s',
+        values: averageKbpsPoints,
+    }, {
+        label: 'kB/s',
+        values: kbpsPoints,
+    }];
+}
+
+function createXScale(totalSizeKb, width) {
+    const linearScale = d3.scale.linear();
+    return linearScale.domain([0, totalSizeKb]).range([0, width - MARGIN.left - 1]);
+}
+
 class DfuThroughputGraph extends React.PureComponent {
-
-    static createGraphData(kbpsPoints, averageKbpsPoints) {
-        return [{
-            label: 'average kB/s',
-            values: averageKbpsPoints,
-        }, {
-            label: 'kB/s',
-            values: kbpsPoints,
-        }];
-    }
-
-    static createXScale(totalSizeKb, width) {
-        const linearScale = d3.scale.linear();
-        return linearScale.domain([0, totalSizeKb]).range([0, width - MARGIN.left - 1]);
-    }
-
     getWidth() {
         // The size prop is added by react-sizeme
         const size = this.props.size;
@@ -83,10 +82,10 @@ class DfuThroughputGraph extends React.PureComponent {
         if (kbpsPoints.length > 0) {
             return (
                 <LineChart
-                    data={DfuThroughputGraph.createGraphData(kbpsPoints, averageKbpsPoints)}
+                    data={createGraphData(kbpsPoints, averageKbpsPoints)}
                     width={width}
                     height={HEIGHT}
-                    xScale={DfuThroughputGraph.createXScale(totalSizeKb, width)}
+                    xScale={createXScale(totalSizeKb, width)}
                     xAxis={{ label: 'kB transferred' }}
                     margin={MARGIN}
                 />

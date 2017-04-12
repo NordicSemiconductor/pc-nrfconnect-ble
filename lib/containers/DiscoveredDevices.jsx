@@ -37,6 +37,10 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint react/prop-types: off */
+/* eslint jsx-a11y/no-static-element-interactions: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -100,7 +104,8 @@ class DiscoveredDevices extends React.PureComponent {
                 <Checkbox
                     className="adv-label"
                     defaultChecked={discoveryOptions.sortByRssi}
-                    onChange={e => this.handleCheckedChange('sortByRssi', e)}>
+                    onChange={e => this.handleCheckedChange('sortByRssi', e)}
+                >
                     Sort by signal strength
                 </Checkbox>
                 <TextInput
@@ -152,18 +157,21 @@ class DiscoveredDevices extends React.PureComponent {
 
                 <div style={{ paddingTop: '0px' }}>
                     {
-                        discoveredDevices.map((device, address) => (
-                            <DiscoveredDevice
-                                key={address}
-                                device={device}
-                                standalone={false}
-                                adapterIsConnecting={adapterIsConnecting}
-                                isConnecting={device.isConnecting}
-                                onConnect={device2 => connectToDevice(device2)}
-                                onCancelConnect={() => cancelConnect()}
-                                onToggleExpanded={toggleExpanded}
-                            />
-                        ))
+                        discoveredDevices.map((device, address) => {
+                            const key = `${address}`;
+                            return (
+                                <DiscoveredDevice
+                                    key={key}
+                                    device={device}
+                                    standalone={false}
+                                    adapterIsConnecting={adapterIsConnecting}
+                                    isConnecting={device.isConnecting}
+                                    onConnect={device2 => connectToDevice(device2)}
+                                    onCancelConnect={() => cancelConnect()}
+                                    onToggleExpanded={toggleExpanded}
+                                />
+                            );
+                        })
                     }
                 </div>
             </div>
@@ -179,7 +187,7 @@ function mapStateToProps(state) {
     let scanning = false;
     let adapterAvailable = false;
 
-    if (adapter.selectedAdapter !== undefined && adapter.selectedAdapter !== null) {
+    if (adapter.selectedAdapterIndex !== null) {
         selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapterIndex]);
 
         if (selectedAdapter && selectedAdapter.state) {

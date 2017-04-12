@@ -37,6 +37,10 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint react/prop-types: off */
+/* eslint react/require-default-props: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -45,7 +49,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
 
-import { ipcRenderer } from 'electron';
+import { hackApi } from '../actions/coreActionsHack';
 
 import * as ServerSetupActions from '../actions/serverSetupActions';
 import * as AdapterActions from '../actions/adapterActions';
@@ -69,26 +73,22 @@ class ServerSetup extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this._setupFileDialogs();
+        this.LsetupFileDialogs();
 
-        this.moveUp = () => this._selectNextComponent(true);
-        this.moveDown = () => this._selectNextComponent(false);
-        this.moveRight = () => this._expandComponent(true);
-        this.moveLeft = () => this._expandComponent(false);
+        this.moveUp = () => this.LselectNextComponent(true);
+        this.moveDown = () => this.LselectNextComponent(false);
+        this.moveRight = () => this.LexpandComponent(true);
+        this.moveLeft = () => this.LexpandComponent(false);
 
         this.modified = false;
         this.pendingSelectInstanceId = null;
     }
 
     componentDidMount() {
-        this._registerKeyboardShortcuts();
+        this.LregisterKeyboardShortcuts();
     }
 
-    componentWillUnmount() {
-        this._unregisterKeyboardShortcuts();
-    }
-
-    componentWillUpdate(nextProps, nextState) {
+    componentWillUpdate(nextProps) {
         if (!this.props.serverSetup) { return false; }
 
         if (!nextProps || !nextProps.serverSetup) { return false; }
@@ -96,24 +96,30 @@ class ServerSetup extends React.PureComponent {
         if (!this.props.serverSetup ||
             nextProps.serverSetup.selectedComponent !== this.props.serverSetup.selectedComponent) {
             this.modified = false;
+            return false;
         }
+        return true;
     }
 
-    _registerKeyboardShortcuts() {
+    componentWillUnmount() {
+        this.LunregisterKeyboardShortcuts();
+    }
+
+    LregisterKeyboardShortcuts() {
         window.addEventListener('core:move-down', this.moveDown);
         window.addEventListener('core:move-up', this.moveUp);
         window.addEventListener('core:move-right', this.moveRight);
         window.addEventListener('core:move-left', this.moveLeft);
     }
 
-    _unregisterKeyboardShortcuts() {
+    LunregisterKeyboardShortcuts() {
         window.removeEventListener('core:move-down', this.moveDown);
         window.removeEventListener('core:move-up', this.moveUp);
         window.removeEventListener('core:move-right', this.moveRight);
         window.removeEventListener('core:move-left', this.moveLeft);
     }
 
-    _selectNextComponent(backward) {
+    LselectNextComponent(backward) {
         const {
             serverSetup,
             selectComponent,
@@ -127,7 +133,9 @@ class ServerSetup extends React.PureComponent {
         const deviceDetails = new Map({ devices: new Map({ 'local.server': serverSetup }) });
         let foundCurrent = false;
 
-        for (let item of traverseItems(deviceDetails, true, backward)) {
+        const items = traverseItems(deviceDetails, true, backward);
+        for (let i = 0; i < items.length; i += 1) {
+            const item = items[i];
             if (selectedComponent === null) {
                 if (item !== null) {
                     selectComponent(item.instanceId);
@@ -144,7 +152,7 @@ class ServerSetup extends React.PureComponent {
         }
     }
 
-    _expandComponent(expand) {
+    LexpandComponent(expand) {
         const {
             serverSetup,
             selectComponent,
@@ -168,7 +176,7 @@ class ServerSetup extends React.PureComponent {
         if (item) {
             if (expand && item.expanded && item.children.size) {
                 if (item.children.size) {
-                    this._selectNextComponent(false);
+                    this.LselectNextComponent(false);
                 }
 
                 return;
@@ -186,44 +194,44 @@ class ServerSetup extends React.PureComponent {
         }
     }
 
-    _setupFileDialogs() {
+    LsetupFileDialogs() {
         const {
             loadServerSetup,
             saveServerSetup,
         } = this.props;
 
         if (loadServerSetupReplyHandle) {
-            ipcRenderer.removeListener('load-server-setup-reply', loadServerSetupReplyHandle);
+            hackApi.ipcRenderer.removeListener('load-server-setup-reply', loadServerSetupReplyHandle);
         }
 
         const loadServerSetupReply = (event, filename) => {
             loadServerSetup(filename);
         };
 
-        ipcRenderer.on('load-server-setup-reply', loadServerSetupReply);
+        hackApi.ipcRenderer.on('load-server-setup-reply', loadServerSetupReply);
         loadServerSetupReplyHandle = loadServerSetupReply;
 
         if (saveServerSetupReplyHandle) {
-            ipcRenderer.removeListener('save-server-setup-reply', saveServerSetupReplyHandle);
+            hackApi.ipcRenderer.removeListener('save-server-setup-reply', saveServerSetupReplyHandle);
         }
 
         const saveServerSetupReply = (event, filename) => {
             saveServerSetup(filename);
         };
 
-        ipcRenderer.on('save-server-setup-reply', saveServerSetupReply);
+        hackApi.ipcRenderer.on('save-server-setup-reply', saveServerSetupReply);
         saveServerSetupReplyHandle = saveServerSetupReply;
     }
 
-    _saveChangedAttribute(changedAttribute) {
+    LsaveChangedAttribute(changedAttribute) {
         this.props.saveChangedAttribute(changedAttribute);
     }
 
-    _onModified(value) {
+    LonModified(value) {
         this.modified = value;
     }
 
-    _onSelectComponent(instanceId) {
+    LonSelectComponent(instanceId) {
         if (!this.modified) {
             this.props.selectComponent(instanceId);
             return;
@@ -233,13 +241,13 @@ class ServerSetup extends React.PureComponent {
         this.props.showDiscardDialog();
     }
 
-    _onDiscardCancel() {
+    LonDiscardCancel() {
         this.pendingSelectInstanceId = null;
 
         this.props.hideDiscardDialog();
     }
 
-    _onDiscardOk() {
+    LonDiscardOk() {
         this.props.hideDiscardDialog();
         this.props.selectComponent(this.pendingSelectInstanceId);
     }
@@ -248,7 +256,7 @@ class ServerSetup extends React.PureComponent {
         const {
             selectedAdapter,
             serverSetup,
-            selectComponent,
+            // selectComponent,
             setAttributeExpanded,
             addNewService,
             addNewCharacteristic,
@@ -261,12 +269,12 @@ class ServerSetup extends React.PureComponent {
             showClearDialog,
             hideClearDialog,
             showErrorDialog,
-            showDiscardDialog,
-            hideDiscardDialog,
+            // showDiscardDialog,
+            // hideDiscardDialog,
         } = this.props;
 
         if (!serverSetup) {
-            return (<div className='server-setup' style={this.props.style} />);
+            return (<div className="server-setup" style={this.props.style} />);
         }
 
         const {
@@ -302,22 +310,44 @@ class ServerSetup extends React.PureComponent {
         }
 
         const editorBorderClass = selectedAttribute ? ' selected-component-editor-border' : '';
-        const editor = selectedIsService ? <ServiceEditor service={selectedAttribute}
-                                                          onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
-                                                          onRemoveAttribute={showDeleteDialog}
-                                                          onModified={modified => this._onModified(modified)}
-                                                          onValidationError={error => showErrorDialog(error)} />
-                     : selectedIsCharacteristic ? <CharacteristicEditor characteristic={selectedAttribute}
-                                                                        onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
-                                                                        onRemoveAttribute={showDeleteDialog}
-                                                                        onModified={modified => this._onModified(modified)}
-                                                                        onValidationError={error => showErrorDialog(error)} />
-                     : selectedIsDescriptor ? <DescriptorEditor descriptor={selectedAttribute}
-                                                                onSaveChangedAttribute={changedAttribute => this._saveChangedAttribute(changedAttribute)}
-                                                                onRemoveAttribute={showDeleteDialog}
-                                                                onModified={modified => this._onModified(modified)}
-                                                                onValidationError={error => showErrorDialog(error)} />
-                     : <div className='nothing-selected' />;
+        let editor = <div className="nothing-selected" />;
+        if (selectedIsService) {
+            editor = (
+                <ServiceEditor
+                    service={selectedAttribute}
+                    onSaveChangedAttribute={
+                        changedAttribute => this.LsaveChangedAttribute(changedAttribute)
+                    }
+                    onRemoveAttribute={showDeleteDialog}
+                    onModified={modified => this.LonModified(modified)}
+                    onValidationError={error => showErrorDialog(error)}
+                />
+            );
+        } else if (selectedIsCharacteristic) {
+            editor = (
+                <CharacteristicEditor
+                    characteristic={selectedAttribute}
+                    onSaveChangedAttribute={
+                        changedAttribute => this.LsaveChangedAttribute(changedAttribute)
+                    }
+                    onRemoveAttribute={showDeleteDialog}
+                    onModified={modified => this.LonModified(modified)}
+                    onValidationError={error => showErrorDialog(error)}
+                />
+            );
+        } else if (selectedIsDescriptor) {
+            editor = (
+                <DescriptorEditor
+                    descriptor={selectedAttribute}
+                    onSaveChangedAttribute={
+                        changedAttribute => this.LsaveChangedAttribute(changedAttribute)
+                    }
+                    onRemoveAttribute={showDeleteDialog}
+                    onModified={modified => this.LonModified(modified)}
+                    onValidationError={error => showErrorDialog(error)}
+                />
+            );
+        }
 
         const services = children.map((service, i) => {
             let canAdd = true;
@@ -326,66 +356,88 @@ class ServerSetup extends React.PureComponent {
                 canAdd = false;
             }
 
-            return <ServiceItem
-                            key={i}
-                            item={service}
-                            selectOnClick={true}
-                            selected={selectedComponent}
-                            onSelected={this._onSelected}
-                            onSelectAttribute={instanceId => this._onSelectComponent(instanceId)}
-                            onSetAttributeExpanded={setAttributeExpanded}
-                            addNew={canAdd}
-                            onAddCharacteristic={addNewCharacteristic}
-                            onAddDescriptor={addNewDescriptor} />
-            ;
+            const key = `${i}`;
+            return (
+                <ServiceItem
+                    key={key}
+                    item={service}
+                    selectOnClick
+                    selected={selectedComponent}
+                    onSelected={this.LonSelected}
+                    onSelectAttribute={instanceId => this.LonSelectComponent(instanceId)}
+                    onSetAttributeExpanded={setAttributeExpanded}
+                    addNew={canAdd}
+                    onAddCharacteristic={addNewCharacteristic}
+                    onAddDescriptor={addNewDescriptor}
+                />
+            );
         });
 
         const btnTitle = selectedAdapter.isServerSetupApplied ? 'Server setup can be applied only once between resets' : '';
 
-        const central = <CentralDevice id={selectedAdapter.instanceId + '_serversetup'}
-            name={selectedAdapter.state.name}
-            address={selectedAdapter.state.address}
-            onSaveSetup={() => {
-                ipcRenderer.send('save-server-setup', null);
-            }}
-
-            onLoadSetup={() => {
-                ipcRenderer.send('load-server-setup', null);
-            }}
-
-         />;
+        const central = (
+            <CentralDevice
+                id={`${selectedAdapter.instanceId}_serversetup`}
+                name={selectedAdapter.state.name}
+                address={selectedAdapter.state.address}
+                onSaveSetup={() => {
+                    hackApi.ipcRenderer.send('save-server-setup', null);
+                }}
+                onLoadSetup={() => {
+                    hackApi.ipcRenderer.send('load-server-setup', null);
+                }}
+            />
+        );
 
         return (
-            <div className='server-setup' style={this.props.style}>
-                <div className='server-setup-view'>
-                    <div className='server-setup-tree'>
+            <div className="server-setup" style={this.props.style}>
+                <div className="server-setup-view">
+                    <div className="server-setup-tree">
                         {central}
-                        <div className='service-items-wrap'>
+                        <div className="service-items-wrap">
                             {services}
-                            <AddNewItem text='New service' id='add-btn-root' bars={1} parentInstanceId={'local.server'} selected={selectedComponent} onClick={addNewService} />
+                            <AddNewItem text="New service" id="add-btn-root" bars={1} parentInstanceId={'local.server'} selected={selectedComponent} onClick={addNewService} />
                         </div>
-                        <div className='server-setup-buttons'>
-                            <button type='button' className='btn btn-primary btn-nordic'
-                                disabled={selectedAdapter.isServerSetupApplied} title={btnTitle}
-                                onClick={applyServer}><i className='icon-ok' /> Apply to device</button>
-                            <button type='button' className='btn btn-primary btn-nordic' onClick={showClearDialog}><i className='icon-trash' /> Clear</button>
+                        <div className="server-setup-buttons">
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-nordic"
+                                disabled={selectedAdapter.isServerSetupApplied}
+                                title={btnTitle}
+                                onClick={applyServer}
+                            >
+                                <i className="icon-ok" /> Apply to device
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-nordic"
+                                onClick={showClearDialog}
+                            >
+                                <i className="icon-trash" /> Clear
+                            </button>
                         </div>
                     </div>
-                    <div className={'item-editor' + editorBorderClass}>
+                    <div className={`item-editor${editorBorderClass}`}>
                         {editor}
                     </div>
-                    <ConfirmationDialog show={showingDeleteDialog}
-                                        onOk={removeAttribute}
-                                        onCancel={hideDeleteDialog}
-                                        text='Are you sure you want to delete the attribute?'/>
-                    <ConfirmationDialog show={showingClearDialog}
-                                        onOk={clearServer}
-                                        onCancel={hideClearDialog}
-                                        text='Are you sure you want to clear the server setup?'/>
-                    <ConfirmationDialog show={showingDiscardDialog}
-                                        onOk={() => this._onDiscardOk()}
-                                        onCancel={() => this._onDiscardCancel()}
-                                        text='The attribute has been modified. Discard the changes?' />
+                    <ConfirmationDialog
+                        show={showingDeleteDialog}
+                        onOk={removeAttribute}
+                        onCancel={hideDeleteDialog}
+                        text="Are you sure you want to delete the attribute?"
+                    />
+                    <ConfirmationDialog
+                        show={showingClearDialog}
+                        onOk={clearServer}
+                        onCancel={hideClearDialog}
+                        text="Are you sure you want to clear the server setup?"
+                    />
+                    <ConfirmationDialog
+                        show={showingDiscardDialog}
+                        onOk={() => this.LonDiscardOk()}
+                        onCancel={() => this.LonDiscardCancel()}
+                        text="The attribute has been modified. Discard the changes?"
+                    />
                 </div>
             </div>
         );
@@ -400,25 +452,25 @@ function mapStateToProps(state) {
     }
 
     return {
-        selectedAdapter: selectedAdapter,
+        selectedAdapter,
         serverSetup: selectedAdapter.serverSetup,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    let retval = Object.assign(
-            {},
-            bindActionCreators(ServerSetupActions, dispatch),
-            bindActionCreators(AdapterActions, dispatch),
-            bindActionCreators(ErrorActions, dispatch)
-        );
+    const retval = Object.assign(
+        {},
+        bindActionCreators(ServerSetupActions, dispatch),
+        bindActionCreators(AdapterActions, dispatch),
+        bindActionCreators(ErrorActions, dispatch),
+    );
 
     return retval;
 }
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(ServerSetup);
 
 ServerSetup.propTypes = {

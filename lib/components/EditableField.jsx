@@ -50,6 +50,10 @@ import $ from 'jquery';
 
 import TextArea from './input/TextArea';
 
+function LstopPropagation(e) {
+    e.stopPropagation();
+}
+
 class EditableField extends React.Component {
 
     /*
@@ -88,10 +92,6 @@ class EditableField extends React.Component {
         function, fires if the value changed due to user input. First argument is the new value.
 
     */
-
-    static LstopPropagation(e) {
-        e.stopPropagation();
-    }
 
     componentDidMount() {
         this.editing = false;
@@ -247,7 +247,7 @@ class EditableField extends React.Component {
                     onKeyDown={e => this.LonKeyDown(e)}
                     value={this.props.value}
                     onChange={e => this.LonChange(e)}
-                    onClick={this.LstopPropagation}
+                    onClick={LstopPropagation}
                 />
             );
         } else if (this.editing && this.props.onWrite) {
@@ -276,7 +276,7 @@ class EditableField extends React.Component {
                         title={this.props.title}
                         value={this.value}
                         onChange={e => this.LonChange(e)}
-                        onClick={this.LstopPropagation}
+                        onClick={LstopPropagation}
                     />
                 </div>
             );

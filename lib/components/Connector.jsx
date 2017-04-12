@@ -143,29 +143,28 @@ ConnectionOverlay.propTypes = {
     device: PropTypes.object.isRequired,
 };
 
-export class Connector extends React.PureComponent {
+function LgenerateLines(lineCoordinates) {
+    const result = [];
 
-    static LgenerateLines(lineCoordinates) {
-        const result = [];
-
-        for (let i = 0; i < lineCoordinates.length - 1; i += 1) {
-            result.push(
-                <line
-                    stroke="black"
-                    strokeWidth="3"
-                    strokeLinecap="square"
-                    key={i}
-                    x1={lineCoordinates[i].x}
-                    y1={lineCoordinates[i].y}
-                    x2={lineCoordinates[i + 1].x}
-                    y2={lineCoordinates[i + 1].y}
-                />,
-            );
-        }
-
-        return result;
+    for (let i = 0; i < lineCoordinates.length - 1; i += 1) {
+        result.push(
+            <line
+                stroke="black"
+                strokeWidth="3"
+                strokeLinecap="square"
+                key={i}
+                x1={lineCoordinates[i].x}
+                y1={lineCoordinates[i].y}
+                x2={lineCoordinates[i + 1].x}
+                y2={lineCoordinates[i + 1].y}
+            />,
+        );
     }
 
+    return result;
+}
+
+export class Connector extends React.PureComponent {
     componentDidMount() {
         // To be able to draw the line between two component they have be in the browser DOM
         // At first render they are not rendered, therefore we have to do an additional rendering
@@ -221,7 +220,7 @@ export class Connector extends React.PureComponent {
 
         const layoutInfo = layoutStrategies(layout)(sourceRect, targetRect, 3);
         const connectorBox = layoutInfo.boundingBox;
-        const lines = this.LgenerateLines(layoutInfo.lineCoordinates);
+        const lines = LgenerateLines(layoutInfo.lineCoordinates);
         const connectionInfoOverlay = this.LgetConnectionOverlay(layoutInfo.lineCoordinates);
 
         return (

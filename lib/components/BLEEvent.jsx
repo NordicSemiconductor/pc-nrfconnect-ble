@@ -49,11 +49,11 @@ import { BLEEventState, BLEEventType } from './../actions/common';
 
 const EVENT_TIMEOUT_SECONDS = 30;
 
-class BLEEvent extends React.PureComponent {
-    static LonExpandAreaClick() {
-        console.log('TODO: implement me! I did not exist earlier either...');
-    }
+function LonExpandAreaClick() {
+    console.log('TODO: implement me! I did not exist earlier either...');
+}
 
+class BLEEvent extends React.PureComponent {
     LgetEventInfo() {
         const eventType = this.props.event.type;
 
@@ -196,7 +196,7 @@ class BLEEvent extends React.PureComponent {
     render() {
         return (
             <div className={`service-item ${this.LgetClass()}`} style={this.LgetStyle()} onClick={_event => this.LonClick(_event)}>
-                <div className="expand-area" onClick={() => this.LonExpandAreaClick()}>
+                <div className="expand-area" onClick={LonExpandAreaClick}>
                     <div className="bar1" />
                     <div className="icon-wrap" />
                 </div>

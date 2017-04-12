@@ -37,6 +37,10 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint react/prop-types: off */
+/* eslint react/require-default-props: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -61,39 +65,41 @@ class DeviceDetailsContainer extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this.moveUp = () => this._selectNextComponent(true);
-        this.moveDown = () => this._selectNextComponent(false);
-        this.moveRight = () => this._expandComponent(true);
-        this.moveLeft = () => this._expandComponent(false);
+        this.moveUp = () => this.LselectNextComponent(true);
+        this.moveDown = () => this.LselectNextComponent(false);
+        this.moveRight = () => this.LexpandComponent(true);
+        this.moveLeft = () => this.LexpandComponent(false);
     }
 
     componentDidMount() {
-        this._registerKeyboardShortcuts();
+        this.LregisterKeyboardShortcuts();
     }
 
     componentWillUnmount() {
-        this._unregisterKeyboardShortcuts();
+        this.LunregisterKeyboardShortcuts();
     }
 
-    _registerKeyboardShortcuts() {
+    LregisterKeyboardShortcuts() {
         window.addEventListener('core:move-down', this.moveDown);
         window.addEventListener('core:move-up', this.moveUp);
         window.addEventListener('core:move-right', this.moveRight);
         window.addEventListener('core:move-left', this.moveLeft);
     }
 
-    _unregisterKeyboardShortcuts() {
+    LunregisterKeyboardShortcuts() {
         window.removeEventListener('core:move-down', this.moveDown);
         window.removeEventListener('core:move-up', this.moveUp);
         window.removeEventListener('core:move-right', this.moveRight);
         window.removeEventListener('core:move-left', this.moveLeft);
     }
 
-    _selectNextComponent(backward) {
+    LselectNextComponent(backward) {
         const { deviceDetails, selectedComponent, selectComponent } = this.props;
         let foundCurrent = false;
 
-        for (let item of traverseItems(deviceDetails, true, backward)) {
+        const items = traverseItems(deviceDetails, true, backward);
+        for (let i = 0; i < items.length; i += 1) {
+            const item = items[i];
             if (selectedComponent === null) {
                 if (item !== null) {
                     selectComponent(item.instanceId);
@@ -110,7 +116,7 @@ class DeviceDetailsContainer extends React.PureComponent {
         }
     }
 
-    _expandComponent(expand) {
+    LexpandComponent(expand) {
         const {
             deviceDetails,
             selectedComponent,
@@ -135,7 +141,7 @@ class DeviceDetailsContainer extends React.PureComponent {
             }
 
             if (expand && item.expanded && item.children.size) {
-                this._selectNextComponent(false);
+                this.LselectNextComponent(false);
                 return;
             }
 
@@ -166,7 +172,7 @@ class DeviceDetailsContainer extends React.PureComponent {
             showSetupDialog,
             toggleAdvertising,
             disconnectFromDevice,
-            pairWithDevice,
+            // pairWithDevice,
             createUserInitiatedConnParamsUpdateEvent,
             createUserInitiatedPairingEvent,
             toggleAutoConnUpdate,
@@ -183,52 +189,56 @@ class DeviceDetailsContainer extends React.PureComponent {
         const detailDevices = [];
 
         if (!adapterState) {
-            return <div className='device-details-container' style={this.props.style} />;
+            return <div className="device-details-container" style={this.props.style} />;
         }
 
         // Details for connected adapter
-        detailDevices.push(<DeviceDetailsView key={adapterState.instanceId}
-                                              device={adapterState}
-                                              selected={selectedComponent}
-                                              deviceDetails={deviceDetails}
-                                              onSelectComponent={selectComponent}
-                                              onSetAttributeExpanded={setAttributeExpanded}
-                                              onReadCharacteristic={readCharacteristic}
-                                              onWriteCharacteristic={writeCharacteristic}
-                                              onReadDescriptor={readDescriptor}
-                                              onWriteDescriptor={writeDescriptor}
-                                              onShowAdvertisingSetupDialog={showSetupDialog}
-                                              onToggleAdvertising={toggleAdvertising}
-                                              containerHeight={this.props.style.height}
-                                              onToggleAutoConnUpdate={toggleAutoConnUpdate}
-                                              autoConnUpdate={autoConnUpdate}
-                                              onShowSecurityParamsDialog={showSecurityParamsDialog}
-                                              onToggleAutoAcceptPairing={toggleAutoAcceptPairing}
-                                              onDeleteBondInfo={deleteBondInfo}
-                                              security={security}
-                                              onOpenCustomUuidFile={openCustomUuidFile}
-                                              />
+        detailDevices.push(
+            <DeviceDetailsView
+                key={adapterState.instanceId}
+                device={adapterState}
+                selected={selectedComponent}
+                deviceDetails={deviceDetails}
+                onSelectComponent={selectComponent}
+                onSetAttributeExpanded={setAttributeExpanded}
+                onReadCharacteristic={readCharacteristic}
+                onWriteCharacteristic={writeCharacteristic}
+                onReadDescriptor={readDescriptor}
+                onWriteDescriptor={writeDescriptor}
+                onShowAdvertisingSetupDialog={showSetupDialog}
+                onToggleAdvertising={toggleAdvertising}
+                containerHeight={this.props.style.height}
+                onToggleAutoConnUpdate={toggleAutoConnUpdate}
+                autoConnUpdate={autoConnUpdate}
+                onShowSecurityParamsDialog={showSecurityParamsDialog}
+                onToggleAutoAcceptPairing={toggleAutoAcceptPairing}
+                onDeleteBondInfo={deleteBondInfo}
+                security={security}
+                onOpenCustomUuidFile={openCustomUuidFile}
+            />,
         );
 
         // Details for connected devices
         connectedDevices.forEach(device => {
-            detailDevices.push(<DeviceDetailsView key={device.instanceId}
-                                                  adapter = {adapterState}
-                                                  device={device}
-                                                  selected={selectedComponent}
-                                                  deviceDetails={deviceDetails}
-                                                  onShowDfuDialog={showDfuDialog}
-                                                  onSelectComponent={selectComponent}
-                                                  onSetAttributeExpanded={setAttributeExpanded}
-                                                  onReadCharacteristic={readCharacteristic}
-                                                  onWriteCharacteristic={writeCharacteristic}
-                                                  onReadDescriptor={readDescriptor}
-                                                  onWriteDescriptor={writeDescriptor}
-                                                  onDisconnectFromDevice={disconnectFromDevice}
-                                                  onPairWithDevice={createUserInitiatedPairingEvent}
-                                                  onUpdateDeviceConnectionParams={createUserInitiatedConnParamsUpdateEvent}
-                                                  containerHeight={this.props.style.height}
-                                                  />
+            detailDevices.push(
+                <DeviceDetailsView
+                    key={device.instanceId}
+                    adapter={adapterState}
+                    device={device}
+                    selected={selectedComponent}
+                    deviceDetails={deviceDetails}
+                    onShowDfuDialog={showDfuDialog}
+                    onSelectComponent={selectComponent}
+                    onSetAttributeExpanded={setAttributeExpanded}
+                    onReadCharacteristic={readCharacteristic}
+                    onWriteCharacteristic={writeCharacteristic}
+                    onReadDescriptor={readDescriptor}
+                    onWriteDescriptor={writeDescriptor}
+                    onDisconnectFromDevice={disconnectFromDevice}
+                    onPairWithDevice={createUserInitiatedPairingEvent}
+                    onUpdateDeviceConnectionParams={createUserInitiatedConnParamsUpdateEvent}
+                    containerHeight={this.props.style.height}
+                />,
             );
         });
 
@@ -238,8 +248,8 @@ class DeviceDetailsContainer extends React.PureComponent {
         // TODO: Fix better solution to right padding of scroll area than div box with border
         return (
             <div>
-                <div className='device-details-container' style={this.props.style}>
-                    <div style={{ width: width }}>
+                <div className="device-details-container" style={this.props.style}>
+                    <div style={{ width }}>
                         {detailDevices}
                         <div style={{ borderColor: 'transparent', borderLeftWidth: '20px', borderRightWidth: '0px', borderStyle: 'solid' }} />
                     </div>
@@ -263,7 +273,8 @@ function mapStateToProps(state) {
 
     return {
         adapterState: selectedAdapter.state,
-        selectedComponent: selectedAdapter.deviceDetails && selectedAdapter.deviceDetails.selectedComponent,
+        selectedComponent: (selectedAdapter.deviceDetails
+            && selectedAdapter.deviceDetails.selectedComponent),
         connectedDevices: selectedAdapter.connectedDevices,
         deviceDetails: selectedAdapter.deviceDetails,
         autoConnUpdate: adapter.autoConnUpdate,
@@ -272,22 +283,22 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    let retval = Object.assign(
-            {},
-            bindActionCreators(DeviceDetailsActions, dispatch),
-            bindActionCreators(AdvertisingActions, dispatch),
-            bindActionCreators(AdapterActions, dispatch),
-            bindActionCreators(BLEEventActions, dispatch),
-            bindActionCreators(SecurityActions, dispatch),
-            bindActionCreators(DfuActions, dispatch),
-        );
+    const retval = Object.assign(
+        {},
+        bindActionCreators(DeviceDetailsActions, dispatch),
+        bindActionCreators(AdvertisingActions, dispatch),
+        bindActionCreators(AdapterActions, dispatch),
+        bindActionCreators(BLEEventActions, dispatch),
+        bindActionCreators(SecurityActions, dispatch),
+        bindActionCreators(DfuActions, dispatch),
+    );
 
     return retval;
 }
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(DeviceDetailsContainer);
 
 DeviceDetailsContainer.propTypes = {
@@ -295,7 +306,7 @@ DeviceDetailsContainer.propTypes = {
     selectedComponent: PropTypes.string,
     deviceDetails: PropTypes.object,
     connectedDevices: PropTypes.object,
-    deviceServers: PropTypes.object,
+    // deviceServers: PropTypes.object,
     readCharacteristic: PropTypes.func.isRequired,
     writeCharacteristic: PropTypes.func.isRequired,
     readDescriptor: PropTypes.func.isRequired,

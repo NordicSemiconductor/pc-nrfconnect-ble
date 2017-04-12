@@ -37,6 +37,9 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+/* eslint react/prop-types: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -49,7 +52,7 @@ import { BLEEventState, BLEEventType } from '../actions/common';
 
 import BLEEvent from '../components/BLEEvent';
 import { ConnectionUpdateRequestEditor } from '../components/ConnectionUpdateRequestEditor';
-import { PairingEditor } from '../components/PairingEditor';
+import PairingEditor from '../components/PairingEditor';
 import { AuthKeyEditor } from '../components/AuthKeyEditor';
 
 import * as BLEEventActions from '../actions/bleEventActions';

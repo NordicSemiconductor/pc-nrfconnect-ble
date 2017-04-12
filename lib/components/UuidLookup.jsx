@@ -45,17 +45,17 @@ import React, { PropTypes } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import { getUuidName } from '../utils/uuid_definitions';
 
-class UuidLookup extends React.PureComponent {
-    static formatUuid(value) {
-        if (!value) { return value; }
+function formatUuid(value) {
+    if (!value) { return value; }
 
-        if (value.length > 8) {
-            return `${value.slice(0, 8)}...`;
-        }
-
-        return value;
+    if (value.length > 8) {
+        return `${value.slice(0, 8)}...`;
     }
 
+    return value;
+}
+
+class UuidLookup extends React.PureComponent {
     shouldComponentUpdate(nextProps) {
         return !(JSON.stringify(this.props.uuidDefs) === JSON.stringify(nextProps.uuidDefs));
     }
@@ -91,7 +91,7 @@ class UuidLookup extends React.PureComponent {
                                     title={`${uuid}: ${getUuidName(uuid)}`}
                                     eventKey={uuid}
                                 >
-                                    {`${this.formatUuid(uuid)}: ${getUuidName(uuid)}`}
+                                    {`${formatUuid(uuid)}: ${getUuidName(uuid)}`}
                                 </MenuItem>
                             ))
                         }

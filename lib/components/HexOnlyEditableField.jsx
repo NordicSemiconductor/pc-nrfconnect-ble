@@ -49,39 +49,39 @@ import EditableField from './EditableField';
 
 import { hexArrayToText, textToHexText, hexArrayToHexText } from '../utils/stringUtil';
 
-class HexOnlyEditableField extends React.PureComponent {
-    static LcalcCaretPosition(origValue, caretPosition) {
-        /*
-        * Replacing the textarea contents places the caret at the end.
-        * We need to place the caret back where it should be.
-        * Since we're adding dashes, this is not so trivial.
-        *
-        * Consider if the user typed the 1 in the string below:
-        * Before formatting: AA-A1A-AA, After: AA-A1-AA-A
-        * caretPosition before: 5, caretPosition after: 5
-        *
-        * But here it works differently:
-        * Before formatting: AA-AA1-AA, After: AA-AA-1A-A
-        * caretPosition before: 6, caretPosition after: 7
-        *
-        * And there's also this case:
-        * Before formatting: AA-AA-1AA, After: AA-AA-1A-A
-        * caretPosition before: 7, caretPosition after: 7
-        *
-        * Also have to handle backspace:
-        * Before formatting: AA-A-AA, After: AA-AA-A
-        * caretPosition before: 4, caretPosition after: 4
-        *
-        * Find where the caret would be without the dashes,
-        * and map that position back to the dashed string
-        */
-        const dashesBeforeCaret = origValue.substr(0, caretPosition).match(/ /g);
-        const numDashesBeforeCaret = dashesBeforeCaret === null ? 0 : dashesBeforeCaret.length;
-        const caretPositionWithoutDashes = caretPosition - numDashesBeforeCaret;
-        const correctNumberOfDashes = Math.floor(caretPositionWithoutDashes / 2);
-        return caretPositionWithoutDashes + correctNumberOfDashes;
-    }
+function LcalcCaretPosition(origValue, caretPosition) {
+    /*
+    * Replacing the textarea contents places the caret at the end.
+    * We need to place the caret back where it should be.
+    * Since we're adding dashes, this is not so trivial.
+    *
+    * Consider if the user typed the 1 in the string below:
+    * Before formatting: AA-A1A-AA, After: AA-A1-AA-A
+    * caretPosition before: 5, caretPosition after: 5
+    *
+    * But here it works differently:
+    * Before formatting: AA-AA1-AA, After: AA-AA-1A-A
+    * caretPosition before: 6, caretPosition after: 7
+    *
+    * And there's also this case:
+    * Before formatting: AA-AA-1AA, After: AA-AA-1A-A
+    * caretPosition before: 7, caretPosition after: 7
+    *
+    * Also have to handle backspace:
+    * Before formatting: AA-A-AA, After: AA-AA-A
+    * caretPosition before: 4, caretPosition after: 4
+    *
+    * Find where the caret would be without the dashes,
+    * and map that position back to the dashed string
+    */
+    const dashesBeforeCaret = origValue.substr(0, caretPosition).match(/ /g);
+    const numDashesBeforeCaret = dashesBeforeCaret === null ? 0 : dashesBeforeCaret.length;
+    const caretPositionWithoutDashes = caretPosition - numDashesBeforeCaret;
+    const correctNumberOfDashes = Math.floor(caretPositionWithoutDashes / 2);
+    return caretPositionWithoutDashes + correctNumberOfDashes;
+}
 
+class HexOnlyEditableField extends React.PureComponent {
     shouldComponentUpdate(nextProps) {
         if (!_.isEqual(this.props.value, nextProps.value)) {
             return true;
@@ -132,7 +132,7 @@ class HexOnlyEditableField extends React.PureComponent {
             };
         }
 
-        const caretPos = this.LcalcCaretPosition(str, caretPosition);
+        const caretPos = LcalcCaretPosition(str, caretPosition);
         const chars = str.toUpperCase().replace(/ /g, '').split('');
         // insert spaces after every second char
         let inserted = 0;

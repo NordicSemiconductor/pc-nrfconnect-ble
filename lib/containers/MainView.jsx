@@ -37,6 +37,8 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/prop-types: off */
+
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -112,8 +114,8 @@ class MainViewContainer extends React.PureComponent {
     }
 
     componentWillMount() {
-        (function () {
-            const throttle = function (type, name, obj) {
+        (() => {
+            const throttle = (type, name, obj) => {
                 let running = false;
                 const object = obj || window;
                 const func = () => {
@@ -122,7 +124,7 @@ class MainViewContainer extends React.PureComponent {
                     }
 
                     running = true;
-                    requestAnimationFrame(function () {
+                    requestAnimationFrame(() => {
                         object.dispatchEvent(new CustomEvent(name));
                         running = false;
                     });
@@ -205,9 +207,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return Object.assign(
-            bindActionCreators(AppActions, dispatch),
-            bindActionCreators(AdvertisingActions, dispatch),
-            bindActionCreators(ErrorActions, dispatch),
+        bindActionCreators(AppActions, dispatch),
+        bindActionCreators(AdvertisingActions, dispatch),
+        bindActionCreators(ErrorActions, dispatch),
     );
 }
 
@@ -219,5 +221,3 @@ export default connect(
 MainViewContainer.propTypes = {
     selectedMainView: PropTypes.string.isRequired,
 };
-
-// export default MainViewContainer;
