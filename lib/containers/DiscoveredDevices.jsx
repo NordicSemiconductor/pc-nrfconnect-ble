@@ -55,7 +55,6 @@ import DiscoveryButton from '../components/discoveryButton';
 import DiscoveredDevice from '../components/DiscoveredDevice';
 import TextInput from '../components/input/TextInput';
 import Spinner from '../components/Spinner';
-import spinnerImage from '../../resources/ajax-loader.gif';
 
 class DiscoveredDevices extends React.PureComponent {
     constructor(props) {
@@ -127,7 +126,7 @@ class DiscoveredDevices extends React.PureComponent {
                 <div>
                     <h4>
                         Discovered devices
-                        <Spinner image={spinnerImage} visible={isScanning} />
+                        <Spinner visible={isScanning} />
                     </h4>
                 </div>
 
@@ -157,7 +156,7 @@ class DiscoveredDevices extends React.PureComponent {
 
                 <div style={{ paddingTop: '0px' }}>
                     {
-                        discoveredDevices.map((device, address) => {
+                        discoveredDevices.valueSeq().map((device, address) => {
                             const key = `${address}`;
                             return (
                                 <DiscoveredDevice

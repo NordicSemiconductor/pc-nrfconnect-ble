@@ -221,11 +221,13 @@ class CentralDevice extends React.PureComponent {
             return items;
         })();
 
+        const icon = require('../../resources/nordic_usb_icon.png'); // eslint-disable-line
+
         return (
             <div id={id} className="device main-device standalone" style={style}>
                 <img
                     className="center-block"
-                    src="resources/nordic_usb_icon.png"
+                    src={icon}
                     height={41}
                     width={16}
                     title="Development kit or dongle"

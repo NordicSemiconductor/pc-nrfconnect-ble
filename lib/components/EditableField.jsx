@@ -104,7 +104,8 @@ class EditableField extends React.Component {
             const textarea = this.editableTextarea;
             const caretPosition = textarea.value.length;
             textarea.focus();
-            textarea.setSelectionRange(caretPosition, caretPosition);
+            textarea.selectionStart = caretPosition;
+            textarea.selectionEnd = caretPosition;
         }
     }
 

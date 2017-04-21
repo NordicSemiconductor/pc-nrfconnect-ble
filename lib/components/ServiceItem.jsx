@@ -89,7 +89,7 @@ class ServiceItem extends AttributeItem {
             children,
         } = item;
 
-        return children.map(characteristic =>
+        return children.valueSeq().map(characteristic =>
             <CharacteristicItem
                 key={characteristic.instanceId}
                 item={characteristic}
