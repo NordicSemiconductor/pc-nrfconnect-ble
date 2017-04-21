@@ -46,8 +46,6 @@ import { Dropdown, MenuItem, Button } from 'react-bootstrap';
 
 import { Connector } from './Connector';
 
-import dfuIcon from '../../resources/dfu_icon.png';
-
 const WINDOW_WIDTH_OFFSET = 375;
 const THROTTLE_TIMEOUT = 100;
 
@@ -133,6 +131,8 @@ class ConnectedDevice extends React.PureComponent {
         };
 
         const pullRight = !!this.belowWidthThreshold;
+
+        const dfuIcon = require('../../resources/dfu_icon.png'); // eslint-disable-line
 
         return (
             <div

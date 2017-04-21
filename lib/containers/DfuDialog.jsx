@@ -154,7 +154,11 @@ DfuDialog.propTypes = {
     hideDfuDialog: PropTypes.func.isRequired,
     hideConfirmCloseDialog: PropTypes.func.isRequired,
     isConfirmCloseVisible: PropTypes.bool.isRequired,
-    device: PropTypes.object.isRequired,
+    device: PropTypes.object,
+};
+
+DfuDialog.defaultProps = {
+    device: null,
 };
 
 function mapStateToProps(state) {

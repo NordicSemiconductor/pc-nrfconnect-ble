@@ -42,7 +42,6 @@
 import React, { PropTypes } from 'react';
 
 import Spinner from './Spinner';
-import spinnerImage from '../../resources/ajax-loader.gif';
 
 const EnumeratingAttributes = props => {
     const barList = [];
@@ -57,7 +56,6 @@ const EnumeratingAttributes = props => {
             {barList}
             <div className="enumerating-content">
                 <Spinner
-                    image={spinnerImage}
                     visible
                     className="spinner center-block"
                     size={20}

@@ -349,7 +349,7 @@ class ServerSetup extends React.PureComponent {
             );
         }
 
-        const services = children.map((service, i) => {
+        const services = children.valueSeq().map((service, i) => {
             let canAdd = true;
 
             if (service.instanceId === 'local.server.0' || service.instanceId === 'local.server.1') {

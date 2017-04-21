@@ -113,56 +113,54 @@ class AdvertisingSetup extends React.PureComponent {
         } = this.props;
 
         return (
-            <div>
-                <Modal className="adv-setup" show={show} onHide={() => {}} bsSize="large">
-                    <Modal.Header>
-                        <Modal.Title>Advertising setup</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <AdvertisingData onValueChange={value => this.handleValueChange(value)} />
-                        <div className="adv-row">
-                            <div className="adv-col adv-pkt">
-                                <Button
-                                    className="btn-add btn-primary btn-nordic icon-plus"
-                                    onClick={() => this.addToAdvData()}
-                                >
-                                    {' Add to advertising data'}
-                                </Button>
-                                <AdvertisingList
-                                    title="Advertising data"
-                                    onDelete={deleteAdvData}
-                                    advEntries={tempAdvDataEntries}
-                                />
-                            </div>
-                            <div className="adv-col scan-rsp-pkt">
-                                <Button
-                                    className="btn-add btn-primary btn-nordic icon-plus"
-                                    onClick={() => this.addToScanResponse()}
-                                >
-                                    {' Add to scan response'}
-                                </Button>
-                                <AdvertisingList
-                                    title="Scan response data"
-                                    onDelete={deleteScanRsp}
-                                    advEntries={tempScanRespEntries}
-                                />
-                            </div>
+            <Modal className="adv-setup" show={show} onHide={() => {}} bsSize="large">
+                <Modal.Header>
+                    <Modal.Title>Advertising setup</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <AdvertisingData onValueChange={value => this.handleValueChange(value)} />
+                    <div className="adv-row">
+                        <div className="adv-col adv-pkt">
+                            <Button
+                                className="btn-add btn-primary btn-nordic icon-plus"
+                                onClick={() => this.addToAdvData()}
+                            >
+                                {' Add to advertising data'}
+                            </Button>
+                            <AdvertisingList
+                                title="Advertising data"
+                                onDelete={deleteAdvData}
+                                advEntries={tempAdvDataEntries}
+                            />
                         </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Label className="error-label" bsStyle="danger">{setAdvdataStatus}</Label>
-                        <Button
-                            className="btn-primary btn-nordic"
-                            onClick={() => this.handleApply()}
-                        >
-                            Apply
-                        </Button>
-                        <Button className="btn-primary btn-nordic" onClick={hideSetupDialog}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            </div>
+                        <div className="adv-col scan-rsp-pkt">
+                            <Button
+                                className="btn-add btn-primary btn-nordic icon-plus"
+                                onClick={() => this.addToScanResponse()}
+                            >
+                                {' Add to scan response'}
+                            </Button>
+                            <AdvertisingList
+                                title="Scan response data"
+                                onDelete={deleteScanRsp}
+                                advEntries={tempScanRespEntries}
+                            />
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Label className="error-label" bsStyle="danger">{setAdvdataStatus}</Label>
+                    <Button
+                        className="btn-primary btn-nordic"
+                        onClick={() => this.handleApply()}
+                    >
+                        Apply
+                    </Button>
+                    <Button className="btn-primary btn-nordic" onClick={hideSetupDialog}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         );
     }
 }

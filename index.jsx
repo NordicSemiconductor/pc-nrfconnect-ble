@@ -34,6 +34,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import path from 'path';
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import reducers from './lib/reducers';
@@ -43,14 +44,12 @@ import * as AppActions from './lib/actions/appActions';
 import MainViewContainer from './lib/containers/MainView';
 import BLEEventDialog from './lib/containers/BLEEventDialog';
 import DiscoveredDevices from './lib/containers/DiscoveredDevices';
-import { initHackAction } from './lib/actions/coreActionsHack';
+import { initializeApp } from './lib/actions/coreActionsHack';
 import { confirmUserUUIDsExist } from './lib/utils/uuid_definitions';
 
 import './resources/css/styles.less';
 
 /* eslint react/prop-types: 0 */
-
-let hacked = false;
 
 export default {
     config: {
@@ -103,12 +102,6 @@ export default {
         if (!action) {
             return;
         }
-        if (!hacked) {
-            store.dispatch(initHackAction());
-            confirmUserUUIDsExist();
-            store.dispatch(AdapterActions.findAdapters());
-            hacked = true;
-        }
         if (action.type === 'FIRMWARE_DIALOG_SHOW') {
             const { port } = action;
             store.dispatch(AdapterActions.validateFirmware(port.serialNumber, {
@@ -124,5 +117,13 @@ export default {
             store.dispatch(AdapterActions.closeAdapter());
         }
         next(action);
+    },
+    onInit: (dispatch, getState, { core }) => {
+        __webpack_public_path__ = path.join(core.getAppDir(), 'dist/'); // eslint-disable-line
+    },
+    onReady: (dispatch, getState, api) => {
+        initializeApp(api);
+        confirmUserUUIDsExist();
+        dispatch(AdapterActions.findAdapters());
     },
 };

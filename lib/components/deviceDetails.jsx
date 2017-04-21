@@ -106,7 +106,7 @@ class DeviceDetailsView extends React.PureComponent {
         if (children) {
             return (
                 <div className="service-items-wrap">
-                    {children.map(service => this.createServiceItem(service))}
+                    {children.valueSeq().map(service => this.createServiceItem(service))}
                 </div>
             );
         }

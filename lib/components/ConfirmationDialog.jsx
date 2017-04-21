@@ -43,7 +43,6 @@ import React, { PropTypes } from 'react';
 
 import { Modal, Button } from 'react-bootstrap';
 import Spinner from './Spinner';
-import spinnerImage from '../../resources/ajax-loader.gif';
 
 const ConfirmationDialog = props => {
     const {
@@ -66,7 +65,7 @@ const ConfirmationDialog = props => {
                     <p>{text}</p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Spinner image={spinnerImage} visible={showProgress} />
+                    <Spinner visible={showProgress} />
                     &nbsp;
                     <Button onClick={onOk} disabled={buttonDisabled}>OK</Button>
                     <Button onClick={onCancel} disabled={buttonDisabled}>Cancel</Button>

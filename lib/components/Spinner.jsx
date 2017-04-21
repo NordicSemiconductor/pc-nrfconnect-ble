@@ -1,18 +1,22 @@
 import React, { PropTypes } from 'react';
 
 const Spinner = props => {
-    const { image, size, visible, className } = props;
+    const { size, visible, className } = props;
     const style = {
         visibility: visible ? 'visible' : 'hidden',
     };
 
+    const spinnerImg = require('../../resources/ajax-loader.gif'); // eslint-disable-line
+
     return (
-        <img alt="" className={className} src={image} height={size} width={size} style={style} />
+        <img
+            alt="" className={className} src={spinnerImg}
+            height={size} width={size} style={style}
+        />
     );
 };
 
 Spinner.propTypes = {
-    image: PropTypes.string.isRequired,
     size: PropTypes.number,
     visible: PropTypes.bool,
     className: PropTypes.string,

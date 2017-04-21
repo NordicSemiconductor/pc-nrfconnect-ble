@@ -353,7 +353,6 @@ class AdvertisingData extends React.PureComponent {
                         title={this.title}
                         id="dropdown-adv"
                         label="Type"
-                        onSelect={(eventKey, event) => this.handleSelect(event, eventKey)}
                     >
                         <MenuItem eventKey="0">{keyToAdvertisingType('0')}</MenuItem>
                         <MenuItem eventKey="1">{keyToAdvertisingType('1')}</MenuItem>
