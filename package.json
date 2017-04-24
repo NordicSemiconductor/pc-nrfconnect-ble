@@ -26,6 +26,7 @@
     "d3": "^4.7.4",
     "jquery": "^3.2.1",
     "lodash.throttle": "^4.1.1",
+    "mousetrap": "^1.6.1",
     "pc-nrfconnect-devdep": "https://github.com/NordicSemiconductor/pc-nrfconnect-devdep.git",
     "react-d3-components": "^0.6.6",
     "react-onclickoutside": "^5.10.0",

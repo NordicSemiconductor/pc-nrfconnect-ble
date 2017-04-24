@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import withHotkey from '../utils/withHotkey';
 
 const DiscoveryButton = props => {
     const {
@@ -6,6 +7,7 @@ const DiscoveryButton = props => {
         adapterIsConnecting,
         scanInProgress,
         onScanClicked,
+        bindHotkey,
     } = props;
 
     let labelString;
@@ -21,6 +23,8 @@ const DiscoveryButton = props => {
         iconName = 'icon-play';
         hoverText = 'Start scan (Alt+S)';
     }
+
+    bindHotkey('alt+s', onScanClicked);
 
     return (
         <button
@@ -40,6 +44,7 @@ DiscoveryButton.propTypes = {
     adapterIsConnecting: PropTypes.bool.isRequired,
     scanInProgress: PropTypes.bool.isRequired,
     onScanClicked: PropTypes.func.isRequired,
+    bindHotkey: PropTypes.func.isRequired,
 };
 
-export default DiscoveryButton;
+export default withHotkey(DiscoveryButton);

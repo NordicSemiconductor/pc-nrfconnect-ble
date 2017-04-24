@@ -56,6 +56,8 @@ import DiscoveredDevice from '../components/DiscoveredDevice';
 import TextInput from '../components/input/TextInput';
 import Spinner from '../components/Spinner';
 
+import withHotkey from '../utils/withHotkey';
+
 class DiscoveredDevices extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -92,7 +94,10 @@ class DiscoveredDevices extends React.PureComponent {
             cancelConnect,
             toggleExpanded,
             toggleOptionsExpanded,
+            bindHotkey,
         } = this.props;
+
+        bindHotkey('alt+c', clearDevicesList);
 
         this.discoveryOptions = this.props.discoveryOptions.toJS();
 
@@ -218,7 +223,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps,
-)(DiscoveredDevices);
+)(withHotkey(DiscoveredDevices));
 
 DiscoveredDevices.propTypes = {
     discoveredDevices: PropTypes.object.isRequired,
@@ -229,4 +234,5 @@ DiscoveredDevices.propTypes = {
     toggleScan: PropTypes.func.isRequired,
     connectToDevice: PropTypes.func.isRequired,
     cancelConnect: PropTypes.func.isRequired,
+    bindHotkey: PropTypes.func.isRequired,
 };

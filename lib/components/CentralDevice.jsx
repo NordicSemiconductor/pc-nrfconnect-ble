@@ -48,6 +48,8 @@ import { Dropdown, MenuItem } from 'react-bootstrap';
 import AdvertisingSetup from '../containers/AdvertisingSetup';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 
+import withHotkey from '../utils/withHotkey';
+
 class CentralDevice extends React.PureComponent {
     LonSelect(event, eventKey) {
         const {
@@ -110,7 +112,10 @@ class CentralDevice extends React.PureComponent {
             onShowSecurityParamsDialog,
             onOpenCustomUuidFile,
             security,
+            bindHotkey,
         } = this.props;
+
+        bindHotkey('alt+a', onToggleAdvertising);
 
         const style = {
             position: 'relative',
@@ -276,6 +281,7 @@ CentralDevice.propTypes = {
     onToggleAutoAcceptPairing: PropTypes.func,
     onDeleteBondInfo: PropTypes.func,
     onOpenCustomUuidFile: PropTypes.func,
+    bindHotkey: PropTypes.func.isRequired,
 };
 
-export default CentralDevice;
+export default withHotkey(CentralDevice);
