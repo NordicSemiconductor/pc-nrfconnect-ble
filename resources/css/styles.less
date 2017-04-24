@@ -237,13 +237,13 @@
   }
 }
 
-.main-layout > div:nth-child(1) {
+.core-main-layout > div:nth-child(1) {
     flex: 1;
     display: flex;
     flex-flow: row;
 }
 
-.main-layout {
+.core-main-layout {
   display: flex;
   flex-flow: row;
   > div:nth-child(1) {
@@ -778,6 +778,11 @@
       }
       .form-horizontal .has-feedback .form-control {
         padding-right: 20px;
+      }
+      .form-horizontal .form-inline {
+        margin-left: -15px;
+        margin-right: -15px;
+        margin-bottom: 15px;
       }
     }
   }
