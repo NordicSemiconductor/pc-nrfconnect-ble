@@ -182,13 +182,12 @@ class DiscoveredDevice extends React.PureComponent {
                         .valueSeq()
                         .map((value, key) => {
                             const key1 = `${key}_1`;
-                            const key2 = `${key}_2`;
                             return (
-                                <div className="adv-line">
-                                    <span key={key1} className="adv-label">
-                                        {rewriter(key)}: </span>
-                                    <span key={key2} className="adv-value">
-                                        {toHexString(value)} </span>
+                                <div key={key1} className="adv-line">
+                                    <span className="adv-label">
+                                        {rewriter(key)}:</span>
+                                    <span className="adv-value">
+                                        {toHexString(value)}</span>
                                 </div>
                             );
                         })
@@ -201,14 +200,14 @@ class DiscoveredDevice extends React.PureComponent {
                     <div className="adv-line">
                         <span className="adv-label">Advertising type:</span>
                         <span className="adv-value">
-                            {getAdvTypeText(this.currentAdvType)} </span>
+                            {getAdvTypeText(this.currentAdvType)}</span>
                     </div>
-                ) : '';
+                ) : null;
 
             addressTypeDiv = (
                 <div className="adv-line">
-                    <span className="adv-label">Address type: </span>
-                    <span className="adv-value">{rewriter(device.addressType)} </span>
+                    <span className="adv-label">Address type:</span>
+                    <span className="adv-value">{rewriter(device.addressType)}</span>
                 </div>
             );
 
@@ -223,7 +222,7 @@ class DiscoveredDevice extends React.PureComponent {
                             })
                         }
                     </div>
-                ) : '';
+                ) : null;
 
             servicesDiv = this.currentServices && this.currentServices.size > 0
                 ? (
@@ -239,7 +238,7 @@ class DiscoveredDevice extends React.PureComponent {
                             })
                         }
                     </div>
-                ) : '';
+                ) : null;
         }
 
         addressDiv = <div className="address-text">{device.address}</div>;
