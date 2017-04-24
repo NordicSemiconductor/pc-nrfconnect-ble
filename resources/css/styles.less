@@ -12,6 +12,10 @@
 
 @import "./variables.less";
 
+.core-main-view, .core-side-panel {
+    padding: 0;
+}
+
 .nomargin {
     margin: 0px;
 }
@@ -445,7 +449,7 @@
   }
 }
 
-.dropdown {
+.dropdown:not(core-nav-bar .dropdown) {
   padding: 0px;
   border: 0px;
   min-width: 143px;
