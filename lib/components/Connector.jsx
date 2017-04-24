@@ -124,7 +124,7 @@ export class ConnectionOverlay extends React.PureComponent {
                         <Popover id="pover" title="Connection Information">
                             <ConnectionSetup
                                 device={device}
-                                closePopover={this.Lcloseme()}
+                                closePopover={this.Lcloseme}
                             />
                         </Popover>
                     }

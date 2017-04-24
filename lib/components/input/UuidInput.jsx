@@ -71,20 +71,17 @@ class UuidInput extends React.PureComponent {
         this.forceUpdate();
     }
 
-    LhandleUuidSelect(event, eventKey) {
-        this.LonUuidChange(eventKey);
-    }
-
     render() {
         const {
             label,
             uuidDefinitions,
+            handleSelection,
             value,
         } = this.props;
 
         const uuidSelectButton = (
             <UuidLookup
-                onSelect={(event, eventKey) => this.LhandleUuidSelect(event, eventKey)}
+                onSelect={(event, eventKey) => this.LonUuidChange(eventKey)}
                 title={`Predefined ${label}s`}
                 uuidDefs={uuidDefinitions()}
                 pullRight
@@ -94,9 +91,10 @@ class UuidInput extends React.PureComponent {
         return (
             <TextInput
                 label={label}
-                hasFeedback validationState={this.validateUuidInput()}
+                hasFeedback
+                validationState={this.validateUuidInput()}
                 value={value}
-                onChange={e => this.props.handleSelection(e.target.value)}
+                onChange={e => handleSelection(e.target.value)}
                 buttonAfter={uuidSelectButton}
             />
         );

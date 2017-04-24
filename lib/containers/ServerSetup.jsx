@@ -49,7 +49,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
 
-import { hackApi } from '../actions/coreActionsHack';
+import { coreApi } from '../actions/coreActionsHack';
 
 import * as ServerSetupActions from '../actions/serverSetupActions';
 import * as AdapterActions from '../actions/adapterActions';
@@ -201,25 +201,25 @@ class ServerSetup extends React.PureComponent {
         } = this.props;
 
         if (loadServerSetupReplyHandle) {
-            hackApi.ipcRenderer.removeListener('load-server-setup-reply', loadServerSetupReplyHandle);
+            coreApi.electron.ipcRenderer.removeListener('load-server-setup-reply', loadServerSetupReplyHandle);
         }
 
         const loadServerSetupReply = (event, filename) => {
             loadServerSetup(filename);
         };
 
-        hackApi.ipcRenderer.on('load-server-setup-reply', loadServerSetupReply);
+        coreApi.electron.ipcRenderer.on('load-server-setup-reply', loadServerSetupReply);
         loadServerSetupReplyHandle = loadServerSetupReply;
 
         if (saveServerSetupReplyHandle) {
-            hackApi.ipcRenderer.removeListener('save-server-setup-reply', saveServerSetupReplyHandle);
+            coreApi.electron.ipcRenderer.removeListener('save-server-setup-reply', saveServerSetupReplyHandle);
         }
 
         const saveServerSetupReply = (event, filename) => {
             saveServerSetup(filename);
         };
 
-        hackApi.ipcRenderer.on('save-server-setup-reply', saveServerSetupReply);
+        coreApi.electron.ipcRenderer.on('save-server-setup-reply', saveServerSetupReply);
         saveServerSetupReplyHandle = saveServerSetupReply;
     }
 
@@ -381,10 +381,10 @@ class ServerSetup extends React.PureComponent {
                 name={selectedAdapter.state.name}
                 address={selectedAdapter.state.address}
                 onSaveSetup={() => {
-                    hackApi.ipcRenderer.send('save-server-setup', null);
+                    coreApi.electron.ipcRenderer.send('save-server-setup', null);
                 }}
                 onLoadSetup={() => {
-                    hackApi.ipcRenderer.send('load-server-setup', null);
+                    coreApi.electron.ipcRenderer.send('load-server-setup', null);
                 }}
             />
         );

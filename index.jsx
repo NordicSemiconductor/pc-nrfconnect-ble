@@ -41,6 +41,7 @@ import reducers from './lib/reducers';
 import * as DiscoveryActions from './lib/actions/discoveryActions';
 import * as AdapterActions from './lib/actions/adapterActions';
 import * as AppActions from './lib/actions/appActions';
+import * as FirmwareActions from './lib/actions/firmwareActions';
 import MainViewContainer from './lib/containers/MainView';
 import BLEEventDialog from './lib/containers/BLEEventDialog';
 import DiscoveredDevices from './lib/containers/DiscoveredDevices';
@@ -102,19 +103,30 @@ export default {
         if (!action) {
             return;
         }
-        if (action.type === 'FIRMWARE_DIALOG_SHOW') {
-            const { port } = action;
-            store.dispatch(AdapterActions.validateFirmware(port.serialNumber, {
-                onValid: versionInfo => store.dispatch({ type: 'SERIAL_PORT_SELECTED', port, versionInfo }),
-                onInvalid: () => next(action),
-            }));
-            return;
-        }
         if (action.type === 'SERIAL_PORT_SELECTED') {
-            store.dispatch(AdapterActions.openAdapter(action.port, action.versionInfo));
+            const { port } = action;
+            store.dispatch(FirmwareActions.validateFirmware(port.serialNumber, {
+                onValid: version => store.dispatch(
+                    AdapterActions.openAdapter(action.port, version),
+                ),
+                onInvalid: () => store.dispatch({ type: 'FIRMWARE_DIALOG_SHOW', port }),
+            }));
         }
         if (action.type === 'SERIAL_PORT_DESELECTED') {
             store.dispatch(AdapterActions.closeAdapter());
+        }
+        if (action.type === 'FIRMWARE_DIALOG_UPDATE_REQUESTED') {
+            const { port } = action;
+            store.dispatch(FirmwareActions.programFirmware(port.serialNumber, {
+                onSuccess: version => {
+                    store.dispatch(AdapterActions.openAdapter(action.port, version));
+                    store.dispatch({ type: 'FIRMWARE_DIALOG_HIDE' });
+                },
+                onFailure: () => {
+                    store.dispatch({ type: 'FIRMWARE_DIALOG_HIDE' });
+                    store.dispatch({ type: 'SERIAL_PORT_DESELECTED' });
+                },
+            }));
         }
         next(action);
     },
@@ -123,7 +135,7 @@ export default {
     },
     onReady: (dispatch, getState, api) => {
         initializeApp(api);
-        confirmUserUUIDsExist();
+        confirmUserUUIDsExist(api.core.getUserDataDir());
         dispatch(AdapterActions.findAdapters());
     },
 };

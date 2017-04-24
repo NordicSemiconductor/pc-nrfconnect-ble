@@ -210,7 +210,7 @@ class CharacteristicItem extends AttributeItem {
             children,
         } = item;
 
-        return children.map(descriptor => (
+        return children.valueSeq().map(descriptor => (
             <DescriptorItem
                 key={descriptor.instanceId}
                 item={descriptor}

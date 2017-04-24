@@ -179,6 +179,7 @@ class DiscoveredDevice extends React.PureComponent {
                     {
                         device.adData
                         .filterNot((value, key) => key.includes('BIT_SERVICE') || key.includes('_FLAGS') || key.includes('LOCAL_NAME'))
+                        .valueSeq()
                         .map((value, key) => {
                             const key1 = `${key}_1`;
                             const key2 = `${key}_2`;
@@ -216,7 +217,7 @@ class DiscoveredDevice extends React.PureComponent {
                     <div className="adv-line">
                         <span className="adv-label">Flags:</span>
                         {
-                            this.currentFlags.map((flag, index) => {
+                            this.currentFlags.valueSeq().map((flag, index) => {
                                 const key = `${index}_3`;
                                 return (<span key={key} className="adv-value">{flag}</span>);
                             })
@@ -229,7 +230,7 @@ class DiscoveredDevice extends React.PureComponent {
                     <div className="adv-line">
                         <span className="adv-label">Services:</span>
                         {
-                            device.services.map((service, index) => {
+                            device.services.valueSeq().map((service, index) => {
                                 const key = `${index}_4`;
                                 return (
                                     <span key={key} className="adv-value">

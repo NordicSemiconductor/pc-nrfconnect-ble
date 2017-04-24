@@ -242,6 +242,7 @@ class EditableField extends React.Component {
         if (this.props.plain) {
             child = (
                 <TextArea
+                    id="editable-field"
                     ref={editableTextarea => { this.editableTextarea = editableTextarea; }}
                     label={this.props.label}
                     title={this.props.title}

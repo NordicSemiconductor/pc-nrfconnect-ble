@@ -149,7 +149,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                         min={CONN_INTERVAL_MIN}
                         max={CONN_INTERVAL_MAX}
                         step={CONN_INTERVAL_STEP}
-                        defaultValue={this.connectionInterval}
+                        defaultValue={`${this.connectionInterval}`}
                         readOnly={this.readOnly}
                     />
                 </div>

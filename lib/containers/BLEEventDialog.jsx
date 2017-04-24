@@ -51,9 +51,9 @@ import { Modal, Button } from 'react-bootstrap';
 import { BLEEventState, BLEEventType } from '../actions/common';
 
 import BLEEvent from '../components/BLEEvent';
-import { ConnectionUpdateRequestEditor } from '../components/ConnectionUpdateRequestEditor';
+import ConnectionUpdateRequestEditor from '../components/ConnectionUpdateRequestEditor';
 import PairingEditor from '../components/PairingEditor';
-import { AuthKeyEditor } from '../components/AuthKeyEditor';
+import AuthKeyEditor from '../components/AuthKeyEditor';
 
 import * as BLEEventActions from '../actions/bleEventActions';
 import * as AdapterActions from '../actions/adapterActions';
@@ -197,7 +197,7 @@ class BLEEventDialog extends React.PureComponent {
                     <div className="bleevent-dialog-view">
                         <div className="service-items-wrap">
                             {
-                                events.map(event => (
+                                events.valueSeq().map(event => (
                                     <BLEEvent
                                         key={event.id}
                                         onSelected={eventId => this.LonSelected(eventId)}
@@ -214,7 +214,7 @@ class BLEEventDialog extends React.PureComponent {
                         </div>
 
                         {
-                            events.map(event => (
+                            events.valueSeq().map(event => (
                                 <div
                                     key={event.id}
                                     className="item-editor"

@@ -41,7 +41,7 @@ import React, { PropTypes } from 'react';
 import { FormGroup, ControlLabel, FormControl, InputGroup } from 'react-bootstrap';
 
 const SelectList = props => {
-    const { id, label, children, labelClassName, wrapperClassName } = props;
+    const { id, label, children, labelClassName, wrapperClassName, ...newProps } = props;
 
     return (
         <FormGroup controlId={id}>
@@ -49,7 +49,7 @@ const SelectList = props => {
                 label && <ControlLabel className={labelClassName}>{label}</ControlLabel>
             }
             <InputGroup className={wrapperClassName}>
-                <FormControl componentClass="select" {...props}>
+                <FormControl componentClass="select" {...newProps}>
                     {children}
                 </FormControl>
             </InputGroup>

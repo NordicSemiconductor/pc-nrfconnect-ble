@@ -50,7 +50,7 @@ import * as DfuActions from '../actions/dfuActions';
 import DfuEditor from '../components/DfuEditor';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 
-import { hackApi } from '../actions/coreActionsHack';
+import { coreApi } from '../actions/coreActionsHack';
 
 class DfuDialog extends React.PureComponent {
     constructor(props) {
@@ -78,7 +78,7 @@ class DfuDialog extends React.PureComponent {
     }
 
     showFileDialog() {
-        hackApi.ipcRenderer.once('choose-file-dialog-reply', (event, fileArray) => {
+        coreApi.electron.ipcRenderer.once('choose-file-dialog-reply', (event, fileArray) => {
             if (fileArray && fileArray.length === 1) {
                 this.onFileSelected(fileArray[0]);
             }
@@ -87,7 +87,7 @@ class DfuDialog extends React.PureComponent {
             name: 'Zip Files',
             extensions: ['zip'],
         }];
-        hackApi.ipcRenderer.send('choose-file-dialog', filters);
+        coreApi.electron.ipcRenderer.send('choose-file-dialog', filters);
     }
 
 

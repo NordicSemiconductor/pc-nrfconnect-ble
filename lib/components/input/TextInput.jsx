@@ -1,22 +1,23 @@
 import React, { PropTypes } from 'react';
 import { FormGroup, ControlLabel, FormControl, InputGroup } from 'react-bootstrap';
 
-const TextInput = ({
-    id,
-    label,
-    hasFeedback,
-    validationState,
-    buttonAfter,
-    labelClassName,
-    wrapperClassName,
-    inline,
-    title,
-    className,
-    defaultValue,
-    onChange,
-    placeholder,
-}) => {
+const TextInput = props => {
+    const {
+        id,
+        inline,
+        validationState,
+        label,
+        labelClassName,
+        wrapperClassName,
+        hasFeedback,
+        buttonAfter,
+        value,
+        defaultValue,
+        ...newProps
+    } = props;
     const bsClassProp = inline && { bsClass: 'form-inline' };
+
+    const realValue = `${value || defaultValue}`;
 
     return (
         <FormGroup controlId={id} validationState={validationState} {...bsClassProp}>
@@ -24,13 +25,7 @@ const TextInput = ({
                 label && <ControlLabel className={labelClassName}>{label}</ControlLabel>
             }
             <InputGroup className={wrapperClassName}>
-                <FormControl
-                    title={title}
-                    className={className}
-                    defaultValue={defaultValue}
-                    onChange={onChange}
-                    placeholder={placeholder}
-                />
+                <FormControl value={realValue} {...newProps} />
                 { hasFeedback && <FormControl.Feedback /> }
                 { buttonAfter && <InputGroup.Button>{ buttonAfter }</InputGroup.Button> }
             </InputGroup>
@@ -52,6 +47,10 @@ TextInput.propTypes = {
     defaultValue: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
+    value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
 };
 
 TextInput.defaultProps = {
@@ -67,6 +66,7 @@ TextInput.defaultProps = {
     className: null,
     defaultValue: '',
     placeholder: '',
+    value: null,
 };
 
 export default TextInput;
