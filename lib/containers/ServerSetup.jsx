@@ -66,14 +66,14 @@ import CentralDevice from '../components/CentralDevice';
 import { getInstanceIds } from '../utils/api';
 import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
 
-let loadServerSetupReplyHandle;
-let saveServerSetupReplyHandle;
+const filters = [
+    { name: 'nRF Connect Server Setup', extensions: ['ncs', 'json'] },
+    { name: 'All Files', extensions: ['*'] },
+];
 
 class ServerSetup extends React.PureComponent {
     constructor(props) {
         super(props);
-
-        this.LsetupFileDialogs();
 
         this.moveUp = () => this.LselectNextComponent(true);
         this.moveDown = () => this.LselectNextComponent(false);
@@ -82,6 +82,9 @@ class ServerSetup extends React.PureComponent {
 
         this.modified = false;
         this.pendingSelectInstanceId = null;
+
+        this.LopenSaveDialog = this.LopenSaveDialog.bind(this);
+        this.LopenLoadDialog = this.LopenLoadDialog.bind(this);
     }
 
     componentDidMount() {
@@ -103,6 +106,30 @@ class ServerSetup extends React.PureComponent {
 
     componentWillUnmount() {
         this.LunregisterKeyboardShortcuts();
+    }
+
+    LopenSaveDialog() {
+        const { dialog } = coreApi.electron.remote;
+        dialog.showSaveDialog({ filters }, filePath => {
+            if (!filePath) {
+                return;
+            }
+            this.props.saveServerSetup(filePath);
+        });
+    }
+
+    LopenLoadDialog() {
+        const { dialog } = coreApi.electron.remote;
+        dialog.showOpenDialog({ filters, properties: ['openFile'] }, filePaths => {
+            if (!filePaths) {
+                return;
+            }
+            const [filePath] = filePaths;
+            if (!filePath) {
+                return;
+            }
+            this.props.loadServerSetup(filePath);
+        });
     }
 
     LregisterKeyboardShortcuts() {
@@ -192,35 +219,6 @@ class ServerSetup extends React.PureComponent {
 
             setAttributeExpanded(item, expand);
         }
-    }
-
-    LsetupFileDialogs() {
-        const {
-            loadServerSetup,
-            saveServerSetup,
-        } = this.props;
-
-        if (loadServerSetupReplyHandle) {
-            coreApi.electron.ipcRenderer.removeListener('load-server-setup-reply', loadServerSetupReplyHandle);
-        }
-
-        const loadServerSetupReply = (event, filename) => {
-            loadServerSetup(filename);
-        };
-
-        coreApi.electron.ipcRenderer.on('load-server-setup-reply', loadServerSetupReply);
-        loadServerSetupReplyHandle = loadServerSetupReply;
-
-        if (saveServerSetupReplyHandle) {
-            coreApi.electron.ipcRenderer.removeListener('save-server-setup-reply', saveServerSetupReplyHandle);
-        }
-
-        const saveServerSetupReply = (event, filename) => {
-            saveServerSetup(filename);
-        };
-
-        coreApi.electron.ipcRenderer.on('save-server-setup-reply', saveServerSetupReply);
-        saveServerSetupReplyHandle = saveServerSetupReply;
     }
 
     LsaveChangedAttribute(changedAttribute) {
@@ -380,12 +378,8 @@ class ServerSetup extends React.PureComponent {
                 id={`${selectedAdapter.instanceId}_serversetup`}
                 name={selectedAdapter.state.name}
                 address={selectedAdapter.state.address}
-                onSaveSetup={() => {
-                    coreApi.electron.ipcRenderer.send('save-server-setup', null);
-                }}
-                onLoadSetup={() => {
-                    coreApi.electron.ipcRenderer.send('load-server-setup', null);
-                }}
+                onSaveSetup={this.LopenSaveDialog}
+                onLoadSetup={this.LopenLoadDialog}
             />
         );
 

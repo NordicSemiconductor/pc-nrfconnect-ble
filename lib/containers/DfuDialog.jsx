@@ -78,16 +78,24 @@ class DfuDialog extends React.PureComponent {
     }
 
     showFileDialog() {
-        coreApi.electron.ipcRenderer.once('choose-file-dialog-reply', (event, fileArray) => {
-            if (fileArray && fileArray.length === 1) {
-                this.onFileSelected(fileArray[0]);
-            }
-        });
+        const { dialog } = coreApi.electron.remote;
         const filters = [{
             name: 'Zip Files',
             extensions: ['zip'],
         }];
-        coreApi.electron.ipcRenderer.send('choose-file-dialog', filters);
+
+        dialog.showOpenDialog({
+            title: 'Choose file', filters, properties: ['openFile'],
+        }, filePaths => {
+            if (!filePaths) {
+                return;
+            }
+            const [filePath] = filePaths;
+            if (!filePath) {
+                return;
+            }
+            this.onFileSelected(filePath);
+        });
     }
 
 
