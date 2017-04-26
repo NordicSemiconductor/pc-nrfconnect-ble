@@ -58,10 +58,6 @@ import { ValidationError } from '../common/Errors';
 import { ERROR, SUCCESS, validateUuid } from '../utils/validateUuid';
 
 class DescriptorEditor extends React.PureComponent {
-    validateUuidInput() {
-        return validateUuid(this.uuid);
-    }
-
     validateValueLength() {
         const maxLength = parseInt(this.maxLength, 10);
         const fixedLength = this.fixedLength;
@@ -107,30 +103,8 @@ class DescriptorEditor extends React.PureComponent {
         this.props.onModified(true);
     }
 
-    LonUuidChange(uuid) {
-        const hexRegEx = /^[0-9A-F]*$/i;
-        const valid = hexRegEx.test(uuid);
-        let caretPosition = textarea.selectionStart;
-
-        if (!valid) {
-            caretPosition -= 1;
-            this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
-            return;
-        }
-
-        this.uuid = uuid;
-        const uuidName = getUuidName(this.uuid);
-
-        if (this.uuid !== uuidName) {
-            this.name = uuidName;
-        }
-
-        this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
-        this.props.onModified(true);
-    }
-
     LsaveAttribute() {
-        if (this.validateUuidInput() === ERROR) {
+        if (validateUuid(this.uuid) === ERROR) {
             this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
         }
@@ -204,7 +178,6 @@ class DescriptorEditor extends React.PureComponent {
                     label="Descriptor UUID"
                     name="uuid"
                     value={this.uuid}
-                    onChange={e => this.LonUuidChange(e.target.value)}
                     uuidDefinitions={uuidDescriptorDefinitions}
                     handleSelection={uuid2 => this.LhandleUuidSelect(uuid2)}
                 />

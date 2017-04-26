@@ -55,21 +55,6 @@ import { ERROR, validateUuid } from '../utils/validateUuid';
 
 class ServiceEditor extends React.PureComponent {
     LhandleUuidSelect(uuid) {
-        this.LonUuidChange(uuid);
-    }
-
-    validateUuidInput() {
-        return validateUuid(this.uuid);
-    }
-
-    LonUuidChange(uuid) {
-        const hexRegEx = /^[0-9A-F]*$/i;
-        const valid = hexRegEx.test(uuid);
-
-        if (!valid) {
-            return;
-        }
-
         this.uuid = uuid;
         const uuidName = getUuidName(this.uuid);
 
@@ -89,7 +74,7 @@ class ServiceEditor extends React.PureComponent {
     }
 
     LsaveAttribute() {
-        if (this.validateUuidInput() === ERROR) {
+        if (validateUuid(this.uuid) === ERROR) {
             this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
         }
@@ -130,7 +115,6 @@ class ServiceEditor extends React.PureComponent {
                     label="Service UUID"
                     name="uuid"
                     value={this.uuid}
-                    onChange={e => this.LonUuidChange(e)}
                     uuidDefinitions={uuidServiceDefinitions}
                     handleSelection={uuid2 => this.LhandleUuidSelect(uuid2)}
                 />

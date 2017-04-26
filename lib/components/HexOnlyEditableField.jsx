@@ -270,7 +270,11 @@ class HexOnlyEditableField extends React.PureComponent {
 }
 
 HexOnlyEditableField.propTypes = {
-    showText: PropTypes.bool.isRequired,
+    showText: PropTypes.bool,
+};
+
+HexOnlyEditableField.defaultProps = {
+    showText: false,
 };
 
 export default HexOnlyEditableField;

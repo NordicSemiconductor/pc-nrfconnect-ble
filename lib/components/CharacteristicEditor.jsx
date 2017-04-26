@@ -103,30 +103,6 @@ class CharacteristicEditor extends React.Component {
         this.props.onModified(true);
     }
 
-    LonUuidChange(e) {
-        const hexRegEx = /^[0-9A-F]*$/i;
-        const textarea = e.target;
-        const uuid = textarea.value;
-        const valid = hexRegEx.test(uuid);
-        let caretPosition = textarea.selectionStart;
-
-        if (!valid) {
-            caretPosition -= 1;
-            this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
-            return;
-        }
-
-        this.uuid = uuid;
-        const uuidName = getUuidName(this.uuid);
-
-        if (this.uuid !== uuidName) {
-            this.name = uuidName;
-        }
-
-        this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
-        this.props.onModified(true);
-    }
-
     LsaveAttribute() {
         if (validateUuid(this.uuid) === ERROR) {
             this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
