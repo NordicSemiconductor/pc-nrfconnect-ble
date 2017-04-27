@@ -128,10 +128,14 @@ class DiscoveredDevice extends React.PureComponent {
         this.currentAdvType = undefined;
         this.currentFlags = undefined;
         this.currentServices = undefined;
+
+        this.toggleExpand = this.toggleExpand.bind(this);
+        this.onButtonClick = this.onButtonClick.bind(this);
     }
 
-    onButtonClick(e, device) {
+    onButtonClick(e) {
         const {
+            device,
             onCancelConnect,
             onConnect,
             adapterIsConnecting,
@@ -146,11 +150,15 @@ class DiscoveredDevice extends React.PureComponent {
         }
     }
 
+    toggleExpand() {
+        const { device, onToggleExpanded } = this.props;
+        onToggleExpanded(device.address);
+    }
+
     render() {
         const {
             device,
             isConnecting,
-            onToggleExpanded,
             adapterIsConnecting,
         } = this.props;
 
@@ -254,7 +262,7 @@ class DiscoveredDevice extends React.PureComponent {
         }
 
         return (
-            <div className="device" onClick={() => onToggleExpanded(device.address)} >
+            <div className="device" onClick={this.toggleExpand}>
                 <div className="top-bar">
                     <div style={{ float: 'right' }}>
                         <span style={{ width: `${getRssiWidth(device.rssi)}px` }} className="icon-signal icon-foreground" />
@@ -265,7 +273,7 @@ class DiscoveredDevice extends React.PureComponent {
                 <div className="discovered-device-body text-small">
                     <div className="discovered-device-address-line">
                         <button
-                            onClick={e => this.onButtonClick(e, device)}
+                            onClick={this.onButtonClick}
                             className="btn btn-primary btn-xs btn-nordic"
                             disabled={(!isConnecting && adapterIsConnecting) || device.connected}
                         >

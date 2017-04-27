@@ -63,8 +63,10 @@ class DiscoveredDevices extends React.PureComponent {
         super(props);
 
         const { toggleScan, clearDevicesList } = this.props;
-        window.addEventListener('core:toggle-scan', () => { toggleScan(); });
-        window.addEventListener('core:clear-scan', () => { clearDevicesList(); });
+        window.addEventListener('core:toggle-scan', toggleScan);
+        window.addEventListener('core:clear-scan', clearDevicesList);
+
+        this.handleFilterChange = this.handleFilterChange.bind(this);
     }
 
     handleCheckedChange(property, e) {
@@ -118,7 +120,7 @@ class DiscoveredDevices extends React.PureComponent {
                     label="Filter:"
                     className="adv-value"
                     defaultValue={discoveryOptions.filterString}
-                    onChange={e => this.handleFilterChange(e)}
+                    onChange={this.handleFilterChange}
                     labelClassName=""
                     wrapperClassName=""
                     placeholder="Device name or address"
@@ -140,11 +142,11 @@ class DiscoveredDevices extends React.PureComponent {
                         scanInProgress={isScanning}
                         adapterIsConnecting={adapterIsConnecting}
                         isAdapterAvailable={isAdapterAvailable}
-                        onScanClicked={() => toggleScan()}
+                        onScanClicked={toggleScan}
                     />
                     <button
                         title="Clear list (Alt+C)"
-                        onClick={() => clearDevicesList()}
+                        onClick={clearDevicesList}
                         type="button"
                         className="btn btn-primary btn-sm btn-nordic padded-row"
                     >
@@ -170,8 +172,8 @@ class DiscoveredDevices extends React.PureComponent {
                                     standalone={false}
                                     adapterIsConnecting={adapterIsConnecting}
                                     isConnecting={device.isConnecting}
-                                    onConnect={device2 => connectToDevice(device2)}
-                                    onCancelConnect={() => cancelConnect()}
+                                    onConnect={connectToDevice}
+                                    onCancelConnect={cancelConnect}
                                     onToggleExpanded={toggleExpanded}
                                 />
                             );
