@@ -173,7 +173,6 @@ function mapStateToProps(state) {
     const { advertising } = state.app;
 
     return {
-        advertising,
         tempAdvDataEntries: advertising.tempAdvDataEntries,
         tempScanRespEntries: advertising.tempScanRespEntries,
         show: advertising.show,
@@ -202,11 +201,9 @@ AdvertisingSetup.propTypes = {
     addAdvEntry: PropTypes.func.isRequired,
     applyChanges: PropTypes.func.isRequired,
     setAdvertisingData: PropTypes.func.isRequired,
-    // advertising: PropTypes.object.isRequired,
     setAdvdataStatus: PropTypes.string.isRequired,
     deleteAdvData: PropTypes.func.isRequired,
     addScanRsp: PropTypes.func.isRequired,
     deleteScanRsp: PropTypes.func.isRequired,
-    // showSetupDialog: PropTypes.func.isRequired,
     hideSetupDialog: PropTypes.func.isRequired,
 };
