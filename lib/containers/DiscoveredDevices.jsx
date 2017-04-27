@@ -37,8 +37,6 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/forbid-prop-types: off */
-/* eslint react/prop-types: off */
 /* eslint jsx-a11y/no-static-element-interactions: off */
 
 'use strict';
@@ -47,6 +45,9 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Checkbox } from 'react-bootstrap';
+import { OrderedMap } from 'immutable';
+
+import { DiscoveryOptions } from '../reducers/discoveryReducer';
 
 import * as DiscoveryActions from '../actions/discoveryActions';
 import * as AdapterActions from '../actions/adapterActions';
@@ -67,6 +68,7 @@ class DiscoveredDevices extends React.PureComponent {
         window.addEventListener('core:clear-scan', clearDevicesList);
 
         this.handleFilterChange = this.handleFilterChange.bind(this);
+        this.handleSortByRssiCheckedChange = this.handleCheckedChange.bind(this, 'sortByRssi');
     }
 
     handleCheckedChange(property, e) {
@@ -110,7 +112,7 @@ class DiscoveredDevices extends React.PureComponent {
                 <Checkbox
                     className="adv-label"
                     defaultChecked={discoveryOptions.sortByRssi}
-                    onChange={e => this.handleCheckedChange('sortByRssi', e)}
+                    onChange={this.handleSortByRssiCheckedChange}
                 >
                     Sort by signal strength
                 </Checkbox>
@@ -228,7 +230,7 @@ export default connect(
 )(withHotkey(DiscoveredDevices));
 
 DiscoveredDevices.propTypes = {
-    discoveredDevices: PropTypes.object.isRequired,
+    discoveredDevices: PropTypes.instanceOf(OrderedMap).isRequired,
     isAdapterAvailable: PropTypes.bool.isRequired,
     isScanning: PropTypes.bool.isRequired,
     adapterIsConnecting: PropTypes.bool.isRequired,
@@ -237,4 +239,8 @@ DiscoveredDevices.propTypes = {
     connectToDevice: PropTypes.func.isRequired,
     cancelConnect: PropTypes.func.isRequired,
     bindHotkey: PropTypes.func.isRequired,
+    setDiscoveryOptions: PropTypes.func.isRequired,
+    toggleOptionsExpanded: PropTypes.func.isRequired,
+    toggleExpanded: PropTypes.func.isRequired,
+    discoveryOptions: PropTypes.instanceOf(DiscoveryOptions).isRequired,
 };

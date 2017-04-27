@@ -37,8 +37,6 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/forbid-prop-types: off */
-/* eslint react/prop-types: off */
 /* eslint jsx-a11y/no-static-element-interactions: off */
 
 'use strict';
@@ -47,6 +45,7 @@ import React, { PropTypes } from 'react';
 import changeCase from 'change-case';
 import { getUuidName } from '../utils/uuid_definitions';
 import { toHexString } from '../utils/stringUtil';
+import { ImmutableDevice } from '../utils/api';
 
 const RSSI_WIDTH_MAX = 20;
 const RSSI_WIDTH_HIGH = Math.round(RSSI_WIDTH_MAX * 0.8);
@@ -298,13 +297,14 @@ class DiscoveredDevice extends React.PureComponent {
 }
 
 DiscoveredDevice.propTypes = {
-    device: PropTypes.object.isRequired,
+    device: PropTypes.instanceOf(ImmutableDevice).isRequired,
     // If adapter is currently connecting to a device
     adapterIsConnecting: PropTypes.bool.isRequired,
     // If adapter is currently connecting to this device
     isConnecting: PropTypes.bool.isRequired,
     onConnect: PropTypes.func.isRequired,
     onCancelConnect: PropTypes.func.isRequired,
+    onToggleExpanded: PropTypes.func.isRequired,
 };
 
 export default DiscoveredDevice;
