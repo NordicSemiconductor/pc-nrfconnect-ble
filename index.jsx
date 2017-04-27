@@ -98,6 +98,10 @@ export default {
         ...bindActionCreators(DiscoveryActions, dispatch),
         ...bindActionCreators(AdapterActions, dispatch),
     }),
+    mapSerialPortSelectorState: (state, props) => ({
+        portIndicatorStatus: state.app.adapter.selectedAdapterIndex ? 'on' : 'off',
+        ...props,
+    }),
     reduceApp: reducers,
     middleware: store => next => action => {
         if (!action) {
