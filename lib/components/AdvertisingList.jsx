@@ -37,11 +37,10 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/forbid-prop-types: off */
-
 'use strict';
 
 import React, { PropTypes } from 'react';
+import { List } from 'immutable';
 import AdvertisingListEntry from './AdvertisingListEntry';
 
 const AdvertisingList = props => {
@@ -78,7 +77,7 @@ const AdvertisingList = props => {
 
 AdvertisingList.propTypes = {
     title: PropTypes.string.isRequired,
-    advEntries: PropTypes.object.isRequired,
+    advEntries: PropTypes.instanceOf(List).isRequired,
     onDelete: PropTypes.func.isRequired,
 };
 

@@ -37,14 +37,13 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/forbid-prop-types: off */
-
 'use strict';
 
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Modal, Button, Label } from 'react-bootstrap';
+import { List } from 'immutable';
 
 import AdvertisingList from '../components/AdvertisingList';
 import AdvertisingData from '../components/AdvertisingData';
@@ -55,6 +54,11 @@ class AdvertisingSetup extends React.PureComponent {
     constructor(props) {
         super(props);
         this.id = 0;
+
+        this.addToAdvData = this.addToAdvData.bind(this);
+        this.addToScanResponse = this.addToScanResponse.bind(this);
+        this.handleApply = this.handleApply.bind(this);
+        this.handleValueChange = this.handleValueChange.bind(this);
     }
 
     LprepareValue() {
@@ -118,12 +122,12 @@ class AdvertisingSetup extends React.PureComponent {
                     <Modal.Title>Advertising setup</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <AdvertisingData onValueChange={value => this.handleValueChange(value)} />
+                    <AdvertisingData onValueChange={this.handleValueChange} />
                     <div className="adv-row">
                         <div className="adv-col adv-pkt">
                             <Button
                                 className="btn-add btn-primary btn-nordic icon-plus"
-                                onClick={() => this.addToAdvData()}
+                                onClick={this.addToAdvData}
                             >
                                 {' Add to advertising data'}
                             </Button>
@@ -136,7 +140,7 @@ class AdvertisingSetup extends React.PureComponent {
                         <div className="adv-col scan-rsp-pkt">
                             <Button
                                 className="btn-add btn-primary btn-nordic icon-plus"
-                                onClick={() => this.addToScanResponse()}
+                                onClick={this.addToScanResponse}
                             >
                                 {' Add to scan response'}
                             </Button>
@@ -152,7 +156,7 @@ class AdvertisingSetup extends React.PureComponent {
                     <Label className="error-label" bsStyle="danger">{setAdvdataStatus}</Label>
                     <Button
                         className="btn-primary btn-nordic"
-                        onClick={() => this.handleApply()}
+                        onClick={this.handleApply}
                     >
                         Apply
                     </Button>
@@ -192,8 +196,8 @@ export default connect(
 )(AdvertisingSetup);
 
 AdvertisingSetup.propTypes = {
-    tempAdvDataEntries: PropTypes.object.isRequired,
-    tempScanRespEntries: PropTypes.object.isRequired,
+    tempAdvDataEntries: PropTypes.instanceOf(List).isRequired,
+    tempScanRespEntries: PropTypes.instanceOf(List).isRequired,
     show: PropTypes.bool.isRequired,
     addAdvEntry: PropTypes.func.isRequired,
     applyChanges: PropTypes.func.isRequired,

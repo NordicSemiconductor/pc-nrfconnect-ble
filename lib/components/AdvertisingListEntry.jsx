@@ -45,28 +45,34 @@ import React, { PropTypes } from 'react';
 
 import { Button } from 'react-bootstrap';
 
-const AdvertisingListEntry = props => {
-    const {
-        entry,
-        onDelete,
-    } = props;
-
-    return (
-        <tr>
-            <td>{entry.type}</td>
-            <td>{entry.value}</td>
-            <td>
-                <Button
-                    className="icon-cancel-circled"
-                    bsSize="xsmall"
-                    onClick={() => onDelete(entry.id)}
-                >
-                    {' Delete'}
-                </Button>
-            </td>
-        </tr>
-    );
-};
+class AdvertisingListEntry extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.onButtonClicked = this.onButtonClicked.bind(this);
+    }
+    onButtonClicked() {
+        const { entry, onDelete } = this.props;
+        onDelete(entry.id);
+    }
+    render() {
+        const { entry } = this.props;
+        return (
+            <tr>
+                <td>{entry.type}</td>
+                <td>{entry.value}</td>
+                <td>
+                    <Button
+                        className="icon-cancel-circled"
+                        bsSize="xsmall"
+                        onClick={this.onButtonClicked}
+                    >
+                        {' Delete'}
+                    </Button>
+                </td>
+            </tr>
+        );
+    }
+}
 
 AdvertisingListEntry.propTypes = {
     entry: PropTypes.object.isRequired,

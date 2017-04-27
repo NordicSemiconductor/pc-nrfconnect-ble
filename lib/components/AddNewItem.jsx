@@ -37,24 +37,24 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/prop-types: off */
 /* eslint jsx-a11y/no-static-element-interactions: off */
-/* eslint no-underscore-dangle: off */
 
 'use strict';
 
 import _ from 'lodash';
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 class AddNewItem extends React.PureComponent {
     componentWillReceiveProps(nextProps) {
         // if we're selected through keyboard navigation, we need to make sure we're visible
 
-        // btw: this _addBtnId can't be found anywhere, probably obsolete
-        const selectedId = nextProps.selected && nextProps.selected._addBtnId;
+        const selectedId = nextProps.selected;
         if (nextProps.id === selectedId && nextProps.onRequestVisibility) {
             nextProps.onRequestVisibility();
         }
+
+        // open bug: https://github.com/yannickcr/eslint-plugin-react/issues/944
+        const { id, selected, onRequestVisibility } = this.props; // eslint-disable-line
     }
 
     render() {
@@ -75,5 +75,18 @@ class AddNewItem extends React.PureComponent {
         );
     }
 }
+
+AddNewItem.propTypes = {
+    id: PropTypes.string.isRequired,
+    bars: PropTypes.number.isRequired,
+    selected: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
+    onRequestVisibility: PropTypes.func,
+};
+
+AddNewItem.defaultProps = {
+    onRequestVisibility: null,
+};
 
 export default AddNewItem;

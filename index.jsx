@@ -50,8 +50,6 @@ import { confirmUserUUIDsExist } from './lib/utils/uuid_definitions';
 
 import './resources/css/styles.less';
 
-/* eslint react/prop-types: 0 */
-
 export default {
     config: {
         firmwareUseBLE: true,
