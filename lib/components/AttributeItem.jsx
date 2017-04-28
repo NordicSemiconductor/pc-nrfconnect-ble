@@ -34,12 +34,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/prop-types: off */
 /* eslint jsx-a11y/no-static-element-interactions: off */
 
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import EnumeratingAttributes from './EnumeratingAttributes';
 
@@ -47,7 +46,7 @@ import AddNewItem from './AddNewItem';
 import { Effects } from '../utils/Effects';
 import * as Colors from '../utils/colorDefinitions';
 
-import { getInstanceIds } from '../utils/api';
+import { getInstanceIds, ImmutableService, ImmutableDescriptor, ImmutableCharacteristic } from '../utils/api';
 import { toHexString } from '../utils/stringUtil';
 
 export const CCCD_UUID = '2902';
@@ -61,6 +60,9 @@ class AttributeItem extends React.PureComponent {
         this.expandable = true;
         this.attributeType = 'attribute';
         this.childAttributeType = 'service';
+
+        this.LchildChanged = this.LchildChanged.bind(this);
+        this.LselectComponent = this.LselectComponent.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -123,7 +125,9 @@ class AttributeItem extends React.PureComponent {
 
     LonExpandAreaClick(e) {
         e.stopPropagation();
-        this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
+        if (this.props.onSetAttributeExpanded) {
+            this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
+        }
     }
 
     LchildChanged() {
@@ -279,5 +283,34 @@ class AttributeItem extends React.PureComponent {
         );
     }
 }
+
+AttributeItem.propTypes = {
+    item: PropTypes.oneOfType([
+        PropTypes.instanceOf(ImmutableService),
+        PropTypes.instanceOf(ImmutableDescriptor),
+        PropTypes.instanceOf(ImmutableCharacteristic),
+    ]).isRequired,
+    selected: PropTypes.string,
+    addNew: PropTypes.bool,
+    onChange: PropTypes.func,
+    onRead: PropTypes.func,
+    onWrite: PropTypes.func,
+    onSelectAttribute: PropTypes.func,
+    onAddCharacteristic: PropTypes.func,
+    onAddDescriptor: PropTypes.func,
+    onSetAttributeExpanded: PropTypes.func,
+};
+
+AttributeItem.defaultProps = {
+    selected: null,
+    addNew: false,
+    onChange: null,
+    onRead: null,
+    onWrite: null,
+    onSelectAttribute: null,
+    onAddCharacteristic: null,
+    onAddDescriptor: null,
+    onSetAttributeExpanded: null,
+};
 
 export default AttributeItem;

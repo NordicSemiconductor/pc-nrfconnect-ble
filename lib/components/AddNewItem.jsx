@@ -76,13 +76,14 @@ class AddNewItem extends React.PureComponent {
 AddNewItem.propTypes = {
     id: PropTypes.string.isRequired,
     bars: PropTypes.number.isRequired,
-    selected: PropTypes.string.isRequired,
+    selected: PropTypes.string,
     text: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
     onRequestVisibility: PropTypes.func,
 };
 
 AddNewItem.defaultProps = {
+    selected: null,
     onRequestVisibility: null,
 };
 

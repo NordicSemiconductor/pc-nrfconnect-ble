@@ -106,7 +106,7 @@ class DescriptorItem extends AttributeItem {
                         onWrite={LonWrite}
                         onRead={LonRead}
                         showReadButton={itemIsSelected}
-                        selectParent={() => this.LselectComponent()}
+                        selectParent={this.LselectComponent}
                     />,
                 );
             });
@@ -118,7 +118,7 @@ class DescriptorItem extends AttributeItem {
                     onWrite={LonWrite}
                     onRead={LonRead}
                     showReadButton={itemIsSelected}
-                    selectParent={() => this.LselectComponent()}
+                    selectParent={this.LselectComponent}
                 />,
             );
         }

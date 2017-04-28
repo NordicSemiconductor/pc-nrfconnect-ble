@@ -34,14 +34,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/forbid-prop-types: off */
-
 'use strict';
 
 import React, { PropTypes } from 'react';
 
 import AttributeItem from './AttributeItem';
 import CharacteristicItem from './CharacteristicItem';
+
+import { ImmutableService } from '../utils/api';
 
 class ServiceItem extends AttributeItem {
     constructor(props) {
@@ -58,7 +58,7 @@ class ServiceItem extends AttributeItem {
             <div className="content">
                 {this.renderName()}
                 {button &&
-                    <button className="btn btn-primary btn-nordic" onClick={() => button.onClick()}>
+                    <button className="btn btn-primary btn-nordic" onClick={button.onClick}>
                         <img src={button.icon} alt="" />
                     </button>
                 }
@@ -98,7 +98,7 @@ class ServiceItem extends AttributeItem {
                 onWrite={onWriteCharacteristic}
                 onReadDescriptor={onReadDescriptor}
                 onWriteDescriptor={onWriteDescriptor}
-                onChange={() => this.LchildChanged()}
+                onChange={this.LchildChanged}
                 addNew={addNew}
                 onAddDescriptor={onAddDescriptor}
             />,
@@ -107,7 +107,7 @@ class ServiceItem extends AttributeItem {
 }
 
 ServiceItem.propTypes = {
-    item: PropTypes.object.isRequired,
+    item: PropTypes.instanceOf(ImmutableService).isRequired,
     selected: PropTypes.string,
     button: PropTypes.shape({
         icon: PropTypes.string,

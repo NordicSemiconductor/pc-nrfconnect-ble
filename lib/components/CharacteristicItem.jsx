@@ -77,6 +77,8 @@ class CharacteristicItem extends AttributeItem {
         this.bars = 2;
         this.attributeType = 'characteristic';
         this.childAttributeType = 'descriptor';
+
+        this.LonToggleNotify = this.LonToggleNotify.bind(this);
     }
 
     LonToggleNotify(e) {
@@ -171,7 +173,7 @@ class CharacteristicItem extends AttributeItem {
                     title={toggleNotificationsText}
                     disabled={!hasCccd}
                     style={notifyIconStyle}
-                    onClick={e => this.LonToggleNotify(e)}
+                    onClick={this.LonToggleNotify}
                 >
                     <i className={notifyIcon} />
                 </div>
@@ -186,7 +188,7 @@ class CharacteristicItem extends AttributeItem {
                     onWrite={LonWrite}
                     showReadButton={hasReadProperty && itemIsSelected}
                     onRead={LonRead}
-                    selectParent={() => this.LselectComponent()}
+                    selectParent={this.LselectComponent}
                     showText={showText}
                 />
                 {this.renderError()}
@@ -213,7 +215,7 @@ class CharacteristicItem extends AttributeItem {
                 item={descriptor}
                 selected={selected}
                 onSelectAttribute={onSelectAttribute}
-                onChange={() => this.LchildChanged()}
+                onChange={this.LchildChanged}
                 onRead={onReadDescriptor}
                 onWrite={onWriteDescriptor}
             />

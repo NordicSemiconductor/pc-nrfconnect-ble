@@ -34,7 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/forbid-prop-types: off */
 /* eslint jsx-a11y/no-static-element-interactions: off */
 
 'use strict';
@@ -42,7 +41,9 @@
 import React, { PropTypes } from 'react';
 
 import CountdownTimer from '../components/CountdownTimer';
-import { BLEEventState, BLEEventType } from './../actions/common';
+import { BLEEventState, BLEEventType } from '../actions/common';
+
+import { Event } from '../reducers/bleEventReducer';
 
 const EVENT_TIMEOUT_SECONDS = 30;
 
@@ -206,7 +207,7 @@ class BLEEvent extends React.PureComponent {
 }
 
 BLEEvent.propTypes = {
-    event: PropTypes.object.isRequired,
+    event: PropTypes.instanceOf(Event).isRequired,
     selected: PropTypes.bool.isRequired,
     onTimedOut: PropTypes.func.isRequired,
     onSelected: PropTypes.func.isRequired,

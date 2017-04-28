@@ -34,12 +34,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/forbid-prop-types: off */
 /* eslint react/prop-types: off */
 
 'use strict';
 
 import React, { PropTypes } from 'react';
+import { Map } from 'immutable';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -244,7 +244,7 @@ class BLEEventDialog extends React.PureComponent {
 
 BLEEventDialog.propTypes = {
     visible: PropTypes.bool.isRequired,
-    events: PropTypes.object.isRequired,
+    events: PropTypes.instanceOf(Map).isRequired,
     selectedEventId: PropTypes.number.isRequired,
     clearAllEvents: PropTypes.func.isRequired,
     showDialog: PropTypes.func.isRequired,
