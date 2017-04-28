@@ -34,8 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/prop-types: off */
-
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -217,4 +215,10 @@ export default connect(
 
 MainViewContainer.propTypes = {
     selectedMainView: PropTypes.string.isRequired,
+    toggleAdvertising: PropTypes.func.isRequired,
+    toggleDebug: PropTypes.func,
+};
+
+MainViewContainer.defaultProps = {
+    toggleDebug: null,
 };

@@ -34,9 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/forbid-prop-types: off */
-/* eslint react/prop-types: off */
-/* eslint react/require-default-props: off */
 /* eslint jsx-a11y/label-has-for: off */
 
 'use strict';
@@ -48,6 +45,8 @@ import TextInput from './input/TextInput';
 
 import { BLEEventType } from '../actions/common';
 import { toHexString } from '../utils/stringUtil';
+
+import { Event } from '../reducers/bleEventReducer';
 
 const SUCCESS = 'success';
 const ERROR = 'error';
@@ -466,10 +465,12 @@ class AuthKeyEditor extends React.PureComponent {
 }
 
 AuthKeyEditor.propTypes = {
-    event: PropTypes.object.isRequired,
-    onKeypress: PropTypes.func,
-    onAuthKeySubmit: PropTypes.func,
-    onNumericalComparisonMatch: PropTypes.func,
+    event: PropTypes.instanceOf(Event).isRequired,
+    onKeypress: PropTypes.func.isRequired,
+    onAuthKeySubmit: PropTypes.func.isRequired,
+    onNumericalComparisonMatch: PropTypes.func.isRequired,
+    onLescOobSubmit: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
 };
 
 export default AuthKeyEditor;

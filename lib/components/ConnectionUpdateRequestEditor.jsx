@@ -34,8 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/forbid-prop-types: off */
-
 'use strict';
 
 import React, { PropTypes } from 'react';
@@ -44,6 +42,7 @@ import { Button } from 'react-bootstrap';
 import TextInput from './input/TextInput';
 
 import { BLEEventType } from '../actions/common';
+import { Event } from '../reducers/bleEventReducer';
 
 const CONN_INTERVAL_MIN = 7.5;
 const CONN_INTERVAL_MAX = 4000;
@@ -99,6 +98,16 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
         this.LsetAndValidateSlaveLatency(this.slaveLatency);
         this.LsetAndValidateConnectionSupervisionTimeout(this.connectionSupervisionTimeout);
+
+        this.LhandleUpdateConnection = this.LhandleUpdateConnection.bind(this);
+        this.LhandleConnectionIntervalChange = this.LhandleConnectionIntervalChange.bind(this);
+        this.LhandleConnectionSupervisionTimeoutChange =
+            this.LhandleConnectionSupervisionTimeoutChange.bind(this);
+        this.LhandleSlaveLatencyChange = this.LhandleSlaveLatencyChange.bind(this);
+        this.LonIgnoreEvent = this.LonIgnoreEvent.bind(this);
+        this.LonUpdateConnectionParams = this.LonUpdateConnectionParams.bind(this);
+        this.LonRejectConnectionParams = this.LonRejectConnectionParams(this);
+        this.LonCancelUserInitiatedEvent = this.LonCancelUserInitiatedEvent.bind(this);
     }
 
     LgenerateHeaderMessage() {
@@ -141,7 +150,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                     <TextInput
                         id={`interval_${address}`}
                         className="form-control nordic-form-control"
-                        onChange={_event => this.LhandleConnectionIntervalChange(_event)}
+                        onChange={this.LhandleConnectionIntervalChange}
                         type="number"
                         min={CONN_INTERVAL_MIN}
                         max={CONN_INTERVAL_MAX}
@@ -205,14 +214,28 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
         );
     }
 
+    LonIgnoreEvent() {
+        const { event, onIgnoreEvent } = this.props;
+        onIgnoreEvent(event.id);
+    }
+
+    LonUpdateConnectionParams() {
+        const { event, onUpdateConnectionParams } = this.props;
+        onUpdateConnectionParams(event.id);
+    }
+
+    LonRejectConnectionParams() {
+        const { event, onRejectConnectionParams } = this.props;
+        onRejectConnectionParams(event.device);
+    }
+
+    LonCancelUserInitiatedEvent() {
+        const { event, onCancelUserInitiatedEvent } = this.props;
+        onCancelUserInitiatedEvent(event.id);
+    }
+
     render() {
-        const {
-            event,
-            onUpdateConnectionParams,
-            onRejectConnectionParams,
-            onIgnoreEvent,
-            onCancelUserInitiatedEvent,
-        } = this.props;
+        const { event } = this.props;
 
         this.readOnly = (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE);
 
@@ -228,7 +251,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
             ? (
                 <Button
                     type="button"
-                    onClick={() => onIgnoreEvent(event.id)}
+                    onClick={this.LonIgnoreEvent}
                     className="btn btn-default btn-sm btn-nordic"
                 >
                     Ignore
@@ -239,7 +262,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
             ? (
                 <Button
                     type="button"
-                    onClick={() => onRejectConnectionParams(event.device)}
+                    onClick={this.LonRejectConnectionParams}
                     className="btn btn-default btn-sm btn-nordic"
                 >
                     Reject
@@ -251,7 +274,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
             ? (
                 <Button
                     type="button"
-                    onClick={() => onRejectConnectionParams(event.device)}
+                    onClick={this.LonRejectConnectionParams}
                     className="btn btn-default btn-sm btn-nordic"
                 >
                     Disconnect
@@ -265,7 +288,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                         !this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid
                     }
                     type="button"
-                    onClick={() => this.LhandleUpdateConnection()}
+                    onClick={this.LhandleUpdateConnection}
                     className="btn btn-primary btn-sm btn-nordic"
                 >
                     Update
@@ -279,7 +302,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                         !this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid
                     }
                     type="button"
-                    onClick={() => onUpdateConnectionParams(event.id)}
+                    onClick={this.LonUpdateConnectionParams}
                     className="btn btn-primary btn-sm btn-nordic"
                 >
                     Accept
@@ -290,7 +313,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
             ? (
                 <Button
                     type="button"
-                    onClick={() => onCancelUserInitiatedEvent(event.id)}
+                    onClick={this.LonCancelUserInitiatedEvent}
                     className="btn btn-default btn-sm btn-nordic"
                 >
                     Cancel
@@ -318,7 +341,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                                 style={slaveLatencyStyle}
                                 id={`latency_${address}`}
                                 className="form-control nordic-form-control"
-                                onChange={_event => this.LhandleSlaveLatencyChange(_event)}
+                                onChange={this.LhandleSlaveLatencyChange}
                                 type="number"
                                 value={this.slaveLatency}
                                 min={CONN_LATENCY_MIN}
@@ -341,9 +364,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                                     style={connectionSupervisionTimeoutInputStyle}
                                     id={`timeout_${address}`}
                                     className="form-control nordic-form-control"
-                                    onChange={
-                                        _event => this.LhandleConnectionSupervisionTimeoutChange(_event)
-                                    }
+                                    onChange={this.LhandleConnectionSupervisionTimeoutChange}
                                     type="number"
                                     min={CONN_TIMEOUT_MIN}
                                     max={CONN_TIMEOUT_MAX}
@@ -369,7 +390,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 }
 
 ConnectionUpdateRequestEditor.propTypes = {
-    event: PropTypes.object.isRequired,
+    event: PropTypes.instanceOf(Event).isRequired,
     onRejectConnectionParams: PropTypes.func.isRequired,
     onUpdateConnectionParams: PropTypes.func.isRequired,
     onIgnoreEvent: PropTypes.func.isRequired,

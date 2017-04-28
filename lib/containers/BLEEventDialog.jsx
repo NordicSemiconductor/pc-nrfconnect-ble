@@ -34,7 +34,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/prop-types: off */
+/* eslint react/forbid-prop-types: off */
 
 'use strict';
 
@@ -251,7 +251,6 @@ BLEEventDialog.propTypes = {
     selectEventId: PropTypes.func.isRequired,
     rejectDeviceConnectionParams: PropTypes.func.isRequired,
     updateDeviceConnectionParams: PropTypes.func.isRequired,
-    // ignoreEvent: PropTypes.func.isRequired,
     removeEvent: PropTypes.func.isRequired,
     rejectPairing: PropTypes.func.isRequired,
     acceptPairing: PropTypes.func.isRequired,
@@ -259,6 +258,14 @@ BLEEventDialog.propTypes = {
     replyAuthKey: PropTypes.func.isRequired,
     replyLescOob: PropTypes.func.isRequired,
     sendKeypress: PropTypes.func.isRequired,
+    disconnectFromDevice: PropTypes.func.isRequired,
+    acceptEvent: PropTypes.func.isRequired,
+    pairWithDevice: PropTypes.func.isRequired,
+    security: PropTypes.object,
+};
+
+BLEEventDialog.defaultProps = {
+    security: null,
 };
 
 function mapStateToProps(state) {
