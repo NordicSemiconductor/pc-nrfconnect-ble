@@ -35,8 +35,6 @@
  */
 
 /* eslint react/forbid-prop-types: off */
-/* eslint react/prop-types: off */
-/* eslint react/require-default-props: off */
 
 'use strict';
 
@@ -204,7 +202,6 @@ class DeviceDetailsContainer extends React.PureComponent {
                 onWriteDescriptor={writeDescriptor}
                 onShowAdvertisingSetupDialog={showSetupDialog}
                 onToggleAdvertising={toggleAdvertising}
-                containerHeight={this.props.style.height}
                 onToggleAutoConnUpdate={toggleAutoConnUpdate}
                 autoConnUpdate={autoConnUpdate}
                 onShowSecurityParamsDialog={showSecurityParamsDialog}
@@ -234,7 +231,6 @@ class DeviceDetailsContainer extends React.PureComponent {
                     onDisconnectFromDevice={disconnectFromDevice}
                     onPairWithDevice={createUserInitiatedPairingEvent}
                     onUpdateDeviceConnectionParams={createUserInitiatedConnParamsUpdateEvent}
-                    containerHeight={this.props.style.height}
                 />,
             );
         });
@@ -315,4 +311,22 @@ DeviceDetailsContainer.propTypes = {
     deleteBondInfo: PropTypes.func.isRequired,
     showSecurityParamsDialog: PropTypes.func.isRequired,
     openCustomUuidFile: PropTypes.func.isRequired,
+    selectComponent: PropTypes.func.isRequired,
+    setAttributeExpanded: PropTypes.func.isRequired,
+    showSetupDialog: PropTypes.func.isRequired,
+    toggleAdvertising: PropTypes.func.isRequired,
+    disconnectFromDevice: PropTypes.func.isRequired,
+    toggleAutoConnUpdate: PropTypes.func.isRequired,
+    autoConnUpdate: PropTypes.bool,
+    showDfuDialog: PropTypes.func.isRequired,
+    style: PropTypes.object.isRequired,
+};
+
+DeviceDetailsContainer.defaultProps = {
+    adapterState: null,
+    selectedComponent: null,
+    deviceDetails: null,
+    connectedDevices: null,
+    security: null,
+    autoConnUpdate: false,
 };

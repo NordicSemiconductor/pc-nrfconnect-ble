@@ -35,7 +35,6 @@
  */
 
 /* eslint react/forbid-prop-types: off */
-/* eslint react/require-default-props: off */
 
 import React, { PropTypes } from 'react';
 import { FormGroup, ControlLabel, ButtonToolbar } from 'react-bootstrap';
@@ -175,6 +174,18 @@ DfuEditor.propTypes = {
     onStartDfu: PropTypes.func.isRequired,
     onStopDfu: PropTypes.func.isRequired,
     throughput: PropTypes.object,
+};
+
+DfuEditor.defaultProps = {
+    packageInfo: null,
+    filePath: null,
+    status: null,
+    fileNameBeingTransferred: null,
+    percentCompleted: 0,
+    isCompleted: false,
+    isStopping: false,
+    isStarted: false,
+    throughput: null,
 };
 
 export default DfuEditor;

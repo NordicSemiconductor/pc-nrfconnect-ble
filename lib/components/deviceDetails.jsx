@@ -33,9 +33,8 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* eslint react/require-default-props: off */
+
 /* eslint react/forbid-prop-types: off */
-/* eslint react/prop-types: off */
 
 'use strict';
 
@@ -51,6 +50,11 @@ class DeviceDetailsView extends React.PureComponent {
     constructor(props) {
         super(props);
         this.dfuUuid = getUuidByName('Secure DFU');
+
+        this.LonDisconnectFromDevice = this.LonDisconnectFromDevice.bind(this);
+        this.LonUpdateDeviceConnectionParams = this.LonUpdateDeviceConnectionParams.bind(this);
+        this.LonPairWithDevice = this.LonPairWithDevice.bind(this);
+        this.LonShowDfuDialog = this.LonShowDfuDialog.bind(this);
     }
 
     createServiceItem(service) {
@@ -89,6 +93,26 @@ class DeviceDetailsView extends React.PureComponent {
             }
         }
         return false;
+    }
+
+    LonDisconnectFromDevice() {
+        const { device, onDisconnectFromDevice } = this.props;
+        onDisconnectFromDevice(device);
+    }
+
+    LonUpdateDeviceConnectionParams() {
+        const { device, onUpdateDeviceConnectionParams } = this.props;
+        onUpdateDeviceConnectionParams(device);
+    }
+
+    LonPairWithDevice() {
+        const { device, onPairWithDevice } = this.props;
+        onPairWithDevice(device);
+    }
+
+    LonShowDfuDialog() {
+        const { device, onShowDfuDialog } = this.props;
+        onShowDfuDialog(device);
     }
 
     renderChildren(instanceId) {
@@ -187,18 +211,8 @@ class DeviceDetailsView extends React.PureComponent {
             );
         }
 
-        const {
-            onDisconnectFromDevice,
-            onPairWithDevice,
-            onUpdateDeviceConnectionParams,
-            onShowDfuDialog,
-        } = this.props;
-
         const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
         const isDfuSupported = this.LhasDfuService(instanceId);
-        const onClickDfu = () => {
-            onShowDfuDialog(device);
-        };
 
         if (!deviceDetail) {
             return <div />;
@@ -213,11 +227,11 @@ class DeviceDetailsView extends React.PureComponent {
                 selected={selected}
                 layout="vertical"
                 isDfuSupported={isDfuSupported}
-                onClickDfu={onClickDfu}
+                onClickDfu={this.LonShowDfuDialog}
                 onSelectComponent={onSelectComponent}
-                onDisconnect={() => onDisconnectFromDevice(device)}
-                onPair={() => onPairWithDevice(device)}
-                onConnectionParamsUpdate={() => onUpdateDeviceConnectionParams(device)}
+                onDisconnect={this.LonDisconnectFromDevice}
+                onPair={this.LonPairWithDevice}
+                onConnectionParamsUpdate={this.LonUpdateDeviceConnectionParams}
             />
         );
 
@@ -240,10 +254,10 @@ DeviceDetailsView.propTypes = {
     onUpdateDeviceConnectionParams: PropTypes.func,
     deviceDetails: PropTypes.object,
     adapter: PropTypes.object,
-    onReadCharacteristic: PropTypes.func,
-    onWriteCharacteristic: PropTypes.func,
-    onReadDescriptor: PropTypes.func,
-    onWriteDescriptor: PropTypes.func,
+    onReadCharacteristic: PropTypes.func.isRequired,
+    onWriteCharacteristic: PropTypes.func.isRequired,
+    onReadDescriptor: PropTypes.func.isRequired,
+    onWriteDescriptor: PropTypes.func.isRequired,
     onDisconnectFromDevice: PropTypes.func,
     onPairWithDevice: PropTypes.func,
     onShowAdvertisingSetupDialog: PropTypes.func,
@@ -255,6 +269,30 @@ DeviceDetailsView.propTypes = {
     onDeleteBondInfo: PropTypes.func,
     onShowSecurityParamsDialog: PropTypes.func,
     onOpenCustomUuidFile: PropTypes.func,
+    onSetSecurityParams: PropTypes.func,
+    onShowDfuDialog: PropTypes.func,
+    style: PropTypes.object,
+};
+
+DeviceDetailsView.defaultProps = {
+    selected: null,
+    onUpdateDeviceConnectionParams: null,
+    deviceDetails: null,
+    adapter: null,
+    onDisconnectFromDevice: null,
+    onPairWithDevice: null,
+    onShowAdvertisingSetupDialog: null,
+    onToggleAdvertising: null,
+    onToggleAutoConnUpdate: null,
+    autoConnUpdate: false,
+    security: null,
+    onToggleAutoAcceptPairing: null,
+    onDeleteBondInfo: null,
+    onShowSecurityParamsDialog: null,
+    onOpenCustomUuidFile: null,
+    onSetSecurityParams: null,
+    onShowDfuDialog: null,
+    style: null,
 };
 
 export default DeviceDetailsView;

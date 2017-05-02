@@ -34,8 +34,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/require-default-props: off */
-/* eslint react/prop-types: off */
+/* eslint react/forbid-prop-types: off */
 
 'use strict';
 
@@ -269,16 +268,34 @@ CentralDevice.propTypes = {
     address: PropTypes.string,
     advertising: PropTypes.bool,
     onToggleAdvertising: PropTypes.func,
+    onShowSecurityParamsDialog: PropTypes.func,
+    security: PropTypes.object,
     onShowSetupDialog: PropTypes.func,
     onSaveSetup: PropTypes.func,
     onLoadSetup: PropTypes.func,
     autoConnUpdate: PropTypes.bool,
-    // autoAcceptPairing: PropTypes.bool,
     onToggleAutoConnUpdate: PropTypes.func,
     onToggleAutoAcceptPairing: PropTypes.func,
     onDeleteBondInfo: PropTypes.func,
     onOpenCustomUuidFile: PropTypes.func,
     bindHotkey: PropTypes.func.isRequired,
+};
+
+CentralDevice.defaultProps = {
+    name: null,
+    address: null,
+    advertising: false,
+    onToggleAdvertising: null,
+    onShowSecurityParamsDialog: null,
+    security: null,
+    onShowSetupDialog: null,
+    onSaveSetup: null,
+    onLoadSetup: null,
+    autoConnUpdate: false,
+    onToggleAutoConnUpdate: null,
+    onToggleAutoAcceptPairing: null,
+    onDeleteBondInfo: null,
+    onOpenCustomUuidFile: null,
 };
 
 export default withHotkey(CentralDevice);

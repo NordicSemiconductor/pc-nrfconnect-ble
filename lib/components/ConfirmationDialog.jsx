@@ -48,6 +48,8 @@ const ConfirmationDialog = props => {
         showProgress,
         onCancel,
         onOk,
+        okButtonText,
+        cancelButtonText,
     } = props;
     const buttonDisabled = showProgress;
     const backDrop = showProgress ? 'static' : false;
@@ -64,8 +66,8 @@ const ConfirmationDialog = props => {
                 <Modal.Footer>
                     <Spinner visible={showProgress} />
                     &nbsp;
-                    <Button onClick={onOk} disabled={buttonDisabled}>OK</Button>
-                    <Button onClick={onCancel} disabled={buttonDisabled}>Cancel</Button>
+                    <Button onClick={onOk} disabled={buttonDisabled}>{okButtonText}</Button>
+                    <Button onClick={onCancel} disabled={buttonDisabled}>{cancelButtonText}</Button>
                 </Modal.Footer>
             </Modal>
         </div>
@@ -78,10 +80,14 @@ ConfirmationDialog.propTypes = {
     showProgress: PropTypes.bool,
     onCancel: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
+    okButtonText: PropTypes.string,
+    cancelButtonText: PropTypes.string,
 };
 
 ConfirmationDialog.defaultProps = {
     showProgress: false,
+    okButtonText: 'OK',
+    cancelButtonText: 'Cancel',
 };
 
 export default ConfirmationDialog;

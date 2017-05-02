@@ -34,8 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/prop-types: off */
-
 import React, { PropTypes } from 'react';
 import sizeMe from 'react-sizeme';
 import { LineChart } from 'react-d3-components';
@@ -102,6 +100,11 @@ DfuThroughputGraph.propTypes = {
         x: PropTypes.number,
         y: PropTypes.number,
     })).isRequired,
+    size: PropTypes.number,
+};
+
+DfuThroughputGraph.defaultProps = {
+    size: undefined,
 };
 
 // Wrap the component inside a react-sizeme higher order component (HOC). Makes

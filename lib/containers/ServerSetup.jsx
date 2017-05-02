@@ -35,8 +35,6 @@
  */
 
 /* eslint react/forbid-prop-types: off */
-/* eslint react/prop-types: off */
-/* eslint react/require-default-props: off */
 
 'use strict';
 
@@ -60,7 +58,7 @@ import DescriptorEditor from '../components/DescriptorEditor';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import CentralDevice from '../components/CentralDevice';
 
-import { getInstanceIds } from '../utils/api';
+import { getInstanceIds, ImmutableAdapter } from '../utils/api';
 import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
 
 const filters = [
@@ -416,18 +414,24 @@ class ServerSetup extends React.PureComponent {
                         onOk={removeAttribute}
                         onCancel={hideDeleteDialog}
                         text="Are you sure you want to delete the attribute?"
+                        okButtonText="Yes"
+                        cancelButtonText="No"
                     />
                     <ConfirmationDialog
                         show={showingClearDialog}
                         onOk={clearServer}
                         onCancel={hideClearDialog}
                         text="Are you sure you want to clear the server setup?"
+                        okButtonText="Yes"
+                        cancelButtonText="No"
                     />
                     <ConfirmationDialog
                         show={showingDiscardDialog}
                         onOk={() => this.LonDiscardOk()}
                         onCancel={() => this.LonDiscardCancel()}
                         text="The attribute has been modified. Discard the changes?"
+                        okButtonText="Yes"
+                        cancelButtonText="No"
                     />
                 </div>
             </div>
@@ -465,5 +469,30 @@ export default connect(
 )(ServerSetup);
 
 ServerSetup.propTypes = {
+    selectedAdapter: PropTypes.instanceOf(ImmutableAdapter),
     serverSetup: PropTypes.object,
+    saveServerSetup: PropTypes.func.isRequired,
+    loadServerSetup: PropTypes.func.isRequired,
+    selectComponent: PropTypes.func.isRequired,
+    setAttributeExpanded: PropTypes.func.isRequired,
+    saveChangedAttribute: PropTypes.func.isRequired,
+    showDiscardDialog: PropTypes.func.isRequired,
+    hideDiscardDialog: PropTypes.func.isRequired,
+    addNewService: PropTypes.func.isRequired,
+    addNewCharacteristic: PropTypes.func.isRequired,
+    addNewDescriptor: PropTypes.func.isRequired,
+    removeAttribute: PropTypes.func.isRequired,
+    applyServer: PropTypes.func.isRequired,
+    clearServer: PropTypes.func.isRequired,
+    showDeleteDialog: PropTypes.func.isRequired,
+    hideDeleteDialog: PropTypes.func.isRequired,
+    showClearDialog: PropTypes.func.isRequired,
+    hideClearDialog: PropTypes.func.isRequired,
+    showErrorDialog: PropTypes.func.isRequired,
+    style: PropTypes.object.isRequired,
+};
+
+ServerSetup.defaultProps = {
+    selectedAdapter: null,
+    serverSetup: null,
 };

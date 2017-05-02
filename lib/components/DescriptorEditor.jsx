@@ -35,7 +35,6 @@
  */
 
 /* eslint react/forbid-prop-types: off */
-/* eslint react/prop-types: off */
 
 'use strict';
 
@@ -264,6 +263,7 @@ DescriptorEditor.propTypes = {
     onRemoveAttribute: PropTypes.func.isRequired,
     onSaveChangedAttribute: PropTypes.func.isRequired,
     onValidationError: PropTypes.func.isRequired,
+    onModified: PropTypes.func.isRequired,
 };
 
 export default DescriptorEditor;

@@ -35,7 +35,6 @@
  */
 
 /* eslint react/forbid-prop-types: off */
-/* eslint react/prop-types: off */
 
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
@@ -130,7 +129,6 @@ class DfuDialog extends React.PureComponent {
                             onChooseFile={this.showFileDialog}
                             onStartDfu={this.onStartDfu}
                             onStopDfu={this.onStopDfu}
-                            device={device}
                             {...this.props}
                         />
                     </Modal.Body>
@@ -148,6 +146,8 @@ class DfuDialog extends React.PureComponent {
                     onOk={hideDfuDialog}
                     onCancel={hideConfirmCloseDialog}
                     text="Closing this window will stop DFU. Are you sure?"
+                    okButtonText="Yes"
+                    cancelButtonText="No"
                 />
             </div>
         );
@@ -160,6 +160,13 @@ DfuDialog.propTypes = {
     hideConfirmCloseDialog: PropTypes.func.isRequired,
     isConfirmCloseVisible: PropTypes.bool.isRequired,
     device: PropTypes.object,
+    setDfuFilePath: PropTypes.func.isRequired,
+    loadDfuPackageInfo: PropTypes.func.isRequired,
+    startDfu: PropTypes.func.isRequired,
+    filePath: PropTypes.string.isRequired,
+    stopDfu: PropTypes.func.isRequired,
+    isStarted: PropTypes.bool.isRequired,
+    showConfirmCloseDialog: PropTypes.func.isRequired,
 };
 
 DfuDialog.defaultProps = {

@@ -34,8 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/prop-types: off */
-/* eslint react/require-default-props: off */
 /* eslint jsx-a11y/no-static-element-interactions: off */
 
 'use strict';
@@ -339,6 +337,27 @@ EditableField.propTypes = {
     onRead: PropTypes.func,
     showReadButton: PropTypes.bool,
     insideSelector: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    label: PropTypes.string,
+    plain: PropTypes.bool,
+    selectParent: PropTypes.func,
+    keyPressValidation: PropTypes.func.isRequired,
+    formatInput: PropTypes.func.isRequired,
+    getValueArray: PropTypes.func.isRequired,
+    completeValidation: PropTypes.func.isRequired,
+    onBeforeBackspace: PropTypes.func.isRequired,
+    onBeforeDelete: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+};
+
+EditableField.defaultProps = {
+    onWrite: null,
+    onRead: null,
+    showReadButton: false,
+    insideSelector: null,
+    label: null,
+    plain: null,
+    selectParent: null,
 };
 
 export default onClickOutside(EditableField);

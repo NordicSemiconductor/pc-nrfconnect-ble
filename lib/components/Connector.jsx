@@ -44,7 +44,7 @@ import { Popover, OverlayTrigger } from 'react-bootstrap';
 
 import layoutStrategies from '../common/layoutStrategies';
 
-export const ConnectionSetup = props => {
+const ConnectionSetup = props => {
     const {
         device,
     } = props;
@@ -96,7 +96,7 @@ ConnectionSetup.propTypes = {
     device: PropTypes.object.isRequired,
 };
 
-export class ConnectionOverlay extends React.PureComponent {
+class ConnectionOverlay extends React.PureComponent {
     Lcloseme() {
         this.overlayTrigger.hide();
     }
@@ -161,7 +161,7 @@ function LgenerateLines(lineCoordinates) {
     return result;
 }
 
-export class Connector extends React.PureComponent {
+class Connector extends React.PureComponent {
     componentDidMount() {
         // To be able to draw the line between two component they have be in the browser DOM
         // At first render they are not rendered, therefore we have to do an additional rendering
@@ -237,3 +237,5 @@ Connector.propTypes = {
     targetId: PropTypes.string.isRequired,
     layout: PropTypes.string.isRequired,
 };
+
+export default Connector;

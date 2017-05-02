@@ -34,47 +34,26 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/require-default-props: off */
-
 import React, { PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import TextInput from './TextInput';
 
-class FileInput extends React.PureComponent {
-    constructor(props) {
-        super(props);
-
-        this.onChange = this.onChange.bind(this);
-    }
-
-    onChange(event) {
-        this.props.onChange(this.props.name, event.target.value);
-    }
-
-    render() {
-        const { label, value, onChooseClicked, buttonDisabled, ...props } = this.props;
-        const fileBrowseButton = (
-            <Button disabled={buttonDisabled} onClick={onChooseClicked}>Choose</Button>
-        );
-        return (
-            <TextInput
-                label={label}
-                value={value}
-                onChange={this.onChange}
-                buttonAfter={fileBrowseButton}
-                {...props}
-            />
-        );
-    }
-}
+const FileInput = props => {
+    const { onChooseClicked, buttonDisabled } = props;
+    const fileBrowseButton = (
+        <Button disabled={buttonDisabled} onClick={onChooseClicked}>Choose</Button>
+    );
+    return (
+        <TextInput
+            buttonAfter={fileBrowseButton}
+            {...props}
+        />
+    );
+};
 
 FileInput.propTypes = {
-    label: PropTypes.string,
-    name: PropTypes.string,
-    onChooseClicked: PropTypes.func,
-    buttonDisabled: PropTypes.bool,
-    value: PropTypes.string,
-    onChange: PropTypes.func,
+    onChooseClicked: PropTypes.func.isRequired,
+    buttonDisabled: PropTypes.bool.isRequired,
 };
 
 export default FileInput;

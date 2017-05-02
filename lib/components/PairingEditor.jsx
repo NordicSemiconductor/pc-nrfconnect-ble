@@ -35,7 +35,6 @@
  */
 
 /* eslint react/forbid-prop-types: off */
-/* eslint react/prop-types: off */
 
 'use strict';
 
@@ -54,6 +53,11 @@ class PairingEditor extends React.PureComponent {
         const { event } = props;
 
         this.secParams = event && event.pairingParameters ? event.pairingParameters : null;
+        this.handleSecParamsChange = this.handleSecParamsChange.bind(this);
+        this.handlePair = this.handlePair.bind(this);
+        this.handleAccept = this.handleAccept.bind(this);
+        this.handleReject = this.handleReject.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
     }
 
     handleSecParamsChange(params) {
@@ -61,15 +65,21 @@ class PairingEditor extends React.PureComponent {
     }
 
     handlePair() {
-        this.props.onPair(this.secParams);
+        if (this.props.onPair) {
+            this.props.onPair(this.secParams);
+        }
     }
 
     handleAccept() {
-        this.props.onAccept(this.secParams);
+        if (this.props.onAccept) {
+            this.props.onAccept(this.secParams);
+        }
     }
 
     handleReject() {
-        this.props.onReject();
+        if (this.props.onReject) {
+            this.props.onReject();
+        }
     }
 
     handleCancel() {
@@ -88,7 +98,7 @@ class PairingEditor extends React.PureComponent {
             ? (
                 <Button
                     type="button"
-                    onClick={() => this.handleCancel()}
+                    onClick={this.handleCancel}
                     className="btn btn-default btn-sm btn-nordic"
                 >
                     Cancel
@@ -99,7 +109,7 @@ class PairingEditor extends React.PureComponent {
             ? (
                 <Button
                     type="button"
-                    onClick={() => this.handlePair()}
+                    onClick={this.handlePair}
                     className="btn btn-primary btn-sm btn-nordic"
                 >
                     Pair
@@ -110,7 +120,7 @@ class PairingEditor extends React.PureComponent {
             ? (
                 <Button
                     type="button"
-                    onClick={() => this.handleAccept()}
+                    onClick={this.handleAccept}
                     className="btn btn-primary btn-sm btn-nordic"
                 >
                     Accept
@@ -121,7 +131,7 @@ class PairingEditor extends React.PureComponent {
             ? (
                 <Button
                     type="button"
-                    onClick={() => this.handleReject()}
+                    onClick={this.handleReject}
                     className="btn btn-default btn-sm btn-nordic"
                 >
                     Reject
@@ -132,7 +142,7 @@ class PairingEditor extends React.PureComponent {
             ? (
                 <Button
                     type="button"
-                    onClick={() => this.handleCancel()}
+                    onClick={this.handleCancel}
                     className="btn btn-default btn-sm btn-nordic"
                 >
                     Ignore
@@ -146,7 +156,7 @@ class PairingEditor extends React.PureComponent {
                 </div>
                 <form className="form-horizontal">
                     <SecurityParamsControls
-                        onChange={secParams => this.handleSecParamsChange(secParams)}
+                        onChange={this.handleSecParamsChange}
                         securityParams={event.pairingParameters}
                     />
                     <div className="form-group">
@@ -164,6 +174,16 @@ class PairingEditor extends React.PureComponent {
 
 PairingEditor.propTypes = {
     event: PropTypes.object.isRequired,
+    onPair: PropTypes.func,
+    onAccept: PropTypes.func,
+    onReject: PropTypes.func,
+    onCancel: PropTypes.func.isRequired,
+};
+
+PairingEditor.defaultProps = {
+    onPair: null,
+    onAccept: null,
+    onReject: null,
 };
 
 export default PairingEditor;

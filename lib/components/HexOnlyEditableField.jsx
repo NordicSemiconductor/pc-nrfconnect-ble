@@ -34,7 +34,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint react/prop-types: off */
+/* eslint react/forbid-prop-types: off */
 
 'use strict';
 
@@ -79,6 +79,17 @@ function LcalcCaretPosition(origValue, caretPosition) {
 }
 
 class HexOnlyEditableField extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.LkeyPressValidation = this.LkeyPressValidation.bind(this);
+        this.LformatInput = this.LformatInput.bind(this);
+        this.LcompleteValidation = this.LcompleteValidation.bind(this);
+        this.LonBeforeBackspace = this.LonBeforeBackspace.bind(this);
+        this.LonBeforeDelete = this.LonBeforeDelete.bind(this);
+        this.LgetValueArray = this.LgetValueArray.bind(this);
+        this.LonChange = this.LonChange.bind(this);
+    }
+
     shouldComponentUpdate(nextProps) {
         if (!_.isEqual(this.props.value, nextProps.value)) {
             return true;
@@ -248,19 +259,18 @@ class HexOnlyEditableField extends React.PureComponent {
             showValue = hexArrayToText(value);
         }
 
-        // formatInput={(str, caretPosition) => this.LformatInput(str, caretPosition)}
         return (
             <EditableField
                 {...props}
                 value={showValue}
                 title={titleValue}
-                keyPressValidation={str => this.LkeyPressValidation(str)}
-                completeValidation={str => this.LcompleteValidation(str)}
-                formatInput={(str, caretPosition) => this.LformatInput(str, caretPosition)}
-                onBeforeBackspace={e => this.LonBeforeBackspace(e)}
-                onBeforeDelete={e => this.LonBeforeDelete(e)}
-                getValueArray={val => this.LgetValueArray(val)}
-                onChange={val => this.LonChange(val)}
+                keyPressValidation={this.LkeyPressValidation}
+                completeValidation={this.LcompleteValidation}
+                formatInput={this.LformatInput}
+                onBeforeBackspace={this.LonBeforeBackspace}
+                onBeforeDelete={this.LonBeforeDelete}
+                getValueArray={this.LgetValueArray}
+                onChange={this.LonChange}
             />
         );
     }
@@ -268,10 +278,32 @@ class HexOnlyEditableField extends React.PureComponent {
 
 HexOnlyEditableField.propTypes = {
     showText: PropTypes.bool,
+    value: PropTypes.oneOfType([
+        PropTypes.array,
+        PropTypes.string,
+    ]).isRequired,
+    keyPressValidation: PropTypes.func,
+    completeValidation: PropTypes.func,
+    formatInput: PropTypes.func,
+    onBeforeBackspace: PropTypes.func,
+    onBeforeDelete: PropTypes.func,
+    onChange: PropTypes.func,
+    title: PropTypes.string,
+    onRead: PropTypes.func,
+    onWrite: PropTypes.func,
 };
 
 HexOnlyEditableField.defaultProps = {
     showText: false,
+    title: null,
+    onChange: null,
+    onRead: null,
+    onWrite: null,
+    keyPressValidation: null,
+    completeValidation: null,
+    formatInput: null,
+    onBeforeBackspace: null,
+    onBeforeDelete: null,
 };
 
 export default HexOnlyEditableField;

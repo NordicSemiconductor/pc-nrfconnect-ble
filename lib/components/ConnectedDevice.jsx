@@ -41,7 +41,7 @@
 import React, { PropTypes } from 'react';
 import { Dropdown, MenuItem, Button } from 'react-bootstrap';
 
-import { Connector } from './Connector';
+import Connector from './Connector';
 
 const WINDOW_WIDTH_OFFSET = 375;
 const THROTTLE_TIMEOUT = 100;
