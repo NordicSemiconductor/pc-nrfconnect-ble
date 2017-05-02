@@ -32,7 +32,7 @@
     "react-onclickoutside": "^5.10.0",
     "react-sizeme": "^2.3.1",
     "react-textarea-autosize": "^4.0.5",
-    "tween.js": "^16.6.0",
     "uuid-v4": "^0.1.0"
-  }
+  },
+  "dependencies": {}
 }

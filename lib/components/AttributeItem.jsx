@@ -43,7 +43,6 @@ import React, { PropTypes } from 'react';
 import EnumeratingAttributes from './EnumeratingAttributes';
 
 import AddNewItem from './AddNewItem';
-import { Effects } from '../utils/Effects';
 import * as Colors from '../utils/colorDefinitions';
 
 import { getInstanceIds, ImmutableService, ImmutableDescriptor, ImmutableCharacteristic } from '../utils/api';
@@ -63,6 +62,9 @@ class AttributeItem extends React.PureComponent {
 
         this.LchildChanged = this.LchildChanged.bind(this);
         this.LselectComponent = this.LselectComponent.bind(this);
+        this.LonExpandAreaClick = this.LonExpandAreaClick.bind(this);
+        this.onAddAttribute = this.onAddAttribute.bind(this);
+        this.LonContentClick = this.LonContentClick.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -75,16 +77,9 @@ class AttributeItem extends React.PureComponent {
         }
     }
 
-    componentWillUnmount() {
-        if (!this.animation) {
-            return;
-        }
-
-        this.animation.stop();
-    }
-
-    onAddAttribute(item) {
+    onAddAttribute() {
         const {
+            item,
             onAddCharacteristic,
             onAddDescriptor,
         } = this.props;
@@ -141,13 +136,19 @@ class AttributeItem extends React.PureComponent {
     }
 
     Lblink() {
-        if (this.animation) {
-            this.animation.stop();
-        }
-
         const fromColor = Colors.getColor('brand-primary');
         const toColor = Colors.getColor('brand-base');
-        this.animation = Effects.blink(this, 'backgroundColor', fromColor, toColor);
+
+        const fc = `rgb(${fromColor.r}, ${fromColor.g}, ${fromColor.b})`;
+        const tc = `rgb(${toColor.r}, ${toColor.g}, ${toColor.b})`;
+
+        this.bgDiv.style.transition = 'initial';
+        this.bgDiv.style.backgroundColor = fc;
+
+        setTimeout(() => {
+            this.bgDiv.style.transition = 'background-color 2s';
+            this.bgDiv.style.backgroundColor = tc;
+        }, 25);
     }
 
     LselectComponent() {
@@ -237,7 +238,7 @@ class AttributeItem extends React.PureComponent {
         const childrenList = this.getChildren();
 
         const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
-        const iconStyle = !this.expandable || (children && children.size === 0 && !addNew) ? { display: 'none' } : {};
+        const iconStyle = (!this.expandable || (children && children.size === 0 && !addNew)) ? { display: 'none' } : {};
         const itemIsSelected = item.instanceId === selected;
 
         const backgroundClass = itemIsSelected ?
@@ -251,11 +252,12 @@ class AttributeItem extends React.PureComponent {
         return (
             <div>
                 <div
+                    ref={node => { this.bgDiv = node; }}
                     className={`${this.attributeType}-item ${backgroundClass}`}
                     style={{ backgroundColor }}
-                    onClick={e => this.LonContentClick(e)}
+                    onClick={this.LonContentClick}
                 >
-                    <div className="expand-area" onClick={e => this.LonExpandAreaClick(e)}>
+                    <div className="expand-area" onClick={this.LonExpandAreaClick}>
                         {barList}
                         <div className="icon-wrap">
                             <i className={`icon-slim ${expandIcon}`} style={iconStyle} />
@@ -274,7 +276,7 @@ class AttributeItem extends React.PureComponent {
                             id={`add-btn-${instanceId}`}
                             parentInstanceId={instanceId}
                             selected={selected}
-                            onClick={() => this.onAddAttribute(item)}
+                            onClick={this.onAddAttribute}
                             bars={this.bars + 1}
                         />
                     }
