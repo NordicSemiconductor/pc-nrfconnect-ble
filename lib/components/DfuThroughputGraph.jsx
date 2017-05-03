@@ -34,10 +34,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint react/forbid-prop-types: off */
+
 import React, { PropTypes } from 'react';
 import sizeMe from 'react-sizeme';
 import { LineChart } from 'react-d3-components';
-import d3 from 'd3';
+import { scaleLinear } from 'd3';
 
 const HEIGHT = 250;
 const MARGIN = {
@@ -58,14 +60,14 @@ function createGraphData(kbpsPoints, averageKbpsPoints) {
 }
 
 function createXScale(totalSizeKb, width) {
-    const linearScale = d3.scale.linear();
+    const linearScale = scaleLinear();
     return linearScale.domain([0, totalSizeKb]).range([0, width - MARGIN.left - 1]);
 }
 
 class DfuThroughputGraph extends React.PureComponent {
     getWidth() {
         // The size prop is added by react-sizeme
-        const size = this.props.size;
+        const { size } = this.props;
         const fallbackWidth = 400;
         return size ? size.width : fallbackWidth;
     }
@@ -100,11 +102,11 @@ DfuThroughputGraph.propTypes = {
         x: PropTypes.number,
         y: PropTypes.number,
     })).isRequired,
-    size: PropTypes.number,
+    size: PropTypes.object,
 };
 
 DfuThroughputGraph.defaultProps = {
-    size: undefined,
+    size: null,
 };
 
 // Wrap the component inside a react-sizeme higher order component (HOC). Makes

@@ -81,7 +81,7 @@ TextInput.propTypes = {
     title: PropTypes.string,
     className: PropTypes.string,
     defaultValue: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
     placeholder: PropTypes.string,
     value: PropTypes.oneOfType([
         PropTypes.string,
@@ -101,6 +101,7 @@ TextInput.defaultProps = {
     title: null,
     className: null,
     defaultValue: '',
+    onChange: null,
     placeholder: '',
     value: null,
 };

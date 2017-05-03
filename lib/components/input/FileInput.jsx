@@ -39,14 +39,14 @@ import { Button } from 'react-bootstrap';
 import TextInput from './TextInput';
 
 const FileInput = props => {
-    const { onChooseClicked, buttonDisabled } = props;
+    const { onChooseClicked, buttonDisabled, ...newProps } = props;
     const fileBrowseButton = (
         <Button disabled={buttonDisabled} onClick={onChooseClicked}>Choose</Button>
     );
     return (
         <TextInput
             buttonAfter={fileBrowseButton}
-            {...props}
+            {...newProps}
         />
     );
 };

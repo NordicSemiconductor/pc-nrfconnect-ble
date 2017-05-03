@@ -38,7 +38,15 @@ import React, { PropTypes } from 'react';
 import { FormGroup, ControlLabel, ProgressBar, InputGroup } from 'react-bootstrap';
 
 const ProgressBarInput = props => {
-    const { label, progressLabel, labelClassName, wrapperClassName, status, now } = props;
+    const {
+        label,
+        progressLabel,
+        labelClassName,
+        wrapperClassName,
+        status,
+        now,
+        ...newProps
+    } = props;
     return (
         <FormGroup>
             {
@@ -46,7 +54,7 @@ const ProgressBarInput = props => {
             }
             <InputGroup className={wrapperClassName}>
                 { status && <p>{status}</p>}
-                <ProgressBar label={progressLabel} now={now} {...props} />
+                <ProgressBar label={progressLabel} now={now} {...newProps} />
             </InputGroup>
         </FormGroup>
     );
