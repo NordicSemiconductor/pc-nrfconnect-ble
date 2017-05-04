@@ -60,11 +60,11 @@ class AttributeItem extends React.PureComponent {
         this.attributeType = 'attribute';
         this.childAttributeType = 'service';
 
-        this.LchildChanged = this.LchildChanged.bind(this);
-        this.LselectComponent = this.LselectComponent.bind(this);
-        this.LonExpandAreaClick = this.LonExpandAreaClick.bind(this);
+        this.childChanged = this.childChanged.bind(this);
+        this.selectComponent = this.selectComponent.bind(this);
+        this.onExpandAreaClick = this.onExpandAreaClick.bind(this);
         this.onAddAttribute = this.onAddAttribute.bind(this);
-        this.LonContentClick = this.LonContentClick.bind(this);
+        this.onContentClick = this.onContentClick.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -73,7 +73,7 @@ class AttributeItem extends React.PureComponent {
                 this.props.onChange();
             }
 
-            this.Lblink();
+            this.blink();
         }
     }
 
@@ -89,6 +89,26 @@ class AttributeItem extends React.PureComponent {
         } else if (this.attributeType === 'characteristic') {
             onAddDescriptor(item);
         }
+    }
+
+    onExpandAreaClick(e) {
+        e.stopPropagation();
+        if (this.props.onSetAttributeExpanded) {
+            this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
+        }
+    }
+
+    onContentClick(e) {
+        e.stopPropagation();
+        this.selectComponent();
+    }
+
+    onWrite(value) {
+        this.props.onWrite(this.props.item, value);
+    }
+
+    onRead() {
+        this.props.onRead(this.props.item);
     }
 
     getChildren() {
@@ -113,29 +133,17 @@ class AttributeItem extends React.PureComponent {
         return childrenList;
     }
 
-    LonContentClick(e) {
-        e.stopPropagation();
-        this.LselectComponent();
-    }
-
-    LonExpandAreaClick(e) {
-        e.stopPropagation();
-        if (this.props.onSetAttributeExpanded) {
-            this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
-        }
-    }
-
-    LchildChanged() {
+    childChanged() {
         if (this.props.onChange) {
             this.props.onChange();
         }
 
         if (!this.props.item.expanded) {
-            this.Lblink();
+            this.blink();
         }
     }
 
-    Lblink() {
+    blink() {
         const fromColor = Colors.getColor('brand-primary');
         const toColor = Colors.getColor('brand-base');
 
@@ -151,7 +159,7 @@ class AttributeItem extends React.PureComponent {
         }, 25);
     }
 
-    LselectComponent() {
+    selectComponent() {
         if (this.props.onSelectAttribute) {
             this.props.onSelectAttribute(this.props.item.instanceId);
         }
@@ -160,14 +168,6 @@ class AttributeItem extends React.PureComponent {
     isLocalAttribute() {
         const instanceIds = getInstanceIds(this.props.item.instanceId);
         return instanceIds.device === 'local.server';
-    }
-
-    LonWrite(value) {
-        this.props.onWrite(this.props.item, value);
-    }
-
-    LonRead() {
-        this.props.onRead(this.props.item);
     }
 
     renderContent() { // eslint-disable-line class-methods-use-this
@@ -255,9 +255,9 @@ class AttributeItem extends React.PureComponent {
                     ref={node => { this.bgDiv = node; }}
                     className={`${this.attributeType}-item ${backgroundClass}`}
                     style={{ backgroundColor }}
-                    onClick={this.LonContentClick}
+                    onClick={this.onContentClick}
                 >
-                    <div className="expand-area" onClick={this.LonExpandAreaClick}>
+                    <div className="expand-area" onClick={this.onExpandAreaClick}>
                         {barList}
                         <div className="icon-wrap">
                             <i className={`icon-slim ${expandIcon}`} style={iconStyle} />

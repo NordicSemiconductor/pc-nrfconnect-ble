@@ -49,7 +49,9 @@ const THROTTLE_TIMEOUT = 100;
 class ConnectedDevice extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.boundResizeListener = this.LresizeThrottler.bind(this);
+        this.boundResizeListener = this.resizeThrottler.bind(this);
+        this.onResize = this.onResize.bind(this);
+        this.onSelect = this.onSelect.bind(this);
     }
 
     componentDidMount() {
@@ -61,18 +63,7 @@ class ConnectedDevice extends React.PureComponent {
         window.removeEventListener('resize', this.boundResizeListener);
     }
 
-    LresizeThrottler() {
-        if (this.resizeTimeout) {
-            return;
-        }
-
-        this.resizeTimeout = setTimeout(() => {
-            this.resizeTimeout = null;
-            this.LonResize();
-        }, THROTTLE_TIMEOUT);
-    }
-
-    LonResize() {
+    onResize() {
         if (!this.boundingRect) {
             return;
         }
@@ -89,7 +80,7 @@ class ConnectedDevice extends React.PureComponent {
         this.forceUpdate();
     }
 
-    LonSelect(event, eventKey) {
+    onSelect(eventKey) {
         const {
             onDisconnect,
             onPair,
@@ -110,6 +101,17 @@ class ConnectedDevice extends React.PureComponent {
             default:
                 console.log('Unknown eventKey received:', eventKey);
         }
+    }
+
+    resizeThrottler() {
+        if (this.resizeTimeout) {
+            return;
+        }
+
+        this.resizeTimeout = setTimeout(() => {
+            this.resizeTimeout = null;
+            this.onResize();
+        }, THROTTLE_TIMEOUT);
     }
 
     render() {
@@ -159,8 +161,8 @@ class ConnectedDevice extends React.PureComponent {
                             <Dropdown
                                 pullRight={pullRight}
                                 id="connectionDropDown"
-                                onClick={() => this.LonResize()}
-                                onSelect={(eventKey, event) => { this.LonSelect(event, eventKey); }}
+                                onClick={this.onResize}
+                                onSelect={this.onSelect}
                             >
                                 <Dropdown.Toggle noCaret>
                                     <span className="icon-cog" aria-hidden="true" />

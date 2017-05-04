@@ -54,33 +54,32 @@ import { ValidationError } from '../common/Errors';
 import { ERROR, SUCCESS, validateUuid } from '../utils/validateUuid';
 
 class DescriptorEditor extends React.PureComponent {
-    validateValueLength() {
-        const maxLength = parseInt(this.maxLength, 10);
-        const fixedLength = this.fixedLength;
-        const value = this.LparseValueProperty(this.value);
-
-        if (maxLength > 510 && fixedLength === true) { return ERROR; }
-
-        if (maxLength > 512 && fixedLength === false) { return ERROR; }
-
-        if (maxLength < value.length) { return ERROR; }
-
-        return SUCCESS;
+    constructor(props) {
+        super(props);
+        this.setInitialValue = this.setInitialValue.bind(this);
+        this.saveAttribute = this.saveAttribute.bind(this);
+        this.handleUuidSelect = this.handleUuidSelect.bind(this);
     }
 
-    LsetCheckedProperty(property, e) {
+    setCheckedProperty(property, e) {
         this[property] = e.target.checked;
         this.forceUpdate();
         this.props.onModified(true);
     }
 
-    LsetValueProperty(property, e) {
+    setValueProperty(property, e) {
         this[property] = e.target.value;
         this.forceUpdate();
         this.props.onModified(true);
     }
 
-    LparseValueProperty(value) {
+    setInitialValue(value) {
+        this.value = value;
+        this.forceUpdate();
+        this.props.onModified(true);
+    }
+
+    parseValueProperty(value) {
         if (value.length === 0) {
             return [];
         }
@@ -93,13 +92,21 @@ class DescriptorEditor extends React.PureComponent {
         return this.value;
     }
 
-    LsetInitialValue(value) {
-        this.value = value;
-        this.forceUpdate();
-        this.props.onModified(true);
+    validateValueLength() {
+        const maxLength = parseInt(this.maxLength, 10);
+        const fixedLength = this.fixedLength;
+        const value = this.parseValueProperty(this.value);
+
+        if (maxLength > 510 && fixedLength === true) { return ERROR; }
+
+        if (maxLength > 512 && fixedLength === false) { return ERROR; }
+
+        if (maxLength < value.length) { return ERROR; }
+
+        return SUCCESS;
     }
 
-    LsaveAttribute() {
+    saveAttribute() {
         if (validateUuid(this.uuid) === ERROR) {
             this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
@@ -114,7 +121,7 @@ class DescriptorEditor extends React.PureComponent {
             instanceId: this.props.descriptor.instanceId,
             uuid: this.uuid.toUpperCase().trim(),
             name: this.name,
-            value: this.LparseValueProperty(this.value),
+            value: this.parseValueProperty(this.value),
             readPerm: this.readPerm,
             writePerm: this.writePerm,
             fixedLength: this.fixedLength,
@@ -126,7 +133,7 @@ class DescriptorEditor extends React.PureComponent {
         this.props.onModified(false);
     }
 
-    LhandleUuidSelect(uuid) {
+    handleUuidSelect(uuid) {
         this.uuid = uuid;
         const uuidName = getUuidName(this.uuid);
 
@@ -175,20 +182,20 @@ class DescriptorEditor extends React.PureComponent {
                     name="uuid"
                     value={this.uuid}
                     uuidDefinitions={uuidDescriptorDefinitions}
-                    handleSelection={uuid2 => this.LhandleUuidSelect(uuid2)}
+                    handleSelection={this.handleUuidSelect}
                 />
 
                 <TextInput
                     label="Descriptor name"
                     name="descriptor-name"
                     value={this.name}
-                    onChange={e => this.LsetValueProperty('name', e)}
+                    onChange={e => this.setValueProperty('name', e)}
                 />
                 <HexOnlyEditableField
                     label="Initial value"
                     plain
                     className="form-control" name="initial-value" value={this.value}
-                    onChange={val => this.LsetInitialValue(val)}
+                    onChange={this.setInitialValue}
                     labelClassName="col-md-3"
                     wrapperClassName="col-md-9"
                 />
@@ -198,7 +205,7 @@ class DescriptorEditor extends React.PureComponent {
                     type="select"
                     className="form-control"
                     value={this.readPerm}
-                    onChange={e => this.LsetValueProperty('readPerm', e)}
+                    onChange={e => this.setValueProperty('readPerm', e)}
                 >
                     <option value="open">No security required</option>
                     <option value="encrypt">Encryption required, no MITM</option>
@@ -215,7 +222,7 @@ class DescriptorEditor extends React.PureComponent {
                     type="select"
                     className="form-control"
                     value={this.writePerm}
-                    onChange={e => this.LsetValueProperty('writePerm', e)}
+                    onChange={e => this.setValueProperty('writePerm', e)}
                 >
                     <option value="open">No security required</option>
                     <option value="encrypt">Encryption required, no MITM</option>
@@ -228,7 +235,7 @@ class DescriptorEditor extends React.PureComponent {
                 </SelectList>
 
                 <LabeledInputGroup label="Max length">
-                    <Checkbox checked={this.fixedLength} onChange={e => this.LsetCheckedProperty('fixedLength', e)}>Fixed length</Checkbox>
+                    <Checkbox checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)}>Fixed length</Checkbox>
                     <TextInput
                         inline
                         type="number"
@@ -236,7 +243,7 @@ class DescriptorEditor extends React.PureComponent {
                         max={this.fixedLength ? 510 : 512}
                         name="max-length"
                         value={this.maxLength}
-                        onChange={e => this.LsetValueProperty('maxLength', e)}
+                        onChange={e => this.setValueProperty('maxLength', e)}
                     />
                 </LabeledInputGroup>
 
@@ -248,7 +255,7 @@ class DescriptorEditor extends React.PureComponent {
                     <Button
                         bsStyle="primary"
                         className="btn-nordic"
-                        onClick={() => this.LsaveAttribute()}
+                        onClick={this.saveAttribute}
                     >
                         Save
                     </Button>

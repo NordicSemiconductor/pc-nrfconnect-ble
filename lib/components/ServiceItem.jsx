@@ -98,7 +98,7 @@ class ServiceItem extends AttributeItem {
                 onWrite={onWriteCharacteristic}
                 onReadDescriptor={onReadDescriptor}
                 onWriteDescriptor={onWriteDescriptor}
-                onChange={this.LchildChanged}
+                onChange={this.childChanged}
                 addNew={addNew}
                 onAddDescriptor={onAddDescriptor}
             />,

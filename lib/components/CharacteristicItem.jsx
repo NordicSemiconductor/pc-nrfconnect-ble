@@ -78,10 +78,10 @@ class CharacteristicItem extends AttributeItem {
         this.attributeType = 'characteristic';
         this.childAttributeType = 'descriptor';
 
-        this.LonToggleNotify = this.LonToggleNotify.bind(this);
+        this.onToggleNotify = this.onToggleNotify.bind(this);
     }
 
-    LonToggleNotify(e) {
+    onToggleNotify(e) {
         e.stopPropagation();
 
         const isDescriptorNotifying = isNotifying(this.cccdDescriptor);
@@ -158,12 +158,12 @@ class CharacteristicItem extends AttributeItem {
             });
         }
 
-        const LonRead = (hasReadProperty && !isLocal) ?
-            () => this.LonRead() :
+        const onRead = (hasReadProperty && !isLocal) ?
+            () => this.onRead() :
             undefined;
 
-        const LonWrite = (hasWriteProperty || isLocal) ?
-            val => this.LonWrite(val) :
+        const onWrite = (hasWriteProperty || isLocal) ?
+            val => this.onWrite(val) :
             null;
 
         return (
@@ -173,7 +173,7 @@ class CharacteristicItem extends AttributeItem {
                     title={toggleNotificationsText}
                     disabled={!hasCccd}
                     style={notifyIconStyle}
-                    onClick={this.LonToggleNotify}
+                    onClick={this.onToggleNotify}
                 >
                     <i className={notifyIcon} />
                 </div>
@@ -185,10 +185,10 @@ class CharacteristicItem extends AttributeItem {
                 </div>
                 <HexOnlyEditableField
                     value={value.toArray()}
-                    onWrite={LonWrite}
+                    onWrite={onWrite}
                     showReadButton={hasReadProperty && itemIsSelected}
-                    onRead={LonRead}
-                    selectParent={this.LselectComponent}
+                    onRead={onRead}
+                    selectParent={this.selectComponent}
                     showText={showText}
                 />
                 {this.renderError()}
@@ -215,7 +215,7 @@ class CharacteristicItem extends AttributeItem {
                 item={descriptor}
                 selected={selected}
                 onSelectAttribute={onSelectAttribute}
-                onChange={this.LchildChanged}
+                onChange={this.childChanged}
                 onRead={onReadDescriptor}
                 onWrite={onWriteDescriptor}
             />

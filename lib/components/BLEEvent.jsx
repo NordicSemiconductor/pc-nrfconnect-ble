@@ -52,7 +52,25 @@ function onExpandAreaClick() {
 }
 
 class BLEEvent extends React.PureComponent {
-    LgetEventInfo() {
+    constructor(props) {
+        super(props);
+        this.onClick = this.onClick.bind(this);
+    }
+
+    onClick(e) {
+        e.stopPropagation();
+
+        const {
+           onSelected,
+           event,
+        } = this.props;
+
+        if (onSelected) {
+            onSelected(event.id);
+        }
+    }
+
+    getEventInfo() {
         const eventType = this.props.event.type;
 
         switch (eventType) {
@@ -106,9 +124,9 @@ class BLEEvent extends React.PureComponent {
         }
     }
 
-    LgetEventContent() {
+    getEventContent() {
         const { event, onTimedOut } = this.props;
-        const { name } = this.LgetEventInfo();
+        const { name } = this.getEventInfo();
 
         const eventTimer = ((event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE
             || event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE
@@ -137,20 +155,7 @@ class BLEEvent extends React.PureComponent {
         );
     }
 
-    LonClick(e) {
-        e.stopPropagation();
-
-        const {
-           onSelected,
-           event,
-        } = this.props;
-
-        if (onSelected) {
-            onSelected(event.id);
-        }
-    }
-
-    LgetClass() {
+    getClass() {
         const { event } = this.props;
 
         if (!event) {
@@ -173,7 +178,7 @@ class BLEEvent extends React.PureComponent {
         }
     }
 
-    LgetStyle() {
+    getStyle() {
         const { event, selected } = this.props;
 
         if (!event.state) {
@@ -193,13 +198,13 @@ class BLEEvent extends React.PureComponent {
 
     render() {
         return (
-            <div className={`service-item ${this.LgetClass()}`} style={this.LgetStyle()} onClick={_event => this.LonClick(_event)}>
+            <div className={`service-item ${this.getClass()}`} style={this.getStyle()} onClick={this.onClick}>
                 <div className="expand-area" onClick={onExpandAreaClick}>
                     <div className="bar1" />
                     <div className="icon-wrap" />
                 </div>
                 <div className="content-wrap">
-                    {this.LgetEventContent()}
+                    {this.getEventContent()}
                 </div>
             </div>
         );

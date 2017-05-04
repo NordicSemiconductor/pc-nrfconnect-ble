@@ -47,7 +47,12 @@ import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 import withHotkey from '../utils/withHotkey';
 
 class CentralDevice extends React.PureComponent {
-    LonSelect(event, eventKey) {
+    constructor(props) {
+        super(props);
+        this.onSelect = this.onSelect.bind(this);
+    }
+
+    onSelect(eventKey) {
         const {
             onToggleAdvertising,
             onShowSetupDialog,
@@ -238,7 +243,7 @@ class CentralDevice extends React.PureComponent {
                     <div className="pull-right">
                         <Dropdown
                             id="connectionDropDown"
-                            onSelect={(eventKey, event) => { this.LonSelect(event, eventKey); }}
+                            onSelect={this.onSelect}
                         >
                             <Dropdown.Toggle noCaret>
                                 <span className="icon-cog" aria-hidden="true" />

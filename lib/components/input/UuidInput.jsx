@@ -47,13 +47,11 @@ class UuidInput extends React.PureComponent {
     constructor(props) {
         super(props);
         this.uuid = this.props.value;
+        this.handleSelection = this.handleSelection.bind(this);
+        this.onUuidChange = this.onUuidChange.bind(this);
     }
 
-    validateUuidInput() {
-        return validateUuid(this.uuid);
-    }
-
-    LonUuidChange(e) {
+    onUuidChange(e) {
         const hexRegEx = /^[0-9A-F]*$/i;
         const textarea = e.target;
         this.uuid = textarea.value;
@@ -69,7 +67,11 @@ class UuidInput extends React.PureComponent {
         this.props.handleSelection(this.uuid);
     }
 
-    LhandleSelection(uuid) {
+    validateUuidInput() {
+        return validateUuid(this.uuid);
+    }
+
+    handleSelection(event, uuid) {
         this.uuid = uuid;
         this.props.handleSelection(uuid);
     }
@@ -83,7 +85,7 @@ class UuidInput extends React.PureComponent {
 
         const uuidSelectButton = (
             <UuidLookup
-                onSelect={(event, eventKey) => this.LhandleSelection(eventKey)}
+                onSelect={this.handleSelection}
                 title={`Predefined ${label}s`}
                 uuidDefs={uuidDefinitions()}
                 pullRight
@@ -96,7 +98,7 @@ class UuidInput extends React.PureComponent {
                 hasFeedback
                 validationState={this.validateUuidInput()}
                 value={value}
-                onChange={e => this.LonUuidChange(e)}
+                onChange={this.onUuidChange}
                 buttonAfter={uuidSelectButton}
             />
         );

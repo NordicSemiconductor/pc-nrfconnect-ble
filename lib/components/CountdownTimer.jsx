@@ -45,7 +45,7 @@ class CountdownTimer extends Component {
     }
 
     componentDidMount() {
-        this.interval = setInterval(() => this.Ltick(), 1000);
+        this.interval = setInterval(() => this.tick(), 1000);
     }
 
     componentWillUnmount() {
@@ -56,7 +56,7 @@ class CountdownTimer extends Component {
         clearInterval(this.intervalId);
     }
 
-    Ltick() {
+    tick() {
         this.secondsRemaining -= 1;
         this.forceUpdate();
 

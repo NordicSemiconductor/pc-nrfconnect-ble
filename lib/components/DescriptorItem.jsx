@@ -82,12 +82,12 @@ class DescriptorItem extends AttributeItem {
         const isCCCD = isCCCDAttribute(uuid);
         const isLocalCCCD = isLocal && isCCCD;
 
-        const LonRead = !isLocal ?
-            () => this.LonRead() :
+        const onRead = !isLocal ?
+            () => this.onRead() :
             undefined;
 
-        const LonWrite = !isLocalCCCD ?
-            val => this.LonWrite(val) :
+        const onWrite = !isLocalCCCD ?
+            val => this.onWrite(val) :
             null;
 
         const itemIsSelected = instanceId === selected;
@@ -103,10 +103,10 @@ class DescriptorItem extends AttributeItem {
                         key={key}
                         title={`CCCD value for device: ${address}`}
                         value={cccdValue.toArray()}
-                        onWrite={LonWrite}
-                        onRead={LonRead}
+                        onWrite={onWrite}
+                        onRead={onRead}
                         showReadButton={itemIsSelected}
-                        selectParent={this.LselectComponent}
+                        selectParent={this.selectComponent}
                     />,
                 );
             });
@@ -115,10 +115,10 @@ class DescriptorItem extends AttributeItem {
                 <HexOnlyEditableField
                     key={instanceId}
                     value={value.toArray()}
-                    onWrite={LonWrite}
-                    onRead={LonRead}
+                    onWrite={onWrite}
+                    onRead={onRead}
                     showReadButton={itemIsSelected}
-                    selectParent={this.LselectComponent}
+                    selectParent={this.selectComponent}
                 />,
             );
         }

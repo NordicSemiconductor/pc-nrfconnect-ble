@@ -97,7 +97,11 @@ ConnectionSetup.propTypes = {
 };
 
 class ConnectionOverlay extends React.PureComponent {
-    Lcloseme() {
+    constructor(props) {
+        super(props);
+        this.closeme = this.closeme.bind(this);
+    }
+    closeme() {
         this.overlayTrigger.hide();
     }
     render() {
@@ -121,7 +125,7 @@ class ConnectionOverlay extends React.PureComponent {
                         <Popover id="pover" title="Connection Information">
                             <ConnectionSetup
                                 device={device}
-                                closePopover={this.Lcloseme}
+                                closePopover={this.closeme}
                             />
                         </Popover>
                     }
@@ -169,7 +173,7 @@ class Connector extends React.PureComponent {
         this.forceUpdate();
     }
 
-    LgetConnectionOverlay(lineCoordinates) {
+    getConnectionOverlay(lineCoordinates) {
         const {
             device,
         } = this.props;
@@ -218,7 +222,7 @@ class Connector extends React.PureComponent {
         const layoutInfo = layoutStrategies(layout)(sourceRect, targetRect, 3);
         const connectorBox = layoutInfo.boundingBox;
         const lines = generateLines(layoutInfo.lineCoordinates);
-        const connectionInfoOverlay = this.LgetConnectionOverlay(layoutInfo.lineCoordinates);
+        const connectionInfoOverlay = this.getConnectionOverlay(layoutInfo.lineCoordinates);
 
         return (
             <div className="connector">
