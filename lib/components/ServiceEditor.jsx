@@ -50,7 +50,20 @@ import { ValidationError } from '../common/Errors';
 import { ERROR, validateUuid } from '../utils/validateUuid';
 
 class ServiceEditor extends React.PureComponent {
-    LhandleUuidSelect(uuid) {
+    constructor(props) {
+        super(props);
+        this.onNameChange = this.onNameChange.bind(this);
+        this.handleUuidSelect = this.handleUuidSelect.bind(this);
+        this.saveAttribute = this.saveAttribute.bind(this);
+    }
+
+    onNameChange(e) {
+        this.name = e.target.value;
+        this.props.onModified(true);
+        this.forceUpdate();
+    }
+
+    handleUuidSelect(uuid) {
         this.uuid = uuid;
         const uuidName = getUuidName(this.uuid);
 
@@ -63,13 +76,7 @@ class ServiceEditor extends React.PureComponent {
         this.forceUpdate();
     }
 
-    LonNameChange(e) {
-        this.name = e.target.value;
-        this.props.onModified(true);
-        this.forceUpdate();
-    }
-
-    LsaveAttribute() {
+    saveAttribute() {
         if (validateUuid(this.uuid) === ERROR) {
             this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
@@ -112,13 +119,13 @@ class ServiceEditor extends React.PureComponent {
                     name="uuid"
                     value={this.uuid}
                     uuidDefinitions={uuidServiceDefinitions}
-                    handleSelection={uuid2 => this.LhandleUuidSelect(uuid2)}
+                    handleSelection={this.handleUuidSelect}
                 />
                 <TextInput
                     label="Service name"
                     name="service-name"
                     value={this.name}
-                    onChange={e => this.LonNameChange(e)}
+                    onChange={this.onNameChange}
                 />
                 <ButtonToolbar>
                     <div className="col-md-4" />
@@ -129,7 +136,7 @@ class ServiceEditor extends React.PureComponent {
                     <Button
                         bsStyle="primary"
                         className="btn-nordic"
-                        onClick={() => this.LsaveAttribute()}
+                        onClick={this.saveAttribute}
                     >
                         Save
                     </Button>

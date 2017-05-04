@@ -70,20 +70,25 @@ class ServerSetup extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this.moveUp = () => this.LselectNextComponent(true);
-        this.moveDown = () => this.LselectNextComponent(false);
-        this.moveRight = () => this.LexpandComponent(true);
-        this.moveLeft = () => this.LexpandComponent(false);
+        this.moveUp = () => this.selectNextComponent(true);
+        this.moveDown = () => this.selectNextComponent(false);
+        this.moveRight = () => this.expandComponent(true);
+        this.moveLeft = () => this.expandComponent(false);
 
         this.modified = false;
         this.pendingSelectInstanceId = null;
 
-        this.LopenSaveDialog = this.LopenSaveDialog.bind(this);
-        this.LopenLoadDialog = this.LopenLoadDialog.bind(this);
+        this.openSaveDialog = this.openSaveDialog.bind(this);
+        this.openLoadDialog = this.openLoadDialog.bind(this);
+        this.saveChangedAttribute = this.saveChangedAttribute.bind(this);
+        this.onModified = this.onModified.bind(this);
+        this.onSelectComponent = this.onSelectComponent.bind(this);
+        this.onDiscardCancel = this.onDiscardCancel.bind(this);
+        this.onDiscardOk = this.onDiscardOk.bind(this);
     }
 
     componentDidMount() {
-        this.LregisterKeyboardShortcuts();
+        this.registerKeyboardShortcuts();
     }
 
     componentWillUpdate(nextProps) {
@@ -100,10 +105,35 @@ class ServerSetup extends React.PureComponent {
     }
 
     componentWillUnmount() {
-        this.LunregisterKeyboardShortcuts();
+        this.unregisterKeyboardShortcuts();
     }
 
-    LopenSaveDialog() {
+    onModified(value) {
+        this.modified = value;
+    }
+
+    onSelectComponent(instanceId) {
+        if (!this.modified) {
+            this.props.selectComponent(instanceId);
+            return;
+        }
+
+        this.pendingSelectInstanceId = instanceId;
+        this.props.showDiscardDialog();
+    }
+
+    onDiscardCancel() {
+        this.pendingSelectInstanceId = null;
+
+        this.props.hideDiscardDialog();
+    }
+
+    onDiscardOk() {
+        this.props.hideDiscardDialog();
+        this.props.selectComponent(this.pendingSelectInstanceId);
+    }
+
+    openSaveDialog() {
         const { dialog } = coreApi.electron.remote;
         dialog.showSaveDialog({ filters }, filePath => {
             if (!filePath) {
@@ -113,7 +143,7 @@ class ServerSetup extends React.PureComponent {
         });
     }
 
-    LopenLoadDialog() {
+    openLoadDialog() {
         const { dialog } = coreApi.electron.remote;
         dialog.showOpenDialog({ filters, properties: ['openFile'] }, filePaths => {
             if (!filePaths) {
@@ -127,21 +157,21 @@ class ServerSetup extends React.PureComponent {
         });
     }
 
-    LregisterKeyboardShortcuts() {
+    registerKeyboardShortcuts() {
         window.addEventListener('core:move-down', this.moveDown);
         window.addEventListener('core:move-up', this.moveUp);
         window.addEventListener('core:move-right', this.moveRight);
         window.addEventListener('core:move-left', this.moveLeft);
     }
 
-    LunregisterKeyboardShortcuts() {
+    unregisterKeyboardShortcuts() {
         window.removeEventListener('core:move-down', this.moveDown);
         window.removeEventListener('core:move-up', this.moveUp);
         window.removeEventListener('core:move-right', this.moveRight);
         window.removeEventListener('core:move-left', this.moveLeft);
     }
 
-    LselectNextComponent(backward) {
+    selectNextComponent(backward) {
         const {
             serverSetup,
             selectComponent,
@@ -174,7 +204,7 @@ class ServerSetup extends React.PureComponent {
         }
     }
 
-    LexpandComponent(expand) {
+    expandComponent(expand) {
         const {
             serverSetup,
             selectComponent,
@@ -198,7 +228,7 @@ class ServerSetup extends React.PureComponent {
         if (item) {
             if (expand && item.expanded && item.children.size) {
                 if (item.children.size) {
-                    this.LselectNextComponent(false);
+                    this.selectNextComponent(false);
                 }
 
                 return;
@@ -216,33 +246,8 @@ class ServerSetup extends React.PureComponent {
         }
     }
 
-    LsaveChangedAttribute(changedAttribute) {
+    saveChangedAttribute(changedAttribute) {
         this.props.saveChangedAttribute(changedAttribute);
-    }
-
-    LonModified(value) {
-        this.modified = value;
-    }
-
-    LonSelectComponent(instanceId) {
-        if (!this.modified) {
-            this.props.selectComponent(instanceId);
-            return;
-        }
-
-        this.pendingSelectInstanceId = instanceId;
-        this.props.showDiscardDialog();
-    }
-
-    LonDiscardCancel() {
-        this.pendingSelectInstanceId = null;
-
-        this.props.hideDiscardDialog();
-    }
-
-    LonDiscardOk() {
-        this.props.hideDiscardDialog();
-        this.props.selectComponent(this.pendingSelectInstanceId);
     }
 
     render() {
@@ -308,11 +313,9 @@ class ServerSetup extends React.PureComponent {
             editor = (
                 <ServiceEditor
                     service={selectedAttribute}
-                    onSaveChangedAttribute={
-                        changedAttribute => this.LsaveChangedAttribute(changedAttribute)
-                    }
+                    onSaveChangedAttribute={this.saveChangedAttribute}
                     onRemoveAttribute={showDeleteDialog}
-                    onModified={modified => this.LonModified(modified)}
+                    onModified={this.onModified}
                     onValidationError={error => showErrorDialog(error)}
                 />
             );
@@ -320,11 +323,9 @@ class ServerSetup extends React.PureComponent {
             editor = (
                 <CharacteristicEditor
                     characteristic={selectedAttribute}
-                    onSaveChangedAttribute={
-                        changedAttribute => this.LsaveChangedAttribute(changedAttribute)
-                    }
+                    onSaveChangedAttribute={this.saveChangedAttribute}
                     onRemoveAttribute={showDeleteDialog}
-                    onModified={modified => this.LonModified(modified)}
+                    onModified={this.onModified}
                     onValidationError={error => showErrorDialog(error)}
                 />
             );
@@ -332,11 +333,9 @@ class ServerSetup extends React.PureComponent {
             editor = (
                 <DescriptorEditor
                     descriptor={selectedAttribute}
-                    onSaveChangedAttribute={
-                        changedAttribute => this.LsaveChangedAttribute(changedAttribute)
-                    }
+                    onSaveChangedAttribute={this.saveChangedAttribute}
                     onRemoveAttribute={showDeleteDialog}
-                    onModified={modified => this.LonModified(modified)}
+                    onModified={this.onModified}
                     onValidationError={error => showErrorDialog(error)}
                 />
             );
@@ -356,8 +355,7 @@ class ServerSetup extends React.PureComponent {
                     item={service}
                     selectOnClick
                     selected={selectedComponent}
-                    onSelected={this.LonSelected}
-                    onSelectAttribute={instanceId => this.LonSelectComponent(instanceId)}
+                    onSelectAttribute={this.onSelectComponent}
                     onSetAttributeExpanded={setAttributeExpanded}
                     addNew={canAdd}
                     onAddCharacteristic={addNewCharacteristic}
@@ -373,8 +371,8 @@ class ServerSetup extends React.PureComponent {
                 id={`${selectedAdapter.instanceId}_serversetup`}
                 name={selectedAdapter.state.name}
                 address={selectedAdapter.state.address}
-                onSaveSetup={this.LopenSaveDialog}
-                onLoadSetup={this.LopenLoadDialog}
+                onSaveSetup={this.openSaveDialog}
+                onLoadSetup={this.openLoadDialog}
             />
         );
 
@@ -427,8 +425,8 @@ class ServerSetup extends React.PureComponent {
                     />
                     <ConfirmationDialog
                         show={showingDiscardDialog}
-                        onOk={() => this.LonDiscardOk()}
-                        onCancel={() => this.LonDiscardCancel()}
+                        onOk={this.onDiscardOk}
+                        onCancel={this.onDiscardCancel}
                         text="The attribute has been modified. Discard the changes?"
                         okButtonText="Yes"
                         cancelButtonText="No"

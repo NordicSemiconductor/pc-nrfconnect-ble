@@ -81,13 +81,13 @@ function calcCaretPosition(origValue, caretPosition) {
 class HexOnlyEditableField extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.LkeyPressValidation = this.LkeyPressValidation.bind(this);
-        this.LformatInput = this.LformatInput.bind(this);
-        this.LcompleteValidation = this.LcompleteValidation.bind(this);
-        this.LonBeforeBackspace = this.LonBeforeBackspace.bind(this);
-        this.LonBeforeDelete = this.LonBeforeDelete.bind(this);
-        this.LgetValueArray = this.LgetValueArray.bind(this);
-        this.LonChange = this.LonChange.bind(this);
+        this.keyPressValidation = this.keyPressValidation.bind(this);
+        this.formatInput = this.formatInput.bind(this);
+        this.completeValidation = this.completeValidation.bind(this);
+        this.onBeforeBackspace = this.onBeforeBackspace.bind(this);
+        this.onBeforeDelete = this.onBeforeDelete.bind(this);
+        this.getValueArray = this.getValueArray.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     shouldComponentUpdate(nextProps) {
@@ -104,6 +104,42 @@ class HexOnlyEditableField extends React.PureComponent {
         }
 
         return false;
+    }
+
+    onBeforeBackspace(e) {
+        this.removeSelection(e, -1);
+    }
+
+    onBeforeDelete(e) {
+        this.removeSelection(e, 0);
+    }
+
+    onChange(value) {
+        if (this.props.onChange) {
+            const v = this.props.showText ? this.getValueArray(value) : value;
+            this.props.onChange(v);
+        }
+    }
+
+    getValueArray(val) {
+        let value = val;
+        if (this.props.showText) {
+            value = textToHexText(value);
+        }
+
+        if (!this.completeValidation(value)) {
+            return undefined;
+        }
+
+        const valueArray = [];
+
+        for (let i = 0; i < value.length; i += 3) {
+            const slice = value.substring(i, i + 2);
+            const parsedInt = parseInt(slice, 16);
+            valueArray.push(parsedInt);
+        }
+
+        return valueArray;
     }
 
     /*
@@ -123,7 +159,7 @@ class HexOnlyEditableField extends React.PureComponent {
 
         There's a lot of complexity here related to keeping the caret in the right position.
     */
-    LkeyPressValidation(str) {
+    keyPressValidation(str) {
         if (this.props.showText) {
             return true;
         }
@@ -132,7 +168,7 @@ class HexOnlyEditableField extends React.PureComponent {
         return hexRegEx.test(str);
     }
 
-    LformatInput(str, caretPosition) {
+    formatInput(str, caretPosition) {
         if (this.props.showText) {
             return {
                 value: str,
@@ -157,7 +193,7 @@ class HexOnlyEditableField extends React.PureComponent {
         };
     }
 
-    LremoveSelection(e, caretModifier) {
+    removeSelection(e, caretModifier) {
         if (this.props.showText) {
             return;
         }
@@ -181,15 +217,7 @@ class HexOnlyEditableField extends React.PureComponent {
         }
     }
 
-    LonBeforeBackspace(e) {
-        this.LremoveSelection(e, -1);
-    }
-
-    LonBeforeDelete(e) {
-        this.LremoveSelection(e, 0);
-    }
-
-    LcompleteValidation(str) {
+    completeValidation(str) {
         const s = this.props.showText ? textToHexText(str) : str;
 
         const valueArray = s.trim().split(' ');
@@ -201,34 +229,6 @@ class HexOnlyEditableField extends React.PureComponent {
         }
 
         return { valid: true, validationMessage: 'Valid value' };
-    }
-
-    LgetValueArray(val) {
-        let value = val;
-        if (this.props.showText) {
-            value = textToHexText(value);
-        }
-
-        if (!this.LcompleteValidation(value)) {
-            return undefined;
-        }
-
-        const valueArray = [];
-
-        for (let i = 0; i < value.length; i += 3) {
-            const slice = value.substring(i, i + 2);
-            const parsedInt = parseInt(slice, 16);
-            valueArray.push(parsedInt);
-        }
-
-        return valueArray;
-    }
-
-    LonChange(value) {
-        if (this.props.onChange) {
-            const v = this.props.showText ? this.LgetValueArray(value) : value;
-            this.props.onChange(v);
-        }
     }
 
     render() {
@@ -264,13 +264,13 @@ class HexOnlyEditableField extends React.PureComponent {
                 {...props}
                 value={showValue}
                 title={titleValue}
-                keyPressValidation={this.LkeyPressValidation}
-                completeValidation={this.LcompleteValidation}
-                formatInput={this.LformatInput}
-                onBeforeBackspace={this.LonBeforeBackspace}
-                onBeforeDelete={this.LonBeforeDelete}
-                getValueArray={this.LgetValueArray}
-                onChange={this.LonChange}
+                keyPressValidation={this.keyPressValidation}
+                completeValidation={this.completeValidation}
+                formatInput={this.formatInput}
+                onBeforeBackspace={this.onBeforeBackspace}
+                onBeforeDelete={this.onBeforeDelete}
+                getValueArray={this.getValueArray}
+                onChange={this.onChange}
             />
         );
     }

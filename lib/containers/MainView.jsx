@@ -105,7 +105,7 @@ class MainViewContainer extends React.PureComponent {
         //     },
         // });
 
-        this.LregisterKeyboardShortcuts();
+        this.registerKeyboardShortcuts();
     }
 
     componentWillMount() {
@@ -138,7 +138,7 @@ class MainViewContainer extends React.PureComponent {
         });
     }
 
-    LregisterKeyboardShortcuts() {
+    registerKeyboardShortcuts() {
         // Setup keyboard shortcut callbacks
         //
         // Since we move between the different "tabs" we have to

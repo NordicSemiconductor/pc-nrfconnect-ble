@@ -60,35 +60,35 @@ class DeviceDetailsContainer extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this.moveUp = () => this.LselectNextComponent(true);
-        this.moveDown = () => this.LselectNextComponent(false);
-        this.moveRight = () => this.LexpandComponent(true);
-        this.moveLeft = () => this.LexpandComponent(false);
+        this.moveUp = () => this.selectNextComponent(true);
+        this.moveDown = () => this.selectNextComponent(false);
+        this.moveRight = () => this.expandComponent(true);
+        this.moveLeft = () => this.expandComponent(false);
     }
 
     componentDidMount() {
-        this.LregisterKeyboardShortcuts();
+        this.registerKeyboardShortcuts();
     }
 
     componentWillUnmount() {
-        this.LunregisterKeyboardShortcuts();
+        this.unregisterKeyboardShortcuts();
     }
 
-    LregisterKeyboardShortcuts() {
+    registerKeyboardShortcuts() {
         window.addEventListener('core:move-down', this.moveDown);
         window.addEventListener('core:move-up', this.moveUp);
         window.addEventListener('core:move-right', this.moveRight);
         window.addEventListener('core:move-left', this.moveLeft);
     }
 
-    LunregisterKeyboardShortcuts() {
+    unregisterKeyboardShortcuts() {
         window.removeEventListener('core:move-down', this.moveDown);
         window.removeEventListener('core:move-up', this.moveUp);
         window.removeEventListener('core:move-right', this.moveRight);
         window.removeEventListener('core:move-left', this.moveLeft);
     }
 
-    LselectNextComponent(backward) {
+    selectNextComponent(backward) {
         const { deviceDetails, selectedComponent, selectComponent } = this.props;
         let foundCurrent = false;
 
@@ -111,7 +111,7 @@ class DeviceDetailsContainer extends React.PureComponent {
         }
     }
 
-    LexpandComponent(expand) {
+    expandComponent(expand) {
         const {
             deviceDetails,
             selectedComponent,
@@ -136,7 +136,7 @@ class DeviceDetailsContainer extends React.PureComponent {
             }
 
             if (expand && item.expanded && item.children.size) {
-                this.LselectNextComponent(false);
+                this.selectNextComponent(false);
                 return;
             }
 

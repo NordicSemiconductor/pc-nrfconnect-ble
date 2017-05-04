@@ -58,7 +58,7 @@ class AdvertisingSetup extends React.PureComponent {
         this.handleValueChange = this.handleValueChange.bind(this);
     }
 
-    LprepareValue() {
+    prepareValue() {
         if (!this.typeValue) {
             return undefined;
         }
@@ -69,7 +69,7 @@ class AdvertisingSetup extends React.PureComponent {
     }
 
     addToAdvData() {
-        const newValue = this.LprepareValue();
+        const newValue = this.prepareValue();
 
         if (!newValue || newValue.value === '') {
             return;
@@ -79,7 +79,7 @@ class AdvertisingSetup extends React.PureComponent {
     }
 
     addToScanResponse() {
-        const newValue = this.LprepareValue();
+        const newValue = this.prepareValue();
 
         if (!newValue || newValue.value === '') {
             return;

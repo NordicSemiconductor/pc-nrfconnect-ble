@@ -56,35 +56,18 @@ import * as BLEEventActions from '../actions/bleEventActions';
 import * as AdapterActions from '../actions/adapterActions';
 
 class BLEEventDialog extends React.PureComponent {
-    Lclose() {
-        const { clearAllEvents, showDialog } = this.props;
-
-        clearAllEvents();
-        showDialog(false);
+    constructor(props) {
+        super(props);
+        this.onSelected = this.onSelected.bind(this);
+        this.close = this.close.bind(this);
     }
 
-    LonSelected(selectedEventId) {
+    onSelected(selectedEventId) {
         const { selectEventId } = this.props;
         selectEventId(selectedEventId);
     }
 
-    LareAllEventsHandled() {
-        const { events } = this.props;
-        const allEventsHandled = events.reduce((handled, event) => (
-            handled && event.state !== BLEEventState.INDETERMINATE
-        ), true);
-
-        // events.forEach(event => {
-        //     if (event.state === BLEEventState.INDETERMINATE) {
-        //         allEventsHandled = false;
-        //         return false; // Stops the iteration // This DOESN't stop iteration!
-        //     }
-        // });
-
-        return allEventsHandled;
-    }
-
-    LgetEditorComponent(event) {
+    getEditorComponent(event) {
         const {
             rejectDeviceConnectionParams,
             updateDeviceConnectionParams,
@@ -106,7 +89,6 @@ class BLEEventDialog extends React.PureComponent {
             event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
             return (<ConnectionUpdateRequestEditor
                 event={event}
-                onUpdate={this.LhandleEditorUpdate}
                 onRejectConnectionParams={device => rejectDeviceConnectionParams(event.id, device)}
                 onUpdateConnectionParams={
                     (device, connectionParams) => updateDeviceConnectionParams(
@@ -119,7 +101,6 @@ class BLEEventDialog extends React.PureComponent {
         } else if (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE) {
             return (<ConnectionUpdateRequestEditor
                 event={event}
-                onUpdate={this.LhandleEditorUpdate}
                 onRejectConnectionParams={device => disconnectFromDevice(device)}
                 onUpdateConnectionParams={eventId => acceptEvent(eventId)}
                 onIgnoreEvent={() => {}}
@@ -163,6 +144,13 @@ class BLEEventDialog extends React.PureComponent {
         return null;
     }
 
+    close() {
+        const { clearAllEvents, showDialog } = this.props;
+
+        clearAllEvents();
+        showDialog(false);
+    }
+
     render() {
         const {
             visible,
@@ -197,7 +185,7 @@ class BLEEventDialog extends React.PureComponent {
                                 events.valueSeq().map(event => (
                                     <BLEEvent
                                         key={event.id}
-                                        onSelected={eventId => this.LonSelected(eventId)}
+                                        onSelected={this.onSelected}
                                         selected={selectedEventId === event.id}
                                         event={event}
                                         onTimedOut={
@@ -217,7 +205,7 @@ class BLEEventDialog extends React.PureComponent {
                                     className="item-editor"
                                     style={((selectedEventId !== -1) && (selectedEventId === event.id) && event.state === BLEEventState.INDETERMINATE) ? {} : { display: 'none' }}
                                 >
-                                    {this.LgetEditorComponent(event)}
+                                    {this.getEditorComponent(event)}
                                 </div>
                             ))
                         }
@@ -234,7 +222,7 @@ class BLEEventDialog extends React.PureComponent {
                 <Modal.Footer>
                     <Button
                         className="btn btn-primary btn-nordic"
-                        onClick={() => this.Lclose()}
+                        onClick={this.close}
                     >Close</Button>
                 </Modal.Footer>
             </Modal>

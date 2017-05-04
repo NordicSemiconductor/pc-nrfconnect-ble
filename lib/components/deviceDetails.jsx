@@ -51,10 +51,30 @@ class DeviceDetailsView extends React.PureComponent {
         super(props);
         this.dfuUuid = getUuidByName('Secure DFU');
 
-        this.LonDisconnectFromDevice = this.LonDisconnectFromDevice.bind(this);
-        this.LonUpdateDeviceConnectionParams = this.LonUpdateDeviceConnectionParams.bind(this);
-        this.LonPairWithDevice = this.LonPairWithDevice.bind(this);
-        this.LonShowDfuDialog = this.LonShowDfuDialog.bind(this);
+        this.onDisconnectFromDevice = this.onDisconnectFromDevice.bind(this);
+        this.onUpdateDeviceConnectionParams = this.onUpdateDeviceConnectionParams.bind(this);
+        this.onPairWithDevice = this.onPairWithDevice.bind(this);
+        this.onShowDfuDialog = this.onShowDfuDialog.bind(this);
+    }
+
+    onDisconnectFromDevice() {
+        const { device, onDisconnectFromDevice } = this.props;
+        onDisconnectFromDevice(device);
+    }
+
+    onUpdateDeviceConnectionParams() {
+        const { device, onUpdateDeviceConnectionParams } = this.props;
+        onUpdateDeviceConnectionParams(device);
+    }
+
+    onPairWithDevice() {
+        const { device, onPairWithDevice } = this.props;
+        onPairWithDevice(device);
+    }
+
+    onShowDfuDialog() {
+        const { device, onShowDfuDialog } = this.props;
+        onShowDfuDialog(device);
     }
 
     createServiceItem(service) {
@@ -84,7 +104,7 @@ class DeviceDetailsView extends React.PureComponent {
         );
     }
 
-    LhasDfuService(instanceId) {
+    hasDfuService(instanceId) {
         const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
         if (!deviceDetail.discoveringChildren) {
             const services = deviceDetail.get('children');
@@ -93,26 +113,6 @@ class DeviceDetailsView extends React.PureComponent {
             }
         }
         return false;
-    }
-
-    LonDisconnectFromDevice() {
-        const { device, onDisconnectFromDevice } = this.props;
-        onDisconnectFromDevice(device);
-    }
-
-    LonUpdateDeviceConnectionParams() {
-        const { device, onUpdateDeviceConnectionParams } = this.props;
-        onUpdateDeviceConnectionParams(device);
-    }
-
-    LonPairWithDevice() {
-        const { device, onPairWithDevice } = this.props;
-        onPairWithDevice(device);
-    }
-
-    LonShowDfuDialog() {
-        const { device, onShowDfuDialog } = this.props;
-        onShowDfuDialog(device);
     }
 
     renderChildren(instanceId) {
@@ -212,7 +212,7 @@ class DeviceDetailsView extends React.PureComponent {
         }
 
         const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
-        const isDfuSupported = this.LhasDfuService(instanceId);
+        const isDfuSupported = this.hasDfuService(instanceId);
 
         if (!deviceDetail) {
             return <div />;
@@ -227,11 +227,11 @@ class DeviceDetailsView extends React.PureComponent {
                 selected={selected}
                 layout="vertical"
                 isDfuSupported={isDfuSupported}
-                onClickDfu={this.LonShowDfuDialog}
+                onClickDfu={this.onShowDfuDialog}
                 onSelectComponent={onSelectComponent}
-                onDisconnect={this.LonDisconnectFromDevice}
-                onPair={this.LonPairWithDevice}
-                onConnectionParamsUpdate={this.LonUpdateDeviceConnectionParams}
+                onDisconnect={this.onDisconnectFromDevice}
+                onPair={this.onPairWithDevice}
+                onConnectionParamsUpdate={this.onUpdateDeviceConnectionParams}
             />
         );
 

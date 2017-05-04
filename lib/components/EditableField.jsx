@@ -72,7 +72,7 @@ class EditableField extends React.Component {
         a function called when the user presses the ok button.
         If it returns false the component will stay in edit mode.
     onBeforeBackspace (optional):
-        function called when backspace is detected LonKeyDown. It is passed the event object.
+        function called when backspace is detected onKeyDown. It is passed the event object.
     formatInput (optional):
         function to format the textarea content, called onChange, after keyPressValidation.
         It must return an object with properties value and caretPosition.
@@ -87,6 +87,17 @@ class EditableField extends React.Component {
         function, fires if the value changed due to user input. First argument is the new value.
 
     */
+
+    constructor(props) {
+        super(props);
+        this.selectParentAndToggleEditing = this.selectParentAndToggleEditing.bind(this);
+        this.selectParent = this.selectParent.bind(this);
+        this.toggleEditing = this.toggleEditing.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
+        this.onWriteButtonClick = this.onWriteButtonClick.bind(this);
+        this.onReadButtonClick = this.onReadButtonClick.bind(this);
+    }
 
     componentDidMount() {
         this.editing = false;
@@ -104,47 +115,7 @@ class EditableField extends React.Component {
         }
     }
 
-    handleClickOutside(e) {
-        if (this.editing) {
-            if (this.props.insideSelector) {
-                // don't close if click was within a parent element that matches insideSelector
-                const textarea = this.editableTextarea;
-                if (textarea) {
-                    const insideParent = $(textarea).parents(this.props.insideSelector)[0];
-                    if (e.path.includes(insideParent)) {
-                        return;
-                    }
-                }
-            }
-
-            this.editing = false;
-            this.value = this.props.value; // reset textarea value
-            this.validationMessage = '';
-            this.forceUpdate();
-        }
-    }
-
-    LselectParentAndToggleEditing(e) {
-        e.stopPropagation();
-        this.LtoggleEditing(e);
-        this.props.selectParent(e);
-    }
-
-    LselectParent(e) {
-        e.stopPropagation();
-        this.props.selectParent(e);
-    }
-
-    LtoggleEditing(e) {
-        e.stopPropagation();
-
-        if (this.props.onWrite) {
-            this.editing = !this.editing;
-            this.forceUpdate();
-        }
-    }
-
-    LonChange(e) {
+    onChange(e) {
         const textarea = e.target;
         let value = textarea.value;
         let caretPosition = textarea.selectionStart;
@@ -170,7 +141,7 @@ class EditableField extends React.Component {
         }
     }
 
-    LonKeyDown(e) {
+    onKeyDown(e) {
         if (e.key === 'Backspace' && this.props.onBeforeBackspace) {
             this.props.onBeforeBackspace(e);
         }
@@ -180,22 +151,62 @@ class EditableField extends React.Component {
         }
 
         if (e.key === 'Enter') {
-            this.Lwrite();
+            this.write();
             e.preventDefault();
         }
     }
 
-    LonWriteButtonClick(e) {
+    onWriteButtonClick(e) {
         e.stopPropagation();
-        this.Lwrite();
+        this.write();
     }
 
-    LonReadButtonClick(e) {
+    onReadButtonClick(e) {
         e.stopPropagation();
-        this.Lread();
+        this.read();
     }
 
-    Lwrite() {
+    handleClickOutside(e) {
+        if (this.editing) {
+            if (this.props.insideSelector) {
+                // don't close if click was within a parent element that matches insideSelector
+                const textarea = this.editableTextarea;
+                if (textarea) {
+                    const insideParent = $(textarea).parents(this.props.insideSelector)[0];
+                    if (e.path.includes(insideParent)) {
+                        return;
+                    }
+                }
+            }
+
+            this.editing = false;
+            this.value = this.props.value; // reset textarea value
+            this.validationMessage = '';
+            this.forceUpdate();
+        }
+    }
+
+    selectParentAndToggleEditing(e) {
+        e.stopPropagation();
+        this.toggleEditing(e);
+        this.props.selectParent(e);
+    }
+
+    selectParent(e) {
+        e.stopPropagation();
+        this.props.selectParent(e);
+    }
+
+    toggleEditing(e) {
+        e.stopPropagation();
+
+        if (this.props.onWrite) {
+            this.editing = !this.editing;
+            this.forceUpdate();
+        }
+    }
+
+    write() {
         const { valid, validationMessage } = this.props.completeValidation
             ? this.props.completeValidation(this.value)
             : { valid: true };
@@ -209,7 +220,7 @@ class EditableField extends React.Component {
         }
     }
 
-    Lread() {
+    read() {
         this.props.onRead();
     }
 
@@ -228,7 +239,7 @@ class EditableField extends React.Component {
             <div
                 className="btn btn-primary btn-xs btn-nordic"
                 title="Read"
-                onClick={e => this.LonReadButtonClick(e)}
+                onClick={this.onReadButtonClick}
             >
                 <i className="icon-ccw" />
             </div>
@@ -241,9 +252,9 @@ class EditableField extends React.Component {
                     ref={editableTextarea => { this.editableTextarea = editableTextarea; }}
                     label={this.props.label}
                     title={this.props.title}
-                    onKeyDown={e => this.LonKeyDown(e)}
+                    onKeyDown={this.onKeyDown}
                     value={this.props.value}
-                    onChange={e => this.LonChange(e)}
+                    onChange={this.onChange}
                     onClick={stopPropagation}
                 />
             );
@@ -262,17 +273,17 @@ class EditableField extends React.Component {
                     <div
                         className="btn btn-primary btn-xs btn-nordic"
                         title="Write"
-                        onClick={e => this.LonWriteButtonClick(e)}
+                        onClick={this.onWriteButtonClick}
                     >
                         <i className="icon-ok" />
                     </div>
                     <TextareaAutosize
                         ref={editableTextarea => { this.editableTextarea = editableTextarea; }}
                         minRows={1}
-                        onKeyDown={e => this.LonKeyDown(e)}
+                        onKeyDown={this.onKeyDown}
                         title={this.props.title}
                         value={this.value}
-                        onChange={e => this.LonChange(e)}
+                        onChange={this.onChange}
                         onClick={stopPropagation}
                     />
                 </div>
@@ -283,11 +294,11 @@ class EditableField extends React.Component {
                     <div
                         className="btn btn-primary btn-xs btn-nordic"
                         title="Read"
-                        onClick={e => this.LonReadButtonClick(e)}
+                        onClick={this.onReadButtonClick}
                     >
                         <i className="icon-ccw" />
                     </div>
-                    <div className="subtle-text editable" onClick={e => this.LtoggleEditing(e)}>
+                    <div className="subtle-text editable" onClick={this.toggleEditing}>
                         <span>{this.value || nonBreakingSpace}</span>
                     </div>
                 </div>
@@ -306,7 +317,7 @@ class EditableField extends React.Component {
                 <div
                     className="subtle-text"
                     title={this.props.title}
-                    onClick={e => this.LselectParent(e)}
+                    onClick={this.selectParent}
                 >
                     <span>{this.value || nonBreakingSpace}</span>
                 </div>
@@ -316,7 +327,7 @@ class EditableField extends React.Component {
                 <div
                     className="subtle-text editable"
                     title={this.props.title}
-                    onClick={e => this.LselectParentAndToggleEditing(e)}
+                    onClick={this.selectParentAndToggleEditing}
                 >
                     <span>{this.value || nonBreakingSpace}</span>
                 </div>
