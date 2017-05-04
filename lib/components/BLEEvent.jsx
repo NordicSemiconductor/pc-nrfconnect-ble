@@ -47,7 +47,7 @@ import { Event } from '../reducers/bleEventReducer';
 
 const EVENT_TIMEOUT_SECONDS = 30;
 
-function LonExpandAreaClick() {
+function onExpandAreaClick() {
     console.log('TODO: implement me! I did not exist earlier either...');
 }
 
@@ -194,7 +194,7 @@ class BLEEvent extends React.PureComponent {
     render() {
         return (
             <div className={`service-item ${this.LgetClass()}`} style={this.LgetStyle()} onClick={_event => this.LonClick(_event)}>
-                <div className="expand-area" onClick={LonExpandAreaClick}>
+                <div className="expand-area" onClick={onExpandAreaClick}>
                     <div className="bar1" />
                     <div className="icon-wrap" />
                 </div>

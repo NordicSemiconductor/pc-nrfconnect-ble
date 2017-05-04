@@ -49,7 +49,7 @@ import { TEXT, getUuidFormat } from '../utils/uuid_definitions';
 const NOTIFY = 1;
 const INDICATE = 2;
 
-function LfindCccdDescriptor(children) {
+function findCccdDescriptor(children) {
     if (!children) {
         return undefined;
     }
@@ -57,7 +57,7 @@ function LfindCccdDescriptor(children) {
     return children.find(child => child.uuid === CCCD_UUID);
 }
 
-function LisNotifying(cccdDescriptor) {
+function isNotifying(cccdDescriptor) {
     if (!cccdDescriptor) {
         return false;
     }
@@ -84,7 +84,7 @@ class CharacteristicItem extends AttributeItem {
     LonToggleNotify(e) {
         e.stopPropagation();
 
-        const isNotifying = LisNotifying(this.cccdDescriptor);
+        const isDescriptorNotifying = isNotifying(this.cccdDescriptor);
         const hasNotifyProperty = this.props.item.properties.notify;
         const hasIndicateProperty = this.props.item.properties.indicate;
 
@@ -97,7 +97,7 @@ class CharacteristicItem extends AttributeItem {
         }
 
         let cccdValue;
-        if (!isNotifying) {
+        if (!isDescriptorNotifying) {
             if (hasNotifyProperty) {
                 cccdValue = NOTIFY;
             } else {
@@ -125,10 +125,10 @@ class CharacteristicItem extends AttributeItem {
             children,
         } = item;
 
-        this.cccdDescriptor = LfindCccdDescriptor(children);
+        this.cccdDescriptor = findCccdDescriptor(children);
 
         const isLocal = this.isLocalAttribute();
-        const isNotifying = LisNotifying(this.cccdDescriptor);
+        const isDescriptorNotifying = isNotifying(this.cccdDescriptor);
         const itemIsSelected = item.instanceId === selected;
 
         const hasCccd = this.cccdDescriptor !== undefined;
@@ -141,7 +141,7 @@ class CharacteristicItem extends AttributeItem {
 
         const toggleNotificationsText = hasCccd ? 'Toggle notifications' : 'Toggle notifications (CCCD not discovered)';
         const notifyIconStyle = !isLocal && hasNotifyOrIndicateProperty ? {} : { display: 'none' };
-        const notifyIcon = (isNotifying && hasNotifyOrIndicateProperty) ? 'icon-stop' : 'icon-play';
+        const notifyIcon = (isDescriptorNotifying && hasNotifyOrIndicateProperty) ? 'icon-stop' : 'icon-play';
 
         const showText = getUuidFormat(uuid) === TEXT;
 

@@ -46,7 +46,7 @@ import EditableField from './EditableField';
 
 import { hexArrayToText, textToHexText, hexArrayToHexText } from '../utils/stringUtil';
 
-function LcalcCaretPosition(origValue, caretPosition) {
+function calcCaretPosition(origValue, caretPosition) {
     /*
     * Replacing the textarea contents places the caret at the end.
     * We need to place the caret back where it should be.
@@ -140,7 +140,7 @@ class HexOnlyEditableField extends React.PureComponent {
             };
         }
 
-        const caretPos = LcalcCaretPosition(str, caretPosition);
+        const caretPos = calcCaretPosition(str, caretPosition);
         const chars = str.toUpperCase().replace(/ /g, '').split('');
         // insert spaces after every second char
         let inserted = 0;

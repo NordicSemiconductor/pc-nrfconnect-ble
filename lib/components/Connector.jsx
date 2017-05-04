@@ -140,7 +140,7 @@ ConnectionOverlay.propTypes = {
     device: PropTypes.object.isRequired,
 };
 
-function LgenerateLines(lineCoordinates) {
+function generateLines(lineCoordinates) {
     const result = [];
 
     for (let i = 0; i < lineCoordinates.length - 1; i += 1) {
@@ -217,7 +217,7 @@ class Connector extends React.PureComponent {
 
         const layoutInfo = layoutStrategies(layout)(sourceRect, targetRect, 3);
         const connectorBox = layoutInfo.boundingBox;
-        const lines = LgenerateLines(layoutInfo.lineCoordinates);
+        const lines = generateLines(layoutInfo.lineCoordinates);
         const connectionInfoOverlay = this.LgetConnectionOverlay(layoutInfo.lineCoordinates);
 
         return (

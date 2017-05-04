@@ -54,28 +54,24 @@ const CONN_LATENCY_MIN = 0;
 const CONN_LATENCY_MAX = 499;
 const CONN_LATENCY_STEP = 1;
 
-function LisSlaveLatencyValid(slaveLatency) {
+function isSlaveLatencyValid(slaveLatency) {
     return ((slaveLatency >= CONN_LATENCY_MIN) && (slaveLatency <= CONN_LATENCY_MAX));
 }
 
-function LisConnectionSupervisionTimeoutValid(connectionSupervisionTimeout) {
+function isConnectionSupervisionTimeoutValid(connectionSupervisionTimeout) {
     return ((connectionSupervisionTimeout >= CONN_TIMEOUT_MIN)
         && (connectionSupervisionTimeout < CONN_TIMEOUT_MAX));
 }
 
-function LgetValidInputStyle() {
-    return {
-        boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6)',
-        borderColor: '#66afe9',
-    };
-}
+const validInputStyle = {
+    boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6)',
+    borderColor: '#66afe9',
+};
 
-function LgetInvalidInputStyle() {
-    return {
-        boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 5px rgba(255, 0, 0, 1)',
-        borderColor: 'rgb(200, 10, 10)',
-    };
-}
+const invalidInputStyle = {
+    boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 5px rgba(255, 0, 0, 1)',
+    borderColor: 'rgb(200, 10, 10)',
+};
 
 // This component views an editor for connection update parameters
 // One concept is essential:
@@ -166,7 +162,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
     LsetAndValidateConnectionSupervisionTimeout(value) {
         this.connectionSupervisionTimeout = value;
         this.isConnectionSupervisionTimeoutValid =
-            LisConnectionSupervisionTimeoutValid(this.connectionSupervisionTimeout);
+            isConnectionSupervisionTimeoutValid(this.connectionSupervisionTimeout);
     }
 
     LhandleConnectionSupervisionTimeoutChange(event) {
@@ -176,7 +172,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
     LsetAndValidateSlaveLatency(value) {
         this.slaveLatency = value;
-        this.isSlaveLatencyValid = LisSlaveLatencyValid(value);
+        this.isSlaveLatencyValid = isSlaveLatencyValid(value);
     }
 
     LhandleSlaveLatencyChange(event) {
@@ -243,9 +239,9 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
         const address = device.address;
 
         const slaveLatencyStyle = this.isSlaveLatencyValid ?
-            LgetValidInputStyle() : LgetInvalidInputStyle();
+            validInputStyle : invalidInputStyle;
         const connectionSupervisionTimeoutInputStyle = this.isConnectionSupervisionTimeoutValid ?
-            LgetValidInputStyle() : LgetInvalidInputStyle();
+            validInputStyle : invalidInputStyle;
 
         const ignoreButton = event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE
             ? (
