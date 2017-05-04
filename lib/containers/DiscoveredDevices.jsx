@@ -227,10 +227,10 @@ export default connect(
 )(withHotkey(DiscoveredDevices));
 
 DiscoveredDevices.propTypes = {
-    discoveredDevices: PropTypes.instanceOf(OrderedMap).isRequired,
-    isAdapterAvailable: PropTypes.bool.isRequired,
-    isScanning: PropTypes.bool.isRequired,
-    adapterIsConnecting: PropTypes.bool.isRequired,
+    discoveredDevices: PropTypes.instanceOf(OrderedMap),
+    isAdapterAvailable: PropTypes.bool,
+    isScanning: PropTypes.bool,
+    adapterIsConnecting: PropTypes.bool,
     clearDevicesList: PropTypes.func.isRequired,
     toggleScan: PropTypes.func.isRequired,
     connectToDevice: PropTypes.func.isRequired,
@@ -239,5 +239,13 @@ DiscoveredDevices.propTypes = {
     setDiscoveryOptions: PropTypes.func.isRequired,
     toggleOptionsExpanded: PropTypes.func.isRequired,
     toggleExpanded: PropTypes.func.isRequired,
-    discoveryOptions: PropTypes.instanceOf(DiscoveryOptions).isRequired,
+    discoveryOptions: PropTypes.instanceOf(DiscoveryOptions),
+};
+
+DiscoveredDevices.defaultProps = {
+    discoveryOptions: { expanded: true },
+    discoveredDevices: [],
+    isAdapterAvailable: true,
+    isScanning: false,
+    adapterIsConnecting: false,
 };

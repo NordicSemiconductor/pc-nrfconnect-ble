@@ -51,9 +51,6 @@ import { confirmUserUUIDsExist } from './lib/utils/uuid_definitions';
 import './resources/css/styles.less';
 
 export default {
-    config: {
-        firmwareUseBLE: true,
-    },
     decorateNavMenu: NavMenu => (
         props => (
             <NavMenu
@@ -80,14 +77,7 @@ export default {
     decorateSidePanel: SidePanel => (
         props => (
             <SidePanel>
-                <DiscoveredDevices
-                    {...props}
-                    discoveryOptions={{ expanded: true }}
-                    discoveredDevices={[]}
-                    isAdapterAvailable
-                    isScanning={false}
-                    adapterIsConnecting={false}
-                />
+                <DiscoveredDevices {...props} />
             </SidePanel>
         )
     ),
