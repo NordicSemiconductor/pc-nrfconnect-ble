@@ -44,7 +44,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
 
-import { coreApi } from '../actions/coreActionsHack';
+import electron from 'nrfconnect/electron';
 
 import * as ServerSetupActions from '../actions/serverSetupActions';
 import * as AdapterActions from '../actions/adapterActions';
@@ -134,7 +134,7 @@ class ServerSetup extends React.PureComponent {
     }
 
     openSaveDialog() {
-        const { dialog } = coreApi.electron.remote;
+        const { dialog } = electron.remote;
         dialog.showSaveDialog({ filters }, filePath => {
             if (!filePath) {
                 return;
@@ -144,7 +144,7 @@ class ServerSetup extends React.PureComponent {
     }
 
     openLoadDialog() {
-        const { dialog } = coreApi.electron.remote;
+        const { dialog } = electron.remote;
         dialog.showOpenDialog({ filters, properties: ['openFile'] }, filePaths => {
             if (!filePaths) {
                 return;

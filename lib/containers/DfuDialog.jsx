@@ -42,11 +42,11 @@ import { connect } from 'react-redux';
 
 import { Modal, Button } from 'react-bootstrap';
 
+import electron from 'nrfconnect/electron';
+
 import * as DfuActions from '../actions/dfuActions';
 import DfuEditor from '../components/DfuEditor';
 import ConfirmationDialog from '../components/ConfirmationDialog';
-
-import { coreApi } from '../actions/coreActionsHack';
 
 class DfuDialog extends React.PureComponent {
     constructor(props) {
@@ -74,7 +74,7 @@ class DfuDialog extends React.PureComponent {
     }
 
     showFileDialog() {
-        const { dialog } = coreApi.electron.remote;
+        const { dialog } = electron.remote;
         const filters = [{
             name: 'Zip Files',
             extensions: ['zip'],

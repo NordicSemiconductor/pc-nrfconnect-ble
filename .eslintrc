@@ -36,12 +36,20 @@
         "strict": "off",
         "no-console": "off",
         "valid-jsdoc": 2,
-        "import/no-extraneous-dependencies": 0
+        "import/no-extraneous-dependencies": 0,
+        "import/no-unresolved": [
+            "error",
+            {
+                "ignore": [ "nrfconnect/.*" ]
+            }
+        ],
+        "import/extensions": ["off"],
     },
     "no-undef": 1,
     "no-unused-vars": 1,
     "plugins": [
-        "react"
+        "react",
+        "import"
     ],
     "env": {
         "es6": true,

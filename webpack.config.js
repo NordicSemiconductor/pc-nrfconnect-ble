@@ -10,6 +10,11 @@ function createExternals() {
     // Add production dependencies as externals, but keep the require behavior.
     // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
     const externals = {};
+    const coreApis = ['pc-ble-driver-js', 'serialport', 'logger', 'programming', 'electron', 'core'];
+    coreApis.forEach(api => {
+        const modPath = `nrfconnect/${api}`;
+        externals[modPath] = modPath;
+    });
     Object.keys(dependencies).forEach(dependency => {
         externals[dependency] = dependency;
     });

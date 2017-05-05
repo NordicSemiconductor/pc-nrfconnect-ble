@@ -37,6 +37,7 @@
 import path from 'path';
 import React from 'react';
 import { bindActionCreators } from 'redux';
+import core from 'nrfconnect/core';
 import reducers from './lib/reducers';
 import * as DiscoveryActions from './lib/actions/discoveryActions';
 import * as AdapterActions from './lib/actions/adapterActions';
@@ -45,7 +46,6 @@ import * as FirmwareActions from './lib/actions/firmwareActions';
 import MainViewContainer from './lib/containers/MainView';
 import BLEEventDialog from './lib/containers/BLEEventDialog';
 import DiscoveredDevices from './lib/containers/DiscoveredDevices';
-import { initializeApp } from './lib/actions/coreActionsHack';
 import { confirmUserUUIDsExist } from './lib/utils/uuid_definitions';
 
 import './resources/css/styles.less';
@@ -122,12 +122,11 @@ export default {
         }
         next(action);
     },
-    onInit: (dispatch, getState, { core }) => {
+    onInit: () => {
         __webpack_public_path__ = path.join(core.getAppDir(), 'dist/'); // eslint-disable-line
     },
-    onReady: (dispatch, getState, api) => {
-        initializeApp(api);
-        confirmUserUUIDsExist(api.core.getUserDataDir());
+    onReady: dispatch => {
+        confirmUserUUIDsExist(core.getUserDataDir());
         dispatch(AdapterActions.findAdapters());
     },
 };
