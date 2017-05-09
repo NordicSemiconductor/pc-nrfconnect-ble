@@ -40,15 +40,11 @@ const Spinner = props => {
     const { size, visible, className } = props;
     const style = {
         visibility: visible ? 'visible' : 'hidden',
+        width: size,
+        height: size,
     };
-
-    const spinnerImg = require('../../resources/ajax-loader.gif'); // eslint-disable-line
-
     return (
-        <img
-            alt="" className={className} src={spinnerImg}
-            height={size} width={size} style={style}
-        />
+        <div className={className} style={style} />
     );
 };
 

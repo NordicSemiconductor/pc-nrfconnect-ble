@@ -36,6 +36,42 @@
 
 @import "./variables.less";
 
+@keyframes rotator {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.spinner {
+    border-radius: 50%;
+    background: linear-gradient(to right, @icon-color 10%, rgba(255, 255, 255, 0) 42%);
+    position: relative;
+    display: inline-block;
+    animation: rotator 1.4s infinite linear;
+    transform: translateZ(0);
+}
+.spinner:before {
+    width: 50%;
+    height: 50%;
+    background: @icon-color;
+    border-radius: 100% 0 0 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+}
+.spinner:after {
+    background: #fff;
+    width: 75%;
+    height: 75%;
+    border-radius: 50%;
+    content: '';
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
 .core-main-view, .core-side-panel {
     padding: 0;
 }

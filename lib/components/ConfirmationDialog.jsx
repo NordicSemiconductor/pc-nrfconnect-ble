@@ -39,35 +39,29 @@
 import React, { PropTypes } from 'react';
 
 import { Modal, Button } from 'react-bootstrap';
-import Spinner from './Spinner';
 
 const ConfirmationDialog = props => {
     const {
         text,
         show,
-        showProgress,
         onCancel,
         onOk,
         okButtonText,
         cancelButtonText,
     } = props;
-    const buttonDisabled = showProgress;
-    const backDrop = showProgress ? 'static' : false;
 
     return (
         <div>
-            <Modal show={show} onHide={onCancel} backdrop={backDrop}>
-                <Modal.Header closeButton={!buttonDisabled}>
+            <Modal show={show} onHide={onCancel}>
+                <Modal.Header closeButton>
                     <Modal.Title>Confirm</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <p>{text}</p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Spinner visible={showProgress} />
-                    &nbsp;
-                    <Button onClick={onOk} disabled={buttonDisabled}>{okButtonText}</Button>
-                    <Button onClick={onCancel} disabled={buttonDisabled}>{cancelButtonText}</Button>
+                    <Button onClick={onOk}>{okButtonText}</Button>
+                    <Button onClick={onCancel}>{cancelButtonText}</Button>
                 </Modal.Footer>
             </Modal>
         </div>
@@ -77,7 +71,6 @@ const ConfirmationDialog = props => {
 ConfirmationDialog.propTypes = {
     text: PropTypes.string.isRequired,
     show: PropTypes.bool.isRequired,
-    showProgress: PropTypes.bool,
     onCancel: PropTypes.func.isRequired,
     onOk: PropTypes.func.isRequired,
     okButtonText: PropTypes.string,
@@ -85,7 +78,6 @@ ConfirmationDialog.propTypes = {
 };
 
 ConfirmationDialog.defaultProps = {
-    showProgress: false,
     okButtonText: 'OK',
     cancelButtonText: 'Cancel',
 };
