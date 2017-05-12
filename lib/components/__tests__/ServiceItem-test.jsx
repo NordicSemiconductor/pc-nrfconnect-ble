@@ -34,6 +34,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable import/first */
+
 jest.mock('../../utils/colorDefinitions', () => {
     return {
         getColor: () => {
@@ -42,8 +44,6 @@ jest.mock('../../utils/colorDefinitions', () => {
     };
 });
 jest.mock('../../utils/uuid_definitions', () => {});
-jest.mock('pc-ble-driver-js', () => {});
-
 
 import React from 'react';
 import { mount } from 'enzyme';
@@ -53,7 +53,7 @@ import ServiceItem from '../ServiceItem';
 describe('ServiceItem', () => {
     it('should call button action when button is clicked', () => {
         const button = {
-            onClick: jest.fn()
+            onClick: jest.fn(),
         };
         const wrapper = mount(<ServiceItem item={getImmutableService({})} button={button} />);
         wrapper.find('button').simulate('click');

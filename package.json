@@ -34,5 +34,15 @@
     "react-textarea-autosize": "^4.0.5",
     "uuid-v4": "^0.1.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$": "<rootDir>/mocks/fileMock.js",
+      "\\.(css|less)$": "<rootDir>/mocks/styleMock.js",
+      "nrfconnect/core": "<rootDir>/mocks/coreMock.js",
+      "pc-ble-driver-js": "<rootDir>/mocks/bleDriverMock.js",
+      "pc-nrfjprog-js": "<rootDir>/mocks/nrfjprogMock.js",
+      "serialport": "<rootDir>/mocks/serialportMock.js"
+    }
+  }
 }

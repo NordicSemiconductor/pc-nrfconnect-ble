@@ -34,11 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Have to mock react-dom due to bug: https://github.com/facebook/react/issues/7386
-// Can be removed after upgrade to react 15.4.0.
-jest.mock('react-dom');
-jest.mock('pc-ble-driver-js', () => {});
-
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { getImmutableDevice } from '../../utils/api';
@@ -56,13 +51,15 @@ describe('ConnectedDevice', () => {
         const tree = renderer.create(
             <ConnectedDevice
                 device={device}
-                id='connected-device-id'
-                sourceId='source-id'
-                layout='vertical'
+                id="connected-device-id"
+                sourceId="source-id"
+                layout="vertical"
+                isDfuSupported={false}
+                onClickDfu={() => {}}
                 onConnectionParamsUpdate={() => {}}
                 onDisconnect={() => {}}
                 onPair={() => {}}
-            />
+            />,
         ).toJSON();
 
         expect(tree).toMatchSnapshot();
@@ -72,15 +69,15 @@ describe('ConnectedDevice', () => {
         const tree = renderer.create(
             <ConnectedDevice
                 device={device}
-                id='connected-device-id'
-                sourceId='source-id'
-                layout='vertical'
-                isDfuSupported={true}
+                id="connected-device-id"
+                sourceId="source-id"
+                layout="vertical"
+                isDfuSupported
                 onClickDfu={() => {}}
                 onConnectionParamsUpdate={() => {}}
                 onDisconnect={() => {}}
                 onPair={() => {}}
-            />
+            />,
         ).toJSON();
 
         expect(tree).toMatchSnapshot();

@@ -34,18 +34,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Have to mock react-dom due to bug: https://github.com/facebook/react/issues/7386
-// Can be removed after upgrade to react 15.4.0.
-jest.mock('react-dom');
-jest.mock('../../utils/colorDefinitions', () => {
-    return {
-        getColor: () => {
-            return {r: 255, g: 255, b: 255}
-        }
-    };
-});
+/* eslint-disable import/first */
+
+jest.mock('../../utils/colorDefinitions', () => ({
+    getColor: () => (
+        { r: 255, g: 255, b: 255 }
+    ),
+}));
 jest.mock('../../utils/uuid_definitions', () => {});
-jest.mock('pc-ble-driver-js', () => {});
 
 import React from 'react';
 import renderer from 'react-test-renderer';
@@ -57,13 +53,13 @@ const service = getImmutableService({
     deviceInstanceId: 'service-deviceInstance-1',
     uuid: 'service-uuid-1',
     name: 'Service Name',
-    children: []
+    children: [],
 });
 
 describe('ServiceItem', () => {
     it('should render correctly with no button', () => {
         const tree = renderer.create(
-            <ServiceItem item={service} />
+            <ServiceItem item={service} />,
         ).toJSON();
 
         expect(tree).toMatchSnapshot();
@@ -72,10 +68,10 @@ describe('ServiceItem', () => {
     it('should render correctly with button', () => {
         const button = {
             onClick: () => {},
-            icon: 'path/to/icon.png'
+            icon: 'path/to/icon.png',
         };
         const tree = renderer.create(
-            <ServiceItem item={service} button={button} />
+            <ServiceItem item={service} button={button} />,
         ).toJSON();
 
         expect(tree).toMatchSnapshot();

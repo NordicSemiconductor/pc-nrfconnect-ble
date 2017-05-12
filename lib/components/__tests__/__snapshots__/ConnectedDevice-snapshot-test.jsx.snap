@@ -25,6 +25,7 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
           title="Start Secure DFU"
           type="button">
           <img
+            alt=""
             className="icon-dfu-button"
             src="test-file-stub" />
         </button>
@@ -54,7 +55,7 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
               role="presentation"
               style={undefined}>
               <a
-                href=""
+                href="#"
                 id="updateConnectionMenuItem"
                 onClick={[Function]}
                 onKeyDown={[Function]}
@@ -68,7 +69,7 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
               role="presentation"
               style={undefined}>
               <a
-                href=""
+                href="#"
                 id="pairMenuItem"
                 onClick={[Function]}
                 onKeyDown={[Function]}
@@ -82,7 +83,7 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
               role="presentation"
               style={undefined}>
               <a
-                href=""
+                href="#"
                 id="disconnectMenuItem"
                 onClick={[Function]}
                 onKeyDown={[Function]}
@@ -156,7 +157,7 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
               role="presentation"
               style={undefined}>
               <a
-                href=""
+                href="#"
                 id="updateConnectionMenuItem"
                 onClick={[Function]}
                 onKeyDown={[Function]}
@@ -170,7 +171,7 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
               role="presentation"
               style={undefined}>
               <a
-                href=""
+                href="#"
                 id="pairMenuItem"
                 onClick={[Function]}
                 onKeyDown={[Function]}
@@ -184,7 +185,7 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
               role="presentation"
               style={undefined}>
               <a
-                href=""
+                href="#"
                 id="disconnectMenuItem"
                 onClick={[Function]}
                 onKeyDown={[Function]}

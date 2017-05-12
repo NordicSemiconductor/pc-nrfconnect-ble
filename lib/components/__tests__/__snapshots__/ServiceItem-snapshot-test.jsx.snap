@@ -33,6 +33,7 @@ exports[`ServiceItem should render correctly with button 1`] = `
           className="btn btn-primary btn-nordic"
           onClick={[Function]}>
           <img
+            alt=""
             src="path/to/icon.png" />
         </button>
       </div>
