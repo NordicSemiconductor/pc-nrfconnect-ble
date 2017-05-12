@@ -12,7 +12,7 @@
     "dev": "webpack --watch",
     "webpack": "webpack",
     "build": "cross-env NODE_ENV=production webpack",
-    "lint": "eslint components reducers",
+    "lint": "eslint lib",
     "test": "jest --testResultsProcessor jest-bamboo-formatter",
     "test-watch": "jest --watch",
     "clean": "npm install rimraf && npm run clean-dist && npm run clean-modules",
