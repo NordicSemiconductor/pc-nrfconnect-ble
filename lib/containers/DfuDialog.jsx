@@ -42,7 +42,7 @@ import { connect } from 'react-redux';
 
 import { Modal, Button } from 'react-bootstrap';
 
-import electron from 'nrfconnect/electron';
+import electron from 'electron';
 
 import * as DfuActions from '../actions/dfuActions';
 import DfuEditor from '../components/DfuEditor';
