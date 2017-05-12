@@ -138,6 +138,7 @@ class DfuEditor extends React.PureComponent {
                 <div className="col-md-12">
                     <FileInput
                         readOnly
+                        inline={false}
                         buttonDisabled={isStarted || isCompleted}
                         label="Zip file"
                         value={filePath}

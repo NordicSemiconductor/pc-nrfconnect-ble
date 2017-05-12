@@ -7,16 +7,18 @@ exports[`DfuEditor should render stopping 1`] = `
       className="form-group">
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}>
+        htmlFor="">
         Zip file
       </label>
       <span
         className="col-md-9 input-group">
         <input
           className="form-control"
-          id={undefined}
-          onChange={[Function]}
+          id=""
+          onChange={null}
+          placeholder=""
           readOnly={true}
+          title={null}
           type={undefined}
           value="/path/to/file" />
         <span
@@ -107,18 +109,20 @@ exports[`DfuEditor should render with default props 1`] = `
       className="form-group">
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}>
+        htmlFor="">
         Zip file
       </label>
       <span
         className="col-md-9 input-group">
         <input
           className="form-control"
-          id={undefined}
-          onChange={[Function]}
+          id=""
+          onChange={null}
+          placeholder=""
           readOnly={true}
+          title={null}
           type={undefined}
-          value={undefined} />
+          value="" />
         <span
           className="input-group-btn">
           <button
@@ -164,16 +168,18 @@ exports[`DfuEditor should render with dfu completed 1`] = `
       className="form-group">
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}>
+        htmlFor="">
         Zip file
       </label>
       <span
         className="col-md-9 input-group">
         <input
           className="form-control"
-          id={undefined}
-          onChange={[Function]}
+          id=""
+          onChange={null}
+          placeholder=""
           readOnly={true}
+          title={null}
           type={undefined}
           value="/path/to/file" />
         <span
@@ -268,16 +274,18 @@ exports[`DfuEditor should render with file path 1`] = `
       className="form-group">
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}>
+        htmlFor="">
         Zip file
       </label>
       <span
         className="col-md-9 input-group">
         <input
           className="form-control"
-          id={undefined}
-          onChange={[Function]}
+          id=""
+          onChange={null}
+          placeholder=""
           readOnly={true}
+          title={null}
           type={undefined}
           value="/path/to/file" />
         <span
@@ -321,16 +329,18 @@ exports[`DfuEditor should render with file path and package info 1`] = `
       className="form-group">
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}>
+        htmlFor="">
         Zip file
       </label>
       <span
         className="col-md-9 input-group">
         <input
           className="form-control"
-          id={undefined}
-          onChange={[Function]}
+          id=""
+          onChange={null}
+          placeholder=""
           readOnly={true}
+          title={null}
           type={undefined}
           value="/path/to/file" />
         <span
@@ -391,16 +401,18 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
       className="form-group">
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}>
+        htmlFor="">
         Zip file
       </label>
       <span
         className="col-md-9 input-group">
         <input
           className="form-control"
-          id={undefined}
-          onChange={[Function]}
+          id=""
+          onChange={null}
+          placeholder=""
           readOnly={true}
+          title={null}
           type={undefined}
           value="/path/to/file" />
         <span

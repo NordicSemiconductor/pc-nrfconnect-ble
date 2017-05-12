@@ -56,7 +56,9 @@ class ConnectedDevice extends React.PureComponent {
 
     componentDidMount() {
         window.addEventListener('resize', this.boundResizeListener);
-        this.boundingRect = this.node.getBoundingClientRect();
+        if (this.node) {
+            this.boundingRect = this.node.getBoundingClientRect();
+        }
     }
 
     componentWillUnmount() {

@@ -34,12 +34,25 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-jest.mock('pc-ble-driver-js', () => {});
-
 import React from 'react';
 import { mount } from 'enzyme';
 import { getImmutableDevice } from '../../utils/api';
 import ConnectedDevice from '../ConnectedDevice';
+
+function mountComponent(props) {
+    return mount(<ConnectedDevice
+        id="connected-device-id"
+        device={getImmutableDevice({})}
+        sourceId="source-id"
+        layout="vertical"
+        onDisconnect={() => {}}
+        onPair={() => {}}
+        onConnectionParamsUpdate={() => {}}
+        onClickDfu={() => {}}
+        isDfuSupported={false}
+        {...props}
+    />);
+}
 
 describe('ConnectedDevice', () => {
     describe('when DFU button is clicked', () => {
@@ -96,15 +109,3 @@ describe('ConnectedDevice', () => {
     });
 });
 
-function mountComponent(props) {
-    return mount(<ConnectedDevice
-        id="connected-device-id"
-        device={getImmutableDevice({})}
-        sourceId="source-id"
-        layout="vertical"
-        onDisconnect={() => {}}
-        onPair={() => {}}
-        onConnectionParamsUpdate={() => {}}
-        {...props}
-    />)
-}
