@@ -38,7 +38,8 @@
 
 'use strict';
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import changeCase from 'change-case';
 import { getUuidName } from '../utils/uuid_definitions';
 import { toHexString } from '../utils/stringUtil';

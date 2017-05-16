@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`ServiceItem should render correctly with button 1`] = `
 <div>
   <div
@@ -7,34 +9,44 @@ exports[`ServiceItem should render correctly with button 1`] = `
       Object {
         "backgroundColor": "rgb(255, 255, 255)",
       }
-    }>
+    }
+  >
     <div
       className="expand-area"
-      onClick={[Function]}>
+      onClick={[Function]}
+    >
       <div
-        className="bar1" />
+        className="bar1"
+      />
       <div
-        className="icon-wrap">
+        className="icon-wrap"
+      >
         <i
           className="icon-slim icon-right-dir"
-          style={Object {}} />
+          style={Object {}}
+        />
       </div>
     </div>
     <div
-      className="content-wrap">
+      className="content-wrap"
+    >
       <div
-        className="content">
+        className="content"
+      >
         <div
           className="service-name truncate-text"
-          title="UUID: service-uuid-1">
+          title="UUID: service-uuid-1"
+        >
           Service Name
         </div>
         <button
           className="btn btn-primary btn-nordic"
-          onClick={[Function]}>
+          onClick={[Function]}
+        >
           <img
             alt=""
-            src="path/to/icon.png" />
+            src="path/to/icon.png"
+          />
         </button>
       </div>
     </div>
@@ -44,7 +56,8 @@ exports[`ServiceItem should render correctly with button 1`] = `
       Object {
         "display": "none",
       }
-    } />
+    }
+  />
 </div>
 `;
 
@@ -57,26 +70,34 @@ exports[`ServiceItem should render correctly with no button 1`] = `
       Object {
         "backgroundColor": "rgb(255, 255, 255)",
       }
-    }>
+    }
+  >
     <div
       className="expand-area"
-      onClick={[Function]}>
+      onClick={[Function]}
+    >
       <div
-        className="bar1" />
+        className="bar1"
+      />
       <div
-        className="icon-wrap">
+        className="icon-wrap"
+      >
         <i
           className="icon-slim icon-right-dir"
-          style={Object {}} />
+          style={Object {}}
+        />
       </div>
     </div>
     <div
-      className="content-wrap">
+      className="content-wrap"
+    >
       <div
-        className="content">
+        className="content"
+      >
         <div
           className="service-name truncate-text"
-          title="UUID: service-uuid-1">
+          title="UUID: service-uuid-1"
+        >
           Service Name
         </div>
       </div>
@@ -87,6 +108,7 @@ exports[`ServiceItem should render correctly with no button 1`] = `
       Object {
         "display": "none",
       }
-    } />
+    }
+  />
 </div>
 `;

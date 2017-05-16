@@ -36,7 +36,8 @@
 
 /* eslint react/forbid-prop-types: off */
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import sizeMe from 'react-sizeme';
 import { LineChart } from 'react-d3-components';
 import { scaleLinear } from 'd3';

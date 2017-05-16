@@ -38,7 +38,8 @@
 
 'use strict';
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import { ButtonToolbar, Button, Checkbox } from 'react-bootstrap';
 import TextInput from './input/TextInput';
@@ -194,7 +195,9 @@ class DescriptorEditor extends React.PureComponent {
                 <HexOnlyEditableField
                     label="Initial value"
                     plain
-                    className="form-control" name="initial-value" value={this.value}
+                    className="form-control"
+                    name="initial-value"
+                    value={this.value}
                     onChange={this.setInitialValue}
                     labelClassName="col-md-3"
                     wrapperClassName="col-md-9"
