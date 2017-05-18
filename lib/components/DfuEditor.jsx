@@ -36,7 +36,8 @@
 
 /* eslint react/forbid-prop-types: off */
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { FormGroup, ControlLabel, ButtonToolbar } from 'react-bootstrap';
 
 import FileInput from './input/FileInput';

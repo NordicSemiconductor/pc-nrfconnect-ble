@@ -38,7 +38,8 @@
 
 'use strict';
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import ConnectedDevice from './ConnectedDevice';
 import CentralDevice from './CentralDevice';

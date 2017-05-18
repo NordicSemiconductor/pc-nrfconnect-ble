@@ -38,7 +38,8 @@
 
 'use strict';
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
 import TextareaAutosize from 'react-textarea-autosize';
 import $ from 'jquery';

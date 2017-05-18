@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`ConnectedDevice should render correctly with DFU support 1`] = `
 <div
   className="device standalone"
@@ -6,32 +8,40 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
     Object {
       "opacity": 1,
     }
-  }>
+  }
+>
   <div
-    className="top-bar">
+    className="top-bar"
+  >
     <div
-      className="flag-line" />
+      className="flag-line"
+    />
   </div>
   <div
-    className="device-body text-small">
+    className="device-body text-small"
+  >
     <div>
       <div
-        className="pull-right">
+        className="pull-right"
+      >
         <button
           className="btn-nordic btn-xs btn btn-primary"
           disabled={false}
           id="dfuButton"
           onClick={[Function]}
           title="Start Secure DFU"
-          type="button">
+          type="button"
+        >
           <img
             alt=""
             className="icon-dfu-button"
-            src="test-file-stub" />
+            src="test-file-stub"
+          />
         </button>
         <div
           className="dropdown btn-group"
-          onClick={[Function]}>
+          onClick={[Function]}
+        >
           <button
             aria-expanded={false}
             aria-haspopup={true}
@@ -41,54 +51,63 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
             onClick={[Function]}
             onKeyDown={[Function]}
             role="button"
-            type="button">
+            type="button"
+          >
             <span
               aria-hidden="true"
-              className="icon-cog" />
+              className="icon-cog"
+            />
           </button>
           <ul
             aria-labelledby="connectionDropDown"
             className="dropdown-menu"
-            role="menu">
+            role="menu"
+          >
             <li
               className=""
               role="presentation"
-              style={undefined}>
+              style={undefined}
+            >
               <a
                 href="#"
                 id="updateConnectionMenuItem"
                 onClick={[Function]}
                 onKeyDown={[Function]}
                 role="menuitem"
-                tabIndex="-1">
+                tabIndex="-1"
+              >
                 Update connection...
               </a>
             </li>
             <li
               className=""
               role="presentation"
-              style={undefined}>
+              style={undefined}
+            >
               <a
                 href="#"
                 id="pairMenuItem"
                 onClick={[Function]}
                 onKeyDown={[Function]}
                 role="menuitem"
-                tabIndex="-1">
+                tabIndex="-1"
+              >
                 Pair...
               </a>
             </li>
             <li
               className=""
               role="presentation"
-              style={undefined}>
+              style={undefined}
+            >
               <a
                 href="#"
                 id="disconnectMenuItem"
                 onClick={[Function]}
                 onKeyDown={[Function]}
                 role="menuitem"
-                tabIndex="-1">
+                tabIndex="-1"
+              >
                 Disconnect
               </a>
             </li>
@@ -96,7 +115,8 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
         </div>
       </div>
       <div
-        className="role-flag pull-right">
+        className="role-flag pull-right"
+      >
         Peripheral
       </div>
       <strong>
@@ -104,7 +124,8 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
       </strong>
     </div>
     <div
-      className="address-text">
+      className="address-text"
+    >
       Device Address
     </div>
   </div>
@@ -120,20 +141,26 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
     Object {
       "opacity": 1,
     }
-  }>
+  }
+>
   <div
-    className="top-bar">
+    className="top-bar"
+  >
     <div
-      className="flag-line" />
+      className="flag-line"
+    />
   </div>
   <div
-    className="device-body text-small">
+    className="device-body text-small"
+  >
     <div>
       <div
-        className="pull-right">
+        className="pull-right"
+      >
         <div
           className="dropdown btn-group"
-          onClick={[Function]}>
+          onClick={[Function]}
+        >
           <button
             aria-expanded={false}
             aria-haspopup={true}
@@ -143,54 +170,63 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
             onClick={[Function]}
             onKeyDown={[Function]}
             role="button"
-            type="button">
+            type="button"
+          >
             <span
               aria-hidden="true"
-              className="icon-cog" />
+              className="icon-cog"
+            />
           </button>
           <ul
             aria-labelledby="connectionDropDown"
             className="dropdown-menu"
-            role="menu">
+            role="menu"
+          >
             <li
               className=""
               role="presentation"
-              style={undefined}>
+              style={undefined}
+            >
               <a
                 href="#"
                 id="updateConnectionMenuItem"
                 onClick={[Function]}
                 onKeyDown={[Function]}
                 role="menuitem"
-                tabIndex="-1">
+                tabIndex="-1"
+              >
                 Update connection...
               </a>
             </li>
             <li
               className=""
               role="presentation"
-              style={undefined}>
+              style={undefined}
+            >
               <a
                 href="#"
                 id="pairMenuItem"
                 onClick={[Function]}
                 onKeyDown={[Function]}
                 role="menuitem"
-                tabIndex="-1">
+                tabIndex="-1"
+              >
                 Pair...
               </a>
             </li>
             <li
               className=""
               role="presentation"
-              style={undefined}>
+              style={undefined}
+            >
               <a
                 href="#"
                 id="disconnectMenuItem"
                 onClick={[Function]}
                 onKeyDown={[Function]}
                 role="menuitem"
-                tabIndex="-1">
+                tabIndex="-1"
+              >
                 Disconnect
               </a>
             </li>
@@ -198,7 +234,8 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
         </div>
       </div>
       <div
-        className="role-flag pull-right">
+        className="role-flag pull-right"
+      >
         Peripheral
       </div>
       <strong>
@@ -206,7 +243,8 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
       </strong>
     </div>
     <div
-      className="address-text">
+      className="address-text"
+    >
       Device Address
     </div>
   </div>

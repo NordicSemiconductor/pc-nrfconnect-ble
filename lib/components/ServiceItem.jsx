@@ -36,7 +36,8 @@
 
 'use strict';
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import AttributeItem from './AttributeItem';
 import CharacteristicItem from './CharacteristicItem';
@@ -87,7 +88,7 @@ class ServiceItem extends AttributeItem {
         } = item;
 
         return children.valueSeq().map(characteristic =>
-            <CharacteristicItem
+            (<CharacteristicItem
                 key={characteristic.instanceId}
                 item={characteristic}
                 selectOnClick={selectOnClick}
@@ -101,7 +102,7 @@ class ServiceItem extends AttributeItem {
                 onChange={this.childChanged}
                 addNew={addNew}
                 onAddDescriptor={onAddDescriptor}
-            />,
+            />),
         );
     }
 }

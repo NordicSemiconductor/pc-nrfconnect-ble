@@ -36,7 +36,8 @@
 
 'use strict';
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { List } from 'immutable';
 import AdvertisingListEntry from './AdvertisingListEntry';
 
@@ -60,11 +61,11 @@ const AdvertisingList = props => {
                 </thead>
                 <tbody>
                     {advEntries.map(entry =>
-                        <AdvertisingListEntry
+                        (<AdvertisingListEntry
                             {...{ entry }}
                             key={entry.id}
                             onDelete={onDelete}
-                        />,
+                        />),
                     )}
                 </tbody>
             </table>
