@@ -1,7 +1,7 @@
 {
-  "name": "nrfconnect",
+  "name": "pc-nrfconnect-ble",
   "version": "2.0.0-pre0",
-  "description": "A natural first choice for BLE development",
+  "description": "A natural first choice for Bluetooth low energy development",
   "displayName": "Bluetooth low energy",
   "repository": {
     "type": "git",
