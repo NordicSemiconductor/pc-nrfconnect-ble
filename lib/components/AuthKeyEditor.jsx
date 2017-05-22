@@ -79,6 +79,13 @@ class AuthKeyEditor extends React.PureComponent {
         this.confirmInput = '';
 
         this.validationFeedbackEnabled = false;
+        this.handlePasskeyChange = this.handlePasskeyChange.bind(this);
+        this.handleRandomChange = this.handleRandomChange.bind(this);
+        this.handleConfirmChange = this.handleConfirmChange.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+        this.handlePasskeySubmit = this.handlePasskeySubmit.bind(this);
+        this.handleOobSubmit = this.handleOobSubmit.bind(this);
+        this.handleLescOobSubmit = this.handleLescOobSubmit.bind(this);
     }
 
     handlePasskeyChange(event) {
@@ -246,7 +253,7 @@ class AuthKeyEditor extends React.PureComponent {
                 <div className="form-group">
                     <Button
                         type="button"
-                        onClick={() => this.handleCancel()}
+                        onClick={this.handleCancel}
                         className="btn btn-primary btn-sm btn-nordic"
                     >
                         OK
@@ -264,24 +271,24 @@ class AuthKeyEditor extends React.PureComponent {
             >
                 <TextInput
                     label="Passkey"
-                    defaultValue=""
+                    value={this.authKeyInput}
                     id="passkeyInputId"
                     hasFeedback={this.validationFeedbackEnabled}
                     placeholder="Enter passkey"
                     validationState={validatePasskeyInput(this.authKeyInput)}
-                    onChange={event => this.handlePasskeyChange(event)}
+                    onChange={this.handlePasskeyChange}
                 />
                 <div className="form-group">
                     <Button
                         type="button"
-                        onClick={() => this.handleCancel()}
+                        onClick={this.handleCancel}
                         className="btn btn-default btn-sm btn-nordic"
                     >
                         Ignore
                     </Button>
                     <Button
                         type="button"
-                        onClick={() => this.handlePasskeySubmit()}
+                        onClick={this.handlePasskeySubmit}
                         className="btn btn-primary btn-sm btn-nordic"
                     >
                         Submit
@@ -331,24 +338,24 @@ class AuthKeyEditor extends React.PureComponent {
             >
                 <TextInput
                     label="Out-of-band data"
-                    defaultValue=""
+                    value={this.authKeyInput}
                     id="oobInputId"
                     hasFeedback={this.validationFeedbackEnabled}
                     placeholder="Enter out-of-band data"
                     validationState={validateOobInput(this.authKeyInput)}
-                    onChange={event => this.handlePasskeyChange(event)}
+                    onChange={this.handlePasskeyChange}
                 />
                 <div className="form-group">
                     <Button
                         type="button"
-                        onClick={() => this.handleCancel()}
+                        onClick={this.handleCancel}
                         className="btn btn-default btn-sm btn-nordic"
                     >
                         Ignore
                     </Button>
                     <Button
                         type="button"
-                        onClick={() => this.handleOobSubmit()}
+                        onClick={this.handleOobSubmit}
                         className="btn btn-primary btn-sm btn-nordic"
                     >
                         Submit
@@ -371,21 +378,21 @@ class AuthKeyEditor extends React.PureComponent {
             >
                 <TextInput
                     label="Peer random"
-                    defaultValue=""
+                    value={this.randomInput}
                     id="randomInputId"
                     hasFeedback={this.validationFeedbackEnabled}
                     placeholder="Enter out-of-band data"
                     validationState={validateOobInput(this.randomInput)}
-                    onChange={event2 => this.handleRandomChange(event2)}
+                    onChange={this.handleRandomChange}
                 />
                 <TextInput
                     label="Peer confirm"
-                    defaultValue=""
+                    value={this.confirmInput}
                     id="confirmInputId"
                     hasFeedback={this.validationFeedbackEnabled}
                     placeholder="Enter out-of-band data"
                     validationState={validateOobInput(this.confirmInput)}
-                    onChange={event2 => this.handleConfirmChange(event2)}
+                    onChange={this.handleConfirmChange}
                 />
                 <TextInput
                     readOnly
@@ -402,14 +409,14 @@ class AuthKeyEditor extends React.PureComponent {
                 <div className="form-group">
                     <Button
                         type="button"
-                        onClick={() => this.handleCancel()}
+                        onClick={this.handleCancel}
                         className="btn btn-default btn-sm btn-nordic"
                     >
                         Ignore
                     </Button>
                     <Button
                         type="button"
-                        onClick={() => this.handleLescOobSubmit()}
+                        onClick={this.handleLescOobSubmit}
                         className="btn btn-primary btn-sm btn-nordic"
                     >
                         Submit
