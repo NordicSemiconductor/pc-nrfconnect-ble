@@ -1,10 +1,10 @@
-# nRF Connect Bluetooth <sup>&reg;</sup> low energy
+# nRF Connect Bluetooth<sup>&reg;</sup> low energy
 
 [![License](https://img.shields.io/badge/license-Modified%20BSD%20License-blue.svg)](LICENSE)
 
-*nRF Connect Bluetooth <sup>&reg;</sup> low energy* is a cross-platform tool that enables testing and development with Bluetooth <sup>&reg;</sup> low energy (previously called Bluetooth Smart). It allows easy setup of connections with other devices and use these connections for reading and writing to the external nodes.
+*nRF Connect Bluetooth<sup>&reg;</sup> low energy* is a cross-platform tool that enables testing and development with Bluetooth<sup>&reg;</sup> low energy (previously called Bluetooth Smart). It allows easy setup of connections with other devices and use these connections for reading and writing to the external nodes.
 
-*nRF Connect Bluetooth <sup>&reg;</sup> low energy* is implemented as an app for [nRF Connect](https://github.com/NordicSemiconductor/pc-nrfconnect-core#creating-apps).
+*nRF Connect Bluetooth<sup>&reg;</sup> low energy* is implemented as an app for [nRF Connect](https://github.com/NordicSemiconductor/pc-nrfconnect-core#creating-apps).
 
 The app is designed to be used together with the nRF52 DK, nRF51 DK, or the nRF51 Dongle, running a specific connectivity application.
 
@@ -18,11 +18,11 @@ nRF Connect currently supports the following operating systems:
 * Ubuntu Linux 64-bit
 * macOS
 
-After *nRF Connect* is installed, you can find *Bluetooth <sup>&reg;</sup> low energy* in the app list by selecting *Add/remove apps*.
+After *nRF Connect* is installed, you can find *Bluetooth<sup>&reg;</sup> low energy* in the app list by selecting *Add/remove apps*.
 
 # Usage documentation
 
-A [User guide](http://infocenter.nordicsemi.com/topic/com.nordic.infocenter.tools/dita/tools/nRF_Connect/nRF_Connect_intro.html?cp=4_2) is available on the *nRF Connect Bluetooth <sup>&reg;</sup> low energy* product pages.
+A [User guide](http://infocenter.nordicsemi.com/topic/com.nordic.infocenter.tools/dita/tools/nRF_Connect/nRF_Connect_intro.html?cp=4_2) is available on the *nRF Connect Bluetooth<sup>&reg;</sup> low energy* product pages.
 
 # Contributing
 
