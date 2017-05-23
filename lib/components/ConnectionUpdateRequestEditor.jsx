@@ -103,7 +103,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
         this.handleSlaveLatencyChange = this.handleSlaveLatencyChange.bind(this);
         this.onIgnoreEvent = this.onIgnoreEvent.bind(this);
         this.onUpdateConnectionParams = this.onUpdateConnectionParams.bind(this);
-        this.onRejectConnectionParams = this.onRejectConnectionParams(this);
+        this.onRejectConnectionParams = this.onRejectConnectionParams.bind(this);
         this.onCancelUserInitiatedEvent = this.onCancelUserInitiatedEvent.bind(this);
     }
 
