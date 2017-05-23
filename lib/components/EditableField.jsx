@@ -336,7 +336,7 @@ class EditableField extends React.Component {
         }
 
         return (
-            <div className="editable-field">
+            <div className="editable-field selectable">
                 {child}
             </div>
         );

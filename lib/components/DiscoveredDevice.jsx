@@ -188,7 +188,7 @@ class DiscoveredDevice extends React.PureComponent {
                         .map((value, key) => {
                             const key1 = `${key}_1`;
                             return (
-                                <div key={key1} className="adv-line">
+                                <div key={key1} className="adv-line selectable">
                                     <span className="adv-label">
                                         {rewriter(key)}:</span>
                                     <span className="adv-value">
@@ -202,7 +202,7 @@ class DiscoveredDevice extends React.PureComponent {
 
             advTypeDiv = this.currentAdvType
                 ? (
-                    <div className="adv-line">
+                    <div className="adv-line selectable">
                         <span className="adv-label">Advertising type:</span>
                         <span className="adv-value">
                             {getAdvTypeText(this.currentAdvType)}</span>
@@ -210,7 +210,7 @@ class DiscoveredDevice extends React.PureComponent {
                 ) : null;
 
             addressTypeDiv = (
-                <div className="adv-line">
+                <div className="adv-line selectable">
                     <span className="adv-label">Address type:</span>
                     <span className="adv-value">{rewriter(device.addressType)}</span>
                 </div>
@@ -218,7 +218,7 @@ class DiscoveredDevice extends React.PureComponent {
 
             flagsDiv = this.currentFlags && this.currentFlags.size > 0
                 ? (
-                    <div className="adv-line">
+                    <div className="adv-line selectable">
                         <span className="adv-label">Flags:</span>
                         {
                             this.currentFlags.valueSeq().map((flag, index) => {
@@ -231,7 +231,7 @@ class DiscoveredDevice extends React.PureComponent {
 
             servicesDiv = this.currentServices && this.currentServices.size > 0
                 ? (
-                    <div className="adv-line">
+                    <div className="adv-line selectable">
                         <span className="adv-label">Services:</span>
                         {
                             device.services.valueSeq().map((service, index) => {
@@ -246,7 +246,7 @@ class DiscoveredDevice extends React.PureComponent {
                 ) : null;
         }
 
-        addressDiv = <div className="address-text">{device.address}</div>;
+        addressDiv = <div className="address-text selectable">{device.address}</div>;
 
         const dirIcon = device.isExpanded ? 'icon-down-dir' : 'icon-right-dir';
 
@@ -259,13 +259,13 @@ class DiscoveredDevice extends React.PureComponent {
         }
 
         return (
-            <div className="device" onClick={this.toggleExpand}>
+            <div className="device">
                 <div className="top-bar">
                     <div style={{ float: 'right' }}>
                         <span style={{ width: `${getRssiWidth(device.rssi)}px` }} className="icon-signal icon-foreground" />
                         <span className="icon-signal icon-background" title={`${device.rssi} dBm`} />
                     </div>
-                    <div className="device-name">{device.name || '<Unknown name>'}</div>
+                    <div className="device-name selectable">{device.name || '<Unknown name>'}</div>
                 </div>
                 <div className="discovered-device-body text-small">
                     <div className="discovered-device-address-line">
@@ -279,7 +279,7 @@ class DiscoveredDevice extends React.PureComponent {
                         {addressDiv}
                     </div>
                     <div>
-                        <span className="adv-details">
+                        <span className="adv-details" onClick={this.toggleExpand}>
                             <i className={dirIcon} />Details
                         </span>
                         {addressTypeDiv}
