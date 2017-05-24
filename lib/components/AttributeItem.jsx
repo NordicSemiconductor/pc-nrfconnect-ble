@@ -213,7 +213,7 @@ class AttributeItem extends React.PureComponent {
             handleText = `Value handle: 0x${toHexString(valueHandle)}, `;
         }
 
-        return <div className={`${this.attributeType}-name truncate-text`} title={`${handleText}UUID: ${uuid}`}>{name}</div>;
+        return <div className={`${this.attributeType}-name truncate-text selectable`} title={`${handleText}UUID: ${uuid}`}>{name}</div>;
     }
 
     render() {

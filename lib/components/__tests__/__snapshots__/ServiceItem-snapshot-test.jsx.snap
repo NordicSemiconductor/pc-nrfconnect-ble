@@ -34,7 +34,7 @@ exports[`ServiceItem should render correctly with button 1`] = `
         className="content"
       >
         <div
-          className="service-name truncate-text"
+          className="service-name truncate-text selectable"
           title="UUID: service-uuid-1"
         >
           Service Name
@@ -95,7 +95,7 @@ exports[`ServiceItem should render correctly with no button 1`] = `
         className="content"
       >
         <div
-          className="service-name truncate-text"
+          className="service-name truncate-text selectable"
           title="UUID: service-uuid-1"
         >
           Service Name

@@ -184,9 +184,9 @@ class ConnectedDevice extends React.PureComponent {
                             </Dropdown>
                         </div>
                         <div className="role-flag pull-right">{role}</div>
-                        <strong>{device.name ? device.name : '<Unknown>'}</strong>
+                        <strong className="selectable">{device.name ? device.name : '<Unknown>'}</strong>
                     </div>
-                    <div className="address-text">{device.address}</div>
+                    <div className="address-text selectable">{device.address}</div>
                 </div>
                 <Connector sourceId={sourceId} targetId={id} device={device} layout={layout} />
             </div>

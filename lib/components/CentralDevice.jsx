@@ -256,9 +256,9 @@ class CentralDevice extends React.PureComponent {
                     </div>
                     <div>
                         <div className="role-flag pull-right">Adapter</div>
-                        <strong>{name}</strong>
+                        <strong className="selectable">{name}</strong>
                     </div>
-                    <div className="address-text">{address}</div>
+                    <div className="address-text selectable">{address}</div>
                     <div className={`icon-wifi ${iconOpacity}`} aria-hidden="true" title={advIconTitle} style={progressStyle} />
                     <AdvertisingSetup />
                     <SecurityParamsDialog />
