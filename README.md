@@ -6,6 +6,8 @@
 
 *nRF Connect Bluetooth<sup>&reg;</sup> low energy* is implemented as an app for [nRF Connect](https://github.com/NordicSemiconductor/pc-nrfconnect-core#creating-apps).
 
+![screenshot](resources/ble-screenshot.png)
+
 The app is designed to be used together with the nRF52 DK, nRF51 DK, or the nRF51 Dongle, running a specific connectivity application.
 
 # Installation
@@ -30,7 +32,7 @@ We are currently working on a Contributor License Agreement (CLA), which will al
 
 # Compiling from source
 
-Since *nRF Connect* expects local apps in `$HOME/.nrfconnect-apps/local` (Linux/macOS) or `%USERPROFILE%/.nrfconnect-apps/local` directory, make sure your repository is cloned or linked there.
+Since *nRF Connect* expects local apps in `$HOME/.nrfconnect-apps/local` (Linux/macOS) or `%USERPROFILE%/.nrfconnect-apps/local` (Windows) directory, make sure your repository is cloned or linked there.
 
 ## Dependencies
 
@@ -53,7 +55,7 @@ The built app can be loaded by *nRF Connect* launcher.
 
 ## Testing
 
-Unit testing of all packages can be performed by running:
+Unit testing can be performed by running:
 
     npm test
 
