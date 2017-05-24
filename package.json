@@ -5,7 +5,7 @@
   "displayName": "Bluetooth low energy",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NordicSemiconductor/pc-yggdrasil.git"
+    "url": "https://github.com/NordicSemiconductor/pc-nrfconnect-ble.git"
   },
   "main": "dist/bundle.js",
   "scripts": {
