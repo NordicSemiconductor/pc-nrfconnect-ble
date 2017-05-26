@@ -21,6 +21,11 @@
   },
   "author": "Nordic Semiconductor ASA",
   "license": "Proprietary",
+  "files": [
+    "dist/",
+    "icon.png",
+    "LICENSE"
+  ],
   "devDependencies": {
     "change-case": "^3.0.1",
     "d3": "^4.7.4",

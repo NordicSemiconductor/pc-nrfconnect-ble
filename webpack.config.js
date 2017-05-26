@@ -1,23 +1,29 @@
 const webpack = require('webpack');
 const path = require('path');
+const dependencies = require('./package.json').dependencies;
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
 
-const dependencies = require('./node_modules/pc-nrfconnect-devdep/package.json').dependencies;
-
 function createExternals() {
-    // Add production dependencies as externals, but keep the require behavior.
-    // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
-    const externals = {};
-    const hosted = ['pc-ble-driver-js', 'serialport', 'electron', 'nrfconnect/core', 'nrfconnect/programming'];
-    hosted.forEach(modPath => {
-        externals[modPath] = modPath;
-    });
-    Object.keys(dependencies).forEach(dependency => {
-        externals[dependency] = dependency;
-    });
-    return externals;
+    // Libs provided by nRF Connect at runtime
+    const coreLibs = [
+        'react',
+        'react-dom',
+        'react-redux',
+        'pc-ble-driver-js',
+        'serialport',
+        'electron',
+        'nrfconnect/core',
+        'nrfconnect/programming',
+    ];
+
+    // Libs provided by the app at runtime
+    const appLibs = Object.keys(dependencies);
+
+    return coreLibs.concat(appLibs).reduce((prev, lib) => (
+        Object.assign(prev, { [lib]: lib })
+    ), {});
 }
 
 module.exports = {
