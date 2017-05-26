@@ -7,6 +7,8 @@
     "type": "git",
     "url": "https://github.com/NordicSemiconductor/pc-yggdrasil.git"
   },
+  "author": "Nordic Semiconductor ASA",
+  "license": "SEE LICENSE IN LICENSE",
   "main": "dist/bundle.js",
   "engines": {
     "nrfconnect": "2.x"
@@ -22,8 +24,6 @@
     "clean-dist": "rimraf dist",
     "clean-modules": "rimraf \"node_modules/!(rimraf|.bin)\""
   },
-  "author": "Nordic Semiconductor ASA",
-  "license": "Proprietary",
   "files": [
     "dist/",
     "icon.png",
