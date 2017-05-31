@@ -149,7 +149,7 @@ exports[`DfuEditor should render with default props 1`] = `
           readOnly={true}
           title={null}
           type={undefined}
-          value=""
+          value="null"
         />
         <span
           className="input-group-btn"
