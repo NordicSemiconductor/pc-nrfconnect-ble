@@ -55,13 +55,20 @@ const CONN_LATENCY_MIN = 0;
 const CONN_LATENCY_MAX = 499;
 const CONN_LATENCY_STEP = 1;
 
+function isInRange(value, min, max) {
+    return ((value >= min) && (value <= max));
+}
+
 function isSlaveLatencyValid(slaveLatency) {
-    return ((slaveLatency >= CONN_LATENCY_MIN) && (slaveLatency <= CONN_LATENCY_MAX));
+    return isInRange(slaveLatency, CONN_LATENCY_MIN, CONN_LATENCY_MAX);
 }
 
 function isConnectionSupervisionTimeoutValid(connectionSupervisionTimeout) {
-    return ((connectionSupervisionTimeout >= CONN_TIMEOUT_MIN)
-        && (connectionSupervisionTimeout < CONN_TIMEOUT_MAX));
+    return isInRange(connectionSupervisionTimeout, CONN_TIMEOUT_MIN, CONN_TIMEOUT_MAX);
+}
+
+function isConnectionIntervalValid(connectionInterval) {
+    return isInRange(connectionInterval, CONN_INTERVAL_MIN, CONN_INTERVAL_MAX);
 }
 
 const validInputStyle = {
@@ -95,6 +102,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
         this.setAndValidateSlaveLatency(this.slaveLatency);
         this.setAndValidateConnectionSupervisionTimeout(this.connectionSupervisionTimeout);
+        this.setAndValidateConnectionInterval(this.connectionInterval);
 
         this.handleUpdateConnection = this.handleUpdateConnection.bind(this);
         this.handleConnectionIntervalChange = this.handleConnectionIntervalChange.bind(this);
@@ -138,6 +146,11 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
         this.isSlaveLatencyValid = isSlaveLatencyValid(value);
     }
 
+    setAndValidateConnectionInterval(value) {
+        this.connectionInterval = value;
+        this.isConnectionIntervalValid = isConnectionIntervalValid(value);
+    }
+
     generateHeaderMessage() {
         const { event } = this.props;
         const address = event.device.address;
@@ -166,6 +179,9 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
             ? undefined
             : <div>({rcp.minConnectionInterval}-{rcp.maxConnectionInterval})</div>;
 
+        const connectionIntervalStyle = this.isConnectionIntervalValid ?
+            validInputStyle : invalidInputStyle;
+
         return (
             <div>
                 <label
@@ -176,6 +192,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                 </label>
                 <div className="col-sm-5">
                     <TextInput
+                        style={connectionIntervalStyle}
                         id={`interval_${address}`}
                         className="form-control nordic-form-control"
                         onChange={this.handleConnectionIntervalChange}
@@ -183,7 +200,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                         min={CONN_INTERVAL_MIN}
                         max={CONN_INTERVAL_MAX}
                         step={CONN_INTERVAL_STEP}
-                        defaultValue={`${this.connectionInterval}`}
+                        value={`${this.connectionInterval}`}
                         readOnly={this.readOnly}
                     />
                 </div>
@@ -205,8 +222,8 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
         if (event.target.value === '') {
             return;
         }
-
-        this.connectionInterval = parseFloat(event.target.value);
+        this.setAndValidateConnectionInterval(parseFloat(event.target.value));
+        this.forceUpdate();
     }
 
     handleUpdateConnection() {

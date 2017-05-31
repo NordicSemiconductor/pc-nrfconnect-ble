@@ -49,12 +49,11 @@ const TextInput = props => {
         hasFeedback,
         buttonAfter,
         value,
-        defaultValue,
         ...newProps
     } = props;
     const bsClassProp = inline && { bsClass: 'form-inline' };
 
-    const realValue = `${value || defaultValue}`;
+    const realValue = `${value}`;
 
     return (
         <FormGroup controlId={id} validationState={validationState} {...bsClassProp}>
@@ -81,7 +80,6 @@ TextInput.propTypes = {
     inline: PropTypes.bool,
     title: PropTypes.string,
     className: PropTypes.string,
-    defaultValue: PropTypes.string,
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
     value: PropTypes.oneOfType([
@@ -101,7 +99,6 @@ TextInput.defaultProps = {
     inline: true,
     title: null,
     className: null,
-    defaultValue: '',
     onChange: null,
     placeholder: '',
     value: null,

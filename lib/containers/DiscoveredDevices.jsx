@@ -119,7 +119,7 @@ class DiscoveredDevices extends React.PureComponent {
                     title="Filter list by device name or address"
                     label="Filter:"
                     className="adv-value"
-                    defaultValue={discoveryOptions.filterString}
+                    value={discoveryOptions.filterString}
                     onChange={this.handleFilterChange}
                     labelClassName=""
                     wrapperClassName=""
