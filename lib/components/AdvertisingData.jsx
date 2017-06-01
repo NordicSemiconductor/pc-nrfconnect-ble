@@ -328,7 +328,7 @@ class AdvertisingData extends React.PureComponent {
                     label="AD type value"
                     placeholder="Enter AD type value (1 byte hex)"
                     hasFeedback
-                    defaultValue={this.adTypeValue}
+                    value={this.adTypeValue}
                     labelClassName=""
                     wrapperClassName="col-md-12"
                     validationState={this.validateAdType()}
