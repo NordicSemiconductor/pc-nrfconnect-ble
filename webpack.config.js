@@ -12,10 +12,10 @@ function createExternals() {
         'react-dom',
         'react-redux',
         'pc-ble-driver-js',
+        'pc-nrfjprog-js',
         'serialport',
         'electron',
         'nrfconnect/core',
-        'nrfconnect/programming',
     ];
 
     // Libs provided by the app at runtime
