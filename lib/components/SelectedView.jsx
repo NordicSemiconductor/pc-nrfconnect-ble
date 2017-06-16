@@ -39,19 +39,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import DeviceDetailsContainer from '../containers/DeviceDetails';
+import ServerSetup from '../containers/ServerSetup';
 
-import '../../resources/css/styles.less';
+const DEVICE_DETAILS_VIEW_ID = 0;
+const SERVER_SETUP_VIEW_ID = 1;
 
-import * as AppActions from '../actions/appActions';
-import * as AdvertisingActions from '../actions/advertisingActions';
-import * as ErrorActions from '../actions/errorDialogActions';
-
-import DeviceDetailsContainer from './DeviceDetails';
-import ServerSetup from './ServerSetup';
-
-class MainViewContainer extends React.PureComponent {
+class SelectedView extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -91,7 +85,7 @@ class MainViewContainer extends React.PureComponent {
 
     render() {
         const {
-            selectedMainView,
+            viewId,
         } = this.props;
         const topBarHeight = 55;
         const layoutStyle = {
@@ -99,39 +93,17 @@ class MainViewContainer extends React.PureComponent {
         };
         const mainAreaHeight = layoutStyle.height - 189;
 
-        if (selectedMainView === 'ConnectionMap') {
-            return (
-                <DeviceDetailsContainer style={{ height: mainAreaHeight }} />
-            );
-        }
-        if (selectedMainView === 'ServerSetup') {
-            return (
-                <ServerSetup style={{ height: mainAreaHeight }} />
-            );
+        if (viewId === DEVICE_DETAILS_VIEW_ID) {
+            return <DeviceDetailsContainer style={{ height: mainAreaHeight }} />;
+        } else if (viewId === SERVER_SETUP_VIEW_ID) {
+            return <ServerSetup style={{ height: mainAreaHeight }} />;
         }
         return null;
     }
 }
 
-function mapStateToProps(state) {
-    const { selectedMainView } = state.app.app;
-    return { selectedMainView };
-}
-
-function mapDispatchToProps(dispatch) {
-    return Object.assign(
-        bindActionCreators(AppActions, dispatch),
-        bindActionCreators(AdvertisingActions, dispatch),
-        bindActionCreators(ErrorActions, dispatch),
-    );
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(MainViewContainer);
-
-MainViewContainer.propTypes = {
-    selectedMainView: PropTypes.string.isRequired,
+SelectedView.propTypes = {
+    viewId: PropTypes.number.isRequired,
 };
 
+export default SelectedView;
