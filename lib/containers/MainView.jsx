@@ -41,9 +41,6 @@ import PropTypes from 'prop-types';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-// import KeymapManager from 'atom-keymap';
-// import fs from 'fs';
-// import { remote } from 'electron';
 
 import '../../resources/css/styles.less';
 
@@ -54,11 +51,6 @@ import * as ErrorActions from '../actions/errorDialogActions';
 import DeviceDetailsContainer from './DeviceDetails';
 import ServerSetup from './ServerSetup';
 
-// const keymaps = new KeymapManager();
-
-let toggleAdvertisingHandle;
-let toggleDebugHandle;
-
 class MainViewContainer extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -66,47 +58,6 @@ class MainViewContainer extends React.PureComponent {
         this.state = {
             windowHeight: window.innerHeight,
         };
-
-        // keymaps.defaultTarget = document.body;
-        //
-        // Pass all the window's keydown events to the KeymapManager
-        // document.addEventListener('keydown', event => {
-        //     keymaps.handleKeyboardEvent(event);
-        // });
-        //
-        // const keymapFile = remote.getGlobal('keymap');
-        //
-        // if (fs.existsSync(keymapFile)) {
-        //     keymaps.loadKeymap(keymapFile);
-        // } else {
-        //     keymaps.add('core', {
-        //         body: {
-        //             'alt-1': 'core:connection-map',
-        //             'alt-2': 'core:server-setup',
-        //             'alt-a': 'core:toggle-advertising',
-        //             'alt-c': 'core:clear-scan',
-        //             'alt-p': 'core:select-adapter',
-        //             'alt-s': 'core:toggle-scan',
-        //             down:   'core:move-down',
-        //             up:     'core:move-up',
-        //             left:   'core:move-left',
-        //             right:  'core:move-right',
-        //             'ctrl-alt-d': 'core:toggle-debug',
-        //         },
-        //     });
-        // }
-        //
-        // // These shall always be added
-        // keymaps.add('core', {
-        //     'body .native-key-bindings': {
-        //         left: 'native!',
-        //         right: 'native!',
-        //         up: 'native!',
-        //         down: 'native!',
-        //     },
-        // });
-
-        this.registerKeyboardShortcuts();
     }
 
     componentWillMount() {
@@ -134,42 +85,8 @@ class MainViewContainer extends React.PureComponent {
 
         // handle event
         window.addEventListener('optimizedResize', () => {
-            // document.documentElement.clientHeight;
             this.setState({ windowHeight: window.innerHeight });
         });
-    }
-
-    registerKeyboardShortcuts() {
-        // Setup keyboard shortcut callbacks
-        //
-        // Since we move between the different "tabs" we have to
-        // remove the listeners and add them again so that the correct instance
-        // of this class is associated with the callback registered on window.
-
-        this.toggleAdvertising = () => {
-            const { toggleAdvertising } = this.props;
-            toggleAdvertising();
-        };
-
-        if (toggleAdvertisingHandle) {
-            window.removeEventListener('core:toggle-advertising', toggleAdvertisingHandle);
-        }
-
-        window.addEventListener('core:toggle-advertising', this.toggleAdvertising);
-        toggleAdvertisingHandle = this.toggleAdvertising;
-
-        this.toggleDebug = () => {
-            const { toggleDebug } = this.props;
-            toggleDebug();
-        };
-
-        if (toggleDebugHandle) {
-            window.removeEventListener('core:toggle-debug', toggleDebugHandle);
-            toggleDebugHandle = undefined;
-        }
-
-        window.addEventListener('core:toggle-debug', this.toggleDebug);
-        toggleDebugHandle = this.toggleDebug;
     }
 
     render() {
@@ -216,10 +133,5 @@ export default connect(
 
 MainViewContainer.propTypes = {
     selectedMainView: PropTypes.string.isRequired,
-    toggleAdvertising: PropTypes.func.isRequired,
-    toggleDebug: PropTypes.func,
 };
 
-MainViewContainer.defaultProps = {
-    toggleDebug: null,
-};

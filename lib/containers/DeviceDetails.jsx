@@ -54,6 +54,7 @@ import * as DfuActions from '../actions/dfuActions';
 import DeviceDetailsView from '../components/deviceDetails';
 import DfuDialog from './DfuDialog';
 
+import withHotkey from '../utils/withHotkey';
 import { getInstanceIds } from '../utils/api';
 import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
 
@@ -68,34 +69,19 @@ class DeviceDetailsContainer extends React.PureComponent {
     }
 
     componentDidMount() {
-        this.registerKeyboardShortcuts();
-    }
-
-    componentWillUnmount() {
-        this.unregisterKeyboardShortcuts();
-    }
-
-    registerKeyboardShortcuts() {
-        window.addEventListener('core:move-down', this.moveDown);
-        window.addEventListener('core:move-up', this.moveUp);
-        window.addEventListener('core:move-right', this.moveRight);
-        window.addEventListener('core:move-left', this.moveLeft);
-    }
-
-    unregisterKeyboardShortcuts() {
-        window.removeEventListener('core:move-down', this.moveDown);
-        window.removeEventListener('core:move-up', this.moveUp);
-        window.removeEventListener('core:move-right', this.moveRight);
-        window.removeEventListener('core:move-left', this.moveLeft);
+        const { bindHotkey } = this.props;
+        bindHotkey('up', this.moveUp);
+        bindHotkey('down', this.moveDown);
+        bindHotkey('left', this.moveLeft);
+        bindHotkey('right', this.moveRight);
     }
 
     selectNextComponent(backward) {
         const { deviceDetails, selectedComponent, selectComponent } = this.props;
         let foundCurrent = false;
 
-        const items = traverseItems(deviceDetails, true, backward);
-        for (let i = 0; i < items.length; i += 1) {
-            const item = items[i];
+        // eslint-disable-next-line no-restricted-syntax
+        for (const item of traverseItems(deviceDetails, true, backward)) {
             if (selectedComponent === null) {
                 if (item !== null) {
                     selectComponent(item.instanceId);
@@ -293,7 +279,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps,
-)(DeviceDetailsContainer);
+)(withHotkey(DeviceDetailsContainer));
 
 DeviceDetailsContainer.propTypes = {
     adapterState: PropTypes.object,
@@ -321,6 +307,7 @@ DeviceDetailsContainer.propTypes = {
     autoConnUpdate: PropTypes.bool,
     showDfuDialog: PropTypes.func.isRequired,
     style: PropTypes.object.isRequired,
+    bindHotkey: PropTypes.func.isRequired,
 };
 
 DeviceDetailsContainer.defaultProps = {

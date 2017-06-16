@@ -59,6 +59,7 @@ import DescriptorEditor from '../components/DescriptorEditor';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import CentralDevice from '../components/CentralDevice';
 
+import withHotkey from '../utils/withHotkey';
 import { getInstanceIds, ImmutableAdapter } from '../utils/api';
 import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
 
@@ -89,7 +90,11 @@ class ServerSetup extends React.PureComponent {
     }
 
     componentDidMount() {
-        this.registerKeyboardShortcuts();
+        const { bindHotkey } = this.props;
+        bindHotkey('up', this.moveUp);
+        bindHotkey('down', this.moveDown);
+        bindHotkey('left', this.moveLeft);
+        bindHotkey('right', this.moveRight);
     }
 
     componentWillUpdate(nextProps) {
@@ -103,10 +108,6 @@ class ServerSetup extends React.PureComponent {
             return false;
         }
         return true;
-    }
-
-    componentWillUnmount() {
-        this.unregisterKeyboardShortcuts();
     }
 
     onModified(value) {
@@ -158,20 +159,6 @@ class ServerSetup extends React.PureComponent {
         });
     }
 
-    registerKeyboardShortcuts() {
-        window.addEventListener('core:move-down', this.moveDown);
-        window.addEventListener('core:move-up', this.moveUp);
-        window.addEventListener('core:move-right', this.moveRight);
-        window.addEventListener('core:move-left', this.moveLeft);
-    }
-
-    unregisterKeyboardShortcuts() {
-        window.removeEventListener('core:move-down', this.moveDown);
-        window.removeEventListener('core:move-up', this.moveUp);
-        window.removeEventListener('core:move-right', this.moveRight);
-        window.removeEventListener('core:move-left', this.moveLeft);
-    }
-
     selectNextComponent(backward) {
         const {
             serverSetup,
@@ -186,9 +173,8 @@ class ServerSetup extends React.PureComponent {
         const deviceDetails = new Map({ devices: new Map({ 'local.server': serverSetup }) });
         let foundCurrent = false;
 
-        const items = traverseItems(deviceDetails, true, backward);
-        for (let i = 0; i < items.length; i += 1) {
-            const item = items[i];
+        // eslint-disable-next-line no-restricted-syntax
+        for (const item of traverseItems(deviceDetails, true, backward)) {
             if (selectedComponent === null) {
                 if (item !== null) {
                     selectComponent(item.instanceId);
@@ -465,7 +451,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps,
-)(ServerSetup);
+)(withHotkey(ServerSetup));
 
 ServerSetup.propTypes = {
     selectedAdapter: PropTypes.instanceOf(ImmutableAdapter),
@@ -489,6 +475,7 @@ ServerSetup.propTypes = {
     hideClearDialog: PropTypes.func.isRequired,
     showErrorDialog: PropTypes.func.isRequired,
     style: PropTypes.object.isRequired,
+    bindHotkey: PropTypes.func.isRequired,
 };
 
 ServerSetup.defaultProps = {
