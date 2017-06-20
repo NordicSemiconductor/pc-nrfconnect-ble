@@ -5,15 +5,19 @@ exports[`ServiceItem should render correctly with button 1`] = `
   <div
     className="service-item neutral-background"
     onClick={[Function]}
+    role="button"
     style={
       Object {
         "backgroundColor": "rgb(255, 255, 255)",
       }
     }
+    tabIndex={0}
   >
     <div
       className="expand-area"
       onClick={[Function]}
+      role="button"
+      tabIndex={0}
     >
       <div
         className="bar1"
@@ -66,15 +70,19 @@ exports[`ServiceItem should render correctly with no button 1`] = `
   <div
     className="service-item neutral-background"
     onClick={[Function]}
+    role="button"
     style={
       Object {
         "backgroundColor": "rgb(255, 255, 255)",
       }
     }
+    tabIndex={0}
   >
     <div
       className="expand-area"
       onClick={[Function]}
+      role="button"
+      tabIndex={0}
     >
       <div
         className="bar1"
