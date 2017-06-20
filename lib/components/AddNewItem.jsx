@@ -34,8 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint jsx-a11y/no-static-element-interactions: off */
-
 'use strict';
 
 import _ from 'lodash';
@@ -59,7 +57,7 @@ class AddNewItem extends React.PureComponent {
         const bars = _.times(this.props.bars, i => <div className={`bar${i + 1}`} key={i} />);
 
         return (
-            <div className="add-new" onClick={this.props.onClick}>
+            <div className="add-new" onClick={this.props.onClick} role="button" tabIndex={0}>
                 {bars}
                 <div className="content-wrap">
                     <div className="content padded-row">

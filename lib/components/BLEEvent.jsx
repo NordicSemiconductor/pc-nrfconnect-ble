@@ -34,8 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint jsx-a11y/no-static-element-interactions: off */
-
 'use strict';
 
 import React from 'react';
@@ -199,8 +197,14 @@ class BLEEvent extends React.PureComponent {
 
     render() {
         return (
-            <div className={`service-item ${this.getClass()}`} style={this.getStyle()} onClick={this.onClick}>
-                <div className="expand-area" onClick={onExpandAreaClick}>
+            <div
+                className={`service-item ${this.getClass()}`}
+                style={this.getStyle()}
+                onClick={this.onClick}
+                role="button"
+                tabIndex={0}
+            >
+                <div className="expand-area" onClick={onExpandAreaClick} role="button" tabIndex={0}>
                     <div className="bar1" />
                     <div className="icon-wrap" />
                 </div>

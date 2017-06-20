@@ -34,8 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint jsx-a11y/no-static-element-interactions: off */
-
 'use strict';
 
 import React from 'react';
@@ -153,7 +151,7 @@ class DiscoveredDevices extends React.PureComponent {
                         <span className="icon-trash" />Clear
                     </button>
                     <div className="discovery-options-expand">
-                        <span onClick={toggleOptionsExpanded}>
+                        <span onClick={toggleOptionsExpanded} role="button" tabIndex={0}>
                             <i className={dirIcon} />Options
                         </span>
                         {discoveryOptionsDiv}
