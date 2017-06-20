@@ -34,8 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint jsx-a11y/no-static-element-interactions: off */
-
 'use strict';
 
 import React from 'react';
@@ -257,8 +255,15 @@ class AttributeItem extends React.PureComponent {
                     className={`${this.attributeType}-item ${backgroundClass}`}
                     style={{ backgroundColor }}
                     onClick={this.onContentClick}
+                    role="button"
+                    tabIndex={0}
                 >
-                    <div className="expand-area" onClick={this.onExpandAreaClick}>
+                    <div
+                        className="expand-area"
+                        onClick={this.onExpandAreaClick}
+                        role="button"
+                        tabIndex={0}
+                    >
                         {barList}
                         <div className="icon-wrap">
                             <i className={`icon-slim ${expandIcon}`} style={iconStyle} />

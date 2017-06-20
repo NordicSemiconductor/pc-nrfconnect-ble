@@ -34,8 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint jsx-a11y/no-static-element-interactions: off */
-
 'use strict';
 
 import React from 'react';
@@ -241,6 +239,8 @@ class EditableField extends React.Component {
                 className="btn btn-primary btn-xs btn-nordic"
                 title="Read"
                 onClick={this.onReadButtonClick}
+                role="button"
+                tabIndex={0}
             >
                 <i className="icon-ccw" />
             </div>
@@ -275,6 +275,8 @@ class EditableField extends React.Component {
                         className="btn btn-primary btn-xs btn-nordic"
                         title="Write"
                         onClick={this.onWriteButtonClick}
+                        role="button"
+                        tabIndex={0}
                     >
                         <i className="icon-ok" />
                     </div>
@@ -296,10 +298,17 @@ class EditableField extends React.Component {
                         className="btn btn-primary btn-xs btn-nordic"
                         title="Read"
                         onClick={this.onReadButtonClick}
+                        role="button"
+                        tabIndex={0}
                     >
                         <i className="icon-ccw" />
                     </div>
-                    <div className="subtle-text editable" onClick={this.toggleEditing}>
+                    <div
+                        className="subtle-text editable"
+                        onClick={this.toggleEditing}
+                        role="button"
+                        tabIndex={0}
+                    >
                         <span>{this.value || nonBreakingSpace}</span>
                     </div>
                 </div>
@@ -319,6 +328,8 @@ class EditableField extends React.Component {
                     className="subtle-text"
                     title={this.props.title}
                     onClick={this.selectParent}
+                    role="button"
+                    tabIndex={0}
                 >
                     <span>{this.value || nonBreakingSpace}</span>
                 </div>
@@ -329,6 +340,8 @@ class EditableField extends React.Component {
                     className="subtle-text editable"
                     title={this.props.title}
                     onClick={this.selectParentAndToggleEditing}
+                    role="button"
+                    tabIndex={0}
                 >
                     <span>{this.value || nonBreakingSpace}</span>
                 </div>

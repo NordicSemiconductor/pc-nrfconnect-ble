@@ -34,8 +34,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint jsx-a11y/no-static-element-interactions: off */
-
 'use strict';
 
 import React from 'react';
@@ -278,7 +276,12 @@ class DiscoveredDevice extends React.PureComponent {
                         {addressDiv}
                     </div>
                     <div>
-                        <span className="adv-details" onClick={this.toggleExpand}>
+                        <span
+                            className="adv-details"
+                            onClick={this.toggleExpand}
+                            role="button"
+                            tabIndex={0}
+                        >
                             <i className={dirIcon} />Details
                         </span>
                         {addressTypeDiv}

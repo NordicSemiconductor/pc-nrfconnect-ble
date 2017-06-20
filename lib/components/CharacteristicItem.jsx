@@ -35,7 +35,6 @@
  */
 
 /* eslint no-bitwise: ["error", { "allow": ["&", "|"] }] */
-/* eslint jsx-a11y/no-static-element-interactions: off */
 
 'use strict';
 
@@ -174,6 +173,8 @@ class CharacteristicItem extends AttributeItem {
                     disabled={!hasCccd}
                     style={notifyIconStyle}
                     onClick={this.onToggleNotify}
+                    role="button"
+                    tabIndex={0}
                 >
                     <i className={notifyIcon} />
                 </div>
