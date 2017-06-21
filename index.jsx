@@ -41,39 +41,44 @@ import core from 'nrfconnect/core';
 import reducers from './lib/reducers';
 import * as DiscoveryActions from './lib/actions/discoveryActions';
 import * as AdapterActions from './lib/actions/adapterActions';
-import * as AppActions from './lib/actions/appActions';
 import * as FirmwareActions from './lib/actions/firmwareActions';
-import MainViewContainer from './lib/containers/MainView';
+import SelectedView from './lib/components/SelectedView';
 import BLEEventDialog from './lib/containers/BLEEventDialog';
 import DiscoveredDevices from './lib/containers/DiscoveredDevices';
 import { confirmUserUUIDsExist } from './lib/utils/uuid_definitions';
 
 import './resources/css/styles.less';
 
+/* eslint react/prop-types: 0 */
+
 export default {
     decorateNavMenu: NavMenu => (
         props => (
             <NavMenu
                 {...props}
+                selectedItemId={props.selectedItemId < 0 ? 0 : props.selectedItemId}
                 menuItems={[
-                    { id: 'ConnectionMap', text: 'Connection Map', iconClass: 'icon-columns' },
-                    { id: 'ServerSetup', text: 'Server Setup', iconClass: 'icon-indent-right' },
+                    { id: 0, text: 'Connection Map', iconClass: 'icon-columns' },
+                    { id: 1, text: 'Server Setup', iconClass: 'icon-indent-right' },
                 ]}
             />
         )
     ),
-    mapNavMenuDispatch: (dispatch, props) => ({
-        ...props,
-        onItemSelected: item => dispatch(AppActions.selectMainView(item)),
-    }),
     decorateMainView: MainView => (
         props => (
             <MainView>
-                <MainViewContainer {...props} />
+                <SelectedView {...props} />
                 <BLEEventDialog />
             </MainView>
         )
     ),
+    mapMainViewState: (state, props) => {
+        const { selectedItemId } = state.core.navMenu;
+        return {
+            ...props,
+            viewId: selectedItemId > 0 ? selectedItemId : 0,
+        };
+    },
     decorateSidePanel: SidePanel => (
         props => (
             <SidePanel>
