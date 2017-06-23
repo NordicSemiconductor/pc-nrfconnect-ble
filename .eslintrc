@@ -40,7 +40,7 @@
         "import/no-unresolved": [
             "error",
             {
-                "ignore": [ "nrfconnect/.*", "pc-ble-driver-js", "serialport", "electron" ]
+                "ignore": [ "nrfconnect/.*", "pc-ble-driver-js", "pc-nrfjprog-js", "serialport", "electron" ]
             }
         ],
         "import/extensions": ["off"],
