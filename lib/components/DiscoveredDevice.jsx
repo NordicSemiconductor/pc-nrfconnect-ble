@@ -259,8 +259,9 @@ class DiscoveredDevice extends React.PureComponent {
             <div className="device">
                 <div className="top-bar">
                     <div style={{ float: 'right' }}>
+                        <span className="address-text">{ `${device.rssi} dBm` }</span>
                         <span style={{ width: `${getRssiWidth(device.rssi)}px` }} className="icon-signal icon-foreground" />
-                        <span className="icon-signal icon-background" title={`${device.rssi} dBm`} />
+                        <span className="icon-signal icon-background" />
                     </div>
                     <div className="device-name selectable">{device.name || '<Unknown name>'}</div>
                 </div>
