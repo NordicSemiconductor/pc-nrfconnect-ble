@@ -102,11 +102,13 @@ export default {
         }
         if (action.type === 'SERIAL_PORT_SELECTED') {
             const { port } = action;
-            store.dispatch(FirmwareActions.validateFirmware(port.serialNumber, {
-                onValid: version => store.dispatch(
-                    AdapterActions.openAdapter(action.port, version),
-                ),
-                onInvalid: () => store.dispatch({ type: 'FIRMWARE_DIALOG_SHOW', port }),
+            store.dispatch(AdapterActions.closeAdapter(() => {
+                store.dispatch(FirmwareActions.validateFirmware(port.serialNumber, {
+                    onValid: version => store.dispatch(
+                        AdapterActions.openAdapter(action.port, version),
+                    ),
+                    onInvalid: () => store.dispatch({ type: 'FIRMWARE_DIALOG_SHOW', port }),
+                }));
             }));
         }
         if (action.type === 'SERIAL_PORT_DESELECTED') {
