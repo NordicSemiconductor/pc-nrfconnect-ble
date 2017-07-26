@@ -45,12 +45,11 @@ import ConnectedDevice from './ConnectedDevice';
 import CentralDevice from './CentralDevice';
 import EnumeratingAttributes from './EnumeratingAttributes';
 import ServiceItem from './ServiceItem';
-import { getUuidByName } from '../utils/uuid_definitions';
+import { SECURE_DFU_UUID } from '../utils/definitions';
 
 class DeviceDetailsView extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.dfuUuid = getUuidByName('Secure DFU');
 
         this.onDisconnectFromDevice = this.onDisconnectFromDevice.bind(this);
         this.onUpdateDeviceConnectionParams = this.onUpdateDeviceConnectionParams.bind(this);
@@ -110,7 +109,7 @@ class DeviceDetailsView extends React.PureComponent {
         if (!deviceDetail.discoveringChildren) {
             const services = deviceDetail.get('children');
             if (services) {
-                return services.some(service => service.uuid === this.dfuUuid);
+                return services.some(service => service.uuid === SECURE_DFU_UUID);
             }
         }
         return false;

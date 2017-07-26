@@ -138,7 +138,7 @@ class ConnectedDevice extends React.PureComponent {
 
         return (
             <div
-                ref={node => (this.node = node)}
+                ref={node => { this.node = node; }}
                 id={id}
                 className="device standalone"
                 style={style}
