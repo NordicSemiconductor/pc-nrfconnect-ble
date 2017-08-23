@@ -48,7 +48,7 @@ import { DiscoveryOptions } from '../reducers/discoveryReducer';
 import * as DiscoveryActions from '../actions/discoveryActions';
 import * as AdapterActions from '../actions/adapterActions';
 
-import DiscoveryButton from '../components/discoveryButton';
+import DiscoveryButton from '../components/DiscoveryButton';
 import DiscoveredDevice from '../components/DiscoveredDevice';
 import TextInput from '../components/input/TextInput';
 import Spinner from '../components/Spinner';
