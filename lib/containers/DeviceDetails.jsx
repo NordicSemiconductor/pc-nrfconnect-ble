@@ -51,7 +51,7 @@ import * as BLEEventActions from '../actions/bleEventActions';
 import * as SecurityActions from '../actions/securityActions';
 import * as DfuActions from '../actions/dfuActions';
 
-import DeviceDetailsView from '../components/deviceDetails';
+import DeviceDetailsView from '../components/DeviceDetails';
 import DfuDialog from './DfuDialog';
 
 import withHotkey from '../utils/withHotkey';
