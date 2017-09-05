@@ -33,6 +33,9 @@ exports[`ServiceItem should render correctly with button 1`] = `
     </div>
     <div
       className="content-wrap"
+      onClick={[Function]}
+      role="button"
+      tabIndex={0}
     >
       <div
         className="content"
@@ -98,6 +101,9 @@ exports[`ServiceItem should render correctly with no button 1`] = `
     </div>
     <div
       className="content-wrap"
+      onClick={[Function]}
+      role="button"
+      tabIndex={0}
     >
       <div
         className="content"
