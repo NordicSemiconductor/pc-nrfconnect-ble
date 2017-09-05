@@ -95,6 +95,7 @@ class AttributeItem extends React.PureComponent {
         if (this.props.onSetAttributeExpanded) {
             this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
         }
+        this.onContentClick(e);
     }
 
     onContentClick(e) {
