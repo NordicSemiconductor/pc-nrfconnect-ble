@@ -269,7 +269,12 @@ class AttributeItem extends React.PureComponent {
                             <i className={`icon-slim ${expandIcon}`} style={iconStyle} />
                         </div>
                     </div>
-                    <div className="content-wrap">
+                    <div
+                        className="content-wrap"
+                        onClick={this.onExpandAreaClick}
+                        role="button"
+                        tabIndex={0}
+                    >
                         {content}
                     </div>
                 </div>
