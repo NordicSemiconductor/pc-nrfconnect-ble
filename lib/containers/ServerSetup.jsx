@@ -414,7 +414,8 @@ class ServerSetup extends React.PureComponent {
                         show={showingApplyDialog}
                         onOk={applyServerAgain}
                         onCancel={hideApplyDialog}
-                        text="You may lose the connections if you apply the server setup again.
+                        text="The device must be reset before applying the server setup again.
+                        All active Bluetooth connections will be lost.
                         Are you sure you want to apply?"
                         okButtonText="Yes"
                         cancelButtonText="No"
