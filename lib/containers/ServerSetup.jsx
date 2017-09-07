@@ -414,8 +414,7 @@ class ServerSetup extends React.PureComponent {
                         show={showingApplyDialog}
                         onOk={applyServerAgain}
                         onCancel={hideApplyDialog}
-                        text="To apply the server setup again you need to reset the device,
-                        and therefore you may lose all the connections.
+                        text="You may lose the connections if you apply the server setup again.
                         Are you sure you want to apply?"
                         okButtonText="Yes"
                         cancelButtonText="No"
