@@ -87,6 +87,7 @@ class ServerSetup extends React.PureComponent {
         this.onSelectComponent = this.onSelectComponent.bind(this);
         this.onDiscardCancel = this.onDiscardCancel.bind(this);
         this.onDiscardOk = this.onDiscardOk.bind(this);
+        this.onClickApply = this.onClickApply.bind(this);
     }
 
     componentDidMount() {
@@ -133,6 +134,19 @@ class ServerSetup extends React.PureComponent {
     onDiscardOk() {
         this.props.hideDiscardDialog();
         this.props.selectComponent(this.pendingSelectInstanceId);
+    }
+
+    onClickApply() {
+        const {
+            selectedAdapter,
+            applyServer,
+            showApplyDialog,
+        } = this.props;
+        if (!selectedAdapter.isServerSetupApplied) {
+            applyServer();
+        } else {
+            showApplyDialog();
+        }
     }
 
     openSaveDialog() {
@@ -247,8 +261,10 @@ class ServerSetup extends React.PureComponent {
             addNewCharacteristic,
             addNewDescriptor,
             removeAttribute,
-            applyServer,
+            applyServerAgain,
             clearServer,
+            showApplyDialog,
+            hideApplyDialog,
             showDeleteDialog,
             hideDeleteDialog,
             showClearDialog,
@@ -261,9 +277,9 @@ class ServerSetup extends React.PureComponent {
         if (!serverSetup) {
             return (<div className="server-setup" style={this.props.style} />);
         }
-
         const {
             selectedComponent,
+            showingApplyDialog,
             showingDeleteDialog,
             showingClearDialog,
             showingDiscardDialog,
@@ -321,7 +337,7 @@ class ServerSetup extends React.PureComponent {
                 <DescriptorEditor
                     descriptor={selectedAttribute}
                     onSaveChangedAttribute={this.saveChangedAttribute}
-                    onRemoveAttribute={showDeleteDialog}
+                    onRemoveAttribute={showApplyDialog}
                     onModified={this.onModified}
                     onValidationError={error => showErrorDialog(error)}
                 />
@@ -376,9 +392,9 @@ class ServerSetup extends React.PureComponent {
                             <button
                                 type="button"
                                 className="btn btn-primary btn-nordic"
-                                disabled={selectedAdapter.isServerSetupApplied}
+                                disabled={false}
                                 title={btnTitle}
-                                onClick={applyServer}
+                                onClick={this.onClickApply}
                             >
                                 <i className="icon-ok" /> Apply to device
                             </button>
@@ -394,6 +410,16 @@ class ServerSetup extends React.PureComponent {
                     <div className={`item-editor${editorBorderClass}`}>
                         {editor}
                     </div>
+                    <ConfirmationDialog
+                        show={showingApplyDialog}
+                        onOk={applyServerAgain}
+                        onCancel={hideApplyDialog}
+                        text="To apply the server setup again you need to reset the device,
+                        and therefore you may lose all the connections.
+                        Are you sure you want to apply?"
+                        okButtonText="Yes"
+                        cancelButtonText="No"
+                    />
                     <ConfirmationDialog
                         show={showingDeleteDialog}
                         onOk={removeAttribute}
@@ -468,7 +494,10 @@ ServerSetup.propTypes = {
     addNewDescriptor: PropTypes.func.isRequired,
     removeAttribute: PropTypes.func.isRequired,
     applyServer: PropTypes.func.isRequired,
+    applyServerAgain: PropTypes.func.isRequired,
     clearServer: PropTypes.func.isRequired,
+    showApplyDialog: PropTypes.func.isRequired,
+    hideApplyDialog: PropTypes.func.isRequired,
     showDeleteDialog: PropTypes.func.isRequired,
     hideDeleteDialog: PropTypes.func.isRequired,
     showClearDialog: PropTypes.func.isRequired,
