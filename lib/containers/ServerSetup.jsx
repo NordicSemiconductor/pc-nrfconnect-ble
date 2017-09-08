@@ -261,9 +261,8 @@ class ServerSetup extends React.PureComponent {
             addNewCharacteristic,
             addNewDescriptor,
             removeAttribute,
-            applyServerAgain,
+            resetAndApplyServer,
             clearServer,
-            showApplyDialog,
             hideApplyDialog,
             showDeleteDialog,
             hideDeleteDialog,
@@ -337,7 +336,7 @@ class ServerSetup extends React.PureComponent {
                 <DescriptorEditor
                     descriptor={selectedAttribute}
                     onSaveChangedAttribute={this.saveChangedAttribute}
-                    onRemoveAttribute={showApplyDialog}
+                    onRemoveAttribute={showDeleteDialog}
                     onModified={this.onModified}
                     onValidationError={error => showErrorDialog(error)}
                 />
@@ -392,7 +391,6 @@ class ServerSetup extends React.PureComponent {
                             <button
                                 type="button"
                                 className="btn btn-primary btn-nordic"
-                                disabled={false}
                                 title={btnTitle}
                                 onClick={this.onClickApply}
                             >
@@ -412,7 +410,7 @@ class ServerSetup extends React.PureComponent {
                     </div>
                     <ConfirmationDialog
                         show={showingApplyDialog}
-                        onOk={applyServerAgain}
+                        onOk={resetAndApplyServer}
                         onCancel={hideApplyDialog}
                         text="The device must be reset before applying the server setup again.
                         All active Bluetooth connections will be lost.
@@ -494,7 +492,7 @@ ServerSetup.propTypes = {
     addNewDescriptor: PropTypes.func.isRequired,
     removeAttribute: PropTypes.func.isRequired,
     applyServer: PropTypes.func.isRequired,
-    applyServerAgain: PropTypes.func.isRequired,
+    resetAndApplyServer: PropTypes.func.isRequired,
     clearServer: PropTypes.func.isRequired,
     showApplyDialog: PropTypes.func.isRequired,
     hideApplyDialog: PropTypes.func.isRequired,
