@@ -86,6 +86,16 @@ export default {
             </SidePanel>
         )
     ),
+    decorateFirmwareDialog: FirmwareDialog => (
+        props => (
+            <FirmwareDialog
+                {...props}
+                text={props.isVisible ?
+                    `Would you like to program the development kit on ${props.port.comName} ` +
+                    `(${props.port.serialNumber}) with the latest connectivity firmware?` : ''}
+            />
+        )
+    ),
     mapSidePanelDispatch: (dispatch, props) => ({
         ...props,
         ...bindActionCreators(DiscoveryActions, dispatch),
