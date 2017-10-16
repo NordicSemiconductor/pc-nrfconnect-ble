@@ -96,6 +96,15 @@ export default {
             />
         )
     ),
+    mapFirmwareDialogDispatch: (dispatch, props) => ({
+        ...props,
+        onCancel: port => {
+            dispatch({ type: 'FIRMWARE_DIALOG_HIDE' });
+            getFirmwareInfo(port.serialNumber)
+                .then(versionInfo => dispatch(AdapterActions.openAdapter(port, versionInfo)))
+                .catch(error => logger.error(error.message));
+        },
+    }),
     mapSidePanelDispatch: (dispatch, props) => ({
         ...props,
         ...bindActionCreators(DiscoveryActions, dispatch),
