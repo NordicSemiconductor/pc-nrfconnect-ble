@@ -14,13 +14,13 @@
     "nrfconnect": "2.x"
   },
   "scripts": {
-    "dev": "webpack --watch",
-    "webpack": "webpack",
-    "build": "cross-env NODE_ENV=production webpack",
-    "lint": "eslint lib",
-    "test": "jest --testResultsProcessor jest-bamboo-formatter",
-    "test-watch": "jest --watch",
-    "clean": "npm install rimraf && npm run clean-dist && npm run clean-modules",
+    "dev": "nrfconnect-scripts build-watch",
+    "webpack": "nrfconnect-scripts build-dev",
+    "build": "nrfconnect-scripts build-prod",
+    "lint": "nrfconnect-scripts lint lib",
+    "test": "nrfconnect-scripts test",
+    "test-watch": "nrfconnect-scripts test --watch",
+    "clean": "npm run clean-dist && npm run clean-modules",
     "clean-dist": "rimraf dist",
     "clean-modules": "rimraf \"node_modules/!(rimraf|.bin)\""
   },
@@ -35,22 +35,12 @@
     "jquery": "^3.2.1",
     "lodash.throttle": "^4.1.1",
     "mousetrap": "^1.6.1",
-    "pc-nrfconnect-devdep": "https://github.com/NordicSemiconductor/pc-nrfconnect-devdep.git#v1.0.0",
+    "pc-nrfconnect-devdep": "https://github.com/NordicSemiconductor/pc-nrfconnect-devdep.git#v1.1.0",
     "react-d3-components": "^0.6.6",
     "react-onclickoutside": "^5.10.0",
     "react-sizeme": "^2.3.1",
     "react-textarea-autosize": "^4.0.5",
     "uuid-v4": "^0.1.0"
   },
-  "dependencies": {},
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$": "<rootDir>/mocks/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/mocks/styleMock.js",
-      "nrfconnect/core": "<rootDir>/mocks/coreMock.js",
-      "pc-ble-driver-js": "<rootDir>/mocks/bleDriverMock.js",
-      "pc-nrfjprog-js": "<rootDir>/mocks/nrfjprogMock.js",
-      "serialport": "<rootDir>/mocks/serialportMock.js"
-    }
-  }
+  "dependencies": {}
 }
