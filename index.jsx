@@ -37,11 +37,11 @@
 import path from 'path';
 import React from 'react';
 import { bindActionCreators } from 'redux';
-import core from 'nrfconnect/core';
+import { getAppDir, getUserDataDir, logger } from 'nrfconnect/core';
+import { getFirmwareInfo, programConnectivityFirmware } from './lib/api/firmware';
 import reducers from './lib/reducers';
 import * as DiscoveryActions from './lib/actions/discoveryActions';
 import * as AdapterActions from './lib/actions/adapterActions';
-import * as FirmwareActions from './lib/actions/firmwareActions';
 import SelectedView from './lib/components/SelectedView';
 import BLEEventDialog from './lib/containers/BLEEventDialog';
 import DiscoveredDevices from './lib/containers/DiscoveredDevices';
@@ -86,6 +86,25 @@ export default {
             </SidePanel>
         )
     ),
+    decorateFirmwareDialog: FirmwareDialog => (
+        props => (
+            <FirmwareDialog
+                {...props}
+                text={props.isVisible ?
+                    `Would you like to program the development kit on ${props.port.comName} ` +
+                    `(${props.port.serialNumber}) with the latest connectivity firmware?` : ''}
+            />
+        )
+    ),
+    mapFirmwareDialogDispatch: (dispatch, props) => ({
+        ...props,
+        onCancel: port => {
+            dispatch({ type: 'FIRMWARE_DIALOG_HIDE' });
+            getFirmwareInfo(port.serialNumber)
+                .then(versionInfo => dispatch(AdapterActions.openAdapter(port, versionInfo)))
+                .catch(error => logger.error(error.message));
+        },
+    }),
     mapSidePanelDispatch: (dispatch, props) => ({
         ...props,
         ...bindActionCreators(DiscoveryActions, dispatch),
@@ -103,12 +122,15 @@ export default {
         if (action.type === 'SERIAL_PORT_SELECTED') {
             const { port } = action;
             store.dispatch(AdapterActions.closeAdapter(() => {
-                store.dispatch(FirmwareActions.validateFirmware(port.serialNumber, {
-                    onValid: version => store.dispatch(
-                        AdapterActions.openAdapter(action.port, version),
-                    ),
-                    onInvalid: () => store.dispatch({ type: 'FIRMWARE_DIALOG_SHOW', port }),
-                }));
+                getFirmwareInfo(port.serialNumber)
+                    .then(versionInfo => {
+                        if (versionInfo.isUpdateRequired) {
+                            store.dispatch({ type: 'FIRMWARE_DIALOG_SHOW', port });
+                        } else {
+                            store.dispatch(AdapterActions.openAdapter(port, versionInfo));
+                        }
+                    })
+                    .catch(error => logger.error(error.message));
             }));
         }
         if (action.type === 'SERIAL_PORT_DESELECTED') {
@@ -116,24 +138,24 @@ export default {
         }
         if (action.type === 'FIRMWARE_DIALOG_UPDATE_REQUESTED') {
             const { port } = action;
-            store.dispatch(FirmwareActions.programFirmware(port.serialNumber, {
-                onSuccess: version => {
-                    store.dispatch(AdapterActions.openAdapter(action.port, version));
+            programConnectivityFirmware(port.serialNumber)
+                .then(versionInfo => {
+                    store.dispatch(AdapterActions.openAdapter(port, versionInfo));
                     store.dispatch({ type: 'FIRMWARE_DIALOG_HIDE' });
-                },
-                onFailure: () => {
+                })
+                .catch(error => {
                     store.dispatch({ type: 'FIRMWARE_DIALOG_HIDE' });
                     store.dispatch({ type: 'SERIAL_PORT_DESELECTED' });
-                },
-            }));
+                    logger.error(error.message);
+                });
         }
         next(action);
     },
     onInit: () => {
-        __webpack_public_path__ = path.join(core.getAppDir(), 'dist/'); // eslint-disable-line
+        __webpack_public_path__ = path.join(getAppDir(), 'dist/'); // eslint-disable-line
     },
     onReady: dispatch => {
-        confirmUserUUIDsExist(core.getUserDataDir());
+        confirmUserUUIDsExist(getUserDataDir());
         dispatch(AdapterActions.findAdapters());
     },
 };

@@ -95,6 +95,7 @@ class AttributeItem extends React.PureComponent {
         if (this.props.onSetAttributeExpanded) {
             this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
         }
+        this.selectComponent();
     }
 
     onContentClick(e) {
@@ -269,7 +270,12 @@ class AttributeItem extends React.PureComponent {
                             <i className={`icon-slim ${expandIcon}`} style={iconStyle} />
                         </div>
                     </div>
-                    <div className="content-wrap">
+                    <div
+                        className="content-wrap"
+                        onClick={this.onExpandAreaClick}
+                        role="button"
+                        tabIndex={0}
+                    >
                         {content}
                     </div>
                 </div>
