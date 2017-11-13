@@ -136,15 +136,29 @@ class CentralDevice extends React.PureComponent {
         const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
         const iconCheckmarkConnUpdate = autoConnUpdate ? 'icon-ok' : '';
         const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'icon-ok' : '';
-        const deviceFamily = familyDefinitions[deviceInfo.family];
-        const deviceType = deviceTypeDefinitions[deviceInfo.deviceType];
+        const deviceFamily = familyDefinitions[deviceInfo.family].split('_')[0].replace('NRF', 'nRF');
+        const deviceType = deviceTypeDefinitions[deviceInfo.deviceType].split('_')[0].replace('NRF', 'nRF');
         const softdeviceVersion = versionInfo.sdBleApiVersion;
+
         const localDeviceInfoItems = (() => {
             const items = [];
-            items.push(<MenuItem key="deviceFamily" header>{deviceFamily}</MenuItem>);
-            items.push(<MenuItem key="deviceType" header>{deviceType}</MenuItem>);
+            items.push(<MenuItem key="deviceFamily" header>
+                Family:
+            </MenuItem>);
+            items.push(<MenuItem key="deviceFamilyValue">
+                {deviceFamily}
+            </MenuItem>);
+            items.push(<MenuItem key="deviceType" header>
+                Type:
+            </MenuItem>);
+            items.push(<MenuItem key="deviceTypeValue">
+                {deviceType}
+            </MenuItem>);
             items.push(<MenuItem key="softdeviceVersion" header>
-                SoftDevice Version {softdeviceVersion}
+                SoftDevice Version:
+            </MenuItem>);
+            items.push(<MenuItem key="softdeviceVersionValue">
+                {softdeviceVersion}
             </MenuItem>);
             return items;
         })();
