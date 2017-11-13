@@ -121,17 +121,7 @@ export default {
         }
         if (action.type === 'SERIAL_PORT_SELECTED') {
             const { port } = action;
-            store.dispatch(AdapterActions.closeAdapter(() => {
-                getFirmwareInfo(port.serialNumber)
-                    .then(versionInfo => {
-                        if (versionInfo.isUpdateRequired) {
-                            store.dispatch({ type: 'FIRMWARE_DIALOG_SHOW', port });
-                        } else {
-                            store.dispatch(AdapterActions.openAdapter(port, versionInfo));
-                        }
-                    })
-                    .catch(error => logger.error(error.message));
-            }));
+            store.dispatch(AdapterActions.selectedSerialPort(port));
         }
         if (action.type === 'SERIAL_PORT_DESELECTED') {
             store.dispatch(AdapterActions.closeAdapter());

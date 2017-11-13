@@ -46,6 +46,7 @@ import AdvertisingSetup from '../containers/AdvertisingSetup';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 
 import withHotkey from '../utils/withHotkey';
+import { familyDefinitions, deviceTypeDefinitions } from '../utils/deviceDefinitions';
 
 class CentralDevice extends React.PureComponent {
     constructor(props) {
@@ -115,6 +116,7 @@ class CentralDevice extends React.PureComponent {
             onOpenCustomUuidFile,
             security,
             bindHotkey,
+            deviceInfo,
         } = this.props;
 
         bindHotkey('alt+a', onToggleAdvertising);
@@ -133,6 +135,14 @@ class CentralDevice extends React.PureComponent {
         const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
         const iconCheckmarkConnUpdate = autoConnUpdate ? 'icon-ok' : '';
         const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'icon-ok' : '';
+        const deviceFamily = familyDefinitions[deviceInfo.family];
+        const deviceType = deviceTypeDefinitions[deviceInfo.deviceType];
+        const localDeviceInfoItems = (() => {
+            const items = [];
+            items.push(<MenuItem key="deviceFamily" header>{deviceFamily}</MenuItem>);
+            items.push(<MenuItem key="deviceType" header>{deviceType}</MenuItem>);
+            return items;
+        })();
 
         const dropDownMenuItems = (() => {
             const items = [];
@@ -247,6 +257,17 @@ class CentralDevice extends React.PureComponent {
                             onSelect={this.onSelect}
                         >
                             <Dropdown.Toggle noCaret>
+                                <span className="icon-info" aria-hidden="true" />
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                { localDeviceInfoItems }
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <Dropdown
+                            id="connectionDropDown"
+                            onSelect={this.onSelect}
+                        >
+                            <Dropdown.Toggle noCaret>
                                 <span className="icon-cog" aria-hidden="true" />
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
@@ -271,6 +292,7 @@ class CentralDevice extends React.PureComponent {
 CentralDevice.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string,
+    deviceInfo: PropTypes.object.isRequired,
     address: PropTypes.string,
     advertising: PropTypes.bool,
     onToggleAdvertising: PropTypes.func,

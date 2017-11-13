@@ -61,7 +61,6 @@ import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigati
 class DeviceDetailsContainer extends React.PureComponent {
     constructor(props) {
         super(props);
-
         this.moveUp = () => this.selectNextComponent(true);
         this.moveDown = () => this.selectNextComponent(false);
         this.moveRight = () => this.expandComponent(true);
@@ -165,6 +164,7 @@ class DeviceDetailsContainer extends React.PureComponent {
             security,
             openCustomUuidFile,
             showDfuDialog,
+            deviceInfo,
         } = this.props;
 
         const elemWidth = 250;
@@ -196,6 +196,7 @@ class DeviceDetailsContainer extends React.PureComponent {
                 onDeleteBondInfo={deleteBondInfo}
                 security={security}
                 onOpenCustomUuidFile={openCustomUuidFile}
+                deviceInfo={deviceInfo}
             />,
         );
 
@@ -259,6 +260,7 @@ function mapStateToProps(state) {
         deviceDetails: selectedAdapter.deviceDetails,
         autoConnUpdate: adapter.autoConnUpdate,
         security: selectedAdapter.security,
+        deviceInfo: adapter.deviceInfo,
     };
 }
 
@@ -285,6 +287,7 @@ DeviceDetailsContainer.propTypes = {
     adapterState: PropTypes.object,
     selectedComponent: PropTypes.string,
     deviceDetails: PropTypes.object,
+    deviceInfo: PropTypes.object.isRequired,
     connectedDevices: PropTypes.object,
     // deviceServers: PropTypes.object,
     readCharacteristic: PropTypes.func.isRequired,
