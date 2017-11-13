@@ -171,6 +171,7 @@ class DeviceDetailsView extends React.PureComponent {
                 onOpenCustomUuidFile,
                 security,
                 deviceInfo,
+                versionInfo,
             } = this.props;
 
             const localDevice = (
@@ -192,6 +193,7 @@ class DeviceDetailsView extends React.PureComponent {
                     onOpenCustomUuidFile={onOpenCustomUuidFile}
                     security={security}
                     deviceInfo={deviceInfo}
+                    versionInfo={versionInfo}
                 />
             );
 
@@ -251,6 +253,7 @@ class DeviceDetailsView extends React.PureComponent {
 DeviceDetailsView.propTypes = {
     device: PropTypes.object.isRequired,
     deviceInfo: PropTypes.object.isRequired,
+    versionInfo: PropTypes.object.isRequired,
     selected: PropTypes.string,
     onSelectComponent: PropTypes.func.isRequired,
     onSetAttributeExpanded: PropTypes.func.isRequired,

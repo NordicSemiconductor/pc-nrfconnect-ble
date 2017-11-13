@@ -117,6 +117,7 @@ class CentralDevice extends React.PureComponent {
             security,
             bindHotkey,
             deviceInfo,
+            versionInfo,
         } = this.props;
 
         bindHotkey('alt+a', onToggleAdvertising);
@@ -137,10 +138,14 @@ class CentralDevice extends React.PureComponent {
         const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'icon-ok' : '';
         const deviceFamily = familyDefinitions[deviceInfo.family];
         const deviceType = deviceTypeDefinitions[deviceInfo.deviceType];
+        const softdeviceVersion = versionInfo.sdBleApiVersion;
         const localDeviceInfoItems = (() => {
             const items = [];
             items.push(<MenuItem key="deviceFamily" header>{deviceFamily}</MenuItem>);
             items.push(<MenuItem key="deviceType" header>{deviceType}</MenuItem>);
+            items.push(<MenuItem key="softdeviceVersion" header>
+                SoftDevice Version {softdeviceVersion}
+            </MenuItem>);
             return items;
         })();
 
@@ -293,6 +298,7 @@ CentralDevice.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string,
     deviceInfo: PropTypes.object.isRequired,
+    versionInfo: PropTypes.object.isRequired,
     address: PropTypes.string,
     advertising: PropTypes.bool,
     onToggleAdvertising: PropTypes.func,
