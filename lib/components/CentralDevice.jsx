@@ -134,7 +134,7 @@ class CentralDevice extends React.PureComponent {
         const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
         const iconCheckmarkConnUpdate = autoConnUpdate ? 'icon-ok' : '';
         const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'icon-ok' : '';
-        const deviceType = deviceTypeDefinitions[deviceInfo.deviceType];
+        const deviceType = deviceTypeDefinitions[deviceInfo.deviceType] || 'Unknown device';
 
         const dropDownMenuItems = (() => {
             const items = [];
