@@ -117,7 +117,6 @@ class CentralDevice extends React.PureComponent {
             security,
             bindHotkey,
             deviceInfo,
-            versionInfo,
         } = this.props;
 
         bindHotkey('alt+a', onToggleAdvertising);
@@ -136,32 +135,7 @@ class CentralDevice extends React.PureComponent {
         const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
         const iconCheckmarkConnUpdate = autoConnUpdate ? 'icon-ok' : '';
         const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'icon-ok' : '';
-        const deviceFamily = familyDefinitions[deviceInfo.family].split('_')[0].replace('NRF', 'nRF');
-        const deviceType = deviceTypeDefinitions[deviceInfo.deviceType].split('_')[0].replace('NRF', 'nRF');
-        const softdeviceVersion = versionInfo.sdBleApiVersion;
-
-        const localDeviceInfoItems = (() => {
-            const items = [];
-            items.push(<MenuItem key="deviceFamily" header>
-                Device Family:
-            </MenuItem>);
-            items.push(<MenuItem key="deviceFamilyValue">
-                {deviceFamily}
-            </MenuItem>);
-            items.push(<MenuItem key="deviceType" header>
-                Device Type:
-            </MenuItem>);
-            items.push(<MenuItem key="deviceTypeValue">
-                {deviceType}
-            </MenuItem>);
-            items.push(<MenuItem key="softdeviceVersion" header>
-                SoftDevice Version:
-            </MenuItem>);
-            items.push(<MenuItem key="softdeviceVersionValue">
-                {softdeviceVersion}
-            </MenuItem>);
-            return items;
-        })();
+        const deviceType = deviceTypeDefinitions[deviceInfo.deviceType];
 
         const dropDownMenuItems = (() => {
             const items = [];
@@ -276,17 +250,6 @@ class CentralDevice extends React.PureComponent {
                             onSelect={this.onSelect}
                         >
                             <Dropdown.Toggle noCaret>
-                                <span className="icon-info" aria-hidden="true" />
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                { localDeviceInfoItems }
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <Dropdown
-                            id="connectionDropDown"
-                            onSelect={this.onSelect}
-                        >
-                            <Dropdown.Toggle noCaret>
                                 <span className="icon-cog" aria-hidden="true" />
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
@@ -296,7 +259,7 @@ class CentralDevice extends React.PureComponent {
                     </div>
                     <div>
                         <div className="role-flag pull-right">Adapter</div>
-                        <strong className="selectable">{name}</strong>
+                        <strong className="selectable">{deviceType}</strong>
                     </div>
                     <div className="address-text selectable">{address}</div>
                     <div className={`icon-wifi ${iconOpacity}`} aria-hidden="true" title={advIconTitle} style={progressStyle} />
@@ -312,7 +275,6 @@ CentralDevice.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string,
     deviceInfo: PropTypes.object.isRequired,
-    versionInfo: PropTypes.object.isRequired,
     address: PropTypes.string,
     advertising: PropTypes.bool,
     onToggleAdvertising: PropTypes.func,

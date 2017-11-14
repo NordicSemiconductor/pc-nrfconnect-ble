@@ -165,7 +165,6 @@ class DeviceDetailsContainer extends React.PureComponent {
             openCustomUuidFile,
             showDfuDialog,
             deviceInfo,
-            versionInfo,
         } = this.props;
 
         const elemWidth = 250;
@@ -198,7 +197,6 @@ class DeviceDetailsContainer extends React.PureComponent {
                 security={security}
                 onOpenCustomUuidFile={openCustomUuidFile}
                 deviceInfo={deviceInfo}
-                versionInfo={versionInfo}
             />,
         );
 
@@ -263,7 +261,6 @@ function mapStateToProps(state) {
         autoConnUpdate: adapter.autoConnUpdate,
         security: selectedAdapter.security,
         deviceInfo: adapter.deviceInfo,
-        versionInfo: adapter.versionInfo,
     };
 }
 
@@ -291,7 +288,6 @@ DeviceDetailsContainer.propTypes = {
     selectedComponent: PropTypes.string,
     deviceDetails: PropTypes.object,
     deviceInfo: PropTypes.object,
-    versionInfo: PropTypes.object,
     connectedDevices: PropTypes.object,
     // deviceServers: PropTypes.object,
     readCharacteristic: PropTypes.func.isRequired,
@@ -325,5 +321,4 @@ DeviceDetailsContainer.defaultProps = {
     security: null,
     autoConnUpdate: false,
     deviceInfo: null,
-    versionInfo: null,
 };
