@@ -46,7 +46,7 @@ import AdvertisingSetup from '../containers/AdvertisingSetup';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 
 import withHotkey from '../utils/withHotkey';
-import { familyDefinitions, deviceTypeDefinitions } from '../utils/deviceDefinitions';
+import { deviceTypeDefinitions } from '../utils/deviceDefinitions';
 
 class CentralDevice extends React.PureComponent {
     constructor(props) {
@@ -103,7 +103,6 @@ class CentralDevice extends React.PureComponent {
     render() {
         const {
             id,
-            name,
             address,
             advertising,
             onToggleAdvertising,
@@ -273,7 +272,6 @@ class CentralDevice extends React.PureComponent {
 
 CentralDevice.propTypes = {
     id: PropTypes.string.isRequired,
-    name: PropTypes.string,
     deviceInfo: PropTypes.object.isRequired,
     address: PropTypes.string,
     advertising: PropTypes.bool,
@@ -292,7 +290,6 @@ CentralDevice.propTypes = {
 };
 
 CentralDevice.defaultProps = {
-    name: null,
     address: null,
     advertising: false,
     onToggleAdvertising: null,
