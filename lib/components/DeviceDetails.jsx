@@ -252,8 +252,8 @@ class DeviceDetailsView extends React.PureComponent {
 
 DeviceDetailsView.propTypes = {
     device: PropTypes.object.isRequired,
-    deviceInfo: PropTypes.object.isRequired,
-    versionInfo: PropTypes.object.isRequired,
+    deviceInfo: PropTypes.object,
+    versionInfo: PropTypes.object,
     selected: PropTypes.string,
     onSelectComponent: PropTypes.func.isRequired,
     onSetAttributeExpanded: PropTypes.func.isRequired,
@@ -284,6 +284,8 @@ DeviceDetailsView.defaultProps = {
     selected: null,
     onUpdateDeviceConnectionParams: null,
     deviceDetails: null,
+    deviceInfo: null,
+    versionInfo: null,
     adapter: null,
     onDisconnectFromDevice: null,
     onPairWithDevice: null,
