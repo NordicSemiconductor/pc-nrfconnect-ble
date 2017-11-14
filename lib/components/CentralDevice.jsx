@@ -143,13 +143,13 @@ class CentralDevice extends React.PureComponent {
         const localDeviceInfoItems = (() => {
             const items = [];
             items.push(<MenuItem key="deviceFamily" header>
-                Family:
+                Device Family:
             </MenuItem>);
             items.push(<MenuItem key="deviceFamilyValue">
                 {deviceFamily}
             </MenuItem>);
             items.push(<MenuItem key="deviceType" header>
-                Type:
+                Device Type:
             </MenuItem>);
             items.push(<MenuItem key="deviceTypeValue">
                 {deviceType}
