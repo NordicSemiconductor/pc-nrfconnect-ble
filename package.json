@@ -26,6 +26,7 @@
   },
   "files": [
     "dist/",
+    "resources/icon.*",
     "icon.png",
     "LICENSE"
   ],
