@@ -7,3 +7,5 @@ log.txt
 tags
 jest.json
 npm-debug.log
+.DS_Store
+package-lock.json
