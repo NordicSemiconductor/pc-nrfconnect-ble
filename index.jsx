@@ -38,7 +38,7 @@ import path from 'path';
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { getAppDir, getUserDataDir, logger } from 'nrfconnect/core';
-import { getFirmwareInfo, programConnectivityFirmware } from './lib/api/firmware';
+import { getFirmwareInfo, programConnectivityFirmware } from './lib/api/nrfjprog';
 import reducers from './lib/reducers';
 import * as DiscoveryActions from './lib/actions/discoveryActions';
 import * as AdapterActions from './lib/actions/adapterActions';
