@@ -40,6 +40,16 @@ import FileInput from '../input/FileInput';
 import DfuButton from '../DfuButton';
 import DfuEditor from '../DfuEditor';
 
+function mountComponent(props) {
+    return mount(<DfuEditor
+        isStarted={false}
+        onChooseFile={() => {}}
+        onStartDfu={() => {}}
+        onStopDfu={() => {}}
+        {...props}
+    />);
+}
+
 describe('DfuEditor', () => {
     describe('when choose file button is clicked', () => {
         const onChooseFile = jest.fn();
@@ -85,12 +95,3 @@ describe('DfuEditor', () => {
     });
 });
 
-function mountComponent(props) {
-    return mount(<DfuEditor
-        isStarted={false}
-        onChooseFile={() => {}}
-        onStartDfu={() => {}}
-        onStopDfu={() => {}}
-        {...props}
-    />)
-}

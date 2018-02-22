@@ -36,13 +36,9 @@
 
 /* eslint-disable import/first */
 
-jest.mock('../../utils/colorDefinitions', () => {
-    return {
-        getColor: () => {
-            return {r: 255, g: 255, b: 255}
-        }
-    };
-});
+jest.mock('../../utils/colorDefinitions', () => ({
+    getColor: () => ({ r: 255, g: 255, b: 255 }),
+}));
 jest.mock('../../utils/uuid_definitions', () => {});
 
 import React from 'react';
