@@ -39,7 +39,7 @@ Since *nRF Connect* expects local apps in `$HOME/.nrfconnect-apps/local` (Linux/
 To build this project you will need to install the following tools:
 
 * Node.js (>=6.9)
-* npm (>=3.7.0)
+* npm (>=5.6.0) / yarn (>=1.4.0)
 
 ## Compiling
 
