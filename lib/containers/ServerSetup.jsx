@@ -254,7 +254,6 @@ class ServerSetup extends React.PureComponent {
     render() {
         const {
             selectedAdapter,
-            deviceInfo,
             serverSetup,
             // selectComponent,
             setAttributeExpanded,
@@ -374,7 +373,6 @@ class ServerSetup extends React.PureComponent {
                 id={`${selectedAdapter.instanceId}_serversetup`}
                 name={selectedAdapter.state.name}
                 address={selectedAdapter.state.address}
-                deviceInfo={deviceInfo}
                 onSaveSetup={this.openSaveDialog}
                 onLoadSetup={this.openLoadDialog}
             />
@@ -455,7 +453,7 @@ function mapStateToProps(state) {
         adapter,
     } = state.app;
 
-    const selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapterIndex]);
+    const selectedAdapter = adapter.selectedAdapter;
 
     if (!selectedAdapter) {
         return {};
@@ -463,7 +461,6 @@ function mapStateToProps(state) {
 
     return {
         selectedAdapter,
-        deviceInfo: adapter.deviceInfo,
         serverSetup: selectedAdapter.serverSetup,
     };
 }
@@ -486,7 +483,6 @@ export default connect(
 
 ServerSetup.propTypes = {
     selectedAdapter: PropTypes.instanceOf(ImmutableAdapter),
-    deviceInfo: PropTypes.object,
     serverSetup: PropTypes.object,
     saveServerSetup: PropTypes.func.isRequired,
     loadServerSetup: PropTypes.func.isRequired,
@@ -516,5 +512,4 @@ ServerSetup.propTypes = {
 ServerSetup.defaultProps = {
     selectedAdapter: null,
     serverSetup: null,
-    deviceInfo: null,
 };

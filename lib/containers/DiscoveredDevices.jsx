@@ -186,19 +186,15 @@ class DiscoveredDevices extends React.PureComponent {
 function mapStateToProps(state) {
     const { discovery, adapter } = state.app;
 
-    let selectedAdapter = null;
+    const selectedAdapter = adapter.selectedAdapter;
     let adapterIsConnecting = false;
     let scanning = false;
     let adapterAvailable = false;
 
-    if (adapter.selectedAdapterIndex !== null) {
-        selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapterIndex]);
-
-        if (selectedAdapter && selectedAdapter.state) {
-            adapterIsConnecting = selectedAdapter.state.connecting || false;
-            scanning = selectedAdapter.state.scanning || false;
-            adapterAvailable = selectedAdapter.state.available || false;
-        }
+    if (selectedAdapter && selectedAdapter.state) {
+        adapterIsConnecting = selectedAdapter.state.connecting || false;
+        scanning = selectedAdapter.state.scanning || false;
+        adapterAvailable = selectedAdapter.state.available || false;
     }
 
     return {

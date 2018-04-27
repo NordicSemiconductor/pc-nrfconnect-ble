@@ -177,7 +177,7 @@ DfuDialog.defaultProps = {
 function mapStateToProps(state) {
     const { dfu, adapter } = state.app;
 
-    const selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapterIndex]);
+    const selectedAdapter = adapter.selectedAdapter;
 
     return {
         adapter: selectedAdapter,

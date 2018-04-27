@@ -46,7 +46,6 @@ import AdvertisingSetup from '../containers/AdvertisingSetup';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 
 import withHotkey from '../utils/withHotkey';
-import { deviceTypeDefinitions } from '../utils/deviceDefinitions';
 
 class CentralDevice extends React.PureComponent {
     constructor(props) {
@@ -103,6 +102,7 @@ class CentralDevice extends React.PureComponent {
     render() {
         const {
             id,
+            name,
             address,
             advertising,
             onToggleAdvertising,
@@ -115,7 +115,6 @@ class CentralDevice extends React.PureComponent {
             onOpenCustomUuidFile,
             security,
             bindHotkey,
-            deviceInfo,
         } = this.props;
 
         bindHotkey('alt+a', onToggleAdvertising);
@@ -134,7 +133,6 @@ class CentralDevice extends React.PureComponent {
         const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
         const iconCheckmarkConnUpdate = autoConnUpdate ? 'icon-ok' : '';
         const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'icon-ok' : '';
-        const deviceType = deviceTypeDefinitions[deviceInfo.deviceType] || 'Unknown device';
 
         const dropDownMenuItems = (() => {
             const items = [];
@@ -258,7 +256,7 @@ class CentralDevice extends React.PureComponent {
                     </div>
                     <div>
                         <div className="role-flag pull-right">Adapter</div>
-                        <strong className="selectable">{deviceType}</strong>
+                        <strong className="selectable">{name}</strong>
                     </div>
                     <div className="address-text selectable">{address}</div>
                     <div className={`icon-wifi ${iconOpacity}`} aria-hidden="true" title={advIconTitle} style={progressStyle} />
@@ -272,7 +270,7 @@ class CentralDevice extends React.PureComponent {
 
 CentralDevice.propTypes = {
     id: PropTypes.string.isRequired,
-    deviceInfo: PropTypes.object.isRequired,
+    name: PropTypes.string,
     address: PropTypes.string,
     advertising: PropTypes.bool,
     onToggleAdvertising: PropTypes.func,
@@ -290,6 +288,7 @@ CentralDevice.propTypes = {
 };
 
 CentralDevice.defaultProps = {
+    name: '',
     address: null,
     advertising: false,
     onToggleAdvertising: null,

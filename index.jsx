@@ -37,8 +37,8 @@
 import path from 'path';
 import React from 'react';
 import { bindActionCreators } from 'redux';
-import { getAppDir, getUserDataDir, logger } from 'nrfconnect/core';
-import { getFirmwareInfo, programConnectivityFirmware } from './lib/api/nrfjprog';
+import { FirmwareRegistry } from 'pc-ble-driver-js';
+import { logger, getAppDir, getUserDataDir } from 'nrfconnect/core';
 import reducers from './lib/reducers';
 import * as DiscoveryActions from './lib/actions/discoveryActions';
 import * as AdapterActions from './lib/actions/adapterActions';
@@ -50,6 +50,43 @@ import { confirmUserUUIDsExist } from './lib/utils/uuid_definitions';
 import './resources/css/styles.less';
 
 /* eslint react/prop-types: 0 */
+
+// TODO: Get family from nrf-device-setup.
+function getJlinkDeviceFamily(serialNumber) {
+    const jlinkSnrRegex = /^.*68([0-3]{1})[0-9]{6}$/;
+    if (jlinkSnrRegex.test(serialNumber)) {
+        const developmentKit = parseInt(jlinkSnrRegex.exec(serialNumber)[1], 10);
+        switch (developmentKit) {
+            case 0:
+            case 1:
+                return 'nrf51';
+            case 2:
+            case 3:
+                return 'nrf52';
+            default:
+        }
+    }
+    throw new Error(`Unsupported J-Link device: ${serialNumber}`);
+}
+
+function getFirmwareInfo(device) {
+    if (device.traits.includes('jlink')) {
+        const family = getJlinkDeviceFamily(device.serialNumber);
+        const fwInfo = FirmwareRegistry.getJlinkConnectivityFirmware(family);
+        return {
+            sdBleApiVersion: fwInfo.sdBleApiVersion,
+            baudRate: fwInfo.baudRate,
+        };
+    } else if (device.traits.includes('nordicUsb')) {
+        const fwInfo = FirmwareRegistry.getNordicUsbConnectivityFirmware();
+        return {
+            sdBleApiVersion: fwInfo.sdBleApiVersion,
+            baudRate: fwInfo.baudRate,
+        };
+    }
+    throw new Error(`Unsupported device with serial number '${device.serialNumber}' ` +
+        `and traits ${JSON.stringify(device.traits)}`);
+}
 
 export default {
     decorateNavMenu: NavMenu => (
@@ -86,66 +123,43 @@ export default {
             </SidePanel>
         )
     ),
-    decorateFirmwareDialog: FirmwareDialog => (
-        props => (
-            <FirmwareDialog
-                {...props}
-                text={props.isVisible ?
-                    `Would you like to program the development kit on ${props.port.comName} ` +
-                    `(${props.port.serialNumber}) with the latest connectivity firmware?` : ''}
-            />
-        )
-    ),
-    mapFirmwareDialogDispatch: (dispatch, props) => ({
-        ...props,
-        onCancel: port => {
-            dispatch({ type: 'FIRMWARE_DIALOG_HIDE' });
-            getFirmwareInfo(port.serialNumber)
-                .then(versionInfo => dispatch(AdapterActions.openAdapter(port, versionInfo)))
-                .catch(error => logger.error(error.message));
-        },
-    }),
     mapSidePanelDispatch: (dispatch, props) => ({
         ...props,
         ...bindActionCreators(DiscoveryActions, dispatch),
         ...bindActionCreators(AdapterActions, dispatch),
-    }),
-    mapSerialPortSelectorState: (state, props) => ({
-        portIndicatorStatus: (state.app.adapter.selectedAdapterIndex !== null) ? 'on' : 'off',
-        ...props,
     }),
     reduceApp: reducers,
     middleware: store => next => action => {
         if (!action) {
             return;
         }
-        if (action.type === 'SERIAL_PORT_SELECTED') {
-            const { port } = action;
-            store.dispatch(AdapterActions.selectedSerialPort(port));
+        if (action.type === 'DEVICE_SETUP_COMPLETE') {
+            const { device } = action;
+            try {
+                const { baudRate, sdBleApiVersion } = getFirmwareInfo(device);
+                store.dispatch(AdapterActions.openAdapter(device.serialport.comName, baudRate,
+                    sdBleApiVersion));
+            } catch (error) {
+                logger.error(`Unable to open device: ${error.message}`);
+            }
         }
-        if (action.type === 'SERIAL_PORT_DESELECTED') {
+        if (action.type === 'DEVICE_DESELECTED') {
             store.dispatch(AdapterActions.closeAdapter());
-        }
-        if (action.type === 'FIRMWARE_DIALOG_UPDATE_REQUESTED') {
-            const { port } = action;
-            programConnectivityFirmware(port.serialNumber)
-                .then(versionInfo => {
-                    store.dispatch(AdapterActions.openAdapter(port, versionInfo));
-                    store.dispatch({ type: 'FIRMWARE_DIALOG_HIDE' });
-                })
-                .catch(error => {
-                    store.dispatch({ type: 'FIRMWARE_DIALOG_HIDE' });
-                    store.dispatch({ type: 'SERIAL_PORT_DESELECTED' });
-                    logger.error(error.message);
-                });
         }
         next(action);
     },
     onInit: () => {
         __webpack_public_path__ = path.join(getAppDir(), 'dist/'); // eslint-disable-line
     },
-    onReady: dispatch => {
+    onReady: () => {
         confirmUserUUIDsExist(getUserDataDir());
-        dispatch(AdapterActions.findAdapters());
+    },
+    config: {
+        selectorTraits: {
+            jlink: true,
+            nordicUsb: true,
+            serialport: true,
+        },
+        deviceSetup: FirmwareRegistry.getDeviceSetup(),
     },
 };

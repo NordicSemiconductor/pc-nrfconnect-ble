@@ -164,7 +164,6 @@ class DeviceDetailsContainer extends React.PureComponent {
             security,
             openCustomUuidFile,
             showDfuDialog,
-            deviceInfo,
         } = this.props;
 
         const elemWidth = 250;
@@ -196,7 +195,6 @@ class DeviceDetailsContainer extends React.PureComponent {
                 onDeleteBondInfo={deleteBondInfo}
                 security={security}
                 onOpenCustomUuidFile={openCustomUuidFile}
-                deviceInfo={deviceInfo}
             />,
         );
 
@@ -246,7 +244,7 @@ function mapStateToProps(state) {
         adapter,
     } = state.app;
 
-    const selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapterIndex]);
+    const selectedAdapter = adapter.selectedAdapter;
 
     if (!selectedAdapter) {
         return {};
@@ -260,7 +258,6 @@ function mapStateToProps(state) {
         deviceDetails: selectedAdapter.deviceDetails,
         autoConnUpdate: adapter.autoConnUpdate,
         security: selectedAdapter.security,
-        deviceInfo: adapter.deviceInfo,
     };
 }
 
@@ -287,7 +284,6 @@ DeviceDetailsContainer.propTypes = {
     adapterState: PropTypes.object,
     selectedComponent: PropTypes.string,
     deviceDetails: PropTypes.object,
-    deviceInfo: PropTypes.object,
     connectedDevices: PropTypes.object,
     // deviceServers: PropTypes.object,
     readCharacteristic: PropTypes.func.isRequired,
@@ -320,5 +316,4 @@ DeviceDetailsContainer.defaultProps = {
     connectedDevices: null,
     security: null,
     autoConnUpdate: false,
-    deviceInfo: null,
 };
