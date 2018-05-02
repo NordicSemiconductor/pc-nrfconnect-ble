@@ -46,6 +46,7 @@ import AdvertisingSetup from '../containers/AdvertisingSetup';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 
 import withHotkey from '../utils/withHotkey';
+import Spinner from './Spinner';
 
 class CentralDevice extends React.PureComponent {
     constructor(props) {
@@ -256,7 +257,11 @@ class CentralDevice extends React.PureComponent {
                     </div>
                     <div>
                         <div className="role-flag pull-right">Adapter</div>
-                        <strong className="selectable">{name}</strong>
+                        {
+                            name ?
+                                <strong className="selectable">{name}</strong> :
+                                <Spinner visible />
+                        }
                     </div>
                     <div className="address-text selectable">{address}</div>
                     <div className={`icon-wifi ${iconOpacity}`} aria-hidden="true" title={advIconTitle} style={progressStyle} />
