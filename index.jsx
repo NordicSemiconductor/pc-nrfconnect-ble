@@ -122,7 +122,8 @@ export default {
             }
         }
         if (action.type === 'DEVICE_DESELECTED') {
-            store.dispatch(AdapterActions.closeAdapter());
+            store.dispatch(AdapterActions.closeAdapter())
+                .then(() => logger.info('Device closed.'));
         }
         next(action);
     },
