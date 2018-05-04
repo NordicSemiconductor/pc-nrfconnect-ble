@@ -51,43 +51,6 @@ import './resources/css/styles.less';
 
 /* eslint react/prop-types: 0 */
 
-// TODO: Get family from nrf-device-setup.
-function getJlinkDeviceFamily(serialNumber) {
-    const jlinkSnrRegex = /^.*68([0-3]{1})[0-9]{6}$/;
-    if (jlinkSnrRegex.test(serialNumber)) {
-        const developmentKit = parseInt(jlinkSnrRegex.exec(serialNumber)[1], 10);
-        switch (developmentKit) {
-            case 0:
-            case 1:
-                return 'nrf51';
-            case 2:
-            case 3:
-                return 'nrf52';
-            default:
-        }
-    }
-    throw new Error(`Unsupported J-Link device: ${serialNumber}`);
-}
-
-function getFirmwareInfo(device) {
-    if (device.traits.includes('jlink')) {
-        const family = getJlinkDeviceFamily(device.serialNumber);
-        const fwInfo = FirmwareRegistry.getJlinkConnectivityFirmware(family);
-        return {
-            sdBleApiVersion: fwInfo.sdBleApiVersion,
-            baudRate: fwInfo.baudRate,
-        };
-    } else if (device.traits.includes('nordicUsb')) {
-        const fwInfo = FirmwareRegistry.getNordicUsbConnectivityFirmware();
-        return {
-            sdBleApiVersion: fwInfo.sdBleApiVersion,
-            baudRate: fwInfo.baudRate,
-        };
-    }
-    throw new Error(`Unsupported device with serial number '${device.serialNumber}' ` +
-        `and traits ${JSON.stringify(device.traits)}`);
-}
-
 export default {
     decorateNavMenu: NavMenu => (
         props => (
@@ -133,18 +96,34 @@ export default {
         if (!action) {
             return;
         }
-        if (action.type === 'DEVICE_SETUP_COMPLETE') {
+        if (action.type === 'DEVICE_SELECTED') {
             const { device } = action;
-            try {
-                const { baudRate, sdBleApiVersion } = getFirmwareInfo(device);
-                store.dispatch(AdapterActions.openAdapter(device.serialport.comName, baudRate,
-                    sdBleApiVersion));
-            } catch (error) {
-                logger.error(`Unable to open device: ${error.message}`);
+            logger.info('Validating connectivity firmware for device with serial number ' +
+                `${device.serialNumber}...`);
+        }
+        if (action.type === 'DEVICE_SETUP_COMPLETE') {
+            logger.info('Connectivity firmware is valid.');
+            const { device } = action;
+
+            if (device.serialport) {
+                const serialNumber = device.serialNumber;
+                const comName = device.serialport.comName;
+
+                if (device.traits.includes('jlink')) {
+                    store.dispatch(AdapterActions.openJlinkAdapter(comName, serialNumber));
+                } else if (device.traits.includes('nordicUsb')) {
+                    store.dispatch(AdapterActions.openNordicUsbAdapter(comName));
+                } else {
+                    logger.error(`Unsupported device with serial number '${device.serialNumber}' ` +
+                        `and traits ${JSON.stringify(device.traits)}`);
+                }
+            } else {
+                logger.error('Device has no serial port. Cannot open device.');
             }
         }
         if (action.type === 'DEVICE_DESELECTED') {
-            store.dispatch(AdapterActions.closeAdapter());
+            store.dispatch(AdapterActions.closeAdapter())
+                .then(() => logger.info('Device closed.'));
         }
         next(action);
     },
