@@ -129,7 +129,7 @@ function mapStateToProps(state) {
         adapter,
     } = state.app;
 
-    const selectedAdapter = adapter.getIn(['adapters', adapter.selectedAdapterIndex]);
+    const selectedAdapter = adapter.selectedAdapter;
 
     if (!selectedAdapter) {
         return {};

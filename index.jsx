@@ -37,8 +37,8 @@
 import path from 'path';
 import React from 'react';
 import { bindActionCreators } from 'redux';
-import { getAppDir, getUserDataDir, logger } from 'nrfconnect/core';
-import { getFirmwareInfo, programConnectivityFirmware } from './lib/api/nrfjprog';
+import { FirmwareRegistry } from 'pc-ble-driver-js';
+import { logger, getAppDir, getUserDataDir } from 'nrfconnect/core';
 import reducers from './lib/reducers';
 import * as DiscoveryActions from './lib/actions/discoveryActions';
 import * as AdapterActions from './lib/actions/adapterActions';
@@ -86,66 +86,59 @@ export default {
             </SidePanel>
         )
     ),
-    decorateFirmwareDialog: FirmwareDialog => (
-        props => (
-            <FirmwareDialog
-                {...props}
-                text={props.isVisible ?
-                    `Would you like to program the development kit on ${props.port.comName} ` +
-                    `(${props.port.serialNumber}) with the latest connectivity firmware?` : ''}
-            />
-        )
-    ),
-    mapFirmwareDialogDispatch: (dispatch, props) => ({
-        ...props,
-        onCancel: port => {
-            dispatch({ type: 'FIRMWARE_DIALOG_HIDE' });
-            getFirmwareInfo(port.serialNumber)
-                .then(versionInfo => dispatch(AdapterActions.openAdapter(port, versionInfo)))
-                .catch(error => logger.error(error.message));
-        },
-    }),
     mapSidePanelDispatch: (dispatch, props) => ({
         ...props,
         ...bindActionCreators(DiscoveryActions, dispatch),
         ...bindActionCreators(AdapterActions, dispatch),
-    }),
-    mapSerialPortSelectorState: (state, props) => ({
-        portIndicatorStatus: (state.app.adapter.selectedAdapterIndex !== null) ? 'on' : 'off',
-        ...props,
     }),
     reduceApp: reducers,
     middleware: store => next => action => {
         if (!action) {
             return;
         }
-        if (action.type === 'SERIAL_PORT_SELECTED') {
-            const { port } = action;
-            store.dispatch(AdapterActions.selectedSerialPort(port));
+        if (action.type === 'DEVICE_SELECTED') {
+            const { device } = action;
+            logger.info('Validating connectivity firmware for device with serial number ' +
+                `${device.serialNumber}...`);
         }
-        if (action.type === 'SERIAL_PORT_DESELECTED') {
-            store.dispatch(AdapterActions.closeAdapter());
+        if (action.type === 'DEVICE_SETUP_COMPLETE') {
+            logger.info('Connectivity firmware is valid.');
+            const { device } = action;
+
+            if (device.serialport) {
+                const serialNumber = device.serialNumber;
+                const comName = device.serialport.comName;
+
+                if (device.traits.includes('jlink')) {
+                    store.dispatch(AdapterActions.openJlinkAdapter(comName, serialNumber));
+                } else if (device.traits.includes('nordicUsb')) {
+                    store.dispatch(AdapterActions.openNordicUsbAdapter(comName));
+                } else {
+                    logger.error(`Unsupported device with serial number '${device.serialNumber}' ` +
+                        `and traits ${JSON.stringify(device.traits)}`);
+                }
+            } else {
+                logger.error('Device has no serial port. Cannot open device.');
+            }
         }
-        if (action.type === 'FIRMWARE_DIALOG_UPDATE_REQUESTED') {
-            const { port } = action;
-            programConnectivityFirmware(port.serialNumber)
-                .then(versionInfo => {
-                    store.dispatch(AdapterActions.openAdapter(port, versionInfo));
-                    store.dispatch({ type: 'FIRMWARE_DIALOG_HIDE' });
-                })
-                .catch(error => {
-                    store.dispatch({ type: 'FIRMWARE_DIALOG_HIDE' });
-                    store.dispatch({ type: 'SERIAL_PORT_DESELECTED' });
-                    logger.error(error.message);
-                });
+        if (action.type === 'DEVICE_DESELECTED') {
+            store.dispatch(AdapterActions.closeAdapter())
+                .then(() => logger.info('Device closed.'));
         }
         next(action);
     },
     onInit: () => {
         __webpack_public_path__ = path.join(getAppDir(), 'dist/'); // eslint-disable-line
     },
-    onReady: dispatch => {
+    onReady: () => {
         confirmUserUUIDsExist(getUserDataDir());
-        dispatch(AdapterActions.findAdapters());
+    },
+    config: {
+        selectorTraits: {
+            jlink: true,
+            nordicUsb: true,
+            serialport: true,
+        },
+        deviceSetup: FirmwareRegistry.getDeviceSetup(),
     },
 };
