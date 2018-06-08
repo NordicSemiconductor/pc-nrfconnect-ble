@@ -1,6 +1,6 @@
 {
   "name": "pc-nrfconnect-ble",
-  "version": "2.2.0-alpha.1",
+  "version": "2.2.0-alpha.2",
   "description": "A natural first choice for Bluetooth Low Energy development",
   "displayName": "Bluetooth Low Energy",
   "repository": {
