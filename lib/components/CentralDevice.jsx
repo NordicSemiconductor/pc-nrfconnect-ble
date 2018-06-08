@@ -118,7 +118,9 @@ class CentralDevice extends React.PureComponent {
             bindHotkey,
         } = this.props;
 
-        bindHotkey('alt+a', onToggleAdvertising);
+        if (onToggleAdvertising) {
+            bindHotkey('alt+a', onToggleAdvertising);
+        }
 
         const style = {
             position: 'relative',
@@ -138,16 +140,13 @@ class CentralDevice extends React.PureComponent {
         const dropDownMenuItems = (() => {
             const items = [];
 
-            if (onToggleAdvertising !== undefined) {
+            if (onToggleAdvertising) {
                 items.push(<MenuItem key="advHeader" header>Advertising</MenuItem>);
-                if (advertising !== undefined) {
-                    items.push(
-                        <MenuItem key="setup" eventKey="AdvertisingSetup">
-                            Advertising setup...
-                        </MenuItem>,
-                    );
-                }
-
+                items.push(
+                    <MenuItem key="setup" eventKey="AdvertisingSetup">
+                        Advertising setup...
+                    </MenuItem>,
+                );
                 items.push(
                     <MenuItem key="advertising" eventKey="ToggleAdvertising">
                         {advMenuText} <span className="subtler-text">(Alt+A)</span>
@@ -155,15 +154,15 @@ class CentralDevice extends React.PureComponent {
                 );
             }
 
-            if (onLoadSetup !== undefined) {
+            if (onLoadSetup) {
                 items.push(<MenuItem key="load" eventKey="LoadSetup">Load setup...</MenuItem>);
             }
 
-            if (onSaveSetup !== undefined) {
+            if (onSaveSetup) {
                 items.push(<MenuItem key="save" eventKey="SaveSetup">Save setup...</MenuItem>);
             }
 
-            if (onToggleAutoConnUpdate !== undefined) {
+            if (onToggleAutoConnUpdate) {
                 items.push(<MenuItem key="dividerConnUpdate" divider />);
                 items.push(<MenuItem key="connUpdateHeader" header>Connection update</MenuItem>);
                 items.push(
@@ -177,8 +176,8 @@ class CentralDevice extends React.PureComponent {
                 );
             }
 
-            if (onToggleAutoAcceptPairing !== undefined &&
-                onShowSecurityParamsDialog !== undefined) {
+            if (onToggleAutoAcceptPairing &&
+                onShowSecurityParamsDialog) {
                 items.push(<MenuItem key="dividerSecurity" divider />);
                 items.push(<MenuItem key="securityHeader" header>Security</MenuItem>);
                 items.push(
@@ -210,7 +209,7 @@ class CentralDevice extends React.PureComponent {
                 );
             }
 
-            if (onOpenCustomUuidFile !== undefined) {
+            if (onOpenCustomUuidFile) {
                 items.push(<MenuItem key="dividerOpenUuidFile" divider />);
                 items.push(
                     <MenuItem key="headerOpenUuidFile" header>Custom UUID definitions</MenuItem>,
