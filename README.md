@@ -13,7 +13,7 @@ The app supports the following devices:
 * PCA10031 nRF51 Dongle
 * PCA10040 nRF52 Development Kit
 * PCA10056 nRF52 Development Kit
-* PCA10059 nRF52 Dongle
+* PCA10059
 
 # Installation
 
