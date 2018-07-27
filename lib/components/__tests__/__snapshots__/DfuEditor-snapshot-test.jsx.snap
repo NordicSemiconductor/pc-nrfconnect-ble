@@ -26,7 +26,6 @@ exports[`DfuEditor should render stopping 1`] = `
           placeholder=""
           readOnly={true}
           title={null}
-          type={undefined}
           value="/path/to/file"
         />
         <span
@@ -48,7 +47,6 @@ exports[`DfuEditor should render stopping 1`] = `
     >
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}
       >
         Package info
       </label>
@@ -57,9 +55,9 @@ exports[`DfuEditor should render stopping 1`] = `
       >
         <pre>
           application:
-            bin_file: dfu.bin
-            dat_file: dfu.dat
-          
+  bin_file: dfu.bin
+  dat_file: dfu.dat
+
         </pre>
       </span>
     </div>
@@ -68,7 +66,6 @@ exports[`DfuEditor should render stopping 1`] = `
     >
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}
       >
         Progress
       </label>
@@ -148,7 +145,6 @@ exports[`DfuEditor should render with default props 1`] = `
           placeholder=""
           readOnly={true}
           title={null}
-          type={undefined}
           value="null"
         />
         <span
@@ -219,7 +215,6 @@ exports[`DfuEditor should render with dfu completed 1`] = `
           placeholder=""
           readOnly={true}
           title={null}
-          type={undefined}
           value="/path/to/file"
         />
         <span
@@ -241,7 +236,6 @@ exports[`DfuEditor should render with dfu completed 1`] = `
     >
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}
       >
         Package info
       </label>
@@ -250,9 +244,9 @@ exports[`DfuEditor should render with dfu completed 1`] = `
       >
         <pre>
           application:
-            bin_file: dfu.bin
-            dat_file: dfu.dat
-          
+  bin_file: dfu.bin
+  dat_file: dfu.dat
+
         </pre>
       </span>
     </div>
@@ -261,7 +255,6 @@ exports[`DfuEditor should render with dfu completed 1`] = `
     >
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}
       >
         Progress
       </label>
@@ -345,7 +338,6 @@ exports[`DfuEditor should render with file path 1`] = `
           placeholder=""
           readOnly={true}
           title={null}
-          type={undefined}
           value="/path/to/file"
         />
         <span
@@ -412,7 +404,6 @@ exports[`DfuEditor should render with file path and package info 1`] = `
           placeholder=""
           readOnly={true}
           title={null}
-          type={undefined}
           value="/path/to/file"
         />
         <span
@@ -434,7 +425,6 @@ exports[`DfuEditor should render with file path and package info 1`] = `
     >
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}
       >
         Package info
       </label>
@@ -443,9 +433,9 @@ exports[`DfuEditor should render with file path and package info 1`] = `
       >
         <pre>
           application:
-            bin_file: dfu.bin
-            dat_file: dfu.dat
-          
+  bin_file: dfu.bin
+  dat_file: dfu.dat
+
         </pre>
       </span>
     </div>
@@ -499,7 +489,6 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
           placeholder=""
           readOnly={true}
           title={null}
-          type={undefined}
           value="/path/to/file"
         />
         <span
@@ -521,7 +510,6 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
     >
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}
       >
         Package info
       </label>
@@ -530,9 +518,9 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
       >
         <pre>
           application:
-            bin_file: dfu.bin
-            dat_file: dfu.dat
-          
+  bin_file: dfu.bin
+  dat_file: dfu.dat
+
         </pre>
       </span>
     </div>
@@ -541,7 +529,6 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
     >
       <label
         className="col-md-3 text-right control-label"
-        htmlFor={undefined}
       >
         Progress
       </label>
