@@ -66,7 +66,6 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
             <li
               className=""
               role="presentation"
-              style={undefined}
             >
               <a
                 href="#"
@@ -82,7 +81,6 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
             <li
               className=""
               role="presentation"
-              style={undefined}
             >
               <a
                 href="#"
@@ -98,7 +96,6 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
             <li
               className=""
               role="presentation"
-              style={undefined}
             >
               <a
                 href="#"
@@ -187,7 +184,6 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
             <li
               className=""
               role="presentation"
-              style={undefined}
             >
               <a
                 href="#"
@@ -203,7 +199,6 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
             <li
               className=""
               role="presentation"
-              style={undefined}
             >
               <a
                 href="#"
@@ -219,7 +214,6 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
             <li
               className=""
               role="presentation"
-              style={undefined}
             >
               <a
                 href="#"
