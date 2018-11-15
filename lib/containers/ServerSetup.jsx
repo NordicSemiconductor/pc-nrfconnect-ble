@@ -49,6 +49,7 @@ import electron from 'electron';
 
 import * as ServerSetupActions from '../actions/serverSetupActions';
 import * as AdapterActions from '../actions/adapterActions';
+import * as AdvertisingActions from '../actions/advertisingActions';
 import * as ErrorActions from '../actions/errorDialogActions';
 
 import AddNewItem from '../components/AddNewItem';
@@ -256,6 +257,7 @@ class ServerSetup extends React.PureComponent {
             selectedAdapter,
             serverSetup,
             // selectComponent,
+            toggleAdvertising,
             setAttributeExpanded,
             addNewService,
             addNewCharacteristic,
@@ -375,6 +377,7 @@ class ServerSetup extends React.PureComponent {
                 address={selectedAdapter.state.address}
                 onSaveSetup={this.openSaveDialog}
                 onLoadSetup={this.openLoadDialog}
+                onToggleAdvertising={toggleAdvertising}
             />
         );
 
@@ -470,6 +473,7 @@ function mapDispatchToProps(dispatch) {
         {},
         bindActionCreators(ServerSetupActions, dispatch),
         bindActionCreators(AdapterActions, dispatch),
+        bindActionCreators(AdvertisingActions, dispatch),
         bindActionCreators(ErrorActions, dispatch),
     );
 
@@ -505,6 +509,7 @@ ServerSetup.propTypes = {
     showClearDialog: PropTypes.func.isRequired,
     hideClearDialog: PropTypes.func.isRequired,
     showErrorDialog: PropTypes.func.isRequired,
+    toggleAdvertising: PropTypes.func,
     style: PropTypes.object.isRequired,
     bindHotkey: PropTypes.func.isRequired,
 };
@@ -512,4 +517,5 @@ ServerSetup.propTypes = {
 ServerSetup.defaultProps = {
     selectedAdapter: null,
     serverSetup: null,
+    toggleAdvertising: null,
 };

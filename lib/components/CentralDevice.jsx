@@ -118,6 +118,7 @@ class CentralDevice extends React.PureComponent {
             bindHotkey,
         } = this.props;
 
+        console.log(onToggleAdvertising);
         if (onToggleAdvertising) {
             bindHotkey('alt+a', onToggleAdvertising);
         }
