@@ -141,15 +141,13 @@ class CentralDevice extends React.PureComponent {
         const dropDownMenuItems = (() => {
             const items = [];
 
-            if (onToggleAdvertising) {
-                if (isDeviceDetails) {
-                    items.push(<MenuItem key="advHeader" header>Advertising</MenuItem>);
-                    items.push(
-                        <MenuItem key="setup" eventKey="AdvertisingSetup">
-                            Advertising setup...
-                        </MenuItem>,
-                    );
-                }
+            if (onToggleAdvertising && isDeviceDetails) {
+                items.push(<MenuItem key="advHeader" header>Advertising</MenuItem>);
+                items.push(
+                    <MenuItem key="setup" eventKey="AdvertisingSetup">
+                        Advertising setup...
+                    </MenuItem>,
+                );
                 items.push(
                     <MenuItem key="advertising" eventKey="ToggleAdvertising">
                         {advMenuText} <span className="subtler-text">(Alt+A)</span>
