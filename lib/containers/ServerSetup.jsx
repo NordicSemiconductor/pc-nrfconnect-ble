@@ -377,6 +377,7 @@ class ServerSetup extends React.PureComponent {
                 address={selectedAdapter.state.address}
                 onSaveSetup={this.openSaveDialog}
                 onLoadSetup={this.openLoadDialog}
+                advertising={selectedAdapter.state.advertising}
                 onToggleAdvertising={toggleAdvertising}
             />
         );

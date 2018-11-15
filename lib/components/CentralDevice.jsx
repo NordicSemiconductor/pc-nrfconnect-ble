@@ -115,10 +115,10 @@ class CentralDevice extends React.PureComponent {
             onShowSecurityParamsDialog,
             onOpenCustomUuidFile,
             security,
+            isDeviceDetails,
             bindHotkey,
         } = this.props;
 
-        console.log(onToggleAdvertising);
         if (onToggleAdvertising) {
             bindHotkey('alt+a', onToggleAdvertising);
         }
@@ -142,12 +142,14 @@ class CentralDevice extends React.PureComponent {
             const items = [];
 
             if (onToggleAdvertising) {
-                items.push(<MenuItem key="advHeader" header>Advertising</MenuItem>);
-                items.push(
-                    <MenuItem key="setup" eventKey="AdvertisingSetup">
-                        Advertising setup...
-                    </MenuItem>,
-                );
+                if (isDeviceDetails) {
+                    items.push(<MenuItem key="advHeader" header>Advertising</MenuItem>);
+                    items.push(
+                        <MenuItem key="setup" eventKey="AdvertisingSetup">
+                            Advertising setup...
+                        </MenuItem>,
+                    );
+                }
                 items.push(
                     <MenuItem key="advertising" eventKey="ToggleAdvertising">
                         {advMenuText} <span className="subtler-text">(Alt+A)</span>
@@ -289,6 +291,7 @@ CentralDevice.propTypes = {
     onToggleAutoAcceptPairing: PropTypes.func,
     onDeleteBondInfo: PropTypes.func,
     onOpenCustomUuidFile: PropTypes.func,
+    isDeviceDetails: PropTypes.bool,
     bindHotkey: PropTypes.func.isRequired,
 };
 
@@ -307,6 +310,7 @@ CentralDevice.defaultProps = {
     onToggleAutoAcceptPairing: null,
     onDeleteBondInfo: null,
     onOpenCustomUuidFile: null,
+    isDeviceDetails: false,
 };
 
 export default withHotkey(CentralDevice);

@@ -190,6 +190,7 @@ class DeviceDetailsView extends React.PureComponent {
                     onSetSecurityParams={onSetSecurityParams}
                     onOpenCustomUuidFile={onOpenCustomUuidFile}
                     security={security}
+                    isDeviceDetails
                 />
             );
 
