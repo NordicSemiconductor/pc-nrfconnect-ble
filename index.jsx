@@ -103,23 +103,7 @@ export default {
         }
         if (action.type === 'DEVICE_SETUP_COMPLETE') {
             logger.info('Connectivity firmware is valid.');
-            const { device } = action;
-
-            if (device.serialport) {
-                const serialNumber = device.serialNumber;
-                const comName = device.serialport.comName;
-
-                if (device.traits.includes('jlink')) {
-                    store.dispatch(AdapterActions.openJlinkAdapter(comName, serialNumber));
-                } else if (device.traits.includes('nordicUsb')) {
-                    store.dispatch(AdapterActions.openNordicUsbAdapter(comName));
-                } else {
-                    logger.error(`Unsupported device with serial number '${device.serialNumber}' ` +
-                        `and traits ${JSON.stringify(device.traits)}`);
-                }
-            } else {
-                logger.error('Device has no serial port. Cannot open device.');
-            }
+            store.dispatch(AdapterActions.initAdapter(action.device));
         }
         if (action.type === 'DEVICE_DESELECTED') {
             store.dispatch(AdapterActions.closeAdapter())
