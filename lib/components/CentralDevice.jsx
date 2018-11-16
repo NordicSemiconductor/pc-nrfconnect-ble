@@ -115,6 +115,7 @@ class CentralDevice extends React.PureComponent {
             onShowSecurityParamsDialog,
             onOpenCustomUuidFile,
             security,
+            isDeviceDetails,
             bindHotkey,
         } = this.props;
 
@@ -140,7 +141,7 @@ class CentralDevice extends React.PureComponent {
         const dropDownMenuItems = (() => {
             const items = [];
 
-            if (onToggleAdvertising) {
+            if (onToggleAdvertising && isDeviceDetails) {
                 items.push(<MenuItem key="advHeader" header>Advertising</MenuItem>);
                 items.push(
                     <MenuItem key="setup" eventKey="AdvertisingSetup">
@@ -288,6 +289,7 @@ CentralDevice.propTypes = {
     onToggleAutoAcceptPairing: PropTypes.func,
     onDeleteBondInfo: PropTypes.func,
     onOpenCustomUuidFile: PropTypes.func,
+    isDeviceDetails: PropTypes.bool,
     bindHotkey: PropTypes.func.isRequired,
 };
 
@@ -306,6 +308,7 @@ CentralDevice.defaultProps = {
     onToggleAutoAcceptPairing: null,
     onDeleteBondInfo: null,
     onOpenCustomUuidFile: null,
+    isDeviceDetails: false,
 };
 
 export default withHotkey(CentralDevice);
