@@ -143,7 +143,6 @@ class DeviceDetailsContainer extends React.PureComponent {
             adapterState,
             selectedComponent,
             connectedDevices,
-            updateTimes,
             deviceDetails,
             selectComponent,
             setAttributeExpanded,
@@ -208,7 +207,7 @@ class DeviceDetailsContainer extends React.PureComponent {
                     device={device}
                     selected={selectedComponent}
                     deviceDetails={deviceDetails}
-                    updateTimes={updateTimes}
+                    connectedDevicesNumber={connectedDevices.size}
                     onShowDfuDialog={showDfuDialog}
                     onSelectComponent={selectComponent}
                     onSetAttributeExpanded={setAttributeExpanded}
@@ -260,7 +259,6 @@ function mapStateToProps(state) {
         deviceDetails: selectedAdapter.deviceDetails,
         autoConnUpdate: adapter.autoConnUpdate,
         security: selectedAdapter.security,
-        updateTimes: selectedAdapter.connectedDevicesUpdates || 0,
     };
 }
 
@@ -288,7 +286,6 @@ DeviceDetailsContainer.propTypes = {
     selectedComponent: PropTypes.string,
     deviceDetails: PropTypes.object,
     connectedDevices: PropTypes.object,
-    updateTimes: PropTypes.number,
     // deviceServers: PropTypes.object,
     readCharacteristic: PropTypes.func.isRequired,
     writeCharacteristic: PropTypes.func.isRequired,
@@ -318,7 +315,6 @@ DeviceDetailsContainer.defaultProps = {
     selectedComponent: null,
     deviceDetails: null,
     connectedDevices: null,
-    updateTimes: 0,
     security: null,
     autoConnUpdate: false,
 };

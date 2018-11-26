@@ -184,13 +184,13 @@ class Connector extends React.PureComponent {
             sourceId,
             targetId,
             layout,
-            updateTimes,
+            connectedDevicesNumber,
         } = this.props;
         this.setState({
             sourceId,
             targetId,
             layout,
-            updateTimes,
+            connectedDevicesNumber,
         });
     }
 
@@ -255,7 +255,7 @@ Connector.propTypes = {
     sourceId: PropTypes.string.isRequired,
     targetId: PropTypes.string.isRequired,
     layout: PropTypes.string.isRequired,
-    updateTimes: PropTypes.number.isRequired,
+    connectedDevicesNumber: PropTypes.number.isRequired,
 };
 
 export default Connector;

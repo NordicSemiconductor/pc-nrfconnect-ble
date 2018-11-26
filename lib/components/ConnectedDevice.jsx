@@ -123,7 +123,7 @@ class ConnectedDevice extends React.PureComponent {
             id,
             sourceId,
             layout,
-            updateTimes,
+            connectedDevicesNumber,
             isDfuSupported,
         } = this.props;
 
@@ -194,7 +194,7 @@ class ConnectedDevice extends React.PureComponent {
                     targetId={id}
                     device={device}
                     layout={layout}
-                    updateTimes={updateTimes}
+                    connectedDevicesNumber={connectedDevicesNumber}
                 />
             </div>
         );
@@ -215,7 +215,7 @@ ConnectedDevice.propTypes = {
     device: PropTypes.object.isRequired,
     sourceId: PropTypes.string.isRequired,
     layout: PropTypes.string.isRequired,
-    updateTimes: PropTypes.number.isRequired,
+    connectedDevicesNumber: PropTypes.number.isRequired,
     isDfuSupported: PropTypes.bool.isRequired,
     onClickDfu: PropTypes.func.isRequired,
     onDisconnect: PropTypes.func.isRequired,
