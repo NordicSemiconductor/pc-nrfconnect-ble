@@ -167,25 +167,19 @@ function generateLines(lineCoordinates) {
 }
 
 class Connector extends React.PureComponent {
+
     componentWillMount() {
-        const {
-            sourceId,
-            targetId,
-            layout,
-            updateTimes,
-        } = this.props;
-        this.setState({
-            sourceId,
-            targetId,
-            layout,
-            updateTimes,
-        });
+        this.onUpdate();
     }
 
     componentDidUpdate() {
         // To be able to draw the line between two component they have be in the browser DOM
         // At first render they are not rendered, therefore we have to do an additional rendering
         // after the componenets are in the brower DOM.
+        this.onUpdate();
+    }
+
+    onUpdate() {
         const {
             sourceId,
             targetId,

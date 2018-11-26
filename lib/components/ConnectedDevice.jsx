@@ -189,7 +189,13 @@ class ConnectedDevice extends React.PureComponent {
                     </div>
                     <div className="address-text selectable">{device.address}</div>
                 </div>
-                <Connector sourceId={sourceId} targetId={id} device={device} layout={layout} updateTimes={updateTimes} />
+                <Connector
+                    sourceId={sourceId}
+                    targetId={id}
+                    device={device}
+                    layout={layout}
+                    updateTimes={updateTimes}
+                />
             </div>
         );
 
