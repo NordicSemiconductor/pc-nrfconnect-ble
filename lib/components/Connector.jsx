@@ -167,11 +167,15 @@ function generateLines(lineCoordinates) {
 }
 
 class Connector extends React.PureComponent {
-    componentDidMount() {
+    componentDidUpdate() {
         // To be able to draw the line between two component they have be in the browser DOM
         // At first render they are not rendered, therefore we have to do an additional rendering
         // after the componenets are in the brower DOM.
-        this.forceUpdate();
+        if (!this.isUpdated) {
+            this.forceUpdate();
+            this.isUpdated = true;
+            console.log('force update');
+        }
     }
 
     getConnectionOverlay(lineCoordinates) {
@@ -208,8 +212,9 @@ class Connector extends React.PureComponent {
             sourceId,
             targetId,
             layout,
+            updateTimes,
         } = this.props;
-
+        this.isUpdated = false;
         const sourceElement = document.getElementById(sourceId);
         const targetElement = document.getElementById(targetId);
 
@@ -222,6 +227,8 @@ class Connector extends React.PureComponent {
 
         const layoutInfo = layoutStrategies(layout)(sourceRect, targetRect, 3);
         const connectorBox = layoutInfo.boundingBox;
+        console.log(updateTimes);
+        console.log(layoutInfo.lineCoordinates);
         const lines = generateLines(layoutInfo.lineCoordinates);
         const connectionInfoOverlay = this.getConnectionOverlay(layoutInfo.lineCoordinates);
 
@@ -241,6 +248,7 @@ Connector.propTypes = {
     sourceId: PropTypes.string.isRequired,
     targetId: PropTypes.string.isRequired,
     layout: PropTypes.string.isRequired,
+    updateTimes: PropTypes.number.isRequired,
 };
 
 export default Connector;
