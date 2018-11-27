@@ -139,6 +139,7 @@ class DeviceDetailsView extends React.PureComponent {
             adapter,
             device,
             selected, // instanceId for the selected component
+            connectedDevicesNumber,
             onSelectComponent,
         } = this.props;
 
@@ -227,6 +228,7 @@ class DeviceDetailsView extends React.PureComponent {
                 device={device}
                 selected={selected}
                 layout="vertical"
+                connectedDevicesNumber={connectedDevicesNumber}
                 isDfuSupported={isDfuSupported}
                 onClickDfu={this.onShowDfuDialog}
                 onSelectComponent={onSelectComponent}
@@ -254,6 +256,7 @@ DeviceDetailsView.propTypes = {
     onSetAttributeExpanded: PropTypes.func.isRequired,
     onUpdateDeviceConnectionParams: PropTypes.func,
     deviceDetails: PropTypes.object,
+    connectedDevicesNumber: PropTypes.number,
     adapter: PropTypes.object,
     onReadCharacteristic: PropTypes.func.isRequired,
     onWriteCharacteristic: PropTypes.func.isRequired,
@@ -279,6 +282,7 @@ DeviceDetailsView.defaultProps = {
     selected: null,
     onUpdateDeviceConnectionParams: null,
     deviceDetails: null,
+    connectedDevicesNumber: 0,
     adapter: null,
     onDisconnectFromDevice: null,
     onPairWithDevice: null,

@@ -207,6 +207,7 @@ class DeviceDetailsContainer extends React.PureComponent {
                     device={device}
                     selected={selectedComponent}
                     deviceDetails={deviceDetails}
+                    connectedDevicesNumber={connectedDevices.size}
                     onShowDfuDialog={showDfuDialog}
                     onSelectComponent={selectComponent}
                     onSetAttributeExpanded={setAttributeExpanded}

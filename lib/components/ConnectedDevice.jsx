@@ -123,6 +123,7 @@ class ConnectedDevice extends React.PureComponent {
             id,
             sourceId,
             layout,
+            connectedDevicesNumber,
             isDfuSupported,
         } = this.props;
 
@@ -188,7 +189,13 @@ class ConnectedDevice extends React.PureComponent {
                     </div>
                     <div className="address-text selectable">{device.address}</div>
                 </div>
-                <Connector sourceId={sourceId} targetId={id} device={device} layout={layout} />
+                <Connector
+                    sourceId={sourceId}
+                    targetId={id}
+                    device={device}
+                    layout={layout}
+                    connectedDevicesNumber={connectedDevicesNumber}
+                />
             </div>
         );
 
@@ -208,6 +215,7 @@ ConnectedDevice.propTypes = {
     device: PropTypes.object.isRequired,
     sourceId: PropTypes.string.isRequired,
     layout: PropTypes.string.isRequired,
+    connectedDevicesNumber: PropTypes.number.isRequired,
     isDfuSupported: PropTypes.bool.isRequired,
     onClickDfu: PropTypes.func.isRequired,
     onDisconnect: PropTypes.func.isRequired,
