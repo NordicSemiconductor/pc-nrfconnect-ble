@@ -176,7 +176,7 @@ class Connector extends React.PureComponent {
         this.onUpdate();
     }
 
-    // To be able to draw the line between two component they have be in the browser DOM
+    // To be able to draw the line between two components they have to be in the browser DOM
     // At first render they are not rendered, therefore we have to do an additional rendering
     // after the components are in the browser DOM everytime when it is updated.
     onUpdate() {
