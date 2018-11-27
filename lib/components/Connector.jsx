@@ -173,24 +173,15 @@ class Connector extends React.PureComponent {
     }
 
     componentDidUpdate() {
-        // To be able to draw the line between two component they have be in the browser DOM
-        // At first render they are not rendered, therefore we have to do an additional rendering
-        // after the componenets are in the brower DOM.
         this.onUpdate();
     }
 
+    // To be able to draw the line between two component they have be in the browser DOM
+    // At first render they are not rendered, therefore we have to do an additional rendering
+    // after the components are in the browser DOM everytime when it is updated.
     onUpdate() {
-        const {
-            sourceId,
-            targetId,
-            layout,
-            connectedDevicesNumber,
-        } = this.props;
         this.setState({
-            sourceId,
-            targetId,
-            layout,
-            connectedDevicesNumber,
+            connectedDevicesNumber: this.props.connectedDevicesNumber,
         });
     }
 
@@ -224,8 +215,8 @@ class Connector extends React.PureComponent {
     }
 
     render() {
-        const sourceElement = document.getElementById(this.state.sourceId);
-        const targetElement = document.getElementById(this.state.targetId);
+        const sourceElement = document.getElementById(this.props.sourceId);
+        const targetElement = document.getElementById(this.props.targetId);
 
         if (!sourceElement || !targetElement) {
             return (<div />);
@@ -234,7 +225,7 @@ class Connector extends React.PureComponent {
         const sourceRect = sourceElement.getBoundingClientRect();
         const targetRect = targetElement.getBoundingClientRect();
 
-        const layoutInfo = layoutStrategies(this.state.layout)(sourceRect, targetRect, 3);
+        const layoutInfo = layoutStrategies(this.props.layout)(sourceRect, targetRect, 3);
         const connectorBox = layoutInfo.boundingBox;
         const lines = generateLines(layoutInfo.lineCoordinates);
         const connectionInfoOverlay = this.getConnectionOverlay(layoutInfo.lineCoordinates);
