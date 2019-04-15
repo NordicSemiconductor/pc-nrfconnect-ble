@@ -17,6 +17,7 @@
     "dev": "nrfconnect-scripts build-watch",
     "webpack": "nrfconnect-scripts build-dev",
     "build": "nrfconnect-scripts build-prod",
+    "nordic-publish": "nrfconnect-scripts nordic-publish",
     "lint": "nrfconnect-scripts lint lib",
     "test": "nrfconnect-scripts test",
     "test-watch": "nrfconnect-scripts test --watch",
