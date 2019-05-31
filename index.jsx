@@ -47,7 +47,7 @@ import BLEEventDialog from './lib/containers/BLEEventDialog';
 import DiscoveredDevices from './lib/containers/DiscoveredDevices';
 import { confirmUserUUIDsExist } from './lib/utils/uuid_definitions';
 
-import './resources/css/styles.less';
+import './resources/css/styles.scss';
 
 /* eslint react/prop-types: 0 */
 
