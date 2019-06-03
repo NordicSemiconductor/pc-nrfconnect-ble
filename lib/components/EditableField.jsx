@@ -98,8 +98,9 @@ class EditableField extends React.Component {
     }
 
     componentDidMount() {
+        const { value } = this.props;
         this.editing = false;
-        this.value = this.props.value;
+        this.value = value;
         this.validationMessage = '';
     }
 
@@ -114,16 +115,17 @@ class EditableField extends React.Component {
     }
 
     onChange(e) {
+        const { keyPressValidation, formatInput, onChange } = this.props;
         const textarea = e.target;
-        let { value } = textarea;
-        let caretPosition = textarea.selectionStart;
-        const valid = this.props.keyPressValidation ? this.props.keyPressValidation(value) : true;
+        let { value, selectionStart: caretPosition } = textarea;
+        const valid = keyPressValidation ? keyPressValidation(value) : true;
 
         if (valid) {
-            if (this.props.formatInput) {
-                const formatInputResult = this.props.formatInput(value, caretPosition);
-                value = formatInputResult.value;
-                caretPosition = formatInputResult.caretPosition;
+            if (formatInput) {
+                ({
+                    value,
+                    caretPosition,
+                } = formatInput(value, caretPosition));
             }
 
             this.value = value;
@@ -134,18 +136,19 @@ class EditableField extends React.Component {
 
         this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
 
-        if (this.props.onChange) {
-            this.props.onChange(this.value);
+        if (onChange) {
+            onChange(this.value);
         }
     }
 
     onKeyDown(e) {
-        if (e.key === 'Backspace' && this.props.onBeforeBackspace) {
-            this.props.onBeforeBackspace(e);
+        const { onBeforeDelete, onBeforeBackspace } = this.props;
+        if (e.key === 'Backspace' && onBeforeBackspace) {
+            onBeforeBackspace(e);
         }
 
-        if (e.key === 'Delete' && this.props.onBeforeDelete) {
-            this.props.onBeforeDelete(e);
+        if (e.key === 'Delete' && onBeforeDelete) {
+            onBeforeDelete(e);
         }
 
         if (e.key === 'Enter') {
@@ -165,12 +168,13 @@ class EditableField extends React.Component {
     }
 
     handleClickOutside(e) {
+        const { insideSelector, value } = this.props;
         if (this.editing) {
-            if (this.props.insideSelector) {
+            if (insideSelector) {
                 // don't close if click was within a parent element that matches insideSelector
                 const textarea = this.editableTextarea;
                 if (textarea) {
-                    const insideParent = $(textarea).parents(this.props.insideSelector)[0];
+                    const insideParent = $(textarea).parents(insideSelector)[0];
                     if (e.path.includes(insideParent)) {
                         return;
                     }
@@ -178,40 +182,44 @@ class EditableField extends React.Component {
             }
 
             this.editing = false;
-            this.value = this.props.value; // reset textarea value
+            this.value = value; // reset textarea value
             this.validationMessage = '';
             this.forceUpdate();
         }
     }
 
     selectParentAndToggleEditing(e) {
+        const { selectParent } = this.props;
         e.stopPropagation();
         this.toggleEditing(e);
-        this.props.selectParent(e);
+        selectParent(e);
     }
 
     selectParent(e) {
+        const { selectParent } = this.props;
         e.stopPropagation();
-        this.props.selectParent(e);
+        selectParent(e);
     }
 
     toggleEditing(e) {
+        const { onWrite } = this.props;
         e.stopPropagation();
 
-        if (this.props.onWrite) {
+        if (onWrite) {
             this.editing = !this.editing;
             this.forceUpdate();
         }
     }
 
     write() {
-        const { valid, validationMessage } = this.props.completeValidation
-            ? this.props.completeValidation(this.value)
+        const { completeValidation, onWrite, getValueArray } = this.props;
+        const { valid, validationMessage } = completeValidation
+            ? completeValidation(this.value)
             : { valid: true };
         if (valid) {
             this.editing = false;
-            if (this.props.onWrite) {
-                this.props.onWrite(this.props.getValueArray(this.value));
+            if (onWrite) {
+                onWrite(getValueArray(this.value));
             }
         } else {
             this.validationMessage = validationMessage;
@@ -219,10 +227,20 @@ class EditableField extends React.Component {
     }
 
     read() {
-        this.props.onRead();
+        const { onRead } = this.props;
+        onRead();
     }
 
     render() {
+        const {
+            value,
+            label,
+            title,
+            plain,
+            showReadButton,
+            onRead,
+            onWrite,
+        } = this.props;
         const nonBreakingSpace = '\u00A0';
         // Delaying the creation of TextareaAutosize etc until they're needed
         // gives a performance win.
@@ -230,14 +248,15 @@ class EditableField extends React.Component {
         let child;
 
         if (!this.editing) {
-            this.value = this.props.value;
+            this.value = value;
         }
 
-        const readButton = this.props.showReadButton ? (
+        const readButton = showReadButton ? (
             <div
                 className="btn btn-primary btn-xs btn-nordic"
                 title="Read"
                 onClick={this.onReadButtonClick}
+                onKeyDown={this.onReadButtonClick}
                 role="button"
                 tabIndex={0}
             >
@@ -245,20 +264,20 @@ class EditableField extends React.Component {
             </div>
         ) : null;
 
-        if (this.props.plain) {
+        if (plain) {
             child = (
                 <TextArea
                     id="editable-field"
                     ref={editableTextarea => { this.editableTextarea = editableTextarea; }}
-                    label={this.props.label}
-                    title={this.props.title}
+                    label={label}
+                    title={title}
                     onKeyDown={this.onKeyDown}
-                    value={this.props.value}
+                    value={value}
                     onChange={this.onChange}
                     onClick={stopPropagation}
                 />
             );
-        } else if (this.editing && this.props.onWrite) {
+        } else if (this.editing && onWrite) {
             child = (
                 <div className="editable-field-editor-wrap native-key-bindings">
                     <div className="alert-wrap">
@@ -274,6 +293,7 @@ class EditableField extends React.Component {
                         className="btn btn-primary btn-xs btn-nordic"
                         title="Write"
                         onClick={this.onWriteButtonClick}
+                        onKeyDown={this.onWriteButtonClick}
                         role="button"
                         tabIndex={0}
                     >
@@ -282,21 +302,22 @@ class EditableField extends React.Component {
                     <TextareaAutosize
                         ref={editableTextarea => { this.editableTextarea = editableTextarea; }}
                         minRows={1}
-                        onKeyDown={this.onKeyDown}
-                        title={this.props.title}
+                        title={title}
                         value={this.value}
                         onChange={this.onChange}
                         onClick={stopPropagation}
+                        onKeyDown={stopPropagation}
                     />
                 </div>
             );
-        } else if (this.props.showReadButton && this.props.onRead && this.props.onWrite) {
+        } else if (showReadButton && onRead && onWrite) {
             child = (
                 <div className="editable-field-editor-wrap">
                     <div
                         className="btn btn-primary btn-xs btn-nordic"
                         title="Read"
                         onClick={this.onReadButtonClick}
+                        onKeyDown={this.onReadButtonClick}
                         role="button"
                         tabIndex={0}
                     >
@@ -305,6 +326,7 @@ class EditableField extends React.Component {
                     <div
                         className="subtle-text editable"
                         onClick={this.toggleEditing}
+                        onKeyDown={this.toggleEditing}
                         role="button"
                         tabIndex={0}
                     >
@@ -312,7 +334,7 @@ class EditableField extends React.Component {
                     </div>
                 </div>
             );
-        } else if (this.props.onRead && !this.props.onWrite) {
+        } else if (onRead && !onWrite) {
             child = (
                 <div>
                     {readButton}
@@ -321,12 +343,13 @@ class EditableField extends React.Component {
                     </div>
                 </div>
             );
-        } else if (!this.props.onRead && !this.props.onWrite) {
+        } else if (!onRead && !onWrite) {
             child = (
                 <div
                     className="subtle-text"
-                    title={this.props.title}
+                    title={title}
                     onClick={this.selectParent}
+                    onKeyDown={this.selectParent}
                     role="button"
                     tabIndex={0}
                 >
@@ -337,8 +360,9 @@ class EditableField extends React.Component {
             child = (
                 <div
                     className="subtle-text editable"
-                    title={this.props.title}
+                    title={title}
                     onClick={this.selectParentAndToggleEditing}
+                    onKeyDown={this.selectParentAndToggleEditing}
                     role="button"
                     tabIndex={0}
                 >
