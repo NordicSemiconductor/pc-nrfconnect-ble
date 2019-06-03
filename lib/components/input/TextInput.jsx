@@ -36,7 +36,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, FormControl, InputGroup } from 'react-bootstrap';
+import {
+    FormGroup, ControlLabel, FormControl, InputGroup,
+} from 'react-bootstrap';
 
 const TextInput = props => {
     const {

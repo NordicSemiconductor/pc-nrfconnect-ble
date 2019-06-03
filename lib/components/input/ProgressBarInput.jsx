@@ -36,7 +36,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, ProgressBar, InputGroup } from 'react-bootstrap';
+import {
+    FormGroup, ControlLabel, ProgressBar, InputGroup,
+} from 'react-bootstrap';
 
 const ProgressBarInput = props => {
     const {

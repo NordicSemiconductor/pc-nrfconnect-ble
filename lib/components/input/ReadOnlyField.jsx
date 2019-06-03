@@ -39,7 +39,9 @@ import PropTypes from 'prop-types';
 import { FormGroup, ControlLabel, InputGroup } from 'react-bootstrap';
 
 const ReadOnlyField = props => {
-    const { label, labelClassName, wrapperClassName, value } = props;
+    const {
+        label, labelClassName, wrapperClassName, value,
+    } = props;
     return (
         <FormGroup>
             {

@@ -36,10 +36,14 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, FormControl, InputGroup } from 'react-bootstrap';
+import {
+    FormGroup, ControlLabel, FormControl, InputGroup,
+} from 'react-bootstrap';
 
 const SelectList = props => {
-    const { id, label, children, labelClassName, wrapperClassName, ...newProps } = props;
+    const {
+        id, label, children, labelClassName, wrapperClassName, ...newProps
+    } = props;
 
     return (
         <FormGroup controlId={id}>
