@@ -65,21 +65,24 @@ class CharacteristicEditor extends React.Component {
     }
 
     setCheckedProperty(property, e) {
+        const { onModified } = this.props;
         this[property] = e.target.checked;
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     setInitialValue(value) {
+        const { onModified } = this.props;
         this.value = value;
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     setValueProperty(property, e) {
+        const { onModified } = this.props;
         this[property] = e.target.value;
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     validateValueLength() {
@@ -110,13 +113,16 @@ class CharacteristicEditor extends React.Component {
     }
 
     saveAttribute() {
+        const {
+            characteristic, onValidationError, onSaveChangedAttribute, onModified,
+        } = this.props;
         if (validateUuid(this.uuid) === ERROR) {
-            this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
+            onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
         }
 
         if (this.validateValueLength() === ERROR) {
-            this.props.onValidationError(new ValidationError('Length of value is not valid.'));
+            onValidationError(new ValidationError('Length of value is not valid.'));
             return;
         }
 
@@ -133,7 +139,7 @@ class CharacteristicEditor extends React.Component {
         };
 
         const changedCharacteristic = {
-            instanceId: this.props.characteristic.instanceId,
+            instanceId: characteristic.instanceId,
             uuid: this.uuid.toUpperCase().trim(),
             name: this.name,
             value: this.parseValueProperty(this.value),
@@ -144,12 +150,13 @@ class CharacteristicEditor extends React.Component {
             maxLength: parseInt(this.maxLength, 10),
         };
 
-        this.props.onSaveChangedAttribute(changedCharacteristic);
+        onSaveChangedAttribute(changedCharacteristic);
         this.saved = true;
-        this.props.onModified(false);
+        onModified(false);
     }
 
     handleUuidSelect(uuid) {
+        const { onModified } = this.props;
         this.uuid = uuid;
         const uuidName = getUuidName(this.uuid);
 
@@ -158,7 +165,7 @@ class CharacteristicEditor extends React.Component {
         }
 
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     render() {

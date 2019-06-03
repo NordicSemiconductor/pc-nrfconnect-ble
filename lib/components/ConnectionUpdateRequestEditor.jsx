@@ -34,6 +34,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint jsx-a11y/label-has-for: off */
+/* eslint jsx-a11y/label-has-associated-control: off */
+
 'use strict';
 
 import React from 'react';
@@ -106,8 +109,8 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
         this.handleUpdateConnection = this.handleUpdateConnection.bind(this);
         this.handleConnectionIntervalChange = this.handleConnectionIntervalChange.bind(this);
-        this.handleConnectionSupervisionTimeoutChange = this.handleConnectionSupervisionTimeoutChange.bind(this);
         this.handleSlaveLatencyChange = this.handleSlaveLatencyChange.bind(this);
+        this.handleConnSupTimeoutChange = this.handleConnSupTimeoutChange.bind(this);
         this.onIgnoreEvent = this.onIgnoreEvent.bind(this);
         this.onUpdateConnectionParams = this.onUpdateConnectionParams.bind(this);
         this.onRejectConnectionParams = this.onRejectConnectionParams.bind(this);
@@ -136,7 +139,9 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
     setAndValidateConnectionSupervisionTimeout(value) {
         this.connectionSupervisionTimeout = value;
-        this.isConnectionSupervisionTimeoutValid = isConnectionSupervisionTimeoutValid(this.connectionSupervisionTimeout);
+        this.isConnectionSupervisionTimeoutValid = isConnectionSupervisionTimeoutValid(
+            this.connectionSupervisionTimeout,
+        );
     }
 
     setAndValidateSlaveLatency(value) {
@@ -206,7 +211,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
         );
     }
 
-    handleConnectionSupervisionTimeoutChange(event) {
+    handleConnSupTimeoutChange(event) {
         this.setAndValidateConnectionSupervisionTimeout(parseInt(event.target.value, 10));
         this.forceUpdate();
     }
@@ -281,7 +286,8 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                 </Button>
             ) : '';
 
-        const disconnectButton = event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE
+        const disconnectButton = event.type
+            === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE
             ? (
                 <Button
                     type="button"
@@ -375,7 +381,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                                     style={connectionSupervisionTimeoutInputStyle}
                                     id={`timeout_${address}`}
                                     className="form-control nordic-form-control"
-                                    onChange={this.handleConnectionSupervisionTimeoutChange}
+                                    onChange={this.handleConnSupTimeoutChange}
                                     type="number"
                                     min={CONN_TIMEOUT_MIN}
                                     max={CONN_TIMEOUT_MAX}

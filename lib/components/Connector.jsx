@@ -180,15 +180,18 @@ class Connector extends React.PureComponent {
     // To be able to draw the line between two components they have to be in the browser DOM
     // At first render they are not rendered, therefore we have to do an additional rendering
     // after the components are in the browser DOM everytime when it is updated.
+    /* eslint react/no-unused-state: off */
     onUpdate() {
+        const { connectedDevicesNumber } = this.props;
         this.setState({
-            connectedDevicesNumber: this.props.connectedDevicesNumber,
+            connectedDevicesNumber,
         });
     }
 
     getConnectionOverlay(lineCoordinates) {
         const {
             device,
+            targetId,
         } = this.props;
 
         if (lineCoordinates.length < 2) {
@@ -201,7 +204,7 @@ class Connector extends React.PureComponent {
         let posX = (pointA.x - pointB.x) / 2;
         let posY = (pointA.y - pointB.y) / 2;
 
-        const targetElement = document.getElementById(this.props.targetId);
+        const targetElement = document.getElementById(targetId);
         const targetRect = targetElement.getBoundingClientRect();
 
         if (posX === 0) {
@@ -216,8 +219,13 @@ class Connector extends React.PureComponent {
     }
 
     render() {
-        const sourceElement = document.getElementById(this.props.sourceId);
-        const targetElement = document.getElementById(this.props.targetId);
+        const {
+            sourceId,
+            targetId,
+            layout,
+        } = this.props;
+        const sourceElement = document.getElementById(sourceId);
+        const targetElement = document.getElementById(targetId);
 
         if (!sourceElement || !targetElement) {
             return (<div />);
@@ -226,7 +234,7 @@ class Connector extends React.PureComponent {
         const sourceRect = sourceElement.getBoundingClientRect();
         const targetRect = targetElement.getBoundingClientRect();
 
-        const layoutInfo = layoutStrategies(this.props.layout)(sourceRect, targetRect, 3);
+        const layoutInfo = layoutStrategies(layout)(sourceRect, targetRect, 3);
         const connectorBox = layoutInfo.boundingBox;
         const lines = generateLines(layoutInfo.lineCoordinates);
         const connectionInfoOverlay = this.getConnectionOverlay(layoutInfo.lineCoordinates);

@@ -58,14 +58,15 @@ class CountdownTimer extends Component {
     }
 
     tick() {
+        const { onTimeout } = this.props;
         this.secondsRemaining -= 1;
         this.forceUpdate();
 
         if (this.secondsRemaining <= 0) {
             clearInterval(this.interval);
 
-            if (this.props.onTimeout) {
-                this.props.onTimeout();
+            if (onTimeout) {
+                onTimeout();
             }
         }
     }

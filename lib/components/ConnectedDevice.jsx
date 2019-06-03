@@ -71,7 +71,8 @@ class ConnectedDevice extends React.PureComponent {
             return;
         }
 
-        const isCurrentlyBelow = window.innerWidth < (this.boundingRect.right + WINDOW_WIDTH_OFFSET);
+        const isCurrentlyBelow = window.innerWidth
+            < (this.boundingRect.right + WINDOW_WIDTH_OFFSET);
         const hasChanged = isCurrentlyBelow !== this.belowWidthThreshold;
 
         if (!hasChanged) {
@@ -124,6 +125,7 @@ class ConnectedDevice extends React.PureComponent {
             layout,
             connectedDevicesNumber,
             isDfuSupported,
+            onClickDfu,
         } = this.props;
 
         const role = device.role === 'central' ? 'Central' : 'Peripheral';
@@ -157,7 +159,7 @@ class ConnectedDevice extends React.PureComponent {
                                         bsStyle="primary"
                                         className="btn-nordic btn-xs"
                                         title="Start Secure DFU"
-                                        onClick={this.props.onClickDfu}
+                                        onClick={onClickDfu}
                                     >
                                         <img src={dfuIcon} className="icon-dfu-button" alt="" />
                                     </Button>

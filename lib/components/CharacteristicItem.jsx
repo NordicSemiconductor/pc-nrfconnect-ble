@@ -132,7 +132,9 @@ class CharacteristicItem extends AttributeItem {
 
         const hasCccd = this.cccdDescriptor !== undefined;
         const hasReadProperty = properties.read;
-        const hasWriteProperty = properties.write || properties.writeWoResp || properties.reliableWr;
+        const hasWriteProperty = properties.write
+            || properties.writeWoResp
+            || properties.reliableWr;
         const hasNotifyProperty = properties.notify;
         const hasIndicateProperty = properties.indicate;
         const hasNotifyOrIndicateProperty = hasNotifyProperty || hasIndicateProperty;
@@ -172,6 +174,7 @@ class CharacteristicItem extends AttributeItem {
                     disabled={!hasCccd}
                     style={notifyIconStyle}
                     onClick={this.onToggleNotify}
+                    onKeyDown={this.onToggleNotify}
                     role="button"
                     tabIndex={0}
                 >
