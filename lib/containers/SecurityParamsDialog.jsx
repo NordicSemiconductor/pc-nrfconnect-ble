@@ -129,7 +129,7 @@ function mapStateToProps(state) {
         adapter,
     } = state.app;
 
-    const selectedAdapter = adapter.selectedAdapter;
+    const { selectedAdapter } = adapter;
 
     if (!selectedAdapter) {
         return {};

@@ -68,17 +68,20 @@ class DiscoveredDevices extends React.PureComponent {
     }
 
     handleCheckedChange(property, e) {
+        const { setDiscoveryOptions } = this.props;
         this.discoveryOptions[property] = e.target.checked;
-        this.props.setDiscoveryOptions(this.discoveryOptions);
+        setDiscoveryOptions(this.discoveryOptions);
     }
 
     handleFilterChange(e) {
+        const { setDiscoveryOptions } = this.props;
         this.discoveryOptions.filterString = e.target.value;
-        this.props.setDiscoveryOptions(this.discoveryOptions);
+        setDiscoveryOptions(this.discoveryOptions);
     }
 
     handleOptionsExpanded() {
-        this.props.toggleOptionsExpanded();
+        const { toggleOptionsExpanded } = this.props;
+        toggleOptionsExpanded();
     }
 
     render() {
@@ -99,7 +102,7 @@ class DiscoveredDevices extends React.PureComponent {
 
         bindHotkey('alt+c', clearDevicesList);
 
-        this.discoveryOptions = this.props.discoveryOptions.toJS();
+        this.discoveryOptions = discoveryOptions.toJS();
 
         const dirIcon = discoveryOptions.expanded ? 'icon-down-dir' : 'icon-right-dir';
 
@@ -186,7 +189,7 @@ class DiscoveredDevices extends React.PureComponent {
 function mapStateToProps(state) {
     const { discovery, adapter } = state.app;
 
-    const selectedAdapter = adapter.selectedAdapter;
+    const { selectedAdapter } = adapter;
     let adapterIsConnecting = false;
     let scanning = false;
     let adapterAvailable = false;
@@ -208,10 +211,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     const retval = Object.assign(
-            {},
-            bindActionCreators(DiscoveryActions, dispatch),
-            bindActionCreators(AdapterActions, dispatch),
-        );
+        {},
+        bindActionCreators(DiscoveryActions, dispatch),
+        bindActionCreators(AdapterActions, dispatch),
+    );
 
     return retval;
 }
