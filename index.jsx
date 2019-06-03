@@ -52,17 +52,15 @@ import './resources/css/styles.scss';
 /* eslint react/prop-types: 0 */
 
 export default {
-    decorateNavMenu: NavMenu => (
-        props => (
-            <NavMenu
-                {...props}
-                selectedItemId={props.selectedItemId < 0 ? 0 : props.selectedItemId}
-                menuItems={[
-                    { id: 0, text: 'Connection Map', iconClass: 'icon-columns' },
-                    { id: 1, text: 'Server Setup', iconClass: 'icon-indent-right' },
-                ]}
-            />
-        )
+    decorateNavMenu: NavMenu => ({ selectedItemId, ...restProps }) => (
+        <NavMenu
+            {...restProps}
+            selectedItemId={selectedItemId < 0 ? 0 : selectedItemId}
+            menuItems={[
+                { id: 0, text: 'Connection Map', iconClass: 'icon-columns' },
+                { id: 1, text: 'Server Setup', iconClass: 'icon-indent-right' },
+            ]}
+        />
     ),
     decorateMainView: MainView => (
         props => (
@@ -98,8 +96,8 @@ export default {
         }
         if (action.type === 'DEVICE_SELECTED') {
             const { device } = action;
-            logger.info('Validating connectivity firmware for device with serial number ' +
-                `${device.serialNumber}...`);
+            logger.info('Validating connectivity firmware for device with serial number '
+                + `${device.serialNumber}...`);
         }
         if (action.type === 'DEVICE_SETUP_COMPLETE') {
             logger.info('Connectivity firmware is valid.');
