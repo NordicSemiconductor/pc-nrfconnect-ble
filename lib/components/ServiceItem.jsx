@@ -60,7 +60,11 @@ class ServiceItem extends AttributeItem {
                 {this.renderName()}
                 {button
                     && (
-                        <button className="btn btn-primary btn-nordic" onClick={button.onClick}>
+                        <button
+                            className="btn btn-primary btn-nordic"
+                            type="button"
+                            onClick={button.onClick}
+                        >
                             <img src={button.icon} alt="" />
                         </button>
                     )

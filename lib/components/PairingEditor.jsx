@@ -66,25 +66,29 @@ class PairingEditor extends React.PureComponent {
     }
 
     handlePair() {
-        if (this.props.onPair) {
-            this.props.onPair(this.secParams);
+        const { onPair } = this.props;
+        if (onPair) {
+            onPair(this.secParams);
         }
     }
 
     handleAccept() {
-        if (this.props.onAccept) {
-            this.props.onAccept(this.secParams);
+        const { onAccept } = this.props;
+        if (onAccept) {
+            onAccept(this.secParams);
         }
     }
 
     handleReject() {
-        if (this.props.onReject) {
-            this.props.onReject();
+        const { onReject } = this.props;
+        if (onReject) {
+            onReject();
         }
     }
 
     handleCancel() {
-        this.props.onCancel();
+        const { onCancel } = this.props;
+        onCancel();
     }
 
     render() {

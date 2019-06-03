@@ -35,6 +35,7 @@
  */
 
 /* eslint react/forbid-prop-types: off */
+/* eslint react/no-redundant-should-component-update: off */
 
 'use strict';
 
@@ -55,7 +56,8 @@ function formatUuid(value) {
 
 class UuidLookup extends React.PureComponent {
     shouldComponentUpdate(nextProps) {
-        return !(JSON.stringify(this.props.uuidDefs) === JSON.stringify(nextProps.uuidDefs));
+        const { uuidDefs } = this.props;
+        return !(JSON.stringify(uuidDefs) === JSON.stringify(nextProps.uuidDefs));
     }
 
     render() {

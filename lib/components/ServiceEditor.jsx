@@ -59,12 +59,14 @@ class ServiceEditor extends React.PureComponent {
     }
 
     onNameChange(e) {
+        const { onModified } = this.props;
         this.name = e.target.value;
-        this.props.onModified(true);
+        onModified(true);
         this.forceUpdate();
     }
 
     handleUuidSelect(uuid) {
+        const { onModified } = this.props;
         this.uuid = uuid;
         const uuidName = getUuidName(this.uuid);
 
@@ -72,26 +74,32 @@ class ServiceEditor extends React.PureComponent {
             this.name = uuidName;
         }
 
-        this.props.onModified(true);
+        onModified(true);
 
         this.forceUpdate();
     }
 
     saveAttribute() {
+        const {
+            service,
+            onValidationError,
+            onSaveChangedAttribute,
+            onModified,
+        } = this.props;
         if (validateUuid(this.uuid) === ERROR) {
-            this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
+            onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
         }
 
         const changedService = {
-            instanceId: this.props.service.instanceId,
+            instanceId: service.instanceId,
             uuid: this.uuid.toUpperCase().trim(),
             name: this.name,
         };
 
-        this.props.onSaveChangedAttribute(changedService);
+        onSaveChangedAttribute(changedService);
         this.saved = true;
-        this.props.onModified(false);
+        onModified(false);
     }
 
     render() {

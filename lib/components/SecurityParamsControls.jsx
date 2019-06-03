@@ -36,6 +36,7 @@
 
 /* eslint react/forbid-prop-types: off */
 /* eslint jsx-a11y/label-has-for: off */
+/* eslint jsx-a11y/label-has-associated-control: off */
 
 'use strict';
 
@@ -99,6 +100,7 @@ class SecurityParamsControls extends React.PureComponent {
     }
 
     handleChange() {
+        const { onChange } = this.props;
         const newSecParams = {
             io_caps: this.ioCaps,
             lesc: this.enableLesc,
@@ -108,7 +110,7 @@ class SecurityParamsControls extends React.PureComponent {
             bond: this.performBonding,
         };
 
-        this.props.onChange(newSecParams);
+        onChange(newSecParams);
     }
 
     render() {

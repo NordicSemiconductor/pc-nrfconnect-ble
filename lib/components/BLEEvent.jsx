@@ -70,7 +70,7 @@ class BLEEvent extends React.PureComponent {
     }
 
     getEventInfo() {
-        const eventType = this.props.event.type;
+        const { event: { type: eventType } } = this.props;
 
         switch (eventType) {
             case BLEEventType.USER_INITIATED_CONNECTION_UPDATE:
@@ -181,11 +181,12 @@ class BLEEvent extends React.PureComponent {
 
     getStyle() {
         const { event, selected } = this.props;
+        const { backgroundColor: { r, g, b } } = this.state;
 
         if (!event.state) {
             return {
                 backgroundColor: selected ? 'rgb(179,225,245)'
-                    : `rgb(${this.state.backgroundColor.r}, ${this.state.backgroundColor.g}, ${this.state.backgroundColor.b})`,
+                    : `rgb(${r}, ${g}, ${b})`,
             };
         }
         return {};
@@ -203,10 +204,17 @@ class BLEEvent extends React.PureComponent {
                 className={`service-item ${this.getClass()}`}
                 style={this.getStyle()}
                 onClick={this.onClick}
+                onKeyDown={this.onClick}
                 role="button"
                 tabIndex={0}
             >
-                <div className="expand-area" onClick={onExpandAreaClick} role="button" tabIndex={0}>
+                <div
+                    className="expand-area"
+                    onClick={onExpandAreaClick}
+                    onKeyDown={onExpandAreaClick}
+                    role="button"
+                    tabIndex={0}
+                >
                     <div className="bar1" />
                     <div className="icon-wrap" />
                 </div>
