@@ -62,16 +62,19 @@ class DfuDialog extends React.PureComponent {
 
 
     onFileSelected(filePath) {
-        this.props.setDfuFilePath(filePath);
-        this.props.loadDfuPackageInfo(filePath);
+        const { setDfuFilePath, loadDfuPackageInfo } = this.props;
+        setDfuFilePath(filePath);
+        loadDfuPackageInfo(filePath);
     }
 
     onStartDfu() {
-        this.props.startDfu(this.props.filePath);
+        const { startDfu, filePath } = this.props;
+        startDfu(filePath);
     }
 
     onStopDfu() {
-        this.props.stopDfu();
+        const { stopDfu } = this.props;
+        stopDfu();
     }
 
     showFileDialog() {
@@ -97,10 +100,11 @@ class DfuDialog extends React.PureComponent {
 
 
     hide() {
-        if (this.props.isStarted) {
-            this.props.showConfirmCloseDialog();
+        const { isStarted, showConfirmCloseDialog, hideDfuDialog } = this.props;
+        if (isStarted) {
+            showConfirmCloseDialog();
         } else {
-            this.props.hideDfuDialog();
+            hideDfuDialog();
         }
     }
 
@@ -177,7 +181,7 @@ DfuDialog.defaultProps = {
 function mapStateToProps(state) {
     const { dfu, adapter } = state.app;
 
-    const selectedAdapter = adapter.selectedAdapter;
+    const { selectedAdapter } = adapter;
 
     return {
         adapter: selectedAdapter,
@@ -198,8 +202,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return Object.assign({},
-        bindActionCreators(DfuActions, dispatch),
-    );
+        bindActionCreators(DfuActions, dispatch));
 }
 
 export default connect(

@@ -70,23 +70,25 @@ class AdvertisingSetup extends React.PureComponent {
     }
 
     addToAdvData() {
+        const { addAdvEntry } = this.props;
         const newValue = this.prepareValue();
 
         if (!newValue || newValue.value === '') {
             return;
         }
 
-        this.props.addAdvEntry(newValue);
+        addAdvEntry(newValue);
     }
 
     addToScanResponse() {
+        const { addScanRsp } = this.props;
         const newValue = this.prepareValue();
 
         if (!newValue || newValue.value === '') {
             return;
         }
 
-        this.props.addScanRsp(newValue);
+        addScanRsp(newValue);
     }
 
     handleValueChange(typeValue) {

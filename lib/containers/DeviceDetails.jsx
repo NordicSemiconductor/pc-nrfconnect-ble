@@ -56,7 +56,7 @@ import DfuDialog from './DfuDialog';
 
 import withHotkey from '../utils/withHotkey';
 import { getInstanceIds } from '../utils/api';
-import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
+import { traverseItems, findSelectedItem } from '../common/treeViewKeyNavigation';
 
 class DeviceDetailsContainer extends React.PureComponent {
     constructor(props) {
@@ -164,13 +164,14 @@ class DeviceDetailsContainer extends React.PureComponent {
             security,
             openCustomUuidFile,
             showDfuDialog,
+            style,
         } = this.props;
 
         const elemWidth = 250;
         const detailDevices = [];
 
         if (!adapterState) {
-            return <div className="device-details-container" style={this.props.style} />;
+            return <div className="device-details-container" style={style} />;
         }
 
         // Details for connected adapter
@@ -228,10 +229,13 @@ class DeviceDetailsContainer extends React.PureComponent {
         // TODO: Fix better solution to right padding of scroll area than div box with border
         return (
             <div>
-                <div className="device-details-container" style={this.props.style}>
+                <div className="device-details-container" style={style}>
                     <div style={{ width }}>
                         {detailDevices}
-                        <div style={{ borderColor: 'transparent', borderLeftWidth: '20px', borderRightWidth: '0px', borderStyle: 'solid' }} />
+                        <div style={{
+                            borderColor: 'transparent', borderLeftWidth: '20px', borderRightWidth: '0px', borderStyle: 'solid',
+                        }}
+                        />
                     </div>
                 </div>
                 <DfuDialog />
@@ -245,7 +249,7 @@ function mapStateToProps(state) {
         adapter,
     } = state.app;
 
-    const selectedAdapter = adapter.selectedAdapter;
+    const { selectedAdapter } = adapter;
 
     if (!selectedAdapter) {
         return {};

@@ -154,7 +154,12 @@ class DiscoveredDevices extends React.PureComponent {
                         <span className="icon-trash" />Clear
                     </button>
                     <div className="discovery-options-expand">
-                        <span onClick={toggleOptionsExpanded} role="button" tabIndex={0}>
+                        <span
+                            onClick={toggleOptionsExpanded}
+                            onKeyDown={toggleOptionsExpanded}
+                            role="button"
+                            tabIndex={0}
+                        >
                             <i className={dirIcon} />Options
                         </span>
                         {discoveryOptionsDiv}

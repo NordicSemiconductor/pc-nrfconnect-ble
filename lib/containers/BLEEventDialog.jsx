@@ -86,61 +86,76 @@ class BLEEventDialog extends React.PureComponent {
             sendKeypress,
         } = this.props;
 
-        if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE ||
-            event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
-            return (<ConnectionUpdateRequestEditor
-                event={event}
-                onRejectConnectionParams={device => rejectDeviceConnectionParams(event.id, device)}
-                onUpdateConnectionParams={
-                    (device, connectionParams) => updateDeviceConnectionParams(
-                        event.id, device, connectionParams,
-                    )
-                }
-                onIgnoreEvent={eventId => acceptEvent(eventId)}
-                onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
-            />);
-        } else if (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE) {
-            return (<ConnectionUpdateRequestEditor
-                event={event}
-                onRejectConnectionParams={device => disconnectFromDevice(device)}
-                onUpdateConnectionParams={eventId => acceptEvent(eventId)}
-                onIgnoreEvent={() => {}}
-                onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
-            />);
-        } else if (event.type === BLEEventType.USER_INITIATED_PAIRING) {
-            return (<PairingEditor
-                event={event}
-                onPair={securityParams => pairWithDevice(event.id, event.device, securityParams)}
-                onCancel={() => removeEvent(event.id)}
-                security={security}
-            />);
-        } else if (event.type === BLEEventType.PEER_INITIATED_PAIRING) {
-            return (<PairingEditor
-                event={event}
-                onAccept={securityParams => acceptPairing(event.id, event.device, securityParams)}
-                onReject={() => rejectPairing(event.id, event.device)}
-                onCancel={() => removeEvent(event.id)}
-                security={security}
-            />);
-        } else if (event.type === BLEEventType.PASSKEY_DISPLAY ||
-            event.type === BLEEventType.PASSKEY_REQUEST ||
-            event.type === BLEEventType.NUMERICAL_COMPARISON ||
-            event.type === BLEEventType.LEGACY_OOB_REQUEST ||
-            event.type === BLEEventType.LESC_OOB_REQUEST) {
-            return (<AuthKeyEditor
-                event={event}
-                onAuthKeySubmit={(keyType, key) => replyAuthKey(
-                    event.id, event.device, keyType, key,
-                )}
-                onLescOobSubmit={peerOobData => replyLescOob(
-                    event.id, event.device, peerOobData, event.ownOobData,
-                )}
-                onNumericalComparisonMatch={match => replyNumericalComparisonMatch(
-                    event.id, event.device, match,
-                )}
-                onKeypress={value => sendKeypress(event.id, event.device, value)}
-                onCancel={() => removeEvent(event.id)}
-            />);
+        if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE
+            || event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
+            return (
+                <ConnectionUpdateRequestEditor
+                    event={event}
+                    onRejectConnectionParams={
+                        device => rejectDeviceConnectionParams(event.id, device)
+                    }
+                    onUpdateConnectionParams={
+                        (device, connectionParams) => updateDeviceConnectionParams(
+                            event.id, device, connectionParams,
+                        )
+                    }
+                    onIgnoreEvent={eventId => acceptEvent(eventId)}
+                    onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+                />
+            );
+        } if (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE) {
+            return (
+                <ConnectionUpdateRequestEditor
+                    event={event}
+                    onRejectConnectionParams={device => disconnectFromDevice(device)}
+                    onUpdateConnectionParams={eventId => acceptEvent(eventId)}
+                    onIgnoreEvent={() => {}}
+                    onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+                />
+            );
+        } if (event.type === BLEEventType.USER_INITIATED_PAIRING) {
+            return (
+                <PairingEditor
+                    event={event}
+                    onPair={securityParams => pairWithDevice(event.id, event.device, securityParams)
+                    }
+                    onCancel={() => removeEvent(event.id)}
+                    security={security}
+                />
+            );
+        } if (event.type === BLEEventType.PEER_INITIATED_PAIRING) {
+            return (
+                <PairingEditor
+                    event={event}
+                    onAccept={
+                        securityParams => acceptPairing(event.id, event.device, securityParams)
+                    }
+                    onReject={() => rejectPairing(event.id, event.device)}
+                    onCancel={() => removeEvent(event.id)}
+                    security={security}
+                />
+            );
+        } if (event.type === BLEEventType.PASSKEY_DISPLAY
+            || event.type === BLEEventType.PASSKEY_REQUEST
+            || event.type === BLEEventType.NUMERICAL_COMPARISON
+            || event.type === BLEEventType.LEGACY_OOB_REQUEST
+            || event.type === BLEEventType.LESC_OOB_REQUEST) {
+            return (
+                <AuthKeyEditor
+                    event={event}
+                    onAuthKeySubmit={(keyType, key) => replyAuthKey(
+                        event.id, event.device, keyType, key,
+                    )}
+                    onLescOobSubmit={peerOobData => replyLescOob(
+                        event.id, event.device, peerOobData, event.ownOobData,
+                    )}
+                    onNumericalComparisonMatch={match => replyNumericalComparisonMatch(
+                        event.id, event.device, match,
+                    )}
+                    onKeypress={value => sendKeypress(event.id, event.device, value)}
+                    onCancel={() => removeEvent(event.id)}
+                />
+            );
         }
         return null;
     }
@@ -224,7 +239,8 @@ class BLEEventDialog extends React.PureComponent {
                     <Button
                         className="btn btn-primary btn-nordic"
                         onClick={this.close}
-                    >Close</Button>
+                    >Close
+                    </Button>
                 </Modal.Footer>
             </Modal>
         );
