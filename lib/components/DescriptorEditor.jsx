@@ -63,21 +63,24 @@ class DescriptorEditor extends React.PureComponent {
     }
 
     setCheckedProperty(property, e) {
+        const { onModified } = this.props;
         this[property] = e.target.checked;
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     setValueProperty(property, e) {
+        const { onModified } = this.props;
         this[property] = e.target.value;
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     setInitialValue(value) {
+        const { onModified } = this.props;
         this.value = value;
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     parseValueProperty(value) {
@@ -108,18 +111,21 @@ class DescriptorEditor extends React.PureComponent {
     }
 
     saveAttribute() {
+        const {
+            descriptor, onValidationError, onSaveChangedAttribute, onModified,
+        } = this.props;
         if (validateUuid(this.uuid) === ERROR) {
-            this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
+            onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
         }
 
         if (this.validateValueLength() === ERROR) {
-            this.props.onValidationError(new ValidationError('Length of value is not valid.'));
+            onValidationError(new ValidationError('Length of value is not valid.'));
             return;
         }
 
         const changedDescriptor = {
-            instanceId: this.props.descriptor.instanceId,
+            instanceId: descriptor.instanceId,
             uuid: this.uuid.toUpperCase().trim(),
             name: this.name,
             value: this.parseValueProperty(this.value),
@@ -129,12 +135,13 @@ class DescriptorEditor extends React.PureComponent {
             maxLength: parseInt(this.maxLength, 10),
         };
 
-        this.props.onSaveChangedAttribute(changedDescriptor);
+        onSaveChangedAttribute(changedDescriptor);
         this.saved = true;
-        this.props.onModified(false);
+        onModified(false);
     }
 
     handleUuidSelect(uuid) {
+        const { onModified } = this.props;
         this.uuid = uuid;
         const uuidName = getUuidName(this.uuid);
 
@@ -143,7 +150,7 @@ class DescriptorEditor extends React.PureComponent {
         }
 
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     render() {

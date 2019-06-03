@@ -69,17 +69,19 @@ function createPackageInfoString(packageInfo) {
 
 class DfuEditor extends React.PureComponent {
     getPercentCompleted() {
-        return this.props.isCompleted ? 100 : this.props.percentCompleted;
+        const { isCompleted, percentCompleted } = this.props;
+        return isCompleted ? 100 : percentCompleted;
     }
 
     getStatus() {
-        if (this.props.isCompleted) {
+        const { isCompleted, isStopping, fileNameBeingTransferred } = this.props;
+        let { status } = this.props;
+        if (isCompleted) {
             return 'Completed';
-        } if (this.props.isStopping) {
+        }
+        if (isStopping) {
             return 'Stopping...';
         }
-        let { status } = this.props;
-        const { fileNameBeingTransferred } = this.props;
         if (fileNameBeingTransferred) {
             status += ` ${fileNameBeingTransferred}`;
         }
@@ -87,10 +89,11 @@ class DfuEditor extends React.PureComponent {
     }
 
     renderPackageInfo() {
+        const { packageInfo } = this.props;
         return (
             <ReadOnlyField
                 label="Package info"
-                value={createPackageInfoString(this.props.packageInfo)}
+                value={createPackageInfoString(packageInfo)}
             />
         );
     }

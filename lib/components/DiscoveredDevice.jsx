@@ -272,6 +272,7 @@ class DiscoveredDevice extends React.PureComponent {
                 <div className="discovered-device-body text-small">
                     <div className="discovered-device-address-line">
                         <button
+                            type="button"
                             onClick={this.onButtonClick}
                             className="btn btn-primary btn-xs btn-nordic"
                             disabled={(!isConnecting && adapterIsConnecting) || device.connected}
@@ -284,6 +285,7 @@ class DiscoveredDevice extends React.PureComponent {
                         <span
                             className="adv-details"
                             onClick={this.toggleExpand}
+                            onKeyDown={this.toggleExpand}
                             role="button"
                             tabIndex={0}
                         >

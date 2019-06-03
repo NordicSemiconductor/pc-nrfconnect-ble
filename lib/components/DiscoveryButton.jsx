@@ -68,7 +68,8 @@ const DiscoveryButton = props => {
             title={hoverText}
             className="btn btn-primary btn-sm btn-nordic padded-row"
             disabled={!isAdapterAvailable || adapterIsConnecting}
-            onClick={() => onScanClicked()}
+            type="button"
+            onClick={onScanClicked}
         >
             <span className={iconName} />
             {labelString}
