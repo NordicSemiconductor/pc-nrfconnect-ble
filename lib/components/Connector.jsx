@@ -102,9 +102,11 @@ class ConnectionOverlay extends React.PureComponent {
         super(props);
         this.closeme = this.closeme.bind(this);
     }
+
     closeme() {
         this.overlayTrigger.hide();
     }
+
     render() {
         const {
             style,
@@ -122,14 +124,14 @@ class ConnectionOverlay extends React.PureComponent {
                     trigger={['click', 'focus', 'hover']}
                     rootClose
                     placement="left"
-                    overlay={
+                    overlay={(
                         <Popover id="pover" title="Connection Information">
                             <ConnectionSetup
                                 device={device}
                                 closePopover={this.closeme}
                             />
                         </Popover>
-                    }
+                    )}
                 >
                     <span>
                         <i className={`icon-encircled ${iconClass}`} />
@@ -167,7 +169,6 @@ function generateLines(lineCoordinates) {
 }
 
 class Connector extends React.PureComponent {
-
     componentWillMount() {
         this.onUpdate();
     }
@@ -232,7 +233,10 @@ class Connector extends React.PureComponent {
 
         return (
             <div className="connector">
-                <svg style={{ position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height }}>
+                <svg style={{
+                    position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height,
+                }}
+                >
                     {lines}
                 </svg>
                 {connectionInfoOverlay}

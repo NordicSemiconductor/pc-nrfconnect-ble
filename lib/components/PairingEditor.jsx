@@ -43,7 +43,7 @@ import PropTypes from 'prop-types';
 
 import { Button } from 'react-bootstrap';
 
-import SecurityParamsControls from '../components/SecurityParamsControls';
+import SecurityParamsControls from './SecurityParamsControls';
 
 import { BLEEventType } from '../actions/common';
 

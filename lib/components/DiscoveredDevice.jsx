@@ -73,11 +73,11 @@ function getAdvTypeText(advType) {
 
     if (advType.includes('ADV_IND')) {
         return 'Connectable undirected';
-    } else if (advType.includes('ADV_DIRECT')) {
+    } if (advType.includes('ADV_DIRECT')) {
         return 'Connectable directed';
-    } else if (advType.includes('ADV_SCAN')) {
+    } if (advType.includes('ADV_SCAN')) {
         return 'Scannable undirected';
-    } else if (advType.includes('NONCONN_IND')) {
+    } if (advType.includes('NONCONN_IND')) {
         return 'Non connectable undirected';
     }
 
@@ -181,18 +181,20 @@ class DiscoveredDevice extends React.PureComponent {
                 <div>
                     {
                         device.adData
-                        .filterNot((value, key) => key.includes('BIT_SERVICE') || key.includes('_FLAGS') || key.includes('LOCAL_NAME'))
-                        .map((value, key) => {
-                            const key1 = `${key}_1`;
-                            return (
-                                <div key={key1} className="adv-line selectable">
-                                    <span className="adv-label">
-                                        {rewriter(key)}:</span>
-                                    <span className="adv-value">
-                                        {toHexString(value)}</span>
-                                </div>
-                            );
-                        })
+                            .filterNot((value, key) => key.includes('BIT_SERVICE') || key.includes('_FLAGS') || key.includes('LOCAL_NAME'))
+                            .map((value, key) => {
+                                const key1 = `${key}_1`;
+                                return (
+                                    <div key={key1} className="adv-line selectable">
+                                        <span className="adv-label">
+                                            {rewriter(key)}:
+                                        </span>
+                                        <span className="adv-value">
+                                            {toHexString(value)}
+                                        </span>
+                                    </div>
+                                );
+                            })
                     }
                 </div>
             );
@@ -202,7 +204,8 @@ class DiscoveredDevice extends React.PureComponent {
                     <div className="adv-line selectable">
                         <span className="adv-label">Advertising type:</span>
                         <span className="adv-value">
-                            {getAdvTypeText(this.currentAdvType)}</span>
+                            {getAdvTypeText(this.currentAdvType)}
+                        </span>
                     </div>
                 ) : null;
 
@@ -235,7 +238,8 @@ class DiscoveredDevice extends React.PureComponent {
                                 const key = `${index}_4`;
                                 return (
                                     <span key={key} className="adv-value">
-                                        {getUuidName(service)} </span>
+                                        {getUuidName(service)}
+                                    </span>
                                 );
                             })
                         }

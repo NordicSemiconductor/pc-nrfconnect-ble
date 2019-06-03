@@ -91,7 +91,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
         const { event } = props;
 
-        const requestedConnectionParams = event.requestedConnectionParams;
+        const { requestedConnectionParams } = event;
 
         this.connectionInterval = requestedConnectionParams.minConnectionInterval;
         this.connectionSupervisionTimeout = requestedConnectionParams.connectionSupervisionTimeout;
@@ -106,8 +106,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
         this.handleUpdateConnection = this.handleUpdateConnection.bind(this);
         this.handleConnectionIntervalChange = this.handleConnectionIntervalChange.bind(this);
-        this.handleConnectionSupervisionTimeoutChange =
-            this.handleConnectionSupervisionTimeoutChange.bind(this);
+        this.handleConnectionSupervisionTimeoutChange = this.handleConnectionSupervisionTimeoutChange.bind(this);
         this.handleSlaveLatencyChange = this.handleSlaveLatencyChange.bind(this);
         this.onIgnoreEvent = this.onIgnoreEvent.bind(this);
         this.onUpdateConnectionParams = this.onUpdateConnectionParams.bind(this);
@@ -137,8 +136,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
     setAndValidateConnectionSupervisionTimeout(value) {
         this.connectionSupervisionTimeout = value;
-        this.isConnectionSupervisionTimeoutValid =
-            isConnectionSupervisionTimeoutValid(this.connectionSupervisionTimeout);
+        this.isConnectionSupervisionTimeoutValid = isConnectionSupervisionTimeoutValid(this.connectionSupervisionTimeout);
     }
 
     setAndValidateSlaveLatency(value) {
@@ -153,13 +151,13 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
     generateHeaderMessage() {
         const { event } = this.props;
-        const address = event.device.address;
+        const { address } = event.device;
 
         if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) {
             return `Connection parameters update for device ${address}`;
-        } else if (event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
+        } if (event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
             return `Connection parameters update request from device ${address}`;
-        } else if (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE) {
+        } if (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE) {
             return `Connection parameters updated by peer central ${address}`;
         }
         return undefined;
@@ -170,8 +168,8 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
             event,
         } = this.props;
 
-        const device = event.device;
-        const address = device.address;
+        const { device } = event;
+        const { address } = device;
 
         const rcp = event.requestedConnectionParams;
 
@@ -179,8 +177,8 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
             ? undefined
             : <div>({rcp.minConnectionInterval}-{rcp.maxConnectionInterval})</div>;
 
-        const connectionIntervalStyle = this.isConnectionIntervalValid ?
-            validInputStyle : invalidInputStyle;
+        const connectionIntervalStyle = this.isConnectionIntervalValid
+            ? validInputStyle : invalidInputStyle;
 
         return (
             <div>
@@ -253,13 +251,13 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
         this.readOnly = (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE);
 
-        const device = event.device;
-        const address = device.address;
+        const { device } = event;
+        const { address } = device;
 
-        const slaveLatencyStyle = this.isSlaveLatencyValid ?
-            validInputStyle : invalidInputStyle;
-        const connectionSupervisionTimeoutInputStyle = this.isConnectionSupervisionTimeoutValid ?
-            validInputStyle : invalidInputStyle;
+        const slaveLatencyStyle = this.isSlaveLatencyValid
+            ? validInputStyle : invalidInputStyle;
+        const connectionSupervisionTimeoutInputStyle = this.isConnectionSupervisionTimeoutValid
+            ? validInputStyle : invalidInputStyle;
 
         const ignoreButton = event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE
             ? (
@@ -283,8 +281,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                 </Button>
             ) : '';
 
-        const disconnectButton =
-            event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE
+        const disconnectButton = event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE
             ? (
                 <Button
                     type="button"

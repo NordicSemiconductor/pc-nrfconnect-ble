@@ -60,13 +60,13 @@ const AdvertisingList = props => {
                     </tr>
                 </thead>
                 <tbody>
-                    {advEntries.map(entry =>
-                        (<AdvertisingListEntry
+                    {advEntries.map(entry => (
+                        <AdvertisingListEntry
                             {...{ entry }}
                             key={entry.id}
                             onDelete={onDelete}
-                        />),
-                    )}
+                        />
+                    ))}
                 </tbody>
             </table>
         </div>

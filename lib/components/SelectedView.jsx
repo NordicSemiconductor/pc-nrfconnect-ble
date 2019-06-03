@@ -95,7 +95,7 @@ class SelectedView extends React.PureComponent {
 
         if (viewId === DEVICE_DETAILS_VIEW_ID) {
             return <DeviceDetailsContainer style={{ height: mainAreaHeight }} />;
-        } else if (viewId === SERVER_SETUP_VIEW_ID) {
+        } if (viewId === SERVER_SETUP_VIEW_ID) {
             return <ServerSetup style={{ height: mainAreaHeight }} />;
         }
         return null;

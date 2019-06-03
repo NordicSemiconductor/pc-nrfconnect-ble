@@ -42,7 +42,7 @@ import PropTypes from 'prop-types';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import TextInput from './input/TextInput';
 
-import UuidLookup from '../components/UuidLookup';
+import UuidLookup from './UuidLookup';
 import { uuid16bitServiceDefinitions, uuid128bitServiceDefinitions } from '../utils/uuid_definitions';
 
 const SUCCESS = 'success';

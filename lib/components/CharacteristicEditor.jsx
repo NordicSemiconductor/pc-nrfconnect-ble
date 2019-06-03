@@ -49,7 +49,9 @@ import UuidInput from './input/UuidInput';
 
 import HexOnlyEditableField from './HexOnlyEditableField';
 
-import { getUuidName, uuidCharacteristicDefinitions, TEXT, getUuidFormat } from '../utils/uuid_definitions';
+import {
+    getUuidName, uuidCharacteristicDefinitions, TEXT, getUuidFormat,
+} from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
 
 import { ERROR, SUCCESS, validateUuid } from '../utils/validateUuid';
@@ -82,7 +84,7 @@ class CharacteristicEditor extends React.Component {
 
     validateValueLength() {
         const maxLength = parseInt(this.maxLength, 10);
-        const fixedLength = this.fixedLength;
+        const { fixedLength } = this;
         const value = this.parseValueProperty(this.value);
 
         if (maxLength > 510 && fixedLength === true) { return ERROR; }

@@ -177,8 +177,8 @@ class CentralDevice extends React.PureComponent {
                 );
             }
 
-            if (onToggleAutoAcceptPairing &&
-                onShowSecurityParamsDialog) {
+            if (onToggleAutoAcceptPairing
+                && onShowSecurityParamsDialog) {
                 items.push(<MenuItem key="dividerSecurity" divider />);
                 items.push(<MenuItem key="securityHeader" header>Security</MenuItem>);
                 items.push(
@@ -258,9 +258,9 @@ class CentralDevice extends React.PureComponent {
                     <div>
                         <div className="role-flag pull-right">Adapter</div>
                         {
-                            name ?
-                                <strong className="selectable">{name}</strong> :
-                                <Spinner visible />
+                            name
+                                ? <strong className="selectable">{name}</strong>
+                                : <Spinner visible />
                         }
                     </div>
                     <div className="address-text selectable">{address}</div>

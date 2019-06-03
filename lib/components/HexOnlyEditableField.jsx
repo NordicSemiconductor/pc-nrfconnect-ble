@@ -199,8 +199,8 @@ class HexOnlyEditableField extends React.PureComponent {
             return;
         }
 
-        const selectionStart = e.target.selectionStart;
-        const selectionEnd = e.target.selectionEnd;
+        const { selectionStart } = e.target;
+        const { selectionEnd } = e.target;
 
         if (selectionStart !== selectionEnd) {
             return;

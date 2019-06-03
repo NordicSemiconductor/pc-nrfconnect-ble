@@ -39,7 +39,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import CountdownTimer from '../components/CountdownTimer';
+import CountdownTimer from './CountdownTimer';
 import { BLEEventState, BLEEventType } from '../actions/common';
 
 import { Event } from '../reducers/bleEventReducer';
@@ -60,8 +60,8 @@ class BLEEvent extends React.PureComponent {
         e.stopPropagation();
 
         const {
-           onSelected,
-           event,
+            onSelected,
+            event,
         } = this.props;
 
         if (onSelected) {
@@ -143,12 +143,14 @@ class BLEEvent extends React.PureComponent {
                     <div className="address-text">{event.device.address}</div>
                 </span>
                 {
-                    eventTimer &&
-                    <CountdownTimer
-                        ref={timer => { this.countDownTimerRef = timer; }}
-                        seconds={EVENT_TIMEOUT_SECONDS}
-                        onTimeout={() => onTimedOut()}
-                    />
+                    eventTimer
+                    && (
+                        <CountdownTimer
+                            ref={timer => { this.countDownTimerRef = timer; }}
+                            seconds={EVENT_TIMEOUT_SECONDS}
+                            onTimeout={() => onTimedOut()}
+                        />
+                    )
                 }
             </div>
         );
@@ -183,7 +185,7 @@ class BLEEvent extends React.PureComponent {
         if (!event.state) {
             return {
                 backgroundColor: selected ? 'rgb(179,225,245)'
-                   : `rgb(${this.state.backgroundColor.r}, ${this.state.backgroundColor.g}, ${this.state.backgroundColor.b})`,
+                    : `rgb(${this.state.backgroundColor.r}, ${this.state.backgroundColor.g}, ${this.state.backgroundColor.b})`,
             };
         }
         return {};

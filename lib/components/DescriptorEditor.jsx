@@ -95,7 +95,7 @@ class DescriptorEditor extends React.PureComponent {
 
     validateValueLength() {
         const maxLength = parseInt(this.maxLength, 10);
-        const fixedLength = this.fixedLength;
+        const { fixedLength } = this;
         const value = this.parseValueProperty(this.value);
 
         if (maxLength > 510 && fixedLength === true) { return ERROR; }

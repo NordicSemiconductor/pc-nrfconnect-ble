@@ -49,7 +49,6 @@ function stopPropagation(e) {
 }
 
 class EditableField extends React.Component {
-
     /*
     Produces some text that changes into a textarea when clicked, OR if plain={true},
     it simply produces a textarea. Exposes various events for validation and formatting.
@@ -116,7 +115,7 @@ class EditableField extends React.Component {
 
     onChange(e) {
         const textarea = e.target;
-        let value = textarea.value;
+        let { value } = textarea;
         let caretPosition = textarea.selectionStart;
         const valid = this.props.keyPressValidation ? this.props.keyPressValidation(value) : true;
 

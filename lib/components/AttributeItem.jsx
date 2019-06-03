@@ -44,13 +44,14 @@ import EnumeratingAttributes from './EnumeratingAttributes';
 import AddNewItem from './AddNewItem';
 import * as Colors from '../utils/colorDefinitions';
 
-import { getInstanceIds, ImmutableService, ImmutableDescriptor, ImmutableCharacteristic } from '../utils/api';
+import {
+    getInstanceIds, ImmutableService, ImmutableDescriptor, ImmutableCharacteristic,
+} from '../utils/api';
 import { toHexString } from '../utils/stringUtil';
 
 export const CCCD_UUID = '2902';
 
 class AttributeItem extends React.PureComponent {
-
     constructor(props) {
         super(props);
         this.backgroundColor = Colors.getColor('brand-base');
@@ -67,9 +68,10 @@ class AttributeItem extends React.PureComponent {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.item.value !== nextProps.item.value) {
-            if (this.props.onChange) {
-                this.props.onChange();
+        const { item, onChange } = this.props;
+        if (item.value !== nextProps.item.value) {
+            if (onChange) {
+                onChange();
             }
 
             this.blink();
@@ -91,9 +93,10 @@ class AttributeItem extends React.PureComponent {
     }
 
     onExpandAreaClick(e) {
+        const { item, onSetAttributeExpanded } = this.props;
         e.stopPropagation();
-        if (this.props.onSetAttributeExpanded) {
-            this.props.onSetAttributeExpanded(this.props.item, !this.props.item.expanded);
+        if (onSetAttributeExpanded) {
+            onSetAttributeExpanded(item, !item.expanded);
         }
         this.selectComponent();
     }
@@ -104,11 +107,13 @@ class AttributeItem extends React.PureComponent {
     }
 
     onWrite(value) {
-        this.props.onWrite(this.props.item, value);
+        const { item, onWrite } = this.props;
+        onWrite(item, value);
     }
 
     onRead() {
-        this.props.onRead(this.props.item);
+        const { item, onRead } = this.props;
+        onRead(item);
     }
 
     getChildren() {
@@ -134,11 +139,12 @@ class AttributeItem extends React.PureComponent {
     }
 
     childChanged() {
-        if (this.props.onChange) {
-            this.props.onChange();
+        const { item, onChange } = this.props;
+        if (onChange) {
+            onChange();
         }
 
-        if (!this.props.item.expanded) {
+        if (!item.expanded) {
             this.blink();
         }
     }
@@ -160,13 +166,15 @@ class AttributeItem extends React.PureComponent {
     }
 
     selectComponent() {
-        if (this.props.onSelectAttribute) {
-            this.props.onSelectAttribute(this.props.item.instanceId);
+        const { item, onSelectAttribute } = this.props;
+        if (onSelectAttribute) {
+            onSelectAttribute(item.instanceId);
         }
     }
 
     isLocalAttribute() {
-        const instanceIds = getInstanceIds(this.props.item.instanceId);
+        const { item } = this.props;
+        const instanceIds = getInstanceIds(item.instanceId);
         return instanceIds.device === 'local.server';
     }
 
@@ -241,13 +249,13 @@ class AttributeItem extends React.PureComponent {
         const iconStyle = (!this.expandable || (children && children.size === 0 && !addNew)) ? { display: 'none' } : {};
         const itemIsSelected = item.instanceId === selected;
 
-        const backgroundClass = itemIsSelected ?
-            'brand-background' :
-            'neutral-background'; // @bar1-color
+        const backgroundClass = itemIsSelected
+            ? 'brand-background'
+            : 'neutral-background'; // @bar1-color
 
-        const backgroundColor = itemIsSelected ?
-            '' :
-            `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
+        const backgroundColor = itemIsSelected
+            ? ''
+            : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
 
         return (
             <div>
@@ -256,12 +264,14 @@ class AttributeItem extends React.PureComponent {
                     className={`${this.attributeType}-item ${backgroundClass}`}
                     style={{ backgroundColor }}
                     onClick={this.onContentClick}
+                    onKeyDown={this.onContentClick}
                     role="button"
                     tabIndex={0}
                 >
                     <div
                         className="expand-area"
                         onClick={this.onExpandAreaClick}
+                        onKeyDown={this.onExpandAreaClick}
                         role="button"
                         tabIndex={0}
                     >
@@ -273,6 +283,7 @@ class AttributeItem extends React.PureComponent {
                     <div
                         className="content-wrap"
                         onClick={this.onExpandAreaClick}
+                        onKeyDown={this.onExpandAreaClick}
                         role="button"
                         tabIndex={0}
                     >
@@ -281,16 +292,18 @@ class AttributeItem extends React.PureComponent {
                 </div>
                 <div style={{ display: expanded ? 'block' : 'none' }}>
                     {childrenList}
-                    { addNew &&
-                        <AddNewItem
-                            key={`add-new-${this.childAttributeType}`}
-                            text={`New ${this.childAttributeType}`}
-                            id={`add-btn-${instanceId}`}
-                            parentInstanceId={instanceId}
-                            selected={selected}
-                            onClick={this.onAddAttribute}
-                            bars={this.bars + 1}
-                        />
+                    { addNew
+                        && (
+                            <AddNewItem
+                                key={`add-new-${this.childAttributeType}`}
+                                text={`New ${this.childAttributeType}`}
+                                id={`add-btn-${instanceId}`}
+                                parentInstanceId={instanceId}
+                                selected={selected}
+                                onClick={this.onAddAttribute}
+                                bars={this.bars + 1}
+                            />
+                        )
                     }
                 </div>
             </div>

@@ -48,10 +48,12 @@ class AdvertisingListEntry extends React.PureComponent {
         super(props);
         this.onButtonClicked = this.onButtonClicked.bind(this);
     }
+
     onButtonClicked() {
         const { entry, onDelete } = this.props;
         onDelete(entry.id);
     }
+
     render() {
         const { entry } = this.props;
         return (

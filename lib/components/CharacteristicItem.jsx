@@ -132,8 +132,7 @@ class CharacteristicItem extends AttributeItem {
 
         const hasCccd = this.cccdDescriptor !== undefined;
         const hasReadProperty = properties.read;
-        const hasWriteProperty =
-            properties.write || properties.writeWoResp || properties.reliableWr;
+        const hasWriteProperty = properties.write || properties.writeWoResp || properties.reliableWr;
         const hasNotifyProperty = properties.notify;
         const hasIndicateProperty = properties.indicate;
         const hasNotifyOrIndicateProperty = hasNotifyProperty || hasIndicateProperty;
@@ -157,13 +156,13 @@ class CharacteristicItem extends AttributeItem {
             });
         }
 
-        const onRead = (hasReadProperty && !isLocal) ?
-            () => this.onRead() :
-            undefined;
+        const onRead = (hasReadProperty && !isLocal)
+            ? () => this.onRead()
+            : undefined;
 
-        const onWrite = (hasWriteProperty || isLocal) ?
-            val => this.onWrite(val) :
-            null;
+        const onWrite = (hasWriteProperty || isLocal)
+            ? val => this.onWrite(val)
+            : null;
 
         return (
             <div className="content">

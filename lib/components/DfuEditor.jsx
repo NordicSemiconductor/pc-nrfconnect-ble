@@ -75,11 +75,11 @@ class DfuEditor extends React.PureComponent {
     getStatus() {
         if (this.props.isCompleted) {
             return 'Completed';
-        } else if (this.props.isStopping) {
+        } if (this.props.isStopping) {
             return 'Stopping...';
         }
-        let status = this.props.status;
-        const fileNameBeingTransferred = this.props.fileNameBeingTransferred;
+        let { status } = this.props;
+        const { fileNameBeingTransferred } = this.props;
         if (fileNameBeingTransferred) {
             status += ` ${fileNameBeingTransferred}`;
         }
@@ -108,7 +108,7 @@ class DfuEditor extends React.PureComponent {
     }
 
     renderGraph() {
-        const throughput = this.props.throughput;
+        const { throughput } = this.props;
         if (throughput && throughput.kbpsPoints.length > 0) {
             return (
                 <FormGroup>

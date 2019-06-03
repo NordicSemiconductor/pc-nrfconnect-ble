@@ -71,8 +71,7 @@ class ConnectedDevice extends React.PureComponent {
             return;
         }
 
-        const isCurrentlyBelow =
-            window.innerWidth < (this.boundingRect.right + WINDOW_WIDTH_OFFSET);
+        const isCurrentlyBelow = window.innerWidth < (this.boundingRect.right + WINDOW_WIDTH_OFFSET);
         const hasChanged = isCurrentlyBelow !== this.belowWidthThreshold;
 
         if (!hasChanged) {
@@ -151,16 +150,18 @@ class ConnectedDevice extends React.PureComponent {
                 <div className="device-body text-small">
                     <div>
                         <div className="pull-right">
-                            { isDfuSupported &&
-                                <Button
-                                    id="dfuButton"
-                                    bsStyle="primary"
-                                    className="btn-nordic btn-xs"
-                                    title="Start Secure DFU"
-                                    onClick={this.props.onClickDfu}
-                                >
-                                    <img src={dfuIcon} className="icon-dfu-button" alt="" />
-                                </Button>
+                            { isDfuSupported
+                                && (
+                                    <Button
+                                        id="dfuButton"
+                                        bsStyle="primary"
+                                        className="btn-nordic btn-xs"
+                                        title="Start Secure DFU"
+                                        onClick={this.props.onClickDfu}
+                                    >
+                                        <img src={dfuIcon} className="icon-dfu-button" alt="" />
+                                    </Button>
+                                )
                             }
                             <Dropdown
                                 pullRight={pullRight}
