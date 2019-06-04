@@ -36,13 +36,12 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import UuidLookup from '../UuidLookup';
-import TextInput from './TextInput';
+import React from 'react';
 
 import { validateUuid } from '../../utils/validateUuid';
+import UuidLookup from '../UuidLookup';
+import TextInput from './TextInput';
 
 class UuidInput extends React.PureComponent {
     constructor(props) {

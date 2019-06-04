@@ -34,9 +34,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, InputGroup } from 'react-bootstrap';
+import React from 'react';
+import FormGroup from 'react-bootstrap/FormGroup';
+import FormLabel from 'react-bootstrap/FormLabel';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 const LabeledInputGroup = props => {
     const {
@@ -44,7 +46,7 @@ const LabeledInputGroup = props => {
     } = props;
     return (
         <FormGroup>
-            <ControlLabel className={labelClassName}>{label}</ControlLabel>
+            <FormLabel className={labelClassName}>{label}</FormLabel>
             <InputGroup className={wrapperClassName}>
                 {children}
             </InputGroup>

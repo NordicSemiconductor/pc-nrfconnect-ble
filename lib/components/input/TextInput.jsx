@@ -36,9 +36,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-    FormGroup, ControlLabel, FormControl, InputGroup,
-} from 'react-bootstrap';
+import FormControl from 'react-bootstrap/FormControl';
+import FormGroup from 'react-bootstrap/FormGroup';
+import FormLabel from 'react-bootstrap/FormLabel';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 const TextInput = props => {
     const {
@@ -60,7 +61,7 @@ const TextInput = props => {
     return (
         <FormGroup controlId={id} validationState={validationState} {...bsClassProp}>
             {
-                label && <ControlLabel className={labelClassName}>{label}</ControlLabel>
+                label && <FormLabel className={labelClassName}>{label}</FormLabel>
             }
             <InputGroup className={wrapperClassName}>
                 <FormControl value={realValue} {...newProps} />

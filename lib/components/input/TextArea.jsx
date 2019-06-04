@@ -34,11 +34,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import {
-    FormGroup, ControlLabel, FormControl, InputGroup,
-} from 'react-bootstrap';
+import React from 'react';
+import FormControl from 'react-bootstrap/FormControl';
+import FormGroup from 'react-bootstrap/FormGroup';
+import FormLabel from 'react-bootstrap/FormLabel';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 const TextArea = props => {
     const {
@@ -47,7 +48,7 @@ const TextArea = props => {
     return (
         <FormGroup controlId={id}>
             {
-                label && <ControlLabel className={labelClassName}>{label}</ControlLabel>
+                label && <FormLabel className={labelClassName}>{label}</FormLabel>
             }
             <InputGroup className={wrapperClassName}>
                 <FormControl componentClass="textarea" {...newProps} />

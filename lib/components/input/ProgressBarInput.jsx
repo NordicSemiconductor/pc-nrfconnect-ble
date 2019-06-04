@@ -34,11 +34,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import {
-    FormGroup, ControlLabel, ProgressBar, InputGroup,
-} from 'react-bootstrap';
+import React from 'react';
+import FormGroup from 'react-bootstrap/FormGroup';
+import FormLabel from 'react-bootstrap/FormLabel';
+import InputGroup from 'react-bootstrap/InputGroup';
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
 const ProgressBarInput = props => {
     const {
@@ -53,7 +54,7 @@ const ProgressBarInput = props => {
     return (
         <FormGroup>
             {
-                label && <ControlLabel className={labelClassName}>{label}</ControlLabel>
+                label && <FormLabel className={labelClassName}>{label}</FormLabel>
             }
             <InputGroup className={wrapperClassName}>
                 { status && <p>{status}</p>}
