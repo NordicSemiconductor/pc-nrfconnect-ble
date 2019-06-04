@@ -247,7 +247,7 @@ class CentralDevice extends React.PureComponent {
                             id="connectionDropDown"
                             onSelect={this.onSelect}
                         >
-                            <Dropdown.Toggle noCaret>
+                            <Dropdown.Toggle>
                                 <span className="icon-cog" aria-hidden="true" />
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
