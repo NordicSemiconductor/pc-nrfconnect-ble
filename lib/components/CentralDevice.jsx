@@ -142,7 +142,7 @@ class CentralDevice extends React.PureComponent {
             const items = [];
 
             if (onToggleAdvertising && isDeviceDetails) {
-                items.push(<Dropdown.Item key="advHeader" header>Advertising</Dropdown.Item>);
+                items.push(<Dropdown.Header key="advHeader">Advertising</Dropdown.Header>);
                 items.push(
                     <Dropdown.Item key="setup" eventKey="AdvertisingSetup">
                         Advertising setup...
@@ -165,7 +165,7 @@ class CentralDevice extends React.PureComponent {
 
             if (onToggleAutoConnUpdate) {
                 items.push(<Dropdown.Divider key="dividerConnUpdate" />);
-                items.push(<Dropdown.Item key="connUpdateHeader" header>Connection update</Dropdown.Item>);
+                items.push(<Dropdown.Header key="connUpdateHeader">Connection update</Dropdown.Header>);
                 items.push(
                     <Dropdown.Item
                         key="autoConnUpdate"
@@ -180,7 +180,7 @@ class CentralDevice extends React.PureComponent {
             if (onToggleAutoAcceptPairing
                 && onShowSecurityParamsDialog) {
                 items.push(<Dropdown.Divider key="dividerSecurity" />);
-                items.push(<Dropdown.Item key="securityHeader" header>Security</Dropdown.Item>);
+                items.push(<Dropdown.Header key="securityHeader">Security</Dropdown.Header>);
                 items.push(
                     <Dropdown.Item
                         key="setSecurityParams"
@@ -213,7 +213,7 @@ class CentralDevice extends React.PureComponent {
             if (onOpenCustomUuidFile) {
                 items.push(<Dropdown.Divider key="dividerOpenUuidFile" />);
                 items.push(
-                    <Dropdown.Item key="headerOpenUuidFile" header>Custom UUID definitions</Dropdown.Item>,
+                    <Dropdown.Header key="headerOpenUuidFile">Custom UUID definitions</Dropdown.Header>,
                 );
                 items.push(
                     <Dropdown.Item
