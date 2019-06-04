@@ -36,17 +36,18 @@
 
 'use strict';
 
-import React from 'react';
+import Button from 'react-bootstrap/Button';
+import FormLabel from 'react-bootstrap/FormLabel';
+import { List } from 'immutable';
+import Modal from 'react-bootstrap/Modal';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Modal, Button, Label } from 'react-bootstrap';
-import { List } from 'immutable';
-
-import AdvertisingList from '../components/AdvertisingList';
-import AdvertisingData from '../components/AdvertisingData';
 
 import * as AdvertisingActions from '../actions/advertisingActions';
+import AdvertisingData from '../components/AdvertisingData';
+import AdvertisingList from '../components/AdvertisingList';
 
 class AdvertisingSetup extends React.PureComponent {
     constructor(props) {
@@ -153,7 +154,7 @@ class AdvertisingSetup extends React.PureComponent {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Label className="error-label" bsStyle="danger">{setAdvdataStatus}</Label>
+                    <FormLabel className="error-label" bsStyle="danger">{setAdvdataStatus}</FormLabel>
                     <Button
                         className="btn-primary btn-nordic"
                         onClick={this.handleApply}

@@ -36,18 +36,19 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import EnumeratingAttributes from './EnumeratingAttributes';
-
-import AddNewItem from './AddNewItem';
-import * as Colors from '../utils/colorDefinitions';
+import React from 'react';
 
 import {
-    getInstanceIds, ImmutableService, ImmutableDescriptor, ImmutableCharacteristic,
+    ImmutableCharacteristic,
+    ImmutableDescriptor,
+    ImmutableService,
+    getInstanceIds,
 } from '../utils/api';
+import * as Colors from '../utils/colorDefinitions';
 import { toHexString } from '../utils/stringUtil';
+import AddNewItem from './AddNewItem';
+import EnumeratingAttributes from './EnumeratingAttributes';
 
 export const CCCD_UUID = '2902';
 

@@ -39,11 +39,11 @@
 'use strict';
 
 import React from 'react';
-import AttributeItem, { CCCD_UUID } from './AttributeItem';
 
+import { TEXT, getUuidFormat } from '../utils/uuid_definitions';
+import AttributeItem, { CCCD_UUID } from './AttributeItem';
 import DescriptorItem from './DescriptorItem';
 import HexOnlyEditableField from './HexOnlyEditableField';
-import { TEXT, getUuidFormat } from '../utils/uuid_definitions';
 
 const NOTIFY = 1;
 const INDICATE = 2;

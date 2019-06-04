@@ -39,14 +39,13 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Button } from 'react-bootstrap';
-import TextInput from './input/TextInput';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
 
 import { BLEEventType } from '../actions/common';
 import { Event } from '../reducers/bleEventReducer';
+import TextInput from './input/TextInput';
 
 const CONN_INTERVAL_MIN = 7.5;
 const CONN_INTERVAL_MAX = 4000;

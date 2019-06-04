@@ -38,13 +38,12 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 
 import AdvertisingSetup from '../containers/AdvertisingSetup';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
-
 import withHotkey from '../utils/withHotkey';
 import Spinner from './Spinner';
 

@@ -39,16 +39,14 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Button } from 'react-bootstrap';
-import TextInput from './input/TextInput';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
 
 import { BLEEventType } from '../actions/common';
-import { toHexString } from '../utils/stringUtil';
-
 import { Event } from '../reducers/bleEventReducer';
+import { toHexString } from '../utils/stringUtil';
+import TextInput from './input/TextInput';
 
 const SUCCESS = 'success';
 const ERROR = 'error';

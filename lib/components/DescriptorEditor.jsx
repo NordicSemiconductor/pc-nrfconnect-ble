@@ -38,21 +38,20 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import FormCheck from 'react-bootstrap/FormCheck';
 
-import { ButtonToolbar, Button, Checkbox } from 'react-bootstrap';
-import TextInput from './input/TextInput';
-import SelectList from './input/SelectList';
-import LabeledInputGroup from './input/LabeledInputGroup';
-import UuidInput from './input/UuidInput';
-
-import HexOnlyEditableField from './HexOnlyEditableField';
-
-import { getUuidName, uuidDescriptorDefinitions } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
-
+import { getUuidName, uuidDescriptorDefinitions } from '../utils/uuid_definitions';
 import { ERROR, SUCCESS, validateUuid } from '../utils/validateUuid';
+import HexOnlyEditableField from './HexOnlyEditableField';
+import LabeledInputGroup from './input/LabeledInputGroup';
+import SelectList from './input/SelectList';
+import TextInput from './input/TextInput';
+import UuidInput from './input/UuidInput';
 
 class DescriptorEditor extends React.PureComponent {
     constructor(props) {
@@ -245,7 +244,7 @@ class DescriptorEditor extends React.PureComponent {
                 </SelectList>
 
                 <LabeledInputGroup label="Max length">
-                    <Checkbox checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)}>Fixed length</Checkbox>
+                    <FormCheck checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)}>Fixed length</FormCheck>
                     <TextInput
                         inline
                         type="number"

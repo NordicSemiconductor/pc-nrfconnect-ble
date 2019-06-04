@@ -38,9 +38,8 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
+import React from 'react';
 import { Button } from 'react-bootstrap';
 
 class AdvertisingListEntry extends React.PureComponent {

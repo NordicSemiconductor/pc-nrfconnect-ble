@@ -36,13 +36,12 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import CountdownTimer from './CountdownTimer';
 import { BLEEventState, BLEEventType } from '../actions/common';
-
 import { Event } from '../reducers/bleEventReducer';
+import CountdownTimer from './CountdownTimer';
 
 const EVENT_TIMEOUT_SECONDS = 30;
 

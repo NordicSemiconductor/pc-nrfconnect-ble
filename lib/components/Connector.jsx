@@ -39,9 +39,10 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Popover, OverlayTrigger } from 'react-bootstrap';
+import React from 'react';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
 
 import layoutStrategies from '../common/layoutStrategies';
 
