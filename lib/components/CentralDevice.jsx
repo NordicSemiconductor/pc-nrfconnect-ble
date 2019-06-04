@@ -40,7 +40,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Dropdown, MenuItem } from 'react-bootstrap';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 import AdvertisingSetup from '../containers/AdvertisingSetup';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
@@ -142,87 +142,87 @@ class CentralDevice extends React.PureComponent {
             const items = [];
 
             if (onToggleAdvertising && isDeviceDetails) {
-                items.push(<MenuItem key="advHeader" header>Advertising</MenuItem>);
+                items.push(<Dropdown.Item key="advHeader" header>Advertising</Dropdown.Item>);
                 items.push(
-                    <MenuItem key="setup" eventKey="AdvertisingSetup">
+                    <Dropdown.Item key="setup" eventKey="AdvertisingSetup">
                         Advertising setup...
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
                 items.push(
-                    <MenuItem key="advertising" eventKey="ToggleAdvertising">
+                    <Dropdown.Item key="advertising" eventKey="ToggleAdvertising">
                         {advMenuText} <span className="subtler-text">(Alt+A)</span>
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
             }
 
             if (onLoadSetup) {
-                items.push(<MenuItem key="load" eventKey="LoadSetup">Load setup...</MenuItem>);
+                items.push(<Dropdown.Item key="load" eventKey="LoadSetup">Load setup...</Dropdown.Item>);
             }
 
             if (onSaveSetup) {
-                items.push(<MenuItem key="save" eventKey="SaveSetup">Save setup...</MenuItem>);
+                items.push(<Dropdown.Item key="save" eventKey="SaveSetup">Save setup...</Dropdown.Item>);
             }
 
             if (onToggleAutoConnUpdate) {
-                items.push(<MenuItem key="dividerConnUpdate" divider />);
-                items.push(<MenuItem key="connUpdateHeader" header>Connection update</MenuItem>);
+                items.push(<Dropdown.Divider key="dividerConnUpdate" />);
+                items.push(<Dropdown.Item key="connUpdateHeader" header>Connection update</Dropdown.Item>);
                 items.push(
-                    <MenuItem
+                    <Dropdown.Item
                         key="autoConnUpdate"
                         title="Automatically accept connection update requests"
                         eventKey="ToggleAutoConnUpdate"
                     >
                         <i className={iconCheckmarkConnUpdate} />Auto accept update requests
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
             }
 
             if (onToggleAutoAcceptPairing
                 && onShowSecurityParamsDialog) {
-                items.push(<MenuItem key="dividerSecurity" divider />);
-                items.push(<MenuItem key="securityHeader" header>Security</MenuItem>);
+                items.push(<Dropdown.Divider key="dividerSecurity" />);
+                items.push(<Dropdown.Item key="securityHeader" header>Security</Dropdown.Item>);
                 items.push(
-                    <MenuItem
+                    <Dropdown.Item
                         key="setSecurityParams"
                         title="Configure security parameters related to pairing"
                         eventKey="SetSecurityParams"
                     >
                         Security parameters...
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
                 items.push(
-                    <MenuItem
+                    <Dropdown.Item
                         key="autoAcceptPairing"
                         title="Automatically accept security requests"
                         eventKey="ToggleAutoAcceptPairing"
                     >
                         <i className={iconCheckmarkPairing} />Auto reply security requests
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
                 items.push(
-                    <MenuItem
+                    <Dropdown.Item
                         key="deleteBondInfo"
                         title="Delete bond information"
                         eventKey="DeleteBondInfo"
                     >
                         Delete bond information
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
             }
 
             if (onOpenCustomUuidFile) {
-                items.push(<MenuItem key="dividerOpenUuidFile" divider />);
+                items.push(<Dropdown.Divider key="dividerOpenUuidFile" />);
                 items.push(
-                    <MenuItem key="headerOpenUuidFile" header>Custom UUID definitions</MenuItem>,
+                    <Dropdown.Item key="headerOpenUuidFile" header>Custom UUID definitions</Dropdown.Item>,
                 );
                 items.push(
-                    <MenuItem
+                    <Dropdown.Item
                         key="openUuidFile"
                         title="Open custom UUID definitions file in default text editor"
                         eventKey="OpenCustomUuidFile"
                     >
                         Open UUID definitions file
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
             }
 
