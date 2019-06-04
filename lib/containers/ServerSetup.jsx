@@ -38,31 +38,27 @@
 
 'use strict';
 
-import React from 'react';
-import PropTypes from 'prop-types';
-
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { Map } from 'immutable';
-
 import electron from 'electron';
+import { Map } from 'immutable';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import * as ServerSetupActions from '../actions/serverSetupActions';
 import * as AdapterActions from '../actions/adapterActions';
 import * as AdvertisingActions from '../actions/advertisingActions';
 import * as ErrorActions from '../actions/errorDialogActions';
-
+import * as ServerSetupActions from '../actions/serverSetupActions';
+import { findSelectedItem, traverseItems } from '../common/treeViewKeyNavigation';
 import AddNewItem from '../components/AddNewItem';
-import ServiceItem from '../components/ServiceItem';
-import ServiceEditor from '../components/ServiceEditor';
-import CharacteristicEditor from '../components/CharacteristicEditor';
-import DescriptorEditor from '../components/DescriptorEditor';
-import ConfirmationDialog from '../components/ConfirmationDialog';
 import CentralDevice from '../components/CentralDevice';
-
+import CharacteristicEditor from '../components/CharacteristicEditor';
+import ConfirmationDialog from '../components/ConfirmationDialog';
+import DescriptorEditor from '../components/DescriptorEditor';
+import ServiceEditor from '../components/ServiceEditor';
+import ServiceItem from '../components/ServiceItem';
+import { ImmutableAdapter, getInstanceIds } from '../utils/api';
 import withHotkey from '../utils/withHotkey';
-import { getInstanceIds, ImmutableAdapter } from '../utils/api';
-import { traverseItems, findSelectedItem } from '../common/treeViewKeyNavigation';
 
 const filters = [
     { name: 'nRF Connect Server Setup', extensions: ['ncs', 'json'] },

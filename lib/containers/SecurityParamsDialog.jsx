@@ -39,15 +39,15 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
-import { Modal, Button } from 'react-bootstrap';
-
-import SecurityParamsControls from '../components/SecurityParamsControls';
+import { bindActionCreators } from 'redux';
 
 import * as SecurityActions from '../actions/securityActions';
+import SecurityParamsControls from '../components/SecurityParamsControls';
 
 class SecurityParamsDialog extends React.PureComponent {
     constructor(props) {

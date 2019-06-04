@@ -38,25 +38,22 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { bindActionCreators } from 'redux';
+import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
-import * as AdvertisingActions from '../actions/advertisingActions';
 import * as AdapterActions from '../actions/adapterActions';
+import * as AdvertisingActions from '../actions/advertisingActions';
 import * as BLEEventActions from '../actions/bleEventActions';
-import * as SecurityActions from '../actions/securityActions';
+import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
 import * as DfuActions from '../actions/dfuActions';
-
+import * as SecurityActions from '../actions/securityActions';
+import { findSelectedItem, traverseItems } from '../common/treeViewKeyNavigation';
 import DeviceDetailsView from '../components/DeviceDetails';
-import DfuDialog from './DfuDialog';
-
-import withHotkey from '../utils/withHotkey';
 import { getInstanceIds } from '../utils/api';
-import { traverseItems, findSelectedItem } from '../common/treeViewKeyNavigation';
+import withHotkey from '../utils/withHotkey';
+import DfuDialog from './DfuDialog';
 
 class DeviceDetailsContainer extends React.PureComponent {
     constructor(props) {

@@ -36,23 +36,20 @@
 
 'use strict';
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { Checkbox } from 'react-bootstrap';
 import { OrderedMap } from 'immutable';
+import PropTypes from 'prop-types';
+import React from 'react';
+import FormCheck from 'react-bootstrap/FormCheck';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import { DiscoveryOptions } from '../reducers/discoveryReducer';
-
-import * as DiscoveryActions from '../actions/discoveryActions';
 import * as AdapterActions from '../actions/adapterActions';
-
-import DiscoveryButton from '../components/DiscoveryButton';
+import * as DiscoveryActions from '../actions/discoveryActions';
 import DiscoveredDevice from '../components/DiscoveredDevice';
+import DiscoveryButton from '../components/DiscoveryButton';
 import TextInput from '../components/input/TextInput';
 import Spinner from '../components/Spinner';
-
+import { DiscoveryOptions } from '../reducers/discoveryReducer';
 import withHotkey from '../utils/withHotkey';
 
 class DiscoveredDevices extends React.PureComponent {
@@ -108,13 +105,13 @@ class DiscoveredDevices extends React.PureComponent {
 
         const discoveryOptionsDiv = discoveryOptions.expanded ? (
             <div className="discovery-options">
-                <Checkbox
+                <FormCheck
                     className="adv-label"
                     defaultChecked={discoveryOptions.sortByRssi}
                     onChange={this.handleSortByRssiCheckedChange}
                 >
                     Sort by signal strength
-                </Checkbox>
+                </FormCheck>
                 <TextInput
                     inline
                     title="Filter list by device name or address"

@@ -36,14 +36,14 @@
 
 'use strict';
 
-import Button from 'react-bootstrap/Button';
-import FormLabel from 'react-bootstrap/FormLabel';
 import { List } from 'immutable';
-import Modal from 'react-bootstrap/Modal';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { bindActionCreators } from 'redux';
+import Button from 'react-bootstrap/Button';
+import FormLabel from 'react-bootstrap/FormLabel';
+import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import * as AdvertisingActions from '../actions/advertisingActions';
 import AdvertisingData from '../components/AdvertisingData';

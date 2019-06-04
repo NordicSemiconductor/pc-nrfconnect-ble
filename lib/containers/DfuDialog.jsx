@@ -36,18 +36,17 @@
 
 /* eslint react/forbid-prop-types: off */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-
-import { Modal, Button } from 'react-bootstrap';
-
 import electron from 'electron';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import * as DfuActions from '../actions/dfuActions';
-import DfuEditor from '../components/DfuEditor';
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import DfuEditor from '../components/DfuEditor';
 
 class DfuDialog extends React.PureComponent {
     constructor(props) {

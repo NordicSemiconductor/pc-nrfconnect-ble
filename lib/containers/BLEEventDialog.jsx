@@ -38,23 +38,21 @@
 
 'use strict';
 
-import React from 'react';
-import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-
+import PropTypes from 'prop-types';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Modal, Button } from 'react-bootstrap';
+import * as AdapterActions from '../actions/adapterActions';
+import * as BLEEventActions from '../actions/bleEventActions';
 import { BLEEventState, BLEEventType } from '../actions/common';
-
+import AuthKeyEditor from '../components/AuthKeyEditor';
 import BLEEvent from '../components/BLEEvent';
 import ConnectionUpdateRequestEditor from '../components/ConnectionUpdateRequestEditor';
 import PairingEditor from '../components/PairingEditor';
-import AuthKeyEditor from '../components/AuthKeyEditor';
-
-import * as BLEEventActions from '../actions/bleEventActions';
-import * as AdapterActions from '../actions/adapterActions';
 
 class BLEEventDialog extends React.PureComponent {
     constructor(props) {
