@@ -38,14 +38,14 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import ConnectedDevice from './ConnectedDevice';
+import { SECURE_DFU_UUID } from '../utils/definitions';
 import CentralDevice from './CentralDevice';
+import ConnectedDevice from './ConnectedDevice';
 import EnumeratingAttributes from './EnumeratingAttributes';
 import ServiceItem from './ServiceItem';
-import { SECURE_DFU_UUID } from '../utils/definitions';
 
 class DeviceDetailsView extends React.PureComponent {
     constructor(props) {

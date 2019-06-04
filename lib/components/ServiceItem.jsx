@@ -36,13 +36,12 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import AttributeItem from './AttributeItem';
-import CharacteristicItem from './CharacteristicItem';
+import React from 'react';
 
 import { ImmutableService } from '../utils/api';
+import AttributeItem from './AttributeItem';
+import CharacteristicItem from './CharacteristicItem';
 
 class ServiceItem extends AttributeItem {
     constructor(props) {

@@ -36,11 +36,11 @@
 
 /* eslint react/forbid-prop-types: off */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import sizeMe from 'react-sizeme';
-import { LineChart } from 'react-d3-components';
 import { scaleLinear } from 'd3';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { LineChart } from 'react-d3-components';
+import sizeMe from 'react-sizeme';
 
 const HEIGHT = 250;
 const MARGIN = {

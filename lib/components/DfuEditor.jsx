@@ -36,15 +36,17 @@
 
 /* eslint react/forbid-prop-types: off */
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, ButtonToolbar } from 'react-bootstrap';
+import React from 'react';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import FormGroup from 'react-bootstrap/FormGroup';
+import FormLabel from 'react-bootstrap/FormLabel';
 
+import DfuButton from './DfuButton';
+import DfuThroughputGraph from './DfuThroughputGraph';
 import FileInput from './input/FileInput';
 import ProgressBarInput from './input/ProgressBarInput';
 import ReadOnlyField from './input/ReadOnlyField';
-import DfuButton from './DfuButton';
-import DfuThroughputGraph from './DfuThroughputGraph';
 
 /*
  * Converts an object like:
@@ -115,7 +117,7 @@ class DfuEditor extends React.PureComponent {
         if (throughput && throughput.kbpsPoints.length > 0) {
             return (
                 <FormGroup>
-                    <ControlLabel className="col-md-3 text-right">Throughput (kB/s)</ControlLabel>
+                    <FormLabel className="col-md-3 text-right">Throughput (kB/s)</FormLabel>
                     <div className="col-md-9">
                         <DfuThroughputGraph {...throughput} />
                     </div>

@@ -39,9 +39,10 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Dropdown, MenuItem } from 'react-bootstrap';
+import React from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
+
 import { getUuidName } from '../utils/uuid_definitions';
 
 function formatUuid(value) {
@@ -83,16 +84,16 @@ class UuidLookup extends React.PureComponent {
                         <span className="icon-search" aria-hidden="true" />
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="scroll-menu">
-                        <MenuItem header key="header0">{title}</MenuItem>
+                        <Dropdown.Item header key="header0">{title}</Dropdown.Item>
                         {
                             sorted.map(uuid => (
-                                <MenuItem
+                                <Dropdown.Item
                                     key={uuid}
                                     title={`${uuid}: ${getUuidName(uuid)}`}
                                     eventKey={uuid}
                                 >
                                     {`${formatUuid(uuid)}: ${getUuidName(uuid)}`}
-                                </MenuItem>
+                                </Dropdown.Item>
                             ))
                         }
                     </Dropdown.Menu>

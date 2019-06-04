@@ -39,14 +39,12 @@
 
 'use strict';
 
-import React from 'react';
-import PropTypes from 'prop-types';
-
 import * as _ from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
 
+import { hexArrayToHexText, hexArrayToText, textToHexText } from '../utils/stringUtil';
 import EditableField from './EditableField';
-
-import { hexArrayToText, textToHexText, hexArrayToHexText } from '../utils/stringUtil';
 
 function calcCaretPosition(origValue, caretPosition) {
     /*

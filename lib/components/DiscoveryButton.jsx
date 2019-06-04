@@ -34,8 +34,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 import withHotkey from '../utils/withHotkey';
 
 const DiscoveryButton = props => {

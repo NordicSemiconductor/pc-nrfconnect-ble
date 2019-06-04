@@ -38,14 +38,12 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Button } from 'react-bootstrap';
-
-import SecurityParamsControls from './SecurityParamsControls';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
 
 import { BLEEventType } from '../actions/common';
+import SecurityParamsControls from './SecurityParamsControls';
 
 class PairingEditor extends React.PureComponent {
     constructor(props) {

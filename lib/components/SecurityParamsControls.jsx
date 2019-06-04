@@ -40,10 +40,11 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { DropdownButton, MenuItem, Checkbox } from 'react-bootstrap';
+import React from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import FormCheck from 'react-bootstrap/FormCheck';
 
 const IO_CAPS_DISPLAY_ONLY = 0;
 const IO_CAPS_DISPLAY_YESNO = 1;
@@ -125,67 +126,67 @@ class SecurityParamsControls extends React.PureComponent {
                             id="ioCapsDropdownId"
                             onSelect={(eventKey, event) => this.onIoCapsSelect(event, eventKey)}
                         >
-                            <MenuItem eventKey={IO_CAPS_DISPLAY_ONLY}>
+                            <Dropdown.Item eventKey={IO_CAPS_DISPLAY_ONLY}>
                                 {keyToIoCapsText(IO_CAPS_DISPLAY_ONLY)}
-                            </MenuItem>
-                            <MenuItem eventKey={IO_CAPS_DISPLAY_YESNO}>
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey={IO_CAPS_DISPLAY_YESNO}>
                                 {keyToIoCapsText(IO_CAPS_DISPLAY_YESNO)}
-                            </MenuItem>
-                            <MenuItem eventKey={IO_CAPS_KEYBOARD_ONLY}>
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey={IO_CAPS_KEYBOARD_ONLY}>
                                 {keyToIoCapsText(IO_CAPS_KEYBOARD_ONLY)}
-                            </MenuItem>
-                            <MenuItem eventKey={IO_CAPS_NONE}>
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey={IO_CAPS_NONE}>
                                 {keyToIoCapsText(IO_CAPS_NONE)}
-                            </MenuItem>
-                            <MenuItem eventKey={IO_CAPS_KEYBOARD_DISPLAY}>
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey={IO_CAPS_KEYBOARD_DISPLAY}>
                                 {keyToIoCapsText(IO_CAPS_KEYBOARD_DISPLAY)}
-                            </MenuItem>
+                            </Dropdown.Item>
                         </DropdownButton>
                     </div>
                 </div>
                 <div className="form-group">
                     <label className="control-label col-sm-4">Authentication</label>
                     <div className="col-sm-7">
-                        <Checkbox
+                        <FormCheck
                             defaultChecked={this.enableLesc}
                             onChange={event => this.handleCheckboxChange('enableLesc', event.target.checked)}
                         >
                             Enable LE Secure Connection pairing
-                        </Checkbox>
-                        <Checkbox
+                        </FormCheck>
+                        <FormCheck
                             defaultChecked={this.enableMitm}
                             onChange={event => this.handleCheckboxChange('enableMitm', event.target.checked)}
                         >
                             Enable MITM protection
-                        </Checkbox>
-                        <Checkbox
+                        </FormCheck>
+                        <FormCheck
                             defaultChecked={this.enableOob}
                             onChange={event => this.handleCheckboxChange('enableOob', event.target.checked)}
                         >
                             Enable OOB data
-                        </Checkbox>
+                        </FormCheck>
                     </div>
                 </div>
                 <div className="form-group">
                     <label className="control-label col-sm-4">Keypress notifications</label>
                     <div className="col-sm-7">
-                        <Checkbox
+                        <FormCheck
                             defaultChecked={this.enableKeypress}
                             onChange={event => this.handleCheckboxChange('enableKeypress', event.target.checked)}
                         >
                             Enable keypress notifications
-                        </Checkbox>
+                        </FormCheck>
                     </div>
                 </div>
                 <div className="form-group">
                     <label className="control-label col-sm-4">Bonding</label>
                     <div className="col-sm-7">
-                        <Checkbox
+                        <FormCheck
                             defaultChecked={this.performBonding}
                             onChange={event => this.handleCheckboxChange('performBonding', event.target.checked)}
                         >
                             Perform bonding
-                        </Checkbox>
+                        </FormCheck>
                     </div>
                 </div>
             </div>

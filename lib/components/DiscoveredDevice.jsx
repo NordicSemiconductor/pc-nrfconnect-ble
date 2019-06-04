@@ -36,12 +36,13 @@
 
 'use strict';
 
-import React from 'react';
-import PropTypes from 'prop-types';
 import changeCase from 'change-case';
-import { getUuidName } from '../utils/uuid_definitions';
-import { toHexString } from '../utils/stringUtil';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import { ImmutableDevice } from '../utils/api';
+import { toHexString } from '../utils/stringUtil';
+import { getUuidName } from '../utils/uuid_definitions';
 
 const RSSI_WIDTH_MAX = 20;
 const RSSI_WIDTH_HIGH = Math.round(RSSI_WIDTH_MAX * 0.8);

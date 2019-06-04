@@ -36,11 +36,11 @@
 
 'use strict';
 
-import React from 'react';
+import $ from 'jquery';
 import PropTypes from 'prop-types';
+import React from 'react';
 import onClickOutside from 'react-onclickoutside';
 import TextareaAutosize from 'react-textarea-autosize';
-import $ from 'jquery';
 
 import TextArea from './input/TextArea';
 

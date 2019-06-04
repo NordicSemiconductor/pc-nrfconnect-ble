@@ -38,17 +38,16 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { ButtonToolbar, Button } from 'react-bootstrap';
-import TextInput from './input/TextInput';
-import UuidInput from './input/UuidInput';
-
-import { getUuidName, uuidServiceDefinitions } from '../utils/uuid_definitions';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
 import { ValidationError } from '../common/Errors';
+import { getUuidName, uuidServiceDefinitions } from '../utils/uuid_definitions';
 import { ERROR, validateUuid } from '../utils/validateUuid';
+import TextInput from './input/TextInput';
+import UuidInput from './input/UuidInput';
 
 class ServiceEditor extends React.PureComponent {
     constructor(props) {

@@ -36,13 +36,12 @@
 
 'use strict';
 
+import { is as ImmutableIs, Map } from 'immutable';
 import React from 'react';
-import { Map, is as ImmutableIs } from 'immutable';
 
-import AttributeItem, { CCCD_UUID } from './AttributeItem';
-
-import HexOnlyEditableField from './HexOnlyEditableField';
 import { getInstanceIds } from '../utils/api';
+import AttributeItem, { CCCD_UUID } from './AttributeItem';
+import HexOnlyEditableField from './HexOnlyEditableField';
 
 function isCCCDAttribute(uuid) {
     return uuid === CCCD_UUID;
