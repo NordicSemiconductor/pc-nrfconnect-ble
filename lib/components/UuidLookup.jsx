@@ -80,7 +80,7 @@ class UuidLookup extends React.PureComponent {
                     onSelect={(eventKey, event) => onSelect(event, eventKey)}
                     pullRight={pullRight}
                 >
-                    <Dropdown.Toggle noCaret>
+                    <Dropdown.Toggle>
                         <span className="icon-search" aria-hidden="true" />
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="scroll-menu">

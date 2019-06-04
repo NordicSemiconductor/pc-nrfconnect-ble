@@ -172,7 +172,7 @@ class ConnectedDevice extends React.PureComponent {
                                 onClick={this.onResize}
                                 onSelect={this.onSelect}
                             >
-                                <Dropdown.Toggle noCaret>
+                                <Dropdown.Toggle>
                                     <span className="icon-cog" aria-hidden="true" />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu pullRight={pullRight}>
