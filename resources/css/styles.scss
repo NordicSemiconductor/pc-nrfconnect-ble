@@ -479,6 +479,10 @@
             background-color: #E6E6E6;
           }
         }
+        > .dropdown-toggle{
+          min-width: 0;
+          padding: 0;
+        }
       }
 
       .dropdown-toggle{
@@ -511,12 +515,8 @@
 .dropdown:not(core-nav-bar .dropdown) {
   padding: 0px;
   border: 0px;
-  min-width: 143px;
 
   > .dropdown-toggle {
-    min-width: 143px;
-    padding-right: 20px;
-
     > .caret {
       position: absolute;
       left: 90%;
