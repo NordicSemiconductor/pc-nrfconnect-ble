@@ -135,8 +135,6 @@ class ConnectedDevice extends React.PureComponent {
             opacity: device.connected === true ? 1.0 : 0.5,
         };
 
-        const pullRight = !!this.belowWidthThreshold;
-
         const dfuIcon = require('../../resources/dfu_icon.png'); // eslint-disable-line
 
         return (
@@ -167,7 +165,6 @@ class ConnectedDevice extends React.PureComponent {
                                 )
                             }
                             <Dropdown
-                                pullRight={pullRight}
                                 id="connectionDropDown"
                                 onClick={this.onResize}
                                 onSelect={this.onSelect}
@@ -175,7 +172,7 @@ class ConnectedDevice extends React.PureComponent {
                                 <Dropdown.Toggle>
                                     <span className="icon-cog" aria-hidden="true" />
                                 </Dropdown.Toggle>
-                                <Dropdown.Menu pullRight={pullRight}>
+                                <Dropdown.Menu>
                                     <Dropdown.Item id="updateConnectionMenuItem" eventKey="Update">
                                         Update connection...
                                     </Dropdown.Item>
