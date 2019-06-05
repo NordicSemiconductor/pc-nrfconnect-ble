@@ -41,6 +41,9 @@ import FormGroup from 'react-bootstrap/FormGroup';
 import FormLabel from 'react-bootstrap/FormLabel';
 import InputGroup from 'react-bootstrap/InputGroup';
 
+const SUCCESS = 'success';
+const ERROR = 'error';
+
 const TextInput = props => {
     const {
         id,
@@ -55,11 +58,17 @@ const TextInput = props => {
         ...newProps
     } = props;
     const bsClassProp = inline && { bsClass: 'form-inline' };
-
     const realValue = `${value}`;
 
+    if (validationState === SUCCESS) {
+        newProps.isValid = true;
+    }
+    if (validationState === ERROR) {
+        newProps.isValid = false;
+    }
+
     return (
-        <FormGroup controlId={id} validationState={validationState} {...bsClassProp}>
+        <FormGroup controlId={id} {...bsClassProp}>
             {
                 label && <FormLabel className={labelClassName}>{label}</FormLabel>
             }
