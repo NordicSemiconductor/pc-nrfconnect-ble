@@ -137,12 +137,12 @@ class ServiceEditor extends React.PureComponent {
                 />
                 <ButtonToolbar>
                     <div className="col-md-4" />
-                    <Button bsStyle="primary" className="btn-nordic" onClick={onRemoveAttribute}>
+                    <Button variant="primary" className="btn-nordic" onClick={onRemoveAttribute}>
                         <i className="icon-cancel" />
                         Delete
                     </Button>
                     <Button
-                        bsStyle="primary"
+                        variant="primary"
                         className="btn-nordic"
                         onClick={this.saveAttribute}
                     >

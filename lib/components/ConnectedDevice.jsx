@@ -155,7 +155,7 @@ class ConnectedDevice extends React.PureComponent {
                                 && (
                                     <Button
                                         id="dfuButton"
-                                        bsStyle="primary"
+                                        variant="primary"
                                         className="btn-nordic btn-xs"
                                         title="Start Secure DFU"
                                         onClick={onClickDfu}

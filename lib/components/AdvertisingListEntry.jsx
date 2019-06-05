@@ -62,7 +62,7 @@ class AdvertisingListEntry extends React.PureComponent {
                 <td>
                     <Button
                         className="icon-cancel-circled"
-                        bsSize="xsmall"
+                        size="xsmall"
                         onClick={this.onButtonClicked}
                     >
                         {' Delete'}

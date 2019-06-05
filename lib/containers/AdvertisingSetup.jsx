@@ -118,7 +118,7 @@ class AdvertisingSetup extends React.PureComponent {
         } = this.props;
 
         return (
-            <Modal className="adv-setup" show={show} onHide={() => {}} bsSize="large">
+            <Modal className="adv-setup" show={show} onHide={() => {}} size="large">
                 <Modal.Header>
                     <Modal.Title>Advertising setup</Modal.Title>
                 </Modal.Header>
@@ -154,7 +154,7 @@ class AdvertisingSetup extends React.PureComponent {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <FormLabel className="error-label" bsStyle="danger">{setAdvdataStatus}</FormLabel>
+                    <FormLabel className="error-label" variant="danger">{setAdvdataStatus}</FormLabel>
                     <Button
                         className="btn-primary btn-nordic"
                         onClick={this.handleApply}

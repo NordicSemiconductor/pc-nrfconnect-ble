@@ -122,7 +122,7 @@ class DfuDialog extends React.PureComponent {
 
         return (
             <div>
-                <Modal className="dfu-setup" bsSize="large" show={isVisible}>
+                <Modal className="dfu-setup" size="large" show={isVisible}>
                     <Modal.Header>
                         <Modal.Title>
                             Device Firmware Upgrade (DFU) for device {device.address}

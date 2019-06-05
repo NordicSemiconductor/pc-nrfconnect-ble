@@ -57,7 +57,7 @@ const TextInput = props => {
         value,
         ...newProps
     } = props;
-    const bsClassProp = inline && { bsClass: 'form-inline' };
+    const classProp = inline && { className: 'form-inline' };
     const realValue = `${value}`;
 
     if (validationState === SUCCESS) {
@@ -68,7 +68,7 @@ const TextInput = props => {
     }
 
     return (
-        <FormGroup controlId={id} {...bsClassProp}>
+        <FormGroup controlId={id} {...classProp}>
             {
                 label && <FormLabel className={labelClassName}>{label}</FormLabel>
             }

@@ -54,7 +54,7 @@ const DfuButton = props => {
 
     return (
         <Button
-            bsStyle="primary"
+            variant="primary"
             disabled={disabled}
             className="btn-nordic pull-right"
             onClick={onClick}
