@@ -247,7 +247,7 @@ class CentralDevice extends React.PureComponent {
                             onSelect={this.onSelect}
                         >
                             <Dropdown.Toggle>
-                                <span className="icon-cog" aria-hidden="true" />
+                                <span className="mdi mdi-nut" />
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 { dropDownMenuItems }

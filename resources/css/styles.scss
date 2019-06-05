@@ -547,6 +547,28 @@
   outline: 5px auto;
 }
 
+#connectionDropDown {
+  .dropdown-toggle {
+    margin-right: 8px;
+    font-size: 1.1em;
+    box-shadow: none;
+    color: black;
+    background-color: white;
+  }
+
+  .dropdown-toggle:hover {
+    background-color: gray;
+  }
+
+  .dropdown-toggle:after {
+    content: none;
+  }
+
+  .dropdown-toggle:focus {
+    background-color: gray;
+  }
+}
+
 .text-small {
   font-size: 13px;
 }
