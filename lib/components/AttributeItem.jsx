@@ -246,7 +246,7 @@ class AttributeItem extends React.PureComponent {
         const content = this.renderContent(null);
         const childrenList = this.getChildren();
 
-        const expandIcon = expanded ? 'icon-down-dir' : 'icon-right-dir';
+        const expandIcon = expanded ? 'mdi mdi-menu-down' : 'mdi mdi-menu-right';
         const iconStyle = (!this.expandable || (children && children.size === 0 && !addNew)) ? { display: 'none' } : {};
         const itemIsSelected = item.instanceId === selected;
 
