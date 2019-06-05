@@ -55,7 +55,7 @@ function formatUuid(value) {
     return value;
 }
 
-class UuidLookup extends React.PureComponent {
+class UuidLookup extends React.Component {
     shouldComponentUpdate(nextProps) {
         const { uuidDefs } = this.props;
         return !(JSON.stringify(uuidDefs) === JSON.stringify(nextProps.uuidDefs));

@@ -78,7 +78,7 @@ function calcCaretPosition(origValue, caretPosition) {
     return caretPositionWithoutDashes + correctNumberOfDashes;
 }
 
-class HexOnlyEditableField extends React.PureComponent {
+class HexOnlyEditableField extends React.Component {
     constructor(props) {
         super(props);
         this.keyPressValidation = this.keyPressValidation.bind(this);
