@@ -64,7 +64,7 @@ const TextInput = props => {
         newProps.isValid = true;
     }
     if (validationState === ERROR) {
-        newProps.isValid = false;
+        newProps.isInvalid = true;
     }
 
     return (
