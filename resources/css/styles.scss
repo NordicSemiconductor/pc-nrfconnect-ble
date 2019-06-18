@@ -800,10 +800,11 @@
     display: flex;
     margin: 0px;
     max-width: 800px;
+    height: 100%;
     box-shadow: $draggable-box-shadow;
     .server-setup-tree {
       position: relative;
-      max-height: calc(100% - 285px);
+      height: 100%;
       .service-items-wrap {
         max-height: calc(100% - 441px);
         .flag-line {
@@ -840,9 +841,9 @@
       min-width: 350px;
       overflow-y: auto;
       overflow-x: hidden;
-      height: calc(100% - 285px);
+      height: 100%;
       > form, .nothing-selected {
-        height: calc(100% - 285px);
+        height: 100%;
         padding: 20px;
       }
       .nothing-selected {
