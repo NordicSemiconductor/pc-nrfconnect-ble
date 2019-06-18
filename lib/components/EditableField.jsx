@@ -268,7 +268,6 @@ class EditableField extends React.Component {
             child = (
                 <TextArea
                     id="editable-field"
-                    ref={editableTextarea => { this.editableTextarea = editableTextarea; }}
                     label={label}
                     title={title}
                     onKeyDown={this.onKeyDown}

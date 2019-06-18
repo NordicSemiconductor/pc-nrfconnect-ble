@@ -52,7 +52,7 @@ const SelectList = props => {
                 label && <FormLabel className={labelClassName}>{label}</FormLabel>
             }
             <InputGroup className={wrapperClassName}>
-                <FormControl componentClass="select" {...newProps}>
+                <FormControl as="select" {...newProps}>
                     {children}
                 </FormControl>
             </InputGroup>

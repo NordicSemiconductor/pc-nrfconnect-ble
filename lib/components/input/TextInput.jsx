@@ -36,7 +36,6 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
 import FormGroup from 'react-bootstrap/FormGroup';
 import FormLabel from 'react-bootstrap/FormLabel';

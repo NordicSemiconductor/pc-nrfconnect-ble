@@ -51,7 +51,7 @@ const TextArea = props => {
                 label && <FormLabel className={labelClassName}>{label}</FormLabel>
             }
             <InputGroup className={wrapperClassName}>
-                <FormControl componentClass="textarea" {...newProps} />
+                <FormControl as="textarea" {...newProps} />
             </InputGroup>
         </FormGroup>
     );
