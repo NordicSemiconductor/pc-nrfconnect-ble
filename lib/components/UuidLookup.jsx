@@ -74,15 +74,15 @@ class UuidLookup extends React.Component {
             <div className="uuid-lookup">
                 <Dropdown
                     className="uuid-dropdown"
-                    id="dropdown-uuid-lookup"
+                    id="dropdownUuidLookup"
                     title={title}
                     onSelect={(eventKey, event) => onSelect(event, eventKey)}
                 >
                     <Dropdown.Toggle>
-                        <span className="icon-search" aria-hidden="true" />
+                        <span className="mdi mdi-magnify" aria-hidden="true" />
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="scroll-menu">
-                        <Dropdown.Item header key="header0">{title}</Dropdown.Item>
+                        <Dropdown.Header key="header0">{title}</Dropdown.Header>
                         {
                             sorted.map(uuid => (
                                 <Dropdown.Item

@@ -34,8 +34,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
 import FormGroup from 'react-bootstrap/FormGroup';
 import FormLabel from 'react-bootstrap/FormLabel';
@@ -75,7 +76,7 @@ const TextInput = props => {
             <InputGroup className={wrapperClassName}>
                 <FormControl value={realValue} {...newProps} />
                 { hasFeedback && <FormControl.Feedback /> }
-                { buttonAfter && <InputGroup.Button>{ buttonAfter }</InputGroup.Button> }
+                { buttonAfter && <InputGroup>{ buttonAfter }</InputGroup> }
             </InputGroup>
         </FormGroup>
     );

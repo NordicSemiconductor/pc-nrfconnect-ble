@@ -547,6 +547,12 @@
   outline: 5px auto;
 }
 
+#dropdownUuidLookup {
+  .dropdown-toggle:after {
+    content: none;
+  }
+}
+
 #connectionDropDown {
   .dropdown-toggle {
     margin-right: 8px;
