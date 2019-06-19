@@ -11,12 +11,12 @@ exports[`DfuEditor should render stopping 1`] = `
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
         htmlFor=""
       >
         Zip file
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <input
@@ -28,29 +28,29 @@ exports[`DfuEditor should render stopping 1`] = `
           title={null}
           value="/path/to/file"
         />
-        <span
-          className="input-group-btn"
+        <div
+          className="input-group"
         >
           <button
-            className="btn btn-default"
+            className="btn btn-primary"
             disabled={true}
             onClick={[Function]}
             type="button"
           >
             Choose
           </button>
-        </span>
-      </span>
+        </div>
+      </div>
     </div>
     <div
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
       >
         Package info
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <pre>
@@ -59,17 +59,17 @@ exports[`DfuEditor should render stopping 1`] = `
   dat_file: dfu.dat
 
         </pre>
-      </span>
+      </div>
     </div>
     <div
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
       >
         Progress
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <p>
@@ -93,7 +93,7 @@ exports[`DfuEditor should render stopping 1`] = `
             10%
           </div>
         </div>
-      </span>
+      </div>
     </div>
   </div>
   <div
@@ -130,12 +130,12 @@ exports[`DfuEditor should render with default props 1`] = `
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
         htmlFor=""
       >
         Zip file
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <input
@@ -147,19 +147,19 @@ exports[`DfuEditor should render with default props 1`] = `
           title={null}
           value="null"
         />
-        <span
-          className="input-group-btn"
+        <div
+          className="input-group"
         >
           <button
-            className="btn btn-default"
+            className="btn btn-primary"
             disabled={false}
             onClick={[Function]}
             type="button"
           >
             Choose
           </button>
-        </span>
-      </span>
+        </div>
+      </div>
     </div>
   </div>
   <div
@@ -200,12 +200,12 @@ exports[`DfuEditor should render with dfu completed 1`] = `
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
         htmlFor=""
       >
         Zip file
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <input
@@ -217,29 +217,29 @@ exports[`DfuEditor should render with dfu completed 1`] = `
           title={null}
           value="/path/to/file"
         />
-        <span
-          className="input-group-btn"
+        <div
+          className="input-group"
         >
           <button
-            className="btn btn-default"
+            className="btn btn-primary"
             disabled={true}
             onClick={[Function]}
             type="button"
           >
             Choose
           </button>
-        </span>
-      </span>
+        </div>
+      </div>
     </div>
     <div
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
       >
         Package info
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <pre>
@@ -248,17 +248,17 @@ exports[`DfuEditor should render with dfu completed 1`] = `
   dat_file: dfu.dat
 
         </pre>
-      </span>
+      </div>
     </div>
     <div
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
       >
         Progress
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <p>
@@ -282,7 +282,7 @@ exports[`DfuEditor should render with dfu completed 1`] = `
             100%
           </div>
         </div>
-      </span>
+      </div>
     </div>
   </div>
   <div
@@ -323,12 +323,12 @@ exports[`DfuEditor should render with file path 1`] = `
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
         htmlFor=""
       >
         Zip file
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <input
@@ -340,19 +340,19 @@ exports[`DfuEditor should render with file path 1`] = `
           title={null}
           value="/path/to/file"
         />
-        <span
-          className="input-group-btn"
+        <div
+          className="input-group"
         >
           <button
-            className="btn btn-default"
+            className="btn btn-primary"
             disabled={false}
             onClick={[Function]}
             type="button"
           >
             Choose
           </button>
-        </span>
-      </span>
+        </div>
+      </div>
     </div>
   </div>
   <div
@@ -389,12 +389,12 @@ exports[`DfuEditor should render with file path and package info 1`] = `
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
         htmlFor=""
       >
         Zip file
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <input
@@ -406,29 +406,29 @@ exports[`DfuEditor should render with file path and package info 1`] = `
           title={null}
           value="/path/to/file"
         />
-        <span
-          className="input-group-btn"
+        <div
+          className="input-group"
         >
           <button
-            className="btn btn-default"
+            className="btn btn-primary"
             disabled={false}
             onClick={[Function]}
             type="button"
           >
             Choose
           </button>
-        </span>
-      </span>
+        </div>
+      </div>
     </div>
     <div
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
       >
         Package info
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <pre>
@@ -437,7 +437,7 @@ exports[`DfuEditor should render with file path and package info 1`] = `
   dat_file: dfu.dat
 
         </pre>
-      </span>
+      </div>
     </div>
   </div>
   <div
@@ -474,12 +474,12 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
         htmlFor=""
       >
         Zip file
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <input
@@ -491,29 +491,29 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
           title={null}
           value="/path/to/file"
         />
-        <span
-          className="input-group-btn"
+        <div
+          className="input-group"
         >
           <button
-            className="btn btn-default"
+            className="btn btn-primary"
             disabled={true}
             onClick={[Function]}
             type="button"
           >
             Choose
           </button>
-        </span>
-      </span>
+        </div>
+      </div>
     </div>
     <div
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
       >
         Package info
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <pre>
@@ -522,17 +522,17 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
   dat_file: dfu.dat
 
         </pre>
-      </span>
+      </div>
     </div>
     <div
       className="form-group"
     >
       <label
-        className="col-md-3 text-right control-label"
+        className="col-md-3 text-right form-label"
       >
         Progress
       </label>
-      <span
+      <div
         className="col-md-9 input-group"
       >
         <p>
@@ -556,7 +556,7 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
             10%
           </div>
         </div>
-      </span>
+      </div>
     </div>
   </div>
   <div
