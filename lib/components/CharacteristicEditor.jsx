@@ -42,7 +42,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import FormCheck from 'react-bootstrap/FormCheck';
+import Form from 'react-bootstrap/Form';
 
 import { ValidationError } from '../common/Errors';
 import {
@@ -252,24 +252,26 @@ class CharacteristicEditor extends React.Component {
                     showText={showText}
                 />
 
-                <LabeledInputGroup label="Properties">
-                    <FormCheck checked={this.broadcast} onChange={e => this.setCheckedProperty('broadcast', e)}>Broadcast</FormCheck>
-                    <FormCheck checked={this.read} onChange={e => this.setCheckedProperty('read', e)}>Read</FormCheck>
-                    <FormCheck checked={this.writeWoResp} onChange={e => this.setCheckedProperty('writeWoResp', e)}>Write without response</FormCheck>
-                    <FormCheck checked={this.write} onChange={e => this.setCheckedProperty('write', e)}>Write</FormCheck>
-                    <FormCheck checked={this.notify} onChange={e => this.setCheckedProperty('notify', e)}>Notify</FormCheck>
-                    <FormCheck checked={this.indicate} onChange={e => this.setCheckedProperty('indicate', e)}>Indicate</FormCheck>
-                    <FormCheck checked={this.authSignedWr} onChange={e => this.setCheckedProperty('authSignedWr', e)}>
-                        Authenticated signed write
-                    </FormCheck>
+                <LabeledInputGroup label="Properties" wrapperClassName="form-list">
+                    <Form.Check checked={this.broadcast} onChange={e => this.setCheckedProperty('broadcast', e)} label="Broadcast" />
+                    <Form.Check checked={this.read} onChange={e => this.setCheckedProperty('read', e)} label="Read" />
+                    <Form.Check checked={this.writeWoResp} onChange={e => this.setCheckedProperty('writeWoResp', e)} label="Write without response" />
+                    <Form.Check checked={this.write} onChange={e => this.setCheckedProperty('write', e)} label="Write" />
+                    <Form.Check checked={this.notify} onChange={e => this.setCheckedProperty('notify', e)} label="Notify" />
+                    <Form.Check checked={this.indicate} onChange={e => this.setCheckedProperty('indicate', e)} label="Indicate" />
+                    <Form.Check
+                        label="Authenticated signed write"
+                        checked={this.authSignedWr}
+                        onChange={e => this.setCheckedProperty('authSignedWr', e)}
+                    />
                 </LabeledInputGroup>
 
-                <LabeledInputGroup label="Extended Properties">
-                    <FormCheck checked={this.reliableWr} onChange={e => this.setCheckedProperty('reliableWr', e)}>Reliable write</FormCheck>
-                    <FormCheck checked={this.wrAux} onChange={e => this.setCheckedProperty('wrAux', e)}>Write auxiliary</FormCheck>
+                <LabeledInputGroup label="Extended Properties" wrapperClassName="form-list">
+                    <Form.Check checked={this.reliableWr} onChange={e => this.setCheckedProperty('reliableWr', e)} label="Reliable write" />
+                    <Form.Check checked={this.wrAux} onChange={e => this.setCheckedProperty('wrAux', e)} label="Write auxiliary" />
                 </LabeledInputGroup>
 
-                <SelectList label="Read permission" type="select" className="form-control" value={this.readPerm} onChange={e => this.setValueProperty('readPerm', e)}>
+                <SelectList label="Read permission" type="select" className="form-control form-list" value={this.readPerm} onChange={e => this.setValueProperty('readPerm', e)}>
                     <option value="open">No security required</option>
                     <option value="encrypt">Encryption required, no MITM</option>
                     <option value="encrypt mitm-protection">Encryption with MITM required</option>
@@ -277,7 +279,7 @@ class CharacteristicEditor extends React.Component {
                     <option value="no_access">No access rights specified (undefined)</option>
                 </SelectList>
 
-                <SelectList label="Write permission" type="select" className="form-control" value={this.writePerm} onChange={e => this.setValueProperty('writePerm', e)}>
+                <SelectList label="Write permission" type="select" className="form-control form-list" value={this.writePerm} onChange={e => this.setValueProperty('writePerm', e)}>
                     <option value="open">No security required</option>
                     <option value="encrypt">Encryption required, no MITM</option>
                     <option value="encrypt mitm-protection">Encryption with MITM required</option>
@@ -286,9 +288,8 @@ class CharacteristicEditor extends React.Component {
                 </SelectList>
 
                 <LabeledInputGroup label="Max length">
-                    <FormCheck checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)}>Fixed length</FormCheck>
+                    <Form.Check type="checkbox" checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)} label="Fixed length" />
                     <TextInput
-                        inline
                         type="number"
                         min={0}
                         max={this.fixedLength ? 510 : 512}

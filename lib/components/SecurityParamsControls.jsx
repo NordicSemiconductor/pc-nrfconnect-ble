@@ -44,7 +44,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import FormCheck from 'react-bootstrap/FormCheck';
+import Form from 'react-bootstrap/Form';
 
 const IO_CAPS_DISPLAY_ONLY = 0;
 const IO_CAPS_DISPLAY_YESNO = 1;
@@ -147,46 +147,41 @@ class SecurityParamsControls extends React.PureComponent {
                 <div className="form-group">
                     <label className="control-label col-sm-4">Authentication</label>
                     <div className="col-sm-7">
-                        <FormCheck
+                        <Form.Check
                             defaultChecked={this.enableLesc}
                             onChange={event => this.handleCheckboxChange('enableLesc', event.target.checked)}
-                        >
-                            Enable LE Secure Connection pairing
-                        </FormCheck>
-                        <FormCheck
+                            label="Enable LE Secure Connection pairing"
+                        />
+                        <Form.Check
                             defaultChecked={this.enableMitm}
                             onChange={event => this.handleCheckboxChange('enableMitm', event.target.checked)}
-                        >
-                            Enable MITM protection
-                        </FormCheck>
-                        <FormCheck
+                            label="Enable MITM protection"
+                        />
+                        <Form.Check
                             defaultChecked={this.enableOob}
                             onChange={event => this.handleCheckboxChange('enableOob', event.target.checked)}
-                        >
-                            Enable OOB data
-                        </FormCheck>
+                            label="Enable OOB data"
+                        />
                     </div>
                 </div>
                 <div className="form-group">
                     <label className="control-label col-sm-4">Keypress notifications</label>
                     <div className="col-sm-7">
-                        <FormCheck
+                        <Form.Check
                             defaultChecked={this.enableKeypress}
                             onChange={event => this.handleCheckboxChange('enableKeypress', event.target.checked)}
-                        >
-                            Enable keypress notifications
-                        </FormCheck>
+                            label="Enable keypress notifications"
+                        />
                     </div>
                 </div>
                 <div className="form-group">
                     <label className="control-label col-sm-4">Bonding</label>
                     <div className="col-sm-7">
-                        <FormCheck
+                        <Form.Check
                             defaultChecked={this.performBonding}
                             onChange={event => this.handleCheckboxChange('performBonding', event.target.checked)}
-                        >
-                            Perform bonding
-                        </FormCheck>
+                            label="Perform bonding"
+                        />
                     </div>
                 </div>
             </div>

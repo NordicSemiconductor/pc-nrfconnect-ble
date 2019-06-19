@@ -42,7 +42,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import FormCheck from 'react-bootstrap/FormCheck';
+import Form from 'react-bootstrap/Form';
 
 import { ValidationError } from '../common/Errors';
 import { getUuidName, uuidDescriptorDefinitions } from '../utils/uuid_definitions';
@@ -244,7 +244,7 @@ class DescriptorEditor extends React.PureComponent {
                 </SelectList>
 
                 <LabeledInputGroup label="Max length">
-                    <FormCheck checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)}>Fixed length</FormCheck>
+                    <Form.Check checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)} label="Fixed length" />
                     <TextInput
                         inline
                         type="number"

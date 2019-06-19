@@ -859,16 +859,21 @@
         margin-bottom: 0px;
         padding: 0px;
       }
-      .form-horizontal .has-feedback .form-control-feedback {
-        right: 45px;
-      }
-      .form-horizontal .has-feedback .form-control {
-        padding-right: 20px;
-      }
       .form-horizontal .form-inline {
         margin-left: -15px;
         margin-right: -15px;
         margin-bottom: 15px;
+      }
+      .form-inline {
+        width: 100%;
+      }
+      .form-list {
+        padding: 0 15px;
+        flex-direction: column;
+        align-items: left;
+      }
+      .form-control {
+        width: 100%;
       }
     }
   }

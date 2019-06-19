@@ -39,7 +39,7 @@
 import { OrderedMap } from 'immutable';
 import PropTypes from 'prop-types';
 import React from 'react';
-import FormCheck from 'react-bootstrap/FormCheck';
+import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -105,13 +105,12 @@ class DiscoveredDevices extends React.PureComponent {
 
         const discoveryOptionsDiv = discoveryOptions.expanded ? (
             <div className="discovery-options">
-                <FormCheck
+                <Form.Check
                     className="adv-label"
                     defaultChecked={discoveryOptions.sortByRssi}
                     onChange={this.handleSortByRssiCheckedChange}
-                >
-                    Sort by signal strength
-                </FormCheck>
+                    label="Sort by signal strength"
+                />
                 <TextInput
                     inline
                     title="Filter list by device name or address"
