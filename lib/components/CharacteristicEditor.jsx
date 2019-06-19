@@ -241,6 +241,7 @@ class CharacteristicEditor extends React.Component {
                     value={this.name}
                     onChange={e => this.setValueProperty('name', e)}
                 />
+
                 <HexOnlyEditableField
                     label="Initial value"
                     plain

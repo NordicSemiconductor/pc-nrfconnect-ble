@@ -43,10 +43,18 @@ import InputGroup from 'react-bootstrap/InputGroup';
 
 const TextArea = props => {
     const {
-        id, label, labelClassName, wrapperClassName, ...newProps
+        id,
+        inline,
+        label,
+        labelClassName,
+        wrapperClassName,
+        ...newProps
     } = props;
+
+    const classProp = inline && { className: 'form-inline' };
+
     return (
-        <FormGroup controlId={id}>
+        <FormGroup controlId={id} {...classProp}>
             {
                 label && <FormLabel className={labelClassName}>{label}</FormLabel>
             }
@@ -59,12 +67,14 @@ const TextArea = props => {
 
 TextArea.propTypes = {
     id: PropTypes.string.isRequired,
+    inline: PropTypes.bool,
     label: PropTypes.string.isRequired,
     labelClassName: PropTypes.string,
     wrapperClassName: PropTypes.string,
 };
 
 TextArea.defaultProps = {
+    inline: true,
     labelClassName: 'col-md-3 text-right',
     wrapperClassName: 'col-md-9',
 };

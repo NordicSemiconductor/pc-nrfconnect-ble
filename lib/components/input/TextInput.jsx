@@ -82,18 +82,18 @@ const TextInput = props => {
 };
 
 TextInput.propTypes = {
-    id: PropTypes.string,
-    label: PropTypes.string,
-    validationState: PropTypes.string,
     buttonAfter: PropTypes.node,
-    hasFeedback: PropTypes.bool,
-    labelClassName: PropTypes.string,
-    wrapperClassName: PropTypes.string,
-    inline: PropTypes.bool,
-    title: PropTypes.string,
     className: PropTypes.string,
+    hasFeedback: PropTypes.bool,
+    id: PropTypes.string,
+    inline: PropTypes.bool,
+    label: PropTypes.string,
+    labelClassName: PropTypes.string,
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
+    title: PropTypes.string,
+    validationState: PropTypes.string,
+    wrapperClassName: PropTypes.string,
     value: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number,
@@ -101,19 +101,19 @@ TextInput.propTypes = {
 };
 
 TextInput.defaultProps = {
-    id: '',
-    label: '',
-    validationState: null,
     buttonAfter: null,
-    hasFeedback: false,
-    labelClassName: 'col-md-3 text-right',
-    wrapperClassName: 'col-md-9',
-    inline: true,
-    title: null,
     className: null,
+    hasFeedback: false,
+    id: '',
+    inline: true,
+    label: '',
+    labelClassName: 'col-md-3 text-right',
     onChange: null,
     placeholder: '',
+    title: null,
+    validationState: null,
     value: null,
+    wrapperClassName: 'col-md-9',
 };
 
 export default TextInput;

@@ -43,11 +43,18 @@ import InputGroup from 'react-bootstrap/InputGroup';
 
 const SelectList = props => {
     const {
-        id, label, children, labelClassName, wrapperClassName, ...newProps
+        children,
+        id,
+        inline,
+        label,
+        labelClassName,
+        wrapperClassName,
+        ...newProps
     } = props;
 
+    const classProp = inline && { className: 'form-inline' };
     return (
-        <FormGroup controlId={id}>
+        <FormGroup controlId={id} {...classProp}>
             {
                 label && <FormLabel className={labelClassName}>{label}</FormLabel>
             }
@@ -61,15 +68,17 @@ const SelectList = props => {
 };
 
 SelectList.propTypes = {
+    children: PropTypes.node.isRequired,
     id: PropTypes.string,
+    inline: PropTypes.bool,
     label: PropTypes.string.isRequired,
     labelClassName: PropTypes.string,
     wrapperClassName: PropTypes.string,
-    children: PropTypes.node.isRequired,
 };
 
 SelectList.defaultProps = {
     id: '',
+    inline: true,
     labelClassName: 'col-md-3 text-right',
     wrapperClassName: 'col-md-9',
 };
