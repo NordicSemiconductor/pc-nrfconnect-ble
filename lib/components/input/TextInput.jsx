@@ -74,7 +74,6 @@ const TextInput = props => {
             }
             <InputGroup className={wrapperClassName}>
                 <FormControl value={realValue} {...newProps} />
-                { hasFeedback && <FormControl.Feedback /> }
                 { buttonAfter && <InputGroup>{ buttonAfter }</InputGroup> }
             </InputGroup>
         </FormGroup>
