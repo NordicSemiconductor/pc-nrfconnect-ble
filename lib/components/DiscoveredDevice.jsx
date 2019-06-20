@@ -36,36 +36,43 @@
 
 'use strict';
 
-import changeCase from 'change-case';
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+import changeCase from 'change-case';
+import Button from 'react-bootstrap/Button';
 
 import { ImmutableDevice } from '../utils/api';
 import { toHexString } from '../utils/stringUtil';
 import { getUuidName } from '../utils/uuid_definitions';
 
-const RSSI_WIDTH_MAX = 20;
-const RSSI_WIDTH_HIGH = Math.round(RSSI_WIDTH_MAX * 0.8);
-const RSSI_WIDTH_MID = Math.round(RSSI_WIDTH_MAX * 0.6);
-const RSSI_WIDTH_LOW = Math.round(RSSI_WIDTH_MAX * 0.4);
-const RSSI_WIDTH_MIN = Math.round(RSSI_WIDTH_MAX * 0.2);
-
-function getRssiWidth(rssi) {
-    let rssiWidth;
+const RssiBars = ({ rssi }) => {
+    let bars = 0;
     if (rssi < -100) {
-        rssiWidth = RSSI_WIDTH_MIN;
+        bars = 1;
     } else if (rssi < -80) {
-        rssiWidth = RSSI_WIDTH_LOW;
+        bars = 2;
     } else if (rssi < -60) {
-        rssiWidth = RSSI_WIDTH_MID;
+        bars = 3;
     } else if (rssi < -45) {
-        rssiWidth = RSSI_WIDTH_HIGH;
+        bars = 4;
     } else {
-        rssiWidth = RSSI_WIDTH_MAX;
+        bars = 5;
     }
+    const fill = Array(5).fill(0).map((v, i) => ((i < bars) ? 'black' : 'lightgray'));
+    return (
+        <svg viewBox="0 0 14 16" width="14" className="rssi-bars">
+            <rect x="0" y="14" width="2" height="2" fill={fill[0]} />
+            <rect x="3" y="13" width="2" height="3" fill={fill[1]} />
+            <rect x="6" y="11" width="2" height="5" fill={fill[2]} />
+            <rect x="9" y="8" width="2" height="8" fill={fill[3]} />
+            <rect x="12" y="4" width="2" height="12" fill={fill[4]} />
+        </svg>
+    );
+};
 
-    return rssiWidth;
-}
+RssiBars.propTypes = {
+    rssi: PropTypes.number.isRequired,
+};
 
 function getAdvTypeText(advType) {
     if (!advType) {
@@ -250,7 +257,7 @@ class DiscoveredDevice extends React.PureComponent {
 
         addressDiv = <div className="address-text selectable">{device.address}</div>;
 
-        const dirIcon = device.isExpanded ? 'icon-down-dir' : 'icon-right-dir';
+        const dirIcon = device.isExpanded ? 'menu-down' : 'menu-right';
 
         if (!device) {
             return (
@@ -265,21 +272,21 @@ class DiscoveredDevice extends React.PureComponent {
                 <div className="top-bar">
                     <div style={{ float: 'right' }}>
                         <span className="address-text">{ `${device.rssi} dBm` }</span>
-                        <span style={{ width: `${getRssiWidth(device.rssi)}px` }} className="icon-signal icon-foreground" />
-                        <span className="icon-signal icon-background" />
+                        <RssiBars rssi={device.rssi} />
                     </div>
                     <div className="device-name selectable">{device.name || '<Unknown name>'}</div>
                 </div>
                 <div className="discovered-device-body text-small">
                     <div className="discovered-device-address-line">
-                        <button
+                        <Button
                             type="button"
                             onClick={this.onButtonClick}
                             className="btn btn-primary btn-xs btn-nordic"
                             disabled={(!isConnecting && adapterIsConnecting) || device.connected}
+                            size="sm"
                         >
-                            {isConnecting ? 'Cancel' : 'Connect'} <i className="icon-link" />
-                        </button>
+                            <span>{isConnecting ? 'Cancel' : 'Connect'}</span><i className="mdi mdi-link-variant" />
+                        </Button>
                         {addressDiv}
                     </div>
                     <div>
@@ -290,7 +297,7 @@ class DiscoveredDevice extends React.PureComponent {
                             role="button"
                             tabIndex={0}
                         >
-                            <i className={dirIcon} />Details
+                            <i className={`mdi mdi-${dirIcon}`} />Details
                         </span>
                         {addressTypeDiv}
                         {advTypeDiv}
