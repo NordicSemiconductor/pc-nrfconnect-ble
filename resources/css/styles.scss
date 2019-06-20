@@ -825,7 +825,7 @@
       position: relative;
       height: 100%;
       .service-items-wrap {
-        max-height: calc(100% - 441px);
+        max-height: calc(100vh - 441px);
         .flag-line {
           display: none;
         }
@@ -900,9 +900,9 @@
     box-shadow: $draggable-box-shadow;
     .server-setup-tree {
       position: relative;
-      max-height: calc(100% - 285px);
+      max-height: calc(100vh - 285px);
       .service-items-wrap {
-        max-height: calc(100% - 441px);
+        max-height: calc(100vh - 441px);
         .flag-line {
           display: none;
         }
@@ -944,10 +944,10 @@
 }
 
 .local-server .service-items-wrap {
-  max-height: calc(100% - 386px);
+  max-height: calc(100vh - 386px);
 }
 .remote-server .service-items-wrap {
-  max-height: calc(100% - 444px);
+  max-height: calc(100vh - 444px);
 }
 
 .device-details-view, .server-setup-view, .bleevent-dialog-view {
