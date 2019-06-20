@@ -89,6 +89,10 @@ export default {
         ...bindActionCreators(DiscoveryActions, dispatch),
         ...bindActionCreators(AdapterActions, dispatch),
     }),
+    mapDeviceSelectorState: (state, props) => ({
+        portIndicatorStatus: (state.app.adapter.selectedAdapter !== null) ? 'on' : 'off',
+        ...props,
+    }),
     reduceApp: reducers,
     middleware: store => next => action => {
         if (!action) {
