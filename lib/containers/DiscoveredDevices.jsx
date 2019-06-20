@@ -40,6 +40,7 @@ import { OrderedMap } from 'immutable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -101,16 +102,18 @@ class DiscoveredDevices extends React.PureComponent {
 
         this.discoveryOptions = discoveryOptions.toJS();
 
-        const dirIcon = discoveryOptions.expanded ? 'icon-down-dir' : 'icon-right-dir';
+        const dirIcon = discoveryOptions.expanded ? 'menu-down' : 'menu-right';
 
         const discoveryOptionsDiv = discoveryOptions.expanded ? (
             <div className="discovery-options">
-                <Form.Check
-                    className="adv-label"
-                    defaultChecked={discoveryOptions.sortByRssi}
-                    onChange={this.handleSortByRssiCheckedChange}
-                    label="Sort by signal strength"
-                />
+                <Form.Group controlId="sortCheck">
+                    <Form.Check
+                        className="adv-label"
+                        defaultChecked={discoveryOptions.sortByRssi}
+                        onChange={this.handleSortByRssiCheckedChange}
+                        label="Sort by signal strength"
+                    />
+                </Form.Group>
                 <TextInput
                     inline
                     title="Filter list by device name or address"
@@ -141,14 +144,15 @@ class DiscoveredDevices extends React.PureComponent {
                         isAdapterAvailable={isAdapterAvailable}
                         onScanClicked={toggleScan}
                     />
-                    <button
+                    <Button
                         title="Clear list (Alt+C)"
                         onClick={clearDevicesList}
                         type="button"
-                        className="btn btn-primary btn-sm btn-nordic padded-row"
+                        className="btn btn-primary btn-nordic"
                     >
-                        <span className="icon-trash" />Clear
-                    </button>
+                        <span className="mdi mdi-trash-can" />
+                        <span>Clear</span>
+                    </Button>
                     <div className="discovery-options-expand">
                         <span
                             onClick={toggleOptionsExpanded}
@@ -156,7 +160,7 @@ class DiscoveredDevices extends React.PureComponent {
                             role="button"
                             tabIndex={0}
                         >
-                            <i className={dirIcon} />Options
+                            <i className={`mdi mdi-${dirIcon}`} />Options
                         </span>
                         {discoveryOptionsDiv}
                     </div>
