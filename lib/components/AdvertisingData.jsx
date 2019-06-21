@@ -357,6 +357,7 @@ class AdvertisingData extends React.PureComponent {
                         id="dropdown-adv"
                         label="Type"
                         onSelect={this.handleSelect}
+                        variant="outline-secondary"
                     >
                         <Dropdown.Item eventKey="0">{keyToAdvertisingType('0')}</Dropdown.Item>
                         <Dropdown.Item eventKey="1">{keyToAdvertisingType('1')}</Dropdown.Item>
@@ -370,6 +371,7 @@ class AdvertisingData extends React.PureComponent {
                 </div>
                 <div className="adv-value-container">
                     {adTypeDiv}
+                    {/* <div className="type-label">Value</div> */}
                     <TextInput
                         disabled={inputDisabled}
                         id="value"
@@ -378,7 +380,7 @@ class AdvertisingData extends React.PureComponent {
                         hasFeedback
                         placeholder={this.placeholderText}
                         validationState={this.validateInput()}
-                        labelClassName=""
+                        labelClassName="type-label col-md-3"
                         wrapperClassName="col-md-12"
                         onChange={this.handleChange}
                     />

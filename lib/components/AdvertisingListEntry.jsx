@@ -61,9 +61,10 @@ class AdvertisingListEntry extends React.PureComponent {
                 <td>{entry.value}</td>
                 <td>
                     <Button
-                        className="mdi mdi-cancel"
-                        size="xsmall"
+                        className="mdi mdi-close-circle adv-data-delete"
+                        size="xs"
                         onClick={this.onButtonClicked}
+                        variant="outline-secondary"
                     >
                         {' Delete'}
                     </Button>
