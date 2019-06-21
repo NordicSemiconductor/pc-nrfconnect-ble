@@ -180,12 +180,18 @@ class BLEEvent extends React.PureComponent {
 
     getStyle() {
         const { event, selected } = this.props;
-        const { backgroundColor: { r, g, b } } = this.state;
-
         if (!event.state) {
+            if (selected) {
+                return {
+                    backgroundColor: 'rgb(179,225,245)',
+                };
+            }
+
+            // seems this code is dead:
+            const { backgroundColor } = this.state;
+            const { r, g, b } = backgroundColor;
             return {
-                backgroundColor: selected ? 'rgb(179,225,245)'
-                    : `rgb(${r}, ${g}, ${b})`,
+                backgroundColor: `rgb(${r}, ${g}, ${b})`,
             };
         }
         return {};

@@ -100,8 +100,7 @@ const ConnectionSetup = props => {
                 <Col sm={4} xs={4} className="connection-parameter-value" />
             </Row>
             <Row>
-                <Col sm={8} xs={8} className={`connection-security ${iconClass}`}>{securityLevelText}</Col>
-                <Col sm={4} xs={4} className="connection-parameter-value" />
+                <Col sm={12} xs={12} className={`connection-security ${iconClass}`}>{securityLevelText}</Col>
             </Row>
         </Container>
     );

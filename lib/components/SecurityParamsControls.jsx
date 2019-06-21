@@ -45,6 +45,9 @@ import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const IO_CAPS_DISPLAY_ONLY = 0;
 const IO_CAPS_DISPLAY_YESNO = 1;
@@ -116,15 +119,16 @@ class SecurityParamsControls extends React.PureComponent {
 
     render() {
         return (
-            <div>
-                <div className="form-group">
-                    <label className="control-label col-sm-4">IO capabilities</label>
-                    <div className="col-sm-7">
+            <Container>
+                <Row className="form-group">
+                    <Col sm={4} className="form-label text-right">IO capabilities</Col>
+                    <Col sm={7}>
                         <DropdownButton
                             title={this.ioCapsTitle}
                             key="ioCapsDropdownKey"
                             id="ioCapsDropdownId"
                             onSelect={(eventKey, event) => this.onIoCapsSelect(event, eventKey)}
+                            variant="outline-secondary"
                         >
                             <Dropdown.Item eventKey={IO_CAPS_DISPLAY_ONLY}>
                                 {keyToIoCapsText(IO_CAPS_DISPLAY_ONLY)}
@@ -142,11 +146,11 @@ class SecurityParamsControls extends React.PureComponent {
                                 {keyToIoCapsText(IO_CAPS_KEYBOARD_DISPLAY)}
                             </Dropdown.Item>
                         </DropdownButton>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="control-label col-sm-4">Authentication</label>
-                    <div className="col-sm-7">
+                    </Col>
+                </Row>
+                <Row className="form-group">
+                    <Col sm={4} className="form-label text-right align-baseline">Authentication</Col>
+                    <Col sm={7}>
                         <Form.Group controlId="enableLescCheck">
                             <Form.Check
                                 defaultChecked={this.enableLesc}
@@ -168,11 +172,11 @@ class SecurityParamsControls extends React.PureComponent {
                                 label="Enable OOB data"
                             />
                         </Form.Group>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="control-label col-sm-4">Keypress notifications</label>
-                    <div className="col-sm-7">
+                    </Col>
+                </Row>
+                <Row className="form-group">
+                    <Col sm={4} className="form-label text-right">Keypress notifications</Col>
+                    <Col sm={7}>
                         <Form.Group controlId="enableKeypressCheck">
                             <Form.Check
                                 defaultChecked={this.enableKeypress}
@@ -180,11 +184,11 @@ class SecurityParamsControls extends React.PureComponent {
                                 label="Enable keypress notifications"
                             />
                         </Form.Group>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="control-label col-sm-4">Bonding</label>
-                    <div className="col-sm-7">
+                    </Col>
+                </Row>
+                <Row className="form-group">
+                    <Col sm={4} className="form-label text-right align-baseline">Bonding</Col>
+                    <Col sm={7}>
                         <Form.Group controlId="performBondingCheck">
                             <Form.Check
                                 defaultChecked={this.performBonding}
@@ -192,9 +196,9 @@ class SecurityParamsControls extends React.PureComponent {
                                 label="Perform bonding"
                             />
                         </Form.Group>
-                    </div>
-                </div>
-            </div>
+                    </Col>
+                </Row>
+            </Container>
         );
     }
 }
