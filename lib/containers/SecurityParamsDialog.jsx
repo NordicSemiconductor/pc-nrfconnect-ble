@@ -89,7 +89,7 @@ class SecurityParamsDialog extends React.PureComponent {
         }
 
         return (
-            <Modal className="" show={security.showingSecurityDialog} onHide={() => {}}>
+            <Modal className="security-param-modal" show={security.showingSecurityDialog} onHide={() => {}}>
                 <Modal.Header>
                     <Modal.Title>Security parameters</Modal.Title>
                 </Modal.Header>
@@ -114,6 +114,7 @@ class SecurityParamsDialog extends React.PureComponent {
                             type="button"
                             onClick={() => this.handleCancel()}
                             className="btn btn-default btn-sm btn-nordic"
+                            variant="outline-secondary"
                         >
                             Cancel
                         </Button>
