@@ -41,29 +41,33 @@ import FormGroup from 'react-bootstrap/FormGroup';
 import FormLabel from 'react-bootstrap/FormLabel';
 import InputGroup from 'react-bootstrap/InputGroup';
 
-const TextArea = props => {
-    const {
-        id,
-        inline,
-        label,
-        labelClassName,
-        wrapperClassName,
-        ...newProps
-    } = props;
+/* eslint-disable react/prefer-stateless-function */
 
-    const classProp = inline && { className: 'form-inline' };
+class TextArea extends React.Component {
+    render() {
+        const {
+            id,
+            inline,
+            label,
+            labelClassName,
+            wrapperClassName,
+            ...newProps
+        } = this.props;
 
-    return (
-        <FormGroup controlId={id} {...classProp}>
-            {
-                label && <FormLabel className={labelClassName}>{label}</FormLabel>
-            }
-            <InputGroup className={wrapperClassName}>
-                <FormControl as="textarea" {...newProps} />
-            </InputGroup>
-        </FormGroup>
-    );
-};
+        const classProp = inline && { className: 'form-inline' };
+
+        return (
+            <FormGroup controlId={id} {...classProp}>
+                {
+                    label && <FormLabel className={labelClassName}>{label}</FormLabel>
+                }
+                <InputGroup className={wrapperClassName}>
+                    <FormControl as="textarea" {...newProps} />
+                </InputGroup>
+            </FormGroup>
+        );
+    }
+}
 
 TextArea.propTypes = {
     id: PropTypes.string.isRequired,

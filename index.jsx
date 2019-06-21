@@ -57,8 +57,8 @@ export default {
             {...restProps}
             selectedItemId={selectedItemId < 0 ? 0 : selectedItemId}
             menuItems={[
-                { id: 0, text: 'Connection Map', iconClass: 'icon-columns' },
-                { id: 1, text: 'Server Setup', iconClass: 'icon-indent-right' },
+                { id: 0, text: 'Connection Map', iconClass: 'mdi mdi-sitemap' },
+                { id: 1, text: 'Server Setup', iconClass: 'mdi mdi-format-indent-increase' },
             ]}
         />
     ),

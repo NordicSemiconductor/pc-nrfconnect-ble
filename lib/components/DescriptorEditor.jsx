@@ -244,7 +244,9 @@ class DescriptorEditor extends React.PureComponent {
                 </SelectList>
 
                 <LabeledInputGroup label="Max length">
-                    <Form.Check checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)} label="Fixed length" />
+                    <Form.Group controlId="fixedLengthCheck">
+                        <Form.Check checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)} label="Fixed length" />
+                    </Form.Group>
                     <TextInput
                         inline
                         type="number"
@@ -259,7 +261,7 @@ class DescriptorEditor extends React.PureComponent {
                 <ButtonToolbar>
                     <div className="col-md-4" />
                     <Button variant="primary" className="btn-nordic" onClick={onRemoveAttribute}>
-                        <i className="icon-cancel" />Delete
+                        <i className="mdi mdi-close" />Delete
                     </Button>
                     <Button
                         variant="primary"

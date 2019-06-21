@@ -66,8 +66,8 @@ const ConnectionSetup = props => {
             securityLevelText = 'Unencrypted link';
     }
 
-    const iconClass = (device.securityLevel && (device.securityLevel > 1)) ? 'icon-lock' : 'icon-lock-open';
-    const iconBondedClass = device.bonded ? 'icon-link' : 'icon-unlink';
+    const iconClass = (device.securityLevel && (device.securityLevel > 1)) ? 'mdi mdi-lock' : 'mdi mdi-lock-open';
+    const iconBondedClass = device.bonded ? 'mdi mdi-link-variant' : 'mdi mdi-link-variant-off';
     const bondedText = device.bonded ? 'Bonded' : 'Not bonded';
 
     return (
@@ -115,8 +115,8 @@ class ConnectionOverlay extends React.PureComponent {
         } = this.props;
 
         const iconClass = (device.securityLevel && (device.securityLevel > 1))
-            ? 'icon-lock'
-            : 'icon-lock-open';
+            ? 'mdi mdi-lock'
+            : 'mdi mdi-lock-open';
 
         return (
             <div className="connection-info-button btn btn-xs btn-link" style={style}>

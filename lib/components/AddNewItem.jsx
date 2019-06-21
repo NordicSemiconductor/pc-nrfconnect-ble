@@ -69,7 +69,7 @@ class AddNewItem extends React.PureComponent {
                 <div className="content-wrap">
                     <div className="content padded-row">
                         <span className="icon-wrap">
-                            <i className="icon-slim icon-plus-circled" />
+                            <i className="icon-slim mdi mdi-plus-circle" />
                         </span>
                         <span>{text}</span>
                     </div>

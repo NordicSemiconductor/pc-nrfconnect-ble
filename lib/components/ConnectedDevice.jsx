@@ -170,7 +170,7 @@ class ConnectedDevice extends React.PureComponent {
                                 onSelect={this.onSelect}
                             >
                                 <Dropdown.Toggle>
-                                    <span className="icon-cog" aria-hidden="true" />
+                                    <span className="mdi mdi-settings" aria-hidden="true" />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     <Dropdown.Item id="updateConnectionMenuItem" eventKey="Update">

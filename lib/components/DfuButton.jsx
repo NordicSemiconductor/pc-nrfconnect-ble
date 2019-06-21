@@ -46,10 +46,10 @@ const DfuButton = props => {
 
     if (dfuInProgress) {
         labelString = 'Stop DFU';
-        iconName = 'icon-stop';
+        iconName = 'mdi mdi-stop';
     } else {
         labelString = 'Start DFU';
-        iconName = 'icon-play';
+        iconName = 'mdi mdi-play';
     }
 
     return (

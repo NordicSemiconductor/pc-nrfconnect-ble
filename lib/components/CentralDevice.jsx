@@ -134,8 +134,8 @@ class CentralDevice extends React.PureComponent {
         const iconOpacity = advertising ? '' : 'icon-background';
         const advMenuText = advertising ? 'Stop advertising' : 'Start advertising';
         const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
-        const iconCheckmarkConnUpdate = autoConnUpdate ? 'icon-ok' : '';
-        const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'icon-ok' : '';
+        const iconCheckmarkConnUpdate = autoConnUpdate ? 'mdi mdi-check' : '';
+        const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'mdi mdi-check' : '';
 
         const dropDownMenuItems = (() => {
             const items = [];
@@ -247,7 +247,7 @@ class CentralDevice extends React.PureComponent {
                             onSelect={this.onSelect}
                         >
                             <Dropdown.Toggle>
-                                <span className="mdi mdi-nut" />
+                                <span className="mdi mdi-settings" />
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 { dropDownMenuItems }
@@ -263,7 +263,7 @@ class CentralDevice extends React.PureComponent {
                         }
                     </div>
                     <div className="address-text selectable">{address}</div>
-                    <div className={`icon-wifi ${iconOpacity}`} aria-hidden="true" title={advIconTitle} style={progressStyle} />
+                    <div className={`mdi mdi-signal-variant ${iconOpacity}`} aria-hidden="true" title={advIconTitle} style={progressStyle} />
                     <AdvertisingSetup />
                     <SecurityParamsDialog />
                 </div>

@@ -492,18 +492,18 @@
             background-color: #E6E6E6;
           }
         }
-        > .dropdown-toggle{
+        > .dropdown-toggle {
           min-width: 0;
           padding: 0;
         }
       }
 
-      .dropdown-toggle{
+      .dropdown-toggle {
         margin-left: 5px;
         min-width: 0px;
         padding: 0px;
         border: none;
-        .icon-cog{
+        .mdi-settings {
           font-size: 18px;
         }
       }
@@ -870,7 +870,7 @@
       }
       .uuid-lookup {
         margin-bottom: 0px;
-        padding: 0px;
+        padding-left: 1px;
       }
       .form-horizontal .form-inline {
         margin-left: -15px;
@@ -884,9 +884,6 @@
         padding: 0 15px;
         flex-direction: column;
         align-items: left;
-      }
-      .form-control {
-        width: 100%;
       }
     }
   }
@@ -1365,11 +1362,13 @@ hr {
   display: inline-block;
   vertical-align: bottom;
   margin-bottom: 22px;
-  padding: 3px;
   .dropdown-toggle {
     margin-left: 0px;
     min-width: 0px;
-    padding: 0px;
+    padding: 2px 2px 3px 2px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: 0;
     span[class^='icon-'] {
       font-size: 18px;
       padding: 3px;

@@ -95,6 +95,8 @@ class EditableField extends React.Component {
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onWriteButtonClick = this.onWriteButtonClick.bind(this);
         this.onReadButtonClick = this.onReadButtonClick.bind(this);
+
+        this.editableTextarea = React.createRef();
     }
 
     componentDidMount() {
@@ -106,7 +108,7 @@ class EditableField extends React.Component {
 
     componentDidUpdate() {
         if (this.editing) {
-            const textarea = this.editableTextarea;
+            const textarea = this.editableTextarea.current;
             const caretPosition = textarea.value.length;
             textarea.focus();
             textarea.selectionStart = caretPosition;
@@ -172,7 +174,7 @@ class EditableField extends React.Component {
         if (this.editing) {
             if (insideSelector) {
                 // don't close if click was within a parent element that matches insideSelector
-                const textarea = this.editableTextarea;
+                const textarea = this.editableTextarea.current;
                 if (textarea) {
                     const insideParent = $(textarea).parents(insideSelector)[0];
                     if (e.path.includes(insideParent)) {
@@ -260,7 +262,7 @@ class EditableField extends React.Component {
                 role="button"
                 tabIndex={0}
             >
-                <i className="icon-ccw" />
+                <i className="mdi mdi-refresh" />
             </div>
         ) : null;
 
@@ -268,6 +270,7 @@ class EditableField extends React.Component {
             child = (
                 <TextArea
                     id="editable-field"
+                    ref={this.editableTextarea}
                     label={label}
                     title={title}
                     onKeyDown={this.onKeyDown}
@@ -296,10 +299,10 @@ class EditableField extends React.Component {
                         role="button"
                         tabIndex={0}
                     >
-                        <i className="icon-ok" />
+                        <i className="mdi mdi-check" />
                     </div>
                     <TextareaAutosize
-                        ref={editableTextarea => { this.editableTextarea = editableTextarea; }}
+                        ref={this.editableTextarea}
                         minRows={1}
                         title={title}
                         value={this.value}
@@ -320,7 +323,7 @@ class EditableField extends React.Component {
                         role="button"
                         tabIndex={0}
                     >
-                        <i className="icon-ccw" />
+                        <i className="mdi mdi-refresh" />
                     </div>
                     <div
                         className="subtle-text editable"

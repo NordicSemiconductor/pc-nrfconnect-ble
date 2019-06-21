@@ -91,6 +91,7 @@ class UuidInput extends React.PureComponent {
                 onSelect={this.handleSelection}
                 title={`Predefined ${label}s`}
                 uuidDefs={uuidDefinitions()}
+                pullRight
             />
         );
 

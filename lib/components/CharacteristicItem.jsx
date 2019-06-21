@@ -141,7 +141,7 @@ class CharacteristicItem extends AttributeItem {
 
         const toggleNotificationsText = hasCccd ? 'Toggle notifications' : 'Toggle notifications (CCCD not discovered)';
         const notifyIconStyle = !isLocal && hasNotifyOrIndicateProperty ? {} : { display: 'none' };
-        const notifyIcon = (isDescriptorNotifying && hasNotifyOrIndicateProperty) ? 'icon-stop' : 'icon-play';
+        const notifyIcon = (isDescriptorNotifying && hasNotifyOrIndicateProperty) ? 'mdi mdi-stop' : 'mdi mdi-play';
 
         const showText = getUuidFormat(uuid) === TEXT;
 

@@ -127,7 +127,7 @@ class AdvertisingSetup extends React.PureComponent {
                     <div className="adv-row">
                         <div className="adv-col adv-pkt">
                             <Button
-                                className="btn-add btn-primary btn-nordic icon-plus"
+                                className="btn-add btn-primary btn-nordic mdi mdi-plus"
                                 onClick={this.addToAdvData}
                             >
                                 {' Add to advertising data'}
@@ -140,7 +140,7 @@ class AdvertisingSetup extends React.PureComponent {
                         </div>
                         <div className="adv-col scan-rsp-pkt">
                             <Button
-                                className="btn-add btn-primary btn-nordic icon-plus"
+                                className="btn-add btn-primary btn-nordic mdi mdi-plus"
                                 onClick={this.addToScanResponse}
                             >
                                 {' Add to scan response'}

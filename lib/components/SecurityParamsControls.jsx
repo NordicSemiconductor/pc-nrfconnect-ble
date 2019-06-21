@@ -147,41 +147,51 @@ class SecurityParamsControls extends React.PureComponent {
                 <div className="form-group">
                     <label className="control-label col-sm-4">Authentication</label>
                     <div className="col-sm-7">
-                        <Form.Check
-                            defaultChecked={this.enableLesc}
-                            onChange={event => this.handleCheckboxChange('enableLesc', event.target.checked)}
-                            label="Enable LE Secure Connection pairing"
-                        />
-                        <Form.Check
-                            defaultChecked={this.enableMitm}
-                            onChange={event => this.handleCheckboxChange('enableMitm', event.target.checked)}
-                            label="Enable MITM protection"
-                        />
-                        <Form.Check
-                            defaultChecked={this.enableOob}
-                            onChange={event => this.handleCheckboxChange('enableOob', event.target.checked)}
-                            label="Enable OOB data"
-                        />
+                        <Form.Group controlId="enableLescCheck">
+                            <Form.Check
+                                defaultChecked={this.enableLesc}
+                                onChange={event => this.handleCheckboxChange('enableLesc', event.target.checked)}
+                                label="Enable LE Secure Connection pairing"
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="enableMitmCheck">
+                            <Form.Check
+                                defaultChecked={this.enableMitm}
+                                onChange={event => this.handleCheckboxChange('enableMitm', event.target.checked)}
+                                label="Enable MITM protection"
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="enableOobCheck">
+                            <Form.Check
+                                defaultChecked={this.enableOob}
+                                onChange={event => this.handleCheckboxChange('enableOob', event.target.checked)}
+                                label="Enable OOB data"
+                            />
+                        </Form.Group>
                     </div>
                 </div>
                 <div className="form-group">
                     <label className="control-label col-sm-4">Keypress notifications</label>
                     <div className="col-sm-7">
-                        <Form.Check
-                            defaultChecked={this.enableKeypress}
-                            onChange={event => this.handleCheckboxChange('enableKeypress', event.target.checked)}
-                            label="Enable keypress notifications"
-                        />
+                        <Form.Group controlId="enableKeypressCheck">
+                            <Form.Check
+                                defaultChecked={this.enableKeypress}
+                                onChange={event => this.handleCheckboxChange('enableKeypress', event.target.checked)}
+                                label="Enable keypress notifications"
+                            />
+                        </Form.Group>
                     </div>
                 </div>
                 <div className="form-group">
                     <label className="control-label col-sm-4">Bonding</label>
                     <div className="col-sm-7">
-                        <Form.Check
-                            defaultChecked={this.performBonding}
-                            onChange={event => this.handleCheckboxChange('performBonding', event.target.checked)}
-                            label="Perform bonding"
-                        />
+                        <Form.Group controlId="performBondingCheck">
+                            <Form.Check
+                                defaultChecked={this.performBonding}
+                                onChange={event => this.handleCheckboxChange('performBonding', event.target.checked)}
+                                label="Perform bonding"
+                            />
+                        </Form.Group>
                     </div>
                 </div>
             </div>

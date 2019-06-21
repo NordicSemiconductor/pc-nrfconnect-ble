@@ -52,7 +52,7 @@ import EnumeratingAttributes from './EnumeratingAttributes';
 
 export const CCCD_UUID = '2902';
 
-class AttributeItem extends React.PureComponent {
+class AttributeItem extends React.Component {
     constructor(props) {
         super(props);
         this.backgroundColor = Colors.getColor('brand-base');

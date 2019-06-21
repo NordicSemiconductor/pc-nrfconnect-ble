@@ -66,6 +66,7 @@ class UuidLookup extends React.Component {
             title,
             onSelect,
             uuidDefs,
+            pullRight,
         } = this.props;
 
         const sorted = Object.keys(uuidDefs).sort((a, b) => parseInt(a, 16) - parseInt(b, 16));
@@ -77,8 +78,9 @@ class UuidLookup extends React.Component {
                     id="dropdownUuidLookup"
                     title={title}
                     onSelect={(eventKey, event) => onSelect(event, eventKey)}
+                    alignRight={pullRight}
                 >
-                    <Dropdown.Toggle>
+                    <Dropdown.Toggle variant="outline-secondary" size="lg">
                         <span className="mdi mdi-magnify" aria-hidden="true" />
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="scroll-menu">
@@ -105,10 +107,12 @@ UuidLookup.propTypes = {
     title: PropTypes.string,
     onSelect: PropTypes.func.isRequired,
     uuidDefs: PropTypes.object.isRequired,
+    pullRight: PropTypes.bool,
 };
 
 UuidLookup.defaultProps = {
     title: 'Predefined UUIDs',
+    pullRight: false,
 };
 
 export default UuidLookup;

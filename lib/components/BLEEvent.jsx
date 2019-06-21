@@ -76,22 +76,22 @@ class BLEEvent extends React.PureComponent {
             case BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE:
                 return {
                     name: 'Connection update',
-                    icon: (<span className="icon-link"><span className="icon-down" /></span>),
+                    icon: (<span className="mdi mdi-link-variant"><span className="mdi mdi-arrow-down" /></span>),
                 };
             case BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE:
                 return {
                     name: 'Connection update request',
-                    icon: (<span className="icon-link"><span className="icon-up" /></span>),
+                    icon: (<span className="mdi mdi-link-variant"><span className="mdi mdi-arrow-up" /></span>),
                 };
             case BLEEventType.USER_INITIATED_PAIRING:
                 return {
                     name: 'Pairing',
-                    icon: (<span className="icon-link"><span className="icon-down" /></span>),
+                    icon: (<span className="mdi mdi-link-variant"><span className="mdi mdi-arrow-down" /></span>),
                 };
             case BLEEventType.PEER_INITIATED_PAIRING:
                 return {
                     name: 'Pairing requested',
-                    icon: (<span className="icon-link"><span className="icon-up" /></span>),
+                    icon: (<span className="mdi mdi-link-variant"><span className="mdi mdi-arrow-up" /></span>),
                 };
             case BLEEventType.PASSKEY_DISPLAY:
                 return {
