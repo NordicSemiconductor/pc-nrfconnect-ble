@@ -246,7 +246,7 @@ class AttributeItem extends React.Component {
         const content = this.renderContent(null);
         const childrenList = this.getChildren();
 
-        const expandIcon = expanded ? 'mdi mdi-menu-down' : 'mdi mdi-menu-right';
+        const expandIcon = expanded ? 'expand mdi mdi-menu-down' : 'expand mdi mdi-menu-right';
         const iconStyle = (!this.expandable || (children && children.size === 0 && !addNew)) ? { display: 'none' } : {};
         const itemIsSelected = item.instanceId === selected;
 

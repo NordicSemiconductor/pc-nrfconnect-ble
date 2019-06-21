@@ -41,6 +41,9 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 
@@ -66,31 +69,41 @@ const ConnectionSetup = props => {
             securityLevelText = 'Unencrypted link';
     }
 
-    const iconClass = (device.securityLevel && (device.securityLevel > 1)) ? 'mdi mdi-lock' : 'mdi mdi-lock-open';
+    const iconClass = (device.securityLevel && (device.securityLevel > 1)) ? 'mdi mdi-lock' : 'mdi mdi-lock-open-outline';
     const iconBondedClass = device.bonded ? 'mdi mdi-link-variant' : 'mdi mdi-link-variant-off';
     const bondedText = device.bonded ? 'Bonded' : 'Not bonded';
 
     return (
-        <div className="connection-parameters">
-            <span className="col-sm-8 col-xs-8 connection-parameter-label">
-                Connection Interval
-            </span>
-            <span className="col-sm-4 col-xs-4 connection-parameter-value">
-                {device.maxConnectionInterval} ms
-            </span>
-            <span className="col-sm-8 col-xs-8 connection-parameter-label">Slave latency</span>
-            <span className="col-sm-4 col-xs-4 connection-parameter-value">
-                {device.slaveLatency} ms
-            </span>
-            <span className="col-sm-8 col-xs-8 connection-parameter-label">Timeout</span>
-            <span className="col-sm-4 col-xs-4 connection-parameter-value">
-                {device.connectionSupervisionTimeout} ms
-            </span>
-
-            <span className={`col-sm-8 col-xs-8 top-spacer ${iconBondedClass}`}> {bondedText}</span>
-            <span className="col-sm-4 col-xs-4 connection-parameter-value" />
-            <span className={`connection-security ${iconClass}`}> {securityLevelText}</span>
-        </div>
+        <Container className="connection-parameters">
+            <Row>
+                <Col sm={8} xs={8} className="connection-parameter-label">
+                    Connection Interval
+                </Col>
+                <Col sm={4} xs={4} className="connection-parameter-value">
+                    {device.maxConnectionInterval} ms
+                </Col>
+            </Row>
+            <Row>
+                <Col sm={8} xs={8} className="connection-parameter-label">Slave latency</Col>
+                <Col sm={4} xs={4} className="connection-parameter-value">
+                    {device.slaveLatency} ms
+                </Col>
+            </Row>
+            <Row>
+                <Col sm={6} xs={6} className="connection-parameter-label">Timeout</Col>
+                <Col sm={6} xs={6} className="connection-parameter-value">
+                    {device.connectionSupervisionTimeout} ms
+                </Col>
+            </Row>
+            <Row>
+                <Col sm={8} xs={8} className={`top-spacer ${iconBondedClass}`}>{bondedText}</Col>
+                <Col sm={4} xs={4} className="connection-parameter-value" />
+            </Row>
+            <Row>
+                <Col sm={8} xs={8} className={`connection-security ${iconClass}`}>{securityLevelText}</Col>
+                <Col sm={4} xs={4} className="connection-parameter-value" />
+            </Row>
+        </Container>
     );
 };
 
@@ -116,7 +129,7 @@ class ConnectionOverlay extends React.PureComponent {
 
         const iconClass = (device.securityLevel && (device.securityLevel > 1))
             ? 'mdi mdi-lock'
-            : 'mdi mdi-lock-open';
+            : 'mdi mdi-lock-open-outline';
 
         return (
             <div className="connection-info-button btn btn-xs btn-link" style={style}>
@@ -126,7 +139,7 @@ class ConnectionOverlay extends React.PureComponent {
                     rootClose
                     placement="left"
                     overlay={(
-                        <Popover id="pover" title="Connection Information">
+                        <Popover className="connection-info-popover" title="Connection Information">
                             <ConnectionSetup
                                 device={device}
                                 closePopover={this.closeme}
@@ -216,7 +229,7 @@ class Connector extends React.PureComponent {
             posY = targetRect.height / 2;
         }
 
-        return (<ConnectionOverlay style={{ position: 'absolute', left: posX - 14, top: posY - 14 }} device={device} />);
+        return (<ConnectionOverlay style={{ position: 'absolute', left: posX - 17, top: posY - 14 }} device={device} />);
     }
 
     render() {
