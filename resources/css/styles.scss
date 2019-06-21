@@ -1209,6 +1209,18 @@ hr {
         float: left;
         margin-left: 10px;
     }
+    .row {
+        align-items: center;
+    }
+    .form-label {
+        font-weight: bold;
+    }
+    .align-baseline {
+        align-self: baseline;
+    }
+    .nothing-selected {
+        border-left: none;
+    }
 }
 
 .events-modal {
@@ -1264,7 +1276,6 @@ hr {
                     margin-left: 15px;
                 }
                 .form-group {
-                    margin-left: 15px;
                     margin-right: 15px;
                 }
             }
