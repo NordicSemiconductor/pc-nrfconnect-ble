@@ -118,7 +118,7 @@ class AdvertisingSetup extends React.PureComponent {
         } = this.props;
 
         return (
-            <Modal className="adv-setup" show={show} onHide={() => {}} size="large">
+            <Modal className="adv-setup" show={show} onHide={() => {}} size="lg">
                 <Modal.Header>
                     <Modal.Title>Advertising setup</Modal.Title>
                 </Modal.Header>
