@@ -1400,6 +1400,15 @@ hr {
     }
 }
 
+.dfu-dialog {
+    .input-group {
+        float: right;
+    }
+    .progress {
+        width: 100%;
+    }
+}
+
 .scroll-menu {
     overflow-x: auto;
     max-height: 300px;

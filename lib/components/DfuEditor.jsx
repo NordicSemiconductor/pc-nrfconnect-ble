@@ -140,7 +140,7 @@ class DfuEditor extends React.PureComponent {
         } = this.props;
 
         return (
-            <form className="form-horizontal native-key-bindings">
+            <form className="form-horizontal native-key-bindings dfu-dialog">
                 <div className="col-md-12">
                     <FileInput
                         readOnly
