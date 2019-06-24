@@ -265,14 +265,14 @@ class AttributeItem extends React.Component {
                     className={`${this.attributeType}-item ${backgroundClass}`}
                     style={{ backgroundColor }}
                     onClick={this.onContentClick}
-                    onKeyDown={this.onContentClick}
+                    onKeyDown={() => {}}
                     role="button"
                     tabIndex={0}
                 >
                     <div
                         className="expand-area"
                         onClick={this.onExpandAreaClick}
-                        onKeyDown={this.onExpandAreaClick}
+                        onKeyDown={() => {}}
                         role="button"
                         tabIndex={0}
                     >
@@ -284,7 +284,7 @@ class AttributeItem extends React.Component {
                     <div
                         className="content-wrap"
                         onClick={this.onExpandAreaClick}
-                        onKeyDown={this.onExpandAreaClick}
+                        onKeyDown={() => {}}
                         role="button"
                         tabIndex={0}
                     >

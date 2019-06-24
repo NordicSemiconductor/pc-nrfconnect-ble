@@ -293,7 +293,7 @@ class DiscoveredDevice extends React.PureComponent {
                         <span
                             className="adv-details"
                             onClick={this.toggleExpand}
-                            onKeyDown={this.toggleExpand}
+                            onKeyDown={() => {}}
                             role="button"
                             tabIndex={0}
                         >

@@ -156,7 +156,7 @@ class DiscoveredDevices extends React.PureComponent {
                     <div className="discovery-options-expand">
                         <span
                             onClick={toggleOptionsExpanded}
-                            onKeyDown={toggleOptionsExpanded}
+                            onKeyDown={() => {}}
                             role="button"
                             tabIndex={0}
                         >

@@ -258,7 +258,7 @@ class EditableField extends React.Component {
                 className="btn btn-primary btn-xs btn-nordic"
                 title="Read"
                 onClick={this.onReadButtonClick}
-                onKeyDown={this.onReadButtonClick}
+                onKeyDown={() => {}}
                 role="button"
                 tabIndex={0}
             >
@@ -295,7 +295,7 @@ class EditableField extends React.Component {
                         className="btn btn-primary btn-xs btn-nordic"
                         title="Write"
                         onClick={this.onWriteButtonClick}
-                        onKeyDown={this.onWriteButtonClick}
+                        onKeyDown={() => {}}
                         role="button"
                         tabIndex={0}
                     >
@@ -308,7 +308,7 @@ class EditableField extends React.Component {
                         value={this.value}
                         onChange={this.onChange}
                         onClick={stopPropagation}
-                        onKeyDown={stopPropagation}
+                        onKeyDown={this.onKeyDown}
                     />
                 </div>
             );
@@ -319,7 +319,7 @@ class EditableField extends React.Component {
                         className="btn btn-primary btn-xs btn-nordic"
                         title="Read"
                         onClick={this.onReadButtonClick}
-                        onKeyDown={this.onReadButtonClick}
+                        onKeyDown={() => {}}
                         role="button"
                         tabIndex={0}
                     >
@@ -328,7 +328,7 @@ class EditableField extends React.Component {
                     <div
                         className="subtle-text editable"
                         onClick={this.toggleEditing}
-                        onKeyDown={this.toggleEditing}
+                        onKeyDown={() => {}}
                         role="button"
                         tabIndex={0}
                     >
@@ -351,7 +351,7 @@ class EditableField extends React.Component {
                     className="subtle-text"
                     title={title}
                     onClick={this.selectParent}
-                    onKeyDown={this.selectParent}
+                    onKeyDown={() => {}}
                     role="button"
                     tabIndex={0}
                 >
@@ -364,7 +364,7 @@ class EditableField extends React.Component {
                     className="subtle-text editable"
                     title={title}
                     onClick={this.selectParentAndToggleEditing}
-                    onKeyDown={this.selectParentAndToggleEditing}
+                    onKeyDown={() => {}}
                     role="button"
                     tabIndex={0}
                 >

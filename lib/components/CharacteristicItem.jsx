@@ -174,7 +174,7 @@ class CharacteristicItem extends AttributeItem {
                     disabled={!hasCccd}
                     style={notifyIconStyle}
                     onClick={this.onToggleNotify}
-                    onKeyDown={this.onToggleNotify}
+                    onKeyDown={() => {}}
                     role="button"
                     tabIndex={0}
                 >

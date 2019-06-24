@@ -51,6 +51,10 @@ class CentralDevice extends React.PureComponent {
     constructor(props) {
         super(props);
         this.onSelect = this.onSelect.bind(this);
+        const { bindHotkey, onToggleAdvertising } = this.props;
+        if (onToggleAdvertising) {
+            bindHotkey('alt+a', onToggleAdvertising);
+        }
     }
 
     onSelect(eventKey) {
@@ -115,12 +119,7 @@ class CentralDevice extends React.PureComponent {
             onOpenCustomUuidFile,
             security,
             isDeviceDetails,
-            bindHotkey,
         } = this.props;
-
-        if (onToggleAdvertising) {
-            bindHotkey('alt+a', onToggleAdvertising);
-        }
 
         const style = {
             position: 'relative',
