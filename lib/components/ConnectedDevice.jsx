@@ -157,6 +157,7 @@ class ConnectedDevice extends React.PureComponent {
                                         id="dfuButton"
                                         variant="primary"
                                         className="btn-nordic btn-xs"
+                                        size="sm"
                                         title="Start Secure DFU"
                                         onClick={onClickDfu}
                                     >
