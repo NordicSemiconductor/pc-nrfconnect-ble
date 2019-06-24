@@ -29,7 +29,7 @@ exports[`DfuEditor should render stopping 1`] = `
           value="/path/to/file"
         />
         <div
-          className="input-group"
+          className="input-group-append"
         >
           <button
             className="btn btn-primary"
@@ -110,7 +110,7 @@ exports[`DfuEditor should render stopping 1`] = `
         type="button"
       >
         <span
-          className="icon-stop"
+          className="mdi mdi-stop"
         />
         Stop DFU
       </button>
@@ -148,7 +148,7 @@ exports[`DfuEditor should render with default props 1`] = `
           value="null"
         />
         <div
-          className="input-group"
+          className="input-group-append"
         >
           <button
             className="btn btn-primary"
@@ -180,7 +180,7 @@ exports[`DfuEditor should render with default props 1`] = `
         type="button"
       >
         <span
-          className="icon-play"
+          className="mdi mdi-play"
         />
         Start DFU
       </button>
@@ -218,7 +218,7 @@ exports[`DfuEditor should render with dfu completed 1`] = `
           value="/path/to/file"
         />
         <div
-          className="input-group"
+          className="input-group-append"
         >
           <button
             className="btn btn-primary"
@@ -303,7 +303,7 @@ exports[`DfuEditor should render with dfu completed 1`] = `
         type="button"
       >
         <span
-          className="icon-play"
+          className="mdi mdi-play"
         />
         Start DFU
       </button>
@@ -341,7 +341,7 @@ exports[`DfuEditor should render with file path 1`] = `
           value="/path/to/file"
         />
         <div
-          className="input-group"
+          className="input-group-append"
         >
           <button
             className="btn btn-primary"
@@ -369,7 +369,7 @@ exports[`DfuEditor should render with file path 1`] = `
         type="button"
       >
         <span
-          className="icon-play"
+          className="mdi mdi-play"
         />
         Start DFU
       </button>
@@ -407,7 +407,7 @@ exports[`DfuEditor should render with file path and package info 1`] = `
           value="/path/to/file"
         />
         <div
-          className="input-group"
+          className="input-group-append"
         >
           <button
             className="btn btn-primary"
@@ -454,7 +454,7 @@ exports[`DfuEditor should render with file path and package info 1`] = `
         type="button"
       >
         <span
-          className="icon-play"
+          className="mdi mdi-play"
         />
         Start DFU
       </button>
@@ -492,7 +492,7 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
           value="/path/to/file"
         />
         <div
-          className="input-group"
+          className="input-group-append"
         >
           <button
             className="btn btn-primary"
@@ -573,7 +573,7 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
         type="button"
       >
         <span
-          className="icon-stop"
+          className="mdi mdi-stop"
         />
         Stop DFU
       </button>

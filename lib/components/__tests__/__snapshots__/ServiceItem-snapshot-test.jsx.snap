@@ -28,7 +28,7 @@ exports[`ServiceItem should render correctly with button 1`] = `
         className="icon-wrap"
       >
         <i
-          className="icon-slim mdi mdi-menu-right"
+          className="icon-slim expand mdi mdi-menu-right"
           style={Object {}}
         />
       </div>
@@ -100,7 +100,7 @@ exports[`ServiceItem should render correctly with no button 1`] = `
         className="icon-wrap"
       >
         <i
-          className="icon-slim mdi mdi-menu-right"
+          className="icon-slim expand mdi mdi-menu-right"
           style={Object {}}
         />
       </div>

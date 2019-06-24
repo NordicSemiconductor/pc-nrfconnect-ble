@@ -54,7 +54,7 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
           >
             <span
               aria-hidden="true"
-              className="icon-cog"
+              className="mdi mdi-settings"
             />
           </button>
         </div>
@@ -120,7 +120,7 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
           >
             <span
               aria-hidden="true"
-              className="icon-cog"
+              className="mdi mdi-settings"
             />
           </button>
         </div>
