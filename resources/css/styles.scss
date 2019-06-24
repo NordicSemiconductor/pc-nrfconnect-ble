@@ -473,6 +473,12 @@
                 width: 20px;
                 height: 20px;
             }
+            #dfuButton {
+                width: 32px;
+                height: 22px;
+                padding: 1px 5px;
+                margin-left: 10px;
+            }
 
             .mdi-signal-variant { // advertising icon
                 margin-right: 13px;
@@ -482,6 +488,7 @@
 
             .dropdown {
                 min-width: 0px;
+                display: inline-block;
                 .dropdown-menu {
                     li > a:focus {
                         outline: 1px solid black;
