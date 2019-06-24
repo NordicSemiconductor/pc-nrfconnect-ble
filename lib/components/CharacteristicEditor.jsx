@@ -38,21 +38,25 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Form from 'react-bootstrap/Form';
 
-import { ButtonToolbar, Button, Checkbox } from 'react-bootstrap';
-import TextInput from './input/TextInput';
-import SelectList from './input/SelectList';
-import LabeledInputGroup from './input/LabeledInputGroup';
-import UuidInput from './input/UuidInput';
-
-import HexOnlyEditableField from './HexOnlyEditableField';
-
-import { getUuidName, uuidCharacteristicDefinitions, TEXT, getUuidFormat } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
-
+import {
+    TEXT,
+    getUuidFormat,
+    getUuidName,
+    uuidCharacteristicDefinitions,
+} from '../utils/uuid_definitions';
 import { ERROR, SUCCESS, validateUuid } from '../utils/validateUuid';
+import HexOnlyEditableField from './HexOnlyEditableField';
+import LabeledInputGroup from './input/LabeledInputGroup';
+import SelectList from './input/SelectList';
+import TextInput from './input/TextInput';
+import UuidInput from './input/UuidInput';
 
 class CharacteristicEditor extends React.Component {
     constructor(props) {
@@ -63,26 +67,29 @@ class CharacteristicEditor extends React.Component {
     }
 
     setCheckedProperty(property, e) {
+        const { onModified } = this.props;
         this[property] = e.target.checked;
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     setInitialValue(value) {
+        const { onModified } = this.props;
         this.value = value;
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     setValueProperty(property, e) {
+        const { onModified } = this.props;
         this[property] = e.target.value;
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     validateValueLength() {
         const maxLength = parseInt(this.maxLength, 10);
-        const fixedLength = this.fixedLength;
+        const { fixedLength } = this;
         const value = this.parseValueProperty(this.value);
 
         if (maxLength > 510 && fixedLength === true) { return ERROR; }
@@ -108,13 +115,16 @@ class CharacteristicEditor extends React.Component {
     }
 
     saveAttribute() {
+        const {
+            characteristic, onValidationError, onSaveChangedAttribute, onModified,
+        } = this.props;
         if (validateUuid(this.uuid) === ERROR) {
-            this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
+            onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
         }
 
         if (this.validateValueLength() === ERROR) {
-            this.props.onValidationError(new ValidationError('Length of value is not valid.'));
+            onValidationError(new ValidationError('Length of value is not valid.'));
             return;
         }
 
@@ -131,7 +141,7 @@ class CharacteristicEditor extends React.Component {
         };
 
         const changedCharacteristic = {
-            instanceId: this.props.characteristic.instanceId,
+            instanceId: characteristic.instanceId,
             uuid: this.uuid.toUpperCase().trim(),
             name: this.name,
             value: this.parseValueProperty(this.value),
@@ -142,12 +152,13 @@ class CharacteristicEditor extends React.Component {
             maxLength: parseInt(this.maxLength, 10),
         };
 
-        this.props.onSaveChangedAttribute(changedCharacteristic);
+        onSaveChangedAttribute(changedCharacteristic);
         this.saved = true;
-        this.props.onModified(false);
+        onModified(false);
     }
 
     handleUuidSelect(uuid) {
+        const { onModified } = this.props;
         this.uuid = uuid;
         const uuidName = getUuidName(this.uuid);
 
@@ -156,7 +167,7 @@ class CharacteristicEditor extends React.Component {
         }
 
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     render() {
@@ -230,6 +241,7 @@ class CharacteristicEditor extends React.Component {
                     value={this.name}
                     onChange={e => this.setValueProperty('name', e)}
                 />
+
                 <HexOnlyEditableField
                     label="Initial value"
                     plain
@@ -240,24 +252,44 @@ class CharacteristicEditor extends React.Component {
                     showText={showText}
                 />
 
-                <LabeledInputGroup label="Properties">
-                    <Checkbox checked={this.broadcast} onChange={e => this.setCheckedProperty('broadcast', e)}>Broadcast</Checkbox>
-                    <Checkbox checked={this.read} onChange={e => this.setCheckedProperty('read', e)}>Read</Checkbox>
-                    <Checkbox checked={this.writeWoResp} onChange={e => this.setCheckedProperty('writeWoResp', e)}>Write without response</Checkbox>
-                    <Checkbox checked={this.write} onChange={e => this.setCheckedProperty('write', e)}>Write</Checkbox>
-                    <Checkbox checked={this.notify} onChange={e => this.setCheckedProperty('notify', e)}>Notify</Checkbox>
-                    <Checkbox checked={this.indicate} onChange={e => this.setCheckedProperty('indicate', e)}>Indicate</Checkbox>
-                    <Checkbox checked={this.authSignedWr} onChange={e => this.setCheckedProperty('authSignedWr', e)}>
-                        Authenticated signed write
-                    </Checkbox>
+                <LabeledInputGroup label="Properties" wrapperClassName="form-list">
+                    <Form.Group controlId="broadcastCheck">
+                        <Form.Check checked={this.broadcast} onChange={e => this.setCheckedProperty('broadcast', e)} label="Broadcast" />
+                    </Form.Group>
+                    <Form.Group controlId="readCheck">
+                        <Form.Check checked={this.read} onChange={e => this.setCheckedProperty('read', e)} label="Read" />
+                    </Form.Group>
+                    <Form.Group controlId="writeWoRespCheck">
+                        <Form.Check checked={this.writeWoResp} onChange={e => this.setCheckedProperty('writeWoResp', e)} label="Write without response" />
+                    </Form.Group>
+                    <Form.Group controlId="writeCheck">
+                        <Form.Check checked={this.write} onChange={e => this.setCheckedProperty('write', e)} label="Write" />
+                    </Form.Group>
+                    <Form.Group controlId="notifyCheck">
+                        <Form.Check checked={this.notify} onChange={e => this.setCheckedProperty('notify', e)} label="Notify" />
+                    </Form.Group>
+                    <Form.Group controlId="indicateCheck">
+                        <Form.Check checked={this.indicate} onChange={e => this.setCheckedProperty('indicate', e)} label="Indicate" />
+                    </Form.Group>
+                    <Form.Group controlId="authSignedWrCheck">
+                        <Form.Check
+                            label="Authenticated signed write"
+                            checked={this.authSignedWr}
+                            onChange={e => this.setCheckedProperty('authSignedWr', e)}
+                        />
+                    </Form.Group>
                 </LabeledInputGroup>
 
-                <LabeledInputGroup label="Extended Properties">
-                    <Checkbox checked={this.reliableWr} onChange={e => this.setCheckedProperty('reliableWr', e)}>Reliable write</Checkbox>
-                    <Checkbox checked={this.wrAux} onChange={e => this.setCheckedProperty('wrAux', e)}>Write auxiliary</Checkbox>
+                <LabeledInputGroup label="Extended Properties" wrapperClassName="form-list">
+                    <Form.Group controlId="reliableWrCheck">
+                        <Form.Check checked={this.reliableWr} onChange={e => this.setCheckedProperty('reliableWr', e)} label="Reliable write" />
+                    </Form.Group>
+                    <Form.Group controlId="wrAuxCheck">
+                        <Form.Check checked={this.wrAux} onChange={e => this.setCheckedProperty('wrAux', e)} label="Write auxiliary" />
+                    </Form.Group>
                 </LabeledInputGroup>
 
-                <SelectList label="Read permission" type="select" className="form-control" value={this.readPerm} onChange={e => this.setValueProperty('readPerm', e)}>
+                <SelectList label="Read permission" type="select" value={this.readPerm} onChange={e => this.setValueProperty('readPerm', e)}>
                     <option value="open">No security required</option>
                     <option value="encrypt">Encryption required, no MITM</option>
                     <option value="encrypt mitm-protection">Encryption with MITM required</option>
@@ -265,7 +297,7 @@ class CharacteristicEditor extends React.Component {
                     <option value="no_access">No access rights specified (undefined)</option>
                 </SelectList>
 
-                <SelectList label="Write permission" type="select" className="form-control" value={this.writePerm} onChange={e => this.setValueProperty('writePerm', e)}>
+                <SelectList label="Write permission" type="select" value={this.writePerm} onChange={e => this.setValueProperty('writePerm', e)}>
                     <option value="open">No security required</option>
                     <option value="encrypt">Encryption required, no MITM</option>
                     <option value="encrypt mitm-protection">Encryption with MITM required</option>
@@ -274,9 +306,10 @@ class CharacteristicEditor extends React.Component {
                 </SelectList>
 
                 <LabeledInputGroup label="Max length">
-                    <Checkbox checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)}>Fixed length</Checkbox>
+                    <Form.Group controlId="fixedLengthCheck">
+                        <Form.Check type="checkbox" checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)} label="Fixed length" />
+                    </Form.Group>
                     <TextInput
-                        inline
                         type="number"
                         min={0}
                         max={this.fixedLength ? 510 : 512}
@@ -288,12 +321,12 @@ class CharacteristicEditor extends React.Component {
 
                 <ButtonToolbar>
                     <div className="col-md-4" />
-                    <Button bsStyle="primary" className="btn-nordic" onClick={onRemoveAttribute}>
-                        <i className="icon-cancel" />
+                    <Button variant="primary" className="btn-nordic" onClick={onRemoveAttribute}>
+                        <i className="mdi mdi-close" />
                         Delete
                     </Button>
                     <Button
-                        bsStyle="primary"
+                        variant="primary"
                         className="btn-nordic"
                         onClick={this.saveAttribute}
                     >

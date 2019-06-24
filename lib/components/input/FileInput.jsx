@@ -34,9 +34,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'react-bootstrap';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+
 import TextInput from './TextInput';
 
 const FileInput = props => {

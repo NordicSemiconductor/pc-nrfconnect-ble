@@ -34,15 +34,24 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, InputGroup } from 'react-bootstrap';
+import React from 'react';
+import FormGroup from 'react-bootstrap/FormGroup';
+import FormLabel from 'react-bootstrap/FormLabel';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 const LabeledInputGroup = props => {
-    const { label, children, labelClassName, wrapperClassName } = props;
+    const {
+        children,
+        inline,
+        label,
+        labelClassName,
+        wrapperClassName,
+    } = props;
+    const classProp = inline && { className: 'form-inline' };
     return (
-        <FormGroup>
-            <ControlLabel className={labelClassName}>{label}</ControlLabel>
+        <FormGroup {...classProp}>
+            <FormLabel className={labelClassName}>{label}</FormLabel>
             <InputGroup className={wrapperClassName}>
                 {children}
             </InputGroup>
@@ -51,13 +60,15 @@ const LabeledInputGroup = props => {
 };
 
 LabeledInputGroup.propTypes = {
+    children: PropTypes.node.isRequired,
+    inline: PropTypes.bool,
     label: PropTypes.string.isRequired,
     labelClassName: PropTypes.string,
     wrapperClassName: PropTypes.string,
-    children: PropTypes.node.isRequired,
 };
 
 LabeledInputGroup.defaultProps = {
+    inline: true,
     labelClassName: 'col-md-3 text-right',
     wrapperClassName: 'col-md-9',
 };

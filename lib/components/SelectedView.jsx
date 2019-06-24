@@ -36,8 +36,8 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 import DeviceDetailsContainer from '../containers/DeviceDetails';
 import ServerSetup from '../containers/ServerSetup';
@@ -84,18 +84,15 @@ class SelectedView extends React.PureComponent {
     }
 
     render() {
-        const {
-            viewId,
-        } = this.props;
+        const { viewId } = this.props;
+        const { windowHeight } = this.state;
         const topBarHeight = 55;
-        const layoutStyle = {
-            height: this.state.windowHeight - topBarHeight,
-        };
+        const layoutStyle = { height: windowHeight - topBarHeight };
         const mainAreaHeight = layoutStyle.height - 189;
 
         if (viewId === DEVICE_DETAILS_VIEW_ID) {
             return <DeviceDetailsContainer style={{ height: mainAreaHeight }} />;
-        } else if (viewId === SERVER_SETUP_VIEW_ID) {
+        } if (viewId === SERVER_SETUP_VIEW_ID) {
             return <ServerSetup style={{ height: mainAreaHeight }} />;
         }
         return null;

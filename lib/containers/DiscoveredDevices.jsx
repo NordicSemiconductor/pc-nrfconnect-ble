@@ -36,23 +36,21 @@
 
 'use strict';
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { Checkbox } from 'react-bootstrap';
 import { OrderedMap } from 'immutable';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import { DiscoveryOptions } from '../reducers/discoveryReducer';
-
-import * as DiscoveryActions from '../actions/discoveryActions';
 import * as AdapterActions from '../actions/adapterActions';
-
-import DiscoveryButton from '../components/DiscoveryButton';
+import * as DiscoveryActions from '../actions/discoveryActions';
 import DiscoveredDevice from '../components/DiscoveredDevice';
+import DiscoveryButton from '../components/DiscoveryButton';
 import TextInput from '../components/input/TextInput';
 import Spinner from '../components/Spinner';
-
+import { DiscoveryOptions } from '../reducers/discoveryReducer';
 import withHotkey from '../utils/withHotkey';
 
 class DiscoveredDevices extends React.PureComponent {
@@ -68,17 +66,20 @@ class DiscoveredDevices extends React.PureComponent {
     }
 
     handleCheckedChange(property, e) {
+        const { setDiscoveryOptions } = this.props;
         this.discoveryOptions[property] = e.target.checked;
-        this.props.setDiscoveryOptions(this.discoveryOptions);
+        setDiscoveryOptions(this.discoveryOptions);
     }
 
     handleFilterChange(e) {
+        const { setDiscoveryOptions } = this.props;
         this.discoveryOptions.filterString = e.target.value;
-        this.props.setDiscoveryOptions(this.discoveryOptions);
+        setDiscoveryOptions(this.discoveryOptions);
     }
 
     handleOptionsExpanded() {
-        this.props.toggleOptionsExpanded();
+        const { toggleOptionsExpanded } = this.props;
+        toggleOptionsExpanded();
     }
 
     render() {
@@ -99,19 +100,20 @@ class DiscoveredDevices extends React.PureComponent {
 
         bindHotkey('alt+c', clearDevicesList);
 
-        this.discoveryOptions = this.props.discoveryOptions.toJS();
+        this.discoveryOptions = discoveryOptions.toJS();
 
-        const dirIcon = discoveryOptions.expanded ? 'icon-down-dir' : 'icon-right-dir';
+        const dirIcon = discoveryOptions.expanded ? 'menu-down' : 'menu-right';
 
         const discoveryOptionsDiv = discoveryOptions.expanded ? (
             <div className="discovery-options">
-                <Checkbox
-                    className="adv-label"
-                    defaultChecked={discoveryOptions.sortByRssi}
-                    onChange={this.handleSortByRssiCheckedChange}
-                >
-                    Sort by signal strength
-                </Checkbox>
+                <Form.Group controlId="sortCheck">
+                    <Form.Check
+                        className="adv-label"
+                        defaultChecked={discoveryOptions.sortByRssi}
+                        onChange={this.handleSortByRssiCheckedChange}
+                        label="Sort by signal strength"
+                    />
+                </Form.Group>
                 <TextInput
                     inline
                     title="Filter list by device name or address"
@@ -142,17 +144,23 @@ class DiscoveredDevices extends React.PureComponent {
                         isAdapterAvailable={isAdapterAvailable}
                         onScanClicked={toggleScan}
                     />
-                    <button
+                    <Button
                         title="Clear list (Alt+C)"
                         onClick={clearDevicesList}
                         type="button"
-                        className="btn btn-primary btn-sm btn-nordic padded-row"
+                        className="btn btn-primary btn-nordic"
                     >
-                        <span className="icon-trash" />Clear
-                    </button>
+                        <span className="mdi mdi-trash-can" />
+                        <span>Clear</span>
+                    </Button>
                     <div className="discovery-options-expand">
-                        <span onClick={toggleOptionsExpanded} role="button" tabIndex={0}>
-                            <i className={dirIcon} />Options
+                        <span
+                            onClick={toggleOptionsExpanded}
+                            onKeyDown={toggleOptionsExpanded}
+                            role="button"
+                            tabIndex={0}
+                        >
+                            <i className={`mdi mdi-${dirIcon}`} />Options
                         </span>
                         {discoveryOptionsDiv}
                     </div>
@@ -186,7 +194,7 @@ class DiscoveredDevices extends React.PureComponent {
 function mapStateToProps(state) {
     const { discovery, adapter } = state.app;
 
-    const selectedAdapter = adapter.selectedAdapter;
+    const { selectedAdapter } = adapter;
     let adapterIsConnecting = false;
     let scanning = false;
     let adapterAvailable = false;
@@ -208,10 +216,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     const retval = Object.assign(
-            {},
-            bindActionCreators(DiscoveryActions, dispatch),
-            bindActionCreators(AdapterActions, dispatch),
-        );
+        {},
+        bindActionCreators(DiscoveryActions, dispatch),
+        bindActionCreators(AdapterActions, dispatch),
+    );
 
     return retval;
 }

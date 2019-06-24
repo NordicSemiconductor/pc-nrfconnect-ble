@@ -36,17 +36,18 @@
 
 'use strict';
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { Modal, Button, Label } from 'react-bootstrap';
 import { List } from 'immutable';
-
-import AdvertisingList from '../components/AdvertisingList';
-import AdvertisingData from '../components/AdvertisingData';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import FormLabel from 'react-bootstrap/FormLabel';
+import Modal from 'react-bootstrap/Modal';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import * as AdvertisingActions from '../actions/advertisingActions';
+import AdvertisingData from '../components/AdvertisingData';
+import AdvertisingList from '../components/AdvertisingList';
 
 class AdvertisingSetup extends React.PureComponent {
     constructor(props) {
@@ -70,23 +71,25 @@ class AdvertisingSetup extends React.PureComponent {
     }
 
     addToAdvData() {
+        const { addAdvEntry } = this.props;
         const newValue = this.prepareValue();
 
         if (!newValue || newValue.value === '') {
             return;
         }
 
-        this.props.addAdvEntry(newValue);
+        addAdvEntry(newValue);
     }
 
     addToScanResponse() {
+        const { addScanRsp } = this.props;
         const newValue = this.prepareValue();
 
         if (!newValue || newValue.value === '') {
             return;
         }
 
-        this.props.addScanRsp(newValue);
+        addScanRsp(newValue);
     }
 
     handleValueChange(typeValue) {
@@ -115,7 +118,7 @@ class AdvertisingSetup extends React.PureComponent {
         } = this.props;
 
         return (
-            <Modal className="adv-setup" show={show} onHide={() => {}} bsSize="large">
+            <Modal className="adv-setup" show={show} onHide={() => {}} size="large">
                 <Modal.Header>
                     <Modal.Title>Advertising setup</Modal.Title>
                 </Modal.Header>
@@ -124,7 +127,7 @@ class AdvertisingSetup extends React.PureComponent {
                     <div className="adv-row">
                         <div className="adv-col adv-pkt">
                             <Button
-                                className="btn-add btn-primary btn-nordic icon-plus"
+                                className="btn-add btn-primary btn-nordic mdi mdi-plus"
                                 onClick={this.addToAdvData}
                             >
                                 {' Add to advertising data'}
@@ -137,7 +140,7 @@ class AdvertisingSetup extends React.PureComponent {
                         </div>
                         <div className="adv-col scan-rsp-pkt">
                             <Button
-                                className="btn-add btn-primary btn-nordic icon-plus"
+                                className="btn-add btn-primary btn-nordic mdi mdi-plus"
                                 onClick={this.addToScanResponse}
                             >
                                 {' Add to scan response'}
@@ -151,7 +154,7 @@ class AdvertisingSetup extends React.PureComponent {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Label className="error-label" bsStyle="danger">{setAdvdataStatus}</Label>
+                    <FormLabel className="error-label" variant="danger">{setAdvdataStatus}</FormLabel>
                     <Button
                         className="btn-primary btn-nordic"
                         onClick={this.handleApply}

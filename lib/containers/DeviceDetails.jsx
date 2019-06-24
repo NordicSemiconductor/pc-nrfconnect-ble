@@ -38,25 +38,22 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { bindActionCreators } from 'redux';
+import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
-import * as AdvertisingActions from '../actions/advertisingActions';
 import * as AdapterActions from '../actions/adapterActions';
+import * as AdvertisingActions from '../actions/advertisingActions';
 import * as BLEEventActions from '../actions/bleEventActions';
-import * as SecurityActions from '../actions/securityActions';
+import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
 import * as DfuActions from '../actions/dfuActions';
-
+import * as SecurityActions from '../actions/securityActions';
+import { findSelectedItem, traverseItems } from '../common/treeViewKeyNavigation';
 import DeviceDetailsView from '../components/DeviceDetails';
-import DfuDialog from './DfuDialog';
-
-import withHotkey from '../utils/withHotkey';
 import { getInstanceIds } from '../utils/api';
-import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
+import withHotkey from '../utils/withHotkey';
+import DfuDialog from './DfuDialog';
 
 class DeviceDetailsContainer extends React.PureComponent {
     constructor(props) {
@@ -164,13 +161,14 @@ class DeviceDetailsContainer extends React.PureComponent {
             security,
             openCustomUuidFile,
             showDfuDialog,
+            style,
         } = this.props;
 
         const elemWidth = 250;
         const detailDevices = [];
 
         if (!adapterState) {
-            return <div className="device-details-container" style={this.props.style} />;
+            return <div className="device-details-container" style={style} />;
         }
 
         // Details for connected adapter
@@ -228,10 +226,13 @@ class DeviceDetailsContainer extends React.PureComponent {
         // TODO: Fix better solution to right padding of scroll area than div box with border
         return (
             <div>
-                <div className="device-details-container" style={this.props.style}>
+                <div className="device-details-container" style={style}>
                     <div style={{ width }}>
                         {detailDevices}
-                        <div style={{ borderColor: 'transparent', borderLeftWidth: '20px', borderRightWidth: '0px', borderStyle: 'solid' }} />
+                        <div style={{
+                            borderColor: 'transparent', borderLeftWidth: '20px', borderRightWidth: '0px', borderStyle: 'solid',
+                        }}
+                        />
                     </div>
                 </div>
                 <DfuDialog />
@@ -245,7 +246,7 @@ function mapStateToProps(state) {
         adapter,
     } = state.app;
 
-    const selectedAdapter = adapter.selectedAdapter;
+    const { selectedAdapter } = adapter;
 
     if (!selectedAdapter) {
         return {};

@@ -35,17 +35,16 @@
  */
 
 /* eslint react/forbid-prop-types: off */
+/* eslint react/no-redundant-should-component-update: off */
 
 'use strict';
 
-import React from 'react';
-import PropTypes from 'prop-types';
-
 import * as _ from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
 
+import { hexArrayToHexText, hexArrayToText, textToHexText } from '../utils/stringUtil';
 import EditableField from './EditableField';
-
-import { hexArrayToText, textToHexText, hexArrayToHexText } from '../utils/stringUtil';
 
 function calcCaretPosition(origValue, caretPosition) {
     /*
@@ -79,7 +78,7 @@ function calcCaretPosition(origValue, caretPosition) {
     return caretPositionWithoutDashes + correctNumberOfDashes;
 }
 
-class HexOnlyEditableField extends React.PureComponent {
+class HexOnlyEditableField extends React.Component {
     constructor(props) {
         super(props);
         this.keyPressValidation = this.keyPressValidation.bind(this);
@@ -92,15 +91,16 @@ class HexOnlyEditableField extends React.PureComponent {
     }
 
     shouldComponentUpdate(nextProps) {
-        if (!_.isEqual(this.props.value, nextProps.value)) {
+        const { value, onRead, onWrite } = this.props;
+        if (!_.isEqual(value, nextProps.value)) {
             return true;
         }
 
-        if (this.props.onRead !== nextProps.onRead) {
+        if (onRead !== nextProps.onRead) {
             return true;
         }
 
-        if (this.props.onWrite !== nextProps.onWrite) {
+        if (onWrite !== nextProps.onWrite) {
             return true;
         }
 
@@ -116,15 +116,17 @@ class HexOnlyEditableField extends React.PureComponent {
     }
 
     onChange(value) {
-        if (this.props.onChange) {
-            const v = this.props.showText ? this.getValueArray(value) : value;
-            this.props.onChange(v);
+        const { onChange, showText } = this.props;
+        if (onChange) {
+            const v = showText ? this.getValueArray(value) : value;
+            onChange(v);
         }
     }
 
     getValueArray(val) {
+        const { showText } = this.props;
         let value = val;
-        if (this.props.showText) {
+        if (showText) {
             value = textToHexText(value);
         }
 
@@ -161,7 +163,8 @@ class HexOnlyEditableField extends React.PureComponent {
         There's a lot of complexity here related to keeping the caret in the right position.
     */
     keyPressValidation(str) {
-        if (this.props.showText) {
+        const { showText } = this.props;
+        if (showText) {
             return true;
         }
 
@@ -170,7 +173,8 @@ class HexOnlyEditableField extends React.PureComponent {
     }
 
     formatInput(str, caretPosition) {
-        if (this.props.showText) {
+        const { showText } = this.props;
+        if (showText) {
             return {
                 value: str,
                 caretPosition,
@@ -195,12 +199,12 @@ class HexOnlyEditableField extends React.PureComponent {
     }
 
     removeSelection(e, caretModifier) {
-        if (this.props.showText) {
+        const { showText } = this.props;
+        if (showText) {
             return;
         }
 
-        const selectionStart = e.target.selectionStart;
-        const selectionEnd = e.target.selectionEnd;
+        const { selectionStart, selectionEnd } = e.target;
 
         if (selectionStart !== selectionEnd) {
             return;
@@ -219,7 +223,8 @@ class HexOnlyEditableField extends React.PureComponent {
     }
 
     completeValidation(str) {
-        const s = this.props.showText ? textToHexText(str) : str;
+        const { showText } = this.props;
+        const s = showText ? textToHexText(str) : str;
 
         const valueArray = s.trim().split(' ');
         for (let i = 0; i < valueArray.length; i += 1) {

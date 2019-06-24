@@ -36,13 +36,12 @@
 
 'use strict';
 
+import { is as ImmutableIs, Map } from 'immutable';
 import React from 'react';
-import { Map, is as ImmutableIs } from 'immutable';
 
-import AttributeItem, { CCCD_UUID } from './AttributeItem';
-
-import HexOnlyEditableField from './HexOnlyEditableField';
 import { getInstanceIds } from '../utils/api';
+import AttributeItem, { CCCD_UUID } from './AttributeItem';
+import HexOnlyEditableField from './HexOnlyEditableField';
 
 function isCCCDAttribute(uuid) {
     return uuid === CCCD_UUID;
@@ -59,10 +58,10 @@ class DescriptorItem extends AttributeItem {
     }
 
     shouldComponentUpdate(nextProps) {
-        const update = !ImmutableIs(this.props.item.value, nextProps.item.value) ||
-            !ImmutableIs(this.props.item.errorMessage, nextProps.item.errorMessage) ||
-            !ImmutableIs(this.props.selected, nextProps.selected) ||
-            !ImmutableIs(this.props.item.name, nextProps.item.name);
+        const update = !ImmutableIs(this.props.item.value, nextProps.item.value)
+            || !ImmutableIs(this.props.item.errorMessage, nextProps.item.errorMessage)
+            || !ImmutableIs(this.props.selected, nextProps.selected)
+            || !ImmutableIs(this.props.item.name, nextProps.item.name);
         return update;
     }
 
@@ -82,13 +81,13 @@ class DescriptorItem extends AttributeItem {
         const isCCCD = isCCCDAttribute(uuid);
         const isLocalCCCD = isLocal && isCCCD;
 
-        const onRead = !isLocal ?
-            () => this.onRead() :
-            undefined;
+        const onRead = !isLocal
+            ? () => this.onRead()
+            : undefined;
 
-        const onWrite = !isLocalCCCD ?
-            val => this.onWrite(val) :
-            null;
+        const onWrite = !isLocalCCCD
+            ? val => this.onWrite(val)
+            : null;
 
         const itemIsSelected = instanceId === selected;
 
@@ -96,7 +95,7 @@ class DescriptorItem extends AttributeItem {
 
         if (isLocalCCCD && Map.isMap(value)) {
             value.forEach((cccdValue, deviceInstanceId) => {
-                const address = getInstanceIds(deviceInstanceId).address;
+                const { address } = getInstanceIds(deviceInstanceId);
                 const key = `${instanceId}-${deviceInstanceId}`;
                 valueList.push(
                     <HexOnlyEditableField

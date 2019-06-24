@@ -34,20 +34,32 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, FormControl, InputGroup } from 'react-bootstrap';
+import React from 'react';
+import FormControl from 'react-bootstrap/FormControl';
+import FormGroup from 'react-bootstrap/FormGroup';
+import FormLabel from 'react-bootstrap/FormLabel';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 const SelectList = props => {
-    const { id, label, children, labelClassName, wrapperClassName, ...newProps } = props;
+    const {
+        children,
+        id,
+        inline,
+        label,
+        labelClassName,
+        wrapperClassName,
+        ...newProps
+    } = props;
 
+    const classProp = inline && { className: 'form-inline' };
     return (
-        <FormGroup controlId={id}>
+        <FormGroup controlId={id} {...classProp}>
             {
-                label && <ControlLabel className={labelClassName}>{label}</ControlLabel>
+                label && <FormLabel className={labelClassName}>{label}</FormLabel>
             }
             <InputGroup className={wrapperClassName}>
-                <FormControl componentClass="select" {...newProps}>
+                <FormControl as="select" {...newProps}>
                     {children}
                 </FormControl>
             </InputGroup>
@@ -56,15 +68,17 @@ const SelectList = props => {
 };
 
 SelectList.propTypes = {
+    children: PropTypes.node.isRequired,
     id: PropTypes.string,
+    inline: PropTypes.bool,
     label: PropTypes.string.isRequired,
     labelClassName: PropTypes.string,
     wrapperClassName: PropTypes.string,
-    children: PropTypes.node.isRequired,
 };
 
 SelectList.defaultProps = {
     id: '',
+    inline: true,
     labelClassName: 'col-md-3 text-right',
     wrapperClassName: 'col-md-9',
 };

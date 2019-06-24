@@ -36,13 +36,18 @@
 
 /* eslint react/forbid-prop-types: off */
 /* eslint jsx-a11y/label-has-for: off */
+/* eslint jsx-a11y/label-has-associated-control: off */
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { DropdownButton, MenuItem, Checkbox } from 'react-bootstrap';
+import React from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const IO_CAPS_DISPLAY_ONLY = 0;
 const IO_CAPS_DISPLAY_YESNO = 1;
@@ -99,6 +104,7 @@ class SecurityParamsControls extends React.PureComponent {
     }
 
     handleChange() {
+        const { onChange } = this.props;
         const newSecParams = {
             io_caps: this.ioCaps,
             lesc: this.enableLesc,
@@ -108,85 +114,91 @@ class SecurityParamsControls extends React.PureComponent {
             bond: this.performBonding,
         };
 
-        this.props.onChange(newSecParams);
+        onChange(newSecParams);
     }
 
     render() {
         return (
-            <div>
-                <div className="form-group">
-                    <label className="control-label col-sm-4">IO capabilities</label>
-                    <div className="col-sm-7">
+            <Container>
+                <Row className="form-group">
+                    <Col sm={4} className="form-label text-right">IO capabilities</Col>
+                    <Col sm={7}>
                         <DropdownButton
                             title={this.ioCapsTitle}
                             key="ioCapsDropdownKey"
                             id="ioCapsDropdownId"
                             onSelect={(eventKey, event) => this.onIoCapsSelect(event, eventKey)}
+                            variant="outline-secondary"
                         >
-                            <MenuItem eventKey={IO_CAPS_DISPLAY_ONLY}>
+                            <Dropdown.Item eventKey={IO_CAPS_DISPLAY_ONLY}>
                                 {keyToIoCapsText(IO_CAPS_DISPLAY_ONLY)}
-                            </MenuItem>
-                            <MenuItem eventKey={IO_CAPS_DISPLAY_YESNO}>
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey={IO_CAPS_DISPLAY_YESNO}>
                                 {keyToIoCapsText(IO_CAPS_DISPLAY_YESNO)}
-                            </MenuItem>
-                            <MenuItem eventKey={IO_CAPS_KEYBOARD_ONLY}>
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey={IO_CAPS_KEYBOARD_ONLY}>
                                 {keyToIoCapsText(IO_CAPS_KEYBOARD_ONLY)}
-                            </MenuItem>
-                            <MenuItem eventKey={IO_CAPS_NONE}>
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey={IO_CAPS_NONE}>
                                 {keyToIoCapsText(IO_CAPS_NONE)}
-                            </MenuItem>
-                            <MenuItem eventKey={IO_CAPS_KEYBOARD_DISPLAY}>
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey={IO_CAPS_KEYBOARD_DISPLAY}>
                                 {keyToIoCapsText(IO_CAPS_KEYBOARD_DISPLAY)}
-                            </MenuItem>
+                            </Dropdown.Item>
                         </DropdownButton>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="control-label col-sm-4">Authentication</label>
-                    <div className="col-sm-7">
-                        <Checkbox
-                            defaultChecked={this.enableLesc}
-                            onChange={event => this.handleCheckboxChange('enableLesc', event.target.checked)}
-                        >
-                            Enable LE Secure Connection pairing
-                        </Checkbox>
-                        <Checkbox
-                            defaultChecked={this.enableMitm}
-                            onChange={event => this.handleCheckboxChange('enableMitm', event.target.checked)}
-                        >
-                            Enable MITM protection
-                        </Checkbox>
-                        <Checkbox
-                            defaultChecked={this.enableOob}
-                            onChange={event => this.handleCheckboxChange('enableOob', event.target.checked)}
-                        >
-                            Enable OOB data
-                        </Checkbox>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="control-label col-sm-4">Keypress notifications</label>
-                    <div className="col-sm-7">
-                        <Checkbox
-                            defaultChecked={this.enableKeypress}
-                            onChange={event => this.handleCheckboxChange('enableKeypress', event.target.checked)}
-                        >
-                            Enable keypress notifications
-                        </Checkbox>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="control-label col-sm-4">Bonding</label>
-                    <div className="col-sm-7">
-                        <Checkbox
-                            defaultChecked={this.performBonding}
-                            onChange={event => this.handleCheckboxChange('performBonding', event.target.checked)}
-                        >
-                            Perform bonding
-                        </Checkbox>
-                    </div>
-                </div>
-            </div>
+                    </Col>
+                </Row>
+                <Row className="form-group">
+                    <Col sm={4} className="form-label text-right align-baseline">Authentication</Col>
+                    <Col sm={7}>
+                        <Form.Group controlId="enableLescCheck">
+                            <Form.Check
+                                defaultChecked={this.enableLesc}
+                                onChange={event => this.handleCheckboxChange('enableLesc', event.target.checked)}
+                                label="Enable LE Secure Connection pairing"
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="enableMitmCheck">
+                            <Form.Check
+                                defaultChecked={this.enableMitm}
+                                onChange={event => this.handleCheckboxChange('enableMitm', event.target.checked)}
+                                label="Enable MITM protection"
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="enableOobCheck">
+                            <Form.Check
+                                defaultChecked={this.enableOob}
+                                onChange={event => this.handleCheckboxChange('enableOob', event.target.checked)}
+                                label="Enable OOB data"
+                            />
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row className="form-group">
+                    <Col sm={4} className="form-label text-right">Keypress notifications</Col>
+                    <Col sm={7}>
+                        <Form.Group controlId="enableKeypressCheck">
+                            <Form.Check
+                                defaultChecked={this.enableKeypress}
+                                onChange={event => this.handleCheckboxChange('enableKeypress', event.target.checked)}
+                                label="Enable keypress notifications"
+                            />
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row className="form-group">
+                    <Col sm={4} className="form-label text-right align-baseline">Bonding</Col>
+                    <Col sm={7}>
+                        <Form.Group controlId="performBondingCheck">
+                            <Form.Check
+                                defaultChecked={this.performBonding}
+                                onChange={event => this.handleCheckboxChange('performBonding', event.target.checked)}
+                                label="Perform bonding"
+                            />
+                        </Form.Group>
+                    </Col>
+                </Row>
+            </Container>
         );
     }
 }

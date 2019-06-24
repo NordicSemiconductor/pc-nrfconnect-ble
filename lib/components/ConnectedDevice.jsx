@@ -38,9 +38,10 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Dropdown, MenuItem, Button } from 'react-bootstrap';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 import Connector from './Connector';
 
@@ -71,8 +72,8 @@ class ConnectedDevice extends React.PureComponent {
             return;
         }
 
-        const isCurrentlyBelow =
-            window.innerWidth < (this.boundingRect.right + WINDOW_WIDTH_OFFSET);
+        const isCurrentlyBelow = window.innerWidth
+            < (this.boundingRect.right + WINDOW_WIDTH_OFFSET);
         const hasChanged = isCurrentlyBelow !== this.belowWidthThreshold;
 
         if (!hasChanged) {
@@ -125,6 +126,7 @@ class ConnectedDevice extends React.PureComponent {
             layout,
             connectedDevicesNumber,
             isDfuSupported,
+            onClickDfu,
         } = this.props;
 
         const role = device.role === 'central' ? 'Central' : 'Peripheral';
@@ -132,8 +134,6 @@ class ConnectedDevice extends React.PureComponent {
         const style = {
             opacity: device.connected === true ? 1.0 : 0.5,
         };
-
-        const pullRight = !!this.belowWidthThreshold;
 
         const dfuIcon = require('../../resources/dfu_icon.png'); // eslint-disable-line
 
@@ -151,36 +151,37 @@ class ConnectedDevice extends React.PureComponent {
                 <div className="device-body text-small">
                     <div>
                         <div className="pull-right">
-                            { isDfuSupported &&
-                                <Button
-                                    id="dfuButton"
-                                    bsStyle="primary"
-                                    className="btn-nordic btn-xs"
-                                    title="Start Secure DFU"
-                                    onClick={this.props.onClickDfu}
-                                >
-                                    <img src={dfuIcon} className="icon-dfu-button" alt="" />
-                                </Button>
+                            { isDfuSupported
+                                && (
+                                    <Button
+                                        id="dfuButton"
+                                        variant="primary"
+                                        className="btn-nordic btn-xs"
+                                        title="Start Secure DFU"
+                                        onClick={onClickDfu}
+                                    >
+                                        <img src={dfuIcon} className="icon-dfu-button" alt="" />
+                                    </Button>
+                                )
                             }
                             <Dropdown
-                                pullRight={pullRight}
                                 id="connectionDropDown"
                                 onClick={this.onResize}
                                 onSelect={this.onSelect}
                             >
-                                <Dropdown.Toggle noCaret>
-                                    <span className="icon-cog" aria-hidden="true" />
+                                <Dropdown.Toggle>
+                                    <span className="mdi mdi-settings" aria-hidden="true" />
                                 </Dropdown.Toggle>
-                                <Dropdown.Menu pullRight={pullRight}>
-                                    <MenuItem id="updateConnectionMenuItem" eventKey="Update">
+                                <Dropdown.Menu>
+                                    <Dropdown.Item id="updateConnectionMenuItem" eventKey="Update">
                                         Update connection...
-                                    </MenuItem>
-                                    <MenuItem id="pairMenuItem" eventKey="Pair">
+                                    </Dropdown.Item>
+                                    <Dropdown.Item id="pairMenuItem" eventKey="Pair">
                                         Pair...
-                                    </MenuItem>
-                                    <MenuItem id="disconnectMenuItem" eventKey="Disconnect">
+                                    </Dropdown.Item>
+                                    <Dropdown.Item id="disconnectMenuItem" eventKey="Disconnect">
                                         Disconnect
-                                    </MenuItem>
+                                    </Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>

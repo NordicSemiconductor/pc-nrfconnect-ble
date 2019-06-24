@@ -38,17 +38,16 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { ButtonToolbar, Button } from 'react-bootstrap';
-import TextInput from './input/TextInput';
-import UuidInput from './input/UuidInput';
-
-import { getUuidName, uuidServiceDefinitions } from '../utils/uuid_definitions';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
 import { ValidationError } from '../common/Errors';
+import { getUuidName, uuidServiceDefinitions } from '../utils/uuid_definitions';
 import { ERROR, validateUuid } from '../utils/validateUuid';
+import TextInput from './input/TextInput';
+import UuidInput from './input/UuidInput';
 
 class ServiceEditor extends React.PureComponent {
     constructor(props) {
@@ -59,12 +58,14 @@ class ServiceEditor extends React.PureComponent {
     }
 
     onNameChange(e) {
+        const { onModified } = this.props;
         this.name = e.target.value;
-        this.props.onModified(true);
+        onModified(true);
         this.forceUpdate();
     }
 
     handleUuidSelect(uuid) {
+        const { onModified } = this.props;
         this.uuid = uuid;
         const uuidName = getUuidName(this.uuid);
 
@@ -72,26 +73,32 @@ class ServiceEditor extends React.PureComponent {
             this.name = uuidName;
         }
 
-        this.props.onModified(true);
+        onModified(true);
 
         this.forceUpdate();
     }
 
     saveAttribute() {
+        const {
+            service,
+            onValidationError,
+            onSaveChangedAttribute,
+            onModified,
+        } = this.props;
         if (validateUuid(this.uuid) === ERROR) {
-            this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
+            onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
         }
 
         const changedService = {
-            instanceId: this.props.service.instanceId,
+            instanceId: service.instanceId,
             uuid: this.uuid.toUpperCase().trim(),
             name: this.name,
         };
 
-        this.props.onSaveChangedAttribute(changedService);
+        onSaveChangedAttribute(changedService);
         this.saved = true;
-        this.props.onModified(false);
+        onModified(false);
     }
 
     render() {
@@ -130,12 +137,12 @@ class ServiceEditor extends React.PureComponent {
                 />
                 <ButtonToolbar>
                     <div className="col-md-4" />
-                    <Button bsStyle="primary" className="btn-nordic" onClick={onRemoveAttribute}>
-                        <i className="icon-cancel" />
+                    <Button variant="primary" className="btn-nordic" onClick={onRemoveAttribute}>
+                        <i className="mdi mdi-close" />
                         Delete
                     </Button>
                     <Button
-                        bsStyle="primary"
+                        variant="primary"
                         className="btn-nordic"
                         onClick={this.saveAttribute}
                     >

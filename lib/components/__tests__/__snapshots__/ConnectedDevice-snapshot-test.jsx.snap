@@ -39,76 +39,24 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
           />
         </button>
         <div
-          className="dropdown btn-group"
+          className="dropdown"
+          id="connectionDropDown"
           onClick={[Function]}
+          onKeyDown={[Function]}
         >
           <button
             aria-expanded={false}
             aria-haspopup={true}
-            className="dropdown-toggle btn btn-default"
+            className="dropdown-toggle btn btn-primary"
             disabled={false}
-            id="connectionDropDown"
             onClick={[Function]}
-            onKeyDown={[Function]}
-            role="button"
             type="button"
           >
             <span
               aria-hidden="true"
-              className="icon-cog"
+              className="mdi mdi-settings"
             />
           </button>
-          <ul
-            aria-labelledby="connectionDropDown"
-            className="dropdown-menu"
-            role="menu"
-          >
-            <li
-              className=""
-              role="presentation"
-            >
-              <a
-                href="#"
-                id="updateConnectionMenuItem"
-                onClick={[Function]}
-                onKeyDown={[Function]}
-                role="menuitem"
-                tabIndex="-1"
-              >
-                Update connection...
-              </a>
-            </li>
-            <li
-              className=""
-              role="presentation"
-            >
-              <a
-                href="#"
-                id="pairMenuItem"
-                onClick={[Function]}
-                onKeyDown={[Function]}
-                role="menuitem"
-                tabIndex="-1"
-              >
-                Pair...
-              </a>
-            </li>
-            <li
-              className=""
-              role="presentation"
-            >
-              <a
-                href="#"
-                id="disconnectMenuItem"
-                onClick={[Function]}
-                onKeyDown={[Function]}
-                role="menuitem"
-                tabIndex="-1"
-              >
-                Disconnect
-              </a>
-            </li>
-          </ul>
         </div>
       </div>
       <div
@@ -157,76 +105,24 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
         className="pull-right"
       >
         <div
-          className="dropdown btn-group"
+          className="dropdown"
+          id="connectionDropDown"
           onClick={[Function]}
+          onKeyDown={[Function]}
         >
           <button
             aria-expanded={false}
             aria-haspopup={true}
-            className="dropdown-toggle btn btn-default"
+            className="dropdown-toggle btn btn-primary"
             disabled={false}
-            id="connectionDropDown"
             onClick={[Function]}
-            onKeyDown={[Function]}
-            role="button"
             type="button"
           >
             <span
               aria-hidden="true"
-              className="icon-cog"
+              className="mdi mdi-settings"
             />
           </button>
-          <ul
-            aria-labelledby="connectionDropDown"
-            className="dropdown-menu"
-            role="menu"
-          >
-            <li
-              className=""
-              role="presentation"
-            >
-              <a
-                href="#"
-                id="updateConnectionMenuItem"
-                onClick={[Function]}
-                onKeyDown={[Function]}
-                role="menuitem"
-                tabIndex="-1"
-              >
-                Update connection...
-              </a>
-            </li>
-            <li
-              className=""
-              role="presentation"
-            >
-              <a
-                href="#"
-                id="pairMenuItem"
-                onClick={[Function]}
-                onKeyDown={[Function]}
-                role="menuitem"
-                tabIndex="-1"
-              >
-                Pair...
-              </a>
-            </li>
-            <li
-              className=""
-              role="presentation"
-            >
-              <a
-                href="#"
-                id="disconnectMenuItem"
-                onClick={[Function]}
-                onKeyDown={[Function]}
-                role="menuitem"
-                tabIndex="-1"
-              >
-                Disconnect
-              </a>
-            </li>
-          </ul>
         </div>
       </div>
       <div

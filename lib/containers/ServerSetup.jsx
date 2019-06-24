@@ -38,31 +38,27 @@
 
 'use strict';
 
-import React from 'react';
-import PropTypes from 'prop-types';
-
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { Map } from 'immutable';
-
 import electron from 'electron';
+import { Map } from 'immutable';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import * as ServerSetupActions from '../actions/serverSetupActions';
 import * as AdapterActions from '../actions/adapterActions';
 import * as AdvertisingActions from '../actions/advertisingActions';
 import * as ErrorActions from '../actions/errorDialogActions';
-
+import * as ServerSetupActions from '../actions/serverSetupActions';
+import { findSelectedItem, traverseItems } from '../common/treeViewKeyNavigation';
 import AddNewItem from '../components/AddNewItem';
-import ServiceItem from '../components/ServiceItem';
-import ServiceEditor from '../components/ServiceEditor';
-import CharacteristicEditor from '../components/CharacteristicEditor';
-import DescriptorEditor from '../components/DescriptorEditor';
-import ConfirmationDialog from '../components/ConfirmationDialog';
 import CentralDevice from '../components/CentralDevice';
-
+import CharacteristicEditor from '../components/CharacteristicEditor';
+import ConfirmationDialog from '../components/ConfirmationDialog';
+import DescriptorEditor from '../components/DescriptorEditor';
+import ServiceEditor from '../components/ServiceEditor';
+import ServiceItem from '../components/ServiceItem';
+import { ImmutableAdapter, getInstanceIds } from '../utils/api';
 import withHotkey from '../utils/withHotkey';
-import { getInstanceIds, ImmutableAdapter } from '../utils/api';
-import { traverseItems, findSelectedItem } from './../common/treeViewKeyNavigation';
 
 const filters = [
     { name: 'nRF Connect Server Setup', extensions: ['ncs', 'json'] },
@@ -100,15 +96,17 @@ class ServerSetup extends React.PureComponent {
     }
 
     componentWillUpdate(nextProps) {
-        if (!this.props.serverSetup) { return false; }
+        const { serverSetup } = this.props;
+        if (serverSetup) { return false; }
 
         if (!nextProps || !nextProps.serverSetup) { return false; }
 
-        if (!this.props.serverSetup ||
-            nextProps.serverSetup.selectedComponent !== this.props.serverSetup.selectedComponent) {
+        if (!serverSetup
+            || nextProps.serverSetup.selectedComponent !== serverSetup.selectedComponent) {
             this.modified = false;
             return false;
         }
+
         return true;
     }
 
@@ -117,24 +115,27 @@ class ServerSetup extends React.PureComponent {
     }
 
     onSelectComponent(instanceId) {
+        const { selectComponent, showDiscardDialog } = this.props;
         if (!this.modified) {
-            this.props.selectComponent(instanceId);
+            selectComponent(instanceId);
             return;
         }
 
         this.pendingSelectInstanceId = instanceId;
-        this.props.showDiscardDialog();
+        showDiscardDialog();
     }
 
     onDiscardCancel() {
+        const { hideDiscardDialog } = this.props;
         this.pendingSelectInstanceId = null;
 
-        this.props.hideDiscardDialog();
+        hideDiscardDialog();
     }
 
     onDiscardOk() {
-        this.props.hideDiscardDialog();
-        this.props.selectComponent(this.pendingSelectInstanceId);
+        const { hideDiscardDialog, selectComponent } = this.props;
+        hideDiscardDialog();
+        selectComponent(this.pendingSelectInstanceId);
     }
 
     onClickApply() {
@@ -151,16 +152,18 @@ class ServerSetup extends React.PureComponent {
     }
 
     openSaveDialog() {
+        const { saveServerSetup } = this.props;
         const { dialog } = electron.remote;
         dialog.showSaveDialog({ filters }, filePath => {
             if (!filePath) {
                 return;
             }
-            this.props.saveServerSetup(filePath);
+            saveServerSetup(filePath);
         });
     }
 
     openLoadDialog() {
+        const { loadServerSetup } = this.props;
         const { dialog } = electron.remote;
         dialog.showOpenDialog({ filters, properties: ['openFile'] }, filePaths => {
             if (!filePaths) {
@@ -170,7 +173,7 @@ class ServerSetup extends React.PureComponent {
             if (!filePath) {
                 return;
             }
-            this.props.loadServerSetup(filePath);
+            loadServerSetup(filePath);
         });
     }
 
@@ -184,7 +187,7 @@ class ServerSetup extends React.PureComponent {
             return;
         }
 
-        const selectedComponent = serverSetup.selectedComponent;
+        const { selectedComponent } = serverSetup;
         const deviceDetails = new Map({ devices: new Map({ 'local.server': serverSetup }) });
         let foundCurrent = false;
 
@@ -213,7 +216,7 @@ class ServerSetup extends React.PureComponent {
             setAttributeExpanded,
         } = this.props;
 
-        const selectedComponent = serverSetup.selectedComponent;
+        const { selectedComponent } = serverSetup;
         const deviceDetails = new Map({ devices: new Map({ 'local.server': serverSetup }) });
 
         if (!selectedComponent) {
@@ -249,7 +252,8 @@ class ServerSetup extends React.PureComponent {
     }
 
     saveChangedAttribute(changedAttribute) {
-        this.props.saveChangedAttribute(changedAttribute);
+        const { saveChangedAttribute } = this.props;
+        saveChangedAttribute(changedAttribute);
     }
 
     render() {
@@ -273,10 +277,11 @@ class ServerSetup extends React.PureComponent {
             showErrorDialog,
             // showDiscardDialog,
             // hideDiscardDialog,
+            style,
         } = this.props;
 
         if (!serverSetup) {
-            return (<div className="server-setup" style={this.props.style} />);
+            return (<div className="server-setup" style={style} />);
         }
         const {
             selectedComponent,
@@ -383,29 +388,29 @@ class ServerSetup extends React.PureComponent {
         );
 
         return (
-            <div className="server-setup" style={this.props.style}>
+            <div className="server-setup" style={style}>
                 <div className="server-setup-view">
                     <div className="server-setup-tree">
                         {central}
                         <div className="service-items-wrap">
                             {services}
-                            <AddNewItem text="New service" id="add-btn-root" bars={1} parentInstanceId={'local.server'} selected={selectedComponent} onClick={addNewService} />
+                            <AddNewItem text="New service" id="add-btn-root" bars={1} parentInstanceId="local.server" selected={selectedComponent} onClick={addNewService} />
                         </div>
                         <div className="server-setup-buttons">
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-nordic"
+                                onClick={showClearDialog}
+                            >
+                                <span className="mdi mdi-check" /> Apply to device
+                            </button>
                             <button
                                 type="button"
                                 className="btn btn-primary btn-nordic"
                                 title={btnTitle}
                                 onClick={this.onClickApply}
                             >
-                                <i className="icon-ok" /> Apply to device
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-nordic"
-                                onClick={showClearDialog}
-                            >
-                                <i className="icon-trash" /> Clear
+                                <span className="mdi mdi-trash-can" /> Clear
                             </button>
                         </div>
                     </div>
@@ -457,7 +462,7 @@ function mapStateToProps(state) {
         adapter,
     } = state.app;
 
-    const selectedAdapter = adapter.selectedAdapter;
+    const { selectedAdapter } = adapter;
 
     if (!selectedAdapter) {
         return {};

@@ -38,21 +38,20 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Form from 'react-bootstrap/Form';
 
-import { ButtonToolbar, Button, Checkbox } from 'react-bootstrap';
-import TextInput from './input/TextInput';
-import SelectList from './input/SelectList';
-import LabeledInputGroup from './input/LabeledInputGroup';
-import UuidInput from './input/UuidInput';
-
-import HexOnlyEditableField from './HexOnlyEditableField';
-
-import { getUuidName, uuidDescriptorDefinitions } from '../utils/uuid_definitions';
 import { ValidationError } from '../common/Errors';
-
+import { getUuidName, uuidDescriptorDefinitions } from '../utils/uuid_definitions';
 import { ERROR, SUCCESS, validateUuid } from '../utils/validateUuid';
+import HexOnlyEditableField from './HexOnlyEditableField';
+import LabeledInputGroup from './input/LabeledInputGroup';
+import SelectList from './input/SelectList';
+import TextInput from './input/TextInput';
+import UuidInput from './input/UuidInput';
 
 class DescriptorEditor extends React.PureComponent {
     constructor(props) {
@@ -63,21 +62,24 @@ class DescriptorEditor extends React.PureComponent {
     }
 
     setCheckedProperty(property, e) {
+        const { onModified } = this.props;
         this[property] = e.target.checked;
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     setValueProperty(property, e) {
+        const { onModified } = this.props;
         this[property] = e.target.value;
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     setInitialValue(value) {
+        const { onModified } = this.props;
         this.value = value;
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     parseValueProperty(value) {
@@ -95,7 +97,7 @@ class DescriptorEditor extends React.PureComponent {
 
     validateValueLength() {
         const maxLength = parseInt(this.maxLength, 10);
-        const fixedLength = this.fixedLength;
+        const { fixedLength } = this;
         const value = this.parseValueProperty(this.value);
 
         if (maxLength > 510 && fixedLength === true) { return ERROR; }
@@ -108,18 +110,21 @@ class DescriptorEditor extends React.PureComponent {
     }
 
     saveAttribute() {
+        const {
+            descriptor, onValidationError, onSaveChangedAttribute, onModified,
+        } = this.props;
         if (validateUuid(this.uuid) === ERROR) {
-            this.props.onValidationError(new ValidationError('You have to provide a valid UUID.'));
+            onValidationError(new ValidationError('You have to provide a valid UUID.'));
             return;
         }
 
         if (this.validateValueLength() === ERROR) {
-            this.props.onValidationError(new ValidationError('Length of value is not valid.'));
+            onValidationError(new ValidationError('Length of value is not valid.'));
             return;
         }
 
         const changedDescriptor = {
-            instanceId: this.props.descriptor.instanceId,
+            instanceId: descriptor.instanceId,
             uuid: this.uuid.toUpperCase().trim(),
             name: this.name,
             value: this.parseValueProperty(this.value),
@@ -129,12 +134,13 @@ class DescriptorEditor extends React.PureComponent {
             maxLength: parseInt(this.maxLength, 10),
         };
 
-        this.props.onSaveChangedAttribute(changedDescriptor);
+        onSaveChangedAttribute(changedDescriptor);
         this.saved = true;
-        this.props.onModified(false);
+        onModified(false);
     }
 
     handleUuidSelect(uuid) {
+        const { onModified } = this.props;
         this.uuid = uuid;
         const uuidName = getUuidName(this.uuid);
 
@@ -143,7 +149,7 @@ class DescriptorEditor extends React.PureComponent {
         }
 
         this.forceUpdate();
-        this.props.onModified(true);
+        onModified(true);
     }
 
     render() {
@@ -238,7 +244,9 @@ class DescriptorEditor extends React.PureComponent {
                 </SelectList>
 
                 <LabeledInputGroup label="Max length">
-                    <Checkbox checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)}>Fixed length</Checkbox>
+                    <Form.Group controlId="fixedLengthCheck">
+                        <Form.Check checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)} label="Fixed length" />
+                    </Form.Group>
                     <TextInput
                         inline
                         type="number"
@@ -252,11 +260,11 @@ class DescriptorEditor extends React.PureComponent {
 
                 <ButtonToolbar>
                     <div className="col-md-4" />
-                    <Button bsStyle="primary" className="btn-nordic" onClick={onRemoveAttribute}>
-                        <i className="icon-cancel" />Delete
+                    <Button variant="primary" className="btn-nordic" onClick={onRemoveAttribute}>
+                        <i className="mdi mdi-close" />Delete
                     </Button>
                     <Button
-                        bsStyle="primary"
+                        variant="primary"
                         className="btn-nordic"
                         onClick={this.saveAttribute}
                     >

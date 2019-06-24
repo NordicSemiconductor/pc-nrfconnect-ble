@@ -38,14 +38,14 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import ConnectedDevice from './ConnectedDevice';
+import { SECURE_DFU_UUID } from '../utils/definitions';
 import CentralDevice from './CentralDevice';
+import ConnectedDevice from './ConnectedDevice';
 import EnumeratingAttributes from './EnumeratingAttributes';
 import ServiceItem from './ServiceItem';
-import { SECURE_DFU_UUID } from '../utils/definitions';
 
 class DeviceDetailsView extends React.PureComponent {
     constructor(props) {
@@ -105,7 +105,8 @@ class DeviceDetailsView extends React.PureComponent {
     }
 
     hasDfuService(instanceId) {
-        const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
+        const { deviceDetails } = this.props;
+        const deviceDetail = deviceDetails.devices.get(instanceId);
         if (!deviceDetail.discoveringChildren) {
             const services = deviceDetail.get('children');
             if (services) {
@@ -116,7 +117,8 @@ class DeviceDetailsView extends React.PureComponent {
     }
 
     renderChildren(instanceId) {
-        const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
+        const { deviceDetails } = this.props;
+        const deviceDetail = deviceDetails.devices.get(instanceId);
 
         if (deviceDetail.discoveringChildren) {
             return <EnumeratingAttributes bars={1} />;
@@ -138,9 +140,11 @@ class DeviceDetailsView extends React.PureComponent {
         const {
             adapter,
             device,
+            deviceDetails,
             selected, // instanceId for the selected component
             connectedDevicesNumber,
             onSelectComponent,
+            style,
         } = this.props;
 
         const {
@@ -160,7 +164,6 @@ class DeviceDetailsView extends React.PureComponent {
                 device: {
                     advertising,
                 },
-                deviceDetails,
                 onShowAdvertisingSetupDialog,
                 onToggleAdvertising,
                 autoConnUpdate,
@@ -197,7 +200,7 @@ class DeviceDetailsView extends React.PureComponent {
 
             if (!deviceDetails) {
                 return (
-                    <div className="local-server device-details-view" id={`${instanceId}_details`} style={this.props.style}>
+                    <div className="local-server device-details-view" id={`${instanceId}_details`} style={style}>
                         {localDevice}
                     </div>
                 );
@@ -206,14 +209,14 @@ class DeviceDetailsView extends React.PureComponent {
             const services = this.renderChildren('local.server');
 
             return (
-                <div className="local-server device-details-view" id={`${instanceId}_details`} style={this.props.style}>
+                <div className="local-server device-details-view" id={`${instanceId}_details`} style={style}>
                     {localDevice}
                     {services}
                 </div>
             );
         }
 
-        const deviceDetail = this.props.deviceDetails.devices.get(instanceId);
+        const deviceDetail = deviceDetails.devices.get(instanceId);
         const isDfuSupported = this.hasDfuService(instanceId);
 
         if (!deviceDetail) {
@@ -241,7 +244,7 @@ class DeviceDetailsView extends React.PureComponent {
         const services = this.renderChildren(instanceId);
 
         return (
-            <div className="remote-server device-details-view" id={`${instanceId}_details`} style={this.props.style}>
+            <div className="remote-server device-details-view" id={`${instanceId}_details`} style={style}>
                 {connectedDevice}
                 {services}
             </div>

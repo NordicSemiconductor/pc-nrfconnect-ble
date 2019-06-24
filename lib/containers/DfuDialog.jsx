@@ -36,18 +36,17 @@
 
 /* eslint react/forbid-prop-types: off */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-
-import { Modal, Button } from 'react-bootstrap';
-
 import electron from 'electron';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import * as DfuActions from '../actions/dfuActions';
-import DfuEditor from '../components/DfuEditor';
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import DfuEditor from '../components/DfuEditor';
 
 class DfuDialog extends React.PureComponent {
     constructor(props) {
@@ -62,16 +61,19 @@ class DfuDialog extends React.PureComponent {
 
 
     onFileSelected(filePath) {
-        this.props.setDfuFilePath(filePath);
-        this.props.loadDfuPackageInfo(filePath);
+        const { setDfuFilePath, loadDfuPackageInfo } = this.props;
+        setDfuFilePath(filePath);
+        loadDfuPackageInfo(filePath);
     }
 
     onStartDfu() {
-        this.props.startDfu(this.props.filePath);
+        const { startDfu, filePath } = this.props;
+        startDfu(filePath);
     }
 
     onStopDfu() {
-        this.props.stopDfu();
+        const { stopDfu } = this.props;
+        stopDfu();
     }
 
     showFileDialog() {
@@ -97,10 +99,11 @@ class DfuDialog extends React.PureComponent {
 
 
     hide() {
-        if (this.props.isStarted) {
-            this.props.showConfirmCloseDialog();
+        const { isStarted, showConfirmCloseDialog, hideDfuDialog } = this.props;
+        if (isStarted) {
+            showConfirmCloseDialog();
         } else {
-            this.props.hideDfuDialog();
+            hideDfuDialog();
         }
     }
 
@@ -119,7 +122,7 @@ class DfuDialog extends React.PureComponent {
 
         return (
             <div>
-                <Modal className="dfu-setup" bsSize="large" show={isVisible}>
+                <Modal className="dfu-setup" size="large" show={isVisible}>
                     <Modal.Header>
                         <Modal.Title>
                             Device Firmware Upgrade (DFU) for device {device.address}
@@ -177,7 +180,7 @@ DfuDialog.defaultProps = {
 function mapStateToProps(state) {
     const { dfu, adapter } = state.app;
 
-    const selectedAdapter = adapter.selectedAdapter;
+    const { selectedAdapter } = adapter;
 
     return {
         adapter: selectedAdapter,
@@ -198,8 +201,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return Object.assign({},
-        bindActionCreators(DfuActions, dispatch),
-    );
+        bindActionCreators(DfuActions, dispatch));
 }
 
 export default connect(
