@@ -209,14 +209,14 @@ class BLEEvent extends React.PureComponent {
                 className={`service-item ${this.getClass()}`}
                 style={this.getStyle()}
                 onClick={this.onClick}
-                onKeyDown={this.onClick}
+                onKeyDown={() => {}}
                 role="button"
                 tabIndex={0}
             >
                 <div
                     className="expand-area"
                     onClick={onExpandAreaClick}
-                    onKeyDown={onExpandAreaClick}
+                    onKeyDown={() => {}}
                     role="button"
                     tabIndex={0}
                 >

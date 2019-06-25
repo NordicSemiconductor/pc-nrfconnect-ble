@@ -36,9 +36,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import FormControl from 'react-bootstrap/FormControl';
-import FormGroup from 'react-bootstrap/FormGroup';
-import FormLabel from 'react-bootstrap/FormLabel';
+import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 /* eslint-disable react/prefer-stateless-function */
@@ -57,14 +55,14 @@ class TextArea extends React.Component {
         const classProp = inline && { className: 'form-inline' };
 
         return (
-            <FormGroup controlId={id} {...classProp}>
+            <Form.Group controlId={id} {...classProp}>
                 {
-                    label && <FormLabel className={labelClassName}>{label}</FormLabel>
+                    label && <Form.Label className={labelClassName}>{label}</Form.Label>
                 }
                 <InputGroup className={wrapperClassName}>
-                    <FormControl as="textarea" {...newProps} />
+                    <Form.Control as="textarea" {...newProps} />
                 </InputGroup>
-            </FormGroup>
+            </Form.Group>
         );
     }
 }

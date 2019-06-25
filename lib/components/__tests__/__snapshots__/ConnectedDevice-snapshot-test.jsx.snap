@@ -25,7 +25,7 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
         className="pull-right"
       >
         <button
-          className="btn-nordic btn-xs btn btn-primary"
+          className="btn-nordic btn-xs btn btn-primary btn-sm"
           disabled={false}
           id="dfuButton"
           onClick={[Function]}

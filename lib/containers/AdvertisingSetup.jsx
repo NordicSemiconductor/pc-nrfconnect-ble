@@ -40,7 +40,7 @@ import { List } from 'immutable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
-import FormLabel from 'react-bootstrap/FormLabel';
+import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -118,7 +118,7 @@ class AdvertisingSetup extends React.PureComponent {
         } = this.props;
 
         return (
-            <Modal className="adv-setup" show={show} onHide={() => {}} size="large">
+            <Modal className="adv-setup" show={show} onHide={() => {}} size="lg">
                 <Modal.Header>
                     <Modal.Title>Advertising setup</Modal.Title>
                 </Modal.Header>
@@ -154,7 +154,7 @@ class AdvertisingSetup extends React.PureComponent {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <FormLabel className="error-label" variant="danger">{setAdvdataStatus}</FormLabel>
+                    <Form.Label className="error-label" variant="danger">{setAdvdataStatus}</Form.Label>
                     <Button
                         className="btn-primary btn-nordic"
                         onClick={this.handleApply}
