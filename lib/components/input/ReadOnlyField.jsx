@@ -36,8 +36,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import FormGroup from 'react-bootstrap/FormGroup';
-import FormLabel from 'react-bootstrap/FormLabel';
+import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 const ReadOnlyField = props => {
@@ -45,14 +44,14 @@ const ReadOnlyField = props => {
         label, labelClassName, wrapperClassName, value,
     } = props;
     return (
-        <FormGroup className="form-inline">
+        <Form.Group className="form-inline">
             {
-                label && <FormLabel className={labelClassName}>{label}</FormLabel>
+                label && <Form.Label className={labelClassName}>{label}</Form.Label>
             }
             <InputGroup className={wrapperClassName}>
                 <pre>{value}</pre>
             </InputGroup>
-        </FormGroup>
+        </Form.Group>
     );
 };
 

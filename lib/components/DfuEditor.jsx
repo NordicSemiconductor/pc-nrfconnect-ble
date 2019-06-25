@@ -39,8 +39,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import FormGroup from 'react-bootstrap/FormGroup';
-import FormLabel from 'react-bootstrap/FormLabel';
+import Form from 'react-bootstrap/Form';
 
 import DfuButton from './DfuButton';
 import DfuThroughputGraph from './DfuThroughputGraph';
@@ -116,12 +115,12 @@ class DfuEditor extends React.PureComponent {
         const { throughput } = this.props;
         if (throughput && throughput.kbpsPoints.length > 0) {
             return (
-                <FormGroup className="form-inline">
-                    <FormLabel className="col-md-3 text-right">Throughput (kB/s)</FormLabel>
+                <Form.Group className="form-inline">
+                    <Form.Label className="col-md-3 text-right">Throughput (kB/s)</Form.Label>
                     <div className="col-md-9">
                         <DfuThroughputGraph {...throughput} />
                     </div>
-                </FormGroup>
+                </Form.Group>
             );
         }
         return null;

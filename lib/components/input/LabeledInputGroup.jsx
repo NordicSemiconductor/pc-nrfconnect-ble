@@ -36,8 +36,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import FormGroup from 'react-bootstrap/FormGroup';
-import FormLabel from 'react-bootstrap/FormLabel';
+import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 const LabeledInputGroup = props => {
@@ -50,12 +49,12 @@ const LabeledInputGroup = props => {
     } = props;
     const classProp = inline && { className: 'form-inline' };
     return (
-        <FormGroup {...classProp}>
-            <FormLabel className={labelClassName}>{label}</FormLabel>
+        <Form.Group {...classProp}>
+            <Form.Label className={labelClassName}>{label}</Form.Label>
             <InputGroup className={wrapperClassName}>
                 {children}
             </InputGroup>
-        </FormGroup>
+        </Form.Group>
     );
 };
 

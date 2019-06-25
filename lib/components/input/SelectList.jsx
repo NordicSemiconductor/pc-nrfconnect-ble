@@ -36,9 +36,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import FormControl from 'react-bootstrap/FormControl';
-import FormGroup from 'react-bootstrap/FormGroup';
-import FormLabel from 'react-bootstrap/FormLabel';
+import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 const SelectList = props => {
@@ -54,16 +52,16 @@ const SelectList = props => {
 
     const classProp = inline && { className: 'form-inline' };
     return (
-        <FormGroup controlId={id} {...classProp}>
+        <Form.Group controlId={id} {...classProp}>
             {
-                label && <FormLabel className={labelClassName}>{label}</FormLabel>
+                label && <Form.Label className={labelClassName}>{label}</Form.Label>
             }
             <InputGroup className={wrapperClassName}>
-                <FormControl as="select" {...newProps}>
+                <Form.Control as="select" {...newProps}>
                     {children}
-                </FormControl>
+                </Form.Control>
             </InputGroup>
-        </FormGroup>
+        </Form.Group>
     );
 };
 
