@@ -38,14 +38,16 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
 import DfuButton from './DfuButton';
 import DfuThroughputGraph from './DfuThroughputGraph';
-import FileInput from './input/FileInput';
-import ProgressBarInput from './input/ProgressBarInput';
-import ReadOnlyField from './input/ReadOnlyField';
 
 /*
  * Converts an object like:
@@ -69,11 +71,6 @@ function createPackageInfoString(packageInfo) {
 }
 
 class DfuEditor extends React.PureComponent {
-    getPercentCompleted() {
-        const { isCompleted, percentCompleted } = this.props;
-        return isCompleted ? 100 : percentCompleted;
-    }
-
     getStatus() {
         const { isCompleted, isStopping, fileNameBeingTransferred } = this.props;
         let { status } = this.props;
@@ -89,37 +86,15 @@ class DfuEditor extends React.PureComponent {
         return `${status}...`;
     }
 
-    renderPackageInfo() {
-        const { packageInfo } = this.props;
-        return (
-            <ReadOnlyField
-                label="Package info"
-                value={createPackageInfoString(packageInfo)}
-            />
-        );
-    }
-
-    renderProgress() {
-        const percentCompleted = this.getPercentCompleted();
-        return (
-            <ProgressBarInput
-                label="Progress"
-                status={this.getStatus()}
-                now={percentCompleted}
-                progressLabel={`${percentCompleted}%`}
-            />
-        );
-    }
-
     renderGraph() {
         const { throughput } = this.props;
         if (throughput && throughput.kbpsPoints.length > 0) {
             return (
-                <Form.Group className="form-inline">
-                    <Form.Label className="col-md-3 text-right">Throughput (kB/s)</Form.Label>
-                    <div className="col-md-9">
+                <Form.Group as={Row}>
+                    <Form.Label column sm={2} className="text-right">Throughput (kB/s)</Form.Label>
+                    <Col sm={10}>
                         <DfuThroughputGraph {...throughput} />
-                    </div>
+                    </Col>
                 </Form.Group>
             );
         }
@@ -131,6 +106,7 @@ class DfuEditor extends React.PureComponent {
             onChooseFile,
             filePath,
             packageInfo,
+            percentCompleted,
             isStarted,
             isStopping,
             isCompleted,
@@ -139,21 +115,37 @@ class DfuEditor extends React.PureComponent {
         } = this.props;
 
         return (
-            <form className="form-horizontal native-key-bindings">
-                <div className="col-md-12">
-                    <FileInput
-                        readOnly
-                        inline
-                        buttonDisabled={isStarted || isCompleted}
-                        label="Zip file"
-                        value={filePath}
-                        onChooseClicked={onChooseFile}
-                    />
-                    { packageInfo ? this.renderPackageInfo() : null }
-                    { isStarted || isCompleted ? this.renderProgress() : null }
-                    { isStarted || isCompleted ? this.renderGraph() : null }
-                </div>
-                <ButtonToolbar>
+            <Form className="form-horizontal native-key-bindings">
+                <Form.Group as={Row}>
+                    <Form.Label column sm={2} className="text-right">Zip file</Form.Label>
+                    <InputGroup as={Col} sm={10}>
+                        <Form.Control value={filePath} readOnly />
+                        <InputGroup.Append>
+                            <Button variant="outline-secondary" disabled={isStarted || isCompleted} onClick={onChooseFile}>
+                                Choose
+                            </Button>
+                        </InputGroup.Append>
+                    </InputGroup>
+                </Form.Group>
+                { packageInfo && (
+                    <Form.Group as={Row}>
+                        <Form.Label column sm={2} className="text-right">Package info</Form.Label>
+                        <InputGroup as={Col} sm={10}>
+                            <pre>{createPackageInfoString(packageInfo)}</pre>
+                        </InputGroup>
+                    </Form.Group>
+                )}
+                { (isStarted || isCompleted) && (
+                    <Form.Group as={Row}>
+                        <Form.Label column sm={2} className="text-right">Progress</Form.Label>
+                        <InputGroup as={Col} sm={10}>
+                            { this.getStatus() }
+                            <ProgressBar label={`${percentCompleted}%`} now={percentCompleted} />
+                        </InputGroup>
+                    </Form.Group>
+                )}
+                { (isStarted || isCompleted) && this.renderGraph() }
+                <ButtonToolbar className="row-of-buttons">
                     <div style={filePath && !isCompleted ? {} : { display: 'none' }}>
                         <DfuButton
                             dfuInProgress={isStarted}
@@ -162,7 +154,7 @@ class DfuEditor extends React.PureComponent {
                         />
                     </div>
                 </ButtonToolbar>
-            </form>
+            </Form>
         );
     }
 }
