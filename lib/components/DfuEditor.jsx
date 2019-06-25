@@ -121,7 +121,12 @@ class DfuEditor extends React.PureComponent {
                     <InputGroup as={Col} sm={10}>
                         <Form.Control value={filePath} readOnly />
                         <InputGroup.Append>
-                            <Button variant="outline-secondary" disabled={isStarted || isCompleted} onClick={onChooseFile}>
+                            <Button
+                                id="choose-file"
+                                variant="outline-secondary"
+                                disabled={isStarted || isCompleted}
+                                onClick={onChooseFile}
+                            >
                                 Choose
                             </Button>
                         </InputGroup.Append>
@@ -176,7 +181,7 @@ DfuEditor.propTypes = {
 
 DfuEditor.defaultProps = {
     packageInfo: null,
-    filePath: null,
+    filePath: '',
     status: null,
     fileNameBeingTransferred: null,
     percentCompleted: 0,
