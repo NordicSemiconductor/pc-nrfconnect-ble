@@ -52,7 +52,7 @@ const ProgressBarInput = props => {
         ...newProps
     } = props;
     return (
-        <FormGroup>
+        <FormGroup className="form-inline">
             {
                 label && <FormLabel className={labelClassName}>{label}</FormLabel>
             }

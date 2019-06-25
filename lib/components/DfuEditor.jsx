@@ -116,7 +116,7 @@ class DfuEditor extends React.PureComponent {
         const { throughput } = this.props;
         if (throughput && throughput.kbpsPoints.length > 0) {
             return (
-                <FormGroup>
+                <FormGroup className="form-inline">
                     <FormLabel className="col-md-3 text-right">Throughput (kB/s)</FormLabel>
                     <div className="col-md-9">
                         <DfuThroughputGraph {...throughput} />
@@ -140,11 +140,11 @@ class DfuEditor extends React.PureComponent {
         } = this.props;
 
         return (
-            <form className="form-horizontal native-key-bindings dfu-dialog">
+            <form className="form-horizontal native-key-bindings">
                 <div className="col-md-12">
                     <FileInput
                         readOnly
-                        inline={false}
+                        inline
                         buttonDisabled={isStarted || isCompleted}
                         label="Zip file"
                         value={filePath}

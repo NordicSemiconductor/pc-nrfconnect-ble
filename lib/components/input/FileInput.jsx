@@ -48,6 +48,7 @@ const FileInput = props => {
     return (
         <TextInput
             buttonAfter={fileBrowseButton}
+            inline
             {...newProps}
         />
     );

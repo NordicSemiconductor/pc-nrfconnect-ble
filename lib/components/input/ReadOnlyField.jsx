@@ -45,7 +45,7 @@ const ReadOnlyField = props => {
         label, labelClassName, wrapperClassName, value,
     } = props;
     return (
-        <FormGroup>
+        <FormGroup className="form-inline">
             {
                 label && <FormLabel className={labelClassName}>{label}</FormLabel>
             }
