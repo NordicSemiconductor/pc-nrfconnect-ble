@@ -39,7 +39,7 @@
     "jquery": "^3.2.1",
     "lodash.throttle": "^4.1.1",
     "mousetrap": "^1.6.1",
-    "pc-nrfconnect-devdep": "git+https://github.com/NordicSemiconductor/pc-nrfconnect-devdep.git#feature/react-bootstrap-4",
+    "pc-nrfconnect-devdep": "git+https://github.com/NordicSemiconductor/pc-nrfconnect-devdep.git#semver:^3.0.0",
     "react-d3-components": "^0.9.1",
     "react-onclickoutside": "^5.10.0",
     "react-sizeme": "^2.3.1",
