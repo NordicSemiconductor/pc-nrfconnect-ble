@@ -933,8 +933,19 @@
             flex: 1;
             min-width: 350px;
             overflow: auto;
+            padding-bottom: 12px;
+
             .nothing-selected {
                 border-left: 1px solid $device-details-light-border-color;
+            }
+
+            .form-group label.control-label {
+                font-weight: bold;
+                margin-bottom: 0;
+            }
+            .container .row {
+                margin-left: 0;
+                margin-right: 0;
             }
         }
     }
