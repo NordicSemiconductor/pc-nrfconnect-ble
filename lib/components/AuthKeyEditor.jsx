@@ -42,6 +42,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 import { BLEEventType } from '../actions/common';
 import { Event } from '../reducers/bleEventReducer';
@@ -184,17 +187,23 @@ class AuthKeyEditor extends React.PureComponent {
 
         for (let i = 0; i < 6; i += 1) {
             digitsCreated.push(
-                <div key={`digitsCreated${i}`} className="col-sm-1">{passkey[i]}</div>,
+                <Col sm={1} key={`digitsCreated${i}`}>{passkey[i]}</Col>,
             );
         }
 
         const digitsCreatedFormGroup = (
-            <div className="form-group">
-                <label className="control-label col-sm-4" htmlFor="passkeydigits">Passkey</label>
-                <div className="col-sm-8 form-control-static" id="passkeydigits">
-                    {digitsCreated}
-                </div>
-            </div>
+            <Container className="form-group">
+                <Row>
+                    <Col sm={4} className="text-right">
+                        <label className="control-label" htmlFor="passkeydigits">Passkey</label>
+                    </Col>
+                    <Col sm={8} className="form-control-static" id="passkeydigits">
+                        <Container>
+                            <Row>{digitsCreated}</Row>
+                        </Container>
+                    </Col>
+                </Row>
+            </Container>
         );
 
         let digitsTypedInFormGroup = '';
@@ -227,14 +236,20 @@ class AuthKeyEditor extends React.PureComponent {
                 }
 
                 digitsTypedInFormGroup = (
-                    <div className="form-group">
-                        <label className="control-label col-sm-4" htmlFor="passkeytypedin">
-                            Typed
-                        </label>
-                        <div className="col-sm-8 form-control-static" id="passkeytypedin">
-                            {digitsTypedIn}
-                        </div>
-                    </div>
+                    <Container className="form-group">
+                        <Row>
+                            <Col sm={4} className="text-right">
+                                <label className="control-label" htmlFor="passkeytypedin">
+                                    Typed
+                                </label>
+                            </Col>
+                            <Col sm={8} className="form-control-static" id="passkeytypedin">
+                                <Container>
+                                    <Row>{digitsTypedIn}</Row>
+                                </Container>
+                            </Col>
+                        </Row>
+                    </Container>
                 );
             }
         }

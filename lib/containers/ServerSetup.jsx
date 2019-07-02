@@ -400,7 +400,7 @@ class ServerSetup extends React.PureComponent {
                             <button
                                 type="button"
                                 className="btn btn-primary btn-nordic"
-                                onClick={showClearDialog}
+                                onClick={this.onClickApply}
                             >
                                 <span className="mdi mdi-check" /> Apply to device
                             </button>
@@ -408,7 +408,7 @@ class ServerSetup extends React.PureComponent {
                                 type="button"
                                 className="btn btn-primary btn-nordic"
                                 title={btnTitle}
-                                onClick={this.onClickApply}
+                                onClick={showClearDialog}
                             >
                                 <span className="mdi mdi-trash-can" /> Clear
                             </button>
