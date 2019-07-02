@@ -1493,3 +1493,12 @@ hr {
 .pull-right {
     float: right;
 }
+
+#main-menu, .core-log-header-buttons {
+    .mdi:last-child {
+        margin-left: 0;
+    }
+    .mdi:first-child {
+        margin-right: 0;
+    }
+}
