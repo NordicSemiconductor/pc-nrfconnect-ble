@@ -335,17 +335,15 @@ class AdvertisingData extends React.PureComponent {
                     onChange={this.handleAdTypeChange}
                 />
             </div>
-        ) : '';
+        ) : null;
 
         const uuidLookupDiv = !uuidLookupDisabled ? (
-            <span className="adv-uuid-lookup">
-                <UuidLookup
-                    onSelect={this.handleUuidSelect}
-                    title="Predefined service UUIDs"
-                    uuidDefs={uuidDef}
-                />
-            </span>
-        ) : '';
+            <UuidLookup
+                onSelect={this.handleUuidSelect}
+                title="Predefined service UUIDs"
+                uuidDefs={uuidDef}
+            />
+        ) : null;
 
         return (
             <div>
@@ -371,8 +369,8 @@ class AdvertisingData extends React.PureComponent {
                 </div>
                 <div className="adv-value-container">
                     {adTypeDiv}
-                    {/* <div className="type-label">Value</div> */}
                     <TextInput
+                        buttonAfter={uuidLookupDiv}
                         disabled={inputDisabled}
                         id="value"
                         value={this.value}
@@ -385,7 +383,6 @@ class AdvertisingData extends React.PureComponent {
                         onChange={this.handleChange}
                     />
                 </div>
-                {uuidLookupDiv}
             </div>
         );
     }
