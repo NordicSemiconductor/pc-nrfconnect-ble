@@ -112,7 +112,7 @@ UuidLookup.propTypes = {
 
 UuidLookup.defaultProps = {
     title: 'Predefined UUIDs',
-    pullRight: false,
+    pullRight: true,
 };
 
 export default UuidLookup;
