@@ -51,6 +51,8 @@ import './resources/css/styles.scss';
 
 /* eslint react/prop-types: 0 */
 
+let globalDispatch;
+
 export default {
     decorateNavMenu: NavMenu => ({ selectedItemId, ...restProps }) => (
         <NavMenu
@@ -113,8 +115,9 @@ export default {
         }
         next(action);
     },
-    onInit: () => {
+    onInit: dispatch => {
         __webpack_public_path__ = path.join(getAppDir(), 'dist/'); // eslint-disable-line
+        globalDispatch = dispatch;
     },
     onReady: () => {
         confirmUserUUIDsExist(getUserDataDir());
@@ -126,5 +129,6 @@ export default {
             serialport: true,
         },
         deviceSetup: FirmwareRegistry.getDeviceSetup(),
+        releaseCurrentDevice: () => globalDispatch(AdapterActions.closeAdapter()),
     },
 };
