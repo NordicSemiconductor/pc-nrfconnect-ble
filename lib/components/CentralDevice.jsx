@@ -51,6 +51,9 @@ class CentralDevice extends React.PureComponent {
     constructor(props) {
         super(props);
         this.onSelect = this.onSelect.bind(this);
+    }
+
+    componentDidMount() {
         const { bindHotkey, onToggleAdvertising } = this.props;
         if (onToggleAdvertising) {
             bindHotkey('alt+a', onToggleAdvertising);

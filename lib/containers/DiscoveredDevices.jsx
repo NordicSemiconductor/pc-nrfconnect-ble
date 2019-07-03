@@ -65,6 +65,13 @@ class DiscoveredDevices extends React.PureComponent {
         this.handleSortByRssiCheckedChange = this.handleCheckedChange.bind(this, 'sortByRssi');
     }
 
+    componentDidMount() {
+        const { bindHotkey, clearDevicesList } = this.props;
+        if (clearDevicesList) {
+            bindHotkey('alt+c', clearDevicesList);
+        }
+    }
+
     handleCheckedChange(property, e) {
         const { setDiscoveryOptions } = this.props;
         this.discoveryOptions[property] = e.target.checked;
@@ -95,10 +102,7 @@ class DiscoveredDevices extends React.PureComponent {
             cancelConnect,
             toggleExpanded,
             toggleOptionsExpanded,
-            bindHotkey,
         } = this.props;
-
-        bindHotkey('alt+c', clearDevicesList);
 
         this.discoveryOptions = discoveryOptions.toJS();
 
