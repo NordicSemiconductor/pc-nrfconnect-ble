@@ -182,7 +182,7 @@ function generateLines(lineCoordinates) {
 }
 
 class Connector extends React.PureComponent {
-    componentWillMount() {
+    componentDidMount() {
         this.onUpdate();
     }
 
