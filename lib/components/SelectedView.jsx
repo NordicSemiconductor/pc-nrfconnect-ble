@@ -45,59 +45,16 @@ import ServerSetup from '../containers/ServerSetup';
 const DEVICE_DETAILS_VIEW_ID = 0;
 const SERVER_SETUP_VIEW_ID = 1;
 
-class SelectedView extends React.PureComponent {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            windowHeight: window.innerHeight,
-        };
+const SelectedView = ({ viewId }) => {
+    switch (viewId) {
+        case DEVICE_DETAILS_VIEW_ID:
+            return <DeviceDetailsContainer />;
+        case SERVER_SETUP_VIEW_ID:
+            return <ServerSetup />;
+        default:
     }
-
-    componentWillMount() {
-        (() => {
-            const throttle = (type, name, obj) => {
-                let running = false;
-                const object = obj || window;
-                const func = () => {
-                    if (running) {
-                        return;
-                    }
-
-                    running = true;
-                    requestAnimationFrame(() => {
-                        object.dispatchEvent(new CustomEvent(name));
-                        running = false;
-                    });
-                };
-
-                object.addEventListener(type, func);
-            };
-
-            throttle('resize', 'optimizedResize');
-        })();
-
-        // handle event
-        window.addEventListener('optimizedResize', () => {
-            this.setState({ windowHeight: window.innerHeight });
-        });
-    }
-
-    render() {
-        const { viewId } = this.props;
-        const { windowHeight } = this.state;
-        const topBarHeight = 55;
-        const layoutStyle = { height: windowHeight - topBarHeight };
-        const mainAreaHeight = layoutStyle.height - 189;
-
-        if (viewId === DEVICE_DETAILS_VIEW_ID) {
-            return <DeviceDetailsContainer style={{ height: mainAreaHeight }} />;
-        } if (viewId === SERVER_SETUP_VIEW_ID) {
-            return <ServerSetup style={{ height: mainAreaHeight }} />;
-        }
-        return null;
-    }
-}
+    return null;
+};
 
 SelectedView.propTypes = {
     viewId: PropTypes.number.isRequired,
