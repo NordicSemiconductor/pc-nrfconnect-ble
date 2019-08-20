@@ -54,17 +54,24 @@ class AddNewItem extends React.PureComponent {
     }
 
     render() {
-        const bars = _.times(this.props.bars, i => <div className={`bar${i + 1}`} key={i} />);
+        const { bars: propBars, onClick, text } = this.props;
+        const bars = _.times(propBars, i => <div className={`bar${i + 1}`} key={i} />);
 
         return (
-            <div className="add-new" onClick={this.props.onClick} role="button" tabIndex={0}>
+            <div
+                className="add-new"
+                onClick={onClick}
+                onKeyDown={onClick}
+                role="button"
+                tabIndex={0}
+            >
                 {bars}
                 <div className="content-wrap">
                     <div className="content padded-row">
                         <span className="icon-wrap">
-                            <i className="icon-slim icon-plus-circled" />
+                            <i className="icon-slim mdi mdi-plus-circle" />
                         </span>
-                        <span>{this.props.text}</span>
+                        <span>{text}</span>
                     </div>
                 </div>
             </div>

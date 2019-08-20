@@ -36,23 +36,24 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import UuidLookup from '../UuidLookup';
-import TextInput from './TextInput';
+import React from 'react';
 
 import { validateUuid } from '../../utils/validateUuid';
+import UuidLookup from '../UuidLookup';
+import TextInput from './TextInput';
 
 class UuidInput extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.uuid = this.props.value;
+        const { value } = this.props;
+        this.uuid = value;
         this.handleSelection = this.handleSelection.bind(this);
         this.onUuidChange = this.onUuidChange.bind(this);
     }
 
     onUuidChange(e) {
+        const { handleSelection } = this.props;
         const hexRegEx = /^[0-9A-F]*$/i;
         const textarea = e.target;
         this.uuid = textarea.value;
@@ -65,7 +66,7 @@ class UuidInput extends React.PureComponent {
             return;
         }
 
-        this.props.handleSelection(this.uuid);
+        handleSelection(this.uuid);
     }
 
     validateUuidInput() {
@@ -73,8 +74,9 @@ class UuidInput extends React.PureComponent {
     }
 
     handleSelection(event, uuid) {
+        const { handleSelection } = this.props;
         this.uuid = uuid;
-        this.props.handleSelection(uuid);
+        handleSelection(uuid);
     }
 
     render() {
@@ -89,7 +91,6 @@ class UuidInput extends React.PureComponent {
                 onSelect={this.handleSelection}
                 title={`Predefined ${label}s`}
                 uuidDefs={uuidDefinitions()}
-                pullRight
             />
         );
 

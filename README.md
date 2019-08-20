@@ -1,6 +1,7 @@
 # nRF Connect Bluetooth Low Energy
 
-[![Build Status](https://travis-ci.org/NordicSemiconductor/pc-nrfconnect-ble.svg?branch=master)](https://travis-ci.org/NordicSemiconductor/pc-nrfconnect-ble) [![License](https://img.shields.io/badge/license-Modified%20BSD%20License-blue.svg)](LICENSE)
+[![Build Status](https://dev.azure.com/NordicSemiconductor/Wayland/_apis/build/status/pc-nrfconnect-ble?branchName=master)](https://dev.azure.com/NordicSemiconductor/Wayland/_build/latest?definitionId=7&branchName=master)
+[![License](https://img.shields.io/badge/license-Modified%20BSD%20License-blue.svg)](LICENSE)
 
 *nRF Connect Bluetooth<sup>&reg;</sup> Low Energy* is a cross-platform tool that enables testing and development with Bluetooth Low Energy (previously called Bluetooth Smart). It allows easy setup of connections with other devices and use these connections for reading and writing to the external nodes.
 
@@ -12,8 +13,8 @@ The app supports the following devices:
 * PCA10028 nRF51 Development Kit
 * PCA10031 nRF51 Dongle
 * PCA10040 nRF52 Development Kit
-* PCA10056 nRF52 Development Kit
-* PCA10059 nRF52 Dongle
+* PCA10056 nRF52840 Development Kit
+* PCA10059 nRF52840 Dongle
 
 # Installation
 

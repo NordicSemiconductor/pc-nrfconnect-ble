@@ -39,11 +39,11 @@
 'use strict';
 
 import React from 'react';
-import AttributeItem, { CCCD_UUID } from './AttributeItem';
 
+import { TEXT, getUuidFormat } from '../utils/uuid_definitions';
+import AttributeItem, { CCCD_UUID } from './AttributeItem';
 import DescriptorItem from './DescriptorItem';
 import HexOnlyEditableField from './HexOnlyEditableField';
-import { TEXT, getUuidFormat } from '../utils/uuid_definitions';
 
 const NOTIFY = 1;
 const INDICATE = 2;
@@ -132,15 +132,16 @@ class CharacteristicItem extends AttributeItem {
 
         const hasCccd = this.cccdDescriptor !== undefined;
         const hasReadProperty = properties.read;
-        const hasWriteProperty =
-            properties.write || properties.writeWoResp || properties.reliableWr;
+        const hasWriteProperty = properties.write
+            || properties.writeWoResp
+            || properties.reliableWr;
         const hasNotifyProperty = properties.notify;
         const hasIndicateProperty = properties.indicate;
         const hasNotifyOrIndicateProperty = hasNotifyProperty || hasIndicateProperty;
 
         const toggleNotificationsText = hasCccd ? 'Toggle notifications' : 'Toggle notifications (CCCD not discovered)';
         const notifyIconStyle = !isLocal && hasNotifyOrIndicateProperty ? {} : { display: 'none' };
-        const notifyIcon = (isDescriptorNotifying && hasNotifyOrIndicateProperty) ? 'icon-stop' : 'icon-play';
+        const notifyIcon = (isDescriptorNotifying && hasNotifyOrIndicateProperty) ? 'mdi mdi-stop' : 'mdi mdi-play';
 
         const showText = getUuidFormat(uuid) === TEXT;
 
@@ -157,13 +158,13 @@ class CharacteristicItem extends AttributeItem {
             });
         }
 
-        const onRead = (hasReadProperty && !isLocal) ?
-            () => this.onRead() :
-            undefined;
+        const onRead = (hasReadProperty && !isLocal)
+            ? () => this.onRead()
+            : undefined;
 
-        const onWrite = (hasWriteProperty || isLocal) ?
-            val => this.onWrite(val) :
-            null;
+        const onWrite = (hasWriteProperty || isLocal)
+            ? val => this.onWrite(val)
+            : null;
 
         return (
             <div className="content">
@@ -173,6 +174,7 @@ class CharacteristicItem extends AttributeItem {
                     disabled={!hasCccd}
                     style={notifyIconStyle}
                     onClick={this.onToggleNotify}
+                    onKeyDown={() => {}}
                     role="button"
                     tabIndex={0}
                 >

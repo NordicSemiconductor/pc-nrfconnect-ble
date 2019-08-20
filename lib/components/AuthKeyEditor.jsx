@@ -35,19 +35,21 @@
  */
 
 /* eslint jsx-a11y/label-has-for: off */
+/* eslint jsx-a11y/label-has-associated-control: off */
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Button } from 'react-bootstrap';
-import TextInput from './input/TextInput';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 import { BLEEventType } from '../actions/common';
-import { toHexString } from '../utils/stringUtil';
-
 import { Event } from '../reducers/bleEventReducer';
+import { toHexString } from '../utils/stringUtil';
+import TextInput from './input/TextInput';
 
 const SUCCESS = 'success';
 const ERROR = 'error';
@@ -55,7 +57,7 @@ const ERROR = 'error';
 function validatePasskeyInput(value) {
     if ((!value && value !== '')) {
         return ERROR;
-    } else if (value.search(/^\d{6}$/) === -1) {
+    } if (value.search(/^\d{6}$/) === -1) {
         return ERROR;
     }
     return SUCCESS;
@@ -64,7 +66,7 @@ function validatePasskeyInput(value) {
 function validateOobInput(value) {
     if (!value) {
         return ERROR;
-    } else if (value.search(/^[0-9a-fA-F]{32}$/) === -1) {
+    } if (value.search(/^[0-9a-fA-F]{32}$/) === -1) {
         return ERROR;
     }
     return SUCCESS;
@@ -89,8 +91,7 @@ class AuthKeyEditor extends React.PureComponent {
     }
 
     handlePasskeyChange(event) {
-        const { onKeypress } = this.props;
-        const e = this.props.event;
+        const { onKeypress, event: e } = this.props;
 
         if (e.sendKeypressEnabled === true) {
             const newCount = event.target.value.length - this.authKeyInput.length;
@@ -149,8 +150,8 @@ class AuthKeyEditor extends React.PureComponent {
     handleLescOobSubmit() {
         const { onLescOobSubmit } = this.props;
 
-        if (validateOobInput(this.confirmInput) !== SUCCESS ||
-            validateOobInput(this.randomInput) !== SUCCESS) {
+        if (validateOobInput(this.confirmInput) !== SUCCESS
+            || validateOobInput(this.randomInput) !== SUCCESS) {
             this.validationFeedbackEnabled = true;
             this.forceUpdate();
             return;
@@ -179,8 +180,6 @@ class AuthKeyEditor extends React.PureComponent {
     createPasskeyDisplayControls(
         passkey,
         keypressEnabled,
-        keypressStartReceived,
-        keypressEndReceived,
         keypressCount,
     ) {
         const digitsCreated = [];
@@ -188,17 +187,23 @@ class AuthKeyEditor extends React.PureComponent {
 
         for (let i = 0; i < 6; i += 1) {
             digitsCreated.push(
-                <div key={`digitsCreated${i}`} className="col-sm-1">{passkey[i]}</div>,
+                <Col sm={1} key={`digitsCreated${i}`}>{passkey[i]}</Col>,
             );
         }
 
         const digitsCreatedFormGroup = (
-            <div className="form-group">
-                <label className="control-label col-sm-4" htmlFor="passkeydigits">Passkey</label>
-                <div className="col-sm-8 form-control-static" id="passkeydigits">
-                    {digitsCreated}
-                </div>
-            </div>
+            <Container className="form-group">
+                <Row>
+                    <Col sm={4} className="text-right">
+                        <label className="control-label" htmlFor="passkeydigits">Passkey</label>
+                    </Col>
+                    <Col sm={8} className="form-control-static" id="passkeydigits">
+                        <Container>
+                            <Row>{digitsCreated}</Row>
+                        </Container>
+                    </Col>
+                </Row>
+            </Container>
         );
 
         let digitsTypedInFormGroup = '';
@@ -231,14 +236,20 @@ class AuthKeyEditor extends React.PureComponent {
                 }
 
                 digitsTypedInFormGroup = (
-                    <div className="form-group">
-                        <label className="control-label col-sm-4" htmlFor="passkeytypedin">
-                            Typed
-                        </label>
-                        <div className="col-sm-8 form-control-static" id="passkeytypedin">
-                            {digitsTypedIn}
-                        </div>
-                    </div>
+                    <Container className="form-group">
+                        <Row>
+                            <Col sm={4} className="text-right">
+                                <label className="control-label" htmlFor="passkeytypedin">
+                                    Typed
+                                </label>
+                            </Col>
+                            <Col sm={8} className="form-control-static" id="passkeytypedin">
+                                <Container>
+                                    <Row>{digitsTypedIn}</Row>
+                                </Container>
+                            </Col>
+                        </Row>
+                    </Container>
                 );
             }
         }
@@ -437,8 +448,6 @@ class AuthKeyEditor extends React.PureComponent {
                 controls = this.createPasskeyDisplayControls(
                     event.authKeyParams.passkey,
                     event.receiveKeypressEnabled,
-                    event.keypressStartReceived,
-                    event.keypressEndReceived,
                     event.keypressCount,
                 );
                 break;

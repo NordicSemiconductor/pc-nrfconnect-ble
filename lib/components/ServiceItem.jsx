@@ -36,13 +36,12 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import AttributeItem from './AttributeItem';
-import CharacteristicItem from './CharacteristicItem';
+import React from 'react';
 
 import { ImmutableService } from '../utils/api';
+import AttributeItem from './AttributeItem';
+import CharacteristicItem from './CharacteristicItem';
 
 class ServiceItem extends AttributeItem {
     constructor(props) {
@@ -58,10 +57,16 @@ class ServiceItem extends AttributeItem {
         return (
             <div className="content">
                 {this.renderName()}
-                {button &&
-                    <button className="btn btn-primary btn-nordic" onClick={button.onClick}>
-                        <img src={button.icon} alt="" />
-                    </button>
+                {button
+                    && (
+                        <button
+                            className="btn btn-primary btn-nordic"
+                            type="button"
+                            onClick={button.onClick}
+                        >
+                            <img src={button.icon} alt="" />
+                        </button>
+                    )
                 }
                 {children}
             </div>
@@ -87,8 +92,8 @@ class ServiceItem extends AttributeItem {
             children,
         } = item;
 
-        return children.valueSeq().map(characteristic =>
-            (<CharacteristicItem
+        return children.valueSeq().map(characteristic => (
+            <CharacteristicItem
                 key={characteristic.instanceId}
                 item={characteristic}
                 selectOnClick={selectOnClick}
@@ -102,8 +107,8 @@ class ServiceItem extends AttributeItem {
                 onChange={this.childChanged}
                 addNew={addNew}
                 onAddDescriptor={onAddDescriptor}
-            />),
-        );
+            />
+        ));
     }
 }
 

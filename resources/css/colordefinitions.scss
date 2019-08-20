@@ -34,34 +34,48 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, InputGroup } from 'react-bootstrap';
+@import "./brand.scss";
 
-const ReadOnlyField = props => {
-    const { label, labelClassName, wrapperClassName, value } = props;
-    return (
-        <FormGroup>
-            {
-                label && <ControlLabel className={labelClassName}>{label}</ControlLabel>
-            }
-            <InputGroup className={wrapperClassName}>
-                <pre>{value}</pre>
-            </InputGroup>
-        </FormGroup>
-    );
-};
+.colordefinition-brand-main {
+    color: $brand-main;
+}
 
-ReadOnlyField.propTypes = {
-    label: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-    labelClassName: PropTypes.string,
-    wrapperClassName: PropTypes.string,
-};
+.colordefinition-brand-primary {
+    color: $brand-primary;
+}
 
-ReadOnlyField.defaultProps = {
-    labelClassName: 'col-md-3 text-right',
-    wrapperClassName: 'col-md-9',
-};
+.colordefinition-brand-info {
+    color: $brand-info;
+}
 
-export default ReadOnlyField;
+.colordefinition-brand-base {
+    color: $brand-base;
+}
+
+.colordefinition-brand-success {
+    color: $brand-success;
+}
+
+.colordefinition-brand-warning {
+    color: $brand-warning;
+}
+
+.colordefinition-brand-danger {
+    color: $brand-danger;
+}
+
+.colordefinition-bar1-color {
+    color: $bar1-color;
+}
+
+.colordefinition-bar2-color {
+    color: $bar2-color;
+}
+
+.colordefinition-bar3-color {
+    color: $bar3-color;
+}
+
+.colordefinition-icon-color {
+    color: $icon-color;
+}

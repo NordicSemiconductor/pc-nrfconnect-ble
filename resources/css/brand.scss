@@ -34,45 +34,17 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, ProgressBar, InputGroup } from 'react-bootstrap';
+$brand-main:            #009CDE; // Nordic primary blue
+$brand-primary:         #0080B7; // Nordic secondary dark blue
+$brand-info:            #6dcff6; // Nordic secondary light blue
+$brand-base:            #ffffff; // White
 
-const ProgressBarInput = props => {
-    const {
-        label,
-        progressLabel,
-        labelClassName,
-        wrapperClassName,
-        status,
-        now,
-        ...newProps
-    } = props;
-    return (
-        <FormGroup>
-            {
-                label && <ControlLabel className={labelClassName}>{label}</ControlLabel>
-            }
-            <InputGroup className={wrapperClassName}>
-                { status && <p>{status}</p>}
-                <ProgressBar label={progressLabel} now={now} {...newProps} />
-            </InputGroup>
-        </FormGroup>
-    );
-};
+$brand-success:         #5cb85c;
+$brand-warning:         #f0ad4e;
+$brand-danger:          #d9534f;
 
-ProgressBarInput.propTypes = {
-    label: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-    progressLabel: PropTypes.string.isRequired,
-    now: PropTypes.number.isRequired,
-    labelClassName: PropTypes.string,
-    wrapperClassName: PropTypes.string,
-};
+$bar1-color: rgb(179, 225, 245);
+$bar2-color: rgb(102, 196, 235);
+$bar3-color: rgb(0,   156, 222);
 
-ProgressBarInput.defaultProps = {
-    labelClassName: 'col-md-3 text-right',
-    wrapperClassName: 'col-md-9',
-};
-
-export default ProgressBarInput;
+$icon-color: #0080B7;

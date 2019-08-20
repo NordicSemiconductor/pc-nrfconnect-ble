@@ -36,13 +36,12 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import CountdownTimer from '../components/CountdownTimer';
 import { BLEEventState, BLEEventType } from '../actions/common';
-
 import { Event } from '../reducers/bleEventReducer';
+import CountdownTimer from './CountdownTimer';
 
 const EVENT_TIMEOUT_SECONDS = 30;
 
@@ -60,8 +59,8 @@ class BLEEvent extends React.PureComponent {
         e.stopPropagation();
 
         const {
-           onSelected,
-           event,
+            onSelected,
+            event,
         } = this.props;
 
         if (onSelected) {
@@ -70,29 +69,29 @@ class BLEEvent extends React.PureComponent {
     }
 
     getEventInfo() {
-        const eventType = this.props.event.type;
+        const { event: { type: eventType } } = this.props;
 
         switch (eventType) {
             case BLEEventType.USER_INITIATED_CONNECTION_UPDATE:
             case BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE:
                 return {
                     name: 'Connection update',
-                    icon: (<span className="icon-link"><span className="icon-down" /></span>),
+                    icon: (<span className="mdi mdi-link-variant"><span className="mdi mdi-arrow-down" /></span>),
                 };
             case BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE:
                 return {
                     name: 'Connection update request',
-                    icon: (<span className="icon-link"><span className="icon-up" /></span>),
+                    icon: (<span className="mdi mdi-link-variant"><span className="mdi mdi-arrow-up" /></span>),
                 };
             case BLEEventType.USER_INITIATED_PAIRING:
                 return {
                     name: 'Pairing',
-                    icon: (<span className="icon-link"><span className="icon-down" /></span>),
+                    icon: (<span className="mdi mdi-link-variant"><span className="mdi mdi-arrow-down" /></span>),
                 };
             case BLEEventType.PEER_INITIATED_PAIRING:
                 return {
                     name: 'Pairing requested',
-                    icon: (<span className="icon-link"><span className="icon-up" /></span>),
+                    icon: (<span className="mdi mdi-link-variant"><span className="mdi mdi-arrow-up" /></span>),
                 };
             case BLEEventType.PASSKEY_DISPLAY:
                 return {
@@ -143,12 +142,14 @@ class BLEEvent extends React.PureComponent {
                     <div className="address-text">{event.device.address}</div>
                 </span>
                 {
-                    eventTimer &&
-                    <CountdownTimer
-                        ref={timer => { this.countDownTimerRef = timer; }}
-                        seconds={EVENT_TIMEOUT_SECONDS}
-                        onTimeout={() => onTimedOut()}
-                    />
+                    eventTimer
+                    && (
+                        <CountdownTimer
+                            ref={timer => { this.countDownTimerRef = timer; }}
+                            seconds={EVENT_TIMEOUT_SECONDS}
+                            onTimeout={() => onTimedOut()}
+                        />
+                    )
                 }
             </div>
         );
@@ -179,11 +180,18 @@ class BLEEvent extends React.PureComponent {
 
     getStyle() {
         const { event, selected } = this.props;
-
         if (!event.state) {
+            if (selected) {
+                return {
+                    backgroundColor: 'rgb(179,225,245)',
+                };
+            }
+
+            // seems this code is dead:
+            const { backgroundColor } = this.state;
+            const { r, g, b } = backgroundColor;
             return {
-                backgroundColor: selected ? 'rgb(179,225,245)'
-                   : `rgb(${this.state.backgroundColor.r}, ${this.state.backgroundColor.g}, ${this.state.backgroundColor.b})`,
+                backgroundColor: `rgb(${r}, ${g}, ${b})`,
             };
         }
         return {};
@@ -201,10 +209,17 @@ class BLEEvent extends React.PureComponent {
                 className={`service-item ${this.getClass()}`}
                 style={this.getStyle()}
                 onClick={this.onClick}
+                onKeyDown={() => {}}
                 role="button"
                 tabIndex={0}
             >
-                <div className="expand-area" onClick={onExpandAreaClick} role="button" tabIndex={0}>
+                <div
+                    className="expand-area"
+                    onClick={onExpandAreaClick}
+                    onKeyDown={() => {}}
+                    role="button"
+                    tabIndex={0}
+                >
                     <div className="bar1" />
                     <div className="icon-wrap" />
                 </div>

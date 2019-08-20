@@ -34,32 +34,49 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, FormControl, InputGroup } from 'react-bootstrap';
+import React from 'react';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 
-const TextArea = props => {
-    const { id, label, labelClassName, wrapperClassName, ...newProps } = props;
-    return (
-        <FormGroup controlId={id}>
-            {
-                label && <ControlLabel className={labelClassName}>{label}</ControlLabel>
-            }
-            <InputGroup className={wrapperClassName}>
-                <FormControl componentClass="textarea" {...newProps} />
-            </InputGroup>
-        </FormGroup>
-    );
-};
+/* eslint-disable react/prefer-stateless-function */
+
+class TextArea extends React.Component {
+    render() {
+        const {
+            id,
+            inline,
+            label,
+            labelClassName,
+            wrapperClassName,
+            ...newProps
+        } = this.props;
+
+        const classProp = inline && { className: 'form-inline' };
+
+        return (
+            <Form.Group controlId={id} {...classProp}>
+                {
+                    label && <Form.Label className={labelClassName}>{label}</Form.Label>
+                }
+                <InputGroup className={wrapperClassName}>
+                    <Form.Control as="textarea" {...newProps} />
+                </InputGroup>
+            </Form.Group>
+        );
+    }
+}
 
 TextArea.propTypes = {
     id: PropTypes.string.isRequired,
+    inline: PropTypes.bool,
     label: PropTypes.string.isRequired,
     labelClassName: PropTypes.string,
     wrapperClassName: PropTypes.string,
 };
 
 TextArea.defaultProps = {
+    inline: true,
     labelClassName: 'col-md-3 text-right',
     wrapperClassName: 'col-md-9',
 };

@@ -38,14 +38,12 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Button } from 'react-bootstrap';
-
-import SecurityParamsControls from '../components/SecurityParamsControls';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
 
 import { BLEEventType } from '../actions/common';
+import SecurityParamsControls from './SecurityParamsControls';
 
 class PairingEditor extends React.PureComponent {
     constructor(props) {
@@ -66,25 +64,29 @@ class PairingEditor extends React.PureComponent {
     }
 
     handlePair() {
-        if (this.props.onPair) {
-            this.props.onPair(this.secParams);
+        const { onPair } = this.props;
+        if (onPair) {
+            onPair(this.secParams);
         }
     }
 
     handleAccept() {
-        if (this.props.onAccept) {
-            this.props.onAccept(this.secParams);
+        const { onAccept } = this.props;
+        if (onAccept) {
+            onAccept(this.secParams);
         }
     }
 
     handleReject() {
-        if (this.props.onReject) {
-            this.props.onReject();
+        const { onReject } = this.props;
+        if (onReject) {
+            onReject();
         }
     }
 
     handleCancel() {
-        this.props.onCancel();
+        const { onCancel } = this.props;
+        onCancel();
     }
 
     render() {
@@ -101,6 +103,7 @@ class PairingEditor extends React.PureComponent {
                     type="button"
                     onClick={this.handleCancel}
                     className="btn btn-default btn-sm btn-nordic"
+                    variant="outline-secondary"
                 >
                     Cancel
                 </Button>
@@ -134,6 +137,7 @@ class PairingEditor extends React.PureComponent {
                     type="button"
                     onClick={this.handleReject}
                     className="btn btn-default btn-sm btn-nordic"
+                    variant="outline-secondary"
                 >
                     Reject
                 </Button>
@@ -145,6 +149,7 @@ class PairingEditor extends React.PureComponent {
                     type="button"
                     onClick={this.handleCancel}
                     className="btn btn-default btn-sm btn-nordic"
+                    variant="outline-secondary"
                 >
                     Ignore
                 </Button>
@@ -160,12 +165,12 @@ class PairingEditor extends React.PureComponent {
                         onChange={this.handleSecParamsChange}
                         securityParams={event.pairingParameters}
                     />
-                    <div className="form-group">
-                        {cancelButton}
-                        {ignoreButton}
-                        {pairButton}
-                        {rejectButton}
+                    <div className="row-of-buttons">
                         {acceptButton}
+                        {rejectButton}
+                        {pairButton}
+                        {ignoreButton}
+                        {cancelButton}
                     </div>
                 </form>
             </div>

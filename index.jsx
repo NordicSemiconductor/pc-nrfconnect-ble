@@ -47,22 +47,22 @@ import BLEEventDialog from './lib/containers/BLEEventDialog';
 import DiscoveredDevices from './lib/containers/DiscoveredDevices';
 import { confirmUserUUIDsExist } from './lib/utils/uuid_definitions';
 
-import './resources/css/styles.less';
+import './resources/css/styles.scss';
 
 /* eslint react/prop-types: 0 */
 
+let globalDispatch;
+
 export default {
-    decorateNavMenu: NavMenu => (
-        props => (
-            <NavMenu
-                {...props}
-                selectedItemId={props.selectedItemId < 0 ? 0 : props.selectedItemId}
-                menuItems={[
-                    { id: 0, text: 'Connection Map', iconClass: 'icon-columns' },
-                    { id: 1, text: 'Server Setup', iconClass: 'icon-indent-right' },
-                ]}
-            />
-        )
+    decorateNavMenu: NavMenu => ({ selectedItemId, ...restProps }) => (
+        <NavMenu
+            {...restProps}
+            selectedItemId={selectedItemId < 0 ? 0 : selectedItemId}
+            menuItems={[
+                { id: 0, text: 'Connection Map', iconClass: 'mdi mdi-sitemap' },
+                { id: 1, text: 'Server Setup', iconClass: 'mdi mdi-format-indent-increase' },
+            ]}
+        />
     ),
     decorateMainView: MainView => (
         props => (
@@ -91,6 +91,10 @@ export default {
         ...bindActionCreators(DiscoveryActions, dispatch),
         ...bindActionCreators(AdapterActions, dispatch),
     }),
+    mapDeviceSelectorState: (state, props) => ({
+        portIndicatorStatus: (state.app.adapter.selectedAdapter !== null) ? 'on' : 'off',
+        ...props,
+    }),
     reduceApp: reducers,
     middleware: store => next => action => {
         if (!action) {
@@ -98,28 +102,12 @@ export default {
         }
         if (action.type === 'DEVICE_SELECTED') {
             const { device } = action;
-            logger.info('Validating connectivity firmware for device with serial number ' +
-                `${device.serialNumber}...`);
+            logger.info('Validating connectivity firmware for device with serial number '
+                + `${device.serialNumber}...`);
         }
         if (action.type === 'DEVICE_SETUP_COMPLETE') {
             logger.info('Connectivity firmware is valid.');
-            const { device } = action;
-
-            if (device.serialport) {
-                const serialNumber = device.serialNumber;
-                const comName = device.serialport.comName;
-
-                if (device.traits.includes('jlink')) {
-                    store.dispatch(AdapterActions.openJlinkAdapter(comName, serialNumber));
-                } else if (device.traits.includes('nordicUsb')) {
-                    store.dispatch(AdapterActions.openNordicUsbAdapter(comName));
-                } else {
-                    logger.error(`Unsupported device with serial number '${device.serialNumber}' ` +
-                        `and traits ${JSON.stringify(device.traits)}`);
-                }
-            } else {
-                logger.error('Device has no serial port. Cannot open device.');
-            }
+            store.dispatch(AdapterActions.initAdapter(action.device));
         }
         if (action.type === 'DEVICE_DESELECTED') {
             store.dispatch(AdapterActions.closeAdapter())
@@ -127,8 +115,9 @@ export default {
         }
         next(action);
     },
-    onInit: () => {
+    onInit: dispatch => {
         __webpack_public_path__ = path.join(getAppDir(), 'dist/'); // eslint-disable-line
+        globalDispatch = dispatch;
     },
     onReady: () => {
         confirmUserUUIDsExist(getUserDataDir());
@@ -140,5 +129,6 @@ export default {
             serialport: true,
         },
         deviceSetup: FirmwareRegistry.getDeviceSetup(),
+        releaseCurrentDevice: () => globalDispatch(AdapterActions.closeAdapter()),
     },
 };

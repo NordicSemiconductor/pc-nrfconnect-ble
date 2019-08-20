@@ -1,6 +1,6 @@
 {
   "name": "pc-nrfconnect-ble",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "A natural first choice for Bluetooth Low Energy development",
   "displayName": "Bluetooth Low Energy",
   "repository": {
@@ -11,18 +11,21 @@
   "license": "SEE LICENSE IN LICENSE",
   "main": "dist/bundle.js",
   "engines": {
-    "nrfconnect": "^2.4.0"
+    "nrfconnect": "^3.0.0"
   },
   "scripts": {
-    "dev": "nrfconnect-scripts build-watch",
-    "webpack": "nrfconnect-scripts build-dev",
     "build": "nrfconnect-scripts build-prod",
-    "lint": "nrfconnect-scripts lint lib",
-    "test": "nrfconnect-scripts test",
-    "test-watch": "nrfconnect-scripts test --watch",
-    "clean": "npm run clean-dist && npm run clean-modules",
     "clean-dist": "rimraf dist",
-    "clean-modules": "rimraf \"node_modules/!(rimraf|.bin)\""
+    "clean-modules": "rimraf \"node_modules/!(rimraf|.bin)\"",
+    "clean": "npm run clean-dist && npm run clean-modules",
+    "dev": "nrfconnect-scripts build-watch",
+    "lint-init": "nrfconnect-scripts lint-init",
+    "lint": "nrfconnect-scripts lint lib",
+    "nordic-publish": "nrfconnect-scripts nordic-publish",
+    "postinstall": "nrfconnect-scripts lint-init",
+    "test-watch": "nrfconnect-scripts test --watch",
+    "test": "nrfconnect-scripts test",
+    "webpack": "nrfconnect-scripts build-dev"
   },
   "files": [
     "dist/",
@@ -36,8 +39,8 @@
     "jquery": "^3.2.1",
     "lodash.throttle": "^4.1.1",
     "mousetrap": "^1.6.1",
-    "pc-nrfconnect-devdep": "https://github.com/NordicSemiconductor/pc-nrfconnect-devdep.git#semver:^1.2.2",
-    "react-d3-components": "^0.6.6",
+    "pc-nrfconnect-devdep": "git+https://github.com/NordicSemiconductor/pc-nrfconnect-devdep.git#semver:^3.0.0",
+    "react-d3-components": "^0.9.1",
     "react-onclickoutside": "^5.10.0",
     "react-sizeme": "^2.3.1",
     "react-textarea-autosize": "^4.0.5",

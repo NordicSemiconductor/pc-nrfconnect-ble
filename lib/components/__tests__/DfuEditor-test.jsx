@@ -36,7 +36,6 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import FileInput from '../input/FileInput';
 import DfuButton from '../DfuButton';
 import DfuEditor from '../DfuEditor';
 
@@ -56,7 +55,7 @@ describe('DfuEditor', () => {
         const wrapper = mountComponent({
             onChooseFile,
         });
-        wrapper.find(FileInput).find('button').simulate('click');
+        wrapper.find('button#choose-file').simulate('click');
 
         it('should call onChooseFile', () => {
             expect(onChooseFile).toHaveBeenCalled();
@@ -94,4 +93,3 @@ describe('DfuEditor', () => {
         });
     });
 });
-

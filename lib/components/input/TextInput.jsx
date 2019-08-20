@@ -34,9 +34,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, FormControl, InputGroup } from 'react-bootstrap';
+import React from 'react';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
+
+const SUCCESS = 'success';
+const ERROR = 'error';
 
 const TextInput = props => {
     const {
@@ -51,37 +55,42 @@ const TextInput = props => {
         value,
         ...newProps
     } = props;
-    const bsClassProp = inline && { bsClass: 'form-inline' };
-
+    const classProp = inline && { className: 'form-inline' };
     const realValue = `${value}`;
 
+    if (validationState === SUCCESS) {
+        newProps.isValid = true;
+    }
+    if (validationState === ERROR) {
+        newProps.isInvalid = true;
+    }
+
     return (
-        <FormGroup controlId={id} validationState={validationState} {...bsClassProp}>
+        <Form.Group controlId={id} {...classProp}>
             {
-                label && <ControlLabel className={labelClassName}>{label}</ControlLabel>
+                label && <Form.Label className={labelClassName}>{label}</Form.Label>
             }
             <InputGroup className={wrapperClassName}>
-                <FormControl value={realValue} {...newProps} />
-                { hasFeedback && <FormControl.Feedback /> }
-                { buttonAfter && <InputGroup.Button>{ buttonAfter }</InputGroup.Button> }
+                <Form.Control value={realValue} {...newProps} />
+                { buttonAfter && <InputGroup.Append>{ buttonAfter }</InputGroup.Append> }
             </InputGroup>
-        </FormGroup>
+        </Form.Group>
     );
 };
 
 TextInput.propTypes = {
-    id: PropTypes.string,
-    label: PropTypes.string,
-    validationState: PropTypes.string,
     buttonAfter: PropTypes.node,
-    hasFeedback: PropTypes.bool,
-    labelClassName: PropTypes.string,
-    wrapperClassName: PropTypes.string,
-    inline: PropTypes.bool,
-    title: PropTypes.string,
     className: PropTypes.string,
+    hasFeedback: PropTypes.bool,
+    id: PropTypes.string,
+    inline: PropTypes.bool,
+    label: PropTypes.string,
+    labelClassName: PropTypes.string,
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
+    title: PropTypes.string,
+    validationState: PropTypes.string,
+    wrapperClassName: PropTypes.string,
     value: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number,
@@ -89,19 +98,19 @@ TextInput.propTypes = {
 };
 
 TextInput.defaultProps = {
-    id: '',
-    label: '',
-    validationState: null,
     buttonAfter: null,
-    hasFeedback: false,
-    labelClassName: 'col-md-3 text-right',
-    wrapperClassName: 'col-md-9',
-    inline: true,
-    title: null,
     className: null,
+    hasFeedback: false,
+    id: '',
+    inline: true,
+    label: '',
+    labelClassName: 'col-md-3 text-right',
     onChange: null,
     placeholder: '',
+    title: null,
+    validationState: null,
     value: null,
+    wrapperClassName: 'col-md-9',
 };
 
 export default TextInput;

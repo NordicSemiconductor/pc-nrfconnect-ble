@@ -59,6 +59,7 @@ describe('ConnectedDevice', () => {
                 onConnectionParamsUpdate={() => {}}
                 onDisconnect={() => {}}
                 onPair={() => {}}
+                connectedDevicesNumber={1}
             />,
         ).toJSON();
 
@@ -77,6 +78,7 @@ describe('ConnectedDevice', () => {
                 onConnectionParamsUpdate={() => {}}
                 onDisconnect={() => {}}
                 onPair={() => {}}
+                connectedDevicesNumber={1}
             />,
         ).toJSON();
 

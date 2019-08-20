@@ -45,13 +45,19 @@ export default ComposedComponent => (
             this.bindHotkey = this.bindHotkey.bind(this);
         }
 
-        bindHotkey(key, callback, action) {
-            Mousetrap.bind(key, callback, action);
-            this.bindings.push(key);
-        }
-
         componentWillUnmount() {
             this.bindings.forEach(key => Mousetrap.unbind(key));
+        }
+
+        bindHotkey(key, callback, action) {
+            const cb = (event, ...rest) => {
+                event.stopPropagation();
+                callback(event, ...rest);
+            };
+            Mousetrap.bind(key, cb, action);
+            if (!this.bindings.includes(key)) {
+                this.bindings.push(key);
+            }
         }
 
         render() {

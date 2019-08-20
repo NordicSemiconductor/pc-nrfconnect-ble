@@ -38,13 +38,12 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Dropdown, MenuItem } from 'react-bootstrap';
+import React from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 import AdvertisingSetup from '../containers/AdvertisingSetup';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
-
 import withHotkey from '../utils/withHotkey';
 import Spinner from './Spinner';
 
@@ -52,6 +51,13 @@ class CentralDevice extends React.PureComponent {
     constructor(props) {
         super(props);
         this.onSelect = this.onSelect.bind(this);
+    }
+
+    componentDidMount() {
+        const { bindHotkey, onToggleAdvertising } = this.props;
+        if (onToggleAdvertising) {
+            bindHotkey('alt+a', onToggleAdvertising);
+        }
     }
 
     onSelect(eventKey) {
@@ -115,12 +121,8 @@ class CentralDevice extends React.PureComponent {
             onShowSecurityParamsDialog,
             onOpenCustomUuidFile,
             security,
-            bindHotkey,
+            isDeviceDetails,
         } = this.props;
-
-        if (onToggleAdvertising) {
-            bindHotkey('alt+a', onToggleAdvertising);
-        }
 
         const style = {
             position: 'relative',
@@ -134,94 +136,94 @@ class CentralDevice extends React.PureComponent {
         const iconOpacity = advertising ? '' : 'icon-background';
         const advMenuText = advertising ? 'Stop advertising' : 'Start advertising';
         const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
-        const iconCheckmarkConnUpdate = autoConnUpdate ? 'icon-ok' : '';
-        const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'icon-ok' : '';
+        const iconCheckmarkConnUpdate = autoConnUpdate ? 'mdi mdi-check' : '';
+        const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'mdi mdi-check' : '';
 
         const dropDownMenuItems = (() => {
             const items = [];
 
-            if (onToggleAdvertising) {
-                items.push(<MenuItem key="advHeader" header>Advertising</MenuItem>);
+            if (onToggleAdvertising && isDeviceDetails) {
+                items.push(<Dropdown.Header key="advHeader">Advertising</Dropdown.Header>);
                 items.push(
-                    <MenuItem key="setup" eventKey="AdvertisingSetup">
+                    <Dropdown.Item key="setup" eventKey="AdvertisingSetup">
                         Advertising setup...
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
                 items.push(
-                    <MenuItem key="advertising" eventKey="ToggleAdvertising">
+                    <Dropdown.Item key="advertising" eventKey="ToggleAdvertising">
                         {advMenuText} <span className="subtler-text">(Alt+A)</span>
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
             }
 
             if (onLoadSetup) {
-                items.push(<MenuItem key="load" eventKey="LoadSetup">Load setup...</MenuItem>);
+                items.push(<Dropdown.Item key="load" eventKey="LoadSetup">Load setup...</Dropdown.Item>);
             }
 
             if (onSaveSetup) {
-                items.push(<MenuItem key="save" eventKey="SaveSetup">Save setup...</MenuItem>);
+                items.push(<Dropdown.Item key="save" eventKey="SaveSetup">Save setup...</Dropdown.Item>);
             }
 
             if (onToggleAutoConnUpdate) {
-                items.push(<MenuItem key="dividerConnUpdate" divider />);
-                items.push(<MenuItem key="connUpdateHeader" header>Connection update</MenuItem>);
+                items.push(<Dropdown.Divider key="dividerConnUpdate" />);
+                items.push(<Dropdown.Header key="connUpdateHeader">Connection update</Dropdown.Header>);
                 items.push(
-                    <MenuItem
+                    <Dropdown.Item
                         key="autoConnUpdate"
                         title="Automatically accept connection update requests"
                         eventKey="ToggleAutoConnUpdate"
                     >
                         <i className={iconCheckmarkConnUpdate} />Auto accept update requests
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
             }
 
-            if (onToggleAutoAcceptPairing &&
-                onShowSecurityParamsDialog) {
-                items.push(<MenuItem key="dividerSecurity" divider />);
-                items.push(<MenuItem key="securityHeader" header>Security</MenuItem>);
+            if (onToggleAutoAcceptPairing
+                && onShowSecurityParamsDialog) {
+                items.push(<Dropdown.Divider key="dividerSecurity" />);
+                items.push(<Dropdown.Header key="securityHeader">Security</Dropdown.Header>);
                 items.push(
-                    <MenuItem
+                    <Dropdown.Item
                         key="setSecurityParams"
                         title="Configure security parameters related to pairing"
                         eventKey="SetSecurityParams"
                     >
                         Security parameters...
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
                 items.push(
-                    <MenuItem
+                    <Dropdown.Item
                         key="autoAcceptPairing"
                         title="Automatically accept security requests"
                         eventKey="ToggleAutoAcceptPairing"
                     >
                         <i className={iconCheckmarkPairing} />Auto reply security requests
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
                 items.push(
-                    <MenuItem
+                    <Dropdown.Item
                         key="deleteBondInfo"
                         title="Delete bond information"
                         eventKey="DeleteBondInfo"
                     >
                         Delete bond information
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
             }
 
             if (onOpenCustomUuidFile) {
-                items.push(<MenuItem key="dividerOpenUuidFile" divider />);
+                items.push(<Dropdown.Divider key="dividerOpenUuidFile" />);
                 items.push(
-                    <MenuItem key="headerOpenUuidFile" header>Custom UUID definitions</MenuItem>,
+                    <Dropdown.Header key="headerOpenUuidFile">Custom UUID definitions</Dropdown.Header>,
                 );
                 items.push(
-                    <MenuItem
+                    <Dropdown.Item
                         key="openUuidFile"
                         title="Open custom UUID definitions file in default text editor"
                         eventKey="OpenCustomUuidFile"
                     >
                         Open UUID definitions file
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
             }
 
@@ -246,8 +248,8 @@ class CentralDevice extends React.PureComponent {
                             id="connectionDropDown"
                             onSelect={this.onSelect}
                         >
-                            <Dropdown.Toggle noCaret>
-                                <span className="icon-cog" aria-hidden="true" />
+                            <Dropdown.Toggle>
+                                <span className="mdi mdi-settings" />
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 { dropDownMenuItems }
@@ -257,13 +259,13 @@ class CentralDevice extends React.PureComponent {
                     <div>
                         <div className="role-flag pull-right">Adapter</div>
                         {
-                            name ?
-                                <strong className="selectable">{name}</strong> :
-                                <Spinner visible />
+                            name
+                                ? <strong className="selectable">{name}</strong>
+                                : <Spinner visible />
                         }
                     </div>
                     <div className="address-text selectable">{address}</div>
-                    <div className={`icon-wifi ${iconOpacity}`} aria-hidden="true" title={advIconTitle} style={progressStyle} />
+                    <div className={`mdi mdi-signal-variant ${iconOpacity}`} aria-hidden="true" title={advIconTitle} style={progressStyle} />
                     <AdvertisingSetup />
                     <SecurityParamsDialog />
                 </div>
@@ -288,6 +290,7 @@ CentralDevice.propTypes = {
     onToggleAutoAcceptPairing: PropTypes.func,
     onDeleteBondInfo: PropTypes.func,
     onOpenCustomUuidFile: PropTypes.func,
+    isDeviceDetails: PropTypes.bool,
     bindHotkey: PropTypes.func.isRequired,
 };
 
@@ -306,6 +309,7 @@ CentralDevice.defaultProps = {
     onToggleAutoAcceptPairing: null,
     onDeleteBondInfo: null,
     onOpenCustomUuidFile: null,
+    isDeviceDetails: false,
 };
 
 export default withHotkey(CentralDevice);

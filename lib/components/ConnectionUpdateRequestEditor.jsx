@@ -34,16 +34,18 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint jsx-a11y/label-has-for: off */
+/* eslint jsx-a11y/label-has-associated-control: off */
+
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Button } from 'react-bootstrap';
-import TextInput from './input/TextInput';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
 
 import { BLEEventType } from '../actions/common';
 import { Event } from '../reducers/bleEventReducer';
+import TextInput from './input/TextInput';
 
 const CONN_INTERVAL_MIN = 7.5;
 const CONN_INTERVAL_MAX = 4000;
@@ -91,7 +93,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
         const { event } = props;
 
-        const requestedConnectionParams = event.requestedConnectionParams;
+        const { requestedConnectionParams } = event;
 
         this.connectionInterval = requestedConnectionParams.minConnectionInterval;
         this.connectionSupervisionTimeout = requestedConnectionParams.connectionSupervisionTimeout;
@@ -106,9 +108,8 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
         this.handleUpdateConnection = this.handleUpdateConnection.bind(this);
         this.handleConnectionIntervalChange = this.handleConnectionIntervalChange.bind(this);
-        this.handleConnectionSupervisionTimeoutChange =
-            this.handleConnectionSupervisionTimeoutChange.bind(this);
         this.handleSlaveLatencyChange = this.handleSlaveLatencyChange.bind(this);
+        this.handleConnSupTimeoutChange = this.handleConnSupTimeoutChange.bind(this);
         this.onIgnoreEvent = this.onIgnoreEvent.bind(this);
         this.onUpdateConnectionParams = this.onUpdateConnectionParams.bind(this);
         this.onRejectConnectionParams = this.onRejectConnectionParams.bind(this);
@@ -137,8 +138,9 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
     setAndValidateConnectionSupervisionTimeout(value) {
         this.connectionSupervisionTimeout = value;
-        this.isConnectionSupervisionTimeoutValid =
-            isConnectionSupervisionTimeoutValid(this.connectionSupervisionTimeout);
+        this.isConnectionSupervisionTimeoutValid = isConnectionSupervisionTimeoutValid(
+            this.connectionSupervisionTimeout,
+        );
     }
 
     setAndValidateSlaveLatency(value) {
@@ -153,13 +155,13 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
     generateHeaderMessage() {
         const { event } = this.props;
-        const address = event.device.address;
+        const { address } = event.device;
 
         if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) {
             return `Connection parameters update for device ${address}`;
-        } else if (event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
+        } if (event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
             return `Connection parameters update request from device ${address}`;
-        } else if (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE) {
+        } if (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE) {
             return `Connection parameters updated by peer central ${address}`;
         }
         return undefined;
@@ -170,8 +172,8 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
             event,
         } = this.props;
 
-        const device = event.device;
-        const address = device.address;
+        const { device } = event;
+        const { address } = device;
 
         const rcp = event.requestedConnectionParams;
 
@@ -179,36 +181,29 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
             ? undefined
             : <div>({rcp.minConnectionInterval}-{rcp.maxConnectionInterval})</div>;
 
-        const connectionIntervalStyle = this.isConnectionIntervalValid ?
-            validInputStyle : invalidInputStyle;
+        const connectionIntervalStyle = this.isConnectionIntervalValid
+            ? validInputStyle : invalidInputStyle;
 
         return (
-            <div>
-                <label
-                    className="control-label col-sm-7"
-                    htmlFor={`interval_${address}`}
-                >
-                    Connection Interval (ms) {range}
-                </label>
-                <div className="col-sm-5">
-                    <TextInput
-                        style={connectionIntervalStyle}
-                        id={`interval_${address}`}
-                        className="form-control nordic-form-control"
-                        onChange={this.handleConnectionIntervalChange}
-                        type="number"
-                        min={CONN_INTERVAL_MIN}
-                        max={CONN_INTERVAL_MAX}
-                        step={CONN_INTERVAL_STEP}
-                        value={`${this.connectionInterval}`}
-                        readOnly={this.readOnly}
-                    />
-                </div>
-            </div>
+            <TextInput
+                style={connectionIntervalStyle}
+                id={`interval_${address}`}
+                className="form-control nordic-form-control"
+                onChange={this.handleConnectionIntervalChange}
+                type="number"
+                min={CONN_INTERVAL_MIN}
+                max={CONN_INTERVAL_MAX}
+                step={CONN_INTERVAL_STEP}
+                value={`${this.connectionInterval}`}
+                readOnly={this.readOnly}
+                label={`Connection Interval (ms) ${range || ''}`}
+                labelClassName="col-md-7 text-right"
+                wrapperClassName="col-md-5"
+            />
         );
     }
 
-    handleConnectionSupervisionTimeoutChange(event) {
+    handleConnSupTimeoutChange(event) {
         this.setAndValidateConnectionSupervisionTimeout(parseInt(event.target.value, 10));
         this.forceUpdate();
     }
@@ -253,13 +248,13 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
 
         this.readOnly = (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE);
 
-        const device = event.device;
-        const address = device.address;
+        const { device } = event;
+        const { address } = device;
 
-        const slaveLatencyStyle = this.isSlaveLatencyValid ?
-            validInputStyle : invalidInputStyle;
-        const connectionSupervisionTimeoutInputStyle = this.isConnectionSupervisionTimeoutValid ?
-            validInputStyle : invalidInputStyle;
+        const slaveLatencyStyle = this.isSlaveLatencyValid
+            ? validInputStyle : invalidInputStyle;
+        const connectionSupervisionTimeoutInputStyle = this.isConnectionSupervisionTimeoutValid
+            ? validInputStyle : invalidInputStyle;
 
         const ignoreButton = event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE
             ? (
@@ -267,6 +262,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                     type="button"
                     onClick={this.onIgnoreEvent}
                     className="btn btn-default btn-sm btn-nordic"
+                    variant="outline-secondary"
                 >
                     Ignore
                 </Button>
@@ -278,18 +274,20 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                     type="button"
                     onClick={this.onRejectConnectionParams}
                     className="btn btn-default btn-sm btn-nordic"
+                    variant="outline-secondary"
                 >
                     Reject
                 </Button>
             ) : '';
 
-        const disconnectButton =
-            event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE
+        const disconnectButton = event.type
+            === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE
             ? (
                 <Button
                     type="button"
                     onClick={this.onRejectConnectionParams}
                     className="btn btn-default btn-sm btn-nordic"
+                    variant="outline-secondary"
                 >
                     Disconnect
                 </Button>
@@ -304,6 +302,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                     type="button"
                     onClick={this.handleUpdateConnection}
                     className="btn btn-primary btn-sm btn-nordic"
+                    variant="primary"
                 >
                     Update
                 </Button>
@@ -318,6 +317,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                     type="button"
                     onClick={this.onUpdateConnectionParams}
                     className="btn btn-primary btn-sm btn-nordic"
+                    variant="primary"
                 >
                     Accept
                 </Button>
@@ -329,6 +329,7 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                     type="button"
                     onClick={this.onCancelUserInitiatedEvent}
                     className="btn btn-default btn-sm btn-nordic"
+                    variant="outline-secondary"
                 >
                     Cancel
                 </Button>
@@ -340,62 +341,44 @@ class ConnectionUpdateRequestEditor extends React.PureComponent {
                     <h4>{this.generateHeaderMessage()}</h4>
                 </div>
                 <form className="form-horizontal">
-                    <div className="form-group ">
-                        {this.createConnectionIntervalControl()}
-                    </div>
-                    <div className="form-group">
-                        <label
-                            className="control-label col-sm-7"
-                            htmlFor={`latency_${address}`}
-                        >
-                            Slave latency
-                        </label>
-                        <div className="col-sm-5">
-                            <TextInput
-                                style={slaveLatencyStyle}
-                                id={`latency_${address}`}
-                                className="form-control nordic-form-control"
-                                onChange={this.handleSlaveLatencyChange}
-                                type="number"
-                                value={this.slaveLatency}
-                                min={CONN_LATENCY_MIN}
-                                max={CONN_LATENCY_MAX}
-                                step={CONN_LATENCY_STEP}
-                                readOnly={this.readOnly}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <div>
-                            <label
-                                className="control-label col-sm-7"
-                                htmlFor={`timeout_${address}`}
-                            >
-                                Connection supervision timeout (ms)
-                            </label>
-                            <div className="col-sm-5">
-                                <TextInput
-                                    style={connectionSupervisionTimeoutInputStyle}
-                                    id={`timeout_${address}`}
-                                    className="form-control nordic-form-control"
-                                    onChange={this.handleConnectionSupervisionTimeoutChange}
-                                    type="number"
-                                    min={CONN_TIMEOUT_MIN}
-                                    max={CONN_TIMEOUT_MAX}
-                                    step={CONN_TIMEOUT_STEP}
-                                    readOnly={this.readOnly}
-                                    value={this.connectionSupervisionTimeout}
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            {cancelButton}
-                            {rejectButton}
-                            {disconnectButton}
-                            {updateButton}
-                            {acceptButton}
-                            {ignoreButton}
-                        </div>
+                    {this.createConnectionIntervalControl()}
+                    <TextInput
+                        style={slaveLatencyStyle}
+                        id={`latency_${address}`}
+                        className="form-control nordic-form-control"
+                        onChange={this.handleSlaveLatencyChange}
+                        type="number"
+                        value={this.slaveLatency}
+                        min={CONN_LATENCY_MIN}
+                        max={CONN_LATENCY_MAX}
+                        step={CONN_LATENCY_STEP}
+                        readOnly={this.readOnly}
+                        label="Slave latency"
+                        labelClassName="col-md-7 text-right"
+                        wrapperClassName="col-md-5"
+                    />
+                    <TextInput
+                        style={connectionSupervisionTimeoutInputStyle}
+                        id={`timeout_${address}`}
+                        className="form-control nordic-form-control"
+                        onChange={this.handleConnSupTimeoutChange}
+                        type="number"
+                        min={CONN_TIMEOUT_MIN}
+                        max={CONN_TIMEOUT_MAX}
+                        step={CONN_TIMEOUT_STEP}
+                        readOnly={this.readOnly}
+                        value={this.connectionSupervisionTimeout}
+                        label="Connection supervision timeout (ms)"
+                        labelClassName="col-md-7 text-right"
+                        wrapperClassName="col-md-5"
+                    />
+                    <div className="row-of-buttons">
+                        {ignoreButton}
+                        {acceptButton}
+                        {updateButton}
+                        {disconnectButton}
+                        {rejectButton}
+                        {cancelButton}
                     </div>
                 </form>
             </div>

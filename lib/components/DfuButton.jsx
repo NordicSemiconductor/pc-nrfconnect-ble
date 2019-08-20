@@ -34,9 +34,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'react-bootstrap';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
 
 const DfuButton = props => {
     const { dfuInProgress, disabled, onClick } = props;
@@ -46,15 +46,15 @@ const DfuButton = props => {
 
     if (dfuInProgress) {
         labelString = 'Stop DFU';
-        iconName = 'icon-stop';
+        iconName = 'mdi mdi-stop';
     } else {
         labelString = 'Start DFU';
-        iconName = 'icon-play';
+        iconName = 'mdi mdi-play';
     }
 
     return (
         <Button
-            bsStyle="primary"
+            variant="primary"
             disabled={disabled}
             className="btn-nordic pull-right"
             onClick={onClick}

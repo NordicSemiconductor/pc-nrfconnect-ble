@@ -38,20 +38,21 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Button } from 'react-bootstrap';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
 
 class AdvertisingListEntry extends React.PureComponent {
     constructor(props) {
         super(props);
         this.onButtonClicked = this.onButtonClicked.bind(this);
     }
+
     onButtonClicked() {
         const { entry, onDelete } = this.props;
         onDelete(entry.id);
     }
+
     render() {
         const { entry } = this.props;
         return (
@@ -60,9 +61,10 @@ class AdvertisingListEntry extends React.PureComponent {
                 <td>{entry.value}</td>
                 <td>
                     <Button
-                        className="icon-cancel-circled"
-                        bsSize="xsmall"
+                        className="mdi mdi-close-circle adv-data-delete"
+                        size="sm"
                         onClick={this.onButtonClicked}
+                        variant="outline-secondary"
                     >
                         {' Delete'}
                     </Button>

@@ -36,14 +36,14 @@
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
 
-import { DropdownButton, MenuItem } from 'react-bootstrap';
+import { uuid128bitServiceDefinitions, uuid16bitServiceDefinitions } from '../utils/uuid_definitions';
 import TextInput from './input/TextInput';
-
-import UuidLookup from '../components/UuidLookup';
-import { uuid16bitServiceDefinitions, uuid128bitServiceDefinitions } from '../utils/uuid_definitions';
+import UuidLookup from './UuidLookup';
 
 const SUCCESS = 'success';
 const ERROR = 'error';
@@ -335,17 +335,15 @@ class AdvertisingData extends React.PureComponent {
                     onChange={this.handleAdTypeChange}
                 />
             </div>
-        ) : '';
+        ) : null;
 
         const uuidLookupDiv = !uuidLookupDisabled ? (
-            <span className="adv-uuid-lookup">
-                <UuidLookup
-                    onSelect={this.handleUuidSelect}
-                    title="Predefined service UUIDs"
-                    uuidDefs={uuidDef}
-                />
-            </span>
-        ) : '';
+            <UuidLookup
+                onSelect={this.handleUuidSelect}
+                title="Predefined service UUIDs"
+                uuidDefs={uuidDef}
+            />
+        ) : null;
 
         return (
             <div>
@@ -357,20 +355,22 @@ class AdvertisingData extends React.PureComponent {
                         id="dropdown-adv"
                         label="Type"
                         onSelect={this.handleSelect}
+                        variant="outline-secondary"
                     >
-                        <MenuItem eventKey="0">{keyToAdvertisingType('0')}</MenuItem>
-                        <MenuItem eventKey="1">{keyToAdvertisingType('1')}</MenuItem>
-                        <MenuItem eventKey="2">{keyToAdvertisingType('2')}</MenuItem>
-                        <MenuItem eventKey="3">{keyToAdvertisingType('3')}</MenuItem>
-                        <MenuItem eventKey="4">{keyToAdvertisingType('4')}</MenuItem>
-                        <MenuItem eventKey="5">{keyToAdvertisingType('5')}</MenuItem>
-                        <MenuItem eventKey="6">{keyToAdvertisingType('6')}</MenuItem>
-                        <MenuItem eventKey="7">{keyToAdvertisingType('7')}</MenuItem>
+                        <Dropdown.Item eventKey="0">{keyToAdvertisingType('0')}</Dropdown.Item>
+                        <Dropdown.Item eventKey="1">{keyToAdvertisingType('1')}</Dropdown.Item>
+                        <Dropdown.Item eventKey="2">{keyToAdvertisingType('2')}</Dropdown.Item>
+                        <Dropdown.Item eventKey="3">{keyToAdvertisingType('3')}</Dropdown.Item>
+                        <Dropdown.Item eventKey="4">{keyToAdvertisingType('4')}</Dropdown.Item>
+                        <Dropdown.Item eventKey="5">{keyToAdvertisingType('5')}</Dropdown.Item>
+                        <Dropdown.Item eventKey="6">{keyToAdvertisingType('6')}</Dropdown.Item>
+                        <Dropdown.Item eventKey="7">{keyToAdvertisingType('7')}</Dropdown.Item>
                     </DropdownButton>
                 </div>
                 <div className="adv-value-container">
                     {adTypeDiv}
                     <TextInput
+                        buttonAfter={uuidLookupDiv}
                         disabled={inputDisabled}
                         id="value"
                         value={this.value}
@@ -378,12 +378,11 @@ class AdvertisingData extends React.PureComponent {
                         hasFeedback
                         placeholder={this.placeholderText}
                         validationState={this.validateInput()}
-                        labelClassName=""
+                        labelClassName="type-label col-md-3"
                         wrapperClassName="col-md-12"
                         onChange={this.handleChange}
                     />
                 </div>
-                {uuidLookupDiv}
             </div>
         );
     }

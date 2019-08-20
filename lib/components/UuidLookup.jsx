@@ -35,12 +35,14 @@
  */
 
 /* eslint react/forbid-prop-types: off */
+/* eslint react/no-redundant-should-component-update: off */
 
 'use strict';
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Dropdown, MenuItem } from 'react-bootstrap';
+import React from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
+
 import { getUuidName } from '../utils/uuid_definitions';
 
 function formatUuid(value) {
@@ -53,9 +55,10 @@ function formatUuid(value) {
     return value;
 }
 
-class UuidLookup extends React.PureComponent {
+class UuidLookup extends React.Component {
     shouldComponentUpdate(nextProps) {
-        return !(JSON.stringify(this.props.uuidDefs) === JSON.stringify(nextProps.uuidDefs));
+        const { uuidDefs } = this.props;
+        return !(JSON.stringify(uuidDefs) === JSON.stringify(nextProps.uuidDefs));
     }
 
     render() {
@@ -72,25 +75,25 @@ class UuidLookup extends React.PureComponent {
             <div className="uuid-lookup">
                 <Dropdown
                     className="uuid-dropdown"
-                    id="dropdown-uuid-lookup"
+                    id="dropdownUuidLookup"
                     title={title}
                     onSelect={(eventKey, event) => onSelect(event, eventKey)}
-                    pullRight={pullRight}
+                    alignRight={pullRight}
                 >
-                    <Dropdown.Toggle noCaret>
-                        <span className="icon-search" aria-hidden="true" />
+                    <Dropdown.Toggle variant="outline-secondary" size="lg">
+                        <span className="mdi mdi-magnify" aria-hidden="true" />
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="scroll-menu">
-                        <MenuItem header key="header0">{title}</MenuItem>
+                        <Dropdown.Header key="header0">{title}</Dropdown.Header>
                         {
                             sorted.map(uuid => (
-                                <MenuItem
+                                <Dropdown.Item
                                     key={uuid}
                                     title={`${uuid}: ${getUuidName(uuid)}`}
                                     eventKey={uuid}
                                 >
                                     {`${formatUuid(uuid)}: ${getUuidName(uuid)}`}
-                                </MenuItem>
+                                </Dropdown.Item>
                             ))
                         }
                     </Dropdown.Menu>
@@ -109,7 +112,7 @@ UuidLookup.propTypes = {
 
 UuidLookup.defaultProps = {
     title: 'Predefined UUIDs',
-    pullRight: false,
+    pullRight: true,
 };
 
 export default UuidLookup;
