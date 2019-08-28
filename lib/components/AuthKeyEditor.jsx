@@ -448,8 +448,6 @@ class AuthKeyEditor extends React.PureComponent {
                 controls = this.createPasskeyDisplayControls(
                     event.authKeyParams.passkey,
                     event.receiveKeypressEnabled,
-                    event.keypressStartReceived,
-                    event.keypressEndReceived,
                     event.keypressCount,
                 );
                 break;
