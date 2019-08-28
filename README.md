@@ -30,7 +30,7 @@ After *nRF Connect* is installed, you can find *Bluetooth Low Energy* in the app
 
 # Usage documentation
 
-A [User guide](http://infocenter.nordicsemi.com/topic/com.nordic.infocenter.tools/dita/tools/nRF_Connect/nRF_Connect_intro.html?cp=4_2) is available on the *nRF Connect Bluetooth Low Energy* product pages.
+A [User guide](https://infocenter.nordicsemi.com/topic/ug_nrfconnect_ble/UG/nRF_Connect_BLE/nRF_Connect_intro.html) is available on the *nRF Connect Bluetooth Low Energy* product pages.
 
 # Contributing
 
