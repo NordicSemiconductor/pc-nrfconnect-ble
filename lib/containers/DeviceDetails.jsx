@@ -161,14 +161,13 @@ class DeviceDetailsContainer extends React.PureComponent {
             security,
             openCustomUuidFile,
             showDfuDialog,
-            style,
         } = this.props;
 
         const elemWidth = 250;
         const detailDevices = [];
 
         if (!adapterState) {
-            return <div className="device-details-container" style={style} />;
+            return <div className="device-details-container" />;
         }
 
         // Details for connected adapter
@@ -226,7 +225,7 @@ class DeviceDetailsContainer extends React.PureComponent {
         // TODO: Fix better solution to right padding of scroll area than div box with border
         return (
             <div>
-                <div className="device-details-container" style={style}>
+                <div className="device-details-container">
                     <div style={{ width }}>
                         {detailDevices}
                         <div style={{
@@ -307,7 +306,6 @@ DeviceDetailsContainer.propTypes = {
     toggleAutoConnUpdate: PropTypes.func.isRequired,
     autoConnUpdate: PropTypes.bool,
     showDfuDialog: PropTypes.func.isRequired,
-    style: PropTypes.object.isRequired,
     bindHotkey: PropTypes.func.isRequired,
 };
 
