@@ -224,7 +224,7 @@ class DeviceDetailsContainer extends React.PureComponent {
 
         // TODO: Fix better solution to right padding of scroll area than div box with border
         return (
-            <div>
+            <>
                 <div className="device-details-container">
                     <div style={{ width }}>
                         {detailDevices}
@@ -235,7 +235,7 @@ class DeviceDetailsContainer extends React.PureComponent {
                     </div>
                 </div>
                 <DfuDialog />
-            </div>
+            </>
         );
     }
 }
