@@ -3,73 +3,26 @@
 [![Build Status](https://dev.azure.com/NordicSemiconductor/Wayland/_apis/build/status/pc-nrfconnect-ble?branchName=master)](https://dev.azure.com/NordicSemiconductor/Wayland/_build/latest?definitionId=7&branchName=master)
 [![License](https://img.shields.io/badge/license-Modified%20BSD%20License-blue.svg)](LICENSE)
 
-*nRF Connect Bluetooth<sup>&reg;</sup> Low Energy* is a cross-platform tool that enables testing and development with Bluetooth Low Energy (previously called Bluetooth Smart). It allows easy setup of connections with other devices and use these connections for reading and writing to the external nodes.
+*nRF Connect Bluetooth Low Energy* is a cross-platform tool that enables testing and development with Bluetooth Low Energy (previously called Bluetooth Smart). It allows easy setup of connections with other devices and use these connections for reading and writing to the external nodes.
 
-*nRF Connect Bluetooth Low Energy* is implemented as an app for [nRF Connect](https://github.com/NordicSemiconductor/pc-nrfconnect-core#creating-apps).
+![screenshot](resources/screenshot.gif)
 
-![screenshot](resources/ble-screenshot.png)
+## Installation
 
-The app supports the following devices:
-* PCA10028 nRF51 Development Kit
-* PCA10031 nRF51 Dongle
-* PCA10040 nRF52 Development Kit
-* PCA10056 nRF52840 Development Kit
-* PCA10059 nRF52840 Dongle
+See the [InfoCenter](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fstruct_nrftools%2Fstruct%2Fnrftools_nrfconnect.html) pages for information on how to install the application.
 
-# Installation
+## Development
 
-To install the application you can download binaries from the [nRF Connect product page](https://www.nordicsemi.com/eng/Products/Bluetooth-low-energy/nRF-Connect-for-desktop) on Nordic Semiconductor web pages.
+See the [app development](https://github.com/NordicSemiconductor/pc-nrfconnect-core/wiki) pages for details on how to develop apps for the nRF Connect for Desktop framework.
 
-nRF Connect currently supports the following operating systems:
+## Feedback
 
-* Windows
-* Ubuntu Linux 64-bit
-* macOS
+Please report issues on the [DevZone](https://devzone.nordicsemi.com) portal.
 
-After *nRF Connect* is installed, you can find *Bluetooth Low Energy* in the app list by selecting *Add/remove apps*.
+## Contributing
 
-# Usage documentation
+See the [Contributing](https://github.com/NordicSemiconductor/pc-nrfconnect-core/wiki/Contributing) file for details.
 
-A [User guide](https://infocenter.nordicsemi.com/topic/ug_nrfconnect_ble/UG/nRF_Connect_BLE/nRF_Connect_intro.html) is available on the *nRF Connect Bluetooth Low Energy* product pages.
+## License
 
-# Contributing
-
-Feel free to file code related issues on [GitHub Issues](https://github.com/NordicSemiconductor/pc-nrfconnect-ble/issues) and/or submit a pull request. In order to accept your pull request, we need you to sign our Contributor License Agreement (CLA). You will see instructions for doing this after having submitted your first pull request. You only need to sign the CLA once, so if you have already done it for another project in the NordicSemiconductor organization, you are good to go.
-
-# Compiling from source
-
-Since *nRF Connect* expects local apps in `$HOME/.nrfconnect-apps/local` (Linux/macOS) or `%USERPROFILE%/.nrfconnect-apps/local` (Windows) directory, make sure your repository is cloned or linked there.
-
-## Dependencies
-
-To build this project you will need to install the following tools:
-
-* Node.js (>=6.9)
-* npm (>=5.6.0) / yarn (>=1.4.0)
-
-## Compiling
-
-When *nRF Connect* have been installed, you are ready to start the compilation. Run the following command from the command line, standing in the root folder of the repository:
-
-    npm install
-
-When the procedure has completed successfully you can run the application by running:
-
-    npm run dev
-
-The built app can be loaded by *nRF Connect* launcher.
-
-## Testing
-
-Unit testing can be performed by running:
-
-    npm test
-
-# License
-
-See the [license file](LICENSE) for details.
-
-# Feedback
-
-* Ask questions on [DevZone Questions](https://devzone.nordicsemi.com)
-* File code related issues on [GitHub Issues](https://github.com/NordicSemiconductor/pc-nrfconnect-ble/issues)
+See the [LICENSE](LICENSE) file for details.
