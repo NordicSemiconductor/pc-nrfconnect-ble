@@ -3,7 +3,7 @@
 [![Build Status](https://dev.azure.com/NordicSemiconductor/Wayland/_apis/build/status/pc-nrfconnect-ble?branchName=master)](https://dev.azure.com/NordicSemiconductor/Wayland/_build/latest?definitionId=7&branchName=master)
 [![License](https://img.shields.io/badge/license-Modified%20BSD%20License-blue.svg)](LICENSE)
 
-*nRF Connect Bluetooth<sup>&reg;</sup> Low Energy* is a cross-platform tool that enables testing and development with Bluetooth Low Energy (previously called Bluetooth Smart). It allows easy setup of connections with other devices and use these connections for reading and writing to the external nodes.
+*nRF Connect Bluetooth Low Energy* is a cross-platform tool that enables testing and development with Bluetooth Low Energy (previously called Bluetooth Smart). It allows easy setup of connections with other devices and use these connections for reading and writing to the external nodes.
 
 ![screenshot](resources/screenshot.gif)
 
