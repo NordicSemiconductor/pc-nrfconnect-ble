@@ -277,11 +277,10 @@ class ServerSetup extends React.PureComponent {
             showErrorDialog,
             // showDiscardDialog,
             // hideDiscardDialog,
-            style,
         } = this.props;
 
         if (!serverSetup) {
-            return (<div className="server-setup" style={style} />);
+            return (<div className="server-setup" />);
         }
         const {
             selectedComponent,
@@ -388,7 +387,7 @@ class ServerSetup extends React.PureComponent {
         );
 
         return (
-            <div className="server-setup" style={style}>
+            <div className="server-setup">
                 <div className="server-setup-view">
                     <div className="server-setup-tree">
                         {central}
@@ -516,7 +515,6 @@ ServerSetup.propTypes = {
     hideClearDialog: PropTypes.func.isRequired,
     showErrorDialog: PropTypes.func.isRequired,
     toggleAdvertising: PropTypes.func,
-    style: PropTypes.object.isRequired,
     bindHotkey: PropTypes.func.isRequired,
 };
 
