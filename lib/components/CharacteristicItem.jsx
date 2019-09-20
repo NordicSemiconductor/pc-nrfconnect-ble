@@ -148,7 +148,7 @@ class CharacteristicItem extends AttributeItem {
         const propertyList = [];
 
         if (properties) {
-            properties.forEach((propertyValue, property) => {
+            properties.toSeq().forEach((propertyValue, property) => {
                 if (propertyValue) {
                     const key = property;
                     propertyList.push(
