@@ -36,6 +36,7 @@
   "devDependencies": {
     "change-case": "^3.0.1",
     "d3": "^4.7.4",
+    "immutable": "^3.8.2",
     "jquery": "^3.2.1",
     "lodash.throttle": "^4.1.1",
     "mousetrap": "^1.6.1",
