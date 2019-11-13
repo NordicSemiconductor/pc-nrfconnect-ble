@@ -203,6 +203,7 @@ class DiscoveredDevice extends React.PureComponent {
                                     </div>
                                 );
                             })
+                            .values()
                     }
                 </div>
             );
