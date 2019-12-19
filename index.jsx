@@ -100,13 +100,8 @@ export default {
         if (!action) {
             return;
         }
-        if (action.type === 'DEVICE_SELECTED') {
-            const { device } = action;
-            logger.info('Validating connectivity firmware for device with serial number '
-                + `${device.serialNumber}...`);
-        }
         if (action.type === 'DEVICE_SETUP_COMPLETE') {
-            logger.info('Connectivity firmware is valid.');
+            logger.info('Device selected successfully');
             store.dispatch(AdapterActions.initAdapter(action.device));
         }
         if (action.type === 'DEVICE_DESELECTED') {
