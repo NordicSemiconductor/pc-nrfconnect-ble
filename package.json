@@ -34,17 +34,15 @@
     "LICENSE"
   ],
   "devDependencies": {
-    "change-case": "^3.0.1",
-    "d3": "^4.7.4",
+    "change-case": "^4.1.0",
+    "chart.js": "^2.9.3",
     "immutable": "^3.8.2",
-    "jquery": "^3.2.1",
+    "jquery": "^3.4.1",
     "lodash.throttle": "^4.1.1",
-    "mousetrap": "^1.6.1",
-    "pc-nrfconnect-devdep": "git+https://github.com/NordicSemiconductor/pc-nrfconnect-devdep.git#semver:3.3.0",
-    "react-d3-components": "^0.9.1",
-    "react-onclickoutside": "^5.10.0",
-    "react-sizeme": "^2.3.1",
-    "react-textarea-autosize": "^4.0.5",
+    "mousetrap": "^1.6.3",
+    "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v4.0.0",
+    "react-onclickoutside": "^6.9.0",
+    "react-textarea-autosize": "^7.1.2",
     "uuid-v4": "^0.1.0"
   },
   "dependencies": {}
