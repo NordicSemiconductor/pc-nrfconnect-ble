@@ -36,61 +36,33 @@
 
 'use strict';
 
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class AddNewItem extends React.PureComponent {
-    componentWillReceiveProps(nextProps) {
-        // if we're selected through keyboard navigation, we need to make sure we're visible
-
-        const selectedId = nextProps.selected;
-        if (nextProps.id === selectedId && nextProps.onRequestVisibility) {
-            nextProps.onRequestVisibility();
-        }
-
-        // open bug: https://github.com/yannickcr/eslint-plugin-react/issues/944
-        const { id, selected, onRequestVisibility } = this.props; // eslint-disable-line
-    }
-
-    render() {
-        const { bars: propBars, onClick, text } = this.props;
-        const bars = _.times(propBars, i => <div className={`bar${i + 1}`} key={i} />);
-
-        return (
-            <div
-                className="add-new"
-                onClick={onClick}
-                onKeyDown={onClick}
-                role="button"
-                tabIndex={0}
-            >
-                {bars}
-                <div className="content-wrap">
-                    <div className="content padded-row">
-                        <span className="icon-wrap">
-                            <i className="icon-slim mdi mdi-plus-circle" />
-                        </span>
-                        <span>{text}</span>
-                    </div>
-                </div>
+const AddNewItem = ({ bars: propBars, onClick, text }) => (
+    <div
+        className="add-new"
+        onClick={onClick}
+        onKeyDown={onClick}
+        role="button"
+        tabIndex={0}
+    >
+        { Array(propBars).fill(1).map((_, i) => <div className={`bar${i + 1}`} key={`${i + 1}`} />) }
+        <div className="content-wrap">
+            <div className="content padded-row">
+                <span className="icon-wrap">
+                    <i className="icon-slim mdi mdi-plus-circle" />
+                </span>
+                <span>{text}</span>
             </div>
-        );
-    }
-}
+        </div>
+    </div>
+);
 
 AddNewItem.propTypes = {
-    id: PropTypes.string.isRequired,
     bars: PropTypes.number.isRequired,
-    selected: PropTypes.string,
     text: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
-    onRequestVisibility: PropTypes.func,
-};
-
-AddNewItem.defaultProps = {
-    selected: null,
-    onRequestVisibility: null,
 };
 
 export default AddNewItem;
