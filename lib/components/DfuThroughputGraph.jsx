@@ -36,62 +36,26 @@
 
 /* eslint react/forbid-prop-types: off */
 
-import { scaleLinear } from 'd3';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { LineChart } from 'react-d3-components';
-import sizeMe from 'react-sizeme';
+import LineChart from './LineChart';
 
-const HEIGHT = 250;
-const MARGIN = {
-    top: 10,
-    bottom: 30,
-    left: 30,
-    right: 0,
-};
-
-function createGraphData(kbpsPoints, averageKbpsPoints) {
-    return [{
-        label: 'average kB/s',
-        values: averageKbpsPoints,
-    }, {
-        label: 'kB/s',
-        values: kbpsPoints,
-    }];
-}
-
-function createXScale(totalSizeKb, width) {
-    const linearScale = scaleLinear();
-    return linearScale.domain([0, totalSizeKb]).range([0, width - MARGIN.left - 1]);
-}
-
-class DfuThroughputGraph extends React.PureComponent {
-    getWidth() {
-        // The size prop is added by react-sizeme
-        const { size } = this.props;
-        const fallbackWidth = 400;
-        return size ? size.width : fallbackWidth;
-    }
-
-    render() {
-        const { totalSizeKb, kbpsPoints, averageKbpsPoints } = this.props;
-        const width = this.getWidth();
-
-        if (kbpsPoints.length > 0) {
-            return (
-                <LineChart
-                    data={createGraphData(kbpsPoints, averageKbpsPoints)}
-                    width={width}
-                    height={HEIGHT}
-                    xScale={createXScale(totalSizeKb, width)}
-                    xAxis={{ label: 'kB transferred' }}
-                    margin={MARGIN}
-                />
-            );
-        }
-        return null;
-    }
-}
+const DfuThroughputGraph = ({ totalSizeKb, kbpsPoints, averageKbpsPoints }) => (
+    (kbpsPoints.length > 0) ? (
+        <LineChart
+            data={[{
+                values: averageKbpsPoints,
+                color: '#0080B7',
+            }, {
+                values: kbpsPoints,
+                color: '#6dcff6',
+            }]}
+            xTotal={totalSizeKb}
+            xAxisLabel="kB transferred"
+            height={250}
+        />
+    ) : null
+);
 
 DfuThroughputGraph.propTypes = {
     totalSizeKb: PropTypes.number.isRequired,
@@ -103,13 +67,6 @@ DfuThroughputGraph.propTypes = {
         x: PropTypes.number,
         y: PropTypes.number,
     })).isRequired,
-    size: PropTypes.object,
 };
 
-DfuThroughputGraph.defaultProps = {
-    size: null,
-};
-
-// Wrap the component inside a react-sizeme higher order component (HOC). Makes
-// the component aware of its size, so that the graph can be resized dynamically.
-export default sizeMe()(DfuThroughputGraph);
+export default DfuThroughputGraph;

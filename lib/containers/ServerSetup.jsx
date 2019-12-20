@@ -95,14 +95,14 @@ class ServerSetup extends React.PureComponent {
         bindHotkey('right', this.moveRight);
     }
 
-    componentWillUpdate(nextProps) {
+    componentDidUpdate(prevProps) {
         const { serverSetup } = this.props;
         if (serverSetup) { return false; }
 
-        if (!nextProps || !nextProps.serverSetup) { return false; }
+        if (!prevProps || !prevProps.serverSetup) { return false; }
 
         if (!serverSetup
-            || nextProps.serverSetup.selectedComponent !== serverSetup.selectedComponent) {
+            || prevProps.serverSetup.selectedComponent !== serverSetup.selectedComponent) {
             this.modified = false;
             return false;
         }

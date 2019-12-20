@@ -68,9 +68,9 @@ class AttributeItem extends React.Component {
         this.onContentClick = this.onContentClick.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentDidUpdate(prevProps) {
         const { item, onChange } = this.props;
-        if (item.value !== nextProps.item.value) {
+        if (item.value !== prevProps.item.value) {
             if (onChange) {
                 onChange();
             }
