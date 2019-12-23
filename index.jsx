@@ -109,6 +109,7 @@ export default {
                 logger.info('Note: no firmware is defined for the selected device. '
                     + 'You may still use the app if you have programmed the device '
                     + 'with proper firmware.');
+                store.dispatch(AdapterActions.initAdapter(action.device));
             }
         }
         if (action.type === 'DEVICE_DESELECTED') {
