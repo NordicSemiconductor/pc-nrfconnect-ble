@@ -101,8 +101,15 @@ export default {
             return;
         }
         if (action.type === 'DEVICE_SETUP_COMPLETE') {
-            logger.info('Device selected successfully');
+            logger.info('Device setup completed');
             store.dispatch(AdapterActions.initAdapter(action.device));
+        }
+        if (action.type === 'DEVICE_SETUP_ERROR') {
+            if (action.error.message.includes('No firmware defined')) {
+                logger.info('Note: no firmware is defined for the selected device. '
+                    + 'You may still use the app if you have programmed the device '
+                    + 'with proper firmware.');
+            }
         }
         if (action.type === 'DEVICE_DESELECTED') {
             store.dispatch(AdapterActions.closeAdapter())
@@ -123,7 +130,10 @@ export default {
             nordicUsb: true,
             serialport: true,
         },
-        deviceSetup: FirmwareRegistry.getDeviceSetup(),
+        deviceSetup: {
+            ...FirmwareRegistry.getDeviceSetup(),
+            allowCustomDevice: true,
+        },
         releaseCurrentDevice: () => globalDispatch(AdapterActions.closeAdapter()),
     },
 };
