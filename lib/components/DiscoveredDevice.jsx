@@ -38,7 +38,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import changeCase from 'change-case';
+import { pascalCase, camelCase } from 'change-case';
 import Button from 'react-bootstrap/Button';
 
 import { ImmutableDevice } from '../utils/api';
@@ -97,13 +97,13 @@ function rewriter(value) {
         {
             expr: /BLE_GAP_AD_TYPE_(.*)/,
             on_match: function onMatch(matches) {
-                return changeCase.pascalCase(matches[1]);
+                return pascalCase(matches[1]);
             },
         },
         {
             expr: /BLE_GAP_ADDR_TYPE_(.*)/,
             on_match: function onMatch(matches) {
-                return changeCase.pascalCase(matches[1]);
+                return pascalCase(matches[1]);
             },
         },
     ];
@@ -121,7 +121,7 @@ function rewriter(value) {
     }
 
     // We did not find any rules to rewrite the value, return original value
-    return changeCase.camelCase(value);
+    return camelCase(value);
 }
 
 class DiscoveredDevice extends React.PureComponent {

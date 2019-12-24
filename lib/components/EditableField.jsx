@@ -108,7 +108,8 @@ class EditableField extends React.Component {
 
     componentDidUpdate() {
         if (this.editing) {
-            const textarea = this.editableTextarea.current;
+            // eslint-disable-next-line no-underscore-dangle
+            const textarea = this.editableTextarea.current._ref;
             const caretPosition = textarea.value.length;
             textarea.focus();
             textarea.selectionStart = caretPosition;
