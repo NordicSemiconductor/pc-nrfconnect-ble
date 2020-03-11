@@ -39,7 +39,7 @@
 'use strict';
 
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
 
@@ -48,56 +48,69 @@ import Connector from './Connector';
 const WINDOW_WIDTH_OFFSET = 375;
 const THROTTLE_TIMEOUT = 100;
 
-class ConnectedDevice extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.boundResizeListener = this.resizeThrottler.bind(this);
-        this.onResize = this.onResize.bind(this);
-        this.onSelect = this.onSelect.bind(this);
-    }
+const ConnectedDevice = ({
+    id,
+    device,
+    sourceId,
+    layout,
+    connectedDevicesNumber,
+    isDfuSupported,
+    onClickDfu,
+    onDisconnect,
+    onPair,
+    onConnectionParamsUpdate,
+    onPhyUpdate,
+    onMtuUpdate,
+}) => {
+    const node = useRef(null);
+    const [boundingRect, setBoundingRect] = useState(null);
+    const [, setBelowWidthThreshold] = useState(false);
+    const [resizeTimeout, setResizeTimeout] = useState(null);
 
-    componentDidMount() {
-        window.addEventListener('resize', this.boundResizeListener);
-        if (this.node) {
-            this.boundingRect = this.node.getBoundingClientRect();
+    const onResize = () => {
+        if (!boundingRect) {
+            return;
         }
-    }
+        setBelowWidthThreshold(window.innerWidth < (boundingRect.right + WINDOW_WIDTH_OFFSET));
+    };
 
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.boundResizeListener);
-    }
-
-    onResize() {
-        if (!this.boundingRect) {
+    const resizeThrottler = () => {
+        if (resizeTimeout) {
             return;
         }
 
-        const isCurrentlyBelow = window.innerWidth
-            < (this.boundingRect.right + WINDOW_WIDTH_OFFSET);
-        const hasChanged = isCurrentlyBelow !== this.belowWidthThreshold;
+        setResizeTimeout(setTimeout(() => {
+            setResizeTimeout(null);
+            onResize();
+        }, THROTTLE_TIMEOUT));
+    };
 
-        if (!hasChanged) {
-            return;
+    useEffect(() => {
+        // componentDidMount()
+        window.addEventListener('resize', resizeThrottler);
+        if (node.current) {
+            setBoundingRect(node.current.getBoundingClientRect());
         }
+        // componentWillUnmount()
+        return () => {
+            window.removeEventListener('resize', resizeThrottler);
+        };
+    }, []);
 
-        this.belowWidthThreshold = isCurrentlyBelow;
-        this.forceUpdate();
-    }
 
-    onSelect(eventKey) {
-        const {
-            onDisconnect,
-            onPair,
-            onConnectionParamsUpdate,
-            device,
-        } = this.props;
-
+    const onSelect = eventKey => {
         switch (eventKey) {
             case 'Disconnect':
                 onDisconnect();
                 break;
-            case 'Update':
+            case 'UpdateConnectionParams':
                 onConnectionParamsUpdate(device);
+                break;
+            case 'UpdatePhy':
+                onPhyUpdate(device);
+                break;
+            case 'UpdateMtu':
+                onMtuUpdate(device);
                 break;
             case 'Pair':
                 onPair();
@@ -105,112 +118,97 @@ class ConnectedDevice extends React.PureComponent {
             default:
                 console.log('Unknown eventKey received:', eventKey);
         }
-    }
+    };
 
-    resizeThrottler() {
-        if (this.resizeTimeout) {
-            return;
-        }
+    const role = device.role === 'central' ? 'Central' : 'Peripheral';
 
-        this.resizeTimeout = setTimeout(() => {
-            this.resizeTimeout = null;
-            this.onResize();
-        }, THROTTLE_TIMEOUT);
-    }
+    const style = {
+        opacity: device.connected === true ? 1.0 : 0.5,
+    };
 
-    render() {
-        const {
-            device,
-            id,
-            sourceId,
-            layout,
-            connectedDevicesNumber,
-            isDfuSupported,
-            onClickDfu,
-        } = this.props;
+    const dfuIcon = require('../../resources/dfu_icon.png'); // eslint-disable-line
 
-        const role = device.role === 'central' ? 'Central' : 'Peripheral';
-
-        const style = {
-            opacity: device.connected === true ? 1.0 : 0.5,
-        };
-
-        const dfuIcon = require('../../resources/dfu_icon.png'); // eslint-disable-line
-
-        return (
-            <div
-                ref={node => { this.node = node; }}
-                id={id}
-                className="device standalone"
-                style={style}
-            >
-                <div className="top-bar">
-                    <div className="flag-line" />
-                </div>
-
-                <div className="device-body text-small">
-                    <div>
-                        <div className="pull-right">
-                            { isDfuSupported
-                                && (
-                                    <Button
-                                        id="dfuButton"
-                                        variant="primary"
-                                        className="btn-nordic btn-xs"
-                                        size="sm"
-                                        title="Start Secure DFU"
-                                        onClick={onClickDfu}
-                                    >
-                                        <img src={dfuIcon} className="icon-dfu-button" alt="" />
-                                    </Button>
-                                )
-                            }
-                            <Dropdown
-                                id="connectionDropDown"
-                                onClick={this.onResize}
-                                onSelect={this.onSelect}
-                            >
-                                <Dropdown.Toggle>
-                                    <span className="mdi mdi-settings" aria-hidden="true" />
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item id="updateConnectionMenuItem" eventKey="Update">
-                                        Update connection...
-                                    </Dropdown.Item>
-                                    <Dropdown.Item id="pairMenuItem" eventKey="Pair">
-                                        Pair...
-                                    </Dropdown.Item>
-                                    <Dropdown.Item id="disconnectMenuItem" eventKey="Disconnect">
-                                        Disconnect
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </div>
-                        <div className="role-flag pull-right">{role}</div>
-                        <strong className="selectable">{device.name ? device.name : '<Unknown>'}</strong>
-                    </div>
-                    <div className="address-text selectable">{device.address}</div>
-                </div>
-                <Connector
-                    sourceId={sourceId}
-                    targetId={id}
-                    device={device}
-                    layout={layout}
-                    connectedDevicesNumber={connectedDevicesNumber}
-                />
+    return (
+        <div
+            ref={node}
+            id={id}
+            className="device standalone"
+            style={style}
+        >
+            <div className="top-bar">
+                <div className="flag-line" />
             </div>
-        );
 
-        // TODO: later on, we must implement a transition of data from device discovery flags
-        // TODO: to connected devices.
-        //
-        // <div className='flag-line'>
-        //     {device.services.map((service, index) => {
-        //         return (<div key={index} className='device-flag'>{service}</div>);
-        //     })}
-        // </div>
-    }
-}
+            <div className="device-body text-small">
+                <div>
+                    <div className="pull-right">
+                        { isDfuSupported
+                            && (
+                                <Button
+                                    id="dfuButton"
+                                    variant="primary"
+                                    className="btn-nordic btn-xs"
+                                    size="sm"
+                                    title="Start Secure DFU"
+                                    onClick={onClickDfu}
+                                >
+                                    <img src={dfuIcon} className="icon-dfu-button" alt="" />
+                                </Button>
+                            )
+                        }
+                        <Dropdown
+                            id="connectionDropDown"
+                            onClick={onResize}
+                            onSelect={onSelect}
+                        >
+                            <Dropdown.Toggle>
+                                <span className="mdi mdi-settings" aria-hidden="true" />
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item id="updateConnectionMenuItem" eventKey="UpdateConnectionParams">
+                                    Update connection...
+                                </Dropdown.Item>
+                                <Dropdown.Item id="updatePhyMenuItem" eventKey="UpdatePhy">
+                                    Update Phy...
+                                </Dropdown.Item>
+                                <Dropdown.Item id="updateMtuMenuItem" eventKey="UpdateMtu">
+                                    Update MTU...
+                                </Dropdown.Item>
+                                <Dropdown.Divider key="dividerPair" />
+                                <Dropdown.Item id="pairMenuItem" eventKey="Pair">
+                                    Pair...
+                                </Dropdown.Item>
+                                <Dropdown.Divider key="dividerDisconnect" />
+                                <Dropdown.Item id="disconnectMenuItem" eventKey="Disconnect">
+                                    Disconnect
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                    <div className="role-flag pull-right">{role}</div>
+                    <strong className="selectable">{device.name ? device.name : '<Unknown>'}</strong>
+                </div>
+                <div className="address-text selectable">{device.address}</div>
+            </div>
+            <Connector
+                sourceId={sourceId}
+                targetId={id}
+                device={device}
+                layout={layout}
+                connectedDevicesNumber={connectedDevicesNumber}
+            />
+        </div>
+    );
+
+    // TODO: later on, we must implement a transition of data from device discovery flags
+    // TODO: to connected devices.
+    //
+    // <div className='flag-line'>
+    //     {device.services.map((service, index) => {
+    //         return (<div key={index} className='device-flag'>{service}</div>);
+    //     })}
+    // </div>
+};
 
 ConnectedDevice.propTypes = {
     id: PropTypes.string.isRequired,
@@ -223,6 +221,8 @@ ConnectedDevice.propTypes = {
     onDisconnect: PropTypes.func.isRequired,
     onPair: PropTypes.func.isRequired,
     onConnectionParamsUpdate: PropTypes.func.isRequired,
+    onPhyUpdate: PropTypes.func.isRequired,
+    onMtuUpdate: PropTypes.func.isRequired,
 };
 
 export default ConnectedDevice;

@@ -40,12 +40,18 @@
 'use strict';
 
 import PropTypes from 'prop-types';
-import React from 'react';
-import Button from 'react-bootstrap/Button';
+import React, { useState } from 'react';
+import ActionButton from './ActionButton';
 
 import { BLEEventType } from '../actions/common';
 import { Event } from '../reducers/bleEventReducer';
 import TextInput from './input/TextInput';
+
+const {
+    PEER_CENTRAL_INITIATED_CONNECTION_UPDATE,
+    PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE,
+    USER_INITIATED_CONNECTION_UPDATE,
+} = BLEEventType;
 
 const CONN_INTERVAL_MIN = 7.5;
 const CONN_INTERVAL_MAX = 4000;
@@ -59,18 +65,6 @@ const CONN_LATENCY_STEP = 1;
 
 function isInRange(value, min, max) {
     return ((value >= min) && (value <= max));
-}
-
-function isSlaveLatencyValid(slaveLatency) {
-    return isInRange(slaveLatency, CONN_LATENCY_MIN, CONN_LATENCY_MAX);
-}
-
-function isConnectionSupervisionTimeoutValid(connectionSupervisionTimeout) {
-    return isInRange(connectionSupervisionTimeout, CONN_TIMEOUT_MIN, CONN_TIMEOUT_MAX);
-}
-
-function isConnectionIntervalValid(connectionInterval) {
-    return isInRange(connectionInterval, CONN_INTERVAL_MIN, CONN_INTERVAL_MAX);
 }
 
 const validInputStyle = {
@@ -87,304 +81,162 @@ const invalidInputStyle = {
 // One concept is essential:
 //  If the user sets an connectionInterval we force that value to the SoftDevice
 //  by setting both maxConnectionInterval and minConnection interval to that value.
-class ConnectionUpdateRequestEditor extends React.PureComponent {
-    constructor(props) {
-        super(props);
+const ConnectionUpdateRequestEditor = ({
+    event: {
+        id,
+        type,
+        requestedConnectionParams: rcp,
+        device,
+    },
+    onIgnoreEvent,
+    onUpdateConnectionParams,
+    onRejectConnectionParams,
+    onCancelUserInitiatedEvent,
+}) => {
+    const { address } = device;
 
-        const { event } = props;
+    const [connectionInterval, setConnectionInterval] = useState(rcp.minConnectionInterval);
+    const [connectionSupervisionTimeout, setConnectionSupervisionTimeout] = useState(
+        rcp.connectionSupervisionTimeout,
+    );
+    const [slaveLatency, setSlaveLatency] = useState(rcp.slaveLatency);
 
-        const { requestedConnectionParams } = event;
+    const readOnly = (type === PEER_CENTRAL_INITIATED_CONNECTION_UPDATE);
 
-        this.connectionInterval = requestedConnectionParams.minConnectionInterval;
-        this.connectionSupervisionTimeout = requestedConnectionParams.connectionSupervisionTimeout;
-        this.slaveLatency = requestedConnectionParams.slaveLatency;
+    const isSlaveLatencyValid = isInRange(
+        slaveLatency, CONN_LATENCY_MIN, CONN_LATENCY_MAX,
+    );
 
-        this.maxConnectionInterval = requestedConnectionParams.maxConnectionInterval;
-        this.minConnectionInterval = requestedConnectionParams.minConnectionInterval;
+    const isConnectionSupervisionTimeoutValid = isInRange(
+        connectionSupervisionTimeout, CONN_TIMEOUT_MIN, CONN_TIMEOUT_MAX,
+    );
 
-        this.setAndValidateSlaveLatency(this.slaveLatency);
-        this.setAndValidateConnectionSupervisionTimeout(this.connectionSupervisionTimeout);
-        this.setAndValidateConnectionInterval(this.connectionInterval);
+    const isConnectionIntervalValid = isInRange(
+        connectionInterval, CONN_INTERVAL_MIN, CONN_INTERVAL_MAX,
+    );
 
-        this.handleUpdateConnection = this.handleUpdateConnection.bind(this);
-        this.handleConnectionIntervalChange = this.handleConnectionIntervalChange.bind(this);
-        this.handleSlaveLatencyChange = this.handleSlaveLatencyChange.bind(this);
-        this.handleConnSupTimeoutChange = this.handleConnSupTimeoutChange.bind(this);
-        this.onIgnoreEvent = this.onIgnoreEvent.bind(this);
-        this.onUpdateConnectionParams = this.onUpdateConnectionParams.bind(this);
-        this.onRejectConnectionParams = this.onRejectConnectionParams.bind(this);
-        this.onCancelUserInitiatedEvent = this.onCancelUserInitiatedEvent.bind(this);
-    }
+    const disabled = (!isSlaveLatencyValid || !isConnectionSupervisionTimeoutValid);
 
-    onIgnoreEvent() {
-        const { event, onIgnoreEvent } = this.props;
-        onIgnoreEvent(event.id);
-    }
-
-    onUpdateConnectionParams() {
-        const { event, onUpdateConnectionParams } = this.props;
-        onUpdateConnectionParams(event.id);
-    }
-
-    onRejectConnectionParams() {
-        const { event, onRejectConnectionParams } = this.props;
-        onRejectConnectionParams(event.device);
-    }
-
-    onCancelUserInitiatedEvent() {
-        const { event, onCancelUserInitiatedEvent } = this.props;
-        onCancelUserInitiatedEvent(event.id);
-    }
-
-    setAndValidateConnectionSupervisionTimeout(value) {
-        this.connectionSupervisionTimeout = value;
-        this.isConnectionSupervisionTimeoutValid = isConnectionSupervisionTimeoutValid(
-            this.connectionSupervisionTimeout,
-        );
-    }
-
-    setAndValidateSlaveLatency(value) {
-        this.slaveLatency = value;
-        this.isSlaveLatencyValid = isSlaveLatencyValid(value);
-    }
-
-    setAndValidateConnectionInterval(value) {
-        this.connectionInterval = value;
-        this.isConnectionIntervalValid = isConnectionIntervalValid(value);
-    }
-
-    generateHeaderMessage() {
-        const { event } = this.props;
-        const { address } = event.device;
-
-        if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE) {
-            return `Connection parameters update for device ${address}`;
-        } if (event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
-            return `Connection parameters update request from device ${address}`;
-        } if (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE) {
-            return `Connection parameters updated by peer central ${address}`;
-        }
-        return undefined;
-    }
-
-    createConnectionIntervalControl() {
-        const {
-            event,
-        } = this.props;
-
-        const { device } = event;
-        const { address } = device;
-
-        const rcp = event.requestedConnectionParams;
-
-        const range = event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE
-            ? undefined
-            : <div>({rcp.minConnectionInterval}-{rcp.maxConnectionInterval})</div>;
-
-        const connectionIntervalStyle = this.isConnectionIntervalValid
-            ? validInputStyle : invalidInputStyle;
-
-        return (
-            <TextInput
-                style={connectionIntervalStyle}
-                id={`interval_${address}`}
-                className="form-control nordic-form-control"
-                onChange={this.handleConnectionIntervalChange}
-                type="number"
-                min={CONN_INTERVAL_MIN}
-                max={CONN_INTERVAL_MAX}
-                step={CONN_INTERVAL_STEP}
-                value={`${this.connectionInterval}`}
-                readOnly={this.readOnly}
-                label={`Connection Interval (ms) ${range || ''}`}
-                labelClassName="col-md-7 text-right"
-                wrapperClassName="col-md-5"
-            />
-        );
-    }
-
-    handleConnSupTimeoutChange(event) {
-        this.setAndValidateConnectionSupervisionTimeout(parseInt(event.target.value, 10));
-        this.forceUpdate();
-    }
-
-    handleSlaveLatencyChange(event) {
-        this.setAndValidateSlaveLatency(parseInt(event.target.value, 10));
-        this.forceUpdate();
-    }
-
-    handleConnectionIntervalChange(event) {
-        if (event.target.value === '') {
-            return;
-        }
-        this.setAndValidateConnectionInterval(parseFloat(event.target.value));
-        this.forceUpdate();
-    }
-
-    handleUpdateConnection() {
-        const {
-            event,
-            onUpdateConnectionParams,
-        } = this.props;
-
-        // Set minConnectionInterval and maxConnectionInterval to connectionInterval
-        // that way we force the connectionInterval on SoftDevice.
-        this.minConnectionInterval = this.connectionInterval;
-        this.maxConnectionInterval = this.connectionInterval;
-
-        onUpdateConnectionParams(
-            event.device,
-            {
-                minConnectionInterval: this.minConnectionInterval,
-                maxConnectionInterval: this.maxConnectionInterval,
-                slaveLatency: this.slaveLatency,
-                connectionSupervisionTimeout: this.connectionSupervisionTimeout,
-            },
-        );
-    }
-
-    render() {
-        const { event } = this.props;
-
-        this.readOnly = (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE);
-
-        const { device } = event;
-        const { address } = device;
-
-        const slaveLatencyStyle = this.isSlaveLatencyValid
-            ? validInputStyle : invalidInputStyle;
-        const connectionSupervisionTimeoutInputStyle = this.isConnectionSupervisionTimeoutValid
-            ? validInputStyle : invalidInputStyle;
-
-        const ignoreButton = event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE
-            ? (
-                <Button
-                    type="button"
-                    onClick={this.onIgnoreEvent}
-                    className="btn btn-default btn-sm btn-nordic"
-                    variant="outline-secondary"
-                >
-                    Ignore
-                </Button>
-            ) : '';
-
-        const rejectButton = event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE
-            ? (
-                <Button
-                    type="button"
-                    onClick={this.onRejectConnectionParams}
-                    className="btn btn-default btn-sm btn-nordic"
-                    variant="outline-secondary"
-                >
-                    Reject
-                </Button>
-            ) : '';
-
-        const disconnectButton = event.type
-            === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE
-            ? (
-                <Button
-                    type="button"
-                    onClick={this.onRejectConnectionParams}
-                    className="btn btn-default btn-sm btn-nordic"
-                    variant="outline-secondary"
-                >
-                    Disconnect
-                </Button>
-            ) : '';
-
-        const updateButton = event.type !== BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE
-            ? (
-                <Button
-                    disabled={
-                        !this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid
-                    }
-                    type="button"
-                    onClick={this.handleUpdateConnection}
-                    className="btn btn-primary btn-sm btn-nordic"
-                    variant="primary"
-                >
-                    Update
-                </Button>
-            ) : '';
-
-        const acceptButton = event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE
-            ? (
-                <Button
-                    disabled={
-                        !this.isSlaveLatencyValid || !this.isConnectionSupervisionTimeoutValid
-                    }
-                    type="button"
-                    onClick={this.onUpdateConnectionParams}
-                    className="btn btn-primary btn-sm btn-nordic"
-                    variant="primary"
-                >
-                    Accept
-                </Button>
-            ) : '';
-
-        const cancelButton = event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE
-            ? (
-                <Button
-                    type="button"
-                    onClick={this.onCancelUserInitiatedEvent}
-                    className="btn btn-default btn-sm btn-nordic"
-                    variant="outline-secondary"
-                >
-                    Cancel
-                </Button>
-            ) : '';
-
-        return (
-            <div>
-                <div className="event-header">
-                    <h4>{this.generateHeaderMessage()}</h4>
-                </div>
-                <form className="form-horizontal">
-                    {this.createConnectionIntervalControl()}
-                    <TextInput
-                        style={slaveLatencyStyle}
-                        id={`latency_${address}`}
-                        className="form-control nordic-form-control"
-                        onChange={this.handleSlaveLatencyChange}
-                        type="number"
-                        value={this.slaveLatency}
-                        min={CONN_LATENCY_MIN}
-                        max={CONN_LATENCY_MAX}
-                        step={CONN_LATENCY_STEP}
-                        readOnly={this.readOnly}
-                        label="Slave latency"
-                        labelClassName="col-md-7 text-right"
-                        wrapperClassName="col-md-5"
-                    />
-                    <TextInput
-                        style={connectionSupervisionTimeoutInputStyle}
-                        id={`timeout_${address}`}
-                        className="form-control nordic-form-control"
-                        onChange={this.handleConnSupTimeoutChange}
-                        type="number"
-                        min={CONN_TIMEOUT_MIN}
-                        max={CONN_TIMEOUT_MAX}
-                        step={CONN_TIMEOUT_STEP}
-                        readOnly={this.readOnly}
-                        value={this.connectionSupervisionTimeout}
-                        label="Connection supervision timeout (ms)"
-                        labelClassName="col-md-7 text-right"
-                        wrapperClassName="col-md-5"
-                    />
-                    <div className="row-of-buttons">
-                        {ignoreButton}
-                        {acceptButton}
-                        {updateButton}
-                        {disconnectButton}
-                        {rejectButton}
-                        {cancelButton}
-                    </div>
-                </form>
+    return (
+        <div>
+            <div className="event-header">
+                <h4>
+                    { type === USER_INITIATED_CONNECTION_UPDATE && (
+                        `Connection parameters update for device ${address}`
+                    )}
+                    { type === PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE && (
+                        `Connection parameters update request from device ${address}`
+                    )}
+                    { type === PEER_CENTRAL_INITIATED_CONNECTION_UPDATE && (
+                        `Connection parameters updated by peer central ${address}`
+                    )}
+                </h4>
             </div>
-        );
-    }
-}
+            <form className="form-horizontal">
+                <TextInput
+                    style={isConnectionIntervalValid ? validInputStyle : invalidInputStyle}
+                    id={`interval_${address}`}
+                    className="form-control nordic-form-control"
+                    onChange={({ target }) => {
+                        if (target.value === '') {
+                            return;
+                        }
+                        setConnectionInterval(parseFloat(target.value));
+                    }}
+                    type="number"
+                    min={CONN_INTERVAL_MIN}
+                    max={CONN_INTERVAL_MAX}
+                    step={CONN_INTERVAL_STEP}
+                    value={`${connectionInterval}`}
+                    readOnly={readOnly}
+                    label={`Connection Interval (ms) ${type === USER_INITIATED_CONNECTION_UPDATE
+                        ? '' : <div>({rcp.minConnectionInterval}-{rcp.maxConnectionInterval})</div>}`}
+                    labelClassName="col-md-7 text-right"
+                    wrapperClassName="col-md-5"
+                />
+                <TextInput
+                    style={isSlaveLatencyValid ? validInputStyle : invalidInputStyle}
+                    id={`latency_${address}`}
+                    className="form-control nordic-form-control"
+                    onChange={({ target }) => {
+                        setSlaveLatency(parseInt(target.value, 10));
+                    }}
+                    type="number"
+                    value={slaveLatency}
+                    min={CONN_LATENCY_MIN}
+                    max={CONN_LATENCY_MAX}
+                    step={CONN_LATENCY_STEP}
+                    readOnly={readOnly}
+                    label="Slave latency"
+                    labelClassName="col-md-7 text-right"
+                    wrapperClassName="col-md-5"
+                />
+                <TextInput
+                    style={isConnectionSupervisionTimeoutValid
+                        ? validInputStyle : invalidInputStyle}
+                    id={`timeout_${address}`}
+                    className="form-control nordic-form-control"
+                    onChange={({ target }) => {
+                        setConnectionSupervisionTimeout(parseInt(target.value, 10));
+                    }}
+                    type="number"
+                    min={CONN_TIMEOUT_MIN}
+                    max={CONN_TIMEOUT_MAX}
+                    step={CONN_TIMEOUT_STEP}
+                    readOnly={readOnly}
+                    value={connectionSupervisionTimeout}
+                    label="Connection supervision timeout (ms)"
+                    labelClassName="col-md-7 text-right"
+                    wrapperClassName="col-md-5"
+                />
+                <div className="row-of-buttons">
+                    {type === PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE && (
+                        <>
+                            <ActionButton label="Ignore" onClick={() => onIgnoreEvent(id)} />
+                            <ActionButton label="Reject" onClick={() => onRejectConnectionParams(device)} />
+                        </>
+                    )}
+
+                    {type === PEER_CENTRAL_INITIATED_CONNECTION_UPDATE ? (
+                        <>
+                            <ActionButton
+                                label="Accept"
+                                onClick={() => onUpdateConnectionParams(id)}
+                                primary
+                                disabled={disabled}
+                            />
+                            <ActionButton label="Disconnect" onClick={() => onRejectConnectionParams(device)} />
+                        </>
+                    ) : (
+                        <ActionButton
+                            label="Update"
+                            onClick={() => {
+                                // Set minConnectionInterval and maxConnectionInterval
+                                // to connectionInterval
+                                // that way we force the connectionInterval on SoftDevice.
+                                onUpdateConnectionParams(
+                                    device,
+                                    {
+                                        minConnectionInterval: connectionInterval,
+                                        maxConnectionInterval: connectionInterval,
+                                        slaveLatency,
+                                        connectionSupervisionTimeout,
+                                    },
+                                );
+                            }}
+                            primary
+                            disabled={disabled}
+                        />
+                    )}
+
+                    {type === USER_INITIATED_CONNECTION_UPDATE && (
+                        <ActionButton label="Cancel" onClick={() => onCancelUserInitiatedEvent(id)} />
+                    )}
+                </div>
+            </form>
+        </div>
+    );
+};
 
 ConnectionUpdateRequestEditor.propTypes = {
     event: PropTypes.instanceOf(Event).isRequired,

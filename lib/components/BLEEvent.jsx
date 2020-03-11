@@ -114,6 +114,18 @@ class BLEEvent extends React.PureComponent {
                     name: 'OOB request',
                     icon: '',
                 };
+            case BLEEventType.USER_INITIATED_PHY_UPDATE:
+            case BLEEventType.PEER_INITIATED_PHY_UPDATE:
+                return {
+                    name: 'Phy Update',
+                    icon: '',
+                };
+            case BLEEventType.USER_INITIATED_MTU_UPDATE:
+            case BLEEventType.PEER_INITIATED_MTU_UPDATE:
+                return {
+                    name: 'MTU Update',
+                    icon: '',
+                };
             default:
                 return {
                     name: 'unknown event',

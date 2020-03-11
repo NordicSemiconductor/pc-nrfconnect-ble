@@ -52,198 +52,212 @@ import { BLEEventState, BLEEventType } from '../actions/common';
 import AuthKeyEditor from '../components/AuthKeyEditor';
 import BLEEvent from '../components/BLEEvent';
 import ConnectionUpdateRequestEditor from '../components/ConnectionUpdateRequestEditor';
+import PhyUpdateRequestEditor from '../components/PhyUpdateRequestEditor';
+import MtuUpdateRequestEditor from '../components/MtuUpdateRequestEditor';
 import PairingEditor from '../components/PairingEditor';
 
-class BLEEventDialog extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.onSelected = this.onSelected.bind(this);
-        this.close = this.close.bind(this);
+const BLEEventDialog = ({
+    selectEventId,
+    rejectDeviceConnectionParams,
+    updateDeviceConnectionParams,
+    updateDevicePhyParams,
+    updateDeviceMtu,
+    disconnectFromDevice,
+    // ignoreEvent,
+    acceptEvent,
+    removeEvent,
+    pairWithDevice,
+    security,
+    rejectPairing,
+    acceptPairing,
+    replyNumericalComparisonMatch,
+    replyAuthKey,
+    replyLescOob,
+    sendKeypress,
+    clearAllEvents,
+    showDialog,
+    visible,
+    events,
+    selectedEventId,
+}) => {
+    if (events === null || events === undefined || events.size < 1) {
+        return <div />;
     }
 
-    onSelected(selectedEventId) {
-        const { selectEventId } = this.props;
-        selectEventId(selectedEventId);
-    }
+    const onSelected = id => selectEventId(id);
 
-    getEditorComponent(event) {
-        const {
-            rejectDeviceConnectionParams,
-            updateDeviceConnectionParams,
-            disconnectFromDevice,
-            // ignoreEvent,
-            acceptEvent,
-            removeEvent,
-            pairWithDevice,
-            security,
-            rejectPairing,
-            acceptPairing,
-            replyNumericalComparisonMatch,
-            replyAuthKey,
-            replyLescOob,
-            sendKeypress,
-        } = this.props;
-
-        if (event.type === BLEEventType.USER_INITIATED_CONNECTION_UPDATE
-            || event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE) {
-            return (
-                <ConnectionUpdateRequestEditor
-                    event={event}
-                    onRejectConnectionParams={
-                        device => rejectDeviceConnectionParams(event.id, device)
-                    }
-                    onUpdateConnectionParams={
-                        (device, connectionParams) => updateDeviceConnectionParams(
-                            event.id, device, connectionParams,
-                        )
-                    }
-                    onIgnoreEvent={eventId => acceptEvent(eventId)}
-                    onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
-                />
-            );
-        } if (event.type === BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE) {
-            return (
-                <ConnectionUpdateRequestEditor
-                    event={event}
-                    onRejectConnectionParams={device => disconnectFromDevice(device)}
-                    onUpdateConnectionParams={eventId => acceptEvent(eventId)}
-                    onIgnoreEvent={() => {}}
-                    onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
-                />
-            );
-        } if (event.type === BLEEventType.USER_INITIATED_PAIRING) {
-            return (
-                <PairingEditor
-                    event={event}
-                    onPair={securityParams => pairWithDevice(event.id, event.device, securityParams)
-                    }
-                    onCancel={() => removeEvent(event.id)}
-                    security={security}
-                />
-            );
-        } if (event.type === BLEEventType.PEER_INITIATED_PAIRING) {
-            return (
-                <PairingEditor
-                    event={event}
-                    onAccept={
-                        securityParams => acceptPairing(event.id, event.device, securityParams)
-                    }
-                    onReject={() => rejectPairing(event.id, event.device)}
-                    onCancel={() => removeEvent(event.id)}
-                    security={security}
-                />
-            );
-        } if (event.type === BLEEventType.PASSKEY_DISPLAY
-            || event.type === BLEEventType.PASSKEY_REQUEST
-            || event.type === BLEEventType.NUMERICAL_COMPARISON
-            || event.type === BLEEventType.LEGACY_OOB_REQUEST
-            || event.type === BLEEventType.LESC_OOB_REQUEST) {
-            return (
-                <AuthKeyEditor
-                    event={event}
-                    onAuthKeySubmit={(keyType, key) => replyAuthKey(
-                        event.id, event.device, keyType, key,
-                    )}
-                    onLescOobSubmit={peerOobData => replyLescOob(
-                        event.id, event.device, peerOobData, event.ownOobData,
-                    )}
-                    onNumericalComparisonMatch={match => replyNumericalComparisonMatch(
-                        event.id, event.device, match,
-                    )}
-                    onKeypress={value => sendKeypress(event.id, event.device, value)}
-                    onCancel={() => removeEvent(event.id)}
-                />
-            );
+    const getEditorComponent = event => {
+        switch (event.type) {
+            case BLEEventType.USER_INITIATED_CONNECTION_UPDATE:
+            case BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE:
+                return (
+                    <ConnectionUpdateRequestEditor
+                        event={event}
+                        onRejectConnectionParams={
+                            device => rejectDeviceConnectionParams(event.id, device)
+                        }
+                        onUpdateConnectionParams={
+                            (device, connectionParams) => updateDeviceConnectionParams(
+                                event.id, device, connectionParams,
+                            )
+                        }
+                        onIgnoreEvent={eventId => acceptEvent(eventId)}
+                        onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+                    />
+                );
+            case BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE:
+                return (
+                    <ConnectionUpdateRequestEditor
+                        event={event}
+                        onRejectConnectionParams={device => disconnectFromDevice(device)}
+                        onUpdateConnectionParams={eventId => acceptEvent(eventId)}
+                        onIgnoreEvent={() => {}}
+                        onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+                    />
+                );
+            case BLEEventType.USER_INITIATED_PAIRING:
+                return (
+                    <PairingEditor
+                        event={event}
+                        onPair={
+                            securityParams => pairWithDevice(event.id, event.device, securityParams)
+                        }
+                        onCancel={() => removeEvent(event.id)}
+                        security={security}
+                    />
+                );
+            case BLEEventType.PEER_INITIATED_PAIRING:
+                return (
+                    <PairingEditor
+                        event={event}
+                        onAccept={securityParams => acceptPairing(
+                            event.id, event.device, securityParams,
+                        )}
+                        onReject={() => rejectPairing(event.id, event.device)}
+                        onCancel={() => removeEvent(event.id)}
+                        security={security}
+                    />
+                );
+            case BLEEventType.PASSKEY_DISPLAY:
+            case BLEEventType.PASSKEY_REQUEST:
+            case BLEEventType.NUMERICAL_COMPARISON:
+            case BLEEventType.LEGACY_OOB_REQUEST:
+            case BLEEventType.LESC_OOB_REQUEST:
+                return (
+                    <AuthKeyEditor
+                        event={event}
+                        onAuthKeySubmit={(keyType, key) => replyAuthKey(
+                            event.id, event.device, keyType, key,
+                        )}
+                        onLescOobSubmit={peerOobData => replyLescOob(
+                            event.id, event.device, peerOobData, event.ownOobData,
+                        )}
+                        onNumericalComparisonMatch={match => replyNumericalComparisonMatch(
+                            event.id, event.device, match,
+                        )}
+                        onKeypress={value => sendKeypress(event.id, event.device, value)}
+                        onCancel={() => removeEvent(event.id)}
+                    />
+                );
+            case BLEEventType.USER_INITIATED_PHY_UPDATE:
+                return (
+                    <PhyUpdateRequestEditor
+                        event={event}
+                        onUpdatePhyParams={
+                            (device, phyParams) => updateDevicePhyParams(
+                                event.id, device, phyParams,
+                            )
+                        }
+                        onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+                    />
+                );
+            case BLEEventType.USER_INITIATED_MTU_UPDATE:
+                return (
+                    <MtuUpdateRequestEditor
+                        event={event}
+                        onUpdateMtuParams={
+                            (device, mtu) => updateDeviceMtu(
+                                event.id, device, mtu,
+                            )
+                        }
+                        onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+                    />
+                );
+            default:
+                return null;
         }
-        return null;
-    }
+    };
 
-    close() {
-        const { clearAllEvents, showDialog } = this.props;
-
+    const close = () => {
         clearAllEvents();
         showDialog(false);
-    }
+    };
 
-    render() {
-        const {
-            visible,
-            events,
-            selectedEventId,
-            showDialog,
-            clearAllEvents,
-        } = this.props;
+    return (
+        <Modal
+            className="events-modal"
+            show={visible}
+            backdrop
+            onHide={() => {
+                clearAllEvents();
+                showDialog(false);
+            }}
+        >
+            <Modal.Header>
+                <Modal.Title>Events and actions</Modal.Title>
+            </Modal.Header>
 
-        if (events === null || events === undefined || events.size < 1) {
-            return <div />;
-        }
-
-        return (
-            <Modal
-                className="events-modal"
-                show={visible}
-                backdrop
-                onHide={() => {
-                    clearAllEvents();
-                    showDialog(false);
-                }}
-            >
-                <Modal.Header>
-                    <Modal.Title>Events and actions</Modal.Title>
-                </Modal.Header>
-
-                <div className="bleevent-dialog">
-                    <div className="bleevent-dialog-view">
-                        <div className="service-items-wrap">
-                            {
-                                events.valueSeq().map(event => (
-                                    <BLEEvent
-                                        key={event.id}
-                                        onSelected={this.onSelected}
-                                        selected={selectedEventId === event.id}
-                                        event={event}
-                                        onTimedOut={
-                                            () => {
-                                                console.log('Guessing event timed out!');
-                                            }
-                                        }
-                                    />
-                                ))
-                            }
-                        </div>
-
+            <div className="bleevent-dialog">
+                <div className="bleevent-dialog-view">
+                    <div className="service-items-wrap">
                         {
                             events.valueSeq().map(event => (
-                                <div
+                                <BLEEvent
                                     key={event.id}
-                                    className="item-editor"
-                                    style={((selectedEventId !== -1) && (selectedEventId === event.id) && event.state === BLEEventState.INDETERMINATE) ? {} : { display: 'none' }}
-                                >
-                                    {this.getEditorComponent(event)}
-                                </div>
+                                    onSelected={onSelected}
+                                    selected={selectedEventId === event.id}
+                                    event={event}
+                                    onTimedOut={
+                                        () => {
+                                            console.log('Guessing event timed out!');
+                                        }
+                                    }
+                                />
                             ))
                         }
+                    </div>
 
-                        <div
-                            className="item-editor"
-                            style={((selectedEventId === -1) && (events.size > 0)) ? {} : { display: 'none' }}
-                        >
-                            <div className="nothing-selected" />
-                        </div>
+                    {
+                        events.valueSeq().map(event => (
+                            <div
+                                key={event.id}
+                                className="item-editor"
+                                style={((selectedEventId !== -1) && (selectedEventId === event.id) && event.state === BLEEventState.INDETERMINATE) ? {} : { display: 'none' }}
+                            >
+                                {getEditorComponent(event)}
+                            </div>
+                        ))
+                    }
+
+                    <div
+                        className="item-editor"
+                        style={((selectedEventId === -1) && (events.size > 0)) ? {} : { display: 'none' }}
+                    >
+                        <div className="nothing-selected" />
                     </div>
                 </div>
+            </div>
 
-                <Modal.Footer>
-                    <Button
-                        className="btn btn-primary btn-nordic"
-                        onClick={this.close}
-                    >Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        );
-    }
-}
+            <Modal.Footer>
+                <Button
+                    className="btn btn-primary btn-nordic"
+                    onClick={close}
+                >Close
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+};
 
 BLEEventDialog.propTypes = {
     visible: PropTypes.bool.isRequired,
@@ -254,6 +268,8 @@ BLEEventDialog.propTypes = {
     selectEventId: PropTypes.func.isRequired,
     rejectDeviceConnectionParams: PropTypes.func.isRequired,
     updateDeviceConnectionParams: PropTypes.func.isRequired,
+    updateDevicePhyParams: PropTypes.func.isRequired,
+    updateDeviceMtu: PropTypes.func.isRequired,
     removeEvent: PropTypes.func.isRequired,
     rejectPairing: PropTypes.func.isRequired,
     acceptPairing: PropTypes.func.isRequired,
