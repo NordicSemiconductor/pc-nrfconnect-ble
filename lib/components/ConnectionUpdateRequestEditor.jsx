@@ -63,16 +63,16 @@ const CONN_LATENCY_MIN = 0;
 const CONN_LATENCY_MAX = 499;
 const CONN_LATENCY_STEP = 1;
 
-function isInRange(value, min, max) {
+export function isInRange(value, min, max) {
     return ((value >= min) && (value <= max));
 }
 
-const validInputStyle = {
+export const validInputStyle = {
     boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6)',
     borderColor: '#66afe9',
 };
 
-const invalidInputStyle = {
+export const invalidInputStyle = {
     boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 5px rgba(255, 0, 0, 1)',
     borderColor: 'rgb(200, 10, 10)',
 };

@@ -160,27 +160,35 @@ const BLEEventDialog = ({
                     />
                 );
             case BLEEventType.USER_INITIATED_PHY_UPDATE:
+            case BLEEventType.PEER_INITIATED_PHY_UPDATE:
                 return (
                     <PhyUpdateRequestEditor
                         event={event}
-                        onUpdatePhyParams={
-                            (device, phyParams) => updateDevicePhyParams(
-                                event.id, device, phyParams,
-                            )
-                        }
-                        onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+                        onUpdatePhy={({ rxPhy, txPhy }) => updateDevicePhyParams(
+                            event.id, event.device, { rx_phys: rxPhy, tx_phys: txPhy },
+                        )}
+                        onCancelPhyUpdate={() => {
+                            if (event.type === BLEEventType.PEER_INITIATED_PHY_UPDATE) {
+                                disconnectFromDevice(event.device);
+                            } else {
+                                removeEvent(event.id);
+                            }
+                        }}
                     />
                 );
             case BLEEventType.USER_INITIATED_MTU_UPDATE:
+            case BLEEventType.PEER_INITIATED_MTU_UPDATE:
                 return (
                     <MtuUpdateRequestEditor
                         event={event}
-                        onUpdateMtuParams={
-                            (device, mtu) => updateDeviceMtu(
-                                event.id, device, mtu,
-                            )
-                        }
-                        onCancelUserInitiatedEvent={eventId => removeEvent(eventId)}
+                        onUpdateMtu={(mtu, dl) => updateDeviceMtu(event.id, event.device, mtu, dl)}
+                        onCancelMtuUpdate={() => {
+                            if (event.type === BLEEventType.PEER_INITIATED_MTU_UPDATE) {
+                                disconnectFromDevice(event.device);
+                            } else {
+                                removeEvent(event.id);
+                            }
+                        }}
                     />
                 );
             default:

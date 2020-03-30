@@ -166,11 +166,11 @@ class CentralDevice extends React.PureComponent {
 
             if (onToggleAutoConnUpdate) {
                 items.push(<Dropdown.Divider key="dividerConnUpdate" />);
-                items.push(<Dropdown.Header key="connUpdateHeader">Connection update</Dropdown.Header>);
+                items.push(<Dropdown.Header key="connUpdateHeader">Connection, phy and data length update</Dropdown.Header>);
                 items.push(
                     <Dropdown.Item
                         key="autoConnUpdate"
-                        title="Automatically accept connection update requests"
+                        title="Automatically accept connection, phy and data length update requests"
                         eventKey="ToggleAutoConnUpdate"
                     >
                         <i className={iconCheckmarkConnUpdate} />Auto accept update requests

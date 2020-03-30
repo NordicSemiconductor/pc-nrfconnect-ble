@@ -36,6 +36,7 @@
 
 /* eslint jsx-a11y/label-has-for: off */
 /* eslint jsx-a11y/label-has-associated-control: off */
+/* eslint jsx-a11y/click-events-have-key-events: off */
 
 'use strict';
 
@@ -44,25 +45,31 @@ import React, { useState } from 'react';
 import ActionButton from './ActionButton';
 
 import { Event } from '../reducers/bleEventReducer';
-import { BLEPHYType } from '../actions/common';
+import { BLEPHYType, BLEEventType } from '../actions/common';
+
+const { PEER_INITIATED_PHY_UPDATE } = BLEEventType;
 
 const PhyUpdateRequestEditor = ({
     event: {
-        id,
+        type,
         device,
+        requestedPhyParams: {
+            txPhy: rTxPhy,
+            rxPhy: rRxPhy,
+        },
     },
-    onUpdatePhyParams,
-    onCancelUserInitiatedEvent,
+    onUpdatePhy,
+    onCancelPhyUpdate,
 }) => {
     const { address } = device;
+    const peerInitiated = type === PEER_INITIATED_PHY_UPDATE;
 
-    const [linked, setLinked] = useState(true);
-    const [txPhy, setTxPhy] = useState(device.txPhy);
-    const [rxPhy, setRxPhy] = useState(device.rxPhy);
+    const [linked, setLinked] = useState(rTxPhy === rRxPhy);
+    const [txPhy, setTxPhy] = useState(peerInitiated ? rTxPhy : device.txPhy);
+    const [rxPhy, setRxPhy] = useState(peerInitiated ? rRxPhy : device.rxPhy);
 
     const linkedRxPhy = linked ? txPhy : rxPhy;
 
-    /* eslint-disable jsx-a11y/click-events-have-key-events */
     return (
         <div>
             <div className="event-header">
@@ -79,12 +86,14 @@ const PhyUpdateRequestEditor = ({
                                     label="1 Mb/s"
                                     primary={txPhy === BLEPHYType.BLE_GAP_PHY_1MBPS}
                                     onClick={() => setTxPhy(BLEPHYType.BLE_GAP_PHY_1MBPS)}
+                                    disabled={peerInitiated}
                                 />
                                 <ActionButton
                                     className="col col-3 mt-0"
                                     label="2 Mb/s"
                                     primary={txPhy === BLEPHYType.BLE_GAP_PHY_2MBPS}
                                     onClick={() => setTxPhy(BLEPHYType.BLE_GAP_PHY_2MBPS)}
+                                    disabled={peerInitiated}
                                 />
                             </div>
                             <div className="row">
@@ -93,14 +102,14 @@ const PhyUpdateRequestEditor = ({
                                     className="col col-3 mt-0"
                                     label="1 Mb/s"
                                     primary={linkedRxPhy === BLEPHYType.BLE_GAP_PHY_1MBPS}
-                                    disabled={linked}
+                                    disabled={linked || peerInitiated}
                                     onClick={() => setRxPhy(BLEPHYType.BLE_GAP_PHY_1MBPS)}
                                 />
                                 <ActionButton
                                     className="col col-3 mt-0"
                                     label="2 Mb/s"
                                     primary={linkedRxPhy === BLEPHYType.BLE_GAP_PHY_2MBPS}
-                                    disabled={linked}
+                                    disabled={linked || peerInitiated}
                                     onClick={() => setRxPhy(BLEPHYType.BLE_GAP_PHY_2MBPS)}
                                 />
                             </div>
@@ -116,17 +125,17 @@ const PhyUpdateRequestEditor = ({
 
                 <div className="row-of-buttons">
                     <ActionButton
-                        label="Update"
-                        onClick={() => onUpdatePhyParams(
-                            device,
-                            {
-                                tx_phys: txPhy,
-                                rx_phys: linkedRxPhy,
-                            },
-                        )}
+                        label={peerInitiated ? 'Accept' : 'Update'}
+                        onClick={() => onUpdatePhy({
+                            rxPhy: linkedRxPhy,
+                            txPhy,
+                        })}
                         primary
                     />
-                    <ActionButton label="Cancel" onClick={() => onCancelUserInitiatedEvent(id)} />
+                    <ActionButton
+                        label={peerInitiated ? 'Disconnect' : 'Cancel'}
+                        onClick={onCancelPhyUpdate}
+                    />
                 </div>
             </form>
         </div>
@@ -135,8 +144,8 @@ const PhyUpdateRequestEditor = ({
 
 PhyUpdateRequestEditor.propTypes = {
     event: PropTypes.instanceOf(Event).isRequired,
-    onUpdatePhyParams: PropTypes.func.isRequired,
-    onCancelUserInitiatedEvent: PropTypes.func.isRequired,
+    onUpdatePhy: PropTypes.func.isRequired,
+    onCancelPhyUpdate: PropTypes.func.isRequired,
 };
 
 export default PhyUpdateRequestEditor;

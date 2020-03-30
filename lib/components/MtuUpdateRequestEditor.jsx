@@ -41,20 +41,45 @@
 
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import ActionButton from './ActionButton';
 
 import { Event } from '../reducers/bleEventReducer';
+import { BLEEventType } from '../actions/common';
+import TextInput from './input/TextInput';
+import { isInRange, validInputStyle, invalidInputStyle } from './ConnectionUpdateRequestEditor';
+
+const { PEER_INITIATED_MTU_UPDATE } = BLEEventType;
+
+const MTU_MIN = 23;
+const MTU_MAX = 247;
+const DL_MIN = 27;
+const DL_MAX = 251;
 
 const MtuUpdateRequestEditor = ({
     event: {
-        id,
+        type,
         requestedMtu,
+        requestedDataLength,
         device,
     },
-    onUpdateMtuParams,
-    onCancelUserInitiatedEvent,
+    onUpdateMtu,
+    onCancelMtuUpdate,
 }) => {
     const { address } = device;
+    const peerInitiated = type === PEER_INITIATED_MTU_UPDATE;
+
+    // eslint-disable-next-line no-underscore-dangle
+    const sdApiVersion = useSelector(({ app }) => app
+        .adapter.bleDriver.adapter._bleDriver.NRF_SD_BLE_API_VERSION);
+
+    const [dataLength, setDataLength] = useState(
+        sdApiVersion >= 5 ? requestedDataLength || DL_MAX : null,
+    );
+    const [mtu, setMtu] = useState(peerInitiated ? requestedMtu : device.mtu);
+
+    const isMtuValid = isInRange(mtu, MTU_MIN, MTU_MAX);
+    const isDataLengthValid = isInRange(dataLength, DL_MIN, DL_MAX);
 
     return (
         <div>
@@ -62,21 +87,56 @@ const MtuUpdateRequestEditor = ({
                 <h4>MTU update for device {address}</h4>
             </div>
             <form className="form-horizontal">
+                {(dataLength !== null) && (
+                    <TextInput
+                        style={isDataLengthValid ? validInputStyle : invalidInputStyle}
+                        id={`dl_${address}`}
+                        className="form-control nordic-form-control col col-10 pr-0"
+                        onChange={({ target }) => {
+                            setDataLength(parseInt(target.value, 10));
+                        }}
+                        type="number"
+                        value={dataLength}
+                        min={DL_MIN}
+                        max={DL_MAX}
+                        readOnly={peerInitiated}
+                        label="Data length"
+                        labelClassName="col-md-7 text-right"
+                        wrapperClassName="col-md-5"
+                    />
+                )}
+                { peerInitiated || (
+                    <TextInput
+                        style={isMtuValid ? validInputStyle : invalidInputStyle}
+                        id={`mtu_${address}`}
+                        className="form-control nordic-form-control col col-10 pr-0"
+                        onChange={({ target }) => {
+                            setMtu(parseInt(target.value, 10));
+                        }}
+                        type="number"
+                        value={mtu}
+                        min={MTU_MIN}
+                        max={MTU_MAX}
+                        readOnly={peerInitiated}
+                        label="ATT MTU"
+                        labelClassName="col-md-7 text-right"
+                        wrapperClassName="col-md-5"
+                    />
+                )}
+
                 <div className="row-of-buttons">
                     <ActionButton
-                        label="Update"
-                        onClick={() => {
-                            onUpdateMtuParams(
-                                device,
-                                {
-                                    max_rx_octets: device.maxTxOctets,
-                                    max_tx_octets: device.maxRxOctets,
-                                },
-                            );
-                        }}
+                        label={peerInitiated ? 'Accept' : 'Update'}
+                        onClick={() => onUpdateMtu(
+                            peerInitiated ? undefined : mtu,
+                            sdApiVersion >= 5 ? dataLength : undefined,
+                        )}
                         primary
                     />
-                    <ActionButton label="Cancel" onClick={() => onCancelUserInitiatedEvent(id)} />
+                    <ActionButton
+                        label={peerInitiated ? 'Disconnect' : 'Cancel'}
+                        onClick={onCancelMtuUpdate}
+                    />
                 </div>
             </form>
         </div>
@@ -85,8 +145,8 @@ const MtuUpdateRequestEditor = ({
 
 MtuUpdateRequestEditor.propTypes = {
     event: PropTypes.instanceOf(Event).isRequired,
-    onUpdateMtuParams: PropTypes.func.isRequired,
-    onCancelUserInitiatedEvent: PropTypes.func.isRequired,
+    onUpdateMtu: PropTypes.func.isRequired,
+    onCancelMtuUpdate: PropTypes.func.isRequired,
 };
 
 export default MtuUpdateRequestEditor;

@@ -40,6 +40,7 @@
 
 import PropTypes from 'prop-types';
 import React, { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
 
@@ -66,6 +67,10 @@ const ConnectedDevice = ({
     const [boundingRect, setBoundingRect] = useState(null);
     const [, setBelowWidthThreshold] = useState(false);
     const [resizeTimeout, setResizeTimeout] = useState(null);
+
+    // eslint-disable-next-line no-underscore-dangle
+    const sdApiVersion = useSelector(({ app }) => app
+        .adapter.bleDriver.adapter._bleDriver.NRF_SD_BLE_API_VERSION);
 
     const onResize = () => {
         if (!boundingRect) {
@@ -168,12 +173,16 @@ const ConnectedDevice = ({
                                 <Dropdown.Item id="updateConnectionMenuItem" eventKey="UpdateConnectionParams">
                                     Update connection...
                                 </Dropdown.Item>
-                                <Dropdown.Item id="updatePhyMenuItem" eventKey="UpdatePhy">
-                                    Update Phy...
-                                </Dropdown.Item>
-                                <Dropdown.Item id="updateMtuMenuItem" eventKey="UpdateMtu">
-                                    Update MTU...
-                                </Dropdown.Item>
+                                {sdApiVersion >= 5 && (
+                                    <Dropdown.Item id="updatePhyMenuItem" eventKey="UpdatePhy">
+                                        Update Phy...
+                                    </Dropdown.Item>
+                                )}
+                                {sdApiVersion >= 5 && (
+                                    <Dropdown.Item id="updateMtuMenuItem" eventKey="UpdateMtu">
+                                        Update MTU...
+                                    </Dropdown.Item>
+                                )}
                                 <Dropdown.Divider key="dividerPair" />
                                 <Dropdown.Item id="pairMenuItem" eventKey="Pair">
                                     Pair...
