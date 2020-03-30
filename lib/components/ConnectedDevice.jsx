@@ -147,20 +147,18 @@ const ConnectedDevice = ({
             <div className="device-body text-small">
                 <div>
                     <div className="pull-right">
-                        { isDfuSupported
-                            && (
-                                <Button
-                                    id="dfuButton"
-                                    variant="primary"
-                                    className="btn-nordic btn-xs"
-                                    size="sm"
-                                    title="Start Secure DFU"
-                                    onClick={onClickDfu}
-                                >
-                                    <img src={dfuIcon} className="icon-dfu-button" alt="" />
-                                </Button>
-                            )
-                        }
+                        {isDfuSupported && (
+                            <Button
+                                id="dfuButton"
+                                variant="primary"
+                                className="btn-nordic btn-xs"
+                                size="sm"
+                                title="Start Secure DFU"
+                                onClick={onClickDfu}
+                            >
+                                <img src={dfuIcon} className="icon-dfu-button" alt="" />
+                            </Button>
+                        )}
                         <Dropdown
                             id="connectionDropDown"
                             onClick={onResize}
