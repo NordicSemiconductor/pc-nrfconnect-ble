@@ -78,7 +78,7 @@ const MtuUpdateRequestEditor = ({
                     ATT Maximum Transmission Unit (MTU) is the maximum length of an ATT packet.
                     Its valid range is between {MTU_MIN} and {MTU_MAX} octets.
                 </p>
-                <p>
+                <p className="mx-4">
                     This value can only be changed once.
                 </p>
                 <TextInput
