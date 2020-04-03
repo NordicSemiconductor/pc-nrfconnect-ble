@@ -47,78 +47,39 @@ import ConnectedDevice from './ConnectedDevice';
 import EnumeratingAttributes from './EnumeratingAttributes';
 import ServiceItem from './ServiceItem';
 
-class DeviceDetailsView extends React.PureComponent {
-    constructor(props) {
-        super(props);
-
-        this.onDisconnectFromDevice = this.onDisconnectFromDevice.bind(this);
-        this.onUpdateDeviceConnectionParams = this.onUpdateDeviceConnectionParams.bind(this);
-        this.onPairWithDevice = this.onPairWithDevice.bind(this);
-        this.onShowDfuDialog = this.onShowDfuDialog.bind(this);
-    }
-
-    onDisconnectFromDevice() {
-        const { device, onDisconnectFromDevice } = this.props;
-        onDisconnectFromDevice(device);
-    }
-
-    onUpdateDeviceConnectionParams() {
-        const { device, onUpdateDeviceConnectionParams } = this.props;
-        onUpdateDeviceConnectionParams(device);
-    }
-
-    onPairWithDevice() {
-        const { device, onPairWithDevice } = this.props;
-        onPairWithDevice(device);
-    }
-
-    onShowDfuDialog() {
-        const { device, onShowDfuDialog } = this.props;
-        onShowDfuDialog(device);
-    }
-
-    createServiceItem(service) {
-        const {
-            selected,
-            onSelectComponent,
-            onSetAttributeExpanded,
-            onReadCharacteristic,
-            onWriteCharacteristic,
-            onReadDescriptor,
-            onWriteDescriptor,
-        } = this.props;
-
-        return (
-            <ServiceItem
-                key={service.instanceId}
-                item={service}
-                selectOnClick
-                selected={selected}
-                onSelectAttribute={onSelectComponent}
-                onSetAttributeExpanded={onSetAttributeExpanded}
-                onReadCharacteristic={onReadCharacteristic}
-                onWriteCharacteristic={onWriteCharacteristic}
-                onReadDescriptor={onReadDescriptor}
-                onWriteDescriptor={onWriteDescriptor}
-            />
-        );
-    }
-
-    hasDfuService(instanceId) {
-        const { deviceDetails } = this.props;
-        const deviceDetail = deviceDetails.devices.get(instanceId);
-        if (!deviceDetail.discoveringChildren) {
-            const services = deviceDetail.get('children');
-            if (services) {
-                return services.some(service => service.uuid === SECURE_DFU_UUID);
-            }
-        }
-        return false;
-    }
-
-    renderChildren(instanceId) {
-        const { deviceDetails } = this.props;
-        const deviceDetail = deviceDetails.devices.get(instanceId);
+const DeviceDetailsView = ({
+    device,
+    selected, // instanceId for the selected component
+    onSelectComponent,
+    onSetAttributeExpanded,
+    onUpdateDeviceConnectionParams,
+    onUpdateDevicePhy,
+    onUpdateDeviceMtu,
+    onUpdateDeviceDataLength,
+    deviceDetails,
+    connectedDevicesNumber,
+    adapter,
+    onReadCharacteristic,
+    onWriteCharacteristic,
+    onReadDescriptor,
+    onWriteDescriptor,
+    onDisconnectFromDevice,
+    onPairWithDevice,
+    onShowAdvertisingSetupDialog,
+    onToggleAdvertising,
+    onToggleAutoConnUpdate,
+    autoConnUpdate,
+    security,
+    onToggleAutoAcceptPairing,
+    onDeleteBondInfo,
+    onShowSecurityParamsDialog,
+    onOpenCustomUuidFile,
+    onSetSecurityParams,
+    onShowDfuDialog,
+    style,
+}) => {
+    const renderChildren = id => {
+        const deviceDetail = deviceDetails.devices.get(id);
 
         if (deviceDetail.discoveringChildren) {
             return <EnumeratingAttributes bars={1} />;
@@ -128,61 +89,43 @@ class DeviceDetailsView extends React.PureComponent {
         if (children) {
             return (
                 <div className="service-items-wrap">
-                    {children.valueSeq().map(service => this.createServiceItem(service))}
+                    {children.valueSeq().map(service => (
+                        <ServiceItem
+                            key={service.instanceId}
+                            item={service}
+                            selectOnClick
+                            selected={selected}
+                            onSelectAttribute={onSelectComponent}
+                            onSetAttributeExpanded={onSetAttributeExpanded}
+                            onReadCharacteristic={onReadCharacteristic}
+                            onWriteCharacteristic={onWriteCharacteristic}
+                            onReadDescriptor={onReadDescriptor}
+                            onWriteDescriptor={onWriteDescriptor}
+                        />
+                    ))}
                 </div>
             );
         }
 
         return undefined;
-    }
+    };
 
-    render() {
-        const {
-            adapter,
-            device,
-            deviceDetails,
-            selected, // instanceId for the selected component
-            connectedDevicesNumber,
-            onSelectComponent,
-            style,
-        } = this.props;
+    const {
+        instanceId,
+        name,
+        address,
+        role,
+    } = device;
 
-        const {
-            instanceId,
-            name,
-            address,
-            role,
-        } = device;
-
-        const centralPosition = {
-            x: 0,
-            y: 0,
-        };
-
-        if (device && role === undefined) {
-            const {
-                device: {
-                    advertising,
-                },
-                onShowAdvertisingSetupDialog,
-                onToggleAdvertising,
-                autoConnUpdate,
-                onToggleAutoConnUpdate,
-                onShowSecurityParamsDialog,
-                onToggleAutoAcceptPairing,
-                onDeleteBondInfo,
-                onSetSecurityParams,
-                onOpenCustomUuidFile,
-                security,
-            } = this.props;
-
-            const localDevice = (
+    if (device && role === undefined) {
+        return (
+            <div className="local-server device-details-view" id={`${instanceId}_details`} style={style}>
                 <CentralDevice
                     id={`${instanceId}_details`}
-                    position={centralPosition}
+                    position={{ x: 0, y: 0 }}
                     name={name}
                     address={address}
-                    advertising={advertising}
+                    advertising={device.advertising}
                     selected={selected}
                     onShowSetupDialog={onShowAdvertisingSetupDialog}
                     onToggleAdvertising={onToggleAdvertising}
@@ -196,34 +139,28 @@ class DeviceDetailsView extends React.PureComponent {
                     security={security}
                     isDeviceDetails
                 />
-            );
+                {deviceDetails && renderChildren('local.server')}
+            </div>
+        );
+    }
 
-            if (!deviceDetails) {
-                return (
-                    <div className="local-server device-details-view" id={`${instanceId}_details`} style={style}>
-                        {localDevice}
-                    </div>
-                );
-            }
+    if (!deviceDetails.devices.get(instanceId)) {
+        return <div />;
+    }
 
-            const services = this.renderChildren('local.server');
-
-            return (
-                <div className="local-server device-details-view" id={`${instanceId}_details`} style={style}>
-                    {localDevice}
-                    {services}
-                </div>
-            );
-        }
-
+    const hasDfuService = () => {
         const deviceDetail = deviceDetails.devices.get(instanceId);
-        const isDfuSupported = this.hasDfuService(instanceId);
-
-        if (!deviceDetail) {
-            return <div />;
+        if (!deviceDetail.discoveringChildren) {
+            const services = deviceDetail.get('children');
+            if (services) {
+                return services.some(service => service.uuid === SECURE_DFU_UUID);
+            }
         }
+        return false;
+    };
 
-        const connectedDevice = (
+    return (
+        <div className="remote-server device-details-view" id={`${instanceId}_details`} style={style}>
             <ConnectedDevice
                 id={`${instanceId}_details`}
                 sourceId={`${adapter.instanceId}_details`}
@@ -232,25 +169,20 @@ class DeviceDetailsView extends React.PureComponent {
                 selected={selected}
                 layout="vertical"
                 connectedDevicesNumber={connectedDevicesNumber}
-                isDfuSupported={isDfuSupported}
-                onClickDfu={this.onShowDfuDialog}
+                isDfuSupported={hasDfuService(instanceId)}
+                onClickDfu={() => onShowDfuDialog(device)}
                 onSelectComponent={onSelectComponent}
-                onDisconnect={this.onDisconnectFromDevice}
-                onPair={this.onPairWithDevice}
-                onConnectionParamsUpdate={this.onUpdateDeviceConnectionParams}
+                onDisconnect={() => onDisconnectFromDevice(device)}
+                onPair={() => onPairWithDevice(device)}
+                onConnectionParamsUpdate={() => onUpdateDeviceConnectionParams(device)}
+                onPhyUpdate={() => onUpdateDevicePhy(device)}
+                onMtuUpdate={() => onUpdateDeviceMtu(device)}
+                onDataLengthUpdate={() => onUpdateDeviceDataLength(device)}
             />
-        );
-
-        const services = this.renderChildren(instanceId);
-
-        return (
-            <div className="remote-server device-details-view" id={`${instanceId}_details`} style={style}>
-                {connectedDevice}
-                {services}
-            </div>
-        );
-    }
-}
+            {renderChildren(instanceId)}
+        </div>
+    );
+};
 
 DeviceDetailsView.propTypes = {
     device: PropTypes.object.isRequired,
@@ -258,6 +190,9 @@ DeviceDetailsView.propTypes = {
     onSelectComponent: PropTypes.func.isRequired,
     onSetAttributeExpanded: PropTypes.func.isRequired,
     onUpdateDeviceConnectionParams: PropTypes.func,
+    onUpdateDevicePhy: PropTypes.func,
+    onUpdateDeviceMtu: PropTypes.func,
+    onUpdateDeviceDataLength: PropTypes.func,
     deviceDetails: PropTypes.object,
     connectedDevicesNumber: PropTypes.number,
     adapter: PropTypes.object,
@@ -284,6 +219,9 @@ DeviceDetailsView.propTypes = {
 DeviceDetailsView.defaultProps = {
     selected: null,
     onUpdateDeviceConnectionParams: null,
+    onUpdateDevicePhy: null,
+    onUpdateDeviceMtu: null,
+    onUpdateDeviceDataLength: null,
     deviceDetails: null,
     connectedDevicesNumber: 0,
     adapter: null,

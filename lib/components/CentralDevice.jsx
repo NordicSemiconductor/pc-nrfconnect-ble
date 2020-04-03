@@ -39,7 +39,8 @@
 'use strict';
 
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Dropdown from 'react-bootstrap/Dropdown';
 
 import AdvertisingSetup from '../containers/AdvertisingSetup';
@@ -47,232 +48,165 @@ import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 import withHotkey from '../utils/withHotkey';
 import Spinner from './Spinner';
 
-class CentralDevice extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.onSelect = this.onSelect.bind(this);
-    }
+const icon = require('../../resources/nordic_usb_icon.png');
 
-    componentDidMount() {
-        const { bindHotkey, onToggleAdvertising } = this.props;
-        if (onToggleAdvertising) {
-            bindHotkey('alt+a', onToggleAdvertising);
-        }
-    }
+const CentralDevice = ({
+    id,
+    name,
+    address,
+    advertising,
+    onToggleAdvertising,
+    onSaveSetup,
+    onLoadSetup,
+    onToggleAutoConnUpdate,
+    autoConnUpdate,
+    onToggleAutoAcceptPairing,
+    onShowSecurityParamsDialog,
+    onOpenCustomUuidFile,
+    security,
+    isDeviceDetails,
+    bindHotkey,
+    onShowSetupDialog,
+    onDeleteBondInfo,
+}) => {
+    const sdApiVersion = useSelector(({ app }) => (
+        // eslint-disable-next-line no-underscore-dangle
+        ((app.adapter.bleDriver.adapter || {})._bleDriver || {}).NRF_SD_BLE_API_VERSION));
 
-    onSelect(eventKey) {
-        const {
-            onToggleAdvertising,
-            onShowSetupDialog,
-            onSaveSetup,
-            onLoadSetup,
-            onToggleAutoConnUpdate,
-            onToggleAutoAcceptPairing,
-            onDeleteBondInfo,
-            onShowSecurityParamsDialog,
-            onOpenCustomUuidFile,
-        } = this.props;
+    useEffect(() => (onToggleAdvertising && bindHotkey('alt+a', onToggleAdvertising)), []);
 
-        switch (eventKey) {
-            case 'ToggleAdvertising':
-                onToggleAdvertising();
-                break;
-            case 'AdvertisingSetup':
-                onShowSetupDialog();
-                break;
-            case 'SaveSetup':
-                onSaveSetup();
-                break;
-            case 'LoadSetup':
-                onLoadSetup();
-                break;
-            case 'ToggleAutoConnUpdate':
-                onToggleAutoConnUpdate();
-                break;
-            case 'ToggleAutoAcceptPairing':
-                onToggleAutoAcceptPairing();
-                break;
-            case 'DeleteBondInfo':
-                onDeleteBondInfo();
-                break;
-            case 'SetSecurityParams':
-                onShowSecurityParamsDialog();
-                break;
-            case 'OpenCustomUuidFile':
-                onOpenCustomUuidFile();
-                break;
-            default:
-                console.log('Unknown eventKey received:', eventKey);
-        }
-    }
+    const style = {
+        position: 'relative',
+        height: '102px',
+    };
 
-    render() {
-        const {
-            id,
-            name,
-            address,
-            advertising,
-            onToggleAdvertising,
-            onSaveSetup,
-            onLoadSetup,
-            onToggleAutoConnUpdate,
-            autoConnUpdate,
-            onToggleAutoAcceptPairing,
-            onShowSecurityParamsDialog,
-            onOpenCustomUuidFile,
-            security,
-            isDeviceDetails,
-        } = this.props;
+    const progressStyle = {
+        visibility: advertising ? 'visible' : 'hidden',
+    };
 
-        const style = {
-            position: 'relative',
-            height: '102px',
-        };
+    const iconOpacity = advertising ? '' : 'icon-background';
+    const advMenuText = advertising ? 'Stop advertising' : 'Start advertising';
+    const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
+    const iconCheckmarkConnUpdate = autoConnUpdate ? 'mdi mdi-check' : '';
+    const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'mdi mdi-check' : '';
 
-        const progressStyle = {
-            visibility: advertising ? 'visible' : 'hidden',
-        };
+    const autoConnHeader = (sdApiVersion >= 5)
+        ? 'Connection, phy, data length and mtu update'
+        : 'Connection update';
+    const autoConnTitle = (sdApiVersion >= 5)
+        ? 'Automatically accept connection, phy, data length and mtu update requests'
+        : 'Automatically accept connection update requests';
 
-        const iconOpacity = advertising ? '' : 'icon-background';
-        const advMenuText = advertising ? 'Stop advertising' : 'Start advertising';
-        const advIconTitle = advertising ? 'Advertising' : 'Not advertising';
-        const iconCheckmarkConnUpdate = autoConnUpdate ? 'mdi mdi-check' : '';
-        const iconCheckmarkPairing = (security && security.autoAcceptPairing) ? 'mdi mdi-check' : '';
-
-        const dropDownMenuItems = (() => {
-            const items = [];
-
-            if (onToggleAdvertising && isDeviceDetails) {
-                items.push(<Dropdown.Header key="advHeader">Advertising</Dropdown.Header>);
-                items.push(
-                    <Dropdown.Item key="setup" eventKey="AdvertisingSetup">
+    const dropDownMenu = (
+        <Dropdown.Menu>
+            {onToggleAdvertising && isDeviceDetails && (
+                <>
+                    <Dropdown.Header key="advHeader">Advertising</Dropdown.Header>
+                    <Dropdown.Item key="setup" onSelect={onShowSetupDialog}>
                         Advertising setup...
-                    </Dropdown.Item>,
-                );
-                items.push(
-                    <Dropdown.Item key="advertising" eventKey="ToggleAdvertising">
+                    </Dropdown.Item>
+                    <Dropdown.Item key="advertising" onSelect={onToggleAdvertising}>
                         {advMenuText} <span className="subtler-text">(Alt+A)</span>
-                    </Dropdown.Item>,
-                );
-            }
-
-            if (onLoadSetup) {
-                items.push(<Dropdown.Item key="load" eventKey="LoadSetup">Load setup...</Dropdown.Item>);
-            }
-
-            if (onSaveSetup) {
-                items.push(<Dropdown.Item key="save" eventKey="SaveSetup">Save setup...</Dropdown.Item>);
-            }
-
-            if (onToggleAutoConnUpdate) {
-                items.push(<Dropdown.Divider key="dividerConnUpdate" />);
-                items.push(<Dropdown.Header key="connUpdateHeader">Connection update</Dropdown.Header>);
-                items.push(
+                    </Dropdown.Item>
+                </>
+            )}
+            {onLoadSetup && (
+                <Dropdown.Item key="load" onSelect={onLoadSetup}>Load setup...</Dropdown.Item>
+            )}
+            {onSaveSetup && (
+                <Dropdown.Item key="save" onSelect={onSaveSetup}>Save setup...</Dropdown.Item>
+            )}
+            {onToggleAutoConnUpdate && (
+                <>
+                    <Dropdown.Divider key="dividerConnUpdate" />
+                    <Dropdown.Header key="connUpdateHeader">{autoConnHeader}</Dropdown.Header>
                     <Dropdown.Item
                         key="autoConnUpdate"
-                        title="Automatically accept connection update requests"
-                        eventKey="ToggleAutoConnUpdate"
+                        title={autoConnTitle}
+                        onSelect={onToggleAutoConnUpdate}
                     >
                         <i className={iconCheckmarkConnUpdate} />Auto accept update requests
-                    </Dropdown.Item>,
-                );
-            }
-
-            if (onToggleAutoAcceptPairing
-                && onShowSecurityParamsDialog) {
-                items.push(<Dropdown.Divider key="dividerSecurity" />);
-                items.push(<Dropdown.Header key="securityHeader">Security</Dropdown.Header>);
-                items.push(
+                    </Dropdown.Item>
+                </>
+            )}
+            {onToggleAutoAcceptPairing && onShowSecurityParamsDialog && (
+                <>
+                    <Dropdown.Divider key="dividerSecurity" />
+                    <Dropdown.Header key="securityHeader">Security</Dropdown.Header>
                     <Dropdown.Item
                         key="setSecurityParams"
                         title="Configure security parameters related to pairing"
-                        eventKey="SetSecurityParams"
+                        onSelect={onShowSecurityParamsDialog}
                     >
                         Security parameters...
-                    </Dropdown.Item>,
-                );
-                items.push(
+                    </Dropdown.Item>
                     <Dropdown.Item
                         key="autoAcceptPairing"
                         title="Automatically accept security requests"
-                        eventKey="ToggleAutoAcceptPairing"
+                        onSelect={onToggleAutoAcceptPairing}
                     >
                         <i className={iconCheckmarkPairing} />Auto reply security requests
-                    </Dropdown.Item>,
-                );
-                items.push(
+                    </Dropdown.Item>
                     <Dropdown.Item
                         key="deleteBondInfo"
                         title="Delete bond information"
-                        eventKey="DeleteBondInfo"
+                        onSelect={onDeleteBondInfo}
                     >
                         Delete bond information
-                    </Dropdown.Item>,
-                );
-            }
-
-            if (onOpenCustomUuidFile) {
-                items.push(<Dropdown.Divider key="dividerOpenUuidFile" />);
-                items.push(
-                    <Dropdown.Header key="headerOpenUuidFile">Custom UUID definitions</Dropdown.Header>,
-                );
-                items.push(
+                    </Dropdown.Item>
+                </>
+            )}
+            {onOpenCustomUuidFile && (
+                <>
+                    <Dropdown.Divider key="dividerOpenUuidFile" />
+                    <Dropdown.Header key="headerOpenUuidFile">Custom UUID definitions</Dropdown.Header>
                     <Dropdown.Item
                         key="openUuidFile"
                         title="Open custom UUID definitions file in default text editor"
-                        eventKey="OpenCustomUuidFile"
+                        onSelect={onOpenCustomUuidFile}
                     >
                         Open UUID definitions file
-                    </Dropdown.Item>,
-                );
-            }
+                    </Dropdown.Item>
+                </>
+            )}
+        </Dropdown.Menu>
+    );
 
-            return items;
-        })();
-
-        const icon = require('../../resources/nordic_usb_icon.png'); // eslint-disable-line
-
-        return (
-            <div id={id} className="device main-device standalone" style={style}>
-                <img
-                    className="center-block"
-                    src={icon}
-                    height={41}
-                    width={16}
-                    title="Development kit or dongle"
-                    alt=""
-                />
-                <div className="device-body text-small">
-                    <div className="pull-right">
-                        <Dropdown
-                            id="connectionDropDown"
-                            onSelect={this.onSelect}
-                        >
-                            <Dropdown.Toggle>
-                                <span className="mdi mdi-settings" />
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                { dropDownMenuItems }
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </div>
-                    <div>
-                        <div className="role-flag pull-right">Adapter</div>
-                        {
-                            name
-                                ? <strong className="selectable">{name}</strong>
-                                : <Spinner visible />
-                        }
-                    </div>
-                    <div className="address-text selectable">{address}</div>
-                    <div className={`mdi mdi-signal-variant ${iconOpacity}`} aria-hidden="true" title={advIconTitle} style={progressStyle} />
-                    <AdvertisingSetup />
-                    <SecurityParamsDialog />
+    return (
+        <div id={id} className="device main-device standalone" style={style}>
+            <img
+                className="center-block"
+                src={icon}
+                height={41}
+                width={16}
+                title="Development kit or dongle"
+                alt=""
+            />
+            <div className="device-body text-small">
+                <div className="pull-right">
+                    <Dropdown id="connectionDropDown">
+                        <Dropdown.Toggle>
+                            <span className="mdi mdi-settings" />
+                        </Dropdown.Toggle>
+                        { dropDownMenu }
+                    </Dropdown>
                 </div>
+                <div>
+                    <div className="role-flag pull-right">Adapter</div>
+                    {
+                        name
+                            ? <strong className="selectable">{name}</strong>
+                            : <Spinner visible />
+                    }
+                </div>
+                <div className="address-text selectable">{address}</div>
+                <div className={`mdi mdi-signal-variant ${iconOpacity}`} aria-hidden="true" title={advIconTitle} style={progressStyle} />
+                <AdvertisingSetup />
+                <SecurityParamsDialog />
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
 CentralDevice.propTypes = {
     id: PropTypes.string.isRequired,
