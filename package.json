@@ -1,6 +1,6 @@
 {
   "name": "pc-nrfconnect-ble",
-  "version": "2.3.2",
+  "version": "2.4.0-alpha.0",
   "description": "A natural first choice for Bluetooth Low Energy development",
   "displayName": "Bluetooth Low Energy",
   "repository": {
@@ -11,7 +11,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "main": "dist/bundle.js",
   "engines": {
-    "nrfconnect": "^3.2.0"
+    "nrfconnect": "^3.4.0"
   },
   "scripts": {
     "build": "nrfconnect-scripts build-prod",
@@ -40,7 +40,7 @@
     "jquery": "^3.4.1",
     "lodash.throttle": "^4.1.1",
     "mousetrap": "^1.6.3",
-    "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v4.0.0",
+    "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v4.1.0",
     "react-onclickoutside": "^6.9.0",
     "react-textarea-autosize": "^7.1.2",
     "uuid-v4": "^0.1.0"

@@ -39,6 +39,13 @@ import renderer from 'react-test-renderer';
 import { getImmutableDevice } from '../../utils/api';
 import ConnectedDevice from '../ConnectedDevice';
 
+jest.mock('react-redux', () => ({
+    ...require.requireActual('react-redux'),
+    useSelector: jest.fn().mockImplementation(() => ({
+        app: { adapter: { bleDriver: { adapter: { _bleDriver: { NRF_SD_BLE_API_VERSION: 5 } } } } },
+    })),
+}));
+
 const device = getImmutableDevice({
     instanceId: 'device-1',
     connected: true,
@@ -60,6 +67,8 @@ describe('ConnectedDevice', () => {
                 onDisconnect={() => {}}
                 onPair={() => {}}
                 connectedDevicesNumber={1}
+                onPhyUpdate={() => {}}
+                onMtuUpdate={() => {}}
             />,
         ).toJSON();
 
@@ -79,6 +88,8 @@ describe('ConnectedDevice', () => {
                 onDisconnect={() => {}}
                 onPair={() => {}}
                 connectedDevicesNumber={1}
+                onPhyUpdate={() => {}}
+                onMtuUpdate={() => {}}
             />,
         ).toJSON();
 
