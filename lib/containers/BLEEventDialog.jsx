@@ -54,6 +54,7 @@ import BLEEvent from '../components/BLEEvent';
 import ConnectionUpdateRequestEditor from '../components/ConnectionUpdateRequestEditor';
 import PhyUpdateRequestEditor from '../components/PhyUpdateRequestEditor';
 import MtuUpdateRequestEditor from '../components/MtuUpdateRequestEditor';
+import DataLengthUpdateRequestEditor from '../components/DataLengthUpdateRequestEditor';
 import PairingEditor from '../components/PairingEditor';
 
 const BLEEventDialog = ({
@@ -62,6 +63,7 @@ const BLEEventDialog = ({
     updateDeviceConnectionParams,
     updateDevicePhyParams,
     updateDeviceMtu,
+    updateDeviceDataLength,
     disconnectFromDevice,
     // ignoreEvent,
     acceptEvent,
@@ -181,9 +183,27 @@ const BLEEventDialog = ({
                 return (
                     <MtuUpdateRequestEditor
                         event={event}
-                        onUpdateMtu={(mtu, dl) => updateDeviceMtu(event.id, event.device, mtu, dl)}
+                        onUpdateMtu={mtu => updateDeviceMtu(event.id, event.device, mtu, false)}
+                        onAcceptMtu={mtu => updateDeviceMtu(event.id, event.device, mtu, true)}
                         onCancelMtuUpdate={() => {
                             if (event.type === BLEEventType.PEER_INITIATED_MTU_UPDATE) {
+                                disconnectFromDevice(event.device);
+                            } else {
+                                removeEvent(event.id);
+                            }
+                        }}
+                    />
+                );
+            case BLEEventType.USER_INITIATED_DATA_LENGTH_UPDATE:
+            case BLEEventType.PEER_INITIATED_DATA_LENGTH_UPDATE:
+                return (
+                    <DataLengthUpdateRequestEditor
+                        event={event}
+                        onUpdateDataLength={dataLength => updateDeviceDataLength(
+                            event.id, event.device, dataLength,
+                        )}
+                        onCancelDataLengthUpdate={() => {
+                            if (event.type === BLEEventType.PEER_INITIATED_DATA_LENTH_UPDATE) {
                                 disconnectFromDevice(event.device);
                             } else {
                                 removeEvent(event.id);
@@ -278,6 +298,7 @@ BLEEventDialog.propTypes = {
     updateDeviceConnectionParams: PropTypes.func.isRequired,
     updateDevicePhyParams: PropTypes.func.isRequired,
     updateDeviceMtu: PropTypes.func.isRequired,
+    updateDeviceDataLength: PropTypes.func.isRequired,
     removeEvent: PropTypes.func.isRequired,
     rejectPairing: PropTypes.func.isRequired,
     acceptPairing: PropTypes.func.isRequired,

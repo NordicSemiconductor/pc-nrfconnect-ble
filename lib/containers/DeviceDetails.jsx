@@ -154,6 +154,7 @@ class DeviceDetailsContainer extends React.PureComponent {
             createUserInitiatedConnParamsUpdateEvent,
             createUserInitiatedPhyUpdateEvent,
             createUserInitiatedMtuUpdateEvent,
+            createUserInitiatedDataLengthUpdateEvent,
             createUserInitiatedPairingEvent,
             toggleAutoConnUpdate,
             autoConnUpdate,
@@ -219,6 +220,7 @@ class DeviceDetailsContainer extends React.PureComponent {
                     onUpdateDeviceConnectionParams={createUserInitiatedConnParamsUpdateEvent}
                     onUpdateDevicePhy={createUserInitiatedPhyUpdateEvent}
                     onUpdateDeviceMtu={createUserInitiatedMtuUpdateEvent}
+                    onUpdateDeviceDataLength={createUserInitiatedDataLengthUpdateEvent}
                 />,
             );
         });
@@ -298,6 +300,7 @@ DeviceDetailsContainer.propTypes = {
     createUserInitiatedConnParamsUpdateEvent: PropTypes.func.isRequired,
     createUserInitiatedPhyUpdateEvent: PropTypes.func.isRequired,
     createUserInitiatedMtuUpdateEvent: PropTypes.func.isRequired,
+    createUserInitiatedDataLengthUpdateEvent: PropTypes.func.isRequired,
     createUserInitiatedPairingEvent: PropTypes.func.isRequired,
     security: PropTypes.object,
     toggleAutoAcceptPairing: PropTypes.func.isRequired,

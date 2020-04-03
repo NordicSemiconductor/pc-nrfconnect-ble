@@ -55,6 +55,7 @@ const DeviceDetailsView = ({
     onUpdateDeviceConnectionParams,
     onUpdateDevicePhy,
     onUpdateDeviceMtu,
+    onUpdateDeviceDataLength,
     deviceDetails,
     connectedDevicesNumber,
     adapter,
@@ -176,6 +177,7 @@ const DeviceDetailsView = ({
                 onConnectionParamsUpdate={() => onUpdateDeviceConnectionParams(device)}
                 onPhyUpdate={() => onUpdateDevicePhy(device)}
                 onMtuUpdate={() => onUpdateDeviceMtu(device)}
+                onDataLengthUpdate={() => onUpdateDeviceDataLength(device)}
             />
             {renderChildren(instanceId)}
         </div>
@@ -190,6 +192,7 @@ DeviceDetailsView.propTypes = {
     onUpdateDeviceConnectionParams: PropTypes.func,
     onUpdateDevicePhy: PropTypes.func,
     onUpdateDeviceMtu: PropTypes.func,
+    onUpdateDeviceDataLength: PropTypes.func,
     deviceDetails: PropTypes.object,
     connectedDevicesNumber: PropTypes.number,
     adapter: PropTypes.object,
@@ -218,6 +221,7 @@ DeviceDetailsView.defaultProps = {
     onUpdateDeviceConnectionParams: null,
     onUpdateDevicePhy: null,
     onUpdateDeviceMtu: null,
+    onUpdateDeviceDataLength: null,
     deviceDetails: null,
     connectedDevicesNumber: 0,
     adapter: null,

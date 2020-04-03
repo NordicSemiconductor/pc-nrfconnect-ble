@@ -117,13 +117,19 @@ class BLEEvent extends React.PureComponent {
             case BLEEventType.USER_INITIATED_PHY_UPDATE:
             case BLEEventType.PEER_INITIATED_PHY_UPDATE:
                 return {
-                    name: 'Phy Update',
+                    name: 'Phy update',
                     icon: '',
                 };
             case BLEEventType.USER_INITIATED_MTU_UPDATE:
             case BLEEventType.PEER_INITIATED_MTU_UPDATE:
                 return {
-                    name: 'MTU Update',
+                    name: 'MTU update',
+                    icon: '',
+                };
+            case BLEEventType.USER_INITIATED_DATA_LENGTH_UPDATE:
+            case BLEEventType.PEER_INITIATED_DATA_LENGTH_UPDATE:
+                return {
+                    name: 'Data length update',
                     icon: '',
                 };
             default:

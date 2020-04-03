@@ -46,6 +46,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 import Connector from './Connector';
 
+const dfuIcon = require('../../resources/dfu_icon.png');
+
 const WINDOW_WIDTH_OFFSET = 375;
 const THROTTLE_TIMEOUT = 100;
 
@@ -62,6 +64,7 @@ const ConnectedDevice = ({
     onConnectionParamsUpdate,
     onPhyUpdate,
     onMtuUpdate,
+    onDataLengthUpdate,
 }) => {
     const node = useRef(null);
     const [boundingRect, setBoundingRect] = useState(null);
@@ -117,6 +120,9 @@ const ConnectedDevice = ({
             case 'UpdateMtu':
                 onMtuUpdate(device);
                 break;
+            case 'UpdateDataLength':
+                onDataLengthUpdate(device);
+                break;
             case 'Pair':
                 onPair();
                 break;
@@ -126,12 +132,11 @@ const ConnectedDevice = ({
     };
 
     const role = device.role === 'central' ? 'Central' : 'Peripheral';
+    const mtuDisable = device.mtu > 23;
 
     const style = {
         opacity: device.connected === true ? 1.0 : 0.5,
     };
-
-    const dfuIcon = require('../../resources/dfu_icon.png'); // eslint-disable-line
 
     return (
         <div
@@ -172,14 +177,26 @@ const ConnectedDevice = ({
                                     Update connection...
                                 </Dropdown.Item>
                                 {sdApiVersion >= 5 && (
-                                    <Dropdown.Item id="updatePhyMenuItem" eventKey="UpdatePhy">
-                                        Update Phy...
-                                    </Dropdown.Item>
-                                )}
-                                {sdApiVersion >= 5 && (
-                                    <Dropdown.Item id="updateMtuMenuItem" eventKey="UpdateMtu">
-                                        Update MTU...
-                                    </Dropdown.Item>
+                                    <>
+                                        <Dropdown.Item id="updatePhyMenuItem" eventKey="UpdatePhy">
+                                            Update phy...
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            id="updateDataLengthMenuItem"
+                                            eventKey="UpdateDataLength"
+                                            title="Length of data payload of link layer packets"
+                                        >
+                                            Update data length...
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            id="updateMtuMenuItem"
+                                            eventKey="UpdateMtu"
+                                            disabled={mtuDisable}
+                                            title="ATT maximum transfer unit, length of an ATT packet"
+                                        >
+                                            Update MTU...
+                                        </Dropdown.Item>
+                                    </>
                                 )}
                                 <Dropdown.Divider key="dividerPair" />
                                 <Dropdown.Item id="pairMenuItem" eventKey="Pair">
@@ -230,6 +247,7 @@ ConnectedDevice.propTypes = {
     onConnectionParamsUpdate: PropTypes.func.isRequired,
     onPhyUpdate: PropTypes.func.isRequired,
     onMtuUpdate: PropTypes.func.isRequired,
+    onDataLengthUpdate: PropTypes.func.isRequired,
 };
 
 export default ConnectedDevice;

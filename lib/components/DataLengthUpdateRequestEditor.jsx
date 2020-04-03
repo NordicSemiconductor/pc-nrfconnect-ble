@@ -48,72 +48,61 @@ import { BLEEventType } from '../actions/common';
 import TextInput from './input/TextInput';
 import { isInRange, validInputStyle, invalidInputStyle } from './ConnectionUpdateRequestEditor';
 
-const { PEER_INITIATED_MTU_UPDATE } = BLEEventType;
+const { PEER_INITIATED_DATA_LENGTH_UPDATE } = BLEEventType;
 
-const MTU_MIN = 23;
-const MTU_MAX = 247;
+const DL_MIN = 27;
+const DL_MAX = 251;
 
-const MtuUpdateRequestEditor = ({
+const DataLengthUpdateRequestEditor = ({
     event: {
         type,
-        requestedMtu,
+        requestedDataLength,
         device,
     },
-    onUpdateMtu,
-    onAcceptMtu,
-    onCancelMtuUpdate,
+    onUpdateDataLength,
+    onCancelDataLengthUpdate,
 }) => {
     const { address } = device;
-    const peerInitiated = type === PEER_INITIATED_MTU_UPDATE;
-    const [mtu, setMtu] = useState(peerInitiated ? requestedMtu : device.mtu);
-    const isMtuValid = isInRange(mtu, MTU_MIN, MTU_MAX);
+    const peerInitiated = type === PEER_INITIATED_DATA_LENGTH_UPDATE;
+    const [dataLength, setDataLength] = useState(
+        peerInitiated ? requestedDataLength : device.dataLength,
+    );
+    const isDataLengthValid = isInRange(dataLength, DL_MIN, DL_MAX);
 
     return (
         <div>
             <div className="event-header">
-                <h4>MTU update for device {address}</h4>
+                <h4>Data length update for device {address}</h4>
             </div>
             <form className="form-horizontal">
                 <p className="mx-4">
-                    ATT Maximum Transmission Unit (MTU) is the maximum length of an ATT packet.
-                    Its valid range is between {MTU_MIN} and {MTU_MAX} octets.
-                </p>
-                <p>
-                    This value can only be changed once.
+                    Data length is the length of payload of link layer packets.
+                    Its valid range is between {DL_MIN} and {DL_MAX} octets.
                 </p>
                 <TextInput
-                    style={isMtuValid ? validInputStyle : invalidInputStyle}
-                    id={`mtu_${address}`}
+                    style={isDataLengthValid ? validInputStyle : invalidInputStyle}
+                    id={`dl_${address}`}
                     className="form-control nordic-form-control col col-10 pr-0"
-                    onChange={({ target }) => setMtu(parseInt(target.value, 10))}
+                    onChange={({ target }) => setDataLength(parseInt(target.value, 10))}
                     type="number"
-                    value={mtu}
-                    min={MTU_MIN}
-                    max={MTU_MAX}
+                    value={dataLength}
+                    min={DL_MIN}
+                    max={DL_MAX}
                     readOnly={peerInitiated}
-                    label="ATT MTU"
+                    label="Data length"
                     labelClassName="col-md-7 text-right"
                     wrapperClassName="col-md-5"
                 />
 
                 <div className="row-of-buttons">
-                    {peerInitiated && (
-                        <ActionButton
-                            label="Accept"
-                            onClick={() => onAcceptMtu(mtu)}
-                            primary
-                        />
-                    )}
-                    {peerInitiated || (
-                        <ActionButton
-                            label="Update"
-                            onClick={() => onUpdateMtu(mtu)}
-                            primary
-                        />
-                    )}
+                    <ActionButton
+                        label={peerInitiated ? 'Accept' : 'Update'}
+                        onClick={() => onUpdateDataLength(dataLength)}
+                        primary
+                    />
                     <ActionButton
                         label={peerInitiated ? 'Disconnect' : 'Cancel'}
-                        onClick={onCancelMtuUpdate}
+                        onClick={onCancelDataLengthUpdate}
                     />
                 </div>
             </form>
@@ -121,11 +110,10 @@ const MtuUpdateRequestEditor = ({
     );
 };
 
-MtuUpdateRequestEditor.propTypes = {
+DataLengthUpdateRequestEditor.propTypes = {
     event: PropTypes.instanceOf(Event).isRequired,
-    onUpdateMtu: PropTypes.func.isRequired,
-    onAcceptMtu: PropTypes.func.isRequired,
-    onCancelMtuUpdate: PropTypes.func.isRequired,
+    onUpdateDataLength: PropTypes.func.isRequired,
+    onCancelDataLengthUpdate: PropTypes.func.isRequired,
 };
 
-export default MtuUpdateRequestEditor;
+export default DataLengthUpdateRequestEditor;

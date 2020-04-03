@@ -64,9 +64,9 @@ const PhyUpdateRequestEditor = ({
     const { address } = device;
     const peerInitiated = type === PEER_INITIATED_PHY_UPDATE;
 
-    const [linked, setLinked] = useState(rTxPhy === rRxPhy);
     const [txPhy, setTxPhy] = useState(peerInitiated ? rTxPhy : device.txPhy);
     const [rxPhy, setRxPhy] = useState(peerInitiated ? rRxPhy : device.rxPhy);
+    const [linked, setLinked] = useState(rTxPhy === rRxPhy);
 
     const linkedRxPhy = linked ? txPhy : rxPhy;
 
