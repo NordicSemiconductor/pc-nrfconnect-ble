@@ -60,6 +60,7 @@ function mountComponent(props) {
         connectedDevicesNumber={1}
         onPhyUpdate={() => {}}
         onMtuUpdate={() => {}}
+        onDataLengthUpdate={() => {}}
         {...props}
     />);
 }
