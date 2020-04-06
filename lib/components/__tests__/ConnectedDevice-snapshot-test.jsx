@@ -69,6 +69,7 @@ describe('ConnectedDevice', () => {
                 connectedDevicesNumber={1}
                 onPhyUpdate={() => {}}
                 onMtuUpdate={() => {}}
+                onDataLengthUpdate={() => {}}
             />,
         ).toJSON();
 
@@ -90,6 +91,7 @@ describe('ConnectedDevice', () => {
                 connectedDevicesNumber={1}
                 onPhyUpdate={() => {}}
                 onMtuUpdate={() => {}}
+                onDataLengthUpdate={() => {}}
             />,
         ).toJSON();
 

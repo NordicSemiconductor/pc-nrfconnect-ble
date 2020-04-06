@@ -1,3 +1,7 @@
+## Version 2.4.0
+### Features
+- Added UI to control 2 Mb/s phy, data length and ATT MTU #152
+
 ## Version 2.3.2
 ### Features
 - Support nRF52833 #137
