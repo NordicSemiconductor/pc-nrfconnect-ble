@@ -46,7 +46,10 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { getUuidName } from '../utils/uuid_definitions';
 
 function formatUuid(value) {
-    if (!value) { return value; }
+    if (!value) {
+        console.log('NUMB', value);
+        return value;
+    }
 
     if (value.length > 8) {
         return `${value.slice(0, 8)}...`;
@@ -70,7 +73,6 @@ class UuidLookup extends React.Component {
         } = this.props;
 
         const sorted = Object.keys(uuidDefs).sort((a, b) => parseInt(a, 16) - parseInt(b, 16));
-
         return (
             <div className="uuid-lookup">
                 <Dropdown

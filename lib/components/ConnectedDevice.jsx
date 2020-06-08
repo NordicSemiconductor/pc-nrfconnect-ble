@@ -138,6 +138,9 @@ const ConnectedDevice = ({
         opacity: device.connected === true ? 1.0 : 0.5,
     };
 
+
+    console.log('DEVICE NR', connectedDevicesNumber);
+
     return (
         <div
             ref={node}
