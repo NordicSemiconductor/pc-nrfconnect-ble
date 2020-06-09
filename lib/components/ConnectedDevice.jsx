@@ -139,8 +139,6 @@ const ConnectedDevice = ({
     };
 
 
-    console.log('DEVICE NR', connectedDevicesNumber);
-
     return (
         <div
             ref={node}

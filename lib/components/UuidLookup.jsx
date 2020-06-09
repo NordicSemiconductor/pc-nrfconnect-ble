@@ -47,7 +47,6 @@ import { getUuidName } from '../utils/uuid_definitions';
 
 function formatUuid(value) {
     if (!value) {
-        console.log('NUMB', value);
         return value;
     }
 
