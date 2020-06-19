@@ -25,7 +25,8 @@
     "postinstall": "nrfconnect-scripts lint-init",
     "test-watch": "nrfconnect-scripts test --watch",
     "test": "nrfconnect-scripts test",
-    "webpack": "nrfconnect-scripts build-dev"
+    "webpack": "nrfconnect-scripts build-dev",
+    "prepack": "scripts/prepare-ble-driver.sh"
   },
   "files": [
     "dist/",
@@ -45,5 +46,10 @@
     "react-textarea-autosize": "^7.1.2",
     "uuid-v4": "^0.1.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "pc-ble-driver-js": "2.7.1"
+  },
+  "bundledDependencies": [
+    "pc-ble-driver-js"
+  ]
 }
