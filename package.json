@@ -45,5 +45,7 @@
     "react-textarea-autosize": "^7.1.2",
     "uuid-v4": "^0.1.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "bluetooth-uuid-database": "github:NordicSemiconductor/bluetooth-numbers-database#bea7edc8aa"
+  }
 }
