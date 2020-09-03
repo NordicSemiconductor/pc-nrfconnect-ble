@@ -48,12 +48,23 @@ import { bindActionCreators } from 'redux';
 import * as AdvertisingActions from '../actions/advertisingActions';
 import AdvertisingData from '../components/AdvertisingData';
 import AdvertisingList from '../components/AdvertisingList';
+import { getAdvSetup, getScanResponse } from '../common/Persistentstore';
 
 class AdvertisingSetup extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.id = 0;
-
+        const advList = getAdvSetup();
+        const scanList = getScanResponse();
+        // to prevent elements having the same id
+        let adv = 0;
+        let scan = 0;
+        if (advList.length !== 0) {
+            adv = advList[Object.keys(advList)[Object.keys(advList).length - 1]].id;
+        }
+        if (scanList.length !== 0) {
+            scan = scanList[Object.keys(scanList)[Object.keys(scanList).length - 1]].id;
+        }
+        this.id = Math.max(adv, scan);
         this.addToAdvData = this.addToAdvData.bind(this);
         this.addToScanResponse = this.addToScanResponse.bind(this);
         this.handleApply = this.handleApply.bind(this);

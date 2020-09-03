@@ -113,7 +113,6 @@ class SecurityParamsControls extends React.PureComponent {
             keypress: this.enableKeypress,
             bond: this.performBonding,
         };
-
         onChange(newSecParams);
     }
 

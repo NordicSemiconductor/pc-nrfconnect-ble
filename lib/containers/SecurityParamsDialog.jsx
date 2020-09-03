@@ -65,9 +65,7 @@ class SecurityParamsDialog extends React.PureComponent {
             setSecurityParams,
             hideSecurityParamsDialog,
         } = this.props;
-
         setSecurityParams(this.secParams);
-
         hideSecurityParamsDialog();
     }
 
