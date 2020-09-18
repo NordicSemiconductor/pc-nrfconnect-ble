@@ -105,6 +105,7 @@ class DiscoveredDevices extends React.PureComponent {
         } = this.props;
 
         this.discoveryOptions = discoveryOptions.toJS();
+        // alternative: remember
         this.discoveryOptions.filterString = getFilterRegexp();
 
         const dirIcon = discoveryOptions.expanded ? 'menu-down' : 'menu-right';
