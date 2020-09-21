@@ -46,6 +46,7 @@
     "uuid-v4": "^0.1.0"
   },
   "dependencies": {
-    "bluetooth-uuid-database": "github:NordicSemiconductor/bluetooth-numbers-database#bea7edc8aa"
+    "bluetooth-uuid-database": "github:NordicSemiconductor/bluetooth-numbers-database#bea7edc8aa",
+    "electron-store": "^6.0.0"
   }
 }
