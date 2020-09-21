@@ -50,7 +50,7 @@ import DiscoveredDevice from '../components/DiscoveredDevice';
 import DiscoveryButton from '../components/DiscoveryButton';
 import TextInput from '../components/input/TextInput';
 import Spinner from '../components/Spinner';
-import { DiscoveryOptions, getFilterRegexp } from '../reducers/discoveryReducer';
+import { DiscoveryOptions } from '../reducers/discoveryReducer';
 import withHotkey from '../utils/withHotkey';
 
 class DiscoveredDevices extends React.PureComponent {
