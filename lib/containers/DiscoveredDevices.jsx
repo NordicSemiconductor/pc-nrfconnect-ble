@@ -53,6 +53,14 @@ import Spinner from '../components/Spinner';
 import { DiscoveryOptions } from '../reducers/discoveryReducer';
 import withHotkey from '../utils/withHotkey';
 
+const matchesFilter = filterRegexp => (
+    device => {
+        if (device.name.search(filterRegexp) >= 0) return true;
+        if (device.address.search(filterRegexp) >= 0) return true;
+        return false;
+    }
+);
+
 class DiscoveredDevices extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -132,6 +140,13 @@ class DiscoveredDevices extends React.PureComponent {
             </div>
         ) : null;
 
+        let discoveredDeviceList = discoveredDevices.valueSeq();
+
+        const { filterRegexp } = discoveryOptions;
+        if (filterRegexp) {
+            discoveredDeviceList = discoveredDeviceList.filter(matchesFilter(filterRegexp));
+        }
+
         return (
             <div id="discoveredDevicesContainer">
                 <div>
@@ -173,7 +188,7 @@ class DiscoveredDevices extends React.PureComponent {
 
                 <div style={{ paddingTop: '0px' }}>
                     {
-                        discoveredDevices.valueSeq().map((device, address) => {
+                        discoveredDeviceList.map((device, address) => {
                             const key = `${address}`;
                             return (
                                 <DiscoveredDevice
