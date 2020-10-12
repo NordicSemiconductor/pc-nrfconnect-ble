@@ -1,6 +1,6 @@
 ## Version 2.4.1
 ### Updates
-- Use UUIDs from Nordic official database bluetooth-numbers-database
+- Use UUIDs from official Nordic bluetooth-numbers-database repository
 - Updated according to changes of Electron dialog API
 ### Bugfixes
 - Fixed destructive scan filtering
