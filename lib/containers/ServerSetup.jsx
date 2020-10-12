@@ -154,8 +154,8 @@ class ServerSetup extends React.PureComponent {
     openSaveDialog() {
         const { saveServerSetup } = this.props;
         const { dialog } = electron.remote;
-        dialog.showSaveDialog({ filters }, filePath => {
-            if (!filePath) {
+        dialog.showSaveDialog({ filters }).then(({ canceled, filePath }) => {
+            if (!filePath || canceled) {
                 return;
             }
             saveServerSetup(filePath);
@@ -165,16 +165,17 @@ class ServerSetup extends React.PureComponent {
     openLoadDialog() {
         const { loadServerSetup } = this.props;
         const { dialog } = electron.remote;
-        dialog.showOpenDialog({ filters, properties: ['openFile'] }, filePaths => {
-            if (!filePaths) {
-                return;
-            }
-            const [filePath] = filePaths;
-            if (!filePath) {
-                return;
-            }
-            loadServerSetup(filePath);
-        });
+        dialog.showOpenDialog({ filters, properties: ['openFile'] })
+            .then(({ canceled, filePaths }) => {
+                if (!filePaths || canceled) {
+                    return;
+                }
+                const [filePath] = filePaths;
+                if (!filePath) {
+                    return;
+                }
+                loadServerSetup(filePath);
+            });
     }
 
     selectNextComponent(backward) {
