@@ -1,3 +1,10 @@
+## Version 2.4.1
+### Updates
+- Fetch UUIDs from github:NordicSemiconductor/bluetooth-numbers-database
+- Updated according to changes of Electron dialog API
+### Bugfixes
+- Fixed destructive scan filtering
+
 ## Version 2.4.0
 ### Features
 - Added UI to control 2 Mb/s phy, data length and ATT MTU #152

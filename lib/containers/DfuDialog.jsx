@@ -85,8 +85,8 @@ class DfuDialog extends React.PureComponent {
 
         dialog.showOpenDialog({
             title: 'Choose file', filters, properties: ['openFile'],
-        }, filePaths => {
-            if (!filePaths) {
+        }).then(({ canceled, filePaths }) => {
+            if (!filePaths || canceled) {
                 return;
             }
             const [filePath] = filePaths;
