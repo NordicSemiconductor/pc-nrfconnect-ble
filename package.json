@@ -1,6 +1,6 @@
 {
   "name": "pc-nrfconnect-ble",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "A natural first choice for Bluetooth Low Energy development",
   "displayName": "Bluetooth Low Energy",
   "repository": {
@@ -47,5 +47,8 @@
   },
   "dependencies": {
     "bluetooth-uuid-database": "github:NordicSemiconductor/bluetooth-numbers-database#bea7edc8aa"
-  }
+  },
+  "bundledDependencies": [
+    "bluetooth-uuid-database"
+  ]
 }

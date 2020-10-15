@@ -1,3 +1,7 @@
+## Version 2.4.2
+### Bugfixes
+- Fixed 'bluetooth-uuid-database' not found issue
+
 ## Version 2.4.1
 ### Updates
 - Use UUIDs from official Nordic bluetooth-numbers-database repository
