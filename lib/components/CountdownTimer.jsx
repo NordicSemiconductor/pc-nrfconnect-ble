@@ -73,9 +73,7 @@ class CountdownTimer extends Component {
 
     render() {
         const content = this.secondsRemaining || '';
-        return (
-            <div className="countdown-timer"> {content} </div>
-        );
+        return <div className="countdown-timer"> {content} </div>;
     }
 }
 

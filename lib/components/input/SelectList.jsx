@@ -53,9 +53,9 @@ const SelectList = props => {
     const classProp = inline && { className: 'form-inline' };
     return (
         <Form.Group controlId={id} {...classProp}>
-            {
-                label && <Form.Label className={labelClassName}>{label}</Form.Label>
-            }
+            {label && (
+                <Form.Label className={labelClassName}>{label}</Form.Label>
+            )}
             <InputGroup className={wrapperClassName}>
                 <Form.Control as="select" {...newProps}>
                     {children}

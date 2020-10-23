@@ -109,13 +109,16 @@ class SecurityParamsControls extends React.PureComponent {
         return (
             <Container>
                 <Row className="form-group">
-                    <Col sm={4} className="form-label text-right">IO capabilities</Col>
+                    <Col sm={4} className="form-label text-right">
+                        IO capabilities
+                    </Col>
                     <Col sm={7}>
                         <DropdownButton
                             title={this.state.io_caps_title}
                             key="ioCapsDropdownKey"
                             id="ioCapsDropdownId"
-                            onSelect={(eventKey, event) => this.onIoCapsSelect(event, eventKey)}
+                            onSelect={(eventKey, event) => this.onIoCapsSelect(event, eventKey)
+                            }
                             variant="outline-secondary"
                         >
                             <Dropdown.Item eventKey={IO_CAPS_DISPLAY_ONLY}>
@@ -137,7 +140,12 @@ class SecurityParamsControls extends React.PureComponent {
                     </Col>
                 </Row>
                 <Row className="form-group">
-                    <Col sm={4} className="form-label text-right align-baseline">Authentication</Col>
+                    <Col
+                        sm={4}
+                        className="form-label text-right align-baseline"
+                    >
+                        Authentication
+                    </Col>
                     <Col sm={7}>
                         <Form.Group controlId="enableLescCheck">
                             <Form.Check
@@ -163,7 +171,9 @@ class SecurityParamsControls extends React.PureComponent {
                     </Col>
                 </Row>
                 <Row className="form-group">
-                    <Col sm={4} className="form-label text-right">Keypress notifications</Col>
+                    <Col sm={4} className="form-label text-right">
+                        Keypress notifications
+                    </Col>
                     <Col sm={7}>
                         <Form.Group controlId="enableKeypressCheck">
                             <Form.Check
@@ -175,7 +185,12 @@ class SecurityParamsControls extends React.PureComponent {
                     </Col>
                 </Row>
                 <Row className="form-group">
-                    <Col sm={4} className="form-label text-right align-baseline">Bonding</Col>
+                    <Col
+                        sm={4}
+                        className="form-label text-right align-baseline"
+                    >
+                        Bonding
+                    </Col>
                     <Col sm={7}>
                         <Form.Group controlId="performBondingCheck">
                             <Form.Check

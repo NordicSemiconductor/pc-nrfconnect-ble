@@ -40,10 +40,13 @@
     "jquery": "^3.4.1",
     "lodash.throttle": "^4.1.1",
     "mousetrap": "^1.6.3",
-    "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v4.1.0",
+    "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v4.13.0",
     "react-onclickoutside": "^6.9.0",
     "react-textarea-autosize": "^7.1.2",
-    "uuid-v4": "^0.1.0"
+    "uuid-v4": "^0.1.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-redux": "7.2.0"
   },
   "dependencies": {
     "bluetooth-uuid-database": "github:NordicSemiconductor/bluetooth-numbers-database#bea7edc8aa",

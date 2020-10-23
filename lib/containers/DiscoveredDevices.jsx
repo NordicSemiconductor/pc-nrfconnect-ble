@@ -53,13 +53,11 @@ import Spinner from '../components/Spinner';
 import { DiscoveryOptions } from '../reducers/discoveryReducer';
 import withHotkey from '../utils/withHotkey';
 
-const matchesFilter = filterRegexp => (
-    device => {
-        if (device.name.search(filterRegexp) >= 0) return true;
-        if (device.address.search(filterRegexp) >= 0) return true;
-        return false;
-    }
-);
+const matchesFilter = filterRegexp => device => {
+    if (device.name.search(filterRegexp) >= 0) return true;
+    if (device.address.search(filterRegexp) >= 0) return true;
+    return false;
+};
 
 class DiscoveredDevices extends React.PureComponent {
     constructor(props) {
@@ -70,7 +68,10 @@ class DiscoveredDevices extends React.PureComponent {
         window.addEventListener('core:clear-scan', clearDevicesList);
 
         this.handleFilterChange = this.handleFilterChange.bind(this);
-        this.handleSortByRssiCheckedChange = this.handleCheckedChange.bind(this, 'sortByRssi');
+        this.handleSortByRssiCheckedChange = this.handleCheckedChange.bind(
+            this,
+            'sortByRssi'
+        );
     }
 
     componentDidMount() {
@@ -144,7 +145,9 @@ class DiscoveredDevices extends React.PureComponent {
 
         const { filterRegexp } = discoveryOptions;
         if (filterRegexp) {
-            discoveredDeviceList = discoveredDeviceList.filter(matchesFilter(filterRegexp));
+            discoveredDeviceList = discoveredDeviceList.filter(
+                matchesFilter(filterRegexp)
+            );
         }
 
         return (
@@ -179,31 +182,29 @@ class DiscoveredDevices extends React.PureComponent {
                             role="button"
                             tabIndex={0}
                         >
-                            <i className={`mdi mdi-${dirIcon}`} />Options
+                            <i className={`mdi mdi-${dirIcon}`} />
+                            Options
                         </span>
                         {discoveryOptionsDiv}
                     </div>
-
                 </div>
 
                 <div style={{ paddingTop: '0px' }}>
-                    {
-                        discoveredDeviceList.map((device, address) => {
-                            const key = `${address}`;
-                            return (
-                                <DiscoveredDevice
-                                    key={key}
-                                    device={device}
-                                    standalone={false}
-                                    adapterIsConnecting={adapterIsConnecting}
-                                    isConnecting={device.isConnecting}
-                                    onConnect={connectToDevice}
-                                    onCancelConnect={cancelConnect}
-                                    onToggleExpanded={toggleExpanded}
-                                />
-                            );
-                        })
-                    }
+                    {discoveredDeviceList.map((device, address) => {
+                        const key = `${address}`;
+                        return (
+                            <DiscoveredDevice
+                                key={key}
+                                device={device}
+                                standalone={false}
+                                adapterIsConnecting={adapterIsConnecting}
+                                isConnecting={device.isConnecting}
+                                onConnect={connectToDevice}
+                                onCancelConnect={cancelConnect}
+                                onToggleExpanded={toggleExpanded}
+                            />
+                        );
+                    })}
                 </div>
             </div>
         );
@@ -234,18 +235,17 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    const retval = Object.assign(
-        {},
-        bindActionCreators(DiscoveryActions, dispatch),
-        bindActionCreators(AdapterActions, dispatch),
-    );
+    const retval = {
+        ...bindActionCreators(DiscoveryActions, dispatch),
+        ...bindActionCreators(AdapterActions, dispatch),
+    };
 
     return retval;
 }
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps,
+    mapDispatchToProps
 )(withHotkey(DiscoveredDevices));
 
 DiscoveredDevices.propTypes = {

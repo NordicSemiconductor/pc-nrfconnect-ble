@@ -68,24 +68,24 @@ class SecurityParamsDialog extends React.PureComponent {
     }
 
     handleCancel() {
-        const {
-            hideSecurityParamsDialog,
-        } = this.props;
+        const { hideSecurityParamsDialog } = this.props;
 
         hideSecurityParamsDialog();
     }
 
     render() {
-        const {
-            security,
-        } = this.props;
+        const { security } = this.props;
 
         if (!security) {
             return <div />;
         }
 
         return (
-            <Modal className="security-param-modal" show={security.showingSecurityDialog} onHide={() => {}}>
+            <Modal
+                className="security-param-modal"
+                show={security.showingSecurityDialog}
+                onHide={() => {}}
+            >
                 <Modal.Header>
                     <Modal.Title>Security parameters</Modal.Title>
                 </Modal.Header>
@@ -137,10 +137,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    const retval = Object.assign(
-        {},
-        bindActionCreators(SecurityActions, dispatch),
-    );
+    const retval = {
+        ...bindActionCreators(SecurityActions, dispatch),
+    };
 
     return retval;
 }

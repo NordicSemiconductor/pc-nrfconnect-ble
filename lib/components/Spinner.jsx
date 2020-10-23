@@ -44,9 +44,7 @@ const Spinner = props => {
         width: size,
         height: size,
     };
-    return (
-        <div className={className} style={style} />
-    );
+    return <div className={className} style={style} />;
 };
 
 Spinner.propTypes = {

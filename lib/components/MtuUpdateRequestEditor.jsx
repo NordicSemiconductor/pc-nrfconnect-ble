@@ -46,7 +46,11 @@ import ActionButton from './ActionButton';
 import { Event } from '../reducers/bleEventReducer';
 import { BLEEventType } from '../actions/common';
 import TextInput from './input/TextInput';
-import { isInRange, validInputStyle, invalidInputStyle } from './ConnectionUpdateRequestEditor';
+import {
+    isInRange,
+    validInputStyle,
+    invalidInputStyle,
+} from './ConnectionUpdateRequestEditor';
 
 const { PEER_INITIATED_MTU_UPDATE } = BLEEventType;
 
@@ -54,11 +58,7 @@ const MTU_MIN = 23;
 const MTU_MAX = 247;
 
 const MtuUpdateRequestEditor = ({
-    event: {
-        type,
-        requestedMtu,
-        device,
-    },
+    event: { type, requestedMtu, device },
     onUpdateMtu,
     onAcceptMtu,
     onCancelMtuUpdate,
@@ -75,17 +75,18 @@ const MtuUpdateRequestEditor = ({
             </div>
             <form className="form-horizontal">
                 <p className="mx-4">
-                    ATT Maximum Transmission Unit (MTU) is the maximum length of an ATT packet.
-                    Its valid range is between {MTU_MIN} and {MTU_MAX} octets.
+                    ATT Maximum Transmission Unit (MTU) is the maximum length of
+                    an ATT packet. Its valid range is between {MTU_MIN} and{' '}
+                    {MTU_MAX} octets.
                 </p>
-                <p className="mx-4">
-                    This value can only be changed once.
-                </p>
+                <p className="mx-4">This value can only be changed once.</p>
                 <TextInput
                     style={isMtuValid ? validInputStyle : invalidInputStyle}
                     id={`mtu_${address}`}
                     className="form-control nordic-form-control col col-10 pr-0"
-                    onChange={({ target }) => setMtu(parseInt(target.value, 10))}
+                    onChange={({ target }) =>
+                        setMtu(parseInt(target.value, 10))
+                    }
                     type="number"
                     value={mtu}
                     min={MTU_MIN}

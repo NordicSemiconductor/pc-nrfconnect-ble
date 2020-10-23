@@ -41,7 +41,10 @@ import React from 'react';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 
-import { uuid128bitServiceDefinitions, uuid16bitServiceDefinitions } from '../utils/uuid_definitions';
+import {
+    uuid128bitServiceDefinitions,
+    uuid16bitServiceDefinitions,
+} from '../utils/uuid_definitions';
 import TextInput from './input/TextInput';
 import UuidLookup from './UuidLookup';
 
@@ -162,7 +165,10 @@ function validateLocalNameString(value) {
 }
 
 function validateUuid(value, uuidType) {
-    const cleanedUuidArray = value.replace(/0[xX]/g, '').replace('-', '').split(',');
+    const cleanedUuidArray = value
+        .replace(/0[xX]/g, '')
+        .replace('-', '')
+        .split(',');
     let regex;
     switch (uuidType) {
         case UUID_TYPE_16:
@@ -263,9 +269,10 @@ class AdvertisingData extends React.PureComponent {
             return;
         }
 
-        const tempValue = (this.typeKey === CUSTOM)
-            ? (this.adTypeValue + this.value).replace(/0[xX]/g, '')
-            : this.value;
+        const tempValue =
+            this.typeKey === CUSTOM
+                ? (this.adTypeValue + this.value).replace(/0[xX]/g, '')
+                : this.value;
 
         const typeValue = {
             typeKey: this.typeKey,
@@ -313,7 +320,7 @@ class AdvertisingData extends React.PureComponent {
     }
 
     render() {
-        const inputDisabled = (this.type === null);
+        const inputDisabled = this.type === null;
         let uuidDef = {};
         if (this.title.includes('16 bit')) {
             uuidDef = uuid16bitServiceDefinitions();
@@ -322,20 +329,21 @@ class AdvertisingData extends React.PureComponent {
         }
         const uuidLookupDisabled = Object.keys(uuidDef).length === 0;
 
-        const adTypeDiv = (this.typeKey === CUSTOM) ? (
-            <div>
-                <TextInput
-                    label="AD type value"
-                    placeholder="Enter AD type value (1 byte hex)"
-                    hasFeedback
-                    value={this.adTypeValue}
-                    labelClassName=""
-                    wrapperClassName="col-md-12"
-                    validationState={this.validateAdType()}
-                    onChange={this.handleAdTypeChange}
-                />
-            </div>
-        ) : null;
+        const adTypeDiv =
+            this.typeKey === CUSTOM ? (
+                <div>
+                    <TextInput
+                        label="AD type value"
+                        placeholder="Enter AD type value (1 byte hex)"
+                        hasFeedback
+                        value={this.adTypeValue}
+                        labelClassName=""
+                        wrapperClassName="col-md-12"
+                        validationState={this.validateAdType()}
+                        onChange={this.handleAdTypeChange}
+                    />
+                </div>
+            ) : null;
 
         const uuidLookupDiv = !uuidLookupDisabled ? (
             <UuidLookup
@@ -357,14 +365,30 @@ class AdvertisingData extends React.PureComponent {
                         onSelect={this.handleSelect}
                         variant="outline-secondary"
                     >
-                        <Dropdown.Item eventKey="0">{keyToAdvertisingType('0')}</Dropdown.Item>
-                        <Dropdown.Item eventKey="1">{keyToAdvertisingType('1')}</Dropdown.Item>
-                        <Dropdown.Item eventKey="2">{keyToAdvertisingType('2')}</Dropdown.Item>
-                        <Dropdown.Item eventKey="3">{keyToAdvertisingType('3')}</Dropdown.Item>
-                        <Dropdown.Item eventKey="4">{keyToAdvertisingType('4')}</Dropdown.Item>
-                        <Dropdown.Item eventKey="5">{keyToAdvertisingType('5')}</Dropdown.Item>
-                        <Dropdown.Item eventKey="6">{keyToAdvertisingType('6')}</Dropdown.Item>
-                        <Dropdown.Item eventKey="7">{keyToAdvertisingType('7')}</Dropdown.Item>
+                        <Dropdown.Item eventKey="0">
+                            {keyToAdvertisingType('0')}
+                        </Dropdown.Item>
+                        <Dropdown.Item eventKey="1">
+                            {keyToAdvertisingType('1')}
+                        </Dropdown.Item>
+                        <Dropdown.Item eventKey="2">
+                            {keyToAdvertisingType('2')}
+                        </Dropdown.Item>
+                        <Dropdown.Item eventKey="3">
+                            {keyToAdvertisingType('3')}
+                        </Dropdown.Item>
+                        <Dropdown.Item eventKey="4">
+                            {keyToAdvertisingType('4')}
+                        </Dropdown.Item>
+                        <Dropdown.Item eventKey="5">
+                            {keyToAdvertisingType('5')}
+                        </Dropdown.Item>
+                        <Dropdown.Item eventKey="6">
+                            {keyToAdvertisingType('6')}
+                        </Dropdown.Item>
+                        <Dropdown.Item eventKey="7">
+                            {keyToAdvertisingType('7')}
+                        </Dropdown.Item>
                     </DropdownButton>
                 </div>
                 <div className="adv-value-container">

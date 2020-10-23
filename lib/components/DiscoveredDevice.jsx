@@ -58,7 +58,9 @@ const RssiBars = ({ rssi }) => {
     } else {
         bars = 5;
     }
-    const fill = Array(5).fill(0).map((v, i) => ((i < bars) ? 'black' : 'lightgray'));
+    const fill = Array(5)
+        .fill(0)
+        .map((v, i) => (i < bars ? 'black' : 'lightgray'));
     return (
         <svg viewBox="0 0 14 16" width="14" className="rssi-bars">
             <rect x="0" y="14" width="2" height="2" fill={fill[0]} />
@@ -81,11 +83,14 @@ function getAdvTypeText(advType) {
 
     if (advType.includes('ADV_IND')) {
         return 'Connectable undirected';
-    } if (advType.includes('ADV_DIRECT')) {
+    }
+    if (advType.includes('ADV_DIRECT')) {
         return 'Connectable directed';
-    } if (advType.includes('ADV_SCAN')) {
+    }
+    if (advType.includes('ADV_SCAN')) {
         return 'Scannable undirected';
-    } if (advType.includes('NONCONN_IND')) {
+    }
+    if (advType.includes('NONCONN_IND')) {
         return 'Non connectable undirected';
     }
 
@@ -159,11 +164,7 @@ class DiscoveredDevice extends React.PureComponent {
     }
 
     render() {
-        const {
-            device,
-            isConnecting,
-            adapterIsConnecting,
-        } = this.props;
+        const { device, isConnecting, adapterIsConnecting } = this.props;
 
         let adDataDiv = '';
         let advTypeDiv = '';
@@ -187,76 +188,82 @@ class DiscoveredDevice extends React.PureComponent {
 
             adDataDiv = (
                 <div>
-                    {
-                        device.adData
-                            .filterNot((value, key) => key.includes('BIT_SERVICE') || key.includes('_FLAGS') || key.includes('LOCAL_NAME'))
-                            .map((value, key) => {
-                                const key1 = `${key}_1`;
-                                return (
-                                    <div key={key1} className="adv-line selectable">
-                                        <span className="adv-label">
-                                            {rewriter(key)}:
-                                        </span>
-                                        <span className="adv-value">
-                                            {toHexString(value)}
-                                        </span>
-                                    </div>
-                                );
-                            })
-                            .values()
-                    }
+                    {device.adData
+                        .filterNot(
+                            (value, key) =>
+                                key.includes('BIT_SERVICE') ||
+                                key.includes('_FLAGS') ||
+                                key.includes('LOCAL_NAME')
+                        )
+                        .map((value, key) => {
+                            const key1 = `${key}_1`;
+                            return (
+                                <div key={key1} className="adv-line selectable">
+                                    <span className="adv-label">
+                                        {rewriter(key)}:
+                                    </span>
+                                    <span className="adv-value">
+                                        {toHexString(value)}
+                                    </span>
+                                </div>
+                            );
+                        })
+                        .values()}
                 </div>
             );
 
-            advTypeDiv = this.currentAdvType
-                ? (
-                    <div className="adv-line selectable">
-                        <span className="adv-label">Advertising type:</span>
-                        <span className="adv-value">
-                            {getAdvTypeText(this.currentAdvType)}
-                        </span>
-                    </div>
-                ) : null;
+            advTypeDiv = this.currentAdvType ? (
+                <div className="adv-line selectable">
+                    <span className="adv-label">Advertising type:</span>
+                    <span className="adv-value">
+                        {getAdvTypeText(this.currentAdvType)}
+                    </span>
+                </div>
+            ) : null;
 
             addressTypeDiv = (
                 <div className="adv-line selectable">
                     <span className="adv-label">Address type:</span>
-                    <span className="adv-value">{rewriter(device.addressType)}</span>
+                    <span className="adv-value">
+                        {rewriter(device.addressType)}
+                    </span>
                 </div>
             );
 
-            flagsDiv = this.currentFlags && this.currentFlags.size > 0
-                ? (
+            flagsDiv =
+                this.currentFlags && this.currentFlags.size > 0 ? (
                     <div className="adv-line selectable">
                         <span className="adv-label">Flags:</span>
-                        {
-                            this.currentFlags.map((flag, index) => {
-                                const key = `${index}_3`;
-                                return (<span key={key} className="adv-value">{flag}</span>);
-                            })
-                        }
+                        {this.currentFlags.map((flag, index) => {
+                            const key = `${index}_3`;
+                            return (
+                                <span key={key} className="adv-value">
+                                    {flag}
+                                </span>
+                            );
+                        })}
                     </div>
                 ) : null;
 
-            servicesDiv = this.currentServices && this.currentServices.size > 0
-                ? (
+            servicesDiv =
+                this.currentServices && this.currentServices.size > 0 ? (
                     <div className="adv-line selectable">
                         <span className="adv-label">Services:</span>
-                        {
-                            device.services.map((service, index) => {
-                                const key = `${index}_4`;
-                                return (
-                                    <span key={key} className="adv-value">
-                                        {getUuidName(service)}
-                                    </span>
-                                );
-                            })
-                        }
+                        {device.services.map((service, index) => {
+                            const key = `${index}_4`;
+                            return (
+                                <span key={key} className="adv-value">
+                                    {getUuidName(service)}
+                                </span>
+                            );
+                        })}
                     </div>
                 ) : null;
         }
 
-        addressDiv = <div className="address-text selectable">{device.address}</div>;
+        addressDiv = (
+            <div className="address-text selectable">{device.address}</div>
+        );
 
         const dirIcon = device.isExpanded ? 'menu-down' : 'menu-right';
 
@@ -272,10 +279,12 @@ class DiscoveredDevice extends React.PureComponent {
             <div className="device">
                 <div className="top-bar">
                     <div style={{ float: 'right' }}>
-                        <span className="address-text">{ `${device.rssi} dBm` }</span>
+                        <span className="address-text">{`${device.rssi} dBm`}</span>
                         <RssiBars rssi={device.rssi} />
                     </div>
-                    <div className="device-name selectable">{device.name || '<Unknown name>'}</div>
+                    <div className="device-name selectable">
+                        {device.name || '<Unknown name>'}
+                    </div>
                 </div>
                 <div className="discovered-device-body text-small">
                     <div className="discovered-device-address-line">
@@ -283,10 +292,14 @@ class DiscoveredDevice extends React.PureComponent {
                             type="button"
                             onClick={this.onButtonClick}
                             className="btn btn-primary btn-xs btn-nordic"
-                            disabled={(!isConnecting && adapterIsConnecting) || device.connected}
+                            disabled={
+                                (!isConnecting && adapterIsConnecting) ||
+                                device.connected
+                            }
                             size="sm"
                         >
-                            <span>{isConnecting ? 'Cancel' : 'Connect'}</span><i className="mdi mdi-link-variant" />
+                            <span>{isConnecting ? 'Cancel' : 'Connect'}</span>
+                            <i className="mdi mdi-link-variant" />
                         </Button>
                         {addressDiv}
                     </div>
@@ -298,7 +311,8 @@ class DiscoveredDevice extends React.PureComponent {
                             role="button"
                             tabIndex={0}
                         >
-                            <i className={`mdi mdi-${dirIcon}`} />Details
+                            <i className={`mdi mdi-${dirIcon}`} />
+                            Details
                         </span>
                         {addressTypeDiv}
                         {advTypeDiv}

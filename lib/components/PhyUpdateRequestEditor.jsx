@@ -53,10 +53,7 @@ const PhyUpdateRequestEditor = ({
     event: {
         type,
         device,
-        requestedPhyParams: {
-            txPhy: rTxPhy,
-            rxPhy: rRxPhy,
-        },
+        requestedPhyParams: { txPhy: rTxPhy, rxPhy: rRxPhy },
     },
     onUpdatePhy,
     onCancelPhyUpdate,
@@ -84,15 +81,23 @@ const PhyUpdateRequestEditor = ({
                                 <ActionButton
                                     className="col col-3 mt-0"
                                     label="1 Mb/s"
-                                    primary={txPhy === BLEPHYType.BLE_GAP_PHY_1MBPS}
-                                    onClick={() => setTxPhy(BLEPHYType.BLE_GAP_PHY_1MBPS)}
+                                    primary={
+                                        txPhy === BLEPHYType.BLE_GAP_PHY_1MBPS
+                                    }
+                                    onClick={() =>
+                                        setTxPhy(BLEPHYType.BLE_GAP_PHY_1MBPS)
+                                    }
                                     disabled={peerInitiated}
                                 />
                                 <ActionButton
                                     className="col col-3 mt-0"
                                     label="2 Mb/s"
-                                    primary={txPhy === BLEPHYType.BLE_GAP_PHY_2MBPS}
-                                    onClick={() => setTxPhy(BLEPHYType.BLE_GAP_PHY_2MBPS)}
+                                    primary={
+                                        txPhy === BLEPHYType.BLE_GAP_PHY_2MBPS
+                                    }
+                                    onClick={() =>
+                                        setTxPhy(BLEPHYType.BLE_GAP_PHY_2MBPS)
+                                    }
                                     disabled={peerInitiated}
                                 />
                             </div>
@@ -101,21 +106,33 @@ const PhyUpdateRequestEditor = ({
                                 <ActionButton
                                     className="col col-3 mt-0"
                                     label="1 Mb/s"
-                                    primary={linkedRxPhy === BLEPHYType.BLE_GAP_PHY_1MBPS}
+                                    primary={
+                                        linkedRxPhy ===
+                                        BLEPHYType.BLE_GAP_PHY_1MBPS
+                                    }
                                     disabled={linked || peerInitiated}
-                                    onClick={() => setRxPhy(BLEPHYType.BLE_GAP_PHY_1MBPS)}
+                                    onClick={() =>
+                                        setRxPhy(BLEPHYType.BLE_GAP_PHY_1MBPS)
+                                    }
                                 />
                                 <ActionButton
                                     className="col col-3 mt-0"
                                     label="2 Mb/s"
-                                    primary={linkedRxPhy === BLEPHYType.BLE_GAP_PHY_2MBPS}
+                                    primary={
+                                        linkedRxPhy ===
+                                        BLEPHYType.BLE_GAP_PHY_2MBPS
+                                    }
                                     disabled={linked || peerInitiated}
-                                    onClick={() => setRxPhy(BLEPHYType.BLE_GAP_PHY_2MBPS)}
+                                    onClick={() =>
+                                        setRxPhy(BLEPHYType.BLE_GAP_PHY_2MBPS)
+                                    }
                                 />
                             </div>
                         </div>
                         <div
-                            className={`col pl-0 mdi mdi-${linked ? 'link' : 'link-off'}`}
+                            className={`col pl-0 mdi mdi-${
+                                linked ? 'link' : 'link-off'
+                            }`}
                             onClick={() => setLinked(!linked)}
                             role="button"
                             tabIndex="0"
@@ -126,10 +143,12 @@ const PhyUpdateRequestEditor = ({
                 <div className="row-of-buttons">
                     <ActionButton
                         label={peerInitiated ? 'Accept' : 'Update'}
-                        onClick={() => onUpdatePhy({
-                            rxPhy: linkedRxPhy,
-                            txPhy,
-                        })}
+                        onClick={() =>
+                            onUpdatePhy({
+                                rxPhy: linkedRxPhy,
+                                txPhy,
+                            })
+                        }
                         primary
                     />
                     <ActionButton

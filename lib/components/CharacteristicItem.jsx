@@ -67,7 +67,7 @@ function isNotifying(cccdDescriptor) {
         return false;
     }
 
-    return ((valueArray[0] & (NOTIFY | INDICATE)) > 0);
+    return (valueArray[0] & (NOTIFY | INDICATE)) > 0;
 }
 
 class CharacteristicItem extends AttributeItem {
@@ -112,17 +112,9 @@ class CharacteristicItem extends AttributeItem {
     }
 
     renderContent() {
-        const {
-            item,
-            selected,
-        } = this.props;
+        const { item, selected } = this.props;
 
-        const {
-            uuid,
-            properties,
-            value,
-            children,
-        } = item;
+        const { uuid, properties, value, children } = item;
 
         this.cccdDescriptor = findCccdDescriptor(children);
 
@@ -132,16 +124,22 @@ class CharacteristicItem extends AttributeItem {
 
         const hasCccd = this.cccdDescriptor !== undefined;
         const hasReadProperty = properties.read;
-        const hasWriteProperty = properties.write
-            || properties.writeWoResp
-            || properties.reliableWr;
+        const hasWriteProperty =
+            properties.write || properties.writeWoResp || properties.reliableWr;
         const hasNotifyProperty = properties.notify;
         const hasIndicateProperty = properties.indicate;
-        const hasNotifyOrIndicateProperty = hasNotifyProperty || hasIndicateProperty;
+        const hasNotifyOrIndicateProperty =
+            hasNotifyProperty || hasIndicateProperty;
 
-        const toggleNotificationsText = hasCccd ? 'Toggle notifications' : 'Toggle notifications (CCCD not discovered)';
-        const notifyIconStyle = !isLocal && hasNotifyOrIndicateProperty ? {} : { display: 'none' };
-        const notifyIcon = (isDescriptorNotifying && hasNotifyOrIndicateProperty) ? 'mdi mdi-stop' : 'mdi mdi-play';
+        const toggleNotificationsText = hasCccd
+            ? 'Toggle notifications'
+            : 'Toggle notifications (CCCD not discovered)';
+        const notifyIconStyle =
+            !isLocal && hasNotifyOrIndicateProperty ? {} : { display: 'none' };
+        const notifyIcon =
+            isDescriptorNotifying && hasNotifyOrIndicateProperty
+                ? 'mdi mdi-stop'
+                : 'mdi mdi-play';
 
         const showText = getUuidFormat(uuid) === TEXT;
 
@@ -152,19 +150,19 @@ class CharacteristicItem extends AttributeItem {
                 if (propertyValue) {
                     const key = property;
                     propertyList.push(
-                        <div key={key} className="device-flag">{property}</div>,
+                        <div key={key} className="device-flag">
+                            {property}
+                        </div>
                     );
                 }
             });
         }
 
-        const onRead = (hasReadProperty && !isLocal)
-            ? () => this.onRead()
-            : undefined;
+        const onRead =
+            hasReadProperty && !isLocal ? () => this.onRead() : undefined;
 
-        const onWrite = (hasWriteProperty || isLocal)
-            ? val => this.onWrite(val)
-            : null;
+        const onWrite =
+            hasWriteProperty || isLocal ? val => this.onWrite(val) : null;
 
         return (
             <div className="content">
@@ -182,9 +180,7 @@ class CharacteristicItem extends AttributeItem {
                 </div>
                 <div>
                     {this.renderName()}
-                    <div className="flag-line">
-                        {propertyList}
-                    </div>
+                    <div className="flag-line">{propertyList}</div>
                 </div>
                 <HexOnlyEditableField
                     value={value.toArray()}
@@ -208,21 +204,21 @@ class CharacteristicItem extends AttributeItem {
             onWriteDescriptor,
         } = this.props;
 
-        const {
-            children,
-        } = item;
+        const { children } = item;
 
-        return children.valueSeq().map(descriptor => (
-            <DescriptorItem
-                key={descriptor.instanceId}
-                item={descriptor}
-                selected={selected}
-                onSelectAttribute={onSelectAttribute}
-                onChange={this.childChanged}
-                onRead={onReadDescriptor}
-                onWrite={onWriteDescriptor}
-            />
-        ));
+        return children
+            .valueSeq()
+            .map(descriptor => (
+                <DescriptorItem
+                    key={descriptor.instanceId}
+                    item={descriptor}
+                    selected={selected}
+                    onSelectAttribute={onSelectAttribute}
+                    onChange={this.childChanged}
+                    onRead={onReadDescriptor}
+                    onWrite={onWriteDescriptor}
+                />
+            ));
     }
 }
 

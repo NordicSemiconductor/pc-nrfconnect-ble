@@ -47,7 +47,11 @@ const AddNewItem = ({ bars: propBars, onClick, text }) => (
         role="button"
         tabIndex={0}
     >
-        { Array(propBars).fill(1).map((_, i) => <div className={`bar${i + 1}`} key={`${i + 1}`} />) }
+        {Array(propBars)
+            .fill(1)
+            .map((_, i) => (
+                <div className={`bar${i + 1}`} key={`${i + 1}`} />
+            ))}
         <div className="content-wrap">
             <div className="content padded-row">
                 <span className="icon-wrap">

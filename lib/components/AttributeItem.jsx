@@ -80,11 +80,7 @@ class AttributeItem extends React.Component {
     }
 
     onAddAttribute() {
-        const {
-            item,
-            onAddCharacteristic,
-            onAddDescriptor,
-        } = this.props;
+        const { item, onAddCharacteristic, onAddDescriptor } = this.props;
 
         if (this.attributeType === 'service') {
             onAddCharacteristic(item);
@@ -118,20 +114,19 @@ class AttributeItem extends React.Component {
     }
 
     getChildren() {
-        const {
-            item,
-        } = this.props;
+        const { item } = this.props;
 
-        const {
-            expanded,
-            discoveringChildren,
-            children,
-        } = item;
+        const { expanded, discoveringChildren, children } = item;
 
         const childrenList = [];
 
         if (discoveringChildren) {
-            childrenList.push(<EnumeratingAttributes key={`enumerating-${this.childAttributeType}`} bars={this.bars + 1} />);
+            childrenList.push(
+                <EnumeratingAttributes
+                    key={`enumerating-${this.childAttributeType}`}
+                    bars={this.bars + 1}
+                />
+            );
         } else if (children && expanded) {
             childrenList.push(this.renderChildren());
         }
@@ -179,40 +174,33 @@ class AttributeItem extends React.Component {
         return instanceIds.device === 'local.server';
     }
 
-    renderContent() { // eslint-disable-line class-methods-use-this
+    // eslint-disable-next-line class-methods-use-this
+    renderContent() {
         return null;
     }
 
-    renderChildren() { // eslint-disable-line class-methods-use-this
+    // eslint-disable-next-line class-methods-use-this
+    renderChildren() {
         return null;
     }
 
     renderError() {
-        const {
-            item,
-        } = this.props;
+        const { item } = this.props;
 
-        const {
-            errorMessage,
-        } = item;
+        const { errorMessage } = item;
 
         const errorText = errorMessage || '';
-        const hideErrorClass = (errorText === '') ? 'hide' : '';
+        const hideErrorClass = errorText === '' ? 'hide' : '';
 
-        return <div className={`error-label ${hideErrorClass}`}>{errorText}</div>;
+        return (
+            <div className={`error-label ${hideErrorClass}`}>{errorText}</div>
+        );
     }
 
     renderName() {
-        const {
-            item,
-        } = this.props;
+        const { item } = this.props;
 
-        const {
-            handle,
-            valueHandle,
-            uuid,
-            name,
-        } = item;
+        const { handle, valueHandle, uuid, name } = item;
 
         let handleText = '';
         if (handle) {
@@ -221,21 +209,20 @@ class AttributeItem extends React.Component {
             handleText = `Value handle: 0x${toHexString(valueHandle)}, `;
         }
 
-        return <div className={`${this.attributeType}-name truncate-text selectable`} title={`${handleText}UUID: ${uuid}`}>{name}</div>;
+        return (
+            <div
+                className={`${this.attributeType}-name truncate-text selectable`}
+                title={`${handleText}UUID: ${uuid}`}
+            >
+                {name}
+            </div>
+        );
     }
 
     render() {
-        const {
-            item,
-            selected,
-            addNew,
-        } = this.props;
+        const { item, selected, addNew } = this.props;
 
-        const {
-            instanceId,
-            expanded,
-            children,
-        } = item;
+        const { instanceId, expanded, children } = item;
 
         const barList = [];
 
@@ -246,8 +233,13 @@ class AttributeItem extends React.Component {
         const content = this.renderContent(null);
         const childrenList = this.getChildren();
 
-        const expandIcon = expanded ? 'expand mdi mdi-menu-down' : 'expand mdi mdi-menu-right';
-        const iconStyle = (!this.expandable || (children && children.size === 0 && !addNew)) ? { display: 'none' } : {};
+        const expandIcon = expanded
+            ? 'expand mdi mdi-menu-down'
+            : 'expand mdi mdi-menu-right';
+        const iconStyle =
+            !this.expandable || (children && children.size === 0 && !addNew)
+                ? { display: 'none' }
+                : {};
         const itemIsSelected = item.instanceId === selected;
 
         const backgroundClass = itemIsSelected
@@ -256,12 +248,16 @@ class AttributeItem extends React.Component {
 
         const backgroundColor = itemIsSelected
             ? ''
-            : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(this.backgroundColor.g)}, ${Math.floor(this.backgroundColor.b)})`;
+            : `rgb(${Math.floor(this.backgroundColor.r)}, ${Math.floor(
+                  this.backgroundColor.g
+              )}, ${Math.floor(this.backgroundColor.b)})`;
 
         return (
             <div>
                 <div
-                    ref={node => { this.bgDiv = node; }}
+                    ref={node => {
+                        this.bgDiv = node;
+                    }}
                     className={`${this.attributeType}-item ${backgroundClass}`}
                     style={{ backgroundColor }}
                     onClick={this.onContentClick}
@@ -278,7 +274,10 @@ class AttributeItem extends React.Component {
                     >
                         {barList}
                         <div className="icon-wrap">
-                            <i className={`icon-slim ${expandIcon}`} style={iconStyle} />
+                            <i
+                                className={`icon-slim ${expandIcon}`}
+                                style={iconStyle}
+                            />
                         </div>
                     </div>
                     <div
@@ -293,19 +292,17 @@ class AttributeItem extends React.Component {
                 </div>
                 <div style={{ display: expanded ? 'block' : 'none' }}>
                     {childrenList}
-                    { addNew
-                        && (
-                            <AddNewItem
-                                key={`add-new-${this.childAttributeType}`}
-                                text={`New ${this.childAttributeType}`}
-                                id={`add-btn-${instanceId}`}
-                                parentInstanceId={instanceId}
-                                selected={selected}
-                                onClick={this.onAddAttribute}
-                                bars={this.bars + 1}
-                            />
-                        )
-                    }
+                    {addNew && (
+                        <AddNewItem
+                            key={`add-new-${this.childAttributeType}`}
+                            text={`New ${this.childAttributeType}`}
+                            id={`add-btn-${instanceId}`}
+                            parentInstanceId={instanceId}
+                            selected={selected}
+                            onClick={this.onAddAttribute}
+                            bars={this.bars + 1}
+                        />
+                    )}
                 </div>
             </div>
         );

@@ -40,20 +40,12 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 const LabeledInputGroup = props => {
-    const {
-        children,
-        inline,
-        label,
-        labelClassName,
-        wrapperClassName,
-    } = props;
+    const { children, inline, label, labelClassName, wrapperClassName } = props;
     const classProp = inline && { className: 'form-inline' };
     return (
         <Form.Group {...classProp}>
             <Form.Label className={labelClassName}>{label}</Form.Label>
-            <InputGroup className={wrapperClassName}>
-                {children}
-            </InputGroup>
+            <InputGroup className={wrapperClassName}>{children}</InputGroup>
         </Form.Group>
     );
 };

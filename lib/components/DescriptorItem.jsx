@@ -47,7 +47,6 @@ function isCCCDAttribute(uuid) {
     return uuid === CCCD_UUID;
 }
 
-
 class DescriptorItem extends AttributeItem {
     constructor(props) {
         super(props);
@@ -58,36 +57,29 @@ class DescriptorItem extends AttributeItem {
     }
 
     shouldComponentUpdate(nextProps) {
-        const update = !ImmutableIs(this.props.item.value, nextProps.item.value)
-            || !ImmutableIs(this.props.item.errorMessage, nextProps.item.errorMessage)
-            || !ImmutableIs(this.props.selected, nextProps.selected)
-            || !ImmutableIs(this.props.item.name, nextProps.item.name);
+        const update =
+            !ImmutableIs(this.props.item.value, nextProps.item.value) ||
+            !ImmutableIs(
+                this.props.item.errorMessage,
+                nextProps.item.errorMessage
+            ) ||
+            !ImmutableIs(this.props.selected, nextProps.selected) ||
+            !ImmutableIs(this.props.item.name, nextProps.item.name);
         return update;
     }
 
     renderContent() {
-        const {
-            item,
-            selected,
-        } = this.props;
+        const { item, selected } = this.props;
 
-        const {
-            uuid,
-            instanceId,
-            value,
-        } = item;
+        const { uuid, instanceId, value } = item;
 
         const isLocal = this.isLocalAttribute();
         const isCCCD = isCCCDAttribute(uuid);
         const isLocalCCCD = isLocal && isCCCD;
 
-        const onRead = !isLocal
-            ? () => this.onRead()
-            : undefined;
+        const onRead = !isLocal ? () => this.onRead() : undefined;
 
-        const onWrite = !isLocalCCCD
-            ? val => this.onWrite(val)
-            : null;
+        const onWrite = !isLocalCCCD ? val => this.onWrite(val) : null;
 
         const itemIsSelected = instanceId === selected;
 
@@ -106,7 +98,7 @@ class DescriptorItem extends AttributeItem {
                         onRead={onRead}
                         showReadButton={itemIsSelected}
                         selectParent={this.selectComponent}
-                    />,
+                    />
                 );
             });
         } else {
@@ -118,7 +110,7 @@ class DescriptorItem extends AttributeItem {
                     onRead={onRead}
                     showReadButton={itemIsSelected}
                     selectParent={this.selectComponent}
-                />,
+                />
             );
         }
 

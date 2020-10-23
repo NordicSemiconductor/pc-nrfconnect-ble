@@ -77,7 +77,7 @@ class AdvertisingSetup extends React.PureComponent {
 
         this.id += 1;
         this.typeValue.id = this.id;
-        return Object.assign({}, this.typeValue);
+        return { ...this.typeValue };
     }
 
     addToAdvData() {
@@ -107,10 +107,7 @@ class AdvertisingSetup extends React.PureComponent {
     }
 
     handleApply() {
-        const {
-            applyChanges,
-            setAdvertisingData,
-        } = this.props;
+        const { applyChanges, setAdvertisingData } = this.props;
 
         applyChanges();
         setAdvertisingData();
@@ -128,7 +125,12 @@ class AdvertisingSetup extends React.PureComponent {
         } = this.props;
 
         return (
-            <Modal className="adv-setup" show={show} onHide={() => {}} size="lg">
+            <Modal
+                className="adv-setup"
+                show={show}
+                onHide={() => {}}
+                size="lg"
+            >
                 <Modal.Header>
                     <Modal.Title>Advertising setup</Modal.Title>
                 </Modal.Header>
@@ -164,14 +166,19 @@ class AdvertisingSetup extends React.PureComponent {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Form.Label className="error-label" variant="danger">{setAdvdataStatus}</Form.Label>
+                    <Form.Label className="error-label" variant="danger">
+                        {setAdvdataStatus}
+                    </Form.Label>
                     <Button
                         className="btn-primary btn-nordic"
                         onClick={this.handleApply}
                     >
                         Apply
                     </Button>
-                    <Button className="btn-primary btn-nordic" onClick={hideSetupDialog}>
+                    <Button
+                        className="btn-primary btn-nordic"
+                        onClick={hideSetupDialog}
+                    >
                         Close
                     </Button>
                 </Modal.Footer>
@@ -192,18 +199,14 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    const retval = Object.assign(
-        {},
-        bindActionCreators(AdvertisingActions, dispatch),
-    );
+    const retval = {
+        ...bindActionCreators(AdvertisingActions, dispatch),
+    };
 
     return retval;
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(AdvertisingSetup);
+export default connect(mapStateToProps, mapDispatchToProps)(AdvertisingSetup);
 
 AdvertisingSetup.propTypes = {
     tempAdvDataEntries: PropTypes.instanceOf(List).isRequired,

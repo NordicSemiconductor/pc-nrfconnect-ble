@@ -53,11 +53,7 @@ const EnumeratingAttributes = props => {
         <div className="enumerating-items-wrap">
             {barList}
             <div className="enumerating-content">
-                <Spinner
-                    visible
-                    className="spinner center-block"
-                    size={20}
-                />
+                <Spinner visible className="spinner center-block" size={20} />
             </div>
         </div>
     );

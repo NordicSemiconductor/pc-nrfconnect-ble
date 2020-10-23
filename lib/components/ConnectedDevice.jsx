@@ -39,7 +39,7 @@
 'use strict';
 
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -71,15 +71,19 @@ const ConnectedDevice = ({
     const [, setBelowWidthThreshold] = useState(false);
     const [resizeTimeout, setResizeTimeout] = useState(null);
 
-    // eslint-disable-next-line no-underscore-dangle
-    const sdApiVersion = useSelector(({ app }) => app
-        .adapter.bleDriver.adapter._bleDriver.NRF_SD_BLE_API_VERSION);
+    const sdApiVersion = useSelector(
+        ({ app }) =>
+            // eslint-disable-next-line no-underscore-dangle
+            app.adapter.bleDriver.adapter._bleDriver.NRF_SD_BLE_API_VERSION
+    );
 
     const onResize = () => {
         if (!boundingRect) {
             return;
         }
-        setBelowWidthThreshold(window.innerWidth < (boundingRect.right + WINDOW_WIDTH_OFFSET));
+        setBelowWidthThreshold(
+            window.innerWidth < boundingRect.right + WINDOW_WIDTH_OFFSET
+        );
     };
 
     const resizeThrottler = () => {
@@ -87,10 +91,12 @@ const ConnectedDevice = ({
             return;
         }
 
-        setResizeTimeout(setTimeout(() => {
-            setResizeTimeout(null);
-            onResize();
-        }, THROTTLE_TIMEOUT));
+        setResizeTimeout(
+            setTimeout(() => {
+                setResizeTimeout(null);
+                onResize();
+            }, THROTTLE_TIMEOUT)
+        );
     };
 
     useEffect(() => {
@@ -103,8 +109,7 @@ const ConnectedDevice = ({
         return () => {
             window.removeEventListener('resize', resizeThrottler);
         };
-    }, []);
-
+    }, [resizeThrottler]);
 
     const onSelect = eventKey => {
         switch (eventKey) {
@@ -138,14 +143,8 @@ const ConnectedDevice = ({
         opacity: device.connected === true ? 1.0 : 0.5,
     };
 
-
     return (
-        <div
-            ref={node}
-            id={id}
-            className="device standalone"
-            style={style}
-        >
+        <div ref={node} id={id} className="device standalone" style={style}>
             <div className="top-bar">
                 <div className="flag-line" />
             </div>
@@ -162,7 +161,11 @@ const ConnectedDevice = ({
                                 title="Start Secure DFU"
                                 onClick={onClickDfu}
                             >
-                                <img src={dfuIcon} className="icon-dfu-button" alt="" />
+                                <img
+                                    src={dfuIcon}
+                                    className="icon-dfu-button"
+                                    alt=""
+                                />
                             </Button>
                         )}
                         <Dropdown
@@ -171,15 +174,24 @@ const ConnectedDevice = ({
                             onSelect={onSelect}
                         >
                             <Dropdown.Toggle>
-                                <span className="mdi mdi-settings" aria-hidden="true" />
+                                <span
+                                    className="mdi mdi-settings"
+                                    aria-hidden="true"
+                                />
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item id="updateConnectionMenuItem" eventKey="UpdateConnectionParams">
+                                <Dropdown.Item
+                                    id="updateConnectionMenuItem"
+                                    eventKey="UpdateConnectionParams"
+                                >
                                     Update connection...
                                 </Dropdown.Item>
                                 {sdApiVersion >= 5 && (
                                     <>
-                                        <Dropdown.Item id="updatePhyMenuItem" eventKey="UpdatePhy">
+                                        <Dropdown.Item
+                                            id="updatePhyMenuItem"
+                                            eventKey="UpdatePhy"
+                                        >
                                             Update phy...
                                         </Dropdown.Item>
                                         <Dropdown.Item
@@ -200,18 +212,26 @@ const ConnectedDevice = ({
                                     </>
                                 )}
                                 <Dropdown.Divider key="dividerPair" />
-                                <Dropdown.Item id="pairMenuItem" eventKey="Pair">
+                                <Dropdown.Item
+                                    id="pairMenuItem"
+                                    eventKey="Pair"
+                                >
                                     Pair...
                                 </Dropdown.Item>
                                 <Dropdown.Divider key="dividerDisconnect" />
-                                <Dropdown.Item id="disconnectMenuItem" eventKey="Disconnect">
+                                <Dropdown.Item
+                                    id="disconnectMenuItem"
+                                    eventKey="Disconnect"
+                                >
                                     Disconnect
                                 </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
                     <div className="role-flag pull-right">{role}</div>
-                    <strong className="selectable">{device.name ? device.name : '<Unknown>'}</strong>
+                    <strong className="selectable">
+                        {device.name ? device.name : '<Unknown>'}
+                    </strong>
                 </div>
                 <div className="address-text selectable">{device.address}</div>
             </div>

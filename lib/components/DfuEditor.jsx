@@ -63,16 +63,22 @@ import DfuThroughputGraph from './DfuThroughputGraph';
  */
 function createPackageInfoString(packageInfo) {
     return Object.keys(packageInfo).reduce((prevType, type) => {
-        const valueString = Object.keys(packageInfo[type]).reduce((prevValue, value) => (
-            `${prevValue}\n  ${value}: ${packageInfo[type][value]}`
-        ), '');
+        const valueString = Object.keys(packageInfo[type]).reduce(
+            (prevValue, value) =>
+                `${prevValue}\n  ${value}: ${packageInfo[type][value]}`,
+            ''
+        );
         return `${prevType}${type}:${valueString}\n`;
     }, '');
 }
 
 class DfuEditor extends React.PureComponent {
     getStatus() {
-        const { isCompleted, isStopping, fileNameBeingTransferred } = this.props;
+        const {
+            isCompleted,
+            isStopping,
+            fileNameBeingTransferred,
+        } = this.props;
         let { status } = this.props;
         if (isCompleted) {
             return 'Completed';
@@ -91,7 +97,9 @@ class DfuEditor extends React.PureComponent {
         if (throughput && throughput.kbpsPoints.length > 0) {
             return (
                 <Form.Group as={Row}>
-                    <Form.Label column sm={2} className="text-right">Throughput (kB/s)</Form.Label>
+                    <Form.Label column sm={2} className="text-right">
+                        Throughput (kB/s)
+                    </Form.Label>
                     <Col sm={10}>
                         <DfuThroughputGraph {...throughput} />
                     </Col>
@@ -117,7 +125,9 @@ class DfuEditor extends React.PureComponent {
         return (
             <Form className="form-horizontal native-key-bindings">
                 <Form.Group as={Row}>
-                    <Form.Label column sm={2} className="text-right">Zip file</Form.Label>
+                    <Form.Label column sm={2} className="text-right">
+                        Zip file
+                    </Form.Label>
                     <InputGroup as={Col} sm={10}>
                         <Form.Control value={filePath} readOnly />
                         <InputGroup.Append>
@@ -132,26 +142,37 @@ class DfuEditor extends React.PureComponent {
                         </InputGroup.Append>
                     </InputGroup>
                 </Form.Group>
-                { packageInfo && (
+                {packageInfo && (
                     <Form.Group as={Row}>
-                        <Form.Label column sm={2} className="text-right">Package info</Form.Label>
+                        <Form.Label column sm={2} className="text-right">
+                            Package info
+                        </Form.Label>
                         <InputGroup as={Col} sm={10}>
                             <pre>{createPackageInfoString(packageInfo)}</pre>
                         </InputGroup>
                     </Form.Group>
                 )}
-                { (isStarted || isCompleted) && (
+                {(isStarted || isCompleted) && (
                     <Form.Group as={Row}>
-                        <Form.Label column sm={2} className="text-right">Progress</Form.Label>
+                        <Form.Label column sm={2} className="text-right">
+                            Progress
+                        </Form.Label>
                         <InputGroup as={Col} sm={10}>
-                            { this.getStatus() }
-                            <ProgressBar label={`${percentCompleted}%`} now={percentCompleted} />
+                            {this.getStatus()}
+                            <ProgressBar
+                                label={`${percentCompleted}%`}
+                                now={percentCompleted}
+                            />
                         </InputGroup>
                     </Form.Group>
                 )}
-                { (isStarted || isCompleted) && this.renderGraph() }
+                {(isStarted || isCompleted) && this.renderGraph()}
                 <ButtonToolbar className="row-of-buttons">
-                    <div style={filePath && !isCompleted ? {} : { display: 'none' }}>
+                    <div
+                        style={
+                            filePath && !isCompleted ? {} : { display: 'none' }
+                        }
+                    >
                         <DfuButton
                             dfuInProgress={isStarted}
                             disabled={isStopping}

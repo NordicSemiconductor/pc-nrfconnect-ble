@@ -49,7 +49,10 @@ import * as BLEEventActions from '../actions/bleEventActions';
 import * as DeviceDetailsActions from '../actions/deviceDetailsActions';
 import * as DfuActions from '../actions/dfuActions';
 import * as SecurityActions from '../actions/securityActions';
-import { findSelectedItem, traverseItems } from '../common/treeViewKeyNavigation';
+import {
+    findSelectedItem,
+    traverseItems,
+} from '../common/treeViewKeyNavigation';
 import DeviceDetailsView from '../components/DeviceDetails';
 import { getInstanceIds } from '../utils/api';
 import withHotkey from '../utils/withHotkey';
@@ -73,7 +76,11 @@ class DeviceDetailsContainer extends React.PureComponent {
     }
 
     selectNextComponent(backward) {
-        const { deviceDetails, selectedComponent, selectComponent } = this.props;
+        const {
+            deviceDetails,
+            selectedComponent,
+            selectComponent,
+        } = this.props;
         let foundCurrent = false;
 
         // eslint-disable-next-line no-restricted-syntax
@@ -125,7 +132,9 @@ class DeviceDetailsContainer extends React.PureComponent {
 
             if (!expand && !item.expanded) {
                 if (itemInstanceIds.characteristic) {
-                    selectComponent(selectedComponent.split('.').slice(0, -1).join('.'));
+                    selectComponent(
+                        selectedComponent.split('.').slice(0, -1).join('.')
+                    );
                 }
 
                 return;
@@ -195,7 +204,7 @@ class DeviceDetailsContainer extends React.PureComponent {
                 onDeleteBondInfo={deleteBondInfo}
                 security={security}
                 onOpenCustomUuidFile={openCustomUuidFile}
-            />,
+            />
         );
 
         // Details for connected devices
@@ -217,16 +226,20 @@ class DeviceDetailsContainer extends React.PureComponent {
                     onWriteDescriptor={writeDescriptor}
                     onDisconnectFromDevice={disconnectFromDevice}
                     onPairWithDevice={createUserInitiatedPairingEvent}
-                    onUpdateDeviceConnectionParams={createUserInitiatedConnParamsUpdateEvent}
+                    onUpdateDeviceConnectionParams={
+                        createUserInitiatedConnParamsUpdateEvent
+                    }
                     onUpdateDevicePhy={createUserInitiatedPhyUpdateEvent}
                     onUpdateDeviceMtu={createUserInitiatedMtuUpdateEvent}
-                    onUpdateDeviceDataLength={createUserInitiatedDataLengthUpdateEvent}
-                />,
+                    onUpdateDeviceDataLength={
+                        createUserInitiatedDataLengthUpdateEvent
+                    }
+                />
             );
         });
 
-        const perDevice = (20 + elemWidth);
-        const width = (perDevice * detailDevices.length);
+        const perDevice = 20 + elemWidth;
+        const width = perDevice * detailDevices.length;
 
         // TODO: Fix better solution to right padding of scroll area than div box with border
         return (
@@ -234,9 +247,13 @@ class DeviceDetailsContainer extends React.PureComponent {
                 <div className="device-details-container">
                     <div style={{ width }}>
                         {detailDevices}
-                        <div style={{
-                            borderColor: 'transparent', borderLeftWidth: '20px', borderRightWidth: '0px', borderStyle: 'solid',
-                        }}
+                        <div
+                            style={{
+                                borderColor: 'transparent',
+                                borderLeftWidth: '20px',
+                                borderRightWidth: '0px',
+                                borderStyle: 'solid',
+                            }}
                         />
                     </div>
                 </div>
@@ -247,9 +264,7 @@ class DeviceDetailsContainer extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
-    const {
-        adapter,
-    } = state.app;
+    const { adapter } = state.app;
 
     const { selectedAdapter } = adapter;
 
@@ -259,8 +274,9 @@ function mapStateToProps(state) {
 
     return {
         adapterState: selectedAdapter.state,
-        selectedComponent: (selectedAdapter.deviceDetails
-            && selectedAdapter.deviceDetails.selectedComponent),
+        selectedComponent:
+            selectedAdapter.deviceDetails &&
+            selectedAdapter.deviceDetails.selectedComponent,
         connectedDevices: selectedAdapter.connectedDevices,
         deviceDetails: selectedAdapter.deviceDetails,
         autoConnUpdate: adapter.autoConnUpdate,
@@ -269,22 +285,21 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    const retval = Object.assign(
-        {},
-        bindActionCreators(DeviceDetailsActions, dispatch),
-        bindActionCreators(AdvertisingActions, dispatch),
-        bindActionCreators(AdapterActions, dispatch),
-        bindActionCreators(BLEEventActions, dispatch),
-        bindActionCreators(SecurityActions, dispatch),
-        bindActionCreators(DfuActions, dispatch),
-    );
+    const retval = {
+        ...bindActionCreators(DeviceDetailsActions, dispatch),
+        ...bindActionCreators(AdvertisingActions, dispatch),
+        ...bindActionCreators(AdapterActions, dispatch),
+        ...bindActionCreators(BLEEventActions, dispatch),
+        ...bindActionCreators(SecurityActions, dispatch),
+        ...bindActionCreators(DfuActions, dispatch),
+    };
 
     return retval;
 }
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps,
+    mapDispatchToProps
 )(withHotkey(DeviceDetailsContainer));
 
 DeviceDetailsContainer.propTypes = {

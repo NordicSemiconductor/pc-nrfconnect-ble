@@ -45,7 +45,10 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Form from 'react-bootstrap/Form';
 
 import { ValidationError } from '../common/Errors';
-import { getUuidName, uuidDescriptorDefinitions } from '../utils/uuid_definitions';
+import {
+    getUuidName,
+    uuidDescriptorDefinitions,
+} from '../utils/uuid_definitions';
 import { ERROR, SUCCESS, validateUuid } from '../utils/validateUuid';
 import HexOnlyEditableField from './HexOnlyEditableField';
 import LabeledInputGroup from './input/LabeledInputGroup';
@@ -100,26 +103,39 @@ class DescriptorEditor extends React.PureComponent {
         const { fixedLength } = this;
         const value = this.parseValueProperty(this.value);
 
-        if (maxLength > 510 && fixedLength === true) { return ERROR; }
+        if (maxLength > 510 && fixedLength === true) {
+            return ERROR;
+        }
 
-        if (maxLength > 512 && fixedLength === false) { return ERROR; }
+        if (maxLength > 512 && fixedLength === false) {
+            return ERROR;
+        }
 
-        if (maxLength < value.length) { return ERROR; }
+        if (maxLength < value.length) {
+            return ERROR;
+        }
 
         return SUCCESS;
     }
 
     saveAttribute() {
         const {
-            descriptor, onValidationError, onSaveChangedAttribute, onModified,
+            descriptor,
+            onValidationError,
+            onSaveChangedAttribute,
+            onModified,
         } = this.props;
         if (validateUuid(this.uuid) === ERROR) {
-            onValidationError(new ValidationError('You have to provide a valid UUID.'));
+            onValidationError(
+                new ValidationError('You have to provide a valid UUID.')
+            );
             return;
         }
 
         if (this.validateValueLength() === ERROR) {
-            onValidationError(new ValidationError('Length of value is not valid.'));
+            onValidationError(
+                new ValidationError('Length of value is not valid.')
+            );
             return;
         }
 
@@ -153,10 +169,7 @@ class DescriptorEditor extends React.PureComponent {
     }
 
     render() {
-        const {
-            descriptor,
-            onRemoveAttribute,
-        } = this.props;
+        const { descriptor, onRemoveAttribute } = this.props;
 
         const {
             instanceId,
@@ -217,13 +230,21 @@ class DescriptorEditor extends React.PureComponent {
                     onChange={e => this.setValueProperty('readPerm', e)}
                 >
                     <option value="open">No security required</option>
-                    <option value="encrypt">Encryption required, no MITM</option>
-                    <option value="encrypt mitm-protection">Encryption and MITM required</option>
-                    <option value="signed">Signing or encryption required, no MITM</option>
+                    <option value="encrypt">
+                        Encryption required, no MITM
+                    </option>
+                    <option value="encrypt mitm-protection">
+                        Encryption and MITM required
+                    </option>
+                    <option value="signed">
+                        Signing or encryption required, no MITM
+                    </option>
                     <option value="signed mitm-protection">
                         Signing or encryption with MITM required
                     </option>
-                    <option value="no_access">No access rights specified (undefined)</option>
+                    <option value="no_access">
+                        No access rights specified (undefined)
+                    </option>
                 </SelectList>
 
                 <SelectList
@@ -234,18 +255,32 @@ class DescriptorEditor extends React.PureComponent {
                     onChange={e => this.setValueProperty('writePerm', e)}
                 >
                     <option value="open">No security required</option>
-                    <option value="encrypt">Encryption required, no MITM</option>
-                    <option value="encrypt mitm-protection">Encryption and MITM required</option>
-                    <option value="signed">Signing or encryption required, no MITM</option>
+                    <option value="encrypt">
+                        Encryption required, no MITM
+                    </option>
+                    <option value="encrypt mitm-protection">
+                        Encryption and MITM required
+                    </option>
+                    <option value="signed">
+                        Signing or encryption required, no MITM
+                    </option>
                     <option value="signed mitm-protection">
                         Signing or encryption with MITM required
                     </option>
-                    <option value="no_access">No access rights specified (undefined)</option>
+                    <option value="no_access">
+                        No access rights specified (undefined)
+                    </option>
                 </SelectList>
 
                 <LabeledInputGroup label="Max length">
                     <Form.Group controlId="fixedLengthCheck">
-                        <Form.Check checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)} label="Fixed length" />
+                        <Form.Check
+                            checked={this.fixedLength}
+                            onChange={e =>
+                                this.setCheckedProperty('fixedLength', e)
+                            }
+                            label="Fixed length"
+                        />
                     </Form.Group>
                     <TextInput
                         inline
@@ -260,8 +295,13 @@ class DescriptorEditor extends React.PureComponent {
 
                 <ButtonToolbar>
                     <div className="col-md-4" />
-                    <Button variant="primary" className="btn-nordic" onClick={onRemoveAttribute}>
-                        <i className="mdi mdi-close" />Delete
+                    <Button
+                        variant="primary"
+                        className="btn-nordic"
+                        onClick={onRemoveAttribute}
+                    >
+                        <i className="mdi mdi-close" />
+                        Delete
                     </Button>
                     <Button
                         variant="primary"

@@ -40,33 +40,39 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import LineChart from './LineChart';
 
-const DfuThroughputGraph = ({ totalSizeKb, kbpsPoints, averageKbpsPoints }) => (
-    (kbpsPoints.length > 0) ? (
+const DfuThroughputGraph = ({ totalSizeKb, kbpsPoints, averageKbpsPoints }) =>
+    kbpsPoints.length > 0 ? (
         <LineChart
-            data={[{
-                values: averageKbpsPoints,
-                color: '#0080B7',
-            }, {
-                values: kbpsPoints,
-                color: '#6dcff6',
-            }]}
+            data={[
+                {
+                    values: averageKbpsPoints,
+                    color: '#0080B7',
+                },
+                {
+                    values: kbpsPoints,
+                    color: '#6dcff6',
+                },
+            ]}
             xTotal={totalSizeKb}
             xAxisLabel="kB transferred"
             height={250}
         />
-    ) : null
-);
+    ) : null;
 
 DfuThroughputGraph.propTypes = {
     totalSizeKb: PropTypes.number.isRequired,
-    kbpsPoints: PropTypes.arrayOf(PropTypes.shape({
-        x: PropTypes.number,
-        y: PropTypes.number,
-    })).isRequired,
-    averageKbpsPoints: PropTypes.arrayOf(PropTypes.shape({
-        x: PropTypes.number,
-        y: PropTypes.number,
-    })).isRequired,
+    kbpsPoints: PropTypes.arrayOf(
+        PropTypes.shape({
+            x: PropTypes.number,
+            y: PropTypes.number,
+        })
+    ).isRequired,
+    averageKbpsPoints: PropTypes.arrayOf(
+        PropTypes.shape({
+            x: PropTypes.number,
+            y: PropTypes.number,
+        })
+    ).isRequired,
 };
 
 export default DfuThroughputGraph;
