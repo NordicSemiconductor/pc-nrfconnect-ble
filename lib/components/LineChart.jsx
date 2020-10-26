@@ -84,7 +84,8 @@ const LineChart = ({ data, xTotal, xAxisLabel, height }) => {
                 })),
             },
         });
-    }, [axis, data, xAxisLabel, xTotal]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         // componentDidUpdate

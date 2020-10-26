@@ -78,7 +78,8 @@ const CentralDevice = ({
 
     useEffect(
         () => onToggleAdvertising && bindHotkey('alt+a', onToggleAdvertising),
-        [bindHotkey, onToggleAdvertising]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []
     );
 
     const style = {

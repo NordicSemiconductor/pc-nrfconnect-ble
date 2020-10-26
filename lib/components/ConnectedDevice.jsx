@@ -109,7 +109,8 @@ const ConnectedDevice = ({
         return () => {
             window.removeEventListener('resize', resizeThrottler);
         };
-    }, [resizeThrottler]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const onSelect = eventKey => {
         switch (eventKey) {
