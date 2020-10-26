@@ -48,7 +48,7 @@ import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 import withHotkey from '../utils/withHotkey';
 import Spinner from './Spinner';
 
-const icon = require('../../resources/nordic_usb_icon.png');
+import icon from '../../resources/nordic_usb_icon.png';
 
 const CentralDevice = ({
     id,
