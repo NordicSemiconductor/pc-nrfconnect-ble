@@ -40,29 +40,37 @@ import { getImmutableDevice } from '../../utils/api';
 import ConnectedDevice from '../ConnectedDevice';
 
 jest.mock('react-redux', () => ({
-    ...require.requireActual('react-redux'),
+    ...jest.requireActual('react-redux'),
     useSelector: jest.fn().mockImplementation(() => ({
-        app: { adapter: { bleDriver: { adapter: { _bleDriver: { NRF_SD_BLE_API_VERSION: 5 } } } } },
+        app: {
+            adapter: {
+                bleDriver: {
+                    adapter: { _bleDriver: { NRF_SD_BLE_API_VERSION: 5 } },
+                },
+            },
+        },
     })),
 }));
 
 function mountComponent(props) {
-    return mount(<ConnectedDevice
-        id="connected-device-id"
-        device={getImmutableDevice({})}
-        sourceId="source-id"
-        layout="vertical"
-        onDisconnect={() => {}}
-        onPair={() => {}}
-        onConnectionParamsUpdate={() => {}}
-        onClickDfu={() => {}}
-        isDfuSupported={false}
-        connectedDevicesNumber={1}
-        onPhyUpdate={() => {}}
-        onMtuUpdate={() => {}}
-        onDataLengthUpdate={() => {}}
-        {...props}
-    />);
+    return mount(
+        <ConnectedDevice
+            id="connected-device-id"
+            device={getImmutableDevice({})}
+            sourceId="source-id"
+            layout="vertical"
+            onDisconnect={() => {}}
+            onPair={() => {}}
+            onConnectionParamsUpdate={() => {}}
+            onClickDfu={() => {}}
+            isDfuSupported={false}
+            connectedDevicesNumber={1}
+            onPhyUpdate={() => {}}
+            onMtuUpdate={() => {}}
+            onDataLengthUpdate={() => {}}
+            {...props}
+        />
+    );
 }
 
 describe('ConnectedDevice', () => {

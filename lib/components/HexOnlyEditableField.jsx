@@ -247,18 +247,7 @@ class HexOnlyEditableField extends React.Component {
     }
 
     render() {
-        const {
-            showText,
-            value,
-            keyPressValidation,
-            completeValidation,
-            formatInput,
-            onBeforeBackspace,
-            onBeforeDelete,
-            onChange,
-            title,
-            ...props
-        } = this.props; // pass along all props except these
+        const { showText, value, title, ...props } = this.props; // pass along all props except these
 
         const parsedValue = hexArrayToHexText(value);
         let titleValue = parsedValue;

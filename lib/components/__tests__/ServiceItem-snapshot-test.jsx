@@ -37,9 +37,7 @@
 /* eslint-disable import/first */
 
 jest.mock('../../utils/colorDefinitions', () => ({
-    getColor: () => (
-        { r: 255, g: 255, b: 255 }
-    ),
+    getColor: () => ({ r: 255, g: 255, b: 255 }),
 }));
 jest.mock('../../utils/uuid_definitions', () => {});
 
@@ -58,9 +56,7 @@ const service = getImmutableService({
 
 describe('ServiceItem', () => {
     it('should render correctly with no button', () => {
-        const tree = renderer.create(
-            <ServiceItem item={service} />,
-        ).toJSON();
+        const tree = renderer.create(<ServiceItem item={service} />).toJSON();
 
         expect(tree).toMatchSnapshot();
     });
@@ -70,9 +66,9 @@ describe('ServiceItem', () => {
             onClick: () => {},
             icon: 'path/to/icon.png',
         };
-        const tree = renderer.create(
-            <ServiceItem item={service} button={button} />,
-        ).toJSON();
+        const tree = renderer
+            .create(<ServiceItem item={service} button={button} />)
+            .toJSON();
 
         expect(tree).toMatchSnapshot();
     });

@@ -127,15 +127,6 @@ ConnectionSetup.propTypes = {
 };
 
 class ConnectionOverlay extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.closeme = this.closeme.bind(this);
-    }
-
-    closeme() {
-        this.overlayTrigger.hide();
-    }
-
     render() {
         const { style, device } = this.props;
 
@@ -150,9 +141,6 @@ class ConnectionOverlay extends React.PureComponent {
                 style={style}
             >
                 <OverlayTrigger
-                    ref={overlayTrigger => {
-                        this.overlayTrigger = overlayTrigger;
-                    }}
                     trigger={['click', 'focus', 'hover']}
                     rootClose
                     placement="left"
@@ -161,10 +149,7 @@ class ConnectionOverlay extends React.PureComponent {
                             className="connection-info-popover"
                             title="Connection Information"
                         >
-                            <ConnectionSetup
-                                device={device}
-                                closePopover={this.closeme}
-                            />
+                            <ConnectionSetup device={device} />
                         </Popover>
                     }
                 >

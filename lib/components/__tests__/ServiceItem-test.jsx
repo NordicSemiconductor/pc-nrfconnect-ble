@@ -51,7 +51,9 @@ describe('ServiceItem', () => {
         const button = {
             onClick: jest.fn(),
         };
-        const wrapper = mount(<ServiceItem item={getImmutableService({})} button={button} />);
+        const wrapper = mount(
+            <ServiceItem item={getImmutableService({})} button={button} />
+        );
         wrapper.find('button').simulate('click');
 
         expect(button.onClick).toBeCalled();

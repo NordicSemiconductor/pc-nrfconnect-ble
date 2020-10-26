@@ -50,7 +50,6 @@ const TextInput = props => {
         label,
         labelClassName,
         wrapperClassName,
-        hasFeedback,
         buttonAfter,
         value,
         ...newProps

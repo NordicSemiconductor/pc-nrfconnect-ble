@@ -66,7 +66,8 @@ class AdvertisingSetup extends React.PureComponent {
     findCurrentMaxId() {
         const { advSetup, scanResponse } = persistentStore;
         const advId = advSetup.length > 0 ? advSetup.slice(-1)[0].id : 0;
-        const scanId = scanResponse.length > 0 ? scanResponse.slice(-1)[0].id : 0;
+        const scanId =
+            scanResponse.length > 0 ? scanResponse.slice(-1)[0].id : 0;
         this.id = Math.max(advId, scanId);
     }
 

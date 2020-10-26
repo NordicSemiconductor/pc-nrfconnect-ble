@@ -1,3 +1,4 @@
+/* eslint-disable react/state-in-constructor */
 /* Copyright (c) 2015 - 2017, Nordic Semiconductor ASA
  *
  * All rights reserved.
@@ -146,7 +147,7 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps,
+    mapDispatchToProps
 )(SecurityParamsDialog);
 
 SecurityParamsDialog.propTypes = {
