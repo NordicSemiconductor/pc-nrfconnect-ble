@@ -50,24 +50,20 @@ import * as SecurityActions from '../actions/securityActions';
 import SecurityParamsControls from '../components/SecurityParamsControls';
 
 class SecurityParamsDialog extends React.PureComponent {
-    constructor(props) {
-        super(props);
+    state = {
+        secParams: null,
+    };
 
-        this.secParams = props.security ? props.security.securityParams : null;
-    }
-
-    handleSecParamsChange(params) {
-        this.secParams = params;
-    }
+    handleSecParamsChange = secParams => this.setState({ secParams });
 
     handleApplyParams() {
         const {
             setSecurityParams,
             hideSecurityParamsDialog,
+            security: { securityParams },
         } = this.props;
-
-        setSecurityParams(this.secParams);
-
+        const { secParams } = this.state;
+        setSecurityParams(secParams || securityParams);
         hideSecurityParamsDialog();
     }
 
@@ -96,7 +92,7 @@ class SecurityParamsDialog extends React.PureComponent {
                 <Modal.Body>
                     <form className="form-horizontal">
                         <SecurityParamsControls
-                            onChange={secParams => this.handleSecParamsChange(secParams)}
+                            onChange={this.handleSecParamsChange}
                             securityParams={security.securityParams}
                         />
                     </form>
@@ -127,10 +123,8 @@ class SecurityParamsDialog extends React.PureComponent {
 
 function mapStateToProps(state) {
     const {
-        adapter,
+        adapter: { selectedAdapter },
     } = state.app;
-
-    const { selectedAdapter } = adapter;
 
     if (!selectedAdapter) {
         return {};
@@ -138,6 +132,7 @@ function mapStateToProps(state) {
 
     return {
         security: selectedAdapter.security,
+        adapter: state.app.adapter,
     };
 }
 

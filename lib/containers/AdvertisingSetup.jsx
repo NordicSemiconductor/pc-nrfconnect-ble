@@ -48,16 +48,26 @@ import { bindActionCreators } from 'redux';
 import * as AdvertisingActions from '../actions/advertisingActions';
 import AdvertisingData from '../components/AdvertisingData';
 import AdvertisingList from '../components/AdvertisingList';
+import { persistentStore } from '../common/Persistentstore';
 
 class AdvertisingSetup extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.id = 0;
-
         this.addToAdvData = this.addToAdvData.bind(this);
         this.addToScanResponse = this.addToScanResponse.bind(this);
         this.handleApply = this.handleApply.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+    }
+
+    componentDidMount() {
+        this.findCurrentMaxId();
+    }
+
+    findCurrentMaxId() {
+        const { advSetup, scanResponse } = persistentStore;
+        const advId = advSetup.length > 0 ? advSetup.slice(-1)[0].id : 0;
+        const scanId = scanResponse.length > 0 ? scanResponse.slice(-1)[0].id : 0;
+        this.id = Math.max(advId, scanId);
     }
 
     prepareValue() {

@@ -37,6 +37,7 @@
 /* eslint react/forbid-prop-types: off */
 /* eslint jsx-a11y/label-has-for: off */
 /* eslint jsx-a11y/label-has-associated-control: off */
+/* eslint-disable react/destructuring-assignment */
 
 'use strict';
 
@@ -78,43 +79,30 @@ function keyToIoCapsText(key) {
 }
 
 class SecurityParamsControls extends React.PureComponent {
-    constructor(props) {
-        super(props);
-
-        this.ioCaps = props.securityParams.io_caps;
-        this.enableLesc = props.securityParams.lesc;
-        this.enableMitm = props.securityParams.mitm;
-        this.enableOob = props.securityParams.oob;
-        this.enableKeypress = props.securityParams.keypress;
-        this.performBonding = props.securityParams.bond;
-
-        this.ioCapsTitle = keyToIoCapsText(this.ioCaps);
+    state = {
+        io_caps: this.props.securityParams.io_caps,
+        lesc: this.props.securityParams.lesc,
+        mitm: this.props.securityParams.mitm,
+        oob: this.props.securityParams.oob,
+        keypress: this.props.securityParams.keypress,
+        bond: this.props.securityParams.bond,
+        io_caps_title: keyToIoCapsText(this.props.securityParams.io_caps),
     }
 
-    onIoCapsSelect(event, eventKey) {
-        this.ioCaps = parseInt(eventKey, 10);
-        this.ioCapsTitle = keyToIoCapsText(this.ioCaps);
-        this.handleChange();
-        this.forceUpdate();
+    onIoCapsSelect(_, eventKey) {
+        const ioCaps = parseInt(eventKey, 10);
+        this.setState({
+            io_caps: ioCaps,
+            io_caps_title: keyToIoCapsText(ioCaps),
+        }, () => {
+            this.props.onChange(this.state);
+        });
     }
 
     handleCheckboxChange(variableName, checked) {
-        this[variableName] = checked;
-        this.handleChange();
-    }
-
-    handleChange() {
-        const { onChange } = this.props;
-        const newSecParams = {
-            io_caps: this.ioCaps,
-            lesc: this.enableLesc,
-            mitm: this.enableMitm,
-            oob: this.enableOob,
-            keypress: this.enableKeypress,
-            bond: this.performBonding,
-        };
-
-        onChange(newSecParams);
+        this.setState({ [variableName]: checked }, () => {
+            this.props.onChange(this.state);
+        });
     }
 
     render() {
@@ -124,7 +112,7 @@ class SecurityParamsControls extends React.PureComponent {
                     <Col sm={4} className="form-label text-right">IO capabilities</Col>
                     <Col sm={7}>
                         <DropdownButton
-                            title={this.ioCapsTitle}
+                            title={this.state.io_caps_title}
                             key="ioCapsDropdownKey"
                             id="ioCapsDropdownId"
                             onSelect={(eventKey, event) => this.onIoCapsSelect(event, eventKey)}
@@ -153,22 +141,22 @@ class SecurityParamsControls extends React.PureComponent {
                     <Col sm={7}>
                         <Form.Group controlId="enableLescCheck">
                             <Form.Check
-                                defaultChecked={this.enableLesc}
-                                onChange={event => this.handleCheckboxChange('enableLesc', event.target.checked)}
+                                defaultChecked={this.state.lesc}
+                                onChange={event => this.handleCheckboxChange('lesc', event.target.checked)}
                                 label="Enable LE Secure Connection pairing"
                             />
                         </Form.Group>
                         <Form.Group controlId="enableMitmCheck">
                             <Form.Check
-                                defaultChecked={this.enableMitm}
-                                onChange={event => this.handleCheckboxChange('enableMitm', event.target.checked)}
+                                defaultChecked={this.state.mitm}
+                                onChange={event => this.handleCheckboxChange('mitm', event.target.checked)}
                                 label="Enable MITM protection"
                             />
                         </Form.Group>
                         <Form.Group controlId="enableOobCheck">
                             <Form.Check
-                                defaultChecked={this.enableOob}
-                                onChange={event => this.handleCheckboxChange('enableOob', event.target.checked)}
+                                defaultChecked={this.state.oob}
+                                onChange={event => this.handleCheckboxChange('oob', event.target.checked)}
                                 label="Enable OOB data"
                             />
                         </Form.Group>
@@ -179,8 +167,8 @@ class SecurityParamsControls extends React.PureComponent {
                     <Col sm={7}>
                         <Form.Group controlId="enableKeypressCheck">
                             <Form.Check
-                                defaultChecked={this.enableKeypress}
-                                onChange={event => this.handleCheckboxChange('enableKeypress', event.target.checked)}
+                                defaultChecked={this.state.keypress}
+                                onChange={event => this.handleCheckboxChange('keypress', event.target.checked)}
                                 label="Enable keypress notifications"
                             />
                         </Form.Group>
@@ -191,8 +179,8 @@ class SecurityParamsControls extends React.PureComponent {
                     <Col sm={7}>
                         <Form.Group controlId="performBondingCheck">
                             <Form.Check
-                                defaultChecked={this.performBonding}
-                                onChange={event => this.handleCheckboxChange('performBonding', event.target.checked)}
+                                defaultChecked={this.state.bond}
+                                onChange={event => this.handleCheckboxChange('bond', event.target.checked)}
                                 label="Perform bonding"
                             />
                         </Form.Group>
