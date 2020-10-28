@@ -51,7 +51,8 @@ class PairingEditor extends React.PureComponent {
 
         const { event } = props;
 
-        this.secParams = event && event.pairingParameters ? event.pairingParameters : null;
+        this.secParams =
+            event && event.pairingParameters ? event.pairingParameters : null;
         this.handleSecParamsChange = this.handleSecParamsChange.bind(this);
         this.handlePair = this.handlePair.bind(this);
         this.handleAccept = this.handleAccept.bind(this);
@@ -90,15 +91,15 @@ class PairingEditor extends React.PureComponent {
     }
 
     render() {
-        const {
-            event,
-        } = this.props;
+        const { event } = this.props;
 
-        const title = (event.type === BLEEventType.PEER_INITIATED_PAIRING) ? 'Pairing requested'
-            : 'User initiated pairing';
+        const title =
+            event.type === BLEEventType.PEER_INITIATED_PAIRING
+                ? 'Pairing requested'
+                : 'User initiated pairing';
 
-        const cancelButton = (event.type === BLEEventType.USER_INITIATED_PAIRING)
-            ? (
+        const cancelButton =
+            event.type === BLEEventType.USER_INITIATED_PAIRING ? (
                 <Button
                     type="button"
                     onClick={this.handleCancel}
@@ -107,10 +108,12 @@ class PairingEditor extends React.PureComponent {
                 >
                     Cancel
                 </Button>
-            ) : '';
+            ) : (
+                ''
+            );
 
-        const pairButton = (event.type === BLEEventType.USER_INITIATED_PAIRING)
-            ? (
+        const pairButton =
+            event.type === BLEEventType.USER_INITIATED_PAIRING ? (
                 <Button
                     type="button"
                     onClick={this.handlePair}
@@ -118,10 +121,12 @@ class PairingEditor extends React.PureComponent {
                 >
                     Pair
                 </Button>
-            ) : '';
+            ) : (
+                ''
+            );
 
-        const acceptButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING)
-            ? (
+        const acceptButton =
+            event.type === BLEEventType.PEER_INITIATED_PAIRING ? (
                 <Button
                     type="button"
                     onClick={this.handleAccept}
@@ -129,10 +134,12 @@ class PairingEditor extends React.PureComponent {
                 >
                     Accept
                 </Button>
-            ) : '';
+            ) : (
+                ''
+            );
 
-        const rejectButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING)
-            ? (
+        const rejectButton =
+            event.type === BLEEventType.PEER_INITIATED_PAIRING ? (
                 <Button
                     type="button"
                     onClick={this.handleReject}
@@ -141,10 +148,12 @@ class PairingEditor extends React.PureComponent {
                 >
                     Reject
                 </Button>
-            ) : '';
+            ) : (
+                ''
+            );
 
-        const ignoreButton = (event.type === BLEEventType.PEER_INITIATED_PAIRING)
-            ? (
+        const ignoreButton =
+            event.type === BLEEventType.PEER_INITIATED_PAIRING ? (
                 <Button
                     type="button"
                     onClick={this.handleCancel}
@@ -153,7 +162,9 @@ class PairingEditor extends React.PureComponent {
                 >
                     Ignore
                 </Button>
-            ) : '';
+            ) : (
+                ''
+            );
 
         return (
             <div>

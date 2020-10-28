@@ -37,7 +37,7 @@
 import React from 'react';
 import Mousetrap from 'mousetrap';
 
-export default ComposedComponent => (
+export default ComposedComponent =>
     class WithHotkey extends React.Component {
         constructor(props) {
             super(props);
@@ -68,5 +68,4 @@ export default ComposedComponent => (
                 />
             );
         }
-    }
-);
+    };

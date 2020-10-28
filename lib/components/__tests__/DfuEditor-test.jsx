@@ -40,13 +40,15 @@ import DfuButton from '../DfuButton';
 import DfuEditor from '../DfuEditor';
 
 function mountComponent(props) {
-    return mount(<DfuEditor
-        isStarted={false}
-        onChooseFile={() => {}}
-        onStartDfu={() => {}}
-        onStopDfu={() => {}}
-        {...props}
-    />);
+    return mount(
+        <DfuEditor
+            isStarted={false}
+            onChooseFile={() => {}}
+            onStartDfu={() => {}}
+            onStopDfu={() => {}}
+            {...props}
+        />
+    );
 }
 
 describe('DfuEditor', () => {

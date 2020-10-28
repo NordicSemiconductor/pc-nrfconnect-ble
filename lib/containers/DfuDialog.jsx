@@ -59,7 +59,6 @@ class DfuDialog extends React.PureComponent {
         this.onStopDfu = this.onStopDfu.bind(this);
     }
 
-
     onFileSelected(filePath) {
         const { setDfuFilePath, loadDfuPackageInfo } = this.props;
         setDfuFilePath(filePath);
@@ -78,25 +77,30 @@ class DfuDialog extends React.PureComponent {
 
     showFileDialog() {
         const { dialog } = electron.remote;
-        const filters = [{
-            name: 'Zip Files',
-            extensions: ['zip'],
-        }];
+        const filters = [
+            {
+                name: 'Zip Files',
+                extensions: ['zip'],
+            },
+        ];
 
-        dialog.showOpenDialog({
-            title: 'Choose file', filters, properties: ['openFile'],
-        }).then(({ canceled, filePaths }) => {
-            if (!filePaths || canceled) {
-                return;
-            }
-            const [filePath] = filePaths;
-            if (!filePath) {
-                return;
-            }
-            this.onFileSelected(filePath);
-        });
+        dialog
+            .showOpenDialog({
+                title: 'Choose file',
+                filters,
+                properties: ['openFile'],
+            })
+            .then(({ canceled, filePaths }) => {
+                if (!filePaths || canceled) {
+                    return;
+                }
+                const [filePath] = filePaths;
+                if (!filePath) {
+                    return;
+                }
+                this.onFileSelected(filePath);
+            });
     }
-
 
     hide() {
         const { isStarted, showConfirmCloseDialog, hideDfuDialog } = this.props;
@@ -125,7 +129,8 @@ class DfuDialog extends React.PureComponent {
                 <Modal className="dfu-dialog" size="lg" show={isVisible}>
                     <Modal.Header>
                         <Modal.Title>
-                            Device Firmware Upgrade (DFU) for device {device.address}
+                            Device Firmware Upgrade (DFU) for device{' '}
+                            {device.address}
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -200,11 +205,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return Object.assign({},
-        bindActionCreators(DfuActions, dispatch));
+    return {
+        ...bindActionCreators(DfuActions, dispatch),
+    };
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(DfuDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(DfuDialog);

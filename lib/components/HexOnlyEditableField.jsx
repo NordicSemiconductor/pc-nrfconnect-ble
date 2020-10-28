@@ -43,36 +43,41 @@ import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { hexArrayToHexText, hexArrayToText, textToHexText } from '../utils/stringUtil';
+import {
+    hexArrayToHexText,
+    hexArrayToText,
+    textToHexText,
+} from '../utils/stringUtil';
 import EditableField from './EditableField';
 
 function calcCaretPosition(origValue, caretPosition) {
     /*
-    * Replacing the textarea contents places the caret at the end.
-    * We need to place the caret back where it should be.
-    * Since we're adding dashes, this is not so trivial.
-    *
-    * Consider if the user typed the 1 in the string below:
-    * Before formatting: AA-A1A-AA, After: AA-A1-AA-A
-    * caretPosition before: 5, caretPosition after: 5
-    *
-    * But here it works differently:
-    * Before formatting: AA-AA1-AA, After: AA-AA-1A-A
-    * caretPosition before: 6, caretPosition after: 7
-    *
-    * And there's also this case:
-    * Before formatting: AA-AA-1AA, After: AA-AA-1A-A
-    * caretPosition before: 7, caretPosition after: 7
-    *
-    * Also have to handle backspace:
-    * Before formatting: AA-A-AA, After: AA-AA-A
-    * caretPosition before: 4, caretPosition after: 4
-    *
-    * Find where the caret would be without the dashes,
-    * and map that position back to the dashed string
-    */
+     * Replacing the textarea contents places the caret at the end.
+     * We need to place the caret back where it should be.
+     * Since we're adding dashes, this is not so trivial.
+     *
+     * Consider if the user typed the 1 in the string below:
+     * Before formatting: AA-A1A-AA, After: AA-A1-AA-A
+     * caretPosition before: 5, caretPosition after: 5
+     *
+     * But here it works differently:
+     * Before formatting: AA-AA1-AA, After: AA-AA-1A-A
+     * caretPosition before: 6, caretPosition after: 7
+     *
+     * And there's also this case:
+     * Before formatting: AA-AA-1AA, After: AA-AA-1A-A
+     * caretPosition before: 7, caretPosition after: 7
+     *
+     * Also have to handle backspace:
+     * Before formatting: AA-A-AA, After: AA-AA-A
+     * caretPosition before: 4, caretPosition after: 4
+     *
+     * Find where the caret would be without the dashes,
+     * and map that position back to the dashed string
+     */
     const dashesBeforeCaret = origValue.substr(0, caretPosition).match(/ /g);
-    const numDashesBeforeCaret = dashesBeforeCaret === null ? 0 : dashesBeforeCaret.length;
+    const numDashesBeforeCaret =
+        dashesBeforeCaret === null ? 0 : dashesBeforeCaret.length;
     const caretPositionWithoutDashes = caretPosition - numDashesBeforeCaret;
     const correctNumberOfDashes = Math.floor(caretPositionWithoutDashes / 2);
     return caretPositionWithoutDashes + correctNumberOfDashes;
@@ -230,7 +235,11 @@ class HexOnlyEditableField extends React.Component {
         for (let i = 0; i < valueArray.length; i += 1) {
             const value = valueArray[i];
             if (value.length % 2 !== 0) {
-                return { valid: false, validationMessage: 'Please enter full bytes (pairs of hexadecimals)' };
+                return {
+                    valid: false,
+                    validationMessage:
+                        'Please enter full bytes (pairs of hexadecimals)',
+                };
             }
         }
 
@@ -238,18 +247,7 @@ class HexOnlyEditableField extends React.Component {
     }
 
     render() {
-        const {
-            showText,
-            value,
-            keyPressValidation,
-            completeValidation,
-            formatInput,
-            onBeforeBackspace,
-            onBeforeDelete,
-            onChange,
-            title,
-            ...props
-        } = this.props; // pass along all props except these
+        const { showText, value, title, ...props } = this.props; // pass along all props except these
 
         const parsedValue = hexArrayToHexText(value);
         let titleValue = parsedValue;
@@ -284,10 +282,7 @@ class HexOnlyEditableField extends React.Component {
 
 HexOnlyEditableField.propTypes = {
     showText: PropTypes.bool,
-    value: PropTypes.oneOfType([
-        PropTypes.array,
-        PropTypes.string,
-    ]).isRequired,
+    value: PropTypes.oneOfType([PropTypes.array, PropTypes.string]).isRequired,
     keyPressValidation: PropTypes.func,
     completeValidation: PropTypes.func,
     formatInput: PropTypes.func,

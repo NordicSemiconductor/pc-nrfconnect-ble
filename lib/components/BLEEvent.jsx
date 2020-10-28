@@ -58,10 +58,7 @@ class BLEEvent extends React.PureComponent {
     onClick(e) {
         e.stopPropagation();
 
-        const {
-            onSelected,
-            event,
-        } = this.props;
+        const { onSelected, event } = this.props;
 
         if (onSelected) {
             onSelected(event.id);
@@ -69,29 +66,47 @@ class BLEEvent extends React.PureComponent {
     }
 
     getEventInfo() {
-        const { event: { type: eventType } } = this.props;
+        const {
+            event: { type: eventType },
+        } = this.props;
 
         switch (eventType) {
             case BLEEventType.USER_INITIATED_CONNECTION_UPDATE:
             case BLEEventType.PEER_CENTRAL_INITIATED_CONNECTION_UPDATE:
                 return {
                     name: 'Connection update',
-                    icon: (<span className="mdi mdi-link-variant"><span className="mdi mdi-arrow-down" /></span>),
+                    icon: (
+                        <span className="mdi mdi-link-variant">
+                            <span className="mdi mdi-arrow-down" />
+                        </span>
+                    ),
                 };
             case BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE:
                 return {
                     name: 'Connection update request',
-                    icon: (<span className="mdi mdi-link-variant"><span className="mdi mdi-arrow-up" /></span>),
+                    icon: (
+                        <span className="mdi mdi-link-variant">
+                            <span className="mdi mdi-arrow-up" />
+                        </span>
+                    ),
                 };
             case BLEEventType.USER_INITIATED_PAIRING:
                 return {
                     name: 'Pairing',
-                    icon: (<span className="mdi mdi-link-variant"><span className="mdi mdi-arrow-down" /></span>),
+                    icon: (
+                        <span className="mdi mdi-link-variant">
+                            <span className="mdi mdi-arrow-down" />
+                        </span>
+                    ),
                 };
             case BLEEventType.PEER_INITIATED_PAIRING:
                 return {
                     name: 'Pairing requested',
-                    icon: (<span className="mdi mdi-link-variant"><span className="mdi mdi-arrow-up" /></span>),
+                    icon: (
+                        <span className="mdi mdi-link-variant">
+                            <span className="mdi mdi-arrow-up" />
+                        </span>
+                    ),
                 };
             case BLEEventType.PASSKEY_DISPLAY:
                 return {
@@ -144,14 +159,16 @@ class BLEEvent extends React.PureComponent {
         const { event, onTimedOut } = this.props;
         const { name } = this.getEventInfo();
 
-        const eventTimer = ((event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE
-            || event.type === BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE
-            || event.type === BLEEventType.PASSKEY_DISPLAY
-            || event.type === BLEEventType.PASSKEY_REQUEST
-            || event.type === BLEEventType.NUMERICAL_COMPARISON
-            || event.type === BLEEventType.LEGACY_OOB_REQUEST
-            || event.type === BLEEventType.LESC_OOB_REQUEST)
-            && (event.state === BLEEventState.INDETERMINATE));
+        const eventTimer =
+            (event.type === BLEEventType.PEER_INITIATED_CONNECTION_UPDATE ||
+                event.type ===
+                    BLEEventType.PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE ||
+                event.type === BLEEventType.PASSKEY_DISPLAY ||
+                event.type === BLEEventType.PASSKEY_REQUEST ||
+                event.type === BLEEventType.NUMERICAL_COMPARISON ||
+                event.type === BLEEventType.LEGACY_OOB_REQUEST ||
+                event.type === BLEEventType.LESC_OOB_REQUEST) &&
+            event.state === BLEEventState.INDETERMINATE;
 
         return (
             <div className="content">
@@ -159,16 +176,15 @@ class BLEEvent extends React.PureComponent {
                     <div className="service-name truncate-text">{name}</div>
                     <div className="address-text">{event.device.address}</div>
                 </span>
-                {
-                    eventTimer
-                    && (
-                        <CountdownTimer
-                            ref={timer => { this.countDownTimerRef = timer; }}
-                            seconds={EVENT_TIMEOUT_SECONDS}
-                            onTimeout={() => onTimedOut()}
-                        />
-                    )
-                }
+                {eventTimer && (
+                    <CountdownTimer
+                        ref={timer => {
+                            this.countDownTimerRef = timer;
+                        }}
+                        seconds={EVENT_TIMEOUT_SECONDS}
+                        onTimeout={() => onTimedOut()}
+                    />
+                )}
             </div>
         );
     }
@@ -192,7 +208,9 @@ class BLEEvent extends React.PureComponent {
             case BLEEventState.SUCCESS:
                 return 'success-item';
             default:
-                throw new Error(`Error. Unknown ble event state: ${event.state}`);
+                throw new Error(
+                    `Error. Unknown ble event state: ${event.state}`
+                );
         }
     }
 
@@ -241,9 +259,7 @@ class BLEEvent extends React.PureComponent {
                     <div className="bar1" />
                     <div className="icon-wrap" />
                 </div>
-                <div className="content-wrap">
-                    {this.getEventContent()}
-                </div>
+                <div className="content-wrap">{this.getEventContent()}</div>
             </div>
         );
     }

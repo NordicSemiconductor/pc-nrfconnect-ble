@@ -43,11 +43,7 @@ import React from 'react';
 import AdvertisingListEntry from './AdvertisingListEntry';
 
 const AdvertisingList = props => {
-    const {
-        title,
-        advEntries,
-        onDelete,
-    } = props;
+    const { title, advEntries, onDelete } = props;
 
     return (
         <div className="adv-table-container">

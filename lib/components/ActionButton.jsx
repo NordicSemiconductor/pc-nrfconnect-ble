@@ -40,13 +40,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 
-const ActionButton = ({
-    label,
-    onClick,
-    primary,
-    className,
-    ...rest
-}) => (
+const ActionButton = ({ label, onClick, primary, className, ...rest }) => (
     <Button
         type="button"
         onClick={onClick}

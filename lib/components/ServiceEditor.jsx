@@ -86,7 +86,9 @@ class ServiceEditor extends React.PureComponent {
             onModified,
         } = this.props;
         if (validateUuid(this.uuid) === ERROR) {
-            onValidationError(new ValidationError('You have to provide a valid UUID.'));
+            onValidationError(
+                new ValidationError('You have to provide a valid UUID.')
+            );
             return;
         }
 
@@ -102,16 +104,9 @@ class ServiceEditor extends React.PureComponent {
     }
 
     render() {
-        const {
-            service,
-            onRemoveAttribute,
-        } = this.props;
+        const { service, onRemoveAttribute } = this.props;
 
-        const {
-            instanceId,
-            uuid,
-            name,
-        } = service;
+        const { instanceId, uuid, name } = service;
 
         if (this.saved || this.instanceId !== instanceId) {
             this.saved = false;
@@ -137,7 +132,11 @@ class ServiceEditor extends React.PureComponent {
                 />
                 <ButtonToolbar>
                     <div className="col-md-4" />
-                    <Button variant="primary" className="btn-nordic" onClick={onRemoveAttribute}>
+                    <Button
+                        variant="primary"
+                        className="btn-nordic"
+                        onClick={onRemoveAttribute}
+                    >
                         <i className="mdi mdi-close" />
                         Delete
                     </Button>

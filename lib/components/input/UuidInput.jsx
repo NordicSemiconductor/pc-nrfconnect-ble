@@ -62,7 +62,9 @@ class UuidInput extends React.PureComponent {
 
         if (!valid) {
             caretPosition -= 1;
-            this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
+            this.forceUpdate(() =>
+                textarea.setSelectionRange(caretPosition, caretPosition)
+            );
             return;
         }
 
@@ -80,11 +82,7 @@ class UuidInput extends React.PureComponent {
     }
 
     render() {
-        const {
-            label,
-            uuidDefinitions,
-            value,
-        } = this.props;
+        const { label, uuidDefinitions, value } = this.props;
 
         const uuidSelectButton = (
             <UuidLookup

@@ -64,11 +64,12 @@ const CONN_LATENCY_MAX = 499;
 const CONN_LATENCY_STEP = 1;
 
 export function isInRange(value, min, max) {
-    return ((value >= min) && (value <= max));
+    return value >= min && value <= max;
 }
 
 export const validInputStyle = {
-    boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6)',
+    boxShadow:
+        'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6)',
     borderColor: '#66afe9',
 };
 
@@ -82,12 +83,7 @@ export const invalidInputStyle = {
 //  If the user sets an connectionInterval we force that value to the SoftDevice
 //  by setting both maxConnectionInterval and minConnection interval to that value.
 const ConnectionUpdateRequestEditor = ({
-    event: {
-        id,
-        type,
-        requestedConnectionParams: rcp,
-        device,
-    },
+    event: { id, type, requestedConnectionParams: rcp, device },
     onIgnoreEvent,
     onUpdateConnectionParams,
     onRejectConnectionParams,
@@ -95,46 +91,57 @@ const ConnectionUpdateRequestEditor = ({
 }) => {
     const { address } = device;
 
-    const [connectionInterval, setConnectionInterval] = useState(rcp.minConnectionInterval);
-    const [connectionSupervisionTimeout, setConnectionSupervisionTimeout] = useState(
-        rcp.connectionSupervisionTimeout,
+    const [connectionInterval, setConnectionInterval] = useState(
+        rcp.minConnectionInterval
     );
+    const [
+        connectionSupervisionTimeout,
+        setConnectionSupervisionTimeout,
+    ] = useState(rcp.connectionSupervisionTimeout);
     const [slaveLatency, setSlaveLatency] = useState(rcp.slaveLatency);
 
-    const readOnly = (type === PEER_CENTRAL_INITIATED_CONNECTION_UPDATE);
+    const readOnly = type === PEER_CENTRAL_INITIATED_CONNECTION_UPDATE;
 
     const isSlaveLatencyValid = isInRange(
-        slaveLatency, CONN_LATENCY_MIN, CONN_LATENCY_MAX,
+        slaveLatency,
+        CONN_LATENCY_MIN,
+        CONN_LATENCY_MAX
     );
 
     const isConnectionSupervisionTimeoutValid = isInRange(
-        connectionSupervisionTimeout, CONN_TIMEOUT_MIN, CONN_TIMEOUT_MAX,
+        connectionSupervisionTimeout,
+        CONN_TIMEOUT_MIN,
+        CONN_TIMEOUT_MAX
     );
 
     const isConnectionIntervalValid = isInRange(
-        connectionInterval, CONN_INTERVAL_MIN, CONN_INTERVAL_MAX,
+        connectionInterval,
+        CONN_INTERVAL_MIN,
+        CONN_INTERVAL_MAX
     );
 
-    const disabled = (!isSlaveLatencyValid || !isConnectionSupervisionTimeoutValid);
+    const disabled =
+        !isSlaveLatencyValid || !isConnectionSupervisionTimeoutValid;
 
     return (
         <div>
             <div className="event-header">
                 <h4>
-                    { type === USER_INITIATED_CONNECTION_UPDATE && (
-                        `Connection parameters update for device ${address}`
-                    )}
-                    { type === PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE && (
-                        `Connection parameters update request from device ${address}`
-                    )}
-                    { type === PEER_CENTRAL_INITIATED_CONNECTION_UPDATE && (
-                        `Connection parameters updated by peer central ${address}`
-                    )}
+                    {type === USER_INITIATED_CONNECTION_UPDATE &&
+                        `Connection parameters update for device ${address}`}
+                    {type === PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE &&
+                        `Connection parameters update request from device ${address}`}
+                    {type === PEER_CENTRAL_INITIATED_CONNECTION_UPDATE &&
+                        `Connection parameters updated by peer central ${address}`}
                 </h4>
             </div>
             <form className="form-horizontal">
                 <TextInput
-                    style={isConnectionIntervalValid ? validInputStyle : invalidInputStyle}
+                    style={
+                        isConnectionIntervalValid
+                            ? validInputStyle
+                            : invalidInputStyle
+                    }
                     id={`interval_${address}`}
                     className="form-control nordic-form-control"
                     onChange={({ target }) => {
@@ -149,13 +156,25 @@ const ConnectionUpdateRequestEditor = ({
                     step={CONN_INTERVAL_STEP}
                     value={`${connectionInterval}`}
                     readOnly={readOnly}
-                    label={`Connection Interval (ms) ${type === USER_INITIATED_CONNECTION_UPDATE
-                        ? '' : <div>({rcp.minConnectionInterval}-{rcp.maxConnectionInterval})</div>}`}
+                    label={`Connection Interval (ms) ${
+                        type === USER_INITIATED_CONNECTION_UPDATE ? (
+                            ''
+                        ) : (
+                            <div>
+                                ({rcp.minConnectionInterval}-
+                                {rcp.maxConnectionInterval})
+                            </div>
+                        )
+                    }`}
                     labelClassName="col-md-7 text-right"
                     wrapperClassName="col-md-5"
                 />
                 <TextInput
-                    style={isSlaveLatencyValid ? validInputStyle : invalidInputStyle}
+                    style={
+                        isSlaveLatencyValid
+                            ? validInputStyle
+                            : invalidInputStyle
+                    }
                     id={`latency_${address}`}
                     className="form-control nordic-form-control"
                     onChange={({ target }) => {
@@ -172,12 +191,17 @@ const ConnectionUpdateRequestEditor = ({
                     wrapperClassName="col-md-5"
                 />
                 <TextInput
-                    style={isConnectionSupervisionTimeoutValid
-                        ? validInputStyle : invalidInputStyle}
+                    style={
+                        isConnectionSupervisionTimeoutValid
+                            ? validInputStyle
+                            : invalidInputStyle
+                    }
                     id={`timeout_${address}`}
                     className="form-control nordic-form-control"
                     onChange={({ target }) => {
-                        setConnectionSupervisionTimeout(parseInt(target.value, 10));
+                        setConnectionSupervisionTimeout(
+                            parseInt(target.value, 10)
+                        );
                     }}
                     type="number"
                     min={CONN_TIMEOUT_MIN}
@@ -192,8 +216,14 @@ const ConnectionUpdateRequestEditor = ({
                 <div className="row-of-buttons">
                     {type === PEER_PERIPHERAL_INITIATED_CONNECTION_UPDATE && (
                         <>
-                            <ActionButton label="Ignore" onClick={() => onIgnoreEvent(id)} />
-                            <ActionButton label="Reject" onClick={() => onRejectConnectionParams(device)} />
+                            <ActionButton
+                                label="Ignore"
+                                onClick={() => onIgnoreEvent(id)}
+                            />
+                            <ActionButton
+                                label="Reject"
+                                onClick={() => onRejectConnectionParams(device)}
+                            />
                         </>
                     )}
 
@@ -205,7 +235,10 @@ const ConnectionUpdateRequestEditor = ({
                                 primary
                                 disabled={disabled}
                             />
-                            <ActionButton label="Disconnect" onClick={() => onRejectConnectionParams(device)} />
+                            <ActionButton
+                                label="Disconnect"
+                                onClick={() => onRejectConnectionParams(device)}
+                            />
                         </>
                     ) : (
                         <ActionButton
@@ -214,15 +247,12 @@ const ConnectionUpdateRequestEditor = ({
                                 // Set minConnectionInterval and maxConnectionInterval
                                 // to connectionInterval
                                 // that way we force the connectionInterval on SoftDevice.
-                                onUpdateConnectionParams(
-                                    device,
-                                    {
-                                        minConnectionInterval: connectionInterval,
-                                        maxConnectionInterval: connectionInterval,
-                                        slaveLatency,
-                                        connectionSupervisionTimeout,
-                                    },
-                                );
+                                onUpdateConnectionParams(device, {
+                                    minConnectionInterval: connectionInterval,
+                                    maxConnectionInterval: connectionInterval,
+                                    slaveLatency,
+                                    connectionSupervisionTimeout,
+                                });
                             }}
                             primary
                             disabled={disabled}
@@ -230,7 +260,10 @@ const ConnectionUpdateRequestEditor = ({
                     )}
 
                     {type === USER_INITIATED_CONNECTION_UPDATE && (
-                        <ActionButton label="Cancel" onClick={() => onCancelUserInitiatedEvent(id)} />
+                        <ActionButton
+                            label="Cancel"
+                            onClick={() => onCancelUserInitiatedEvent(id)}
+                        />
                     )}
                 </div>
             </form>

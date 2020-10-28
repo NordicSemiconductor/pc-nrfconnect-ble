@@ -88,7 +88,9 @@ class EditableField extends React.Component {
 
     constructor(props) {
         super(props);
-        this.selectParentAndToggleEditing = this.selectParentAndToggleEditing.bind(this);
+        this.selectParentAndToggleEditing = this.selectParentAndToggleEditing.bind(
+            this
+        );
         this.selectParent = this.selectParent.bind(this);
         this.toggleEditing = this.toggleEditing.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -125,10 +127,7 @@ class EditableField extends React.Component {
 
         if (valid) {
             if (formatInput) {
-                ({
-                    value,
-                    caretPosition,
-                } = formatInput(value, caretPosition));
+                ({ value, caretPosition } = formatInput(value, caretPosition));
             }
 
             this.value = value;
@@ -137,7 +136,9 @@ class EditableField extends React.Component {
             caretPosition -= 1;
         }
 
-        this.forceUpdate(() => textarea.setSelectionRange(caretPosition, caretPosition));
+        this.forceUpdate(() =>
+            textarea.setSelectionRange(caretPosition, caretPosition)
+        );
 
         if (onChange) {
             onChange(this.value);
@@ -286,7 +287,12 @@ class EditableField extends React.Component {
                     <div className="alert-wrap">
                         <div
                             className="alert alert-danger tooltip top"
-                            style={{ display: this.validationMessage === '' ? 'none' : 'block' }}
+                            style={{
+                                display:
+                                    this.validationMessage === ''
+                                        ? 'none'
+                                        : 'block',
+                            }}
                         >
                             <div className="tooltip-arrow" />
                             {this.validationMessage}
@@ -374,11 +380,7 @@ class EditableField extends React.Component {
             );
         }
 
-        return (
-            <div className="editable-field selectable">
-                {child}
-            </div>
-        );
+        return <div className="editable-field selectable">{child}</div>;
     }
 }
 

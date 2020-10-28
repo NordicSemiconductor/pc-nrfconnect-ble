@@ -60,18 +60,17 @@ function formatUuid(value) {
 class UuidLookup extends React.Component {
     shouldComponentUpdate(nextProps) {
         const { uuidDefs } = this.props;
-        return !(JSON.stringify(uuidDefs) === JSON.stringify(nextProps.uuidDefs));
+        return !(
+            JSON.stringify(uuidDefs) === JSON.stringify(nextProps.uuidDefs)
+        );
     }
 
     render() {
-        const {
-            title,
-            onSelect,
-            uuidDefs,
-            pullRight,
-        } = this.props;
+        const { title, onSelect, uuidDefs, pullRight } = this.props;
 
-        const sorted = Object.keys(uuidDefs).sort((a, b) => parseInt(a, 16) - parseInt(b, 16));
+        const sorted = Object.keys(uuidDefs).sort(
+            (a, b) => parseInt(a, 16) - parseInt(b, 16)
+        );
         return (
             <div className="uuid-lookup">
                 <Dropdown
@@ -86,17 +85,15 @@ class UuidLookup extends React.Component {
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="scroll-menu">
                         <Dropdown.Header key="header0">{title}</Dropdown.Header>
-                        {
-                            sorted.map(uuid => (
-                                <Dropdown.Item
-                                    key={uuid}
-                                    title={`${uuid}: ${getUuidName(uuid)}`}
-                                    eventKey={uuid}
-                                >
-                                    {`${formatUuid(uuid)}: ${getUuidName(uuid)}`}
-                                </Dropdown.Item>
-                            ))
-                        }
+                        {sorted.map(uuid => (
+                            <Dropdown.Item
+                                key={uuid}
+                                title={`${uuid}: ${getUuidName(uuid)}`}
+                                eventKey={uuid}
+                            >
+                                {`${formatUuid(uuid)}: ${getUuidName(uuid)}`}
+                            </Dropdown.Item>
+                        ))}
                     </Dropdown.Menu>
                 </Dropdown>
             </div>

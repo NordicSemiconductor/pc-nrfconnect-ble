@@ -36,6 +36,7 @@
 
 /* eslint react/forbid-prop-types: off */
 /* eslint react/no-multi-comp: off */
+/* eslint-disable max-classes-per-file */
 
 'use strict';
 
@@ -50,9 +51,7 @@ import Popover from 'react-bootstrap/Popover';
 import layoutStrategies from '../common/layoutStrategies';
 
 const ConnectionSetup = props => {
-    const {
-        device,
-    } = props;
+    const { device } = props;
 
     let securityLevelText;
     switch (device.securityLevel) {
@@ -69,8 +68,13 @@ const ConnectionSetup = props => {
             securityLevelText = 'Unencrypted link';
     }
 
-    const iconClass = (device.securityLevel && (device.securityLevel > 1)) ? 'mdi mdi-lock' : 'mdi mdi-lock-open-outline';
-    const iconBondedClass = device.bonded ? 'mdi mdi-link-variant' : 'mdi mdi-link-variant-off';
+    const iconClass =
+        device.securityLevel && device.securityLevel > 1
+            ? 'mdi mdi-lock'
+            : 'mdi mdi-lock-open-outline';
+    const iconBondedClass = device.bonded
+        ? 'mdi mdi-link-variant'
+        : 'mdi mdi-link-variant-off';
     const bondedText = device.bonded ? 'Bonded' : 'Not bonded';
 
     return (
@@ -84,23 +88,35 @@ const ConnectionSetup = props => {
                 </Col>
             </Row>
             <Row>
-                <Col sm={8} xs={8} className="connection-parameter-label">Slave latency</Col>
+                <Col sm={8} xs={8} className="connection-parameter-label">
+                    Slave latency
+                </Col>
                 <Col sm={4} xs={4} className="connection-parameter-value">
                     {device.slaveLatency} ms
                 </Col>
             </Row>
             <Row>
-                <Col sm={6} xs={6} className="connection-parameter-label">Timeout</Col>
+                <Col sm={6} xs={6} className="connection-parameter-label">
+                    Timeout
+                </Col>
                 <Col sm={6} xs={6} className="connection-parameter-value">
                     {device.connectionSupervisionTimeout} ms
                 </Col>
             </Row>
             <Row>
-                <Col sm={8} xs={8} className={`top-spacer ${iconBondedClass}`}>{bondedText}</Col>
+                <Col sm={8} xs={8} className={`top-spacer ${iconBondedClass}`}>
+                    {bondedText}
+                </Col>
                 <Col sm={4} xs={4} className="connection-parameter-value" />
             </Row>
             <Row>
-                <Col sm={12} xs={12} className={`connection-security ${iconClass}`}>{securityLevelText}</Col>
+                <Col
+                    sm={12}
+                    xs={12}
+                    className={`connection-security ${iconClass}`}
+                >
+                    {securityLevelText}
+                </Col>
             </Row>
         </Container>
     );
@@ -111,40 +127,31 @@ ConnectionSetup.propTypes = {
 };
 
 class ConnectionOverlay extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.closeme = this.closeme.bind(this);
-    }
-
-    closeme() {
-        this.overlayTrigger.hide();
-    }
-
     render() {
-        const {
-            style,
-            device,
-        } = this.props;
+        const { style, device } = this.props;
 
-        const iconClass = (device.securityLevel && (device.securityLevel > 1))
-            ? 'mdi mdi-lock'
-            : 'mdi mdi-lock-open-outline';
+        const iconClass =
+            device.securityLevel && device.securityLevel > 1
+                ? 'mdi mdi-lock'
+                : 'mdi mdi-lock-open-outline';
 
         return (
-            <div className="connection-info-button btn btn-xs btn-link" style={style}>
+            <div
+                className="connection-info-button btn btn-xs btn-link"
+                style={style}
+            >
                 <OverlayTrigger
-                    ref={overlayTrigger => { this.overlayTrigger = overlayTrigger; }}
                     trigger={['click', 'focus', 'hover']}
                     rootClose
                     placement="left"
-                    overlay={(
-                        <Popover className="connection-info-popover" title="Connection Information">
-                            <ConnectionSetup
-                                device={device}
-                                closePopover={this.closeme}
-                            />
+                    overlay={
+                        <Popover
+                            className="connection-info-popover"
+                            title="Connection Information"
+                        >
+                            <ConnectionSetup device={device} />
                         </Popover>
-                    )}
+                    }
                 >
                     <span>
                         <i className={`icon-encircled ${iconClass}`} />
@@ -174,7 +181,7 @@ function generateLines(lineCoordinates) {
                 y1={lineCoordinates[i].y}
                 x2={lineCoordinates[i + 1].x}
                 y2={lineCoordinates[i + 1].y}
-            />,
+            />
         );
     }
 
@@ -202,10 +209,7 @@ class Connector extends React.PureComponent {
     }
 
     getConnectionOverlay(lineCoordinates) {
-        const {
-            device,
-            targetId,
-        } = this.props;
+        const { device, targetId } = this.props;
 
         if (lineCoordinates.length < 2) {
             return null;
@@ -228,20 +232,25 @@ class Connector extends React.PureComponent {
             posY = targetRect.height / 2;
         }
 
-        return (<ConnectionOverlay style={{ position: 'absolute', left: posX - 17, top: posY - 14 }} device={device} />);
+        return (
+            <ConnectionOverlay
+                style={{
+                    position: 'absolute',
+                    left: posX - 17,
+                    top: posY - 14,
+                }}
+                device={device}
+            />
+        );
     }
 
     render() {
-        const {
-            sourceId,
-            targetId,
-            layout,
-        } = this.props;
+        const { sourceId, targetId, layout } = this.props;
         const sourceElement = document.getElementById(sourceId);
         const targetElement = document.getElementById(targetId);
 
         if (!sourceElement || !targetElement) {
-            return (<div />);
+            return <div />;
         }
 
         const sourceRect = sourceElement.getBoundingClientRect();
@@ -250,13 +259,20 @@ class Connector extends React.PureComponent {
         const layoutInfo = layoutStrategies(layout)(sourceRect, targetRect, 3);
         const connectorBox = layoutInfo.boundingBox;
         const lines = generateLines(layoutInfo.lineCoordinates);
-        const connectionInfoOverlay = this.getConnectionOverlay(layoutInfo.lineCoordinates);
+        const connectionInfoOverlay = this.getConnectionOverlay(
+            layoutInfo.lineCoordinates
+        );
 
         return (
             <div className="connector">
-                <svg style={{
-                    position: 'absolute', left: connectorBox.left, top: connectorBox.top, width: connectorBox.width, height: connectorBox.height,
-                }}
+                <svg
+                    style={{
+                        position: 'absolute',
+                        left: connectorBox.left,
+                        top: connectorBox.top,
+                        width: connectorBox.width,
+                        height: connectorBox.height,
+                    }}
                 >
                     {lines}
                 </svg>

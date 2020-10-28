@@ -50,7 +50,6 @@ const TextInput = props => {
         label,
         labelClassName,
         wrapperClassName,
-        hasFeedback,
         buttonAfter,
         value,
         ...newProps
@@ -67,12 +66,14 @@ const TextInput = props => {
 
     return (
         <Form.Group controlId={id} {...classProp}>
-            {
-                label && <Form.Label className={labelClassName}>{label}</Form.Label>
-            }
+            {label && (
+                <Form.Label className={labelClassName}>{label}</Form.Label>
+            )}
             <InputGroup className={wrapperClassName}>
                 <Form.Control value={realValue} {...newProps} />
-                { buttonAfter && <InputGroup.Append>{ buttonAfter }</InputGroup.Append> }
+                {buttonAfter && (
+                    <InputGroup.Append>{buttonAfter}</InputGroup.Append>
+                )}
             </InputGroup>
         </Form.Group>
     );
@@ -91,10 +92,7 @@ TextInput.propTypes = {
     title: PropTypes.string,
     validationState: PropTypes.string,
     wrapperClassName: PropTypes.string,
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-    ]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 TextInput.defaultProps = {

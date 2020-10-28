@@ -110,16 +110,15 @@ const DeviceDetailsView = ({
         return undefined;
     };
 
-    const {
-        instanceId,
-        name,
-        address,
-        role,
-    } = device;
+    const { instanceId, name, address, role } = device;
 
     if (device && role === undefined) {
         return (
-            <div className="local-server device-details-view" id={`${instanceId}_details`} style={style}>
+            <div
+                className="local-server device-details-view"
+                id={`${instanceId}_details`}
+                style={style}
+            >
                 <CentralDevice
                     id={`${instanceId}_details`}
                     position={{ x: 0, y: 0 }}
@@ -153,14 +152,20 @@ const DeviceDetailsView = ({
         if (!deviceDetail.discoveringChildren) {
             const services = deviceDetail.get('children');
             if (services) {
-                return services.some(service => service.uuid === SECURE_DFU_UUID);
+                return services.some(
+                    service => service.uuid === SECURE_DFU_UUID
+                );
             }
         }
         return false;
     };
 
     return (
-        <div className="remote-server device-details-view" id={`${instanceId}_details`} style={style}>
+        <div
+            className="remote-server device-details-view"
+            id={`${instanceId}_details`}
+            style={style}
+        >
             <ConnectedDevice
                 id={`${instanceId}_details`}
                 sourceId={`${adapter.instanceId}_details`}
@@ -174,7 +179,9 @@ const DeviceDetailsView = ({
                 onSelectComponent={onSelectComponent}
                 onDisconnect={() => onDisconnectFromDevice(device)}
                 onPair={() => onPairWithDevice(device)}
-                onConnectionParamsUpdate={() => onUpdateDeviceConnectionParams(device)}
+                onConnectionParamsUpdate={() =>
+                    onUpdateDeviceConnectionParams(device)
+                }
                 onPhyUpdate={() => onUpdateDevicePhy(device)}
                 onMtuUpdate={() => onUpdateDeviceMtu(device)}
                 onDataLengthUpdate={() => onUpdateDeviceDataLength(device)}

@@ -49,7 +49,10 @@ import * as AdapterActions from '../actions/adapterActions';
 import * as AdvertisingActions from '../actions/advertisingActions';
 import * as ErrorActions from '../actions/errorDialogActions';
 import * as ServerSetupActions from '../actions/serverSetupActions';
-import { findSelectedItem, traverseItems } from '../common/treeViewKeyNavigation';
+import {
+    findSelectedItem,
+    traverseItems,
+} from '../common/treeViewKeyNavigation';
 import AddNewItem from '../components/AddNewItem';
 import CentralDevice from '../components/CentralDevice';
 import CharacteristicEditor from '../components/CharacteristicEditor';
@@ -97,12 +100,19 @@ class ServerSetup extends React.PureComponent {
 
     componentDidUpdate(prevProps) {
         const { serverSetup } = this.props;
-        if (serverSetup) { return false; }
+        if (serverSetup) {
+            return false;
+        }
 
-        if (!prevProps || !prevProps.serverSetup) { return false; }
+        if (!prevProps || !prevProps.serverSetup) {
+            return false;
+        }
 
-        if (!serverSetup
-            || prevProps.serverSetup.selectedComponent !== serverSetup.selectedComponent) {
+        if (
+            !serverSetup ||
+            prevProps.serverSetup.selectedComponent !==
+                serverSetup.selectedComponent
+        ) {
             this.modified = false;
             return false;
         }
@@ -139,11 +149,7 @@ class ServerSetup extends React.PureComponent {
     }
 
     onClickApply() {
-        const {
-            selectedAdapter,
-            applyServer,
-            showApplyDialog,
-        } = this.props;
+        const { selectedAdapter, applyServer, showApplyDialog } = this.props;
         if (!selectedAdapter.isServerSetupApplied) {
             applyServer();
         } else {
@@ -165,7 +171,8 @@ class ServerSetup extends React.PureComponent {
     openLoadDialog() {
         const { loadServerSetup } = this.props;
         const { dialog } = electron.remote;
-        dialog.showOpenDialog({ filters, properties: ['openFile'] })
+        dialog
+            .showOpenDialog({ filters, properties: ['openFile'] })
             .then(({ canceled, filePaths }) => {
                 if (!filePaths || canceled) {
                     return;
@@ -179,17 +186,16 @@ class ServerSetup extends React.PureComponent {
     }
 
     selectNextComponent(backward) {
-        const {
-            serverSetup,
-            selectComponent,
-        } = this.props;
+        const { serverSetup, selectComponent } = this.props;
 
         if (!serverSetup) {
             return;
         }
 
         const { selectedComponent } = serverSetup;
-        const deviceDetails = new Map({ devices: new Map({ 'local.server': serverSetup }) });
+        const deviceDetails = new Map({
+            devices: new Map({ 'local.server': serverSetup }),
+        });
         let foundCurrent = false;
 
         // eslint-disable-next-line no-restricted-syntax
@@ -218,7 +224,9 @@ class ServerSetup extends React.PureComponent {
         } = this.props;
 
         const { selectedComponent } = serverSetup;
-        const deviceDetails = new Map({ devices: new Map({ 'local.server': serverSetup }) });
+        const deviceDetails = new Map({
+            devices: new Map({ 'local.server': serverSetup }),
+        });
 
         if (!selectedComponent) {
             return;
@@ -242,7 +250,9 @@ class ServerSetup extends React.PureComponent {
 
             if (!expand && !item.expanded) {
                 if (itemInstanceIds.characteristic) {
-                    selectComponent(selectedComponent.split('.').slice(0, -1).join('.'));
+                    selectComponent(
+                        selectedComponent.split('.').slice(0, -1).join('.')
+                    );
                 }
 
                 return;
@@ -281,7 +291,7 @@ class ServerSetup extends React.PureComponent {
         } = this.props;
 
         if (!serverSetup) {
-            return (<div className="server-setup" />);
+            return <div className="server-setup" />;
         }
         const {
             selectedComponent,
@@ -300,14 +310,17 @@ class ServerSetup extends React.PureComponent {
 
         if (instanceIds.descriptor) {
             selectedAttribute = children.getIn([
-                instanceIds.service, 'children',
-                instanceIds.characteristic, 'children',
+                instanceIds.service,
+                'children',
+                instanceIds.characteristic,
+                'children',
                 instanceIds.descriptor,
             ]);
             selectedIsDescriptor = true;
         } else if (instanceIds.characteristic) {
             selectedAttribute = children.getIn([
-                instanceIds.service, 'children',
+                instanceIds.service,
+                'children',
                 instanceIds.characteristic,
             ]);
             selectedIsCharacteristic = true;
@@ -316,7 +329,9 @@ class ServerSetup extends React.PureComponent {
             selectedIsService = true;
         }
 
-        const editorBorderClass = selectedAttribute ? ' selected-component-editor-border' : '';
+        const editorBorderClass = selectedAttribute
+            ? ' selected-component-editor-border'
+            : '';
         let editor = <div className="nothing-selected" />;
         if (selectedIsService) {
             editor = (
@@ -353,7 +368,10 @@ class ServerSetup extends React.PureComponent {
         const services = children.valueSeq().map((service, i) => {
             let canAdd = true;
 
-            if (service.instanceId === 'local.server.0' || service.instanceId === 'local.server.1') {
+            if (
+                service.instanceId === 'local.server.0' ||
+                service.instanceId === 'local.server.1'
+            ) {
                 canAdd = false;
             }
 
@@ -373,7 +391,9 @@ class ServerSetup extends React.PureComponent {
             );
         });
 
-        const btnTitle = selectedAdapter.isServerSetupApplied ? 'Server setup can be applied only once between resets' : '';
+        const btnTitle = selectedAdapter.isServerSetupApplied
+            ? 'Server setup can be applied only once between resets'
+            : '';
 
         const central = (
             <CentralDevice
@@ -394,7 +414,14 @@ class ServerSetup extends React.PureComponent {
                         {central}
                         <div className="service-items-wrap">
                             {services}
-                            <AddNewItem text="New service" id="add-btn-root" bars={1} parentInstanceId="local.server" selected={selectedComponent} onClick={addNewService} />
+                            <AddNewItem
+                                text="New service"
+                                id="add-btn-root"
+                                bars={1}
+                                parentInstanceId="local.server"
+                                selected={selectedComponent}
+                                onClick={addNewService}
+                            />
                         </div>
                         <div className="server-setup-buttons">
                             <button
@@ -402,7 +429,8 @@ class ServerSetup extends React.PureComponent {
                                 className="btn btn-primary btn-nordic"
                                 onClick={this.onClickApply}
                             >
-                                <span className="mdi mdi-check" /> Apply to device
+                                <span className="mdi mdi-check" /> Apply to
+                                device
                             </button>
                             <button
                                 type="button"
@@ -458,9 +486,7 @@ class ServerSetup extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
-    const {
-        adapter,
-    } = state.app;
+    const { adapter } = state.app;
 
     const { selectedAdapter } = adapter;
 
@@ -475,20 +501,19 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    const retval = Object.assign(
-        {},
-        bindActionCreators(ServerSetupActions, dispatch),
-        bindActionCreators(AdapterActions, dispatch),
-        bindActionCreators(AdvertisingActions, dispatch),
-        bindActionCreators(ErrorActions, dispatch),
-    );
+    const retval = {
+        ...bindActionCreators(ServerSetupActions, dispatch),
+        ...bindActionCreators(AdapterActions, dispatch),
+        ...bindActionCreators(AdvertisingActions, dispatch),
+        ...bindActionCreators(ErrorActions, dispatch),
+    };
 
     return retval;
 }
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps,
+    mapDispatchToProps
 )(withHotkey(ServerSetup));
 
 ServerSetup.propTypes = {

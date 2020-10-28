@@ -92,11 +92,17 @@ class CharacteristicEditor extends React.Component {
         const { fixedLength } = this;
         const value = this.parseValueProperty(this.value);
 
-        if (maxLength > 510 && fixedLength === true) { return ERROR; }
+        if (maxLength > 510 && fixedLength === true) {
+            return ERROR;
+        }
 
-        if (maxLength > 512 && fixedLength === false) { return ERROR; }
+        if (maxLength > 512 && fixedLength === false) {
+            return ERROR;
+        }
 
-        if (maxLength < value.length) { return ERROR; }
+        if (maxLength < value.length) {
+            return ERROR;
+        }
 
         return SUCCESS;
     }
@@ -116,15 +122,22 @@ class CharacteristicEditor extends React.Component {
 
     saveAttribute() {
         const {
-            characteristic, onValidationError, onSaveChangedAttribute, onModified,
+            characteristic,
+            onValidationError,
+            onSaveChangedAttribute,
+            onModified,
         } = this.props;
         if (validateUuid(this.uuid) === ERROR) {
-            onValidationError(new ValidationError('You have to provide a valid UUID.'));
+            onValidationError(
+                new ValidationError('You have to provide a valid UUID.')
+            );
             return;
         }
 
         if (this.validateValueLength() === ERROR) {
-            onValidationError(new ValidationError('Length of value is not valid.'));
+            onValidationError(
+                new ValidationError('Length of value is not valid.')
+            );
             return;
         }
 
@@ -171,10 +184,7 @@ class CharacteristicEditor extends React.Component {
     }
 
     render() {
-        const {
-            characteristic,
-            onRemoveAttribute,
-        } = this.props;
+        const { characteristic, onRemoveAttribute } = this.props;
 
         const {
             instanceId,
@@ -252,62 +262,143 @@ class CharacteristicEditor extends React.Component {
                     showText={showText}
                 />
 
-                <LabeledInputGroup label="Properties" wrapperClassName="form-list">
+                <LabeledInputGroup
+                    label="Properties"
+                    wrapperClassName="form-list"
+                >
                     <Form.Group controlId="broadcastCheck">
-                        <Form.Check checked={this.broadcast} onChange={e => this.setCheckedProperty('broadcast', e)} label="Broadcast" />
+                        <Form.Check
+                            checked={this.broadcast}
+                            onChange={e =>
+                                this.setCheckedProperty('broadcast', e)
+                            }
+                            label="Broadcast"
+                        />
                     </Form.Group>
                     <Form.Group controlId="readCheck">
-                        <Form.Check checked={this.read} onChange={e => this.setCheckedProperty('read', e)} label="Read" />
+                        <Form.Check
+                            checked={this.read}
+                            onChange={e => this.setCheckedProperty('read', e)}
+                            label="Read"
+                        />
                     </Form.Group>
                     <Form.Group controlId="writeWoRespCheck">
-                        <Form.Check checked={this.writeWoResp} onChange={e => this.setCheckedProperty('writeWoResp', e)} label="Write without response" />
+                        <Form.Check
+                            checked={this.writeWoResp}
+                            onChange={e =>
+                                this.setCheckedProperty('writeWoResp', e)
+                            }
+                            label="Write without response"
+                        />
                     </Form.Group>
                     <Form.Group controlId="writeCheck">
-                        <Form.Check checked={this.write} onChange={e => this.setCheckedProperty('write', e)} label="Write" />
+                        <Form.Check
+                            checked={this.write}
+                            onChange={e => this.setCheckedProperty('write', e)}
+                            label="Write"
+                        />
                     </Form.Group>
                     <Form.Group controlId="notifyCheck">
-                        <Form.Check checked={this.notify} onChange={e => this.setCheckedProperty('notify', e)} label="Notify" />
+                        <Form.Check
+                            checked={this.notify}
+                            onChange={e => this.setCheckedProperty('notify', e)}
+                            label="Notify"
+                        />
                     </Form.Group>
                     <Form.Group controlId="indicateCheck">
-                        <Form.Check checked={this.indicate} onChange={e => this.setCheckedProperty('indicate', e)} label="Indicate" />
+                        <Form.Check
+                            checked={this.indicate}
+                            onChange={e =>
+                                this.setCheckedProperty('indicate', e)
+                            }
+                            label="Indicate"
+                        />
                     </Form.Group>
                     <Form.Group controlId="authSignedWrCheck">
                         <Form.Check
                             label="Authenticated signed write"
                             checked={this.authSignedWr}
-                            onChange={e => this.setCheckedProperty('authSignedWr', e)}
+                            onChange={e =>
+                                this.setCheckedProperty('authSignedWr', e)
+                            }
                         />
                     </Form.Group>
                 </LabeledInputGroup>
 
-                <LabeledInputGroup label="Extended Properties" wrapperClassName="form-list">
+                <LabeledInputGroup
+                    label="Extended Properties"
+                    wrapperClassName="form-list"
+                >
                     <Form.Group controlId="reliableWrCheck">
-                        <Form.Check checked={this.reliableWr} onChange={e => this.setCheckedProperty('reliableWr', e)} label="Reliable write" />
+                        <Form.Check
+                            checked={this.reliableWr}
+                            onChange={e =>
+                                this.setCheckedProperty('reliableWr', e)
+                            }
+                            label="Reliable write"
+                        />
                     </Form.Group>
                     <Form.Group controlId="wrAuxCheck">
-                        <Form.Check checked={this.wrAux} onChange={e => this.setCheckedProperty('wrAux', e)} label="Write auxiliary" />
+                        <Form.Check
+                            checked={this.wrAux}
+                            onChange={e => this.setCheckedProperty('wrAux', e)}
+                            label="Write auxiliary"
+                        />
                     </Form.Group>
                 </LabeledInputGroup>
 
-                <SelectList label="Read permission" type="select" value={this.readPerm} onChange={e => this.setValueProperty('readPerm', e)}>
+                <SelectList
+                    label="Read permission"
+                    type="select"
+                    value={this.readPerm}
+                    onChange={e => this.setValueProperty('readPerm', e)}
+                >
                     <option value="open">No security required</option>
-                    <option value="encrypt">Encryption required, no MITM</option>
-                    <option value="encrypt mitm-protection">Encryption with MITM required</option>
-                    <option value="lesc">LESC encryption with MITM required</option>
-                    <option value="no_access">No access rights specified (undefined)</option>
+                    <option value="encrypt">
+                        Encryption required, no MITM
+                    </option>
+                    <option value="encrypt mitm-protection">
+                        Encryption with MITM required
+                    </option>
+                    <option value="lesc">
+                        LESC encryption with MITM required
+                    </option>
+                    <option value="no_access">
+                        No access rights specified (undefined)
+                    </option>
                 </SelectList>
 
-                <SelectList label="Write permission" type="select" value={this.writePerm} onChange={e => this.setValueProperty('writePerm', e)}>
+                <SelectList
+                    label="Write permission"
+                    type="select"
+                    value={this.writePerm}
+                    onChange={e => this.setValueProperty('writePerm', e)}
+                >
                     <option value="open">No security required</option>
-                    <option value="encrypt">Encryption required, no MITM</option>
-                    <option value="encrypt mitm-protection">Encryption with MITM required</option>
-                    <option value="lesc">LESC encryption with MITM required</option>
-                    <option value="no_access">No access rights specified (undefined)</option>
+                    <option value="encrypt">
+                        Encryption required, no MITM
+                    </option>
+                    <option value="encrypt mitm-protection">
+                        Encryption with MITM required
+                    </option>
+                    <option value="lesc">
+                        LESC encryption with MITM required
+                    </option>
+                    <option value="no_access">
+                        No access rights specified (undefined)
+                    </option>
                 </SelectList>
 
                 <LabeledInputGroup label="Max length">
                     <Form.Group controlId="fixedLengthCheck">
-                        <Form.Check type="checkbox" checked={this.fixedLength} onChange={e => this.setCheckedProperty('fixedLength', e)} label="Fixed length" />
+                        <Form.Check
+                            type="checkbox"
+                            checked={this.fixedLength}
+                            onChange={e =>
+                                this.setCheckedProperty('fixedLength', e)
+                            }
+                            label="Fixed length"
+                        />
                     </Form.Group>
                     <TextInput
                         type="number"
@@ -321,7 +412,11 @@ class CharacteristicEditor extends React.Component {
 
                 <ButtonToolbar>
                     <div className="col-md-4" />
-                    <Button variant="primary" className="btn-nordic" onClick={onRemoveAttribute}>
+                    <Button
+                        variant="primary"
+                        className="btn-nordic"
+                        onClick={onRemoveAttribute}
+                    >
                         <i className="mdi mdi-close" />
                         Delete
                     </Button>

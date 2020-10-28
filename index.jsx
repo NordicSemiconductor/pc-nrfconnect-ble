@@ -60,17 +60,19 @@ export default {
             selectedItemId={selectedItemId < 0 ? 0 : selectedItemId}
             menuItems={[
                 { id: 0, text: 'Connection Map', iconClass: 'mdi mdi-sitemap' },
-                { id: 1, text: 'Server Setup', iconClass: 'mdi mdi-format-indent-increase' },
+                {
+                    id: 1,
+                    text: 'Server Setup',
+                    iconClass: 'mdi mdi-format-indent-increase',
+                },
             ]}
         />
     ),
-    decorateMainView: MainView => (
-        props => (
-            <MainView>
-                <SelectedView {...props} />
-                <BLEEventDialog />
-            </MainView>
-        )
+    decorateMainView: MainView => props => (
+        <MainView>
+            <SelectedView {...props} />
+            <BLEEventDialog />
+        </MainView>
     ),
     mapMainViewState: (state, props) => {
         const { selectedItemId } = state.core.navMenu;
@@ -79,12 +81,10 @@ export default {
             viewId: selectedItemId > 0 ? selectedItemId : 0,
         };
     },
-    decorateSidePanel: SidePanel => (
-        props => (
-            <SidePanel>
-                <DiscoveredDevices {...props} />
-            </SidePanel>
-        )
+    decorateSidePanel: SidePanel => props => (
+        <SidePanel>
+            <DiscoveredDevices {...props} />
+        </SidePanel>
     ),
     mapSidePanelDispatch: (dispatch, props) => ({
         ...props,
@@ -92,7 +92,8 @@ export default {
         ...bindActionCreators(AdapterActions, dispatch),
     }),
     mapDeviceSelectorState: (state, props) => ({
-        portIndicatorStatus: (state.app.adapter.selectedAdapter !== null) ? 'on' : 'off',
+        portIndicatorStatus:
+            state.app.adapter.selectedAdapter !== null ? 'on' : 'off',
         ...props,
     }),
     reduceApp: reducers,
@@ -106,18 +107,25 @@ export default {
         }
         if (action.type === 'DEVICE_SETUP_ERROR') {
             if (action.error.message.includes('No firmware defined')) {
-                logger.info(`Connected to device with serial number: ${action.device.serialNumber} `
-                    + `and family: ${action.device.deviceInfo.family || 'Unknown'} `);
-                logger.debug('Note: no pre-compiled firmware is available for the selected device. '
-                    + 'You may still use the app if you have programmed the device '
-                    + 'with a compatible connectivity firmware.');
+                logger.info(
+                    `Connected to device with serial number: ${action.device.serialNumber} ` +
+                        `and family: ${
+                            action.device.deviceInfo.family || 'Unknown'
+                        } `
+                );
+                logger.debug(
+                    'Note: no pre-compiled firmware is available for the selected device. ' +
+                        'You may still use the app if you have programmed the device ' +
+                        'with a compatible connectivity firmware.'
+                );
                 store.dispatch(AdapterActions.initAdapter(action.device));
             } else {
                 logger.error(`Failed to setup device: ${action.error.message}`);
             }
         }
         if (action.type === 'DEVICE_DESELECTED') {
-            store.dispatch(AdapterActions.closeAdapter())
+            store
+                .dispatch(AdapterActions.closeAdapter())
                 .then(() => logger.info('Device closed.'));
         }
         next(action);
@@ -139,6 +147,7 @@ export default {
             ...FirmwareRegistry.getDeviceSetup(),
             allowCustomDevice: true,
         },
-        releaseCurrentDevice: () => globalDispatch(AdapterActions.closeAdapter()),
+        releaseCurrentDevice: () =>
+            globalDispatch(AdapterActions.closeAdapter()),
     },
 };

@@ -1,3 +1,4 @@
+/* eslint-disable react/state-in-constructor */
 /* Copyright (c) 2015 - 2017, Nordic Semiconductor ASA
  *
  * All rights reserved.
@@ -87,16 +88,19 @@ class SecurityParamsControls extends React.PureComponent {
         keypress: this.props.securityParams.keypress,
         bond: this.props.securityParams.bond,
         io_caps_title: keyToIoCapsText(this.props.securityParams.io_caps),
-    }
+    };
 
     onIoCapsSelect(_, eventKey) {
         const ioCaps = parseInt(eventKey, 10);
-        this.setState({
-            io_caps: ioCaps,
-            io_caps_title: keyToIoCapsText(ioCaps),
-        }, () => {
-            this.props.onChange(this.state);
-        });
+        this.setState(
+            {
+                io_caps: ioCaps,
+                io_caps_title: keyToIoCapsText(ioCaps),
+            },
+            () => {
+                this.props.onChange(this.state);
+            }
+        );
     }
 
     handleCheckboxChange(variableName, checked) {
@@ -109,13 +113,17 @@ class SecurityParamsControls extends React.PureComponent {
         return (
             <Container>
                 <Row className="form-group">
-                    <Col sm={4} className="form-label text-right">IO capabilities</Col>
+                    <Col sm={4} className="form-label text-right">
+                        IO capabilities
+                    </Col>
                     <Col sm={7}>
                         <DropdownButton
                             title={this.state.io_caps_title}
                             key="ioCapsDropdownKey"
                             id="ioCapsDropdownId"
-                            onSelect={(eventKey, event) => this.onIoCapsSelect(event, eventKey)}
+                            onSelect={(eventKey, event) =>
+                                this.onIoCapsSelect(event, eventKey)
+                            }
                             variant="outline-secondary"
                         >
                             <Dropdown.Item eventKey={IO_CAPS_DISPLAY_ONLY}>
@@ -137,50 +145,87 @@ class SecurityParamsControls extends React.PureComponent {
                     </Col>
                 </Row>
                 <Row className="form-group">
-                    <Col sm={4} className="form-label text-right align-baseline">Authentication</Col>
+                    <Col
+                        sm={4}
+                        className="form-label text-right align-baseline"
+                    >
+                        Authentication
+                    </Col>
                     <Col sm={7}>
                         <Form.Group controlId="enableLescCheck">
                             <Form.Check
                                 defaultChecked={this.state.lesc}
-                                onChange={event => this.handleCheckboxChange('lesc', event.target.checked)}
+                                onChange={event =>
+                                    this.handleCheckboxChange(
+                                        'lesc',
+                                        event.target.checked
+                                    )
+                                }
                                 label="Enable LE Secure Connection pairing"
                             />
                         </Form.Group>
                         <Form.Group controlId="enableMitmCheck">
                             <Form.Check
                                 defaultChecked={this.state.mitm}
-                                onChange={event => this.handleCheckboxChange('mitm', event.target.checked)}
+                                onChange={event =>
+                                    this.handleCheckboxChange(
+                                        'mitm',
+                                        event.target.checked
+                                    )
+                                }
                                 label="Enable MITM protection"
                             />
                         </Form.Group>
                         <Form.Group controlId="enableOobCheck">
                             <Form.Check
                                 defaultChecked={this.state.oob}
-                                onChange={event => this.handleCheckboxChange('oob', event.target.checked)}
+                                onChange={event =>
+                                    this.handleCheckboxChange(
+                                        'oob',
+                                        event.target.checked
+                                    )
+                                }
                                 label="Enable OOB data"
                             />
                         </Form.Group>
                     </Col>
                 </Row>
                 <Row className="form-group">
-                    <Col sm={4} className="form-label text-right">Keypress notifications</Col>
+                    <Col sm={4} className="form-label text-right">
+                        Keypress notifications
+                    </Col>
                     <Col sm={7}>
                         <Form.Group controlId="enableKeypressCheck">
                             <Form.Check
                                 defaultChecked={this.state.keypress}
-                                onChange={event => this.handleCheckboxChange('keypress', event.target.checked)}
+                                onChange={event =>
+                                    this.handleCheckboxChange(
+                                        'keypress',
+                                        event.target.checked
+                                    )
+                                }
                                 label="Enable keypress notifications"
                             />
                         </Form.Group>
                     </Col>
                 </Row>
                 <Row className="form-group">
-                    <Col sm={4} className="form-label text-right align-baseline">Bonding</Col>
+                    <Col
+                        sm={4}
+                        className="form-label text-right align-baseline"
+                    >
+                        Bonding
+                    </Col>
                     <Col sm={7}>
                         <Form.Group controlId="performBondingCheck">
                             <Form.Check
                                 defaultChecked={this.state.bond}
-                                onChange={event => this.handleCheckboxChange('bond', event.target.checked)}
+                                onChange={event =>
+                                    this.handleCheckboxChange(
+                                        'bond',
+                                        event.target.checked
+                                    )
+                                }
                                 label="Perform bonding"
                             />
                         </Form.Group>

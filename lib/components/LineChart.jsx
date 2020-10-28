@@ -35,14 +35,10 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import {
-    arrayOf, shape, number, string,
-} from 'prop-types';
+import { arrayOf, shape, number, string } from 'prop-types';
 import Chart from 'chart.js';
 
-const LineChart = ({
-    data, xTotal, xAxisLabel, height,
-}) => {
+const LineChart = ({ data, xTotal, xAxisLabel, height }) => {
     const chartRef = useRef(null);
     const axis = {
         type: 'linear',
@@ -63,15 +59,17 @@ const LineChart = ({
                 maintainAspectRatio: false,
                 legend: { display: false },
                 scales: {
-                    xAxes: [{
-                        ...axis,
-                        ticks: { ...axis.ticks, max: Math.round(xTotal) },
-                        scaleLabel: {
-                            display: true,
-                            labelString: xAxisLabel,
-                            fontStyle: 'bold',
+                    xAxes: [
+                        {
+                            ...axis,
+                            ticks: { ...axis.ticks, max: Math.round(xTotal) },
+                            scaleLabel: {
+                                display: true,
+                                labelString: xAxisLabel,
+                                fontStyle: 'bold',
+                            },
                         },
-                    }],
+                    ],
                     yAxes: [axis],
                 },
             },
@@ -86,26 +84,37 @@ const LineChart = ({
                 })),
             },
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         // componentDidUpdate
         const { chart } = chartRef.current;
-        data.forEach(({ values }, index) => { chart.data.datasets[index].data = values; });
+        data.forEach(({ values }, index) => {
+            chart.data.datasets[index].data = values;
+        });
         chart.update();
     });
 
-    return <div style={{ height: `${height}px` }}><canvas ref={chartRef} /></div>;
+    return (
+        <div style={{ height: `${height}px` }}>
+            <canvas ref={chartRef} />
+        </div>
+    );
 };
 
 LineChart.propTypes = {
-    data: arrayOf(shape({
-        values: arrayOf(shape({
-            x: number.isRequired,
-            y: number.isRequired,
-        })),
-        color: string.isRequired,
-    })).isRequired,
+    data: arrayOf(
+        shape({
+            values: arrayOf(
+                shape({
+                    x: number.isRequired,
+                    y: number.isRequired,
+                })
+            ),
+            color: string.isRequired,
+        })
+    ).isRequired,
     xTotal: number.isRequired,
     xAxisLabel: string.isRequired,
     height: number.isRequired,

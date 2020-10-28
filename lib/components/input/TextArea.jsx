@@ -56,9 +56,9 @@ class TextArea extends React.Component {
 
         return (
             <Form.Group controlId={id} {...classProp}>
-                {
-                    label && <Form.Label className={labelClassName}>{label}</Form.Label>
-                }
+                {label && (
+                    <Form.Label className={labelClassName}>{label}</Form.Label>
+                )}
                 <InputGroup className={wrapperClassName}>
                     <Form.Control as="textarea" {...newProps} />
                 </InputGroup>

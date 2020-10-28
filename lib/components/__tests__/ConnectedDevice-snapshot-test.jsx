@@ -40,9 +40,15 @@ import { getImmutableDevice } from '../../utils/api';
 import ConnectedDevice from '../ConnectedDevice';
 
 jest.mock('react-redux', () => ({
-    ...require.requireActual('react-redux'),
+    ...jest.requireActual('react-redux'),
     useSelector: jest.fn().mockImplementation(() => ({
-        app: { adapter: { bleDriver: { adapter: { _bleDriver: { NRF_SD_BLE_API_VERSION: 5 } } } } },
+        app: {
+            adapter: {
+                bleDriver: {
+                    adapter: { _bleDriver: { NRF_SD_BLE_API_VERSION: 5 } },
+                },
+            },
+        },
     })),
 }));
 
@@ -55,45 +61,49 @@ const device = getImmutableDevice({
 
 describe('ConnectedDevice', () => {
     it('should render correctly without DFU support', () => {
-        const tree = renderer.create(
-            <ConnectedDevice
-                device={device}
-                id="connected-device-id"
-                sourceId="source-id"
-                layout="vertical"
-                isDfuSupported={false}
-                onClickDfu={() => {}}
-                onConnectionParamsUpdate={() => {}}
-                onDisconnect={() => {}}
-                onPair={() => {}}
-                connectedDevicesNumber={1}
-                onPhyUpdate={() => {}}
-                onMtuUpdate={() => {}}
-                onDataLengthUpdate={() => {}}
-            />,
-        ).toJSON();
+        const tree = renderer
+            .create(
+                <ConnectedDevice
+                    device={device}
+                    id="connected-device-id"
+                    sourceId="source-id"
+                    layout="vertical"
+                    isDfuSupported={false}
+                    onClickDfu={() => {}}
+                    onConnectionParamsUpdate={() => {}}
+                    onDisconnect={() => {}}
+                    onPair={() => {}}
+                    connectedDevicesNumber={1}
+                    onPhyUpdate={() => {}}
+                    onMtuUpdate={() => {}}
+                    onDataLengthUpdate={() => {}}
+                />
+            )
+            .toJSON();
 
         expect(tree).toMatchSnapshot();
     });
 
     it('should render correctly with DFU support', () => {
-        const tree = renderer.create(
-            <ConnectedDevice
-                device={device}
-                id="connected-device-id"
-                sourceId="source-id"
-                layout="vertical"
-                isDfuSupported
-                onClickDfu={() => {}}
-                onConnectionParamsUpdate={() => {}}
-                onDisconnect={() => {}}
-                onPair={() => {}}
-                connectedDevicesNumber={1}
-                onPhyUpdate={() => {}}
-                onMtuUpdate={() => {}}
-                onDataLengthUpdate={() => {}}
-            />,
-        ).toJSON();
+        const tree = renderer
+            .create(
+                <ConnectedDevice
+                    device={device}
+                    id="connected-device-id"
+                    sourceId="source-id"
+                    layout="vertical"
+                    isDfuSupported
+                    onClickDfu={() => {}}
+                    onConnectionParamsUpdate={() => {}}
+                    onDisconnect={() => {}}
+                    onPair={() => {}}
+                    connectedDevicesNumber={1}
+                    onPhyUpdate={() => {}}
+                    onMtuUpdate={() => {}}
+                    onDataLengthUpdate={() => {}}
+                />
+            )
+            .toJSON();
 
         expect(tree).toMatchSnapshot();
     });

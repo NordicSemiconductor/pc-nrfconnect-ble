@@ -57,17 +57,15 @@ class ServiceItem extends AttributeItem {
         return (
             <div className="content">
                 {this.renderName()}
-                {button
-                    && (
-                        <button
-                            className="btn btn-primary btn-nordic"
-                            type="button"
-                            onClick={button.onClick}
-                        >
-                            <img src={button.icon} alt="" />
-                        </button>
-                    )
-                }
+                {button && (
+                    <button
+                        className="btn btn-primary btn-nordic"
+                        type="button"
+                        onClick={button.onClick}
+                    >
+                        <img src={button.icon} alt="" />
+                    </button>
+                )}
                 {children}
             </div>
         );
@@ -88,27 +86,27 @@ class ServiceItem extends AttributeItem {
             onWriteDescriptor,
         } = this.props;
 
-        const {
-            children,
-        } = item;
+        const { children } = item;
 
-        return children.valueSeq().map(characteristic => (
-            <CharacteristicItem
-                key={characteristic.instanceId}
-                item={characteristic}
-                selectOnClick={selectOnClick}
-                selected={selected}
-                onSelectAttribute={onSelectAttribute}
-                onSetAttributeExpanded={onSetAttributeExpanded}
-                onRead={onReadCharacteristic}
-                onWrite={onWriteCharacteristic}
-                onReadDescriptor={onReadDescriptor}
-                onWriteDescriptor={onWriteDescriptor}
-                onChange={this.childChanged}
-                addNew={addNew}
-                onAddDescriptor={onAddDescriptor}
-            />
-        ));
+        return children
+            .valueSeq()
+            .map(characteristic => (
+                <CharacteristicItem
+                    key={characteristic.instanceId}
+                    item={characteristic}
+                    selectOnClick={selectOnClick}
+                    selected={selected}
+                    onSelectAttribute={onSelectAttribute}
+                    onSetAttributeExpanded={onSetAttributeExpanded}
+                    onRead={onReadCharacteristic}
+                    onWrite={onWriteCharacteristic}
+                    onReadDescriptor={onReadDescriptor}
+                    onWriteDescriptor={onWriteDescriptor}
+                    onChange={this.childChanged}
+                    addNew={addNew}
+                    onAddDescriptor={onAddDescriptor}
+                />
+            ));
     }
 }
 

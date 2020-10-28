@@ -46,7 +46,11 @@ import ActionButton from './ActionButton';
 import { Event } from '../reducers/bleEventReducer';
 import { BLEEventType } from '../actions/common';
 import TextInput from './input/TextInput';
-import { isInRange, validInputStyle, invalidInputStyle } from './ConnectionUpdateRequestEditor';
+import {
+    isInRange,
+    validInputStyle,
+    invalidInputStyle,
+} from './ConnectionUpdateRequestEditor';
 
 const { PEER_INITIATED_DATA_LENGTH_UPDATE } = BLEEventType;
 
@@ -54,18 +58,14 @@ const DL_MIN = 27;
 const DL_MAX = 251;
 
 const DataLengthUpdateRequestEditor = ({
-    event: {
-        type,
-        requestedDataLength,
-        device,
-    },
+    event: { type, requestedDataLength, device },
     onUpdateDataLength,
     onCancelDataLengthUpdate,
 }) => {
     const { address } = device;
     const peerInitiated = type === PEER_INITIATED_DATA_LENGTH_UPDATE;
     const [dataLength, setDataLength] = useState(
-        peerInitiated ? requestedDataLength : device.dataLength,
+        peerInitiated ? requestedDataLength : device.dataLength
     );
     const isDataLengthValid = isInRange(dataLength, DL_MIN, DL_MAX);
 
@@ -80,10 +80,14 @@ const DataLengthUpdateRequestEditor = ({
                     Its valid range is between {DL_MIN} and {DL_MAX} octets.
                 </p>
                 <TextInput
-                    style={isDataLengthValid ? validInputStyle : invalidInputStyle}
+                    style={
+                        isDataLengthValid ? validInputStyle : invalidInputStyle
+                    }
                     id={`dl_${address}`}
                     className="form-control nordic-form-control col col-10 pr-0"
-                    onChange={({ target }) => setDataLength(parseInt(target.value, 10))}
+                    onChange={({ target }) =>
+                        setDataLength(parseInt(target.value, 10))
+                    }
                     type="number"
                     value={dataLength}
                     min={DL_MIN}
