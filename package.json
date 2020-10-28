@@ -49,7 +49,7 @@
     "react-redux": "7.2.0"
   },
   "dependencies": {
-    "bluetooth-uuid-database": "github:NordicSemiconductor/bluetooth-numbers-database#bea7edc8aa",
+    "bluetooth-uuid-database": "github:NordicSemiconductor/bluetooth-numbers-database#75bb6a8079",
     "electron-store": "^6.0.0"
   },
   "bundledDependencies": [
