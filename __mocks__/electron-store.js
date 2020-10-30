@@ -13,7 +13,7 @@ const defaultStoreValues = {
 };
 
 const Store = jest.fn().mockImplementation(() => ({
-    get: key => defaultStoreValues[key],
+    get: (key, defaultValue) => defaultStoreValues[key] || defaultValue,
     set: mockSetFn,
 }));
 
