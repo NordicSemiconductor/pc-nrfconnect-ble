@@ -45,7 +45,10 @@ import * as AdapterActions from './lib/actions/adapterActions';
 import SelectedView from './lib/components/SelectedView';
 import BLEEventDialog from './lib/containers/BLEEventDialog';
 import DiscoveredDevices from './lib/containers/DiscoveredDevices';
-import { confirmUserUUIDsExist } from './lib/utils/uuid_definitions';
+import {
+    confirmUserUUIDsExist,
+    populateUuids,
+} from './lib/utils/uuid_definitions';
 
 import './resources/css/styles.scss';
 
@@ -136,6 +139,7 @@ export default {
     },
     onReady: () => {
         confirmUserUUIDsExist(getUserDataDir());
+        populateUuids();
     },
     config: {
         selectorTraits: {
