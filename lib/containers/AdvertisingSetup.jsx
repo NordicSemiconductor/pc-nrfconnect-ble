@@ -36,6 +36,7 @@
 
 'use strict';
 
+import electron from 'electron';
 import { List } from 'immutable';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -50,6 +51,11 @@ import AdvertisingData from '../components/AdvertisingData';
 import AdvertisingList from '../components/AdvertisingList';
 import { persistentStore } from '../common/Persistentstore';
 
+const filters = [
+    { name: 'nRF Connect Advertising setup', extensions: ['nca', 'json'] },
+    { name: 'All Files', extensions: ['*'] },
+];
+
 class AdvertisingSetup extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -57,6 +63,8 @@ class AdvertisingSetup extends React.PureComponent {
         this.addToScanResponse = this.addToScanResponse.bind(this);
         this.handleApply = this.handleApply.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.handleSave = this.handleSave.bind(this);
+        this.handleLoad = this.handleLoad.bind(this);
     }
 
     componentDidMount() {
@@ -117,6 +125,34 @@ class AdvertisingSetup extends React.PureComponent {
         setAdvertisingData();
     }
 
+    handleSave() {
+        const { saveAdvSetup } = this.props;
+        const { dialog } = electron.remote;
+        dialog.showSaveDialog({ filters }).then(({ canceled, filePath }) => {
+            if (!filePath || canceled) {
+                return;
+            }
+            saveAdvSetup(filePath);
+        });
+    }
+
+    handleLoad() {
+        const { loadAdvSetup } = this.props;
+        const { dialog } = electron.remote;
+        dialog
+            .showOpenDialog({ filters, properties: ['openFile'] })
+            .then(({ canceled, filePaths }) => {
+                if (!filePaths || canceled) {
+                    return;
+                }
+                const [filePath] = filePaths;
+                if (!filePath) {
+                    return;
+                }
+                loadAdvSetup(filePath);
+            });
+    }
+
     render() {
         const {
             tempAdvDataEntries,
@@ -175,6 +211,18 @@ class AdvertisingSetup extends React.PureComponent {
                     </Form.Label>
                     <Button
                         className="btn-primary btn-nordic"
+                        onClick={this.handleLoad}
+                    >
+                        Load setup
+                    </Button>
+                    <Button
+                        className="btn-primary btn-nordic"
+                        onClick={this.handleSave}
+                    >
+                        Save setup
+                    </Button>
+                    <Button
+                        className="btn-primary btn-nordic"
                         onClick={this.handleApply}
                     >
                         Apply
@@ -224,4 +272,6 @@ AdvertisingSetup.propTypes = {
     addScanRsp: PropTypes.func.isRequired,
     deleteScanRsp: PropTypes.func.isRequired,
     hideSetupDialog: PropTypes.func.isRequired,
+    saveAdvSetup: PropTypes.func.isRequired,
+    loadAdvSetup: PropTypes.func.isRequired,
 };
