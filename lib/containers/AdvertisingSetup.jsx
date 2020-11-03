@@ -204,35 +204,41 @@ class AdvertisingSetup extends React.PureComponent {
                             />
                         </div>
                     </div>
+                    <div className="adv-row">
+                        <Form.Label className="error-label" variant="danger">
+                            {setAdvdataStatus}
+                        </Form.Label>
+                    </div>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Form.Label className="error-label" variant="danger">
-                        {setAdvdataStatus}
-                    </Form.Label>
-                    <Button
-                        className="btn-primary btn-nordic"
-                        onClick={this.handleLoad}
-                    >
-                        Load setup
-                    </Button>
-                    <Button
-                        className="btn-primary btn-nordic"
-                        onClick={this.handleSave}
-                    >
-                        Save setup
-                    </Button>
-                    <Button
-                        className="btn-primary btn-nordic"
-                        onClick={this.handleApply}
-                    >
-                        Apply
-                    </Button>
-                    <Button
-                        className="btn-primary btn-nordic"
-                        onClick={hideSetupDialog}
-                    >
-                        Close
-                    </Button>
+                <Modal.Footer className="advertisingSetup-footer">
+                    <div>
+                        <Button
+                            variant="outline-secondary"
+                            onClick={this.handleLoad}
+                        >
+                            Load setup
+                        </Button>
+                        <Button
+                            variant="outline-secondary"
+                            onClick={this.handleSave}
+                        >
+                            Save setup
+                        </Button>
+                    </div>
+                    <div>
+                        <Button
+                            className="btn-primary btn-nordic"
+                            onClick={this.handleApply}
+                        >
+                            Apply
+                        </Button>
+                        <Button
+                            variant="outline-secondary"
+                            onClick={hideSetupDialog}
+                        >
+                            Close
+                        </Button>
+                    </div>
                 </Modal.Footer>
             </Modal>
         );

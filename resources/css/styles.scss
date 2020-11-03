@@ -34,15 +34,23 @@
 * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-@import "./variables.scss";
+@import './variables.scss';
 
 @keyframes rotator {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 .spinner {
     border-radius: 50%;
-    background: linear-gradient(to right, $icon-color 10%, rgba(255, 255, 255, 0) 42%);
+    background: linear-gradient(
+        to right,
+        $icon-color 10%,
+        rgba(255, 255, 255, 0) 42%
+    );
     position: relative;
     display: inline-block;
     animation: rotator 1.4s infinite linear;
@@ -72,7 +80,8 @@
     right: 0;
 }
 
-.core-main-view, .core-side-panel {
+.core-main-view,
+.core-side-panel {
     padding: 0;
 }
 
@@ -115,7 +124,7 @@
 
 .icon-foreground {
     overflow: hidden;
-    position:absolute
+    position: absolute;
 }
 
 .icon-background {
@@ -139,52 +148,55 @@
     }
 }
 
-.border-box { box-sizing:border-box; -moz-box-sizing:border-box; }
+.border-box {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
 .slidein {
-    display:block;
+    display: block;
 }
 
 #diagramContainer {
     padding: 20px;
-    width:100%;
+    width: 100%;
     position: relative;
     overflow: auto;
 }
 
 @font-face {
-    font-family: "Roboto Condensed";
+    font-family: 'Roboto Condensed';
     font-style: normal;
     font-weight: 300;
 }
 
 @font-face {
-    font-family: "Roboto";
+    font-family: 'Roboto';
     font-style: italic;
     font-weight: 300;
 }
 
 /* Normal */
 @font-face {
-    font-family: "Roboto";
+    font-family: 'Roboto';
     font-style: normal;
     font-weight: 400;
 }
 
 @font-face {
-    font-family: "Roboto";
+    font-family: 'Roboto';
     font-style: italic;
     font-weight: 400;
 }
 
 /* Bold */
 @font-face {
-    font-family: "Roboto";
+    font-family: 'Roboto';
     font-style: normal;
     font-weight: 700;
 }
 
 @font-face {
-    font-family: "Roboto";
+    font-family: 'Roboto';
     font-style: italic;
     font-weight: 700;
 }
@@ -265,7 +277,7 @@
 // }
 
 #log-entry > service-info > service-flags > service-flag {
-    height:20px;
+    height: 20px;
     background: #aaaaaa;
     border-radius: 5px;
     text-align: center;
@@ -320,18 +332,21 @@
         flex: 1;
         display: flex;
         flex-flow: column;
-        > div:nth-child(1) { //main
+        > div:nth-child(1) {
+            //main
             flex: 1;
             border-top: 1px solid gray;
             box-shadow: inset -0px 0px 6px 0px gray;
         }
-        > div:nth-child(2) { //log
+        > div:nth-child(2) {
+            //log
             border-top: 1px solid gray;
             overflow: hidden;
         }
     }
 
-    > div:nth-child(2) { //device details
+    > div:nth-child(2) {
+        //device details
         box-shadow: inset 0px 5px 6px -5px gray;
         background-color: white;
         width: 260px;
@@ -386,7 +401,7 @@
             margin-right: 10px;
         }
         .checkbox {
-            margin-top:5px;
+            margin-top: 5px;
             margin-bottom: 3px;
         }
         .form-control {
@@ -409,14 +424,16 @@
 }
 
 .btn-nordic {
-    border-radius: 0px
+    border-radius: 0px;
 }
 
 #diagramContainer .device.standalone {
     box-shadow: $draggable-box-shadow;
 }
 
-.device-details-view .device.standalone, .server-setup-view, .bleevent-dialog-view {
+.device-details-view .device.standalone,
+.server-setup-view,
+.bleevent-dialog-view {
     border-bottom: 1px solid $device-details-light-border-color;
 
     .flag-line {
@@ -452,7 +469,7 @@
         width: 280px;
 
         .top-bar {
-            background-color: #E6E6E6;
+            background-color: #e6e6e6;
             min-height: 20px;
         }
         > div {
@@ -480,7 +497,8 @@
                 margin-left: 10px;
             }
 
-            .mdi-signal-variant { // advertising icon
+            .mdi-signal-variant {
+                // advertising icon
                 margin-right: 13px;
                 float: right;
                 font-size: 18px;
@@ -493,13 +511,13 @@
                     li > a:focus {
                         outline: 1px solid black;
                     }
-                    background-color: #FFFFFF;
+                    background-color: #ffffff;
                     li > a {
-                        background-color: #FFFFFF;
+                        background-color: #ffffff;
                         color: #333333;
                     }
-                    li > a:hover{
-                        background-color: #E6E6E6;
+                    li > a:hover {
+                        background-color: #e6e6e6;
                     }
                 }
                 > .dropdown-toggle {
@@ -589,11 +607,11 @@
 }
 
 @mixin padded-row-list($margin: 5px) {
-    >:not(:last-child) {
+    > :not(:last-child) {
         margin-right: $margin;
     }
 
-    >:last-child {
+    > :last-child {
         margin-right: 0px;
     }
 }
@@ -603,11 +621,11 @@
 }
 
 @mixin padded-column-list($margin: 5px) {
-    >:not(:last-child) {
+    > :not(:last-child) {
         margin-bottom: $margin;
     }
 
-    >:last-child {
+    > :last-child {
         margin-bottom: 0px;
     }
 }
@@ -662,7 +680,8 @@
     @include padded-row-list(2px);
 }
 
-.device-flag, .role-flag {
+.device-flag,
+.role-flag {
     border-radius: 3px;
     font-size: 10px;
     padding: 0px 3px;
@@ -700,7 +719,7 @@
 
 .adv-line {
     @include flag-line;
-    background-color: #F8F8F8;
+    background-color: #f8f8f8;
     margin: 3px 0px 0px 3px;
     padding: 0px 3px 0px 3px;
 }
@@ -754,7 +773,8 @@
         background-color: white;
         display: table-row;
         min-width: 100%;
-        .time, .message {
+        .time,
+        .message {
             display: table-cell;
             padding: 0 20px;
             border-right: 1px dotted gray;
@@ -767,10 +787,14 @@
         }
     }
 
-    .log-trace, .log-debug,.log-info,.log-warning {
+    .log-trace,
+    .log-debug,
+    .log-info,
+    .log-warning {
         background-color: white;
     }
-    .log-error,.log-fatal {
+    .log-error,
+    .log-fatal {
         color: $state-danger-text;
         background-color: $state-danger-bg;
     }
@@ -789,7 +813,7 @@
         font-weight: bold;
         padding-left: 20px;
         font-size: 14px;
-        margin:0;
+        margin: 0;
         flex: 1;
     }
     .log-header-buttons {
@@ -817,7 +841,8 @@
 }
 
 .server-setup {
-    .server-setup-view, .bleevent-dialog-view {
+    .server-setup-view,
+    .bleevent-dialog-view {
         display: flex;
         margin: 0px;
         max-width: 800px;
@@ -863,7 +888,8 @@
             overflow-y: auto;
             overflow-x: hidden;
             height: 100%;
-            > form, .nothing-selected {
+            > form,
+            .nothing-selected {
                 height: 100%;
                 padding: 20px;
             }
@@ -895,7 +921,8 @@
 }
 
 .bleevent-dialog {
-    .server-setup-view, .bleevent-dialog-view {
+    .server-setup-view,
+    .bleevent-dialog-view {
         display: flex;
         margin: 0px;
         max-width: 800px;
@@ -963,22 +990,27 @@
     max-height: calc(100vh - 444px);
 }
 
-.device-details-view, .server-setup-view, .bleevent-dialog-view {
+.device-details-view,
+.server-setup-view,
+.bleevent-dialog-view {
     background-color: white;
     margin: 80px 0px 0px 20px;
     .service-items-wrap {
         overflow-y: auto;
         overflow-x: hidden;
         width: 280px;
-    } .enumerating-items-wrap {
+    }
+    .enumerating-items-wrap {
         display: flex;
         .enumerating-content {
-            width:100%;
+            width: 100%;
             padding: 4px 0px;
             border-bottom: 1px solid $device-details-light-border-color;
         }
     }
-    .bar1, .bar2, .bar3 {
+    .bar1,
+    .bar2,
+    .bar3 {
         width: 8px;
         border-bottom: 1px solid white;
         margin-right: 1px;
@@ -992,7 +1024,9 @@
     .bar3 {
         background-color: $bar3-color;
     }
-    .service-item, .characteristic-item, .descriptor-item {
+    .service-item,
+    .characteristic-item,
+    .descriptor-item {
         padding: 0;
         display: flex;
         align-items: stretch;
@@ -1059,7 +1093,8 @@
             }
         }
     }
-    .characteristic-item, .descriptor-item {
+    .characteristic-item,
+    .descriptor-item {
         .content-wrap {
             font-size: 11px;
         }
@@ -1078,7 +1113,8 @@
         display: flex;
         font-size: 11px;
         color: $icon-color;
-        &:hover, &:hover .icon-wrap {
+        &:hover,
+        &:hover .icon-wrap {
             color: $bar2-color;
         }
         .icon-wrap {
@@ -1104,7 +1140,6 @@
     .icon-encircled:active {
         color: $gray-medium-lighter;
     }
-
 }
 .editable-field {
     .tooltip {
@@ -1112,7 +1147,7 @@
         $arrow-size: 6px;
         padding: 5px 10px;
         opacity: 1;
-        margin:0;
+        margin: 0;
         bottom: $arrow-size;
         .tooltip-arrow {
             border-top-color: $alert-danger-border;
@@ -1176,7 +1211,7 @@ hr {
         margin-bottom: 10px;
     }
     label {
-        text-align: left!important;
+        text-align: left !important;
         font-weight: normal;
     }
 }
@@ -1187,11 +1222,11 @@ hr {
         display: flex;
         justify-content: space-around;
         align-items: center;
-        input[type="number"] {
+        input[type='number'] {
             width: 60px;
             display: inline;
         }
-        >div>label{
+        > div > label {
             margin-right: 8px;
         }
     }
@@ -1256,7 +1291,9 @@ hr {
     .modal-footer {
         border-top: none;
     }
-    .device-details-view, .server-setup-view, .bleevent-dialog-view {
+    .device-details-view,
+    .server-setup-view,
+    .bleevent-dialog-view {
         margin-left: 4px;
         margin-right: 4px;
         margin-bottom: 0px;
@@ -1268,7 +1305,7 @@ hr {
                 display: flex;
                 align-items: center;
                 margin-left: 0px;
-                [class^="icon-"]:before {
+                [class^='icon-']:before {
                     margin-right: 0px;
                     margin-left: 0px;
                 }
@@ -1342,13 +1379,13 @@ hr {
         li > a:focus {
             outline: 1px solid black;
         }
-        background-color: #FFFFFF;
+        background-color: #ffffff;
         li > a {
-            background-color: #FFFFFF;
+            background-color: #ffffff;
             color: #333333;
         }
-        li > a:hover{
-            background-color: #E6E6E6;
+        li > a:hover {
+            background-color: #e6e6e6;
         }
     }
 }
@@ -1364,7 +1401,8 @@ hr {
         flex-flow: row;
         justify-content: center;
     }
-    .adv-pkt, .scan-rsp-pkt {
+    .adv-pkt,
+    .scan-rsp-pkt {
         flex: 1;
         margin: 10px;
     }
@@ -1372,7 +1410,8 @@ hr {
         font-weight: bold;
         margin-bottom: 5px;
     }
-    .adv-drop-container, .adv-value-container {
+    .adv-drop-container,
+    .adv-value-container {
         display: inline-block;
         vertical-align: top;
         margin: 10px;
@@ -1450,7 +1489,7 @@ hr {
     overflow-x: auto;
     max-height: 300px;
     top: 34px;
-    width:300px;
+    width: 300px;
 }
 
 .uuid-lookup {
@@ -1489,18 +1528,27 @@ hr {
 }
 
 .neutral-background {
-    background-color: #FFFFFF
+    background-color: #ffffff;
 }
 
 .pull-right {
     float: right;
 }
 
-#main-menu, .core-log-header-buttons {
+#main-menu,
+.core-log-header-buttons {
     .mdi:last-child {
         margin-left: 0;
     }
     .mdi:first-child {
         margin-right: 0;
+    }
+}
+
+.advertisingSetup-footer {
+    justify-content: space-between;
+
+    div > button:last-of-type {
+        margin-left: 8px;
     }
 }
