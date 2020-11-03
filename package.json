@@ -19,10 +19,8 @@
     "clean-modules": "rimraf \"node_modules/!(rimraf|.bin)\"",
     "clean": "npm run clean-dist && npm run clean-modules",
     "dev": "nrfconnect-scripts build-watch",
-    "lint-init": "nrfconnect-scripts lint-init",
     "lint": "nrfconnect-scripts lint lib",
     "nordic-publish": "nrfconnect-scripts nordic-publish",
-    "postinstall": "nrfconnect-scripts lint-init",
     "test-watch": "nrfconnect-scripts test --watch",
     "test": "nrfconnect-scripts test",
     "webpack": "nrfconnect-scripts build-dev"
@@ -54,5 +52,7 @@
   },
   "bundledDependencies": [
     "bluetooth-uuid-database"
-  ]
+  ],
+  "eslintConfig": { "extends" : "./node_modules/pc-nrfconnect-shared/config/eslintrc.json" },
+  "prettier": "./node_modules/pc-nrfconnect-shared/config/prettier.config.js"
 }

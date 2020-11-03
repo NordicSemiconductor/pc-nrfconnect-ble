@@ -1,5 +1,4 @@
 .DS_Store
-.eslintrc
 .idea
 *.db
 dist

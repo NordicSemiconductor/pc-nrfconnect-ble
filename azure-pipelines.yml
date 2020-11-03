@@ -1,12 +1,12 @@
 pool:
-  vmImage: 'Ubuntu-16.04'
+    vmImage: 'Ubuntu-16.04'
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: 10
-- script: |
-    set -o errexit -o pipefail
-    npm i
-    npm run lint
-    npm run build
-    npm test
+    - task: NodeTool@0
+      inputs:
+          versionSpec: 10
+    - script: |
+          set -o errexit -o pipefail
+          npm ci
+          npm run lint
+          npm run build
+          npm test
