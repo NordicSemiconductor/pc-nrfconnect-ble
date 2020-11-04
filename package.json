@@ -53,6 +53,8 @@
   "bundledDependencies": [
     "bluetooth-uuid-database"
   ],
-  "eslintConfig": { "extends" : "./node_modules/pc-nrfconnect-shared/config/eslintrc.json" },
+  "eslintConfig": {
+    "extends": "./node_modules/pc-nrfconnect-shared/config/eslintrc.json"
+  },
   "prettier": "./node_modules/pc-nrfconnect-shared/config/prettier.config.js"
 }

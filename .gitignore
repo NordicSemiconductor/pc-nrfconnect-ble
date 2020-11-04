@@ -8,4 +8,3 @@ node_modules
 npm-debug.log
 tags
 vendor
-prettier.config.js

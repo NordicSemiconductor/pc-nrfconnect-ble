@@ -210,7 +210,7 @@ class AdvertisingSetup extends React.PureComponent {
                         </Form.Label>
                     </div>
                 </Modal.Body>
-                <Modal.Footer className="advertisingSetup-footer">
+                <Modal.Footer className="advertising-setup-footer">
                     <div>
                         <Button
                             variant="outline-secondary"

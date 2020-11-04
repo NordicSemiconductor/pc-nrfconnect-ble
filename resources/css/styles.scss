@@ -1545,10 +1545,10 @@ hr {
     }
 }
 
-.advertisingSetup-footer {
+.advertising-setup-footer {
     justify-content: space-between;
 
-    div > button:last-of-type {
+    div > button:not(:first-of-type) {
         margin-left: 8px;
     }
 }
