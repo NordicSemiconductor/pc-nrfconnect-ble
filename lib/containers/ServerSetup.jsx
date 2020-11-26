@@ -85,8 +85,6 @@ class ServerSetup extends React.PureComponent {
         this.saveChangedAttribute = this.saveChangedAttribute.bind(this);
         this.onModified = this.onModified.bind(this);
         this.onSelectComponent = this.onSelectComponent.bind(this);
-        this.onDiscardCancel = this.onDiscardCancel.bind(this);
-        this.onDiscardOk = this.onDiscardOk.bind(this);
         this.onClickApply = this.onClickApply.bind(this);
     }
 
@@ -125,27 +123,13 @@ class ServerSetup extends React.PureComponent {
     }
 
     onSelectComponent(instanceId) {
-        const { selectComponent, showDiscardDialog } = this.props;
+        const { selectComponent } = this.props;
         if (!this.modified) {
             selectComponent(instanceId);
             return;
         }
 
         this.pendingSelectInstanceId = instanceId;
-        showDiscardDialog();
-    }
-
-    onDiscardCancel() {
-        const { hideDiscardDialog } = this.props;
-        this.pendingSelectInstanceId = null;
-
-        hideDiscardDialog();
-    }
-
-    onDiscardOk() {
-        const { hideDiscardDialog, selectComponent } = this.props;
-        hideDiscardDialog();
-        selectComponent(this.pendingSelectInstanceId);
     }
 
     onClickApply() {
@@ -271,7 +255,6 @@ class ServerSetup extends React.PureComponent {
         const {
             selectedAdapter,
             serverSetup,
-            // selectComponent,
             toggleAdvertising,
             setAttributeExpanded,
             addNewService,
@@ -286,8 +269,6 @@ class ServerSetup extends React.PureComponent {
             showClearDialog,
             hideClearDialog,
             showErrorDialog,
-            // showDiscardDialog,
-            // hideDiscardDialog,
         } = this.props;
 
         if (!serverSetup) {
@@ -298,7 +279,6 @@ class ServerSetup extends React.PureComponent {
             showingApplyDialog,
             showingDeleteDialog,
             showingClearDialog,
-            showingDiscardDialog,
             children,
         } = serverSetup;
 
@@ -471,14 +451,6 @@ class ServerSetup extends React.PureComponent {
                         okButtonText="Yes"
                         cancelButtonText="No"
                     />
-                    <ConfirmationDialog
-                        show={showingDiscardDialog}
-                        onOk={this.onDiscardOk}
-                        onCancel={this.onDiscardCancel}
-                        text="The attribute has been modified. Discard the changes?"
-                        okButtonText="Yes"
-                        cancelButtonText="No"
-                    />
                 </div>
             </div>
         );
@@ -524,8 +496,6 @@ ServerSetup.propTypes = {
     selectComponent: PropTypes.func.isRequired,
     setAttributeExpanded: PropTypes.func.isRequired,
     saveChangedAttribute: PropTypes.func.isRequired,
-    showDiscardDialog: PropTypes.func.isRequired,
-    hideDiscardDialog: PropTypes.func.isRequired,
     addNewService: PropTypes.func.isRequired,
     addNewCharacteristic: PropTypes.func.isRequired,
     addNewDescriptor: PropTypes.func.isRequired,
