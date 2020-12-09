@@ -177,6 +177,12 @@ const CentralDevice = ({
                         key="deleteBondInfo"
                         title="Delete bond information"
                         onSelect={onDeleteBondInfo}
+                        disabled={
+                            security === null
+                                ? true
+                                : security.bondStore.size === 0
+                        }
+                        // burde den huske hva som er bounded når man restarter app
                     >
                         Delete bond information
                     </Dropdown.Item>
