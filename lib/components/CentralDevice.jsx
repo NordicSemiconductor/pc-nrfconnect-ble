@@ -182,7 +182,6 @@ const CentralDevice = ({
                                 ? true
                                 : security.bondStore.size === 0
                         }
-                        // burde den huske hva som er bounded når man restarter app
                     >
                         Delete bond information
                     </Dropdown.Item>
