@@ -1280,6 +1280,24 @@ hr {
         border-left: none;
     }
 }
+.adv-param-modal {
+    .btn-nordic {
+        float: left;
+        margin-left: 10px;
+    }
+    .row {
+        align-items: center;
+    }
+    .form-label {
+        font-weight: bold;
+    }
+    .align-baseline {
+        align-self: baseline;
+    }
+    .nothing-selected {
+        border-left: none;
+    }
+}
 
 .events-modal {
     .modal-dialog {

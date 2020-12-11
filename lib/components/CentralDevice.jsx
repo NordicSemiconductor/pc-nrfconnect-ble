@@ -43,6 +43,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Dropdown from 'react-bootstrap/Dropdown';
 
+import AdvertisingParams from '../containers/AdvertisingParams';
 import AdvertisingSetup from '../containers/AdvertisingSetup';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 import withHotkey from '../utils/withHotkey';
@@ -68,6 +69,7 @@ const CentralDevice = ({
     bindHotkey,
     onShowSetupDialog,
     onDeleteBondInfo,
+    onShowAdvParams,
 }) => {
     const sdApiVersion = useSelector(
         ({ app }) =>
@@ -116,6 +118,9 @@ const CentralDevice = ({
                     </Dropdown.Header>
                     <Dropdown.Item key="setup" onSelect={onShowSetupDialog}>
                         Advertising setup...
+                    </Dropdown.Item>
+                    <Dropdown.Item key="params" onSelect={onShowAdvParams}>
+                        Advertising parameters...
                     </Dropdown.Item>
                     <Dropdown.Item
                         key="advertising"
@@ -239,6 +244,7 @@ const CentralDevice = ({
                 />
                 <AdvertisingSetup />
                 <SecurityParamsDialog />
+                <AdvertisingParams />
             </div>
         </div>
     );
@@ -253,6 +259,7 @@ CentralDevice.propTypes = {
     onShowSecurityParamsDialog: PropTypes.func,
     security: PropTypes.object,
     onShowSetupDialog: PropTypes.func,
+    onShowAdvParams: PropTypes.func, // onShowAdvParams
     onSaveSetup: PropTypes.func,
     onLoadSetup: PropTypes.func,
     autoConnUpdate: PropTypes.bool,
@@ -272,6 +279,7 @@ CentralDevice.defaultProps = {
     onShowSecurityParamsDialog: null,
     security: null,
     onShowSetupDialog: null,
+    onShowAdvParams: null, // onShowAdvParams
     onSaveSetup: undefined,
     onLoadSetup: undefined,
     autoConnUpdate: false,

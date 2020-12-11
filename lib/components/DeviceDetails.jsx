@@ -66,6 +66,7 @@ const DeviceDetailsView = ({
     onDisconnectFromDevice,
     onPairWithDevice,
     onShowAdvertisingSetupDialog,
+    onShowAdvertisingParameterDialog,
     onToggleAdvertising,
     onToggleAutoConnUpdate,
     autoConnUpdate,
@@ -127,6 +128,7 @@ const DeviceDetailsView = ({
                     advertising={device.advertising}
                     selected={selected}
                     onShowSetupDialog={onShowAdvertisingSetupDialog}
+                    onShowAdvParams={onShowAdvertisingParameterDialog}
                     onToggleAdvertising={onToggleAdvertising}
                     autoConnUpdate={autoConnUpdate}
                     onToggleAutoConnUpdate={onToggleAutoConnUpdate}
@@ -210,6 +212,7 @@ DeviceDetailsView.propTypes = {
     onDisconnectFromDevice: PropTypes.func,
     onPairWithDevice: PropTypes.func,
     onShowAdvertisingSetupDialog: PropTypes.func,
+    onShowAdvertisingParameterDialog: PropTypes.func,
     onToggleAdvertising: PropTypes.func,
     onToggleAutoConnUpdate: PropTypes.func,
     autoConnUpdate: PropTypes.bool,
@@ -235,6 +238,7 @@ DeviceDetailsView.defaultProps = {
     onDisconnectFromDevice: null,
     onPairWithDevice: null,
     onShowAdvertisingSetupDialog: null,
+    onShowAdvertisingParameterDialog: null,
     onToggleAdvertising: null,
     onToggleAutoConnUpdate: null,
     autoConnUpdate: false,
