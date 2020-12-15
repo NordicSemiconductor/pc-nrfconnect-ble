@@ -714,7 +714,14 @@
 
 .adv-value {
     display: inline-block;
+    margin-left: 16px;
     @include text-smaller;
+}
+
+.adv-timeout {
+    display: inline-block;
+    @include text-smaller;
+    width: 50px;
 }
 
 .adv-line {

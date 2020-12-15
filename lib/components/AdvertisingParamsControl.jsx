@@ -44,10 +44,13 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import TextInput from './input/TextInput';
+
+const SUCCESS = 'success';
+const ERROR = 'error';
 
 class AdvertisingParamsControl extends React.PureComponent {
     state = {
@@ -55,8 +58,25 @@ class AdvertisingParamsControl extends React.PureComponent {
         timeout: this.props.advParams.timeout,
     };
 
-    handleInputChange(variableName, value) {
+    validateInterval() {
+        if (this.state.interval > 10240 || this.state.interval < 20)
+            return ERROR;
+        return SUCCESS;
+    }
+    validateTimeout() {
+        if (this.state.timeout < 0) return ERROR;
+        return SUCCESS;
+    }
+
+    handleChange(variableName, value) {
         this.setState({ [variableName]: +value }, () => {
+            if (
+                this.validateInterval() !== SUCCESS ||
+                this.validateTimeout() !== SUCCESS
+            ) {
+                this.props.onChange(null);
+                return;
+            }
             this.props.onChange(this.state);
         });
     }
@@ -69,11 +89,12 @@ class AdvertisingParamsControl extends React.PureComponent {
                         Interval
                     </Col>
                     <Col sm={7}>
-                        <Form.Control
+                        <TextInput
                             type="number"
-                            value={this.state.interval} // fix interval 20-10240 ms
+                            value={this.state.interval}
+                            validationState={this.validateInterval()}
                             onChange={event =>
-                                this.handleInputChange(
+                                this.handleChange(
                                     'interval',
                                     event.target.value
                                 )
@@ -89,14 +110,13 @@ class AdvertisingParamsControl extends React.PureComponent {
                         Timeout
                     </Col>
                     <Col sm={7}>
-                        <Form.Control
+                        <TextInput
                             type="number"
-                            value={this.state.timeout} // fix interval >=0
+                            value={this.state.timeout}
+                            validationState={this.validateTimeout()}
+                            hasFeedback
                             onChange={event =>
-                                this.handleInputChange(
-                                    'timeout',
-                                    event.target.value
-                                )
+                                this.handleChange('timeout', event.target.value)
                             }
                         />
                     </Col>
