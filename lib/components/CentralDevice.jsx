@@ -177,6 +177,9 @@ const CentralDevice = ({
                         key="deleteBondInfo"
                         title="Delete bond information"
                         onSelect={onDeleteBondInfo}
+                        disabled={
+                            security === null || security.bondStore.size === 0
+                        }
                     >
                         Delete bond information
                     </Dropdown.Item>
