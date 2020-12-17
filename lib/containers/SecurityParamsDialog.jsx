@@ -84,7 +84,7 @@ class SecurityParamsDialog extends React.PureComponent {
             <Modal
                 className="security-param-modal"
                 show={security.showingSecurityDialog}
-                onHide={() => this.handleCancel()}
+                onHide={() => {}}
             >
                 <Modal.Header>
                     <Modal.Title>Security parameters</Modal.Title>
