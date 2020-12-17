@@ -47,61 +47,56 @@ import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import * as SecurityActions from '../actions/securityActions';
-import SecurityParamsControls from '../components/SecurityParamsControls';
+import * as AdvertisingActions from '../actions/advertisingActions';
+import AdvertisingParamsControl from '../components/AdvertisingParamsControl';
 
-class SecurityParamsDialog extends React.PureComponent {
+class AdvertisingParams extends React.PureComponent {
     state = {
-        secParams: null,
+        advParams: null,
     };
 
-    handleSecParamsChange = secParams => this.setState({ secParams });
+    handleAdvParamsChange = advParams => this.setState({ advParams });
 
-    handleApplyParams() {
-        const {
-            setSecurityParams,
-            hideSecurityParamsDialog,
-            security: { securityParams },
-        } = this.props;
-        const { secParams } = this.state;
-        setSecurityParams(secParams || securityParams);
-        hideSecurityParamsDialog();
+    handleApply() {
+        const { setAdvParams, hideAdvParamDialog } = this.props;
+        const { advParams } = this.state;
+
+        if (!advParams || !advParams.interval || !advParams.timeout) return;
+
+        setAdvParams(advParams);
+        hideAdvParamDialog();
     }
 
     handleCancel() {
-        const { hideSecurityParamsDialog } = this.props;
-        hideSecurityParamsDialog();
+        const { hideAdvParamDialog } = this.props;
+        hideAdvParamDialog();
     }
 
     render() {
-        const { security } = this.props;
-
-        if (!security) {
-            return <div />;
-        }
+        const { showAdvParams, advParams } = this.props;
 
         return (
             <Modal
-                className="security-param-modal"
-                show={security.showingSecurityDialog}
-                onHide={() => {}}
+                className="adv-param-modal"
+                show={showAdvParams}
+                onHide={() => {
+                    this.handleCancel();
+                }}
             >
                 <Modal.Header>
-                    <Modal.Title>Security parameters</Modal.Title>
+                    <Modal.Title>Advertising parameters</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form className="form-horizontal">
-                        <SecurityParamsControls
-                            onChange={this.handleSecParamsChange}
-                            securityParams={security.securityParams}
-                        />
-                    </form>
+                    <AdvertisingParamsControl
+                        onChange={this.handleAdvParamsChange}
+                        advParams={advParams}
+                    />
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="form-group">
                         <Button
                             type="button"
-                            onClick={() => this.handleApplyParams()}
+                            onClick={() => this.handleApply()}
                             className="btn btn-primary btn-sm btn-nordic"
                         >
                             Apply
@@ -122,35 +117,25 @@ class SecurityParamsDialog extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
-    const {
-        adapter: { selectedAdapter },
-    } = state.app;
-
-    if (!selectedAdapter) {
-        return {};
-    }
+    const { advertising } = state.app;
 
     return {
-        security: selectedAdapter.security,
-        adapter: state.app.adapter,
+        showAdvParams: advertising.showAdvParams,
+        advParams: advertising.advParams,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    const retval = {
-        ...bindActionCreators(SecurityActions, dispatch),
+    return {
+        ...bindActionCreators(AdvertisingActions, dispatch),
     };
-
-    return retval;
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(SecurityParamsDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(AdvertisingParams);
 
-SecurityParamsDialog.propTypes = {
-    security: PropTypes.object,
-    setSecurityParams: PropTypes.func.isRequired,
-    hideSecurityParamsDialog: PropTypes.func.isRequired,
+AdvertisingParams.propTypes = {
+    advParams: PropTypes.object,
+    showAdvParams: PropTypes.bool.isRequired,
+    hideAdvParamDialog: PropTypes.func.isRequired,
+    setAdvParams: PropTypes.func.isRequired,
 };

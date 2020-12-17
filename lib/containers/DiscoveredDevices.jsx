@@ -72,6 +72,7 @@ class DiscoveredDevices extends React.PureComponent {
             this,
             'sortByRssi'
         );
+        this.handleActiveScanCheck = this.handleActiveScanCheck.bind(this);
     }
 
     componentDidMount() {
@@ -96,6 +97,20 @@ class DiscoveredDevices extends React.PureComponent {
     handleOptionsExpanded() {
         const { toggleOptionsExpanded } = this.props;
         toggleOptionsExpanded();
+    }
+
+    handleTimeoutChange(value) {
+        const { setTimeoutChange } = this.props;
+        if (value < 0) {
+            setTimeoutChange(0);
+            return;
+        }
+        setTimeoutChange(value);
+    }
+
+    handleActiveScanCheck() {
+        const { changeActiveScan } = this.props;
+        changeActiveScan();
     }
 
     render() {
@@ -127,6 +142,14 @@ class DiscoveredDevices extends React.PureComponent {
                         label="Sort by signal strength"
                     />
                 </Form.Group>
+                <Form.Group controlId="activeScanCheck">
+                    <Form.Check
+                        className="adv-label"
+                        defaultChecked={discoveryOptions.activeScan}
+                        onChange={this.handleActiveScanCheck}
+                        label="Active scan"
+                    />
+                </Form.Group>
                 <TextInput
                     inline
                     title="Filter list by device name or address"
@@ -137,6 +160,19 @@ class DiscoveredDevices extends React.PureComponent {
                     labelClassName=""
                     wrapperClassName=""
                     placeholder="Device name or address"
+                />
+                <TextInput
+                    type="number"
+                    inline
+                    title="Timeout on scanning process (sec)"
+                    label="Timeout:"
+                    className="adv-timeout"
+                    value={discoveryOptions.scanTimeout}
+                    labelClassName=""
+                    wrapperClassName=""
+                    onChange={event =>
+                        this.handleTimeoutChange(event.target.value)
+                    }
                 />
             </div>
         ) : null;
@@ -261,6 +297,8 @@ DiscoveredDevices.propTypes = {
     setDiscoveryOptions: PropTypes.func.isRequired,
     toggleOptionsExpanded: PropTypes.func.isRequired,
     toggleExpanded: PropTypes.func.isRequired,
+    changeActiveScan: PropTypes.func.isRequired,
+    setTimeoutChange: PropTypes.func.isRequired,
     discoveryOptions: PropTypes.instanceOf(DiscoveryOptions),
 };
 

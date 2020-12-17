@@ -1,3 +1,8 @@
+## Unreleased
+### Features
+- Add functionality to set the interval and timeout for advertising.
+- Toggle active scan and timeout for scanning.
+
 ## Version 2.4.2
 ### Bugfixes
 - Fixed 'bluetooth-uuid-database' not found issue
