@@ -99,7 +99,7 @@ class DiscoveredDevices extends React.PureComponent {
         toggleOptionsExpanded();
     }
 
-    handleTimoutChange(value) {
+    handleTimeoutChange(value) {
         const { setTimeoutChange } = this.props;
         if (value < 0) {
             setTimeoutChange(0);
@@ -164,14 +164,14 @@ class DiscoveredDevices extends React.PureComponent {
                 <TextInput
                     type="number"
                     inline
-                    title="Timout on scanning process (sec)"
+                    title="Timeout on scanning process (sec)"
                     label="Timeout:"
                     className="adv-timeout"
                     value={discoveryOptions.scanTimeout}
                     labelClassName=""
                     wrapperClassName=""
                     onChange={event =>
-                        this.handleTimoutChange(event.target.value)
+                        this.handleTimeoutChange(event.target.value)
                     }
                 />
             </div>

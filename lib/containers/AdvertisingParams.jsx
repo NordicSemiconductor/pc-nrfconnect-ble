@@ -79,7 +79,9 @@ class AdvertisingParams extends React.PureComponent {
             <Modal
                 className="adv-param-modal"
                 show={showAdvParams}
-                onHide={() => {}}
+                onHide={() => {
+                    this.handleCancel();
+                }}
             >
                 <Modal.Header>
                     <Modal.Title>Advertising parameters</Modal.Title>
@@ -124,11 +126,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    const retval = {
+    return {
         ...bindActionCreators(AdvertisingActions, dispatch),
     };
-
-    return retval;
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdvertisingParams);
