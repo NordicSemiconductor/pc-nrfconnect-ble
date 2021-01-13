@@ -61,7 +61,12 @@ class AdvertisingParams extends React.PureComponent {
         const { setAdvParams, hideAdvParamDialog } = this.props;
         const { advParams } = this.state;
 
-        if (!advParams || !advParams.interval || !advParams.timeout) return;
+        if (
+            !advParams ||
+            !advParams.interval ||
+            (!advParams.timeout && advParams.timeout !== 0)
+        )
+            return;
 
         setAdvParams(advParams);
         hideAdvParamDialog();
