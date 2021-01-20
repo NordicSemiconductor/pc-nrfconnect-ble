@@ -299,7 +299,7 @@ DiscoveredDevices.propTypes = {
     toggleExpanded: PropTypes.func.isRequired,
     changeActiveScan: PropTypes.func.isRequired,
     setTimeoutChange: PropTypes.func.isRequired,
-    discoveryOptions: PropTypes.instanceOf(DiscoveryOptions),
+    discoveryOptions: PropTypes.objectOf(DiscoveryOptions),
 };
 
 DiscoveredDevices.defaultProps = {
