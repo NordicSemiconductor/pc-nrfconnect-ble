@@ -149,7 +149,7 @@ const CentralDevice = ({
                     </Dropdown.Header>
                     <Dropdown.Item
                         key="connectionParams"
-                        title={"Configure connection parameters ...."} // endre
+                        title="Configure connection parameters ...." // endre
                         onSelect={console.log('helo')} // endre
                     >
                         Connection parameters...
