@@ -148,6 +148,13 @@ const CentralDevice = ({
                         {autoConnHeader}
                     </Dropdown.Header>
                     <Dropdown.Item
+                        key="connectionParams"
+                        title={"Configure connection parameters ...."} // endre
+                        onSelect={console.log('helo')} // endre
+                    >
+                        Connection parameters...
+                    </Dropdown.Item>
+                    <Dropdown.Item
                         key="autoConnUpdate"
                         title={autoConnTitle}
                         onSelect={onToggleAutoConnUpdate}
