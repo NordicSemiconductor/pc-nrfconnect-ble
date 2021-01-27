@@ -45,6 +45,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 import AdvertisingParams from '../containers/AdvertisingParams';
 import AdvertisingSetup from '../containers/AdvertisingSetup';
+import ConnectionParams from '../containers/ConnectionParams';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 import withHotkey from '../utils/withHotkey';
 import Spinner from './Spinner';
@@ -70,6 +71,7 @@ const CentralDevice = ({
     onShowSetupDialog,
     onDeleteBondInfo,
     onShowAdvParams,
+    onShowConnectionParams,
 }) => {
     const sdApiVersion = useSelector(
         ({ app }) =>
@@ -150,7 +152,7 @@ const CentralDevice = ({
                     <Dropdown.Item
                         key="connectionParams"
                         title="Configure connection parameters ...." // endre
-                        onSelect={console.log('helo')} // endre
+                        onSelect={onShowConnectionParams} // endre -mangler siste funksjon. skal i en action. hvilken?
                     >
                         Connection parameters...
                     </Dropdown.Item>
@@ -252,6 +254,7 @@ const CentralDevice = ({
                 <AdvertisingSetup />
                 <SecurityParamsDialog />
                 <AdvertisingParams />
+                <ConnectionParams />
             </div>
         </div>
     );
@@ -266,7 +269,7 @@ CentralDevice.propTypes = {
     onShowSecurityParamsDialog: PropTypes.func,
     security: PropTypes.object,
     onShowSetupDialog: PropTypes.func,
-    onShowAdvParams: PropTypes.func, // onShowAdvParams
+    onShowAdvParams: PropTypes.func,
     onSaveSetup: PropTypes.func,
     onLoadSetup: PropTypes.func,
     autoConnUpdate: PropTypes.bool,
@@ -276,6 +279,7 @@ CentralDevice.propTypes = {
     onOpenCustomUuidFile: PropTypes.func,
     isDeviceDetails: PropTypes.bool,
     bindHotkey: PropTypes.func.isRequired,
+    onShowConnectionParams: PropTypes.func,
 };
 
 CentralDevice.defaultProps = {
@@ -286,7 +290,7 @@ CentralDevice.defaultProps = {
     onShowSecurityParamsDialog: null,
     security: null,
     onShowSetupDialog: null,
-    onShowAdvParams: null, // onShowAdvParams
+    onShowAdvParams: null,
     onSaveSetup: undefined,
     onLoadSetup: undefined,
     autoConnUpdate: false,
@@ -295,6 +299,7 @@ CentralDevice.defaultProps = {
     onDeleteBondInfo: null,
     onOpenCustomUuidFile: null,
     isDeviceDetails: false,
+    onShowConnectionParams: null,
 };
 
 export default withHotkey(CentralDevice);
