@@ -261,6 +261,7 @@ const CentralDevice = ({
 };
 
 CentralDevice.propTypes = {
+    // device?
     id: PropTypes.string.isRequired,
     name: PropTypes.string,
     address: PropTypes.string,

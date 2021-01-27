@@ -51,6 +51,118 @@ import TextInput from './input/TextInput';
 
 class ConnectionParamsControl extends React.PureComponent {
     state = {
-        
+        slaveLatency: 0,
+        connectionSupervisionTimeout: 0,
+        minConnectionInterval: 0,
+        maxConnectionInterval: 0,
+    };
+
+    // validation functions
+    handleChange(variableName, value) {
+        this.setState({ [variableName]: +value }, () => {
+            if (value < 0) {
+                // edres til success og error
+                this.props.onChange(null);
+                return;
+            }
+            this.props.onChange(this.state);
+        });
+    }
+
+    render() {
+        return (
+            <Container>
+                <Row className="form-group">
+                    <Col sm={4} className="form-label text-right">
+                        Slave Latency
+                    </Col>
+                    <Col sm={7}>
+                        <TextInput
+                            type="number"
+                            value={this.state.slaveLatency}
+                            // validationState={this.validateInterval()}
+                            onChange={event =>
+                                this.handleChange(
+                                    'slaveLatency',
+                                    event.target.value
+                                )
+                            }
+                        />
+                    </Col>
+                </Row>
+                <Row className="form-group">
+                    <Col
+                        sm={4}
+                        className="form-label text-right align-baseline"
+                    >
+                        Connection supervision timeout
+                    </Col>
+                    <Col sm={7}>
+                        <TextInput
+                            type="number"
+                            value={this.state.connectionSupervisionTimeout}
+                            // validationState={this.validateTimeout()}
+                            hasFeedback
+                            onChange={event =>
+                                this.handleChange(
+                                    'connectionSupervisionTimeout',
+                                    event.target.value
+                                )
+                            }
+                        />
+                    </Col>
+                </Row>
+                <Row className="form-group">
+                    <Col
+                        sm={4}
+                        className="form-label text-right align-baseline"
+                    >
+                        Min Connection Interval
+                    </Col>
+                    <Col sm={7}>
+                        <TextInput
+                            type="number"
+                            value={this.state.minConnectionInterval}
+                            // validationState={this.validateTimeout()}
+                            hasFeedback
+                            onChange={event =>
+                                this.handleChange(
+                                    'minConnectionInterval',
+                                    event.target.value
+                                )
+                            }
+                        />
+                    </Col>
+                </Row>
+                <Row className="form-group">
+                    <Col
+                        sm={4}
+                        className="form-label text-right align-baseline"
+                    >
+                        maxConnectionInterval: 0,
+                    </Col>
+                    <Col sm={7}>
+                        <TextInput
+                            type="number"
+                            value={this.state.maxConnectionInterval}
+                            // validationState={this.validateTimeout()}
+                            hasFeedback
+                            onChange={event =>
+                                this.handleChange(
+                                    'maxConnectionInterval',
+                                    event.target.value
+                                )
+                            }
+                        />
+                    </Col>
+                </Row>
+            </Container>
+        );
     }
 }
+
+ConnectionParamsControl.propTypes = {
+    onChange: PropTypes.func.isRequired,
+};
+
+export default ConnectionParamsControl;

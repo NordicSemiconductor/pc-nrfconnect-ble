@@ -48,14 +48,21 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as AdapterActions from '../actions/adapterActions';
+import ConnectionParamsControl from '../components/ConnectionParamsControl';
 
 class ConnectionParams extends React.PureComponent {
-    // state = {
-    //    parameters: null,
-    // };
+    state = {
+        parameters: null,
+    };
+
+    handleParamChange = parameters => this.setState({ parameters });
 
     handleApply() {
         const { hideConnectionParamDialog } = this.props;
+        const { parameters } = this.state;
+        if (parameters === null) {
+            return;
+        }
         console.log('you have applied');
         hideConnectionParamDialog();
     }
@@ -79,7 +86,11 @@ class ConnectionParams extends React.PureComponent {
                 <Modal.Header>
                     <Modal.Title>Connection parameters</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Dette blir kroppen med diverse stuff</Modal.Body>
+                <Modal.Body>
+                    <ConnectionParamsControl
+                        onChange={this.handleParamChange}
+                    />
+                </Modal.Body>
                 <Modal.Footer>
                     <div className="form-group">
                         <Button
