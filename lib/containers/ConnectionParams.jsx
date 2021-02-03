@@ -65,7 +65,6 @@ class ConnectionParams extends React.PureComponent {
             return;
         }
         setConnectionParams(connectionParameters);
-        console.log('you have applied');
         hideConnectionParamDialog();
     }
 

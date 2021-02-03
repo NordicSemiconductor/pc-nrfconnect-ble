@@ -85,16 +85,40 @@ class ConnectionParamsControl extends React.PureComponent {
     }
 
     validateConSupervisionTimeout() {
-        if (this.state.connectionSupervisionTimeout < 0) {
-            // upper bound?
+        // bigger than: (1+latency)*max_con_interval*2, or 100ms
+        // multiple of 10 ms
+        const {
+            connectionSupervisionTimeout,
+            slaveLatency,
+            maxConnectionInterval,
+        } = this.state;
+        const bound = (1 + slaveLatency) * 2 * maxConnectionInterval;
+        const lowerBound = bound > 100 ? bound : 100;
+        if (
+            connectionSupervisionTimeout < lowerBound ||
+            connectionSupervisionTimeout > 32000 ||
+            connectionSupervisionTimeout % 10 !== 0
+        ) {
             return ERROR;
         }
         return SUCCESS;
     }
 
     validateSlaveLatency() {
-        if (this.state.slaveLatency < 0) {
-            // upper bound? 500?
+        // less than: (supervision_timeout/(max_con_interval*2))-1, or 500
+        const {
+            slaveLatency,
+            connectionSupervisionTimeout,
+            maxConnectionInterval,
+        } = this.state;
+        const bound =
+            connectionSupervisionTimeout / (maxConnectionInterval * 2) - 1;
+        const upperbound = bound < 499 ? bound : 499;
+        if (
+            slaveLatency < 0 ||
+            slaveLatency > upperbound ||
+            slaveLatency % 1 !== 0
+        ) {
             return ERROR;
         }
         return SUCCESS;
@@ -126,7 +150,7 @@ class ConnectionParamsControl extends React.PureComponent {
                         <TextInput
                             type="number"
                             value={this.state.slaveLatency}
-                            validationState={this.validateConSupervisionTimeout()}
+                            validationState={this.validateSlaveLatency()}
                             onChange={event =>
                                 this.handleChange(
                                     'slaveLatency',
@@ -141,7 +165,7 @@ class ConnectionParamsControl extends React.PureComponent {
                         sm={4}
                         className="form-label text-right align-baseline"
                     >
-                        Connection supervision timeout
+                        Supervision timeout
                     </Col>
                     <Col sm={7}>
                         <TextInput
@@ -185,7 +209,7 @@ class ConnectionParamsControl extends React.PureComponent {
                         sm={4}
                         className="form-label text-right align-baseline"
                     >
-                        Max connection interval:
+                        Max connection interval
                     </Col>
                     <Col sm={7}>
                         <TextInput

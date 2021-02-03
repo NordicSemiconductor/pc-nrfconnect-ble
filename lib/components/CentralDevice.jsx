@@ -151,8 +151,8 @@ const CentralDevice = ({
                     </Dropdown.Header>
                     <Dropdown.Item
                         key="connectionParams"
-                        title="Configure connection parameters ...." // endre
-                        onSelect={onShowConnectionParams} // endre -mangler siste funksjon. skal i en action. hvilken?
+                        title="Configure connection parameters ...."
+                        onSelect={onShowConnectionParams}
                     >
                         Connection parameters...
                     </Dropdown.Item>
@@ -261,7 +261,6 @@ const CentralDevice = ({
 };
 
 CentralDevice.propTypes = {
-    // device?
     id: PropTypes.string.isRequired,
     name: PropTypes.string,
     address: PropTypes.string,
