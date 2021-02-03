@@ -52,17 +52,19 @@ import ConnectionParamsControl from '../components/ConnectionParamsControl';
 
 class ConnectionParams extends React.PureComponent {
     state = {
-        parameters: null,
+        connectionParameters: null,
     };
 
-    handleParamChange = parameters => this.setState({ parameters });
+    handleParamChange = connectionParameters =>
+        this.setState({ connectionParameters });
 
     handleApply() {
-        const { hideConnectionParamDialog } = this.props;
-        const { parameters } = this.state;
-        if (parameters === null) {
+        const { hideConnectionParamDialog, setConnectionParams } = this.props;
+        const { connectionParameters } = this.state;
+        if (!connectionParameters) {
             return;
         }
+        setConnectionParams(connectionParameters);
         console.log('you have applied');
         hideConnectionParamDialog();
     }
@@ -134,4 +136,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(ConnectionParams);
 ConnectionParams.propTypes = {
     showConnectionParams: PropTypes.bool.isRequired,
     hideConnectionParamDialog: PropTypes.func.isRequired,
+    setConnectionParams: PropTypes.func.isRequired,
 };
