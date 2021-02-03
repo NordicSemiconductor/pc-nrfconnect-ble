@@ -54,10 +54,13 @@ const ERROR = 'error';
 
 class ConnectionParamsControl extends React.PureComponent {
     state = {
-        minConnectionInterval: 7.5,
-        maxConnectionInterval: 7.5,
-        slaveLatency: 0,
-        connectionSupervisionTimeout: 4000,
+        minConnectionInterval: this.props.connectionParameters
+            .minConnectionInterval,
+        maxConnectionInterval: this.props.connectionParameters
+            .maxConnectionInterval,
+        slaveLatency: this.props.connectionParameters.slaveLatency,
+        connectionSupervisionTimeout: this.props.connectionParameters
+            .connectionSupervisionTimeout,
     };
 
     validateMinConInterval() {
@@ -233,6 +236,7 @@ class ConnectionParamsControl extends React.PureComponent {
 
 ConnectionParamsControl.propTypes = {
     onChange: PropTypes.func.isRequired,
+    connectionParameters: PropTypes.object,
 };
 
 export default ConnectionParamsControl;

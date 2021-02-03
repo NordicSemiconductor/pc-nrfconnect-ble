@@ -74,7 +74,7 @@ class ConnectionParams extends React.PureComponent {
     }
 
     render() {
-        const { showConnectionParams } = this.props;
+        const { showConnectionParams, connectionParameters } = this.props;
 
         return (
             <Modal
@@ -90,6 +90,7 @@ class ConnectionParams extends React.PureComponent {
                 <Modal.Body>
                     <ConnectionParamsControl
                         onChange={this.handleParamChange}
+                        connectionParameters={connectionParameters}
                     />
                 </Modal.Body>
                 <Modal.Footer>
@@ -121,6 +122,7 @@ function mapStateToProps(state) {
 
     return {
         showConnectionParams: adapter.showConnectionParams,
+        connectionParameters: adapter.connectionParameters,
     };
 }
 
@@ -133,6 +135,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(ConnectionParams);
 
 ConnectionParams.propTypes = {
+    connectionParameters: PropTypes.object,
     showConnectionParams: PropTypes.bool.isRequired,
     hideConnectionParamDialog: PropTypes.func.isRequired,
     setConnectionParams: PropTypes.func.isRequired,
