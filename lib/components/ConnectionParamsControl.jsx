@@ -60,6 +60,10 @@ import {
 const SUCCESS = 'success';
 const ERROR = 'error';
 
+const multipleOf = (value, multiplier) => value % multiplier !== 0;
+
+const validator = predicate => (predicate ? ERROR : SUCCESS);
+
 class ConnectionParamsControl extends React.PureComponent {
     state = {
         minConnectionInterval: this.props.connectionParameters
@@ -71,13 +75,9 @@ class ConnectionParamsControl extends React.PureComponent {
             .connectionSupervisionTimeout,
     };
 
-    multipleOf = (value, multiplier) => value % multiplier !== 0;
-
-    validator = predicate => (predicate ? ERROR : SUCCESS);
-
     validateMinConnectionInterval() {
         const { minConnectionInterval, maxConnectionInterval } = this.state;
-        return this.validator(
+        return validator(
             minConnectionInterval < CONN_INTERVAL_MIN ||
                 minConnectionInterval > CONN_INTERVAL_MAX ||
                 minConnectionInterval > maxConnectionInterval
@@ -86,7 +86,7 @@ class ConnectionParamsControl extends React.PureComponent {
 
     validateMaxConnectionInterval() {
         const { minConnectionInterval, maxConnectionInterval } = this.state;
-        return this.validator(
+        return validator(
             maxConnectionInterval < CONN_INTERVAL_MIN ||
                 maxConnectionInterval > CONN_INTERVAL_MAX ||
                 minConnectionInterval > maxConnectionInterval
@@ -103,10 +103,10 @@ class ConnectionParamsControl extends React.PureComponent {
         } = this.state;
         const bound = (1 + slaveLatency) * 2 * maxConnectionInterval;
         const lowerBound = bound > CONN_TIMEOUT_MIN ? bound : CONN_TIMEOUT_MIN;
-        return this.validator(
+        return validator(
             connectionSupervisionTimeout < lowerBound ||
                 connectionSupervisionTimeout > CONN_TIMEOUT_MAX ||
-                this.multipleOf(connectionSupervisionTimeout, 10)
+                multipleOf(connectionSupervisionTimeout, 10)
         );
     }
 
@@ -120,10 +120,10 @@ class ConnectionParamsControl extends React.PureComponent {
         const bound =
             connectionSupervisionTimeout / (maxConnectionInterval * 2) - 1;
         const upperbound = bound < CONN_LATENCY_MAX ? bound : CONN_LATENCY_MAX;
-        return this.validator(
+        return validator(
             slaveLatency < CONN_LATENCY_MIN ||
                 slaveLatency > upperbound ||
-                this.multipleOf(slaveLatency, 1)
+                multipleOf(slaveLatency, 1)
         );
     }
 
