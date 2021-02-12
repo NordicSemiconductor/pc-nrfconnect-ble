@@ -63,6 +63,15 @@ const CONN_LATENCY_MIN = 0;
 const CONN_LATENCY_MAX = 499;
 const CONN_LATENCY_STEP = 1;
 
+export {
+    CONN_INTERVAL_MIN,
+    CONN_INTERVAL_MAX,
+    CONN_TIMEOUT_MIN,
+    CONN_TIMEOUT_MAX,
+    CONN_LATENCY_MIN,
+    CONN_LATENCY_MAX,
+};
+
 export function isInRange(value, min, max) {
     return value >= min && value <= max;
 }

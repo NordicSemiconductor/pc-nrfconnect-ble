@@ -158,6 +158,7 @@ class DeviceDetailsContainer extends React.PureComponent {
             writeDescriptor,
             showSetupDialog,
             showParamsDialog,
+            showConnectionDialog,
             toggleAdvertising,
             disconnectFromDevice,
             // pairWithDevice,
@@ -198,6 +199,7 @@ class DeviceDetailsContainer extends React.PureComponent {
                 onWriteDescriptor={writeDescriptor}
                 onShowAdvertisingSetupDialog={showSetupDialog}
                 onShowAdvertisingParameterDialog={showParamsDialog}
+                onShowConnectionParamsDialog={showConnectionDialog}
                 onToggleAdvertising={toggleAdvertising}
                 onToggleAutoConnUpdate={toggleAutoConnUpdate}
                 autoConnUpdate={autoConnUpdate}
@@ -328,6 +330,7 @@ DeviceDetailsContainer.propTypes = {
     setAttributeExpanded: PropTypes.func.isRequired,
     showSetupDialog: PropTypes.func.isRequired,
     showParamsDialog: PropTypes.func.isRequired,
+    showConnectionDialog: PropTypes.func.isRequired,
     toggleAdvertising: PropTypes.func.isRequired,
     disconnectFromDevice: PropTypes.func.isRequired,
     toggleAutoConnUpdate: PropTypes.func.isRequired,
