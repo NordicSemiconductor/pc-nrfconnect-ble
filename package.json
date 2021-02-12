@@ -34,6 +34,7 @@
   "devDependencies": {
     "change-case": "^4.1.0",
     "chart.js": "^2.9.3",
+    "electron-store": "^6.0.0",
     "immutable": "^3.8.2",
     "jquery": "^3.4.1",
     "lodash.throttle": "^4.1.1",
@@ -47,8 +48,7 @@
     "react-redux": "7.2.0"
   },
   "dependencies": {
-    "bluetooth-uuid-database": "github:NordicSemiconductor/bluetooth-numbers-database#75bb6a8079",
-    "electron-store": "^6.0.0"
+    "bluetooth-uuid-database": "github:NordicSemiconductor/bluetooth-numbers-database#75bb6a8079"    
   },
   "bundledDependencies": [
     "bluetooth-uuid-database",
