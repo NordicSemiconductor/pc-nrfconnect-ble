@@ -48,6 +48,14 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import TextInput from './input/TextInput';
+import {
+    CONN_INTERVAL_MIN,
+    CONN_INTERVAL_MAX,
+    CONN_TIMEOUT_MIN,
+    CONN_TIMEOUT_MAX,
+    CONN_LATENCY_MIN,
+    CONN_LATENCY_MAX,
+} from './ConnectionUpdateRequestEditor';
 
 const SUCCESS = 'success';
 const ERROR = 'error';
@@ -63,31 +71,29 @@ class ConnectionParamsControl extends React.PureComponent {
             .connectionSupervisionTimeout,
     };
 
-    validateMinConInterval() {
+    multipleOf = (value, multiplier) => value % multiplier !== 0;
+
+    validator = predicate => (predicate ? ERROR : SUCCESS);
+
+    validateMinConnectionInterval() {
         const { minConnectionInterval, maxConnectionInterval } = this.state;
-        if (
-            minConnectionInterval < 7.5 ||
-            minConnectionInterval > 4000 ||
-            minConnectionInterval > maxConnectionInterval
-        ) {
-            return ERROR;
-        }
-        return SUCCESS;
+        return this.validator(
+            minConnectionInterval < CONN_INTERVAL_MIN ||
+                minConnectionInterval > CONN_INTERVAL_MAX ||
+                minConnectionInterval > maxConnectionInterval
+        );
     }
 
-    validateMaxConInterval() {
+    validateMaxConnectionInterval() {
         const { minConnectionInterval, maxConnectionInterval } = this.state;
-        if (
-            maxConnectionInterval < 7.5 ||
-            maxConnectionInterval > 4000 ||
-            minConnectionInterval > maxConnectionInterval
-        ) {
-            return ERROR;
-        }
-        return SUCCESS;
+        return this.validator(
+            maxConnectionInterval < CONN_INTERVAL_MIN ||
+                maxConnectionInterval > CONN_INTERVAL_MAX ||
+                minConnectionInterval > maxConnectionInterval
+        );
     }
 
-    validateConSupervisionTimeout() {
+    validateConnectionSupervisionTimeout() {
         // bigger than: (1+latency)*max_con_interval*2, or 100ms
         // multiple of 10 ms
         const {
@@ -96,15 +102,12 @@ class ConnectionParamsControl extends React.PureComponent {
             maxConnectionInterval,
         } = this.state;
         const bound = (1 + slaveLatency) * 2 * maxConnectionInterval;
-        const lowerBound = bound > 100 ? bound : 100;
-        if (
+        const lowerBound = bound > CONN_TIMEOUT_MIN ? bound : CONN_TIMEOUT_MIN;
+        return this.validator(
             connectionSupervisionTimeout < lowerBound ||
-            connectionSupervisionTimeout > 32000 ||
-            connectionSupervisionTimeout % 10 !== 0
-        ) {
-            return ERROR;
-        }
-        return SUCCESS;
+                connectionSupervisionTimeout > CONN_TIMEOUT_MAX ||
+                this.multipleOf(connectionSupervisionTimeout, 10)
+        );
     }
 
     validateSlaveLatency() {
@@ -116,24 +119,23 @@ class ConnectionParamsControl extends React.PureComponent {
         } = this.state;
         const bound =
             connectionSupervisionTimeout / (maxConnectionInterval * 2) - 1;
-        const upperbound = bound < 499 ? bound : 499;
-        if (
-            slaveLatency < 0 ||
-            slaveLatency > upperbound ||
-            slaveLatency % 1 !== 0
-        ) {
-            return ERROR;
-        }
-        return SUCCESS;
+        const upperbound = bound < CONN_LATENCY_MAX ? bound : CONN_LATENCY_MAX;
+        return this.validator(
+            slaveLatency < CONN_LATENCY_MIN ||
+                slaveLatency > upperbound ||
+                this.multipleOf(slaveLatency, 1)
+        );
     }
 
     handleChange(variableName, value) {
         this.setState({ [variableName]: +value }, () => {
             if (
-                this.validateSlaveLatency() === ERROR ||
-                this.validateMinConInterval() === ERROR ||
-                this.validateMaxConInterval() === ERROR ||
-                this.validateConSupervisionTimeout() === ERROR
+                [
+                    this.validateSlaveLatency(),
+                    this.validateMinConnectionInterval(),
+                    this.validateMaxConnectionInterval(),
+                    this.validateConnectionSupervisionTimeout(),
+                ].includes(ERROR)
             ) {
                 this.props.onChange(null);
                 return;
@@ -174,7 +176,7 @@ class ConnectionParamsControl extends React.PureComponent {
                         <TextInput
                             type="number"
                             value={this.state.connectionSupervisionTimeout}
-                            validationState={this.validateConSupervisionTimeout()}
+                            validationState={this.validateConnectionSupervisionTimeout()}
                             hasFeedback
                             onChange={event =>
                                 this.handleChange(
@@ -196,7 +198,7 @@ class ConnectionParamsControl extends React.PureComponent {
                         <TextInput
                             type="number"
                             value={this.state.minConnectionInterval}
-                            validationState={this.validateMinConInterval()}
+                            validationState={this.validateMinConnectionInterval()}
                             hasFeedback
                             onChange={event =>
                                 this.handleChange(
@@ -218,7 +220,7 @@ class ConnectionParamsControl extends React.PureComponent {
                         <TextInput
                             type="number"
                             value={this.state.maxConnectionInterval}
-                            validationState={this.validateMaxConInterval()}
+                            validationState={this.validateMaxConnectionInterval()}
                             hasFeedback
                             onChange={event =>
                                 this.handleChange(

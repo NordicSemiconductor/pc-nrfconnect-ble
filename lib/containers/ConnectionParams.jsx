@@ -58,7 +58,7 @@ class ConnectionParams extends React.PureComponent {
     handleParamChange = connectionParameters =>
         this.setState({ connectionParameters });
 
-    handleApply() {
+    handleApply = () => {
         const { hideConnectionParamDialog, setConnectionParams } = this.props;
         const { connectionParameters } = this.state;
         if (!connectionParameters) {
@@ -66,23 +66,20 @@ class ConnectionParams extends React.PureComponent {
         }
         setConnectionParams(connectionParameters);
         hideConnectionParamDialog();
-    }
-
-    handleCancel() {
-        const { hideConnectionParamDialog } = this.props;
-        hideConnectionParamDialog();
-    }
+    };
 
     render() {
-        const { showConnectionParams, connectionParameters } = this.props;
+        const {
+            showConnectionParams,
+            connectionParameters,
+            hideConnectionParamDialog,
+        } = this.props;
 
         return (
             <Modal
                 className="adv-param-modal"
                 show={showConnectionParams}
-                onHide={() => {
-                    this.handleCancel();
-                }}
+                onHide={hideConnectionParamDialog}
             >
                 <Modal.Header>
                     <Modal.Title>Connection parameters</Modal.Title>
@@ -97,14 +94,14 @@ class ConnectionParams extends React.PureComponent {
                     <div className="form-group">
                         <Button
                             type="button"
-                            onClick={() => this.handleApply()}
+                            onClick={this.handleApply}
                             className="btn btn-primary btn-sm btn-nordic"
                         >
                             Apply
                         </Button>
                         <Button
                             type="button"
-                            onClick={() => this.handleCancel()}
+                            onClick={hideConnectionParamDialog}
                             className="btn btn-default btn-sm btn-nordic"
                             variant="outline-secondary"
                         >
