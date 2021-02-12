@@ -1,7 +1,10 @@
-## Unreleased
+## Version 2.5.0
 ### Features
 - Add functionality to set the interval and timeout for advertising.
 - Toggle active scan and timeout for scanning.
+- Add functionality to set connection parameters.
+- Fetch uuid definitions from bluetooth-numbers-database project on app startup.
+- Several configurable parameters are now persisted between sessions.
 
 ## Version 2.4.2
 ### Bugfixes
