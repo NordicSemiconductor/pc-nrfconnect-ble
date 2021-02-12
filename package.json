@@ -51,7 +51,8 @@
     "electron-store": "^6.0.0"
   },
   "bundledDependencies": [
-    "bluetooth-uuid-database"
+    "bluetooth-uuid-database",
+    "electron-store"
   ],
   "eslintConfig": {
     "extends": "./node_modules/pc-nrfconnect-shared/config/eslintrc.json"
