@@ -1,12 +1,29 @@
+trigger:
+- master
+- release/*
 pool:
-    vmImage: 'Ubuntu-16.04'
+  vmImage: 'Ubuntu-18.04'
 steps:
-    - task: NodeTool@0
-      inputs:
-          versionSpec: 10
-    - script: |
-          set -o errexit -o pipefail
-          npm ci
-          npm run lint
-          npm run build
-          npm test
+- task: NodeTool@0
+  inputs:
+    versionSpec: 12
+- script: |
+    set -o errexit -o pipefail
+    npm ci
+    npm run lint
+    npm run test
+    npm run build
+    npm pack
+- task: CopyFiles@2
+  inputs:
+    contents: |
+      *.tgz
+      Changelog.md
+    targetFolder: $(Build.ArtifactStagingDirectory)
+  displayName: 'Copying artifact to artifact staging directory'
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: $(Build.ArtifactStagingDirectory)
+    publishLocation: 'pipeline'
+  condition: ne(variables['Build.Reason'], 'PullRequest')
+  displayName: 'Publishing artifacts to artifact storage'
