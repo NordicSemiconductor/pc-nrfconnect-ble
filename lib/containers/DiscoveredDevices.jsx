@@ -142,14 +142,6 @@ class DiscoveredDevices extends React.PureComponent {
                         label="Sort by signal strength"
                     />
                 </Form.Group>
-                <Form.Group controlId="activeScanCheck">
-                    <Form.Check
-                        className="adv-label"
-                        defaultChecked={discoveryOptions.activeScan}
-                        onChange={this.handleActiveScanCheck}
-                        label="Active scan"
-                    />
-                </Form.Group>
                 <TextInput
                     inline
                     title="Filter list by device name or address"
@@ -161,6 +153,14 @@ class DiscoveredDevices extends React.PureComponent {
                     wrapperClassName=""
                     placeholder="Device name or address"
                 />
+                <Form.Group controlId="activeScanCheck">
+                    <Form.Check
+                        className="adv-label"
+                        defaultChecked={discoveryOptions.activeScan}
+                        onChange={this.handleActiveScanCheck}
+                        label="Active scan"
+                    />
+                </Form.Group>
                 <TextInput
                     type="number"
                     inline

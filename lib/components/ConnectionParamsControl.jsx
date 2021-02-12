@@ -148,8 +148,8 @@ class ConnectionParamsControl extends React.PureComponent {
         return (
             <Container>
                 <Row className="form-group">
-                    <Col sm={4} className="form-label text-right">
-                        Slave latency
+                    <Col sm={5} className="form-label text-right">
+                        Slave latency (ms)
                     </Col>
                     <Col sm={7}>
                         <TextInput
@@ -167,10 +167,10 @@ class ConnectionParamsControl extends React.PureComponent {
                 </Row>
                 <Row className="form-group">
                     <Col
-                        sm={4}
+                        sm={5}
                         className="form-label text-right align-baseline"
                     >
-                        Supervision timeout
+                        Supervision timeout (ms)
                     </Col>
                     <Col sm={7}>
                         <TextInput
@@ -189,10 +189,10 @@ class ConnectionParamsControl extends React.PureComponent {
                 </Row>
                 <Row className="form-group">
                     <Col
-                        sm={4}
+                        sm={5}
                         className="form-label text-right align-baseline"
                     >
-                        Min connection interval
+                        Min connection interval (ms)
                     </Col>
                     <Col sm={7}>
                         <TextInput
@@ -211,10 +211,10 @@ class ConnectionParamsControl extends React.PureComponent {
                 </Row>
                 <Row className="form-group">
                     <Col
-                        sm={4}
+                        sm={5}
                         className="form-label text-right align-baseline"
                     >
-                        Max connection interval
+                        Max connection interval (ms)
                     </Col>
                     <Col sm={7}>
                         <TextInput
