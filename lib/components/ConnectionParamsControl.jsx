@@ -55,6 +55,8 @@ import {
     CONN_TIMEOUT_MAX,
     CONN_LATENCY_MIN,
     CONN_LATENCY_MAX,
+    CONN_TIMEOUT_STEP,
+    CONN_INTERVAL_STEP,
 } from './ConnectionUpdateRequestEditor';
 
 const SUCCESS = 'success';
@@ -66,30 +68,18 @@ const validator = predicate => (predicate ? ERROR : SUCCESS);
 
 class ConnectionParamsControl extends React.PureComponent {
     state = {
-        minConnectionInterval: this.props.connectionParameters
-            .minConnectionInterval,
-        maxConnectionInterval: this.props.connectionParameters
-            .maxConnectionInterval,
+        connectionInterval: this.props.connectionParameters.connectionInterval,
         slaveLatency: this.props.connectionParameters.slaveLatency,
         connectionSupervisionTimeout: this.props.connectionParameters
             .connectionSupervisionTimeout,
     };
 
-    validateMinConnectionInterval() {
-        const { minConnectionInterval, maxConnectionInterval } = this.state;
+    validateConnectionInterval() {
+        const { connectionInterval } = this.state;
         return validator(
-            minConnectionInterval < CONN_INTERVAL_MIN ||
-                minConnectionInterval > CONN_INTERVAL_MAX ||
-                minConnectionInterval > maxConnectionInterval
-        );
-    }
-
-    validateMaxConnectionInterval() {
-        const { minConnectionInterval, maxConnectionInterval } = this.state;
-        return validator(
-            maxConnectionInterval < CONN_INTERVAL_MIN ||
-                maxConnectionInterval > CONN_INTERVAL_MAX ||
-                minConnectionInterval > maxConnectionInterval
+            connectionInterval < CONN_INTERVAL_MIN ||
+                connectionInterval > CONN_INTERVAL_MAX ||
+                multipleOf(connectionInterval, 1.25)
         );
     }
 
@@ -132,8 +122,7 @@ class ConnectionParamsControl extends React.PureComponent {
             if (
                 [
                     this.validateSlaveLatency(),
-                    this.validateMinConnectionInterval(),
-                    this.validateMaxConnectionInterval(),
+                    this.validateConnectionInterval(),
                     this.validateConnectionSupervisionTimeout(),
                 ].includes(ERROR)
             ) {
@@ -148,7 +137,7 @@ class ConnectionParamsControl extends React.PureComponent {
         return (
             <Container>
                 <Row className="form-group">
-                    <Col sm={4} className="form-label text-right">
+                    <Col sm={5} className="form-label text-right">
                         Slave latency
                     </Col>
                     <Col sm={7}>
@@ -167,16 +156,17 @@ class ConnectionParamsControl extends React.PureComponent {
                 </Row>
                 <Row className="form-group">
                     <Col
-                        sm={4}
+                        sm={5}
                         className="form-label text-right align-baseline"
                     >
-                        Supervision timeout
+                        Supervision timeout (ms)
                     </Col>
                     <Col sm={7}>
                         <TextInput
                             type="number"
                             value={this.state.connectionSupervisionTimeout}
                             validationState={this.validateConnectionSupervisionTimeout()}
+                            step={CONN_TIMEOUT_STEP}
                             hasFeedback
                             onChange={event =>
                                 this.handleChange(
@@ -189,42 +179,21 @@ class ConnectionParamsControl extends React.PureComponent {
                 </Row>
                 <Row className="form-group">
                     <Col
-                        sm={4}
+                        sm={5}
                         className="form-label text-right align-baseline"
                     >
-                        Min connection interval
+                        Connection interval (ms)
                     </Col>
                     <Col sm={7}>
                         <TextInput
                             type="number"
-                            value={this.state.minConnectionInterval}
-                            validationState={this.validateMinConnectionInterval()}
+                            value={this.state.connectionInterval}
+                            validationState={this.validateConnectionInterval()}
+                            step={CONN_INTERVAL_STEP}
                             hasFeedback
                             onChange={event =>
                                 this.handleChange(
-                                    'minConnectionInterval',
-                                    event.target.value
-                                )
-                            }
-                        />
-                    </Col>
-                </Row>
-                <Row className="form-group">
-                    <Col
-                        sm={4}
-                        className="form-label text-right align-baseline"
-                    >
-                        Max connection interval
-                    </Col>
-                    <Col sm={7}>
-                        <TextInput
-                            type="number"
-                            value={this.state.maxConnectionInterval}
-                            validationState={this.validateMaxConnectionInterval()}
-                            hasFeedback
-                            onChange={event =>
-                                this.handleChange(
-                                    'maxConnectionInterval',
+                                    'connectionInterval',
                                     event.target.value
                                 )
                             }

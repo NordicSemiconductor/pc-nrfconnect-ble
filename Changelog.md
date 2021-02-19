@@ -5,6 +5,7 @@
 - Add functionality to set connection parameters.
 - Fetch uuid definitions from bluetooth-numbers-database project on app startup.
 - Several configurable parameters are now persisted between sessions.
+- Save and load advertising setup.
 
 ## Version 2.4.2
 ### Bugfixes

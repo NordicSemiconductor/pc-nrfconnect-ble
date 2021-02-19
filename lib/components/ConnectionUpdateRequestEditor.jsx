@@ -68,8 +68,10 @@ export {
     CONN_INTERVAL_MAX,
     CONN_TIMEOUT_MIN,
     CONN_TIMEOUT_MAX,
+    CONN_TIMEOUT_STEP,
     CONN_LATENCY_MIN,
     CONN_LATENCY_MAX,
+    CONN_INTERVAL_STEP,
 };
 
 export function isInRange(value, min, max) {

@@ -86,7 +86,7 @@ class AdvertisingParamsControl extends React.PureComponent {
             <Container>
                 <Row className="form-group">
                     <Col sm={4} className="form-label text-right">
-                        Interval
+                        Interval (ms)
                     </Col>
                     <Col sm={7}>
                         <TextInput
@@ -107,7 +107,7 @@ class AdvertisingParamsControl extends React.PureComponent {
                         sm={4}
                         className="form-label text-right align-baseline"
                     >
-                        Timeout
+                        Timeout (s)
                     </Col>
                     <Col sm={7}>
                         <TextInput
