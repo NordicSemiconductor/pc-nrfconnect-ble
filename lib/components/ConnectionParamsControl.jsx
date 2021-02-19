@@ -55,6 +55,8 @@ import {
     CONN_TIMEOUT_MAX,
     CONN_LATENCY_MIN,
     CONN_LATENCY_MAX,
+    CONN_TIMEOUT_STEP,
+    CONN_INTERVAL_STEP,
 } from './ConnectionUpdateRequestEditor';
 
 const SUCCESS = 'success';
@@ -80,7 +82,8 @@ class ConnectionParamsControl extends React.PureComponent {
         return validator(
             minConnectionInterval < CONN_INTERVAL_MIN ||
                 minConnectionInterval > CONN_INTERVAL_MAX ||
-                minConnectionInterval > maxConnectionInterval
+                minConnectionInterval > maxConnectionInterval ||
+                multipleOf(minConnectionInterval, 1.25)
         );
     }
 
@@ -89,7 +92,8 @@ class ConnectionParamsControl extends React.PureComponent {
         return validator(
             maxConnectionInterval < CONN_INTERVAL_MIN ||
                 maxConnectionInterval > CONN_INTERVAL_MAX ||
-                minConnectionInterval > maxConnectionInterval
+                minConnectionInterval > maxConnectionInterval ||
+                multipleOf(maxConnectionInterval, 1.25)
         );
     }
 
@@ -149,7 +153,7 @@ class ConnectionParamsControl extends React.PureComponent {
             <Container>
                 <Row className="form-group">
                     <Col sm={5} className="form-label text-right">
-                        Slave latency (ms)
+                        Slave latency
                     </Col>
                     <Col sm={7}>
                         <TextInput
@@ -177,6 +181,7 @@ class ConnectionParamsControl extends React.PureComponent {
                             type="number"
                             value={this.state.connectionSupervisionTimeout}
                             validationState={this.validateConnectionSupervisionTimeout()}
+                            step={CONN_TIMEOUT_STEP}
                             hasFeedback
                             onChange={event =>
                                 this.handleChange(
@@ -199,6 +204,7 @@ class ConnectionParamsControl extends React.PureComponent {
                             type="number"
                             value={this.state.minConnectionInterval}
                             validationState={this.validateMinConnectionInterval()}
+                            step={CONN_INTERVAL_STEP}
                             hasFeedback
                             onChange={event =>
                                 this.handleChange(
@@ -221,6 +227,7 @@ class ConnectionParamsControl extends React.PureComponent {
                             type="number"
                             value={this.state.maxConnectionInterval}
                             validationState={this.validateMaxConnectionInterval()}
+                            step={CONN_INTERVAL_STEP}
                             hasFeedback
                             onChange={event =>
                                 this.handleChange(
