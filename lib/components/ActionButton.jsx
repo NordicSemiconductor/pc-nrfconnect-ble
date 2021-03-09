@@ -36,9 +36,9 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
+import PropTypes from 'prop-types';
 
 const ActionButton = ({ label, onClick, primary, className, ...rest }) => (
     <Button

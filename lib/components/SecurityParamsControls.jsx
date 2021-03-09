@@ -42,14 +42,14 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import PropTypes from 'prop-types';
 
 const IO_CAPS_DISPLAY_ONLY = 0;
 const IO_CAPS_DISPLAY_YESNO = 1;

@@ -40,13 +40,13 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
+import Row from 'react-bootstrap/Row';
+import PropTypes from 'prop-types';
 
 import layoutStrategies from '../common/layoutStrategies';
 

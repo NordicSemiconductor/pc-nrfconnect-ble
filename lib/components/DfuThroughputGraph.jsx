@@ -36,8 +36,9 @@
 
 /* eslint react/forbid-prop-types: off */
 
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import LineChart from './LineChart';
 
 const DfuThroughputGraph = ({ totalSizeKb, kbpsPoints, averageKbpsPoints }) =>

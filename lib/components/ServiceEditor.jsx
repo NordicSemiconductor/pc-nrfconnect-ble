@@ -38,10 +38,10 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import PropTypes from 'prop-types';
 
 import { ValidationError } from '../common/Errors';
 import { getUuidName, uuidServiceDefinitions } from '../utils/uuid_definitions';

@@ -36,12 +36,12 @@
 
 /* eslint react/forbid-prop-types: off */
 
-import electron from 'electron';
-import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
+import electron from 'electron';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 
 import * as DfuActions from '../actions/dfuActions';

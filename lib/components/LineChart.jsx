@@ -35,8 +35,8 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { arrayOf, shape, number, string } from 'prop-types';
 import Chart from 'chart.js';
+import { arrayOf, number, shape, string } from 'prop-types';
 
 const LineChart = ({ data, xTotal, xAxisLabel, height }) => {
     const chartRef = useRef(null);

@@ -36,8 +36,8 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { validateUuid } from '../../utils/validateUuid';
 import UuidLookup from '../UuidLookup';

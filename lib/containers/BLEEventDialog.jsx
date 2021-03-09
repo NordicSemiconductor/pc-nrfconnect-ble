@@ -38,12 +38,12 @@
 
 'use strict';
 
-import { Map } from 'immutable';
-import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
+import { Map } from 'immutable';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 
 import * as AdapterActions from '../actions/adapterActions';
@@ -52,10 +52,10 @@ import { BLEEventState, BLEEventType } from '../actions/common';
 import AuthKeyEditor from '../components/AuthKeyEditor';
 import BLEEvent from '../components/BLEEvent';
 import ConnectionUpdateRequestEditor from '../components/ConnectionUpdateRequestEditor';
-import PhyUpdateRequestEditor from '../components/PhyUpdateRequestEditor';
-import MtuUpdateRequestEditor from '../components/MtuUpdateRequestEditor';
 import DataLengthUpdateRequestEditor from '../components/DataLengthUpdateRequestEditor';
+import MtuUpdateRequestEditor from '../components/MtuUpdateRequestEditor';
 import PairingEditor from '../components/PairingEditor';
+import PhyUpdateRequestEditor from '../components/PhyUpdateRequestEditor';
 
 const BLEEventDialog = ({
     selectEventId,

@@ -38,11 +38,11 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Form from 'react-bootstrap/Form';
+import PropTypes from 'prop-types';
 
 import { ValidationError } from '../common/Errors';
 import {

@@ -40,12 +40,12 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import ActionButton from './ActionButton';
+import PropTypes from 'prop-types';
 
+import { BLEEventType, BLEPHYType } from '../actions/common';
 import { Event } from '../reducers/bleEventReducer';
-import { BLEPHYType, BLEEventType } from '../actions/common';
+import ActionButton from './ActionButton';
 
 const { PEER_INITIATED_PHY_UPDATE } = BLEEventType;
 

@@ -36,15 +36,15 @@
 
 /* eslint react/forbid-prop-types: off */
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import ProgressBar from 'react-bootstrap/ProgressBar';
+import Row from 'react-bootstrap/Row';
+import PropTypes from 'prop-types';
 
 import DfuButton from './DfuButton';
 import DfuThroughputGraph from './DfuThroughputGraph';

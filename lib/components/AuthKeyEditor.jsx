@@ -39,12 +39,12 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
+import PropTypes from 'prop-types';
 
 import { BLEEventType } from '../actions/common';
 import { Event } from '../reducers/bleEventReducer';

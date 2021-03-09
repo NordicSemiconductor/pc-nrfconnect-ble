@@ -42,22 +42,23 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
+import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import TextInput from './input/TextInput';
+import PropTypes from 'prop-types';
+
 import {
-    CONN_INTERVAL_MIN,
     CONN_INTERVAL_MAX,
-    CONN_TIMEOUT_MIN,
-    CONN_TIMEOUT_MAX,
-    CONN_LATENCY_MIN,
-    CONN_LATENCY_MAX,
-    CONN_TIMEOUT_STEP,
+    CONN_INTERVAL_MIN,
     CONN_INTERVAL_STEP,
+    CONN_LATENCY_MAX,
+    CONN_LATENCY_MIN,
+    CONN_TIMEOUT_MAX,
+    CONN_TIMEOUT_MIN,
+    CONN_TIMEOUT_STEP,
 } from './ConnectionUpdateRequestEditor';
+import TextInput from './input/TextInput';
 
 const SUCCESS = 'success';
 const ERROR = 'error';

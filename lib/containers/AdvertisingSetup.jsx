@@ -36,20 +36,20 @@
 
 'use strict';
 
-import electron from 'electron';
-import { List } from 'immutable';
-import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
+import electron from 'electron';
+import { List } from 'immutable';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 
 import * as AdvertisingActions from '../actions/advertisingActions';
+import { persistentStore } from '../common/Persistentstore';
 import AdvertisingData from '../components/AdvertisingData';
 import AdvertisingList from '../components/AdvertisingList';
-import { persistentStore } from '../common/Persistentstore';
 
 const filters = [
     { name: 'nRF Connect Advertising setup', extensions: ['nca', 'json'] },
