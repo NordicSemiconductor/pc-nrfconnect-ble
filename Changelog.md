@@ -1,11 +1,15 @@
+## Version 2.5.1
+### Bugfixes
+- Fixed app crashing when toggling pairing parameters
+
 ## Version 2.5.0
 ### Features
-- Add functionality to set the interval and timeout for advertising.
-- Toggle active scan and timeout for scanning.
-- Add functionality to set connection parameters.
-- Fetch uuid definitions from bluetooth-numbers-database project on app startup.
-- Several configurable parameters are now persisted between sessions.
-- Save and load advertising setup.
+- Added functionality to set the interval and timeout for advertising
+- Added toggling of active scan and timeout for scanning
+- Added functionality to set connection parameters
+- Added fetching of uuid definitions from bluetooth-numbers-database project on app startup
+- Added saving and loading of advertising setup
+- Several configurable parameters are now persisted between sessions
 
 ## Version 2.4.2
 ### Bugfixes
