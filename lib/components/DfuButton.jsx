@@ -34,9 +34,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
+import PropTypes from 'prop-types';
 
 const DfuButton = props => {
     const { dfuInProgress, disabled, onClick } = props;

@@ -38,11 +38,11 @@
 
 'use strict';
 
+import React from 'react';
+import { connect } from 'react-redux';
 import electron from 'electron';
 import { Map } from 'immutable';
 import PropTypes from 'prop-types';
-import React from 'react';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as AdapterActions from '../actions/adapterActions';
@@ -60,7 +60,7 @@ import ConfirmationDialog from '../components/ConfirmationDialog';
 import DescriptorEditor from '../components/DescriptorEditor';
 import ServiceEditor from '../components/ServiceEditor';
 import ServiceItem from '../components/ServiceItem';
-import { ImmutableAdapter, getInstanceIds } from '../utils/api';
+import { getInstanceIds, ImmutableAdapter } from '../utils/api';
 import withHotkey from '../utils/withHotkey';
 
 const filters = [

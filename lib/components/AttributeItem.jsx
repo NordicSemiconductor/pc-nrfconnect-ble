@@ -36,14 +36,14 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {
+    getInstanceIds,
     ImmutableCharacteristic,
     ImmutableDescriptor,
     ImmutableService,
-    getInstanceIds,
 } from '../utils/api';
 import * as Colors from '../utils/colorDefinitions';
 import { toHexString } from '../utils/stringUtil';

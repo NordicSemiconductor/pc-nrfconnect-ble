@@ -36,6 +36,7 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
+
 import DfuButton from '../DfuButton';
 import DfuEditor from '../DfuEditor';
 

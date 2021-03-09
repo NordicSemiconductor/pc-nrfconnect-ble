@@ -38,8 +38,8 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { SECURE_DFU_UUID } from '../utils/definitions';
 import CentralDevice from './CentralDevice';

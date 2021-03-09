@@ -36,6 +36,7 @@
 
 import React from 'react';
 import renderer from 'react-test-renderer';
+
 import { getImmutableDevice } from '../../utils/api';
 import ConnectedDevice from '../ConnectedDevice';
 

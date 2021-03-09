@@ -36,6 +36,7 @@
 
 import React from 'react';
 import renderer from 'react-test-renderer';
+
 import DfuEditor from '../DfuEditor';
 
 function renderComponent(props) {
