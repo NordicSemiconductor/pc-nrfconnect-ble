@@ -37,9 +37,9 @@
 'use strict';
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import { pascalCase, camelCase } from 'change-case';
 import Button from 'react-bootstrap/Button';
+import { camelCase, pascalCase } from 'change-case';
+import PropTypes from 'prop-types';
 
 import { ImmutableDevice } from '../utils/api';
 import { toHexString } from '../utils/stringUtil';

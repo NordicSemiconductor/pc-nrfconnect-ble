@@ -38,11 +38,11 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
-import React, { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useRef, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Connector from './Connector';
 

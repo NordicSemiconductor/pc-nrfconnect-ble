@@ -40,7 +40,7 @@
 
 import React from 'react';
 
-import { TEXT, getUuidFormat } from '../utils/uuid_definitions';
+import { getUuidFormat, TEXT } from '../utils/uuid_definitions';
 import AttributeItem, { CCCD_UUID } from './AttributeItem';
 import DescriptorItem from './DescriptorItem';
 import HexOnlyEditableField from './HexOnlyEditableField';

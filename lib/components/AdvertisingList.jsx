@@ -36,9 +36,9 @@
 
 'use strict';
 
+import React from 'react';
 import { List } from 'immutable';
 import PropTypes from 'prop-types';
-import React from 'react';
 
 import AdvertisingListEntry from './AdvertisingListEntry';
 

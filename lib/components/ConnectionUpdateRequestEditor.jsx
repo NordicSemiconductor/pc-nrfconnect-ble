@@ -39,12 +39,12 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import ActionButton from './ActionButton';
+import PropTypes from 'prop-types';
 
 import { BLEEventType } from '../actions/common';
 import { Event } from '../reducers/bleEventReducer';
+import ActionButton from './ActionButton';
 import TextInput from './input/TextInput';
 
 const {

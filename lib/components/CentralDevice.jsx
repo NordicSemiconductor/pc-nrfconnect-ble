@@ -38,19 +38,18 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
+import icon from '../../resources/nordic_usb_icon.png';
 import AdvertisingParams from '../containers/AdvertisingParams';
 import AdvertisingSetup from '../containers/AdvertisingSetup';
 import ConnectionParams from '../containers/ConnectionParams';
 import SecurityParamsDialog from '../containers/SecurityParamsDialog';
 import withHotkey from '../utils/withHotkey';
 import Spinner from './Spinner';
-
-import icon from '../../resources/nordic_usb_icon.png';
 
 const CentralDevice = ({
     id,

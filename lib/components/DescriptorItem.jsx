@@ -36,8 +36,8 @@
 
 'use strict';
 
-import { is as ImmutableIs, Map } from 'immutable';
 import React from 'react';
+import { is as ImmutableIs, Map } from 'immutable';
 
 import { getInstanceIds } from '../utils/api';
 import AttributeItem, { CCCD_UUID } from './AttributeItem';
