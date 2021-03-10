@@ -19,7 +19,7 @@
     "clean-modules": "rimraf \"node_modules/!(rimraf|.bin)\"",
     "clean": "npm run clean-dist && npm run clean-modules",
     "dev": "nrfconnect-scripts build-watch",
-    "lint": "nrfconnect-scripts lint lib",
+    "lint": "nrfconnect-scripts lint lib index.jsx",
     "nordic-publish": "nrfconnect-scripts nordic-publish",
     "test-watch": "nrfconnect-scripts test --watch",
     "test": "nrfconnect-scripts test",

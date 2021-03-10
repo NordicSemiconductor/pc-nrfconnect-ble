@@ -34,17 +34,18 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import path from 'path';
 import React from 'react';
-import { bindActionCreators } from 'redux';
+import { getAppDir, getUserDataDir, logger } from 'nrfconnect/core';
+import path from 'path';
 import { FirmwareRegistry } from 'pc-ble-driver-js';
-import { logger, getAppDir, getUserDataDir } from 'nrfconnect/core';
-import reducers from './lib/reducers';
-import * as DiscoveryActions from './lib/actions/discoveryActions';
+import { bindActionCreators } from 'redux';
+
 import * as AdapterActions from './lib/actions/adapterActions';
+import * as DiscoveryActions from './lib/actions/discoveryActions';
 import SelectedView from './lib/components/SelectedView';
 import BLEEventDialog from './lib/containers/BLEEventDialog';
 import DiscoveredDevices from './lib/containers/DiscoveredDevices';
+import reducers from './lib/reducers';
 import {
     confirmUserUUIDsExist,
     populateUuids,
