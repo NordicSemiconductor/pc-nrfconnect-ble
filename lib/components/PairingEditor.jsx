@@ -38,9 +38,9 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
+import PropTypes from 'prop-types';
 
 import { BLEEventType } from '../actions/common';
 import SecurityParamsControls from './SecurityParamsControls';

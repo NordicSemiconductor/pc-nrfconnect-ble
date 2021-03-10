@@ -36,14 +36,14 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import PropTypes from 'prop-types';
 
 import {
-    uuid128bitServiceDefinitions,
     uuid16bitServiceDefinitions,
+    uuid128bitServiceDefinitions,
 } from '../utils/uuid_definitions';
 import TextInput from './input/TextInput';
 import UuidLookup from './UuidLookup';

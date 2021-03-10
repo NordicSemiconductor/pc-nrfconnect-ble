@@ -39,9 +39,9 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
+import PropTypes from 'prop-types';
 
 import { getUuidName } from '../utils/uuid_definitions';
 

@@ -36,12 +36,12 @@
 
 'use strict';
 
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import { connect } from 'react-redux';
 import { OrderedMap } from 'immutable';
 import PropTypes from 'prop-types';
-import React from 'react';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as AdapterActions from '../actions/adapterActions';

@@ -36,8 +36,8 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { ImmutableService } from '../utils/api';
 import AttributeItem from './AttributeItem';

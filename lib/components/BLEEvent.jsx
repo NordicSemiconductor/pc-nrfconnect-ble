@@ -36,8 +36,8 @@
 
 'use strict';
 
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { BLEEventState, BLEEventType } from '../actions/common';
 import { Event } from '../reducers/bleEventReducer';

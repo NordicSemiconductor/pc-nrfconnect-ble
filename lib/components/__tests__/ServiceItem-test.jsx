@@ -43,6 +43,7 @@ jest.mock('../../utils/uuid_definitions', () => {});
 
 import React from 'react';
 import { mount } from 'enzyme';
+
 import { getImmutableService } from '../../utils/api';
 import ServiceItem from '../ServiceItem';
 

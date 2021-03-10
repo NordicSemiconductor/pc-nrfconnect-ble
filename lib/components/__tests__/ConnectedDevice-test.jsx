@@ -36,6 +36,7 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
+
 import { getImmutableDevice } from '../../utils/api';
 import ConnectedDevice from '../ConnectedDevice';
 
