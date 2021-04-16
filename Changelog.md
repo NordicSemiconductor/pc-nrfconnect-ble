@@ -1,3 +1,7 @@
+## Version 2.5.2
+### Bugfixes
+- The image on the DFU button was not displayed anymore #199 
+
 ## Version 2.5.1
 ### Bugfixes
 - Fixed app crashing when toggling pairing parameters

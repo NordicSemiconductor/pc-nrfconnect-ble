@@ -44,9 +44,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import dfuIcon from '../../resources/dfu_icon.png';
 import Connector from './Connector';
-
-const dfuIcon = require('../../resources/dfu_icon.png');
 
 const WINDOW_WIDTH_OFFSET = 375;
 const THROTTLE_TIMEOUT = 100;
