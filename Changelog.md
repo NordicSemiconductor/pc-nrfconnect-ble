@@ -1,3 +1,7 @@
+## Version 2.5.2
+### Bugfixes
+- `url-loader` changed their export, which broke code that imported images
+
 ## Version 2.5.1
 ### Bugfixes
 - Fixed app crashing when toggling pairing parameters
