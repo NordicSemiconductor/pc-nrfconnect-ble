@@ -1,6 +1,6 @@
 ## Version 2.5.2
 ### Bugfixes
-- `url-loader` changed their export, which broke code that imported images
+- The image on the DFU button was not displayed anymore #199 
 
 ## Version 2.5.1
 ### Bugfixes
