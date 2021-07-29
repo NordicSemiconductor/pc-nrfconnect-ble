@@ -1,6 +1,6 @@
 ## Unreleased
 ### Bugfixes
-- The image on the DFU button was not displayed anymore #199
+- The image on the DFU button was not displayed anymore
 
 ## 2.5.1 - 2021-03-10
 ### Bugfixes
@@ -28,14 +28,14 @@
 
 ## 2.4.0 - 2020-06-08
 ### Features
-- Added UI to control 2 Mb/s phy, data length and ATT MTU #152
+- Added UI to control 2 Mb/s phy, data length and ATT MTU
 
 ## 2.3.2 - 2019-11-14
 ### Features
-- Support nRF52833 #137
+- Support nRF52833
 ### Bugfixes
-- Fixed partly shown dropdown #132
-- Scan results wrongly showed advertisement keys #143
+- Fixed partly shown dropdown
+- Scan results wrongly showed advertisement keys
 - Fixed keypress notification display
 
 ## 2.3.1 - 2019-08-16
@@ -48,36 +48,36 @@
 
 ## 2.2.1 - 2019-04-15
 ### Updates
-- Updated README.md specifying nRF52840 for kit and dongle #94
-- Added filter for supported devices #100
+- Updated README.md specifying nRF52840 for kit and dongle
+- Added filter for supported devices
 ### Bugfixes
-- Fixed ADV packet update by merging existing and new #97
-- Fixed advertising shortcut #99
-- Fixed unexpected line in connected view #102
-- Fixed attribute throttling mechanism #98 #101
+- Fixed ADV packet update by merging existing and new
+- Fixed advertising shortcut
+- Fixed unexpected line in connected view
+- Fixed attribute throttling mechanism
 
 ## 2.1.0 - 2018-02-05
 ### Features
-- Server setup can be applied multiple times with adapter reset (#65, #82)
-- Log J-Link firmware string when selecting serial port (#81)
+- Server setup can be applied multiple times with adapter reset
+- Log J-Link firmware string when selecting serial port
 ### Bugfixes
-- Keep connection open when performing DFU (#77)
-- Fix issue with custom UUIDs interfering with normal behavior (#54)
-- UTF8 support (#60)
+- Keep connection open when performing DFU
+- Fix issue with custom UUIDs interfering with normal behavior
+- UTF8 support
 
 ## 2.0.1 - 2017-07-26
 ### Bugfixes
-- Fix issue with custom UUIDs interfering with normal behavior (#54)
+- Fix issue with custom UUIDs interfering with normal behavior
 
 ## 2.0.0 - 2017-06-28
 The main change of this release is that the tool has been rewritten as an app for nRF Connect v2.0. It is no longer a standalone application, but should be installed and launched from nRF Connect.
 ### Features
-- Add Thingy UUIDs (#37)
-- Buttonless DFU (#47)
+- Add Thingy UUIDs
+- Buttonless DFU
 ### Bugfixes
-- Increase device name max length in advertising data (#20)
-- Better error message when connection lost during service discovery (#39)
+- Increase device name max length in advertising data
+- Better error message when connection lost during service discovery
 
 ## 1.1.1 - 2017-02-20
-- #16 Issue with blank screen if VC++ redistributable is not installed
-- #18 Issue at startup when settings.json is invalid
+- Issue with blank screen if VC++ redistributable is not installed
+- Issue at startup when settings.json is invalid
