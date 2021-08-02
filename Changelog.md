@@ -1,4 +1,4 @@
-## Unreleased
+## 2.5.2 - 2021-08-02
 ### Fixed
 - The image on the DFU button was not displayed anymore.
 
