@@ -39,8 +39,8 @@
 import React from 'react';
 import { is as ImmutableIs, Map } from 'immutable';
 
-import { getUuidFormat, TEXT } from '../utils/uuid_definitions';
 import { getInstanceIds } from '../utils/api';
+import { getUuidFormat, TEXT } from '../utils/uuid_definitions';
 import AttributeItem, { CCCD_UUID } from './AttributeItem';
 import HexOnlyEditableField from './HexOnlyEditableField';
 
@@ -101,7 +101,6 @@ class DescriptorItem extends AttributeItem {
                         onRead={onRead}
                         showReadButton={itemIsSelected}
                         selectParent={this.selectComponent}
-
                     />
                 );
             });
