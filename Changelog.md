@@ -1,3 +1,7 @@
+## 2.5.3 - 2021-08-24
+### Fixed
+- TEXT format definitions were not applied for descriptors.
+
 ## 2.5.2 - 2021-08-02
 ### Fixed
 - The image on the DFU button was not displayed anymore.
