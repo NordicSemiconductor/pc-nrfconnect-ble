@@ -40,6 +40,7 @@ import React from 'react';
 import { is as ImmutableIs, Map } from 'immutable';
 
 import { getInstanceIds } from '../utils/api';
+import { getUuidFormat, TEXT } from '../utils/uuid_definitions';
 import AttributeItem, { CCCD_UUID } from './AttributeItem';
 import HexOnlyEditableField from './HexOnlyEditableField';
 
@@ -85,6 +86,8 @@ class DescriptorItem extends AttributeItem {
 
         const valueList = [];
 
+        const showText = getUuidFormat(uuid) === TEXT;
+
         if (isLocalCCCD && Map.isMap(value)) {
             value.forEach((cccdValue, deviceInstanceId) => {
                 const { address } = getInstanceIds(deviceInstanceId);
@@ -110,6 +113,7 @@ class DescriptorItem extends AttributeItem {
                     onRead={onRead}
                     showReadButton={itemIsSelected}
                     selectParent={this.selectComponent}
+                    showText={showText}
                 />
             );
         }
