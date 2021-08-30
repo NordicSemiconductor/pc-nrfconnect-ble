@@ -65,7 +65,9 @@ function createPackageInfoString(packageInfo) {
     return Object.keys(packageInfo).reduce((prevType, type) => {
         const valueString = Object.keys(packageInfo[type]).reduce(
             (prevValue, value) =>
-                `${prevValue}\n  ${value}: ${JSON.stringify(packageInfo[type][value])}`,
+                `${prevValue}\n  ${value}: ${JSON.stringify(
+                    packageInfo[type][value]
+                )}`,
             ''
         );
         return `${prevType}${type}:${valueString}\n`;
