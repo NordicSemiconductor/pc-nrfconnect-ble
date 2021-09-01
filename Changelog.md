@@ -1,3 +1,7 @@
+## Unreleased
+### Fixed
+- DFU zip package info was not displayed properly
+
 ## 2.5.3 - 2021-08-24
 ### Fixed
 - TEXT format definitions were not applied for descriptors.
