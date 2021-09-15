@@ -48,8 +48,8 @@ exports[`DfuEditor should render stopping 1`] = `
     >
       <pre>
         application:
-  bin_file: dfu.bin
-  dat_file: dfu.dat
+  bin_file: "dfu.bin"
+  dat_file: "dfu.dat"
 
       </pre>
     </div>
@@ -219,8 +219,8 @@ exports[`DfuEditor should render with dfu completed 1`] = `
     >
       <pre>
         application:
-  bin_file: dfu.bin
-  dat_file: dfu.dat
+  bin_file: "dfu.bin"
+  dat_file: "dfu.dat"
 
       </pre>
     </div>
@@ -390,8 +390,8 @@ exports[`DfuEditor should render with file path and package info 1`] = `
     >
       <pre>
         application:
-  bin_file: dfu.bin
-  dat_file: dfu.dat
+  bin_file: "dfu.bin"
+  dat_file: "dfu.dat"
 
       </pre>
     </div>
@@ -467,8 +467,8 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
     >
       <pre>
         application:
-  bin_file: dfu.bin
-  dat_file: dfu.dat
+  bin_file: "dfu.bin"
+  dat_file: "dfu.dat"
 
       </pre>
     </div>
