@@ -71,8 +71,8 @@ class ConnectionParamsControl extends React.PureComponent {
     state = {
         connectionInterval: this.props.connectionParameters.connectionInterval,
         slaveLatency: this.props.connectionParameters.slaveLatency,
-        connectionSupervisionTimeout: this.props.connectionParameters
-            .connectionSupervisionTimeout,
+        connectionSupervisionTimeout:
+            this.props.connectionParameters.connectionSupervisionTimeout,
     };
 
     validateConnectionInterval() {

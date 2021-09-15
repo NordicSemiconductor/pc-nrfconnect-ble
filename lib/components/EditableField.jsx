@@ -88,9 +88,8 @@ class EditableField extends React.Component {
 
     constructor(props) {
         super(props);
-        this.selectParentAndToggleEditing = this.selectParentAndToggleEditing.bind(
-            this
-        );
+        this.selectParentAndToggleEditing =
+            this.selectParentAndToggleEditing.bind(this);
         this.selectParent = this.selectParent.bind(this);
         this.toggleEditing = this.toggleEditing.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -236,15 +235,8 @@ class EditableField extends React.Component {
     }
 
     render() {
-        const {
-            value,
-            label,
-            title,
-            plain,
-            showReadButton,
-            onRead,
-            onWrite,
-        } = this.props;
+        const { value, label, title, plain, showReadButton, onRead, onWrite } =
+            this.props;
         const nonBreakingSpace = '\u00A0';
         // Delaying the creation of TextareaAutosize etc until they're needed
         // gives a performance win.

@@ -76,11 +76,8 @@ class DeviceDetailsContainer extends React.PureComponent {
     }
 
     selectNextComponent(backward) {
-        const {
-            deviceDetails,
-            selectedComponent,
-            selectComponent,
-        } = this.props;
+        const { deviceDetails, selectedComponent, selectComponent } =
+            this.props;
         let foundCurrent = false;
 
         // eslint-disable-next-line no-restricted-syntax

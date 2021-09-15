@@ -42,14 +42,8 @@ import Modal from 'react-bootstrap/Modal';
 import PropTypes from 'prop-types';
 
 const ConfirmationDialog = props => {
-    const {
-        text,
-        show,
-        onCancel,
-        onOk,
-        okButtonText,
-        cancelButtonText,
-    } = props;
+    const { text, show, onCancel, onOk, okButtonText, cancelButtonText } =
+        props;
 
     return (
         <div>

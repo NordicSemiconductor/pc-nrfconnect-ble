@@ -201,11 +201,8 @@ class ServerSetup extends React.PureComponent {
     }
 
     expandComponent(expand) {
-        const {
-            serverSetup,
-            selectComponent,
-            setAttributeExpanded,
-        } = this.props;
+        const { serverSetup, selectComponent, setAttributeExpanded } =
+            this.props;
 
         const { selectedComponent } = serverSetup;
         const deviceDetails = new Map({

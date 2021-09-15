@@ -58,26 +58,34 @@ import './resources/css/styles.scss';
 let globalDispatch;
 
 export default {
-    decorateNavMenu: NavMenu => ({ selectedItemId, ...restProps }) => (
-        <NavMenu
-            {...restProps}
-            selectedItemId={selectedItemId < 0 ? 0 : selectedItemId}
-            menuItems={[
-                { id: 0, text: 'Connection Map', iconClass: 'mdi mdi-sitemap' },
-                {
-                    id: 1,
-                    text: 'Server Setup',
-                    iconClass: 'mdi mdi-format-indent-increase',
-                },
-            ]}
-        />
-    ),
-    decorateMainView: MainView => props => (
-        <MainView>
-            <SelectedView {...props} />
-            <BLEEventDialog />
-        </MainView>
-    ),
+    decorateNavMenu:
+        NavMenu =>
+        ({ selectedItemId, ...restProps }) =>
+            (
+                <NavMenu
+                    {...restProps}
+                    selectedItemId={selectedItemId < 0 ? 0 : selectedItemId}
+                    menuItems={[
+                        {
+                            id: 0,
+                            text: 'Connection Map',
+                            iconClass: 'mdi mdi-sitemap',
+                        },
+                        {
+                            id: 1,
+                            text: 'Server Setup',
+                            iconClass: 'mdi mdi-format-indent-increase',
+                        },
+                    ]}
+                />
+            ),
+    decorateMainView: MainView => props =>
+        (
+            <MainView>
+                <SelectedView {...props} />
+                <BLEEventDialog />
+            </MainView>
+        ),
     mapMainViewState: (state, props) => {
         const { selectedItemId } = state.core.navMenu;
         return {
@@ -85,11 +93,12 @@ export default {
             viewId: selectedItemId > 0 ? selectedItemId : 0,
         };
     },
-    decorateSidePanel: SidePanel => props => (
-        <SidePanel>
-            <DiscoveredDevices {...props} />
-        </SidePanel>
-    ),
+    decorateSidePanel: SidePanel => props =>
+        (
+            <SidePanel>
+                <DiscoveredDevices {...props} />
+            </SidePanel>
+        ),
     mapSidePanelDispatch: (dispatch, props) => ({
         ...props,
         ...bindActionCreators(DiscoveryActions, dispatch),

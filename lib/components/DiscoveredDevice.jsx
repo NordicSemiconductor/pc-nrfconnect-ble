@@ -142,12 +142,8 @@ class DiscoveredDevice extends React.PureComponent {
     }
 
     onButtonClick(e) {
-        const {
-            device,
-            onCancelConnect,
-            onConnect,
-            adapterIsConnecting,
-        } = this.props;
+        const { device, onCancelConnect, onConnect, adapterIsConnecting } =
+            this.props;
 
         e.stopPropagation();
 
