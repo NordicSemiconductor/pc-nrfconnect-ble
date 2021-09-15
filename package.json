@@ -47,11 +47,11 @@
     "uuid-v4": "^0.1.0"
   },
   "dependencies": {
-    "bluetooth-uuid-database": "github:NordicSemiconductor/bluetooth-numbers-database#75bb6a8079",
+    "bluetooth-numbers-database": "github:NordicSemiconductor/bluetooth-numbers-database#75bb6a8079",
     "electron-store": "^6.0.0"
   },
   "bundledDependencies": [
-    "bluetooth-uuid-database",
+    "bluetooth-numbers-database",
     "electron-store"
   ],
   "eslintConfig": {
