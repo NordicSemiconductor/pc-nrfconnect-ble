@@ -36,7 +36,6 @@
  */
 
 /* eslint react/forbid-prop-types: off */
-/* eslint react/require-default-props: off */
 
 'use strict';
 
