@@ -34,38 +34,19 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-'use strict';
-
 import React from 'react';
-import PropTypes from 'prop-types';
+import { SidePanel } from 'pc-nrfconnect-shared';
 
-import Spinner from './Spinner';
+import BLEEventDialog from '../containers/BLEEventDialog';
+import DiscoveredDevices from '../containers/DiscoveredDevices';
 
-const EnumeratingAttributes = props => {
-    const barList = [];
+export default () => (
+    <SidePanel>
+        <DiscoveredDevices />
 
-    for (let i = 0; i < props.bars; i += 1) {
-        const key = `bar${i + 1}`;
-        barList.push(<div key={key} className={key} />);
-    }
-
-    return (
-        <div className="enumerating-items-wrap">
-            {barList}
-            <div className="enumerating-content">
-                <Spinner
-                    onWhite
-                    visible
-                    className="spinner center-block"
-                    size={20}
-                />
-            </div>
-        </div>
-    );
-};
-
-EnumeratingAttributes.propTypes = {
-    bars: PropTypes.number.isRequired,
-};
-
-export default EnumeratingAttributes;
+        {/* The BLEEventDialog is not really part of the side panel but should
+            rather defined in the app component, as soon as we allow global
+            components in there */}
+        <BLEEventDialog />
+    </SidePanel>
+);

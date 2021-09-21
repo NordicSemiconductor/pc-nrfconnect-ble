@@ -240,7 +240,7 @@ const CentralDevice = ({
                     {name ? (
                         <strong className="selectable">{name}</strong>
                     ) : (
-                        <Spinner visible />
+                        <Spinner onWhite visible />
                     )}
                 </div>
                 <div className="address-text selectable">{address}</div>
