@@ -38,7 +38,7 @@
     "jquery": "^3.4.1",
     "lodash.throttle": "^4.1.1",
     "mousetrap": "^1.6.3",
-    "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v4.18.0",
+    "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v5.0.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-onclickoutside": "^6.9.0",
