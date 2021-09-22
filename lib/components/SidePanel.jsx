@@ -34,47 +34,19 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-'use strict';
-
 import React from 'react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import PropTypes from 'prop-types';
+import { SidePanel } from 'pc-nrfconnect-shared';
 
-const ConfirmationDialog = props => {
-    const { text, show, onCancel, onOk, okButtonText, cancelButtonText } =
-        props;
+import BLEEventDialog from '../containers/BLEEventDialog';
+import DiscoveredDevices from '../containers/DiscoveredDevices';
 
-    return (
-        <div>
-            <Modal show={show} onHide={onCancel}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Confirm</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p>{text}</p>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={onOk}>{okButtonText}</Button>
-                    <Button onClick={onCancel}>{cancelButtonText}</Button>
-                </Modal.Footer>
-            </Modal>
-        </div>
-    );
-};
+export default () => (
+    <SidePanel>
+        <DiscoveredDevices />
 
-ConfirmationDialog.propTypes = {
-    text: PropTypes.string.isRequired,
-    show: PropTypes.bool.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    onOk: PropTypes.func.isRequired,
-    okButtonText: PropTypes.string,
-    cancelButtonText: PropTypes.string,
-};
-
-ConfirmationDialog.defaultProps = {
-    okButtonText: 'OK',
-    cancelButtonText: 'Cancel',
-};
-
-export default ConfirmationDialog;
+        {/* The BLEEventDialog is not really part of the side panel but should
+            rather defined in the app component, as soon as we allow global
+            components in there */}
+        <BLEEventDialog />
+    </SidePanel>
+);

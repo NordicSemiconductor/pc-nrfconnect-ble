@@ -67,7 +67,7 @@
     content: '';
 }
 .spinner:after {
-    background: #fff;
+    background: #eceff1;
     width: 75%;
     height: 75%;
     border-radius: 50%;
@@ -78,6 +78,10 @@
     left: 0;
     bottom: 0;
     right: 0;
+}
+
+.spinner.on-white:after {
+    background: #fff;
 }
 
 .core-main-view,
@@ -374,7 +378,10 @@
 }
 
 #discoveredDevicesContainer {
-    padding: 10px 15px;
+    button:disabled {
+        border-color: $brand-main;
+        color: $gray-lighter;
+    }
     .spinner {
         margin-left: 10px;
     }
@@ -400,18 +407,23 @@
             font-weight: normal;
             margin-right: 10px;
         }
-        .checkbox {
-            margin-top: 5px;
-            margin-bottom: 3px;
-        }
         .form-control {
-            width: 160px;
+            width: 155px;
             height: 22px;
             font-size: 12px;
             padding-left: 10px;
         }
         .form-group {
             margin-bottom: 0px;
+        }
+        .form-check {
+            display: unset;
+            padding-left: unset;
+        }
+        .form-check-input {
+            position: unset;
+            margin-left: 3px;
+            margin-right: 0.5rem;
         }
         input {
             margin-top: 2px;
@@ -444,7 +456,6 @@
 .device {
     border-bottom: 1px solid lightgrey;
     padding: 4px 0;
-    background-color: white;
     position: relative;
 
     .btn-nordic {

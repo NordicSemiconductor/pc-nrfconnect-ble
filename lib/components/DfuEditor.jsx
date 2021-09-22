@@ -76,11 +76,8 @@ function createPackageInfoString(packageInfo) {
 
 class DfuEditor extends React.PureComponent {
     getStatus() {
-        const {
-            isCompleted,
-            isStopping,
-            fileNameBeingTransferred,
-        } = this.props;
+        const { isCompleted, isStopping, fileNameBeingTransferred } =
+            this.props;
         let { status } = this.props;
         if (isCompleted) {
             return 'Completed';

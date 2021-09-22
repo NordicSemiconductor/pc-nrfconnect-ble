@@ -105,10 +105,8 @@ const ConnectionUpdateRequestEditor = ({
     const [connectionInterval, setConnectionInterval] = useState(
         rcp.minConnectionInterval
     );
-    const [
-        connectionSupervisionTimeout,
-        setConnectionSupervisionTimeout,
-    ] = useState(rcp.connectionSupervisionTimeout);
+    const [connectionSupervisionTimeout, setConnectionSupervisionTimeout] =
+        useState(rcp.connectionSupervisionTimeout);
     const [slaveLatency, setSlaveLatency] = useState(rcp.slaveLatency);
 
     const readOnly = type === PEER_CENTRAL_INITIATED_CONNECTION_UPDATE;

@@ -34,17 +34,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import React from 'react';
-import { getAppDir, getUserDataDir, logger } from 'nrfconnect/core';
-import path from 'path';
-import { FirmwareRegistry } from 'pc-ble-driver-js';
-import { bindActionCreators } from 'redux';
+import React, { useEffect } from 'react';
+import { App, getUserDataDir } from 'pc-nrfconnect-shared';
 
-import * as AdapterActions from './lib/actions/adapterActions';
-import * as DiscoveryActions from './lib/actions/discoveryActions';
-import SelectedView from './lib/components/SelectedView';
-import BLEEventDialog from './lib/containers/BLEEventDialog';
-import DiscoveredDevices from './lib/containers/DiscoveredDevices';
+import SidePanel from './lib/components/SidePanel';
+import DeviceDetails from './lib/containers/DeviceDetails';
+import DeviceSelector from './lib/containers/DeviceSelector';
+import ServerSetup from './lib/containers/ServerSetup';
 import reducers from './lib/reducers';
 import {
     confirmUserUUIDsExist,
@@ -53,106 +49,21 @@ import {
 
 import './resources/css/styles.scss';
 
-/* eslint react/prop-types: 0 */
-
-let globalDispatch;
-
-export default {
-    decorateNavMenu: NavMenu => ({ selectedItemId, ...restProps }) => (
-        <NavMenu
-            {...restProps}
-            selectedItemId={selectedItemId < 0 ? 0 : selectedItemId}
-            menuItems={[
-                { id: 0, text: 'Connection Map', iconClass: 'mdi mdi-sitemap' },
-                {
-                    id: 1,
-                    text: 'Server Setup',
-                    iconClass: 'mdi mdi-format-indent-increase',
-                },
-            ]}
-        />
-    ),
-    decorateMainView: MainView => props => (
-        <MainView>
-            <SelectedView {...props} />
-            <BLEEventDialog />
-        </MainView>
-    ),
-    mapMainViewState: (state, props) => {
-        const { selectedItemId } = state.core.navMenu;
-        return {
-            ...props,
-            viewId: selectedItemId > 0 ? selectedItemId : 0,
-        };
-    },
-    decorateSidePanel: SidePanel => props => (
-        <SidePanel>
-            <DiscoveredDevices {...props} />
-        </SidePanel>
-    ),
-    mapSidePanelDispatch: (dispatch, props) => ({
-        ...props,
-        ...bindActionCreators(DiscoveryActions, dispatch),
-        ...bindActionCreators(AdapterActions, dispatch),
-    }),
-    mapDeviceSelectorState: (state, props) => ({
-        portIndicatorStatus:
-            state.app.adapter.selectedAdapter !== null ? 'on' : 'off',
-        ...props,
-    }),
-    reduceApp: reducers,
-    middleware: store => next => action => {
-        if (!action) {
-            return;
-        }
-        if (action.type === 'DEVICE_SETUP_COMPLETE') {
-            logger.info('Device setup completed');
-            store.dispatch(AdapterActions.initAdapter(action.device));
-        }
-        if (action.type === 'DEVICE_SETUP_ERROR') {
-            if (action.error.message.includes('No firmware defined')) {
-                logger.info(
-                    `Connected to device with serial number: ${action.device.serialNumber} ` +
-                        `and family: ${
-                            action.device.deviceInfo.family || 'Unknown'
-                        } `
-                );
-                logger.debug(
-                    'Note: no pre-compiled firmware is available for the selected device. ' +
-                        'You may still use the app if you have programmed the device ' +
-                        'with a compatible connectivity firmware.'
-                );
-                store.dispatch(AdapterActions.initAdapter(action.device));
-            } else {
-                logger.error(`Failed to setup device: ${action.error.message}`);
-            }
-        }
-        if (action.type === 'DEVICE_DESELECTED') {
-            store
-                .dispatch(AdapterActions.closeAdapter())
-                .then(() => logger.info('Device closed.'));
-        }
-        next(action);
-    },
-    onInit: dispatch => {
-        __webpack_public_path__ = path.join(getAppDir(), 'dist/'); // eslint-disable-line
-        globalDispatch = dispatch;
-    },
-    onReady: () => {
+export default () => {
+    useEffect(() => {
         confirmUserUUIDsExist(getUserDataDir());
         populateUuids();
-    },
-    config: {
-        selectorTraits: {
-            jlink: true,
-            nordicUsb: true,
-            serialport: true,
-        },
-        deviceSetup: {
-            ...FirmwareRegistry.getDeviceSetup(),
-            allowCustomDevice: true,
-        },
-        releaseCurrentDevice: () =>
-            globalDispatch(AdapterActions.closeAdapter()),
-    },
+    }, []);
+
+    return (
+        <App
+            appReducer={reducers}
+            deviceSelect={<DeviceSelector />}
+            sidePanel={<SidePanel />}
+            panes={[
+                { name: 'Connection Map', Main: DeviceDetails },
+                { name: 'Server Setup', Main: ServerSetup },
+            ]}
+        />
+    );
 };
