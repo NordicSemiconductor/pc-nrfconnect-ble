@@ -363,7 +363,7 @@ class AdvertisingData extends React.PureComponent {
                         id="dropdown-adv"
                         label="Type"
                         onSelect={this.handleSelect}
-                        variant="outline-secondary"
+                        variant="secondary"
                     >
                         <Dropdown.Item eventKey="0">
                             {keyToAdvertisingType('0')}

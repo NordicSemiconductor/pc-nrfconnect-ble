@@ -104,7 +104,7 @@ class PairingEditor extends React.PureComponent {
                     type="button"
                     onClick={this.handleCancel}
                     className="btn btn-default btn-sm btn-nordic"
-                    variant="outline-secondary"
+                    variant="secondary"
                 >
                     Cancel
                 </Button>
@@ -144,7 +144,7 @@ class PairingEditor extends React.PureComponent {
                     type="button"
                     onClick={this.handleReject}
                     className="btn btn-default btn-sm btn-nordic"
-                    variant="outline-secondary"
+                    variant="secondary"
                 >
                     Reject
                 </Button>
@@ -158,7 +158,7 @@ class PairingEditor extends React.PureComponent {
                     type="button"
                     onClick={this.handleCancel}
                     className="btn btn-default btn-sm btn-nordic"
-                    variant="outline-secondary"
+                    variant="secondary"
                 >
                     Ignore
                 </Button>

@@ -24,7 +24,7 @@ exports[`DfuEditor should render stopping 1`] = `
         className="input-group-append"
       >
         <button
-          className="btn btn-outline-secondary"
+          className="btn btn-secondary"
           disabled={true}
           id="choose-file"
           onClick={[Function]}
@@ -133,7 +133,7 @@ exports[`DfuEditor should render with default props 1`] = `
         className="input-group-append"
       >
         <button
-          className="btn btn-outline-secondary"
+          className="btn btn-secondary"
           disabled={false}
           id="choose-file"
           onClick={[Function]}
@@ -195,7 +195,7 @@ exports[`DfuEditor should render with dfu completed 1`] = `
         className="input-group-append"
       >
         <button
-          className="btn btn-outline-secondary"
+          className="btn btn-secondary"
           disabled={true}
           id="choose-file"
           onClick={[Function]}
@@ -308,7 +308,7 @@ exports[`DfuEditor should render with file path 1`] = `
         className="input-group-append"
       >
         <button
-          className="btn btn-outline-secondary"
+          className="btn btn-secondary"
           disabled={false}
           id="choose-file"
           onClick={[Function]}
@@ -366,7 +366,7 @@ exports[`DfuEditor should render with file path and package info 1`] = `
         className="input-group-append"
       >
         <button
-          className="btn btn-outline-secondary"
+          className="btn btn-secondary"
           disabled={false}
           id="choose-file"
           onClick={[Function]}
@@ -443,7 +443,7 @@ exports[`DfuEditor should render with file path, package info, and dfu in progre
         className="input-group-append"
       >
         <button
-          className="btn btn-outline-secondary"
+          className="btn btn-secondary"
           disabled={true}
           id="choose-file"
           onClick={[Function]}

@@ -102,7 +102,7 @@ class ConnectionParams extends React.PureComponent {
                             type="button"
                             onClick={hideConnectionParamDialog}
                             className="btn btn-default btn-sm btn-nordic"
-                            variant="outline-secondary"
+                            variant="secondary"
                         >
                             Cancel
                         </Button>
