@@ -80,7 +80,7 @@ class UuidLookup extends React.Component {
                     onSelect={(eventKey, event) => onSelect(event, eventKey)}
                     alignRight={pullRight}
                 >
-                    <Dropdown.Toggle variant="outline-secondary" size="lg">
+                    <Dropdown.Toggle variant="secondary" size="lg">
                         <span className="mdi mdi-magnify" aria-hidden="true" />
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="scroll-menu">

@@ -132,7 +132,7 @@ class DfuEditor extends React.PureComponent {
                         <InputGroup.Append>
                             <Button
                                 id="choose-file"
-                                variant="outline-secondary"
+                                variant="secondary"
                                 disabled={isStarted || isCompleted}
                                 onClick={onChooseFile}
                             >

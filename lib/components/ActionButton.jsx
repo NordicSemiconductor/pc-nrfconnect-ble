@@ -45,7 +45,7 @@ const ActionButton = ({ label, onClick, primary, className, ...rest }) => (
         type="button"
         onClick={onClick}
         className={`${className} btn btn-default btn-sm btn-nordic`}
-        variant={primary ? 'primary' : 'outline-secondary'}
+        variant={primary ? 'primary' : 'secondary'}
         {...rest}
     >
         {label}

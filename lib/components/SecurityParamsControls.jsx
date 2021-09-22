@@ -124,7 +124,7 @@ class SecurityParamsControls extends React.PureComponent {
                             onSelect={(eventKey, event) =>
                                 this.onIoCapsSelect(event, eventKey)
                             }
-                            variant="outline-secondary"
+                            variant="secondary"
                         >
                             <Dropdown.Item eventKey={IO_CAPS_DISPLAY_ONLY}>
                                 {keyToIoCapsText(IO_CAPS_DISPLAY_ONLY)}

@@ -109,7 +109,7 @@ class AdvertisingParams extends React.PureComponent {
                             type="button"
                             onClick={() => this.handleCancel()}
                             className="btn btn-default btn-sm btn-nordic"
-                            variant="outline-secondary"
+                            variant="secondary"
                         >
                             Cancel
                         </Button>

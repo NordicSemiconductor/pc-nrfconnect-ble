@@ -212,16 +212,10 @@ class AdvertisingSetup extends React.PureComponent {
                 </Modal.Body>
                 <Modal.Footer className="advertising-setup-footer">
                     <div>
-                        <Button
-                            variant="outline-secondary"
-                            onClick={this.handleLoad}
-                        >
+                        <Button variant="secondary" onClick={this.handleLoad}>
                             Load setup
                         </Button>
-                        <Button
-                            variant="outline-secondary"
-                            onClick={this.handleSave}
-                        >
+                        <Button variant="secondary" onClick={this.handleSave}>
                             Save setup
                         </Button>
                     </div>
@@ -232,10 +226,7 @@ class AdvertisingSetup extends React.PureComponent {
                         >
                             Apply
                         </Button>
-                        <Button
-                            variant="outline-secondary"
-                            onClick={hideSetupDialog}
-                        >
+                        <Button variant="secondary" onClick={hideSetupDialog}>
                             Close
                         </Button>
                     </div>
