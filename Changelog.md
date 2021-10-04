@@ -1,4 +1,6 @@
 ## Unreleased
+### Changed
+- Use new nRF Connect for Desktop look & feel.
 ### Fixed
 - DFU zip package info was not displayed properly
 
