@@ -61,7 +61,6 @@ const MtuUpdateRequestEditor = ({
                     value={mtu}
                     min={MTU_MIN}
                     max={MTU_MAX}
-                    readOnly={peerInitiated}
                     label="ATT MTU"
                     labelClassName="col-md-7 text-right"
                     wrapperClassName="col-md-5"
