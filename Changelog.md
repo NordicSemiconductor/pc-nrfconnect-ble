@@ -1,9 +1,10 @@
 ## Unreleased
 ### Changed
-- Establish compatibility with nRF Connect for Desktop 3.8
+- Establish compatibility with nRF Connect for Desktop 3.8.
 - Use new nRF Connect for Desktop look & feel.
+- Removed limitation for value edit in MTU and DLE update dialog.
 ### Fixed
-- DFU zip package info was not displayed properly
+- DFU zip package info was not displayed properly.
 
 ## 2.5.3 - 2021-08-24
 ### Fixed
