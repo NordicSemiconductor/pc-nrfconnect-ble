@@ -11,6 +11,7 @@ import SidePanel from './lib/components/SidePanel';
 import BLEEventDialog from './lib/containers/BLEEventDialog';
 import DeviceDetails from './lib/containers/DeviceDetails';
 import DeviceSelector from './lib/containers/DeviceSelector';
+import DocumentationSections from './lib/containers/DocumentationSection';
 import ServerSetup from './lib/containers/ServerSetup';
 import reducers from './lib/reducers';
 import {
@@ -35,6 +36,7 @@ export default () => {
                 { name: 'Connection Map', Main: DeviceDetails },
                 { name: 'Server Setup', Main: ServerSetup },
             ]}
+            documentation={DocumentationSections}
         >
             <BLEEventDialog />
         </App>
