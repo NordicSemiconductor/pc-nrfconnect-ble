@@ -3,6 +3,7 @@
 - Use new nRF Connect for Desktop look & feel.
 ### Fixed
 - DFU zip package info was not displayed properly
+- Opening UUID definitions file was not working.
 
 ## 2.5.3 - 2021-08-24
 ### Fixed
