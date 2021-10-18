@@ -8,12 +8,15 @@
 
 import childProcess from 'child_process';
 import { shell } from 'electron';
-import fs from 'fs';
+import { exists } from 'fs';
 import os from 'os';
 
-export default function openFileInDefaultApplication(filePath, callback) {
-    fs.exists(filePath, exists => {
-        if (!exists) {
+export default function openFileInDefaultApplication(
+    filePath: string,
+    callback: (error: Error) => void
+) {
+    exists(filePath, found => {
+        if (!found) {
             if (callback) {
                 callback(new Error(`Could not find file at path: ${filePath}`));
             }
