@@ -24,12 +24,12 @@ export default function openFileInDefaultApplication(filePath, callback) {
         const escapedPath = filePath.replace(/ /g, '\\ ');
 
         // Could not find a method that works on all three platforms:
-        // * shell.openItem works on Windows and Linux but not on OSX
+        // * shell.openPath works on Windows and Linux but not on OSX
         // * childProcess.execSync works on OSX but not on Windows
         if (os.type() === 'Darwin') {
             childProcess.execSync(`open  ${escapedPath}`);
         } else {
-            shell.openItem(escapedPath);
+            shell.openPath(escapedPath);
         }
     });
 }
