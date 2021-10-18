@@ -12,10 +12,10 @@ import {
     services,
 } from 'bluetooth-numbers-database';
 import fs from 'fs';
-import { logger } from 'nrfconnect/core';
 import path from 'path';
+import { logger } from 'pc-nrfconnect-shared';
 
-import getAllUuids from './bluetoothUuidApi';
+import { getAllUuids } from './bluetoothUuidApi';
 import * as Definitions from './definitions';
 
 export const { TEXT, NO_FORMAT } = Definitions;
@@ -26,7 +26,7 @@ const Characteristics = {
     ...Definitions.uuid16bitCharacteristicDefinitions,
 };
 const Descriptors = {};
-let uuidDefinitionsFilePath;
+let uuidDefinitionsFilePath: string;
 let uuidDefinitionsFileMTime = 0;
 const customDefinitions = require('./custom_definitions.json');
 
@@ -52,7 +52,7 @@ let RemoteDefinitions = { ...customDefinitions };
 
 let customsFileErrorMessageShown = false;
 
-export function confirmUserUUIDsExist(userDataDir) {
+export function confirmUserUUIDsExist(userDataDir: string) {
     uuidDefinitionsFilePath = path.join(userDataDir, 'uuid_definitions.json');
     if (!fs.existsSync(uuidDefinitionsFilePath)) {
         fs.writeFile(
@@ -182,7 +182,7 @@ export function uuidDefinitions() {
     };
 }
 
-function getLookupUUID(uuid) {
+function getLookupUUID(uuid: string) {
     let lookupUuid = uuid.toUpperCase();
 
     if (lookupUuid[1] === 'X') {
@@ -197,7 +197,7 @@ function getLookupUUID(uuid) {
 // TODO: Also look into reusing code from the Android MCP project:
 // TODO: http://projecttools.nordicsemi.no/stash/projects/APPS-ANDROID/repos/nrf-master-control-panel/browse/app/src/main/java/no/nordicsemi/android/mcp/database/init
 // TODO: http://projecttools.nordicsemi.no/stash/projects/APPS-ANDROID/repos/nrf-master-control-panel/browse/app/src/main/java/no/nordicsemi/android/mcp/database/DatabaseHelper.java
-export function getUuidName(uuid) {
+export function getUuidName(uuid: string) {
     const lookupUuid = getLookupUUID(uuid);
     const uuidDefs = uuidDefinitions();
 
@@ -208,12 +208,12 @@ export function getUuidName(uuid) {
     return uuid;
 }
 
-export function getPrettyUuid(uuid) {
+export function getPrettyUuid(uuid: string) {
     if (uuid.length === 4) {
         return uuid.toUpperCase();
     }
 
-    const insertHyphen = (string, index) =>
+    const insertHyphen = (string: string, index: number) =>
         `${string.substr(0, index)}-${string.substr(index)}`;
 
     return insertHyphen(
@@ -225,7 +225,7 @@ export function getPrettyUuid(uuid) {
     );
 }
 
-export function getUuidFormat(uuid) {
+export function getUuidFormat(uuid: string) {
     if (!uuid) {
         return Definitions.NO_FORMAT;
     }

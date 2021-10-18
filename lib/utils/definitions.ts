@@ -39,3 +39,5 @@ export const uuid128bitCharacteristicDefinitions = {
     EF6801019B3549339B1052FFA9740042: { name: 'Device Name', format: TEXT },
     EF6801069B3549339B1052FFA9740042: { name: 'Cloud Token', format: TEXT },
 };
+
+export const uuid16bitServiceDefinitions = {};

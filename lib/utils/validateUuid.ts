@@ -9,7 +9,7 @@
 export const SUCCESS = 'success';
 export const ERROR = 'error';
 
-export function validateUuid(uuid) {
+export function validateUuid(uuid: string) {
     const uuid16regex = /^[0-9a-fA-F]{4}$/;
     const uuid128regex = /^[0-9a-fA-F]{32}$/;
 
