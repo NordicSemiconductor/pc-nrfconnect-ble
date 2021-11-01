@@ -1,4 +1,4 @@
-## Unreleased
+## 3.0.0 - 2021-11-01
 ### Added
 - Documentation section to `About` pane
 ### Changed
