@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "bluetooth-numbers-database": "github:NordicSemiconductor/bluetooth-numbers-database#75bb6a8079",
+    "electron": "^13.5.2",
     "electron-store": "^6.0.0"
   },
   "bundledDependencies": [
