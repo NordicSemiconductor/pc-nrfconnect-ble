@@ -7,6 +7,7 @@
 import React, { useEffect } from 'react';
 import { App, getUserDataDir } from 'pc-nrfconnect-shared';
 
+import DocumentationSections from './lib/components/DocumentationSection';
 import SidePanel from './lib/components/SidePanel';
 import BLEEventDialog from './lib/containers/BLEEventDialog';
 import DeviceDetails from './lib/containers/DeviceDetails';
@@ -35,6 +36,7 @@ export default () => {
                 { name: 'Connection Map', Main: DeviceDetails },
                 { name: 'Server Setup', Main: ServerSetup },
             ]}
+            documentation={DocumentationSections}
         >
             <BLEEventDialog />
         </App>

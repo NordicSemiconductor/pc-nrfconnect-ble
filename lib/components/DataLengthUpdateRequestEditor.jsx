@@ -62,7 +62,6 @@ const DataLengthUpdateRequestEditor = ({
                     value={dataLength}
                     min={DL_MIN}
                     max={DL_MAX}
-                    readOnly={peerInitiated}
                     label="Data length"
                     labelClassName="col-md-7 text-right"
                     wrapperClassName="col-md-5"

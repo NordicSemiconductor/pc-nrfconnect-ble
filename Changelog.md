@@ -1,6 +1,10 @@
-## Unreleased
+## 3.0.0 - 2021-11-01
+### Added
+- Documentation section to `About` pane
 ### Changed
+- Establish compatibility with nRF Connect for Desktop 3.8.
 - Use new nRF Connect for Desktop look & feel.
+- Removed limitation for value edit in MTU and DLE update dialog.
 ### Fixed
 - DFU zip package info was not displayed properly
 - Opening UUID definitions file was not working.
