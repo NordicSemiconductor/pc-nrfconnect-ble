@@ -38,7 +38,7 @@
     "jquery": "^3.4.1",
     "lodash.throttle": "^4.1.1",
     "mousetrap": "^1.6.3",
-    "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v5.5.4",
+    "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v5.10.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-onclickoutside": "^6.9.0",
@@ -47,6 +47,7 @@
     "uuid-v4": "^0.1.0"
   },
   "dependencies": {
+    "@types/react": "^17.0.37",
     "bluetooth-numbers-database": "github:NordicSemiconductor/bluetooth-numbers-database#75bb6a8079",
     "electron": "^13.5.2",
     "electron-store": "^6.0.0"
