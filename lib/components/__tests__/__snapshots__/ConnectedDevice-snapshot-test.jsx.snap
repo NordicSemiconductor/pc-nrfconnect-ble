@@ -42,7 +42,6 @@ exports[`ConnectedDevice should render correctly with DFU support 1`] = `
           className="dropdown"
           id="connectionDropDown"
           onClick={[Function]}
-          onKeyDown={[Function]}
         >
           <button
             aria-expanded={false}
@@ -108,7 +107,6 @@ exports[`ConnectedDevice should render correctly without DFU support 1`] = `
           className="dropdown"
           id="connectionDropDown"
           onClick={[Function]}
-          onKeyDown={[Function]}
         >
           <button
             aria-expanded={false}
