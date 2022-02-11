@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-4-Clause
  */
 
-/* eslint-disable react/jsx-key */
-
 import React from 'react';
 import { DocumentationSection } from 'pc-nrfconnect-shared';
 

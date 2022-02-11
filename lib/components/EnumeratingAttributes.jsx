@@ -11,10 +11,10 @@ import PropTypes from 'prop-types';
 
 import Spinner from './Spinner';
 
-const EnumeratingAttributes = props => {
+const EnumeratingAttributes = ({ bars }) => {
     const barList = [];
 
-    for (let i = 0; i < props.bars; i += 1) {
+    for (let i = 0; i < bars; i += 1) {
         const key = `bar${i + 1}`;
         barList.push(<div key={key} className={key} />);
     }
