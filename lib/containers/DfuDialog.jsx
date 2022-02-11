@@ -10,7 +10,7 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
-import electron from 'electron';
+import { dialog } from '@electron/remote';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 
@@ -46,7 +46,6 @@ class DfuDialog extends React.PureComponent {
     }
 
     showFileDialog() {
-        const { dialog } = electron.remote;
         const filters = [
             {
                 name: 'Zip Files',

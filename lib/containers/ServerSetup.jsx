@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import electron from 'electron';
+import { dialog } from '@electron/remote';
 import { Map } from 'immutable';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -113,7 +113,6 @@ class ServerSetup extends React.PureComponent {
 
     openSaveDialog() {
         const { saveServerSetup } = this.props;
-        const { dialog } = electron.remote;
         dialog.showSaveDialog({ filters }).then(({ canceled, filePath }) => {
             if (!filePath || canceled) {
                 return;
@@ -124,7 +123,6 @@ class ServerSetup extends React.PureComponent {
 
     openLoadDialog() {
         const { loadServerSetup } = this.props;
-        const { dialog } = electron.remote;
         dialog
             .showOpenDialog({ filters, properties: ['openFile'] })
             .then(({ canceled, filePaths }) => {
