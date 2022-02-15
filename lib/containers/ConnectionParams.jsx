@@ -5,7 +5,6 @@
  */
 
 /* eslint react/forbid-prop-types: off */
-/* eslint-disable react/state-in-constructor */
 
 'use strict';
 
@@ -20,9 +19,12 @@ import * as AdapterActions from '../actions/adapterActions';
 import ConnectionParamsControl from '../components/ConnectionParamsControl';
 
 class ConnectionParams extends React.PureComponent {
-    state = {
-        connectionParameters: null,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            connectionParameters: null,
+        };
+    }
 
     handleParamChange = connectionParameters =>
         this.setState({ connectionParameters });

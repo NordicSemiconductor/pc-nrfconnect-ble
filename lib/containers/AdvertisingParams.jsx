@@ -5,7 +5,6 @@
  */
 
 /* eslint react/forbid-prop-types: off */
-/* eslint-disable react/state-in-constructor */
 
 'use strict';
 
@@ -20,9 +19,12 @@ import * as AdvertisingActions from '../actions/advertisingActions';
 import AdvertisingParamsControl from '../components/AdvertisingParamsControl';
 
 class AdvertisingParams extends React.PureComponent {
-    state = {
-        advParams: null,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            advParams: null,
+        };
+    }
 
     handleAdvParamsChange = advParams => this.setState({ advParams });
 

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-4-Clause
  */
 
-/* eslint-disable react/state-in-constructor */
 /* eslint react/forbid-prop-types: off */
 /* eslint jsx-a11y/label-has-for: off */
 /* eslint jsx-a11y/label-has-associated-control: off */
@@ -38,12 +37,16 @@ const multipleOf = (value, multiplier) => value % multiplier !== 0;
 const validator = predicate => (predicate ? ERROR : SUCCESS);
 
 class ConnectionParamsControl extends React.PureComponent {
-    state = {
-        connectionInterval: this.props.connectionParameters.connectionInterval,
-        slaveLatency: this.props.connectionParameters.slaveLatency,
-        connectionSupervisionTimeout:
-            this.props.connectionParameters.connectionSupervisionTimeout,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            connectionInterval:
+                this.props.connectionParameters.connectionInterval,
+            slaveLatency: this.props.connectionParameters.slaveLatency,
+            connectionSupervisionTimeout:
+                this.props.connectionParameters.connectionSupervisionTimeout,
+        };
+    }
 
     validateConnectionInterval() {
         const { connectionInterval } = this.state;
