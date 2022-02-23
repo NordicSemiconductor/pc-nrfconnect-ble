@@ -1,3 +1,7 @@
+## Unreleased
+### Changed
+- Filter determining which devices are shown in the device lister.
+
 ## 3.0.0 - 2021-11-01
 ### Added
 - Documentation section to `About` pane

@@ -11,7 +11,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "main": "dist/bundle.js",
   "engines": {
-    "nrfconnect": "^3.8.0"
+    "nrfconnect": "^3.10.1"
   },
   "scripts": {
     "build": "nrfconnect-scripts build-prod",
