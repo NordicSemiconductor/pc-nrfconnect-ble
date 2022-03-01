@@ -1,3 +1,7 @@
+## 3.0.1 - 2022-03-01
+### Changed
+- Made compatible with next version of nRF Connect for Desktop.
+
 ## 3.0.0 - 2021-11-01
 ### Added
 - Documentation section to `About` pane
