@@ -11,7 +11,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
-import electron from 'electron';
+import { dialog } from '@electron/remote';
 import { List } from 'immutable';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -97,7 +97,6 @@ class AdvertisingSetup extends React.PureComponent {
 
     handleSave() {
         const { saveAdvSetup } = this.props;
-        const { dialog } = electron.remote;
         dialog.showSaveDialog({ filters }).then(({ canceled, filePath }) => {
             if (!filePath || canceled) {
                 return;
@@ -108,7 +107,6 @@ class AdvertisingSetup extends React.PureComponent {
 
     handleLoad() {
         const { loadAdvSetup } = this.props;
-        const { dialog } = electron.remote;
         dialog
             .showOpenDialog({ filters, properties: ['openFile'] })
             .then(({ canceled, filePaths }) => {

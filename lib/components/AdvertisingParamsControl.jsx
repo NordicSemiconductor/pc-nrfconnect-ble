@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-4-Clause
  */
 
-/* eslint-disable react/state-in-constructor */
 /* eslint react/forbid-prop-types: off */
 /* eslint jsx-a11y/label-has-for: off */
 /* eslint jsx-a11y/label-has-associated-control: off */
@@ -24,10 +23,13 @@ const SUCCESS = 'success';
 const ERROR = 'error';
 
 class AdvertisingParamsControl extends React.PureComponent {
-    state = {
-        interval: this.props.advParams.interval,
-        timeout: this.props.advParams.timeout,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            interval: this.props.advParams.interval,
+            timeout: this.props.advParams.timeout,
+        };
+    }
 
     validateInterval() {
         if (this.state.interval > 10240 || this.state.interval < 20)

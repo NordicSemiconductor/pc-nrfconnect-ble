@@ -5,7 +5,6 @@
  */
 
 /* eslint react/forbid-prop-types: off */
-/* eslint-disable react/state-in-constructor */
 
 'use strict';
 
@@ -20,9 +19,12 @@ import * as SecurityActions from '../actions/securityActions';
 import SecurityParamsControls from '../components/SecurityParamsControls';
 
 class SecurityParamsDialog extends React.PureComponent {
-    state = {
-        secParams: null,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            secParams: null,
+        };
+    }
 
     handleSecParamsChange = secParams => this.setState({ secParams });
 

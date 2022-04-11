@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-4-Clause
  */
 
-/* eslint-disable react/state-in-constructor */
 /* eslint react/forbid-prop-types: off */
 /* eslint jsx-a11y/label-has-for: off */
 /* eslint jsx-a11y/label-has-associated-control: off */
@@ -50,15 +49,18 @@ function keyToIoCapsText(key) {
 }
 
 class SecurityParamsControls extends React.PureComponent {
-    state = {
-        io_caps: this.props.securityParams.io_caps,
-        lesc: this.props.securityParams.lesc,
-        mitm: this.props.securityParams.mitm,
-        oob: this.props.securityParams.oob,
-        keypress: this.props.securityParams.keypress,
-        bond: this.props.securityParams.bond,
-        io_caps_title: keyToIoCapsText(this.props.securityParams.io_caps),
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            io_caps: this.props.securityParams.io_caps,
+            lesc: this.props.securityParams.lesc,
+            mitm: this.props.securityParams.mitm,
+            oob: this.props.securityParams.oob,
+            keypress: this.props.securityParams.keypress,
+            bond: this.props.securityParams.bond,
+            io_caps_title: keyToIoCapsText(this.props.securityParams.io_caps),
+        };
+    }
 
     onIoCapsSelect(_, eventKey) {
         const ioCaps = parseInt(eventKey, 10);
