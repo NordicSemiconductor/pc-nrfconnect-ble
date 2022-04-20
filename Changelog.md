@@ -1,3 +1,7 @@
+## next
+### Changed
+- Default parsing of Nordic UART Service characteristic changed to TEXT
+
 ## 3.0.1 - 2022-03-01
 ### Changed
 - Made compatible with next version of nRF Connect for Desktop.
