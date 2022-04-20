@@ -11,7 +11,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "main": "dist/bundle.js",
   "engines": {
-    "nrfconnect": "^3.8.0"
+    "nrfconnect": "^3.11.0"
   },
   "scripts": {
     "build": "nrfconnect-scripts build-prod",
@@ -19,7 +19,7 @@
     "clean-modules": "rimraf \"node_modules/!(rimraf|.bin)\"",
     "clean": "npm run clean-dist && npm run clean-modules",
     "dev": "nrfconnect-scripts build-watch",
-    "lint": "nrfconnect-scripts lint lib index.jsx",
+    "lint": "nrfconnect-scripts lint src",
     "nordic-publish": "nrfconnect-scripts nordic-publish",
     "test-watch": "nrfconnect-scripts test --watch",
     "test": "nrfconnect-scripts test",
@@ -33,9 +33,12 @@
   ],
   "devDependencies": {
     "react": "16.13.1",
+    "react-dom": "16.13.1",
     "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v5.10.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@electron/remote": "^2.0.8"
+  },
   "eslintConfig": {
     "extends": "./node_modules/pc-nrfconnect-shared/config/eslintrc.json"
   },
