@@ -10,15 +10,15 @@ import { getCurrentWindow } from '@electron/remote';
 import { spawn } from 'child_process';
 import { App } from 'pc-nrfconnect-shared';
 
-import { getInstallationPath } from './detectExistingInstallation';
 import { downloadInstaller, saveBufferToPath } from './downloadInstaller';
+import { getProgramPath } from './paths';
 
 const Main = () => {
     const [progress, setProgress] = useState(0);
     const [exePath, setExePath] = useState<string>();
 
     useEffect(() => {
-        const path = getInstallationPath();
+        const path = getProgramPath();
         setExePath(path);
         if (path !== undefined) {
             // Open the app and close this window

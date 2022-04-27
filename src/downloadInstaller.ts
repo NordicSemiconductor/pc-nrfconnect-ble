@@ -9,13 +9,13 @@ import { chmod, mkdir, mkdtemp, writeFile } from 'fs/promises';
 import { homedir } from 'os';
 import { dirname, join, resolve } from 'path';
 
-import { getInstallationPath } from './detectExistingInstallation';
+import { getProgramPath } from './paths';
 
 export const downloadInstaller = (progress: (percentage: number) => void) => {
     const urlBase =
         'https://github.com/NordicPlayground/pc-nrfconnect-ble-standalone/releases/download/v3.10.1/';
 
-    const file = executableName;
+    const file = installerName;
 
     return new Promise<Buffer>(finish => {
         const request = net.request(urlBase + file);
@@ -37,6 +37,7 @@ export const downloadInstaller = (progress: (percentage: number) => void) => {
 };
 
 export const saveBufferToPath = async (buffer: Buffer) => {
+    // Find directory for installer, make it, if non-existant
     const directory = await (async () => {
         switch (process.platform) {
             case 'win32': {
@@ -44,7 +45,7 @@ export const saveBufferToPath = async (buffer: Buffer) => {
                 return path;
             }
             case 'linux': {
-                const currentInstallationPath = getInstallationPath();
+                const currentInstallationPath = getProgramPath();
                 if (currentInstallationPath) {
                     return dirname(currentInstallationPath);
                 }
@@ -61,7 +62,7 @@ export const saveBufferToPath = async (buffer: Buffer) => {
                 throw new Error('Unsupported platform');
         }
     })();
-    const path = join(directory, executableName);
+    const path = join(directory, installerName);
 
     await writeFile(path, buffer);
     if (process.platform === 'linux') {
@@ -70,7 +71,7 @@ export const saveBufferToPath = async (buffer: Buffer) => {
     return resolve(path);
 };
 
-const executableName = (() => {
+const installerName = (() => {
     switch (process.platform) {
         case 'win32':
             return 'nrfconnect-bluetooth-le-setup-3.10.1-x64.exe';
