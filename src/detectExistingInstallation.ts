@@ -12,10 +12,10 @@ const common = 'nrfconnect-bluetooth-le';
 
 export function getInstallationPath() {
     const path = resolveNrfConnectForDesktop();
-    return existsSync(path) ? path : undefined;
+    return path && existsSync(path) ? path : undefined;
 }
 
-function resolveNrfConnectForDesktop(): string {
+function resolveNrfConnectForDesktop() {
     // Check for the execPath file in the shared folder.
     const desktopDataPath = resolveNrfConnectForDesktopDataPath();
     const execPath = join(desktopDataPath, 'execPath');
@@ -34,7 +34,10 @@ function resolveNrfConnectForDesktop(): string {
     if (process.platform === 'darwin') {
         return '/Applications/nRF Connect for Desktop.app/Contents/MacOS/nRF Connect for Desktop BLE';
     }
-    return '';
+
+    if (process.platform === 'linux') {
+        return resolve(homedir(), 'opt');
+    }
 }
 
 function resolveNrfConnectForDesktopDataPath(): string {
