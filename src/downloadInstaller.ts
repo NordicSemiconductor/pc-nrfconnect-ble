@@ -40,6 +40,7 @@ export const saveBufferToPath = async (buffer: Buffer) => {
     // Find directory for installer, make it, if non-existant
     const directory = await (async () => {
         switch (process.platform) {
+            case 'darwin':
             case 'win32': {
                 const path = await mkdtemp('nrfconnect-ble-standalone');
                 return path;
@@ -77,6 +78,8 @@ const installerName = (() => {
             return 'nrfconnect-bluetooth-le-setup-3.10.1-x64.exe';
         case 'linux':
             return 'nrfconnect-bluetooth-le-3.10.1-x86_64.AppImage';
+        case 'darwin':
+            return 'nrfconnect-bluetooth-le-3.10.1.dmg';
         default:
             throw new Error(`Platform ${process.platform} is not supported`);
     }

@@ -18,7 +18,7 @@ export function getProgramPath() {
     return path && existsSync(path) ? path : undefined;
 }
 
-function programPath() {
+export function programPath() {
     // Check for the execPath file in the shared folder.
     const desktopDataPath = configDirectory();
     const execPath = join(desktopDataPath, 'execPath');

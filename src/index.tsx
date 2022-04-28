@@ -11,22 +11,15 @@ import { spawn } from 'child_process';
 import { App } from 'pc-nrfconnect-shared';
 
 import { downloadInstaller, saveBufferToPath } from './downloadInstaller';
-import { getProgramPath } from './paths';
+import { runExecutable, runInstaller } from './run';
 
 const Main = () => {
     const [progress, setProgress] = useState(0);
     const [exePath, setExePath] = useState<string>();
 
     useEffect(() => {
-        const path = getProgramPath();
+        const path = runExecutable();
         setExePath(path);
-        if (path !== undefined) {
-            // Open the app and close this window
-            spawn(path, {
-                detached: true,
-            });
-            getCurrentWindow().close();
-        }
     }, []);
 
     const openConnect = () => {
@@ -39,13 +32,7 @@ const Main = () => {
     const download = async () => {
         const buffer = await downloadInstaller(setProgress);
         const path = await saveBufferToPath(buffer);
-        const installerProcess = spawn(path);
-        installerProcess.on('close', code => {
-            if (code === 0) {
-                // Installation complete
-                getCurrentWindow().close();
-            }
-        });
+        runInstaller(path);
     };
 
     return (
