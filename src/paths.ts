@@ -8,10 +8,10 @@ import { existsSync, readFileSync } from 'fs';
 import { homedir } from 'os';
 import { dirname, join, resolve } from 'path';
 
+import { bleVersion, packageName } from './config';
+
 export const urlBase =
     'https://github.com/NordicPlayground/pc-nrfconnect-ble-standalone/releases/download/v3.10.1/';
-
-const common = 'nrfconnect-bluetooth-le';
 
 export function getProgramPath() {
     const path = programPath();
@@ -30,7 +30,10 @@ export function programPath() {
     const directory = programDirectory();
 
     if (process.platform === 'win32') {
-        return resolve(directory, 'nRF Connect for Desktop BLE.exe');
+        return resolve(
+            directory,
+            'nRF Connect for Desktop Bluetooth Low Energy.exe'
+        );
     }
 
     if (process.platform === 'darwin') {
@@ -40,7 +43,7 @@ export function programPath() {
     if (process.platform === 'linux') {
         return resolve(
             directory,
-            'nrfconnect-bluetooth-le-3.10.1-x86_64.AppImage'
+            `${packageName}-${bleVersion}-x86_64.AppImage`
         );
     }
 
@@ -59,15 +62,15 @@ export function programDirectory() {
     }
 
     if (process.platform === 'win32') {
-        return resolve(homedir(), 'AppData', 'Local', 'Programs', common);
+        return resolve(homedir(), 'AppData', 'Local', 'Programs', packageName);
     }
 
     if (process.platform === 'darwin') {
-        return '/Applications/nRF Connect for Desktop BLE.app/Contents/MacOS/nRF Connect for Desktop BLE';
+        return '/Applications/nRF Connect for Desktop Bluetooth Low Energy.app/Contents/MacOS/nRF Connect for Desktop Desktop Bluetooth Low Energy';
     }
 
     if (process.platform === 'linux') {
-        return resolve(homedir(), 'opt', common);
+        return resolve(homedir(), 'opt', packageName);
     }
 
     throw new Error(
@@ -78,10 +81,10 @@ export function programDirectory() {
 function configDirectory(): string {
     return (
         // Windows
-        join(homedir(), 'APPDATA', 'Roaming', common),
+        join(homedir(), 'APPDATA', 'Roaming', packageName),
         // macOS
-        join(homedir(), 'Library', 'Application Support', common),
+        join(homedir(), 'Library', 'Application Support', packageName),
         // Linux
-        join(homedir(), '.config', common)
+        join(homedir(), '.config', packageName)
     );
 }

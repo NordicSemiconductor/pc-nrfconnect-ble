@@ -6,8 +6,6 @@
 
 import React, { useEffect, useState } from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import { getCurrentWindow } from '@electron/remote';
-import { spawn } from 'child_process';
 import { App } from 'pc-nrfconnect-shared';
 
 import { downloadInstaller, saveBufferToPath } from './downloadInstaller';
@@ -21,13 +19,6 @@ const Main = () => {
         const path = runExecutable();
         setExePath(path);
     }, []);
-
-    const openConnect = () => {
-        if (exePath !== undefined) {
-            spawn(exePath);
-            getCurrentWindow().close();
-        }
-    };
 
     const download = async () => {
         const buffer = await downloadInstaller(setProgress);
@@ -57,7 +48,7 @@ const Main = () => {
                     <p className="text-muted">
                         Your current installation is located at: {exePath}
                     </p>
-                    <button type="button" onClick={openConnect}>
+                    <button type="button" onClick={runExecutable}>
                         Launch ble standalone
                     </button>
                 </>
