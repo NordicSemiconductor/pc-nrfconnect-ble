@@ -11,8 +11,10 @@ import { App } from 'pc-nrfconnect-shared';
 import { downloadInstaller, saveBufferToPath } from './downloadInstaller';
 import { runExecutable, runInstaller } from './run';
 
+let abortController = new AbortController();
+
 const Main = () => {
-    const [progress, setProgress] = useState(0);
+    const [progress, setProgress] = useState<number>();
     const [exePath, setExePath] = useState<string>();
 
     useEffect(() => {
@@ -21,9 +23,18 @@ const Main = () => {
     }, []);
 
     const download = async () => {
-        const buffer = await downloadInstaller(setProgress);
+        const buffer = await downloadInstaller(
+            setProgress,
+            abortController.signal
+        );
         const path = await saveBufferToPath(buffer);
         runInstaller(path);
+    };
+
+    const cancel = () => {
+        abortController.abort();
+        abortController = new AbortController();
+        setProgress(undefined);
     };
 
     return (
@@ -64,11 +75,22 @@ const Main = () => {
                         >
                             Install Bluetooth Low Energy Standalone app
                         </button>
+                        {progress !== undefined && (
+                            <>
+                                <ProgressBar
+                                    now={progress}
+                                    style={{ marginTop: '2em' }}
+                                />
 
-                        <ProgressBar
-                            now={progress}
-                            style={{ marginTop: '2em' }}
-                        />
+                                <button
+                                    type="button"
+                                    className="btn btn-danger"
+                                    onClick={cancel}
+                                >
+                                    Cancel
+                                </button>
+                            </>
+                        )}
                     </div>
                 </>
             )}

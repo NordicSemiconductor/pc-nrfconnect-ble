@@ -13,16 +13,25 @@ import { usageData } from 'pc-nrfconnect-shared';
 import { baseDownloadUrl, bleVersion, packageName } from './config';
 import { getProgramPath } from './paths';
 
-export const downloadInstaller = (progress: (percentage: number) => void) => {
+export const downloadInstaller = (
+    progress: (percentage: number) => void,
+    signal: AbortSignal
+) => {
     usageData.sendUsageData(
         'Downloading standalone installer',
         `${bleVersion}, ${process.platform}`
     );
 
-    const file = installerName;
+    const file = baseDownloadUrl + installerName;
 
     return new Promise<Buffer>(finish => {
-        const request = net.request(baseDownloadUrl + file);
+        const request = net.request(file);
+        const abortListener = () => {
+            request.abort();
+            signal.removeEventListener('abort', abortListener);
+        };
+        signal.addEventListener('abort', abortListener);
+
         request.on('response', response => {
             const buffer: Buffer[] = [];
             const total = Number(response.headers['content-length']);
