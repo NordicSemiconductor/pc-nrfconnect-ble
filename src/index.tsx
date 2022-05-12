@@ -7,28 +7,48 @@
 import React, { useEffect, useState } from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { App } from 'pc-nrfconnect-shared';
+import { lt } from 'semver';
 
+import { bleVersion } from './config';
 import { downloadInstaller, saveBufferToPath } from './downloadInstaller';
-import { runExecutable, runInstaller } from './run';
+import { programPath } from './paths';
+import { currentVersion, runExecutable, runInstaller } from './run';
 
 let abortController = new AbortController();
 
 const Main = () => {
     const [progress, setProgress] = useState<number>();
+    const [version, setVersion] = useState<string>();
     const [exePath, setExePath] = useState<string>();
+    const [updateAvailable, setUpdateAvailable] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string>();
 
     useEffect(() => {
-        const path = runExecutable();
-        setExePath(path);
+        const current = currentVersion();
+        setExePath(programPath());
+        setVersion(current);
+
+        if (lt(current ?? '0.0.0', bleVersion)) {
+            // Update
+            setUpdateAvailable(true);
+        } else {
+            runExecutable();
+        }
     }, []);
 
     const download = async () => {
-        const buffer = await downloadInstaller(
-            setProgress,
-            abortController.signal
-        );
-        const path = await saveBufferToPath(buffer);
-        runInstaller(path);
+        try {
+            const buffer = await downloadInstaller(
+                setProgress,
+                abortController.signal
+            );
+            const path = await saveBufferToPath(buffer);
+            runInstaller(path);
+        } catch {
+            setErrorMessage(
+                `Downloading the installer failed, try to get the latest release from https://github.com/NordicPlayground/pc-nrfconnect-ble-standalone/releases`
+            );
+        }
     };
 
     const cancel = () => {
@@ -54,18 +74,43 @@ const Main = () => {
                 electron version.
             </p>
 
+            {updateAvailable && (
+                <>
+                    <div className="alert alert-info">
+                        Update available: Detected version: {version}, new
+                        version&nbsp;
+                        {bleVersion}
+                    </div>
+                </>
+            )}
+
             {exePath && (
                 <>
                     <p className="text-muted">
                         Your current installation is located at: {exePath}
                     </p>
-                    <button type="button" onClick={runExecutable}>
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={runExecutable}
+                    >
                         Launch ble standalone
                     </button>
                 </>
             )}
 
-            {exePath === undefined && (
+            {errorMessage && (
+                <>
+                    <div
+                        className="alert alert-danger"
+                        style={{ userSelect: 'text' }}
+                    >
+                        {errorMessage}
+                    </div>
+                </>
+            )}
+
+            {(exePath === undefined || (updateAvailable && !errorMessage)) && (
                 <>
                     <div>
                         <button
@@ -73,7 +118,7 @@ const Main = () => {
                             className="btn btn-primary"
                             onClick={download}
                         >
-                            Install Bluetooth Low Energy Standalone app
+                            Install Bluetooth Low Energy {bleVersion}
                         </button>
                         {progress !== undefined && (
                             <>

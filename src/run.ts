@@ -6,10 +6,12 @@
 
 import { getCurrentWindow } from '@electron/remote';
 import { exec, spawn } from 'child_process';
+import { existsSync, readFileSync } from 'fs';
+import { join } from 'path';
 import { usageData } from 'pc-nrfconnect-shared';
 
 import { bleVersion } from './config';
-import { getProgramPath } from './paths';
+import { configDirectory, getProgramPath } from './paths';
 
 export const runInstaller = (path: string) => {
     usageData.sendUsageData(
@@ -53,5 +55,11 @@ export const runExecutable = () => {
         spawn(path, { detached: true });
         getCurrentWindow().close();
     }
-    return path;
+};
+
+export const currentVersion = () => {
+    const versionFile = join(configDirectory(), 'version');
+    return existsSync(versionFile)
+        ? readFileSync(versionFile, { encoding: 'utf-8' })
+        : undefined;
 };

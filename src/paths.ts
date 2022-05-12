@@ -54,13 +54,14 @@ export function programPath() {
 
 export function programDirectory() {
     // Check for the execPath file in the shared folder.
-    const desktopDataPath = configDirectory();
-    const execPath = join(desktopDataPath, 'execPath');
+    const configPath = configDirectory();
+    const execPath = join(configPath, 'execPath');
 
     if (existsSync(execPath)) {
         return dirname(readFileSync(execPath, { encoding: 'utf8', flag: 'r' }));
     }
 
+    // Fall back to best guess per platform.
     if (process.platform === 'win32') {
         return resolve(homedir(), 'AppData', 'Local', 'Programs', packageName);
     }
@@ -78,13 +79,19 @@ export function programDirectory() {
     );
 }
 
-function configDirectory(): string {
-    return (
-        // Windows
-        join(homedir(), 'APPDATA', 'Roaming', packageName),
-        // macOS
-        join(homedir(), 'Library', 'Application Support', packageName),
-        // Linux
-        join(homedir(), '.config', packageName)
-    );
+export function configDirectory(): string {
+    switch (process.platform) {
+        case 'win32':
+            return join(homedir(), 'APPDATA', 'Roaming', packageName);
+        case 'darwin':
+            return join(
+                homedir(),
+                'Library',
+                'Application Support',
+                packageName
+            );
+        case 'linux':
+        default:
+            return join(homedir(), '.config', packageName);
+    }
 }
