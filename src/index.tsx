@@ -11,8 +11,10 @@ import { lt } from 'semver';
 
 import { bleVersion } from './config';
 import { downloadInstaller, saveBufferToPath } from './downloadInstaller';
-import { programPath } from './paths';
+import { getProgramPath, programDirectory } from './paths';
 import { currentVersion, runExecutable, runInstaller } from './run';
+
+import './style.css';
 
 let abortController = new AbortController();
 
@@ -25,10 +27,11 @@ const Main = () => {
 
     useEffect(() => {
         const current = currentVersion();
-        setExePath(programPath());
+        const existingPath = getProgramPath();
+        setExePath(existingPath);
         setVersion(current);
 
-        if (lt(current ?? '0.0.0', bleVersion)) {
+        if (lt(current ?? '0.0.0', bleVersion) && existingPath) {
             // Update
             setUpdateAvailable(true);
         } else {
@@ -59,86 +62,100 @@ const Main = () => {
 
     return (
         <>
-            <strong>The Bluetooth Low Energy app has moved.</strong>
+            <div className="d-flex h-100">
+                <div className="floating-card">
+                    <div className="title">Install</div>
+                    <div className="content">
+                        <p className="py-3">
+                            {progress === undefined && (
+                                <>
+                                    Bluetooth Low Energy is now a standalone
+                                    app.
+                                </>
+                            )}
+                            {progress !== undefined && (
+                                <>
+                                    Downloading...
+                                    <ProgressBar now={progress} />
+                                </>
+                            )}
+                        </p>
 
-            <p>
-                Due to a breaking change in electron (
-                <a href="https://github.com/electron/electron/issues/18397">
-                    github issue
-                </a>
-                ), the effort to rewrite the underlying libraries used by the
-                current Bluetooth Low Energy is not feasible for us at this
-                moment. The solution for now is to offer you a standalone
-                version of the app that uses the version of electron supporting
-                it, so we can update nRF Connect For Desktop to the newest
-                electron version.
-            </p>
-
-            {updateAvailable && (
-                <>
-                    <div className="alert alert-info">
-                        Update available: Detected version: {version}, new
-                        version&nbsp;
-                        {bleVersion}
-                    </div>
-                </>
-            )}
-
-            {exePath && (
-                <>
-                    <p className="text-muted">
-                        Your current installation is located at: {exePath}
-                    </p>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={runExecutable}
-                    >
-                        Launch ble standalone
-                    </button>
-                </>
-            )}
-
-            {errorMessage && (
-                <>
-                    <div
-                        className="alert alert-danger"
-                        style={{ userSelect: 'text' }}
-                    >
-                        {errorMessage}
-                    </div>
-                </>
-            )}
-
-            {(exePath === undefined || (updateAvailable && !errorMessage)) && (
-                <>
-                    <div>
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={download}
-                        >
-                            Install Bluetooth Low Energy {bleVersion}
-                        </button>
-                        {progress !== undefined && (
+                        {updateAvailable && (
                             <>
-                                <ProgressBar
-                                    now={progress}
-                                    style={{ marginTop: '2em' }}
-                                />
+                                <div className="alert alert-info">
+                                    Update available: Detected version:{' '}
+                                    {version}, new version&nbsp;
+                                    {bleVersion}
+                                </div>
+                            </>
+                        )}
 
+                        {exePath && (
+                            <>
+                                <p className="text-muted">
+                                    Your current installation is located at:{' '}
+                                    {exePath}
+                                </p>
                                 <button
                                     type="button"
-                                    className="btn btn-danger"
-                                    onClick={cancel}
+                                    className="btn btn-primary"
+                                    onClick={runExecutable}
                                 >
-                                    Cancel
+                                    Launch ble standalone
                                 </button>
                             </>
                         )}
+
+                        {errorMessage && (
+                            <>
+                                <div
+                                    className="alert alert-danger"
+                                    style={{ userSelect: 'text' }}
+                                >
+                                    {errorMessage}
+                                </div>
+                            </>
+                        )}
+
+                        {(exePath === undefined ||
+                            (updateAvailable && !errorMessage)) && (
+                            <>
+                                <div className="d-flex">
+                                    <div className="flex-grow-1 install-file-info">
+                                        Location {programDirectory()}
+                                        <br />
+                                        File size 160MB
+                                    </div>
+                                    {progress === undefined && (
+                                        <>
+                                            <button
+                                                type="button"
+                                                className="btn btn-primary"
+                                                onClick={download}
+                                                style={{ width: '150px' }}
+                                            >
+                                                Download and install
+                                            </button>
+                                        </>
+                                    )}
+                                    {progress !== undefined && (
+                                        <>
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-dark"
+                                                onClick={cancel}
+                                            >
+                                                Cancel
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            </>
+                        )}
                     </div>
-                </>
-            )}
+                </div>
+            </div>
         </>
     );
 };
@@ -149,7 +166,7 @@ export default () => {
             deviceSelect={null}
             sidePanel={null}
             showLogByDefault={false}
-            panes={[{ name: 'Main', Main }]}
+            panes={[{ name: 'INSTALL', Main }]}
         />
     );
 };
