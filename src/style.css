@@ -2,6 +2,7 @@
     background-color: white;
     width: 514px;
     margin: auto;
+    box-shadow: 0px 3px 6px #00000029;
 }
 .floating-card .title {
     background-color: #ECEFF1 ;

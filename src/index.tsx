@@ -32,7 +32,6 @@ const Main = () => {
         setVersion(current);
 
         if (lt(current ?? '0.0.0', bleVersion) && existingPath) {
-            // Update
             setUpdateAvailable(true);
         } else {
             runExecutable();
@@ -102,7 +101,7 @@ const Main = () => {
                                     className="btn btn-primary"
                                     onClick={runExecutable}
                                 >
-                                    Launch ble standalone
+                                    Launch current version
                                 </button>
                             </>
                         )}

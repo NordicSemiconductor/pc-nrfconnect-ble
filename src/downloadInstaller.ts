@@ -5,6 +5,7 @@
  */
 
 import { net } from '@electron/remote';
+import { app } from 'electron';
 import { chmod, mkdir, mkdtemp, writeFile } from 'fs/promises';
 import { homedir } from 'os';
 import { dirname, join, resolve } from 'path';
@@ -55,8 +56,11 @@ export const saveBufferToPath = async (buffer: Buffer) => {
         switch (process.platform) {
             case 'darwin':
             case 'win32': {
-                const path = await mkdtemp('nrfconnect-ble-standalone');
-                return path;
+                try {
+                    return app.getPath('downloads');
+                } catch (error) {
+                    return mkdtemp('nrfconnect-ble-standalone');
+                }
             }
             case 'linux': {
                 const currentInstallationPath = getProgramPath();
