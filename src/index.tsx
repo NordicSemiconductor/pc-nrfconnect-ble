@@ -6,6 +6,7 @@
 
 import React, { useEffect, useState } from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar';
+import { getCurrentWindow } from '@electron/remote';
 import { App } from 'pc-nrfconnect-shared';
 import { lt } from 'semver';
 
@@ -46,6 +47,9 @@ const Main = () => {
             );
             const path = await saveBufferToPath(buffer);
             runInstaller(path);
+            if (process.platform === 'darwin' || process.platform === 'linux') {
+                getCurrentWindow().close();
+            }
         } catch {
             setErrorMessage(
                 `Downloading the installer failed, try to get the latest release from https://github.com/NordicPlayground/pc-nrfconnect-ble-standalone/releases`
