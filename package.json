@@ -31,16 +31,15 @@
         "LICENSE"
     ],
     "devDependencies": {
-        "@types/semver": "^7.3.9",
-        "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v6.0.5",
-        "react": "16.13.1",
-        "react-dom": "16.13.1"
+        "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v6.5.3"
     },
     "dependencies": {
-        "electron": "^13.6.9",
-        "electron-store": "^8.0.1",
-        "semver": "^7.3.7"
+        "bluetooth-numbers-database": "https://github.com/NordicSemiconductor/bluetooth-numbers-database#75bb6a8079"
     },
+    "bundledDependencies": [
+      "bluetooth-numbers-database",
+      "electron-store"
+    ],
     "eslintConfig": {
         "extends": "./node_modules/pc-nrfconnect-shared/config/eslintrc"
     },
