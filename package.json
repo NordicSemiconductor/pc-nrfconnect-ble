@@ -37,8 +37,8 @@
         "bluetooth-numbers-database": "https://github.com/NordicSemiconductor/bluetooth-numbers-database#75bb6a8079"
     },
     "bundledDependencies": [
-      "bluetooth-numbers-database",
-      "electron-store"
+        "bluetooth-numbers-database",
+        "electron-store"
     ],
     "eslintConfig": {
         "extends": "./node_modules/pc-nrfconnect-shared/config/eslintrc"

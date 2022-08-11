@@ -9,7 +9,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import { App } from 'pc-nrfconnect-shared';
 import { lt } from 'semver';
 
-import { bleVersion } from './config';
+import { bleVersion, downloadSize } from './config';
 import { downloadInstaller, saveBufferToPath } from './downloadInstaller';
 import { getProgramPath, programDirectory } from './paths';
 import { currentVersion, runExecutable, runInstaller } from './run';
@@ -60,112 +60,95 @@ const Main = () => {
     };
 
     return (
-        <>
-            <div className="d-flex h-100">
-                <div className="floating-card">
-                    <div className="title">Install</div>
-                    <div className="content">
-                        <p className="py-3">
-                            {progress === undefined && (
-                                <>
-                                    Bluetooth Low Energy is now a standalone
-                                    app.
-                                </>
-                            )}
-                            {progress !== undefined && (
-                                <>
-                                    Downloading...
-                                    <ProgressBar now={progress} />
-                                </>
-                            )}
-                        </p>
-
-                        {updateAvailable && (
+        <div className="d-flex h-100">
+            <div className="floating-card">
+                <div className="title">Install</div>
+                <div className="content">
+                    <p className="py-3">
+                        {progress === undefined && (
+                            <>Bluetooth Low Energy is now a standalone app.</>
+                        )}
+                        {progress !== undefined && (
                             <>
-                                <div className="alert alert-info">
-                                    Update available: Detected version:{' '}
-                                    {version}, new version&nbsp;
-                                    {bleVersion}
-                                </div>
+                                Downloading...
+                                <ProgressBar now={progress} />
                             </>
                         )}
+                    </p>
 
-                        {exePath && (
-                            <>
-                                <p className="text-muted">
-                                    Your current installation is located at:{' '}
-                                    {exePath}
-                                </p>
+                    {updateAvailable && (
+                        <div className="alert alert-info">
+                            Update available: Detected version: {version}, new
+                            version&nbsp;
+                            {bleVersion}
+                        </div>
+                    )}
+
+                    {exePath && (
+                        <>
+                            <p className="text-muted">
+                                Your current installation is located at:{' '}
+                                {exePath}
+                            </p>
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={runExecutable}
+                            >
+                                Launch current version
+                            </button>
+                        </>
+                    )}
+
+                    {errorMessage && (
+                        <div
+                            className="alert alert-danger"
+                            style={{ userSelect: 'text' }}
+                        >
+                            {errorMessage}
+                        </div>
+                    )}
+
+                    {(exePath === undefined ||
+                        (updateAvailable && !errorMessage)) && (
+                        <div className="d-flex">
+                            <div className="flex-grow-1 install-file-info">
+                                Location {programDirectory()}
+                                <br />
+                                File size {downloadSize}MB
+                            </div>
+                            {progress === undefined && (
                                 <button
                                     type="button"
                                     className="btn btn-primary"
-                                    onClick={runExecutable}
+                                    onClick={download}
+                                    style={{ width: '150px' }}
                                 >
-                                    Launch current version
+                                    Download and install
                                 </button>
-                            </>
-                        )}
-
-                        {errorMessage && (
-                            <>
-                                <div
-                                    className="alert alert-danger"
-                                    style={{ userSelect: 'text' }}
+                            )}
+                            {progress !== undefined && (
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-dark"
+                                    onClick={cancel}
                                 >
-                                    {errorMessage}
-                                </div>
-                            </>
-                        )}
-
-                        {(exePath === undefined ||
-                            (updateAvailable && !errorMessage)) && (
-                            <>
-                                <div className="d-flex">
-                                    <div className="flex-grow-1 install-file-info">
-                                        Location {programDirectory()}
-                                        <br />
-                                        File size 160MB
-                                    </div>
-                                    {progress === undefined && (
-                                        <>
-                                            <button
-                                                type="button"
-                                                className="btn btn-primary"
-                                                onClick={download}
-                                                style={{ width: '150px' }}
-                                            >
-                                                Download and install
-                                            </button>
-                                        </>
-                                    )}
-                                    {progress !== undefined && (
-                                        <>
-                                            <button
-                                                type="button"
-                                                className="btn btn-outline-dark"
-                                                onClick={cancel}
-                                            >
-                                                Cancel
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
-                            </>
-                        )}
-                    </div>
+                                    Cancel
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 
-export default () => {
-    return (
-        <App
-            deviceSelect={null}
-            sidePanel={null}
-            showLogByDefault={false}
-            panes={[{ name: 'INSTALL', Main }]}
-        />
-    );
-};
+export default () => (
+    <App
+        deviceSelect={null}
+        sidePanel={null}
+        showLogByDefault={false}
+        panes={[{ name: 'INSTALL', Main }]}
+    />
+);

@@ -7,3 +7,8 @@
 export const bleVersion = '4.0.0';
 export const packageName = 'nrfconnect-bluetooth-low-energy';
 export const baseDownloadUrl = `https://github.com/NordicPlayground/pc-nrfconnect-ble-standalone/releases/download/v${bleVersion}/`;
+export const downloadSize = {
+    win32: '104',
+    darwin: '122',
+    linux: '134',
+}[<string>process.platform];

@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-4-Clause
  */
 
-import { net } from '@electron/remote';
-import { app } from 'electron';
+import { app, net } from '@electron/remote';
 import { chmod, mkdir, mkdtemp, writeFile } from 'fs/promises';
 import { homedir } from 'os';
 import { dirname, join, resolve } from 'path';
@@ -77,7 +76,6 @@ export const saveBufferToPath = async (buffer: Buffer) => {
         }
     })();
     const path = join(directory, installerName);
-
     await writeFile(path, buffer);
     if (process.platform === 'linux') {
         await chmod(path, 0o755);
