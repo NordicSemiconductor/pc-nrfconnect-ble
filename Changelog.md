@@ -2,6 +2,7 @@
 
 ### Changed
 
+-   BLE is now an independant application, and will require a separate install when the app is opened.
 -   Made compatible with next version of nRF Connect for Desktop.
 -   Default parsing of Nordic UART Service characteristic changed to TEXT
 
