@@ -10,7 +10,7 @@ import { getCurrentWindow } from '@electron/remote';
 import { App } from 'pc-nrfconnect-shared';
 import { lt } from 'semver';
 
-import { bleVersion, downloadSize } from './config';
+import { baseDownloadUrl, bleVersion, downloadSize } from './config';
 import { downloadInstaller, saveBufferToPath } from './downloadInstaller';
 import { getProgramPath, programDirectory } from './paths';
 import { currentVersion, runExecutable, runInstaller } from './run';
@@ -52,7 +52,7 @@ const Main = () => {
             }
         } catch {
             setErrorMessage(
-                `Downloading the installer failed, try to get the latest release from https://github.com/NordicPlayground/pc-nrfconnect-ble-standalone/releases`
+                `Downloading the installer failed, try to get the release from ${baseDownloadUrl}`
             );
         }
     };

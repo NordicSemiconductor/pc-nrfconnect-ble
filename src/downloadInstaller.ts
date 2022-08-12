@@ -24,7 +24,7 @@ export const downloadInstaller = (
 
     const file = baseDownloadUrl + installerName;
 
-    return new Promise<Buffer>(finish => {
+    return new Promise<Buffer>((finish, error) => {
         const request = net.request(file);
         const abortListener = () => {
             request.abort();
@@ -36,6 +36,10 @@ export const downloadInstaller = (
             const buffer: Buffer[] = [];
             const total = Number(response.headers['content-length']);
 
+            if (response.statusCode >= 400) {
+                error(new Error('Failed to download '));
+            }
+
             let current = 0;
             response.on('data', data => {
                 current += data.length;
@@ -43,8 +47,13 @@ export const downloadInstaller = (
                 progress(Math.round((1000 * current) / total / 10));
             });
 
-            response.on('end', () => finish(Buffer.concat(buffer)));
+            response.on('error', () => error());
+
+            response.on('end', () => {
+                finish(Buffer.concat(buffer));
+            });
         });
+        request.on('error', () => error());
         request.end();
     });
 };
