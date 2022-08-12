@@ -1,63 +1,47 @@
 {
-  "name": "pc-nrfconnect-ble",
-  "version": "3.0.1",
-  "description": "A natural first choice for Bluetooth Low Energy development",
-  "displayName": "Bluetooth Low Energy",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/NordicSemiconductor/pc-nrfconnect-ble.git"
-  },
-  "author": "Nordic Semiconductor ASA",
-  "license": "SEE LICENSE IN LICENSE",
-  "main": "dist/bundle.js",
-  "engines": {
-    "nrfconnect": "^3.8.0"
-  },
-  "scripts": {
-    "build": "nrfconnect-scripts build-prod",
-    "clean-dist": "rimraf dist",
-    "clean-modules": "rimraf \"node_modules/!(rimraf|.bin)\"",
-    "clean": "npm run clean-dist && npm run clean-modules",
-    "dev": "nrfconnect-scripts build-watch",
-    "lint": "nrfconnect-scripts lint lib index.jsx",
-    "nordic-publish": "nrfconnect-scripts nordic-publish",
-    "test-watch": "nrfconnect-scripts test --watch",
-    "test": "nrfconnect-scripts test",
-    "webpack": "nrfconnect-scripts build-dev"
-  },
-  "files": [
-    "dist/",
-    "resources/icon.*",
-    "icon.png",
-    "LICENSE"
-  ],
-  "devDependencies": {
-    "change-case": "^4.1.0",
-    "chart.js": "^2.9.3",
-    "immutable": "^3.8.2",
-    "jquery": "^3.4.1",
-    "lodash.throttle": "^4.1.1",
-    "mousetrap": "^1.6.3",
-    "pc-nrfconnect-shared": "https://github.com/NordicSemiconductor/pc-nrfconnect-shared#v5.17.0",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
-    "react-onclickoutside": "^6.9.0",
-    "react-redux": "7.2.0",
-    "react-textarea-autosize": "^7.1.2",
-    "uuid-v4": "^0.1.0"
-  },
-  "dependencies": {
-    "@types/react": "^17.0.37",
-    "bluetooth-numbers-database": "https://github.com/NordicSemiconductor/bluetooth-numbers-database#75bb6a8079",
-    "electron": "^13.5.2",
-    "electron-store": "^6.0.0"
-  },
-  "bundledDependencies": [
-    "bluetooth-numbers-database",
-    "electron-store"
-  ],
-  "eslintConfig": {
-    "extends": "./node_modules/pc-nrfconnect-shared/config/eslintrc.json"
-  },
-  "prettier": "./node_modules/pc-nrfconnect-shared/config/prettier.config.js"
+    "name": "pc-nrfconnect-ble",
+    "version": "4.0.0",
+    "description": "A natural first choice for Bluetooth Low Energy development",
+    "displayName": "Bluetooth Low Energy",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/NordicSemiconductor/pc-nrfconnect-ble.git"
+    },
+    "author": "Nordic Semiconductor ASA",
+    "license": "SEE LICENSE IN LICENSE",
+    "main": "dist/bundle.js",
+    "engines": {
+        "nrfconnect": "^3.11.0"
+    },
+    "scripts": {
+        "dev": "webpack watch --mode development",
+        "webpack": "webpack build --mode development",
+        "build": "webpack build",
+        "test": "jest",
+        "check": "run-p --silent --continue-on-error --print-label check:*",
+        "check:lint": "eslint --color .",
+        "check:types": "check-for-typescript tsc --noEmit --pretty",
+        "check:license": "nrfconnect-license check",
+        "nordic-publish": "nordic-publish"
+    },
+    "files": [
+        "dist/",
+        "resources/icon.*",
+        "icon.png",
+        "LICENSE"
+    ],
+    "devDependencies": {
+        "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v6.5.3"
+    },
+    "dependencies": {
+        "bluetooth-numbers-database": "https://github.com/NordicSemiconductor/bluetooth-numbers-database#75bb6a8079"
+    },
+    "bundledDependencies": [
+        "bluetooth-numbers-database",
+        "electron-store"
+    ],
+    "eslintConfig": {
+        "extends": "./node_modules/pc-nrfconnect-shared/config/eslintrc"
+    },
+    "prettier": "./node_modules/pc-nrfconnect-shared/config/prettier.config.js"
 }

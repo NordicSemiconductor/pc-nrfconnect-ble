@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) 2022 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-Nordic-4-Clause
+ */
+
+.floating-card {
+    background-color: white;
+    width: 514px;
+    margin: auto;
+    box-shadow: 0px 3px 6px #00000029;
+}
+.floating-card .title {
+    background-color: #ECEFF1 ;
+    padding: 1em;
+    font: normal normal bold 14px/19px Roboto;
+    letter-spacing: 0px;
+    color: #455A64;
+}
+
+.floating-card .content {
+    padding: 1em;
+}
+
+.install-file-info {
+    font: normal normal normal 10px/13px Roboto;
+    letter-spacing: 0px;
+    color: #455A64;
+}
+
+.btn {
+    font-size: 12px;
+}
+
+.progress {
+    height: 4px;
+}
