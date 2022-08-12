@@ -1,9 +1,6 @@
 trigger:
 - main
-<<<<<<< HEAD
-=======
 - release/*
->>>>>>> main
 pool:
   vmImage: 'ubuntu-latest'
 steps:
