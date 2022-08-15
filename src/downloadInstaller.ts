@@ -26,6 +26,7 @@ export const downloadInstaller = (
 
     return new Promise<Buffer>((finish, error) => {
         const request = net.request(file);
+        request.setHeader('Cache-control', 'no-cache');
         const abortListener = () => {
             request.abort();
             signal.removeEventListener('abort', abortListener);
@@ -42,9 +43,12 @@ export const downloadInstaller = (
 
             let current = 0;
             response.on('data', data => {
+                if (signal.aborted) {
+                    return;
+                }
                 current += data.length;
                 buffer.push(data);
-                progress(Math.round((1000 * current) / total / 10));
+                progress(Math.round((1000 * current) / total) / 10);
             });
 
             response.on('error', () => error());
