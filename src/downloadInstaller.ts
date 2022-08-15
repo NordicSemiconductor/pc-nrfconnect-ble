@@ -42,6 +42,9 @@ export const downloadInstaller = (
 
             let current = 0;
             response.on('data', data => {
+                if (signal.aborted) {
+                    return;
+                }
                 current += data.length;
                 buffer.push(data);
                 progress(Math.round((1000 * current) / total / 10));
