@@ -70,7 +70,15 @@ const Main = () => {
                 <div className="content">
                     <p className="py-3">
                         {progress === undefined && (
-                            <>Bluetooth Low Energy is now a standalone app.</>
+                            <>
+                                Bluetooth Low Energy is now a standalone app.
+                                {process.platform === 'win32' && (
+                                    <p>
+                                        The standalone application can be
+                                        uninstalled from the control panel.
+                                    </p>
+                                )}
+                            </>
                         )}
                         {progress !== undefined && (
                             <>
@@ -117,9 +125,9 @@ const Main = () => {
                         (updateAvailable && !errorMessage)) && (
                         <div className="d-flex">
                             <div className="flex-grow-1 install-file-info">
-                                Location {programDirectory()}
+                                Target location: {programDirectory()}
                                 <br />
-                                File size {downloadSize}MB
+                                File size: {downloadSize}MB
                             </div>
                             {progress === undefined && (
                                 <button
