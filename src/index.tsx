@@ -70,7 +70,15 @@ const Main = () => {
                 <div className="content">
                     <p className="py-3">
                         {progress === undefined && (
-                            <>Bluetooth Low Energy is now a standalone app.</>
+                            <>
+                                Bluetooth Low Energy is now a standalone app.
+                                {process.platform === 'win32' && (
+                                    <p>
+                                        The standalone application can be
+                                        uninstalled from the control panel.
+                                    </p>
+                                )}
+                            </>
                         )}
                         {progress !== undefined && (
                             <>
