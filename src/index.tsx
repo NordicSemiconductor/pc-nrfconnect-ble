@@ -117,9 +117,9 @@ const Main = () => {
                         (updateAvailable && !errorMessage)) && (
                         <div className="d-flex">
                             <div className="flex-grow-1 install-file-info">
-                                Location {programDirectory()}
+                                Target location: {programDirectory()}
                                 <br />
-                                File size {downloadSize}MB
+                                File size: {downloadSize}MB
                             </div>
                             {progress === undefined && (
                                 <button
