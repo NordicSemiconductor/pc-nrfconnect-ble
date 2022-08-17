@@ -68,36 +68,40 @@ const Main = () => {
         <div className="d-flex h-100">
             <div className="floating-card">
                 <div className="title">
-                    {updateAvailable ? 'Update' : 'Install'}
+                    Bluetooth &#174; Low Energy Program{' '}
+                    {updateAvailable ? 'Update' : 'Installation'}
                 </div>
                 <div className="content p-3 pt-4">
                     {progress === undefined && (
                         <>
                             {updateAvailable && (
                                 <>
-                                    <p>An update is available</p>
-                                    <p className="mb-0">
-                                        Installed version: {version}.
+                                    <p>
+                                        An update is available for this program
                                     </p>
-                                    <p>Available version: {bleVersion}.</p>
+                                    <ul>
+                                        <li>Installed version: {version}.</li>
+                                        <li>
+                                            Available version: {bleVersion}.
+                                        </li>
+                                    </ul>
                                 </>
                             )}
 
-                            <p>
-                                {!exePath && progress === undefined && (
-                                    <>
-                                        Bluetooth Low Energy is now a standalone
-                                        app.
-                                        {process.platform === 'win32' && (
-                                            <p className="mt-1">
-                                                The standalone application can
-                                                be uninstalled from the control
-                                                panel.
-                                            </p>
-                                        )}
-                                    </>
-                                )}
-                            </p>
+                            {!exePath && progress === undefined && (
+                                <>
+                                    <p>
+                                        Bluetooth &#174; Low Energy is now a
+                                        standalone program, but may still be
+                                        opened from nRF Connect for Desktop.
+                                    </p>
+                                    <p>
+                                        If you have created your own UUID
+                                        definitions, they will remain available
+                                        just like before.
+                                    </p>
+                                </>
+                            )}
 
                             {exePath &&
                                 dirname(exePath) !== programDirectory() && (
@@ -124,25 +128,30 @@ const Main = () => {
                                 <>
                                     <div className="d-flex flex-column mb-0">
                                         <p>
-                                            The standalone application will be
-                                            installed at:
+                                            Click the button below to install
+                                            the program at the following path:
                                         </p>
                                         <p className="path">
                                             {programDirectory()}
                                         </p>
-                                        <p className="mb-4">
-                                            File size: {downloadSize}MB
-                                        </p>
+                                        <p>File size: {downloadSize}MB</p>
+                                        {process.platform === 'win32' && (
+                                            <p>
+                                                The standalone program may be
+                                                uninstalled from the Control
+                                                Panel.
+                                            </p>
+                                        )}
                                     </div>
 
-                                    <div className="d-flex justify-content-end">
+                                    <div className="d-flex justify-content-end mt-4">
                                         {exePath && progress === undefined && (
                                             <button
                                                 type="button"
                                                 className="btn btn-secondary font-size-12 mr-1"
                                                 onClick={runExecutable}
                                             >
-                                                Open current version
+                                                Open Current Version
                                             </button>
                                         )}
                                         {progress === undefined && (
@@ -153,8 +162,8 @@ const Main = () => {
                                                 style={{ width: '150px' }}
                                             >
                                                 {updateAvailable
-                                                    ? 'Update Application'
-                                                    : 'Download and install'}
+                                                    ? 'Update Program'
+                                                    : 'Download and Install'}
                                             </button>
                                         )}
                                     </div>
@@ -164,14 +173,13 @@ const Main = () => {
                     )}
                     {progress !== undefined && (
                         <>
-                            <p>Downloading...</p>
+                            <p>Downloading {exePath ? 'update' : 'files'}...</p>
                             <ProgressBar now={progress} />
                             <div className="d-flex justify-content-end mt-3">
                                 <button
                                     type="button"
-                                    className="btn btn-outline-dark font-size-12"
+                                    className="btn btn-secondary font-size-12"
                                     onClick={cancel}
-                                    style={{ width: '150px' }}
                                 >
                                     Cancel
                                 </button>
