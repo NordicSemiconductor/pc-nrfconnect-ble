@@ -23,15 +23,23 @@
 }
 
 .install-file-info {
-    font: normal normal normal 10px/13px Roboto;
+    font: normal normal normal 14px/13px Roboto;
     letter-spacing: 0px;
     color: #455A64;
 }
 
-.btn {
+.font-size-12 {
     font-size: 12px;
 }
 
 .progress {
     height: 4px;
 }
+
+.path {
+    font-family: monospace;
+    cursor: text;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+}
+
