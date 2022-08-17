@@ -7,6 +7,7 @@
 import React, { useEffect, useState } from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { getCurrentWindow } from '@electron/remote';
+import { dirname } from 'path';
 import { App } from 'pc-nrfconnect-shared';
 import { lt } from 'semver';
 
@@ -63,12 +64,6 @@ const Main = () => {
         setProgress(undefined);
     };
 
-    const isSamePath = (
-        executablePath: string,
-        directoryPath: string
-    ): boolean =>
-        executablePath.split('\\').slice(0, -1).join('\\') === directoryPath;
-
     return (
         <div className="d-flex h-100">
             <div className="floating-card">
@@ -105,7 +100,7 @@ const Main = () => {
                             </p>
 
                             {exePath &&
-                                !isSamePath(exePath, programDirectory()) && (
+                                dirname(exePath) !== programDirectory() && (
                                     <>
                                         <p>
                                             Your current installation is located
