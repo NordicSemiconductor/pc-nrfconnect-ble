@@ -4,8 +4,8 @@
 
 -   The Bluetooth Low Energy Application is converted to a standalone
     application for compatibility reasons.
-    -   This means that the application will need a separate install when you
-        open it from nRF Connect for Desktop.
+    -   When you open the updated application, you will be guided through the
+        installation of the standalone application.
     -   When the standalone application is installed you may open it from nRF
         Connect for Desktop just like before.
 -   Default parsing of Nordic UART Service characteristic changed to TEXT
