@@ -2,9 +2,12 @@
 
 ### Changed
 
--   BLE is now an independant application, and will require a separate install
-    when the app is opened.
--   Made compatible with next version of nRF Connect for Desktop.
+-   The Bluetooth Low Energy Application is converted to a standalone
+    application for compatibility reasons.
+    -   This means that the application will need a separate install when you
+        open it from nRF Connect for Desktop.
+    -   When the standalone application is installed you may open it from nRF
+        Connect for Desktop just like before.
 -   Default parsing of Nordic UART Service characteristic changed to TEXT
 
 ## 3.0.0 - 2021-11-01

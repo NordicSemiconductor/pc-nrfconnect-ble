@@ -68,7 +68,7 @@ const Main = () => {
         <div className="d-flex h-100">
             <div className="floating-card">
                 <div className="title">
-                    Bluetooth &#174; Low Energy Program{' '}
+                    Bluetooth Low Energy Application{' '}
                     {updateAvailable ? 'Update' : 'Installation'}
                 </div>
                 <div className="content p-3 pt-4">
@@ -77,7 +77,8 @@ const Main = () => {
                             {updateAvailable && (
                                 <>
                                     <p>
-                                        An update is available for this program
+                                        An update is available for this
+                                        application
                                     </p>
                                     <ul>
                                         <li>Installed version: {version}.</li>
@@ -89,18 +90,13 @@ const Main = () => {
                             )}
 
                             {!exePath && progress === undefined && (
-                                <>
-                                    <p>
-                                        Bluetooth &#174; Low Energy is now a
-                                        standalone program, but may still be
-                                        opened from nRF Connect for Desktop.
-                                    </p>
-                                    <p>
-                                        If you have created your own UUID
-                                        definitions, they will remain available
-                                        just like before.
-                                    </p>
-                                </>
+                                <p>
+                                    The Bluetooth Low Energy application has
+                                    been converted to a standalone application
+                                    for compatibility reasons. It may however
+                                    still be opened from nRF Connect for
+                                    Desktop.
+                                </p>
                             )}
 
                             {exePath &&
@@ -129,7 +125,8 @@ const Main = () => {
                                     <div className="d-flex flex-column mb-0">
                                         <p>
                                             Click the button below to install
-                                            the program at the following path:
+                                            the application at the following
+                                            path:
                                         </p>
                                         <p className="path">
                                             {programDirectory()}
@@ -137,9 +134,9 @@ const Main = () => {
                                         <p>File size: {downloadSize}MB</p>
                                         {process.platform === 'win32' && (
                                             <p>
-                                                The standalone program may be
-                                                uninstalled from the Control
-                                                Panel.
+                                                The standalone application may
+                                                be uninstalled from the Windows
+                                                Control Panel.
                                             </p>
                                         )}
                                     </div>
@@ -162,7 +159,7 @@ const Main = () => {
                                                 style={{ width: '150px' }}
                                             >
                                                 {updateAvailable
-                                                    ? 'Update Program'
+                                                    ? 'Update Application'
                                                     : 'Download and Install'}
                                             </button>
                                         )}
