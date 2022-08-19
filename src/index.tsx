@@ -13,7 +13,11 @@ import { lt } from 'semver';
 
 import { baseDownloadUrl, bleVersion, downloadSize } from './config';
 import { downloadInstaller, saveBufferToPath } from './downloadInstaller';
-import { getProgramPath, programDirectory } from './paths';
+import {
+    copyOldElectronStore,
+    getProgramPath,
+    programDirectory,
+} from './paths';
 import { currentVersion, runExecutable, runInstaller } from './run';
 
 import './style.css';
@@ -49,6 +53,7 @@ const Main = () => {
             const path = await saveBufferToPath(buffer);
             runInstaller(path);
             if (process.platform === 'darwin' || process.platform === 'linux') {
+                copyOldElectronStore();
                 getCurrentWindow().close();
             }
         } catch {

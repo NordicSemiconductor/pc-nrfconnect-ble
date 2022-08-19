@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-4-Clause
  */
 
-import { existsSync, readFileSync } from 'fs';
+import { copyFileSync, existsSync, readFileSync } from 'fs';
 import { homedir } from 'os';
 import { dirname, join, resolve } from 'path';
 
@@ -93,5 +93,26 @@ export function configDirectory(): string {
         case 'linux':
         default:
             return join(homedir(), '.config', packageName);
+    }
+}
+
+export function copyOldElectronStore(): void {
+    const pathToNewStorage = join(configDirectory(), 'pc-nrfconnect-ble.json');
+    console.log(`Checking if: ${pathToNewStorage} exists.`);
+    if (!existsSync(pathToNewStorage)) {
+        // If storage of Bluetooth Low Energy does not exist for the new userDataDir,
+        // check if there is an old storage of the app for when it was not a standalone app
+        // if there is an old storage, copy it to the new directory so as to migrate the storage
+        // to the standalone application. We do not want customers to loose their persistent store.
+        const pathToOldStorage = join(
+            configDirectory(),
+            '..',
+            'nrfconnect',
+            'pc-nrfconnect-ble.json'
+        );
+        console.log(`Checking if: ${pathToOldStorage} exists.`);
+        if (existsSync(pathToOldStorage)) {
+            copyFileSync(pathToOldStorage, pathToNewStorage);
+        }
     }
 }

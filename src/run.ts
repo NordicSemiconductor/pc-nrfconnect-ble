@@ -11,7 +11,7 @@ import { join } from 'path';
 import { usageData } from 'pc-nrfconnect-shared';
 
 import { bleVersion } from './config';
-import { configDirectory, getProgramPath } from './paths';
+import { configDirectory, copyOldElectronStore, getProgramPath } from './paths';
 
 export const runInstaller = (path: string) => {
     usageData.sendUsageData(
@@ -36,6 +36,7 @@ export const runInstaller = (path: string) => {
             installerProcess.on('close', code => {
                 if (code === 0) {
                     // Installation complete
+                    copyOldElectronStore();
                     getCurrentWindow().close();
                 }
             });
