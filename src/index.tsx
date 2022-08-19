@@ -20,6 +20,9 @@ import './style.css';
 
 let abortController = new AbortController();
 
+const getDarwinAppPath = (fullPath: string): string =>
+    fullPath.split('/').slice(0, -2).join('/');
+
 const Main = () => {
     const [progress, setProgress] = useState<number>();
     const [version, setVersion] = useState<string>();
@@ -106,7 +109,11 @@ const Main = () => {
                                             Your current installation is located
                                             at:
                                         </p>
-                                        <p className="path">{exePath}</p>
+                                        <p className="path">
+                                            {process.platform === 'darwin'
+                                                ? getDarwinAppPath(exePath)
+                                                : exePath}
+                                        </p>
                                     </>
                                 )}
 
@@ -123,15 +130,28 @@ const Main = () => {
                                 (updateAvailable && !errorMessage)) && (
                                 <>
                                     <div className="d-flex flex-column mb-0">
-                                        <p>
-                                            Click the button below to install
-                                            the application at the following
-                                            path:
-                                        </p>
+                                        {process.platform === 'darwin' ? (
+                                            <p>
+                                                Click the button to download it
+                                                and then install it in your
+                                                Applications folder, so that it
+                                                can be found at:
+                                            </p>
+                                        ) : (
+                                            <p>
+                                                Click the button below to
+                                                install the application at the
+                                                following path:
+                                            </p>
+                                        )}
                                         <p className="path">
-                                            {programDirectory()}
+                                            {process.platform === 'darwin'
+                                                ? getDarwinAppPath(
+                                                      programDirectory()
+                                                  )
+                                                : programDirectory()}
                                         </p>
-                                        <p>File size: {downloadSize}MB</p>
+                                        <p>File size: ~{downloadSize}MB</p>
                                         {process.platform === 'win32' && (
                                             <p>
                                                 The standalone application may

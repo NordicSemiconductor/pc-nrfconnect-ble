@@ -67,7 +67,7 @@ export function programDirectory() {
     }
 
     if (process.platform === 'darwin') {
-        return '/Applications/nRF Connect for Desktop Bluetooth Low Energy.app/Contents/MacOS/nRF Connect for Desktop Desktop Bluetooth Low Energy';
+        return '/Applications/nRF Connect for Desktop Bluetooth Low Energy.app/Contents/MacOS/nRF Connect for Desktop Bluetooth Low Energy';
     }
 
     if (process.platform === 'linux') {
