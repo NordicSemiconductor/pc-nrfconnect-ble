@@ -7,6 +7,7 @@
 import React, { useEffect, useState } from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { getCurrentWindow } from '@electron/remote';
+import { existsSync } from 'fs';
 import { dirname } from 'path';
 import { App } from 'pc-nrfconnect-shared';
 import { lt } from 'semver';
@@ -21,7 +22,7 @@ import './style.css';
 let abortController = new AbortController();
 
 const getDarwinAppPath = (fullPath: string): string =>
-    fullPath.split('/').slice(0, -2).join('/');
+    fullPath.split('/').slice(0, -3).join('/');
 
 const Main = () => {
     const [progress, setProgress] = useState<number>();
@@ -35,6 +36,15 @@ const Main = () => {
         const existingPath = getProgramPath();
         setExePath(existingPath);
         setVersion(current);
+
+        if (
+            process.platform === 'darwin' &&
+            current == null &&
+            existingPath &&
+            existsSync(existingPath)
+        ) {
+            runExecutable();
+        }
 
         if (lt(current ?? '0.0.0', bleVersion) && existingPath) {
             setUpdateAvailable(true);
