@@ -1,3 +1,9 @@
+## 4.0.1 - 2022-10-10
+
+### Fixed
+
+-   Issue with appication not loading with error `nrfdl_create_context failed: 50`
+
 ## 4.0.0 - 2022-03-01
 
 ### Changed
