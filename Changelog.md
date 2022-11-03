@@ -1,8 +1,17 @@
+## 4.0.2 - 2022-11-03
+
+### Fixed
+
+-   The version displayed in nRF Connect for Desktop and in the Bluetooth Low
+    Energy Application was not synchronized.
+-   The log informed that the provided JLink version was v7.58b, it is now
+    updated to say v7.66a, similar to the other apps.
+
 ## 4.0.1 - 2022-10-10
 
 ### Fixed
 
--   Issue with appication not loading with error
+-   Issue with application not loading with error
     `nrfdl_create_context failed: 50`
 
 ## 4.0.0 - 2022-03-01
