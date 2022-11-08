@@ -34,7 +34,9 @@
         "pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v6.6.3"
     },
     "dependencies": {
-        "bluetooth-numbers-database": "https://github.com/NordicSemiconductor/bluetooth-numbers-database#75bb6a8079"
+        "bluetooth-numbers-database": "https://github.com/NordicSemiconductor/bluetooth-numbers-database#75bb6a8079",
+        "esbuild": "^0.15.13",
+        "esbuild-sass-plugin": "^2.4.0"
     },
     "bundledDependencies": [
         "bluetooth-numbers-database",

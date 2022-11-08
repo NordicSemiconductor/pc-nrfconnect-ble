@@ -9,20 +9,26 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import { getCurrentWindow } from '@electron/remote';
 import { existsSync } from 'fs';
 import { dirname } from 'path';
-import { App } from 'pc-nrfconnect-shared';
+import { App, logger } from 'pc-nrfconnect-shared';
 import { lt } from 'semver';
 
+import someImage from '../resources/some-image.png';
 import { baseDownloadUrl, bleVersion, downloadSize } from './config';
 import { downloadInstaller, saveBufferToPath } from './downloadInstaller';
 import { getProgramPath, programDirectory } from './paths';
 import { currentVersion, runExecutable, runInstaller } from './run';
 
-import './style.css';
+import './style.scss';
+
+logger.info('Take that!');
 
 let abortController = new AbortController();
 
 const getDarwinAppPath = (fullPath: string): string =>
     fullPath.split('/').slice(0, -3).join('/');
+
+document.head.innerHTML +=
+    '<link rel="stylesheet" href="/home/jonas/.nrfconnect-apps/local/pc-nrfconnect-ble/dist/bundle.css" type="text/css"/>';
 
 const Main = () => {
     const [progress, setProgress] = useState<number>();
@@ -93,6 +99,7 @@ const Main = () => {
                                         An update is available for this
                                         application
                                     </p>
+                                    <img src={someImage} alt="Some alt" />
                                     <ul>
                                         <li>Installed version: {version}.</li>
                                         <li>
