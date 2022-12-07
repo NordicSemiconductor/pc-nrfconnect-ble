@@ -1,3 +1,10 @@
+## 4.0.3 - 2022-12-07
+
+### Fixed
+
+-   In **Server Setup**, creating a **New service** and selecting it threw
+    `TypeError: Assignment to constant variable`.
+
 ## 4.0.2 - 2022-11-03
 
 ### Fixed
