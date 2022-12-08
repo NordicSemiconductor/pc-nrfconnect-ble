@@ -1,3 +1,9 @@
+## 4.0.4 - 2022-12-08
+
+### Fixed
+
+-   Last version did not target correct BLE standalone app.
+
 ## 4.0.3 - 2022-12-07
 
 ### Fixed

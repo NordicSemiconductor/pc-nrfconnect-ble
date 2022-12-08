@@ -1,6 +1,6 @@
 {
     "name": "pc-nrfconnect-ble",
-    "version": "4.0.3",
+    "version": "4.0.4",
     "displayName": "Bluetooth Low Energy",
     "description": "General tool for development and testing with Bluetooth Low Energy",
     "homepage": "https://github.com/NordicSemiconductor/pc-nrfconnect-ble",
