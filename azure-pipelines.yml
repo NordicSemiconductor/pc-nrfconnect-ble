@@ -1,29 +1,29 @@
 trigger:
-- main
-- release/*
+    - main
+    - release/*
 pool:
-  vmImage: 'ubuntu-latest'
+    vmImage: 'ubuntu-latest'
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: 14
-- script: |
-    set -o errexit -o pipefail
-    npm ci
-    npm run check
-    npm run test
-    npm run build
-    npm pack
-- task: CopyFiles@2
-  inputs:
-    contents: |
-      *.tgz
-      Changelog.md
-    targetFolder: $(Build.ArtifactStagingDirectory)
-  displayName: 'Copying artifact to artifact staging directory'
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: $(Build.ArtifactStagingDirectory)
-    publishLocation: 'pipeline'
-  condition: ne(variables['Build.Reason'], 'PullRequest')
-  displayName: 'Publishing artifacts to artifact storage'
+    - task: NodeTool@0
+      inputs:
+          versionSpec: 14
+    - script: |
+          set -o errexit -o pipefail
+          npm ci
+          npm run check
+          npm run test
+          npm run build:dev
+          npm pack
+    - task: CopyFiles@2
+      inputs:
+          contents: |
+              *.tgz
+              Changelog.md
+          targetFolder: $(Build.ArtifactStagingDirectory)
+      displayName: 'Copying artifact to artifact staging directory'
+    - task: PublishPipelineArtifact@1
+      inputs:
+          targetPath: $(Build.ArtifactStagingDirectory)
+          publishLocation: 'pipeline'
+      condition: ne(variables['Build.Reason'], 'PullRequest')
+      displayName: 'Publishing artifacts to artifact storage'
