@@ -12,7 +12,7 @@
     "license": "SEE LICENSE IN LICENSE",
     "main": "dist/bundle.js",
     "engines": {
-        "nrfconnect": "^3.11.0"
+        "nrfconnect": ">=3.11.0"
     },
     "scripts": {
         "watch": "run-p --silent --continue-on-error watch:*",
