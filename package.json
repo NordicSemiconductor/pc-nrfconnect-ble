@@ -20,7 +20,7 @@
         "watch:types": "tsc --noEmit --pretty --watch --preserveWatchOutput",
         "build:dev": "run-esbuild",
         "build:prod": "run-esbuild --prod",
-        "test": "jest",
+        "test": "jest --passWithNoTests",
         "check": "run-p --silent --continue-on-error --print-label check:*",
         "check:lint": "eslint --color .",
         "check:types": "check-for-typescript tsc --noEmit --pretty",
