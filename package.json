@@ -26,7 +26,8 @@
         "check:types": "check-for-typescript tsc --noEmit --pretty",
         "check:license": "nrfconnect-license check",
         "check:app": "check-app-properties",
-        "nordic-publish": "node ./dist/nordic-publish.js"
+        "nordic-publish": "node ./dist/nordic-publish.js",
+        "prepare": "husky install"
     },
     "files": [
         "dist/",
