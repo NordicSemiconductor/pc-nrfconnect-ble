@@ -32,10 +32,11 @@
         "dist/",
         "resources/icon.*",
         "icon.png",
-        "LICENSE"
+        "LICENSE",
+        "Changelog.md"
     ],
     "devDependencies": {
-        "pc-nrfconnect-shared": "git+https://github.com/NordicSemiconductor/pc-nrfconnect-shared.git#v6.13.2"
+        "pc-nrfconnect-shared": "git+https://github.com/NordicSemiconductor/pc-nrfconnect-shared.git#v18"
     },
     "dependencies": {
         "bluetooth-numbers-database": "https://github.com/NordicSemiconductor/bluetooth-numbers-database#75bb6a8079"
