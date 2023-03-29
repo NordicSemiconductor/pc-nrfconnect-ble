@@ -6,7 +6,7 @@ pool:
 steps:
     - task: NodeTool@0
       inputs:
-          versionSpec: 14
+          versionSpec: 18
     - script: |
           set -o errexit -o pipefail
           npm ci
