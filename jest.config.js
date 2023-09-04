@@ -4,4 +4,5 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-4-Clause
  */
 
-module.exports = require('pc-nrfconnect-shared/config/jest.config')();
+module.exports =
+    require('@nordicsemiconductor/pc-nrfconnect-shared/config/jest.config')();

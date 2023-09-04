@@ -7,9 +7,9 @@
 import React, { useEffect, useState } from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { getCurrentWindow } from '@electron/remote';
+import { App, render } from '@nordicsemiconductor/pc-nrfconnect-shared';
 import { existsSync } from 'fs';
 import { dirname } from 'path';
-import { App } from 'pc-nrfconnect-shared';
 import { lt } from 'semver';
 
 import { baseDownloadUrl, bleVersion, downloadSize } from './config';
@@ -219,7 +219,7 @@ const Main = () => {
     );
 };
 
-export default () => (
+render(
     <App
         deviceSelect={null}
         sidePanel={null}
