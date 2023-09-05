@@ -5,10 +5,10 @@
  */
 
 import { app, net } from '@electron/remote';
+import { usageData } from '@nordicsemiconductor/pc-nrfconnect-shared';
 import { chmod, mkdir, mkdtemp, writeFile } from 'fs/promises';
 import { homedir } from 'os';
 import { dirname, join, resolve } from 'path';
-import { usageData } from 'pc-nrfconnect-shared';
 
 import { baseDownloadUrl, bleVersion, packageName } from './config';
 import { getProgramPath } from './paths';

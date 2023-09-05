@@ -1,3 +1,9 @@
+## 4.0.4-patch1 - 2023-09-05
+
+### Fixed
+
+-   Make app compatible with nRF Connect for Desktop 4.2.0
+
 ## 4.0.4 - 2022-12-08
 
 ### Fixed

@@ -5,10 +5,10 @@
  */
 
 import { getCurrentWindow } from '@electron/remote';
+import { usageData } from '@nordicsemiconductor/pc-nrfconnect-shared';
 import { exec, spawn } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
-import { usageData } from 'pc-nrfconnect-shared';
 
 import { bleVersion } from './config';
 import { configDirectory, getProgramPath } from './paths';
