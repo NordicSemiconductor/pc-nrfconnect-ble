@@ -21,7 +21,7 @@ jobs:
       - name: Create zip file
         run: |
           zip -r nrf-connect-ble.zip \
-            doc/docs doc/mkdocs.yml custom.properties tags.yml
+            docs mkdocs.yml custom.properties tags.yml
 
       - name: Upload documentation artifact
         uses: actions/upload-artifact@v3
