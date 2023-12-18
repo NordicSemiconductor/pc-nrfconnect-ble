@@ -16,16 +16,15 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Copy zoomin properties
-        run: cp docs/zoomin/* .
-
-      - name: Replace index.md
-        run: cp docs/zoomin/index.md docs/index.md
+        run: |
+          cp doc/zoomin/custom.properties doc/ \
+          && cp doc/zoomin/tags.yml doc/
 
       - name: Create zip file
         run: |
-          zip -r nrf-connect-ble.zip \
-            docs mkdocs.yml custom.properties tags.yml \
-            -x@docs/zoomin/ignore.txt
+          cd doc/ \
+          && zip -r ../nrf-connect-ble.zip \
+          docs/* mkdocs.yml custom.properties tags.yml
 
       - name: Upload documentation artifact
         uses: actions/upload-artifact@v3
