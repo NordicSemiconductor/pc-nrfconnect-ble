@@ -5,12 +5,13 @@ Bluetooth Low Energy is installed as an app for nRF Connect for Desktop. Before 
 To install the Bluetooth Low Energy app:
 
 1. Open nRF Connect for Desktop.
-1. Find Bluetooth Low Energy in the list of apps and click **Install**.
-1. A proxy app is installed, and the Bluetooth Low Energy button changes to **Open**.
-1. To complete the installation, you must press Open.
+1. Find Bluetooth Low Energy in the list of apps and click **Install**.</br>
+   A proxy app is installed, and the Bluetooth Low Energy button changes to **Open**.
+1. To complete the installation, you must press **Open**.
 1. You will be prompted to **Download and install**, do this to complete installation of the app.
 
-Once the app is installed, you can launch it by clicking **Open**. If a new version of the app becomes available, an **Update** button is displayed next to the **Open** button. Click this button to install the latest version.
+Once the app is installed, you can launch it by clicking **Open**.</br>
+If a new version of the app becomes available, an **Update** button is displayed next to the **Open** button. Click this button to install the latest version.
 
 To uninstall the app, follow the steps appropriate for your operating system:
 

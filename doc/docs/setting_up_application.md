@@ -6,11 +6,12 @@ To set up a local device, complete the following steps:
 
 1. Connect the device to a Universal Serial Bus (USB) port on your computer and power it on.
 2. In the navigation bar, click on **Select device**.
-3. Select a device by clicking on its name in the drop-down list. You can access the following options by selecting the arrow under the device name.
+3. Select a device by clicking on its name in the drop-down list.</br>
+   You can access the following options by selecting the arrow under the device name.
 
-   - Show the device at the top of the list by making it favorite.
-   - Rename the device.
-   - View and select between device Com Ports.
+    - Show the device at the top of the list by making it favorite.
+    - Rename the device.
+    - View and select between device Com Ports.
 
 The name of the selected device is displayed on the navigation bar.
 
