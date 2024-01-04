@@ -58,7 +58,7 @@ extra:
   test: This is a test abbreviation snippet
 
 nav:
-  - Home: README.md
+  - Home: index.md
   - Installing the Bluetooth Low Energy app: installing.md
   - Overview and user interface: overview_and_ui.md
   - Establishing serial port connection to a local device: setting_up_application.md
