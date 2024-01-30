@@ -4,7 +4,7 @@ Pairing is the process of exchanging security keys and establishing an encrypted
 
 To pair with a connected device, complete the following steps:
 
-1. To view device options for the connected device, click the **Device options** icon ![Device options icon](./screenshots/cog.png).
+1. To view device options for the connected device, click the [**Device options**](./overview_and_ui.md#device-options) button.
 2. To open the Pairing dialog, click **Pair...**.
 
     ![Pairing dialog](./screenshots/nRF_connect_pairing.png)
@@ -39,12 +39,12 @@ The nRF Connect Bluetooth Low Energy app can reply automatically to an incoming 
 
 To select the reply option for pairing requests, complete the following steps:
 
-1. Click the local **Device options** icon ![Device options icon](./screenshots/cog.png).
+1. Click the local [**Device options**](./overview_and_ui.md#device-options) button.
 2. Select or deselect **Auto reply security requests**.</br>
    When **Auto reply security requests** is selected, the nRF Connect Bluetooth Low Energy app uses the settings specified in **Security parameters** when automatically replying to the request.
 
 To edit security parameters, complete the following steps:
 
-1. Click the local **Device options** icon ![Device options icon](./screenshots/cog.png).
+1. Click the local [**Device options**](./overview_and_ui.md#device-options) button.
 2. To open the **Security parameters** dialog, click **Security parameters**.
 3. Click **Apply** when done.
