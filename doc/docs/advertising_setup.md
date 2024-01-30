@@ -4,13 +4,13 @@ The nRF Connect Bluetooth® Low Energy app enables the local device to operate a
 
 To start sending advertising packets, complete the following steps:
 
-1. Click the local **Device options** icon ![Device options icon](./screenshots/cog.png).
+1. Click the local [**Device options**](./overview_and_ui.md#device-options) button.
 2. To start advertising the device, click **Start advertising**.
 3. Specify the contents of the advertising packets:
 
      ![Advertising setup](./screenshots/nRF_connect_advertising_setup.png "Advertising setup")
 
-     1. Click the local **Device options** icon ![Device options icon](./screenshots/cog.png).
+     1. Click the local [**Device options**](./overview_and_ui.md#device-options) button.
      2. To display the **Advertising setup** dialog, click **Advertising setup**.
      3. From the AD type drop-down menu, select an AD type.
      4. In the Value field, add a data value.
