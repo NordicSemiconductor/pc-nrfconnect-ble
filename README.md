@@ -21,7 +21,7 @@ in the nRF Connect from Desktop documentation.
 as a standalone application, for reasons of driver compatibility.
 The application functionality remains the same, and a proxy app is used
 from nRF Connect for Desktop. A desktop shortcut is also created
-automatically during the install process.
+automatically during the installation process.
 
 ## Documentation
 
@@ -47,7 +47,7 @@ Please report issues on the [DevZone](https://devzone.nordicsemi.com) portal.
 ## Contributing
 
 See the
-[infos on contributing](https://nordicsemiconductor.github.io/pc-nrfconnect-docs/contributing)
+[information on contributing](https://nordicsemiconductor.github.io/pc-nrfconnect-docs/contributing)
 for details.
 
 ## License
