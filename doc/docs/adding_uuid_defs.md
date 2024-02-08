@@ -4,7 +4,7 @@ The nRF Connect Bluetooth® Low Energy app comes with a list of predefined names
 
 To extend the list of known UUIDs, complete the following steps:
 
-1. To expand the device options for the local device, click the **Device options** icon ![Device options icon](./screenshots/cog.png).
+1. To expand the device options for the local device, click the [**Device options**](./overview_and_ui.md#device-options) button.
 2. Click **Open UUID definitions file**.</br>
    The definitions file is opened in your default application for `.json` files.
 3. Following the examples in the file, add your UUIDs, then save the file.

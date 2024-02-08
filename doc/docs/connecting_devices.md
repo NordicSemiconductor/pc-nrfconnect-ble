@@ -4,12 +4,11 @@ The nRF Connect Bluetooth® Low Energy app can establish and maintain up to eigh
 
 To connect to devices, complete the following steps:
 
-1. To scan for nearby Bluetooth devices, click the **Start scan** button in the **Discovered devices** view.</br>
-    The advertising devices start to appear in a list in the **Discovered devices** view. Each entry in the list shows the name, address, and RSSI of the received advertising packet. For information on how to set up advertising for a device, see [Setting up advertising](./advertising_setup.md).
+1. To scan for nearby Bluetooth devices, click the **Start scan** button in the [**Discovered devices**](./overview_and_ui.md#discovered-devices-panel) side panel.</br>
+    The [entries](./overview_and_ui.md#discovered-devices-entries) for nearby advertising devices start to appear in the side panel.
 
-    To view the advertising type and data fields of a packet, select the packet entry in the list.
-
-    To sort the list according to signal strength and thus according to which device is closest, click **Options** and select **Sort by signal strength**.
+    !!! tip "Tip"
+          For information on how to set up advertising for a device, see [Setting up advertising](./advertising_setup.md).
 
 1. To establish a Bluetooth connection with a peer device, click the **Connect** button associated with the device.
 

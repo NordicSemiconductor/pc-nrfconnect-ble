@@ -30,13 +30,13 @@ To add new attributes to the server setup, complete the following steps:
 
 To save a server setup to file for later use, complete the following steps:
 
-1. Click the local **Device options** icon ![Device options icon](./screenshots/cog.png).
+1. Click the local [**Device options**](./overview_and_ui.md#device-options) button.
 2. Click **Save setup...**.
 3. Choose a directory and type a file name, then click **Save**.
 
 To load a previously saved server setup from a file, complete the following steps:
 
-1. Click the local **Device options** icon ![Device options icon](./screenshots/cog.png).
+1. Click the local [**Device options**](./overview_and_ui.md#device-options) button.
 2. Click **Load setup...**.
 3. Navigate to the right directory and select the file, then click **Open**.
 

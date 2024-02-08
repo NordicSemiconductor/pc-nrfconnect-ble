@@ -4,8 +4,8 @@ nRF Connect Bluetooth® Low Energy helps you learn how to configure and test Blu
 
 ## Supported devices
 
-- PCA10056 nRF52840 Development Kit
-- PCA10040 nRF52 Development Kit
-- PCA10059 nRF52840 Dongle
-- PCA10028 nRF51 Development Kit
-- PCA10031 nRF51 Dongle
+- nRF52840 Development Kit (PCA10056)
+- nRF52840 Dongle (PCA10059)
+- nRF52 Development Kit (PCA10040)
+- nRF51 Development Kit (PCA10028)
+- nRF51 Dongle (PCA10031)
