@@ -2,7 +2,7 @@
 
 | Date       | Description |
 |------------|-------------|
-| 2024-01-30 | Updated documentation for the [nRF Connect Bluetooth® Low Energy v4.0.4-patch1](https://github.com/NordicSemiconductor/pc-nrfconnect-ble/blob/main/Changelog.md#404-patch1---2023-09-05) together with several editorial changes to structure and layout. |
+| 2024-02-08 | Updated documentation for the [nRF Connect Bluetooth® Low Energy v4.0.4-patch1](https://github.com/NordicSemiconductor/pc-nrfconnect-ble/blob/main/Changelog.md#404-patch1---2023-09-05) together with several editorial changes to structure and layout. |
 | 2022-09-06 | Updated for installation changes in nRF Connect Bluetooth® Low Energy v4.0.0 and new user interface in version 3.0.1 and later. |
 | 2021-06-02 | Editorial changes |
 | Sep 2019   | Updated to match nRF Connect Bluetooth Low Energy v2.3.1:</br></br>- Updated [Installing the Bluetooth Low Energy app](installing.md)</br>- Clarified supported devices |
