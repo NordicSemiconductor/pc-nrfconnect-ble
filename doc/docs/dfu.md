@@ -2,7 +2,7 @@
 
 If the connected device has Nordic Device Firmware Update (DFU) Service, you can update the firmware on the device.
 
-For more information on the DFU process, see [Device Firmware Update process](https://infocenter.nordicsemi.com/topic/com.nordic.infocenter.sdk5.v12.2.0/lib_bootloader_dfu_process.html). For DFU bootloader examples, see [DFU bootloader examples](https://infocenter.nordicsemi.com/topic/com.nordic.infocenter.sdk5.v12.2.0/examples_bootloader.html).
+For more information on the DFU process, see [Device Firmware Update process](https://docs.nordicsemi.com/bundle/sdk_nrf5_v17.1.0/page/lib_bootloader_dfu_process.html). For DFU bootloader examples, see [DFU bootloader examples](https://docs.nordicsemi.com/bundle/sdk_nrf5_v17.1.0/page/examples_bootloader.html).
 
 For a device that has DFU Service, Secure DFU appears in the device's list of discovered services, and the **Start Secure DFU** button appears in the list header.
 
@@ -14,7 +14,7 @@ To update the firmware, complete the following steps:
 2. Browse and select a DFU zip package file on your computer.
 
     !!! tip "Important"
-         To create the DFU zip package file, use the nrfutil tool. See the [nrfutil documentation](https://infocenter.nordicsemi.com/topic/ug_nrfutil/UG/nrfutil/nrfutil_intro.html) for more information.
+         To create the DFU zip package file, use the nRF Util tool. See the [nRF Util documentation](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html) for more information.
     Information on the content of the DFU zip package is displayed in the **Package info** field.
 
     ![DFU dialog](./screenshots/nRF_connect_dfu_start.png "DFU dialog")
