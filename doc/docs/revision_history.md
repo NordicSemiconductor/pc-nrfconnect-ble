@@ -12,10 +12,3 @@
 | Jul 2017   | - Application ported to new framework</br>- Added support for multiple custom properties in advertisement data</br>- Added support for Buttonless DFU Service |
 | Jan 2017   | - Added Secure DFU</br>- Added support for nRF52 Development Kit PCA10056 |
 | Jul 2016   | First release |
-
-## Previous versions
-
-- [nRF Connect Bluetooth® Low Energy User Guide v2.3.1](https://infocenter.nordicsemi.com/pdf/nRFConnect_BLE_User_Guide_v2.3.1.pdf) (corresponds to nRF Connect Bluetooth Low Energy v2.3.1)
-- [nRF Connect Bluetooth® Low Energy User Guide v2.1](https://infocenter.nordicsemi.com/pdf/nRFConnect_BLE_User_Guide_v2.1.pdf) (corresponds to nRF Connect Bluetooth Low Energy v2.1.0)
-- [nRF Connect Getting Started Guide v1.1](https://infocenter.nordicsemi.com/pdf/nRF_Connect_v1.1.pdf) (corresponds to nRF Connect v1.1.0)
-- [nRF Connect Getting Started Guide v1.0](https://infocenter.nordicsemi.com/pdf/nRF_Connect_v1.0.pdf) (corresponds to nRF Connect v1.0.0)
