@@ -7,7 +7,7 @@
 | September 2022 | Updated for installation changes in nRF Connect Bluetooth® Low Energy v4.0.0 and new user interface in version 3.0.1 and later |
 | June 2021 | Editorial changes |
 | September 2019   | Updated to match nRF Connect Bluetooth Low Energy v2.3.1:</br></br>- Updated [Installing the Bluetooth Low Energy app](installing.md)</br>- Clarified supported devices |
-| May 2019   | - Updated [Installing the Bluetooth Low Energy app](installing.md)</br> Editorial changes |
+| May 2019   | - Updated [Installing the Bluetooth Low Energy app](installing.md)</br>- Editorial changes |
 | June 2018   | Added support for nRF52840 Dongle PCA10059 |
 | February 2018   | Server setup can be applied multiple times with adapter reset |
 | July 2017   | - Application ported to new framework</br>- Added support for multiple custom properties in advertisement data</br>- Added support for Buttonless DFU Service |
