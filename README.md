@@ -12,7 +12,7 @@ for reading and writing to the external nodes.
 
 ## Installation
 
-nRF Connect Bluetooth Low Energy is installed from nRF Connect from Desktop. For
+nRF Connect Bluetooth Low Energy is installed from nRF Connect for Desktop. For
 detailed steps, see
 [Installing nRF Connect for Desktop apps](https://docs.nordicsemi.com/bundle/nrf-connect-desktop/page/installing_apps.html)
 in the nRF Connect from Desktop documentation.
