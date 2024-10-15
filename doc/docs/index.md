@@ -1,6 +1,6 @@
-# nRF Connect Bluetooth Low Energy
+# {{app_name}} app
 
-nRF Connect Bluetooth® Low Energy helps you learn how to configure and test Bluetooth Low Energy devices. It allows you to set up a local device, connect it to advertising devices, and discover their services. You can maintain the connection parameters, pair devices, update firmware OTA, and change local device server setup. It also offers a detailed log for troubleshooting purposes.
+The {{app_name}} in nRF Connect for Desktop helps you learn how to configure and test Bluetooth Low Energy devices. It allows you to set up a local device, connect it to advertising devices, and discover their services. You can maintain the connection parameters, pair devices, update firmware OTA, and change local device server setup. It also offers a detailed log for troubleshooting purposes.
 
 ## Supported devices
 

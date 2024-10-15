@@ -35,13 +35,13 @@ When the pairing procedure has been completed, the following changes are display
         - Address resolving is currently not supported. Therefore, using keys from a bond after the device has changed address will most likely fail.
         - LE Security bonding might not work for some configurations.
 
-The nRF Connect Bluetooth Low Energy app can reply automatically to an incoming pairing request by default, or it can be handled by the user.
+The {{app_name}} can reply automatically to an incoming pairing request by default, or it can be handled by the user.
 
 To select the reply option for pairing requests, complete the following steps:
 
 1. Click the local [**Device options**](./overview_and_ui.md#device-options) button.
 2. Select or deselect **Auto reply security requests**.</br>
-   When **Auto reply security requests** is selected, the nRF Connect Bluetooth Low Energy app uses the settings specified in **Security parameters** when automatically replying to the request.
+   When **Auto reply security requests** is selected, the {{app_name}} uses the settings specified in **Security parameters** when automatically replying to the request.
 
 To edit security parameters, complete the following steps:
 

@@ -1,6 +1,6 @@
 # Overview and User Interface
 
-After starting nRF Connect Bluetooth® Low Energy, the application window is displayed.
+After starting the {{app_name}}, the application window is displayed.
 
 ![Application window](./screenshots/nRF_connect_app_window.png "Application window")
 
@@ -68,7 +68,7 @@ See [Configuring server setup](./maintaining_server_setup.md) for information ab
 
 You can view application information, restore defaults, access source code, and documentation. You also can find information on the selected device, access support tools, and enable verbose logging.
 
-![nRF Connect for Desktop Bluetooth Low Energy About tab](./screenshots/nRF_Connect_for_Desktop_BLE_about.png "nRF Connect for Desktop Bluetooth Low Energy About tab")
+![About tab](./screenshots/nRF_Connect_for_Desktop_BLE_about.png "About tab")
 
 ## Log
 

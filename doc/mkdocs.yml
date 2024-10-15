@@ -1,4 +1,4 @@
-site_name: nRF Connect Bluetooth Low Energy documentation
+site_name: Bluetooth Low Energy app documentation
 site_url:
 use_directory_urls: false
 
@@ -42,9 +42,6 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.tabbed
   - pymdownx.superfences
-  - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
   - toc:
       permalink: true
       toc_depth: 4
@@ -53,9 +50,9 @@ plugins:
   - macros
   - search
 
-
 extra:
   test: This is a test abbreviation snippet
+  app_name: Bluetooth® Low Energy app
 
 nav:
   - Home: index.md

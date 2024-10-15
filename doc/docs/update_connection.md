@@ -10,7 +10,7 @@ To define connection parameters, complete the following steps:
 3. Set the desired parameters in the dialog, then click **Update**.
 4. To close the dialog, click **Close**.
 
-There are two main options for responding to update requests: Letting the nRF Connect Bluetooth® Low Energy app accept the request automatically (default) or responding to the request manually.
+There are two main options for responding to update requests: Letting the {{app_name}} accept the request automatically (default) or responding to the request manually.
 
 To select the responding option, complete the following steps:
 

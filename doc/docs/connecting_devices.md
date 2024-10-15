@@ -1,6 +1,6 @@
 # Establishing Bluetooth Low Energy connections
 
-The nRF Connect Bluetooth® Low Energy app can establish and maintain up to eight simultaneous Bluetooth Low Energy connections.
+The {{app_name}} can establish and maintain up to eight simultaneous Bluetooth Low Energy connections.
 
 To connect to devices, complete the following steps:
 
@@ -14,7 +14,7 @@ To connect to devices, complete the following steps:
 
     ![Discovered services](./screenshots/nRF_connect_discovered_services.png "Discovered services")
 
-When the connection has been established, a new peripheral device appears in the **Connection Map**, to the right of the local device. The nRF Connect Bluetooth Low Energy app automatically performs an initial service discovery. The discovered services are listed below the connected device. Attributes that are known to the application are shown by their name. Attributes that are unknown to the application are shown by their UUID only. For information on how to add UUID definitions, see [Adding UUID definitions](./adding_uuid_defs.md).
+When the connection has been established, a new peripheral device appears in the **Connection Map**, to the right of the local device. The {{app_name}} automatically performs an initial service discovery. The discovered services are listed below the connected device. Attributes that are known to the application are shown by their name. Attributes that are unknown to the application are shown by their UUID only. For information on how to add UUID definitions, see [Adding UUID definitions](./adding_uuid_defs.md).
 
 A line connects the local and remote device signaling that they are connected over Bluetooth. To open a connection info dialog displaying the parameters of the connection, encryption, and bond state, hover the mouse pointer over the padlock icon.
 

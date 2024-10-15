@@ -6,7 +6,7 @@ When troubleshooting, to view more detailed information than shown in the Log pa
 
 If you receive the error **Could not connect to debug probe**, verify that J-Link software is properly installed on the system.
 
-If the device has been programmed with memory protection, the nRF Connect Bluetooth® Low Energy app cannot program the firmware. To erase the device, download [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download#infotabs) from Nordic Semiconductor and issue the following command from the command line:
+If the device has been programmed with memory protection, the {{app_name}} cannot program the firmware. To erase the device, download [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download#infotabs) from Nordic Semiconductor and issue the following command from the command line:
 
 ```
 nrfjprog -e -f <nrf51 or nrf52>
@@ -20,7 +20,7 @@ In macOS: An issue with the SEGGER J-Link OB firmware leads to the corruption of
 
 ## Serial Port Access Permissions on Ubuntu Linux
 
-If you receive errors when trying to open the serial port in the nRF Connect Bluetooth Low Energy app on Ubuntu Linux, you may need to grant serial port access permissions to your user. To do this, run the following command:
+If you receive errors when trying to open the serial port in the {{app_name}} on Ubuntu Linux, you may need to grant serial port access permissions to your user. To do this, run the following command:
 
 ```
 sudo usermod -a -G dialout <username>

@@ -1,6 +1,6 @@
 # Adding UUID definitions
 
-The nRF Connect Bluetooth® Low Energy app comes with a list of predefined names and UUIDs for some well-known profiles. You can extend this list with custom definitions.
+The {{app_name}} comes with a list of predefined names and UUIDs for some well-known profiles. You can extend this list with custom definitions.
 
 To extend the list of known UUIDs, complete the following steps:
 
