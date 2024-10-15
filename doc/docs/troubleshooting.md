@@ -26,10 +26,6 @@ If you receive errors when trying to open the serial port in the {{app_name}} on
 sudo usermod -a -G dialout <username>
 ```
 
-## nRF52840 USB Problems
-
-If you receive errors related to the nRF52840 Dongle USB connection on Windows, see [GitHub](https://github.com/NordicSemiconductor/pc-nrfconnect-launcher/blob/main/doc/non_mkdocs/win32-usb-troubleshoot.md).
-
 ## Programming with J-Link does not work
 
 If you select a device that uses the nRF5340 SoC as the interface MCU and attempt to program it, you might get the following entries or similar in the log:
