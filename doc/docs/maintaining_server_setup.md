@@ -1,6 +1,6 @@
 # Configuring server setup
 
-The nRF Connect Bluetooth® Low Energy app supports the configuration of the local device's GATT (Generic Attribute profile) attribute table, also known as server setup. Adding attributes to the server setup allows the local device to exchange data with a connected peer device.
+The {{app_name}} supports the configuration of the local device's GATT (Generic Attribute profile) attribute table, also known as server setup. Adding attributes to the server setup allows the local device to exchange data with a connected peer device.
 
 The default server setup consists of two mandatory services: GATT and GAP (Generic Access Profile). These services can be modified, but they cannot be removed, and you cannot extend them with more characteristics or descriptors.
 

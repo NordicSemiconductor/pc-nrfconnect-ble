@@ -1,18 +1,18 @@
-# nRF Connect Bluetooth Low Energy
+# Bluetooth® Low Energy app
 
 [![Build Status](https://dev.azure.com/NordicSemiconductor/Wayland/_apis/build/status/pc-nrfconnect-ble?branchName=main)](https://dev.azure.com/NordicSemiconductor/Wayland/_build/latest?definitionId=7&branchName=main)
 [![License](https://img.shields.io/badge/license-Modified%20BSD%20License-blue.svg)](LICENSE)
 
-nRF Connect Bluetooth Low Energy is a cross-platform tool that enables testing
-and development with Bluetooth Low Energy (previously called Bluetooth Smart).
-It allows easy setup of connections with other devices and use these connections
+The Bluetooth Low Energy app is a cross-platform tool that enables testing and
+development with Bluetooth Low Energy (previously called Bluetooth Smart). It
+allows easy setup of connections with other devices and use these connections
 for reading and writing to the external nodes.
 
 ![screenshot](resources/screenshot.gif)
 
 ## Installation
 
-nRF Connect Bluetooth Low Energy is installed from nRF Connect for Desktop. For
+The Bluetooth Low Energy app is installed from nRF Connect for Desktop. For
 detailed steps, see
 [Installing nRF Connect for Desktop apps](https://docs.nordicsemi.com/bundle/nrf-connect-desktop/page/installing_apps.html)
 in the nRF Connect from Desktop documentation.
@@ -26,7 +26,7 @@ installation process.
 ## Documentation
 
 Read the
-[nRF Connect Bluetooth Low Energy](https://docs.nordicsemi.com/bundle/nrf-connect-ble/page/index.html)
+[Bluetooth Low Energy app](https://docs.nordicsemi.com/bundle/nrf-connect-ble/page/index.html)
 official documentation, which includes information about the
 [establishing Bluetooth LE connections](https://docs.nordicsemi.com/bundle/nrf-connect-ble/page/connecting_devices.html),
 [pairing devices](https://docs.nordicsemi.com/bundle/nrf-connect-ble/page/pairing_devices.html),
