@@ -30,7 +30,7 @@ extra_css:
   - stylesheets/style.css
 
 copyright:
-  Copyright &copy; 2023
+  Copyright &copy; 2017-2024
 
 markdown_extensions:
   - abbr
