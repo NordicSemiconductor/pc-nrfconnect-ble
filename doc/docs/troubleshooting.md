@@ -15,7 +15,7 @@ nrfjprog -e -f <nrf51 or nrf52>
 On Windows: If you receive the error **Could not load nrfjprog DLL**, verify that [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download#infotabs) are installed.
 
 !!! info "Note"
-      nRF Command Line Tools are officially deprecated and are being replaced by nRF Util. Use nRF Util for all related tasks going forward.
+      nRF Command Line Tools are officially deprecated and are being replaced by [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html). Use nRF Util for all related tasks going forward.
 
 ## macOS J-Link Issue
 
