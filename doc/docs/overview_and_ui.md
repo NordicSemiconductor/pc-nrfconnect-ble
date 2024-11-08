@@ -20,7 +20,7 @@ You can access the following options by selecting the arrow under the device nam
 
 The **Discovered devices** side panel lets you scan for nearby Bluetooth devices.
 
-![Discovered devices options](./screenshots/discovered_devices.png "Discovered devices options")
+![Discovered devices options](./screenshots/discovered_devices.PNG "Discovered devices options")
 
 The following options are available:
 
@@ -39,7 +39,7 @@ When you [start scanning](./connecting_devices.md) and discover nearby devices, 
 Each entry in the list shows the name, address, and RSSI of the received advertising packet.
 The details include information about the advertising type and data fields of a packet.
 
-![Example of a discovered device](./screenshots/discovered_devices_example.png "Example of a discovered device")
+![Example of a discovered device](./screenshots/discovered_devices_example.PNG "Example of a discovered device")
 
 For information on how to set up advertising for a device, see [Setting up advertising](./advertising_setup.md).
 
@@ -54,13 +54,13 @@ After that, you will be able to [view service details](./service_discovery.md) f
 
 To expand a menu that shows actions and configurations available for the local device with an active connection, click the **Device options** button (the cog icon next to the **Adapter** field).
 
-![Device options](./screenshots/device_options.png).
+![Device options](./screenshots/device_options.PNG).
 
 ## Server Setup tab
 
 You can configure the local device's GATT (Generic Attribute profile) attribute table. Adding attributes to the server setup allows the local device to exchange data with a connected peer device.
 
-![Server setup](./screenshots/server_setup.png).
+![Server setup](./screenshots/server_setup.PNG).
 
 See [Configuring server setup](./maintaining_server_setup.md) for information about what you can do in this tab.
 
