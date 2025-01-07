@@ -15,7 +15,7 @@ nrfjprog -e -f <nrf51 or nrf52>
 On Windows: If you receive the error **Could not load nrfjprog DLL**, verify that [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download#infotabs) are installed.
 
 !!! info "Note"
-      nRF Command Line Tools are officially deprecated and are being replaced by [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html). Use nRF Util for all related tasks going forward.
+      The nRF Command Line Tools are in the process of being archived. They will remain available for download, but [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html) will gradually replace them.
 
 ## macOS J-Link Issue
 
@@ -45,6 +45,10 @@ This issue is related to readback protection of the nRF5340 MCU.
 To solve the issue, complete the following steps:
 
 1. Make sure you have nrfjprog installed (part of the [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download#infotabs)).
+
+    !!! info "Note"
+          The nRF Command Line Tools are in the process of being archived. They will remain available for download, but [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html) will gradually replace them.
+
 1. Open a command line terminal.
 1. Connect the DK to the serial port.
 1. Run the following command:

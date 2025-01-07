@@ -19,7 +19,7 @@ To update the firmware, complete the following steps:
 
     ![DFU dialog](./screenshots/nRF_connect_dfu_start.png "DFU dialog")
 
-3. To start the transfer of the DFU package to the connected peer device, click **Start DFU**.</br>
+3. To start the transfer of the DFU package to the connected peer device, click **Start DFU**.<br/>
    The progress bar shows the progress of the transfer.
 
     ![DFU progress](./screenshots/nRF_connect_dfu_progress.png "DFU progress")

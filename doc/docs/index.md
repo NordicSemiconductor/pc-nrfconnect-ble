@@ -9,3 +9,8 @@ The {{app_name}} in nRF Connect for Desktop helps you learn how to configure and
 - nRF52 Development Kit (PCA10040)
 - nRF51 Development Kit (PCA10028)
 - nRF51 Dongle (PCA10031)
+
+## Application source code
+
+The code of the application is open source and [available on GitHub](https://github.com/NordicSemiconductor/pc-nrfconnect-ble).
+Feel free to fork the repository and clone it for secondary development or feature contributions.
