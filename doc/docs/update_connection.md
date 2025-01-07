@@ -5,8 +5,10 @@ In a connection, you can request new connection parameters and respond to an inc
 To define connection parameters, complete the following steps:
 
 1. To view device options for the connected device, click the [**Device options**](./overview_and_ui.md#device-options) button.
-2. To open the **Connection update** dialog, click **Update connection...**.
-   ![Update connection](./screenshots/nRF_connect_update_connection.png "Update connection")
+2. To open the **Connection update** dialog, click **Update connection...**.<br/>
+
+    ![Update connection](./screenshots/nRF_connect_update_connection.png "Update connection")
+
 3. Set the desired parameters in the dialog, then click **Update**.
 4. To close the dialog, click **Close**.
 

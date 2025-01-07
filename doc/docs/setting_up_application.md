@@ -5,9 +5,9 @@ The {{app_name}} requires a serial port connection to a local Development Kit (D
 To set up a local device, complete the following steps:
 
 1. Connect the device to a Universal Serial Bus (USB) port on your computer and power it on.
-2. In the navigation bar, click on **Select device**.</br>
+2. In the navigation bar, click on **Select device**.<br/>
    The list of connected devices appears under the button.
-3. Select the device by clicking on its name.</br>
+3. Select the device by clicking on its name.<br/>
    The name of the selected device is displayed on the navigation bar.
 4. If the device has not been used with the {{app_name}} before, you may be asked to update the J-Link firmware and connectivity firmware for the device. You need to have the correct connectivity firmware on the nRF SoC to continue. The programming can take up to 30 seconds.
 

@@ -19,7 +19,7 @@ To pair with a connected device, complete the following steps:
     - When doing LESC, to inform the remote device when keys have been entered or erased, use **Keypress notification**.
     - To re-establish a secure link, without having to go through the pairing process each time, use **Perform Bonding**, which means long-term keys are created and exchanged.
 
-3. Set the desired parameters in the dialog, then click **Pair**.</br>
+3. Set the desired parameters in the dialog, then click **Pair**.<br/>
    Depending on the chosen security parameters, an additional dialog may be shown for passkey, out-of-band data, or numerical comparison input.
 5. To close the Pairing dialog, click **Close**.
 
@@ -40,7 +40,7 @@ The {{app_name}} can reply automatically to an incoming pairing request by defau
 To select the reply option for pairing requests, complete the following steps:
 
 1. Click the local [**Device options**](./overview_and_ui.md#device-options) button.
-2. Select or deselect **Auto reply security requests**.</br>
+2. Select or deselect **Auto reply security requests**.<br/>
    When **Auto reply security requests** is selected, the {{app_name}} uses the settings specified in **Security parameters** when automatically replying to the request.
 
 To edit security parameters, complete the following steps:

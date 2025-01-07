@@ -4,7 +4,7 @@ The {{app_name}} can establish and maintain up to eight simultaneous Bluetooth L
 
 To connect to devices, complete the following steps:
 
-1. To scan for nearby Bluetooth devices, click the **Start scan** button in the [**Discovered devices**](./overview_and_ui.md#discovered-devices-panel) side panel.</br>
+1. To scan for nearby Bluetooth devices, click the **Start scan** button in the [**Discovered devices**](./overview_and_ui.md#discovered-devices-panel) side panel.<br/>
     The [entries](./overview_and_ui.md#discovered-devices-entries) for nearby advertising devices start to appear in the side panel.
 
     !!! tip "Tip"
