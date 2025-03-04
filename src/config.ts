@@ -6,7 +6,7 @@
 
 export const bleVersion = '4.0.4';
 export const packageName = 'nrfconnect-bluetooth-low-energy';
-export const baseDownloadUrl = `https://developer.nordicsemi.com/.pc-tools/nrfconnect-apps/bluetooth-standalone/v${bleVersion}/`;
+export const baseDownloadUrl = `https://files.nordicsemi.com/ui/api/v1/download?isNativeBrowsing=true&repoKey=swtools&path=external/ncd/bluetooth-standalone/v${bleVersion}/`;
 export const downloadSize = {
     win32: '102',
     darwin: '121',
