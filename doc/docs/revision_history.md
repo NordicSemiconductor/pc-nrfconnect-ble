@@ -2,8 +2,9 @@
 
 | Date       | Description |
 |------------|-------------|
+| March 2025   | Final update to the archiving note for the nRF Command Line Tools on the [Troubleshooting](./troubleshooting.md) page |
 | January 2025   | Added the [Application source code](./index.md#application-source-code) section on the [Home](./index.md) page |
-| November 2024   | Added an archiviation note for nRF Command Line Tools on the [Troubleshooting](./troubleshooting.md) page |
+| November 2024   | Added an archiving note for the nRF Command Line Tools on the [Troubleshooting](./troubleshooting.md) page |
 | October 2024   | Removed outdated entry about nRF52840 USB problems on the [Troubleshooting](./troubleshooting.md) page |
 | May 2024   | Editorial changes |
 | February 2024 | Updated documentation for the [{{app_name}} v4.0.4-patch1](https://github.com/NordicSemiconductor/pc-nrfconnect-ble/blob/main/Changelog.md#404-patch1---2023-09-05) together with several editorial changes to structure and layout |

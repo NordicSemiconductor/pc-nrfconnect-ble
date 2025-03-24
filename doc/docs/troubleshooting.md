@@ -15,7 +15,7 @@ nrfjprog -e -f <nrf51 or nrf52>
 On Windows: If you receive the error **Could not load nrfjprog DLL**, verify that [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download#infotabs) are installed.
 
 !!! info "Note"
-      The nRF Command Line Tools are in the process of being archived. They will remain available for download, but [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html) will gradually replace them.
+      The nRF Command Line Tools have been archived and replaced by [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html): no updates to software will be made. Latest supported operating systems are Windows 10, Linux Ubuntu 22.04, and macOS 13. The nRF Command Line Tools will remain available for download, but do not install the SEGGER J-Link version they provide if you have a newer J-Link version installed.
 
 ## macOS J-Link Issue
 
