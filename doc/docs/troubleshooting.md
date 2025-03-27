@@ -6,16 +6,16 @@ When troubleshooting, to view more detailed information than shown in the Log pa
 
 If you receive the error **Could not connect to debug probe**, verify that J-Link software is properly installed on the system.
 
-If the device has been programmed with memory protection, the {{app_name}} cannot program the firmware. To erase the device, download [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download#infotabs) from Nordic Semiconductor and issue the following command from the command line:
+If the device has been programmed with memory protection, the {{app_name}} cannot program the firmware. To erase the device:
 
-```
-nrfjprog -e -f <nrf51 or nrf52>
-```
+1. Download [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html) from Nordic Semiconductor.
+2. [Install the `nrfutil device` command](https://docs.nordicsemi.com/bundle/nrfutil/page/guides/installing_commands.html).
+1. Open a command line terminal.
+1. Run the following command:
 
-On Windows: If you receive the error **Could not load nrfjprog DLL**, verify that [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download#infotabs) are installed.
-
-!!! info "Note"
-      The nRF Command Line Tools have been archived and replaced by [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html): no updates to software will be made. Latest supported operating systems are Windows 10, Linux Ubuntu 22.04, and macOS 13. The nRF Command Line Tools will remain available for download, but do not install the SEGGER J-Link version they provide if you have a newer J-Link version installed.
+    ```
+    nrfutil device erase --x-family <nrf51 or nrf52>
+    ```
 
 ## macOS J-Link Issue
 
@@ -44,17 +44,14 @@ Found device type: unknown. J-Link firmware: J-Link OB-nRF5340-NordicSemi compil
 This issue is related to readback protection of the nRF5340 MCU.
 To solve the issue, complete the following steps:
 
-1. Make sure you have nrfjprog installed (part of the [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download#infotabs)).
-
-    !!! info "Note"
-          The nRF Command Line Tools are in the process of being archived. They will remain available for download, but [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html) will gradually replace them.
-
-1. Open a command line terminal.
+1. Download [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html) from Nordic Semiconductor.
+1. [Install the `nrfutil device` command](https://docs.nordicsemi.com/bundle/nrfutil/page/guides/installing_commands.html).
 1. Connect the DK to the serial port.
+1. Open a command line terminal.
 1. Run the following command:
 
     ```
-    nrfjprog --recover
+    nrfutil device recover
     ```
 
 1. Disconnect and connect the DK to the serial port again.
