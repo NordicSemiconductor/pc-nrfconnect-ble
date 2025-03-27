@@ -4,7 +4,7 @@ When troubleshooting, to view more detailed information than shown in the Log pa
 
 ## Firmware Programming
 
-If you receive the error **Could not connect to debug probe**, verify that J-Link software is properly installed on the system.
+If you receive an error about debug probe connection issues, verify that J-Link software is properly installed on the system.
 
 If the device has been programmed with memory protection, the {{app_name}} cannot program the firmware. To erase the device:
 
@@ -31,15 +31,7 @@ sudo usermod -a -G dialout <username>
 
 ## Programming with J-Link does not work
 
-If you select a device that uses the nRF5340 SoC as the interface MCU and attempt to program it, you might get the following entries or similar in the log:
-
-```
-Uploading image through JLink: 0%
-Device programming completed.
-Device setup completed
-Getting information from J-Link debugger...
-Found device type: unknown. J-Link firmware: J-Link OB-nRF5340-NordicSemi compiled Nov 7 2022 16:22:01.
-```
+If you select a device that uses the nRF5340 SoC as the interface MCU and attempt to program it, you might get an issue related to device type being unknown.
 
 This issue is related to readback protection of the nRF5340 MCU.
 To solve the issue, complete the following steps:
