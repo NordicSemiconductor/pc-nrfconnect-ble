@@ -4,18 +4,18 @@ When troubleshooting, to view more detailed information than shown in the Log pa
 
 ## Firmware Programming
 
-If you receive the error **Could not connect to debug probe**, verify that J-Link software is properly installed on the system.
+If you receive an error about debug probe connection issues, verify that J-Link software is properly installed on the system.
 
-If the device has been programmed with memory protection, the {{app_name}} cannot program the firmware. To erase the device, download [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download#infotabs) from Nordic Semiconductor and issue the following command from the command line:
+If the device has been programmed with memory protection, the {{app_name}} cannot program the firmware. To erase the device:
 
-```
-nrfjprog -e -f <nrf51 or nrf52>
-```
+1. Download [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html) from Nordic Semiconductor.
+2. [Install the `nrfutil device` command](https://docs.nordicsemi.com/bundle/nrfutil/page/guides/installing_commands.html).
+1. Open a command line terminal.
+1. Run the following command:
 
-On Windows: If you receive the error **Could not load nrfjprog DLL**, verify that [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download#infotabs) are installed.
-
-!!! info "Note"
-      The nRF Command Line Tools are in the process of being archived. They will remain available for download, but [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html) will gradually replace them.
+    ```
+    nrfutil device erase --x-family <nrf51 or nrf52>
+    ```
 
 ## macOS J-Link Issue
 
@@ -31,30 +31,19 @@ sudo usermod -a -G dialout <username>
 
 ## Programming with J-Link does not work
 
-If you select a device that uses the nRF5340 SoC as the interface MCU and attempt to program it, you might get the following entries or similar in the log:
-
-```
-Uploading image through JLink: 0%
-Device programming completed.
-Device setup completed
-Getting information from J-Link debugger...
-Found device type: unknown. J-Link firmware: J-Link OB-nRF5340-NordicSemi compiled Nov 7 2022 16:22:01.
-```
+If you select a device that uses the nRF5340 SoC as the interface MCU and attempt to program it, you might get an issue related to device type being unknown.
 
 This issue is related to readback protection of the nRF5340 MCU.
 To solve the issue, complete the following steps:
 
-1. Make sure you have nrfjprog installed (part of the [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools/download#infotabs)).
-
-    !!! info "Note"
-          The nRF Command Line Tools are in the process of being archived. They will remain available for download, but [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html) will gradually replace them.
-
-1. Open a command line terminal.
+1. Download [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html) from Nordic Semiconductor.
+1. [Install the `nrfutil device` command](https://docs.nordicsemi.com/bundle/nrfutil/page/guides/installing_commands.html).
 1. Connect the DK to the serial port.
+1. Open a command line terminal.
 1. Run the following command:
 
     ```
-    nrfjprog --recover
+    nrfutil device recover
     ```
 
 1. Disconnect and connect the DK to the serial port again.
