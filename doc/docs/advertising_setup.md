@@ -1,6 +1,6 @@
 # Setting up advertising
 
-The {{app_name}} enables the local device to operate as a peripheral that can send connectable advertising packets. The contents of the advertising packets can be configured in the advertising setup.
+The Bluetooth Low Energy app enables the local device to operate as a peripheral that can send connectable advertising packets. The contents of the advertising packets can be configured in the advertising setup.
 
 To start sending advertising packets, complete the following steps:
 

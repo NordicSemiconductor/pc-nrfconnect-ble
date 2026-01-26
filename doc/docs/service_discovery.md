@@ -1,6 +1,6 @@
 # Viewing service details
 
-The {{app_name}} can discover and display services, characteristics, and descriptors of a connected peer device's attribute table.
+The Bluetooth Low Energy app can discover and display services, characteristics, and descriptors of a connected peer device's attribute table.
 
 ![Service details](./screenshots/nRF_connect_servicedetails.png "Service details")
 

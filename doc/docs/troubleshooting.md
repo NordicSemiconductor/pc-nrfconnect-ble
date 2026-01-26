@@ -6,7 +6,7 @@ When troubleshooting, to view more detailed information than shown in the Log pa
 
 If you receive an error about debug probe connection issues, verify that J-Link software is properly installed on the system.
 
-If the device has been programmed with memory protection, the {{app_name}} cannot program the firmware. To erase the device:
+If the device has been programmed with memory protection, the Bluetooth Low Energy app cannot program the firmware. To erase the device:
 
 1. Download [nRF Util](https://docs.nordicsemi.com/bundle/nrfutil/page/README.html) from Nordic Semiconductor.
 2. [Install the `nrfutil device` command](https://docs.nordicsemi.com/bundle/nrfutil/page/guides/installing_commands.html).
@@ -23,7 +23,7 @@ In macOS: An issue with the SEGGER J-Link OB firmware leads to the corruption of
 
 ## Serial Port Access Permissions on Ubuntu Linux
 
-If you receive errors when trying to open the serial port in the {{app_name}} on Ubuntu Linux, you may need to grant serial port access permissions to your user. To do this, run the following command:
+If you receive errors when trying to open the serial port in the Bluetooth Low Energy app on Ubuntu Linux, you may need to grant serial port access permissions to your user. To do this, run the following command:
 
 ```
 sudo usermod -a -G dialout <username>

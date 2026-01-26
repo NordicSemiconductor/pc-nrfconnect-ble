@@ -52,7 +52,6 @@ plugins:
 
 extra:
   test: This is a test abbreviation snippet
-  app_name: Bluetooth® Low Energy app
 
 nav:
   - Home: index.md
