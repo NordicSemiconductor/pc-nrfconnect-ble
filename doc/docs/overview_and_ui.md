@@ -1,6 +1,6 @@
 # Overview and User Interface
 
-After starting the {{app_name}}, the application window is displayed.
+After starting the Bluetooth Low Energy app, the application window is displayed.
 
 ![Application window](./screenshots/nRF_connect_app_window.png "Application window")
 
