@@ -1,58 +1,67 @@
 site_name: Bluetooth Low Energy app documentation
-site_url: null
+site_url:
 use_directory_urls: false
+
 theme:
   name: material
   palette:
-  - scheme: custom-blue
-    toggle:
-      icon: material/lightbulb-outline
-      name: Switch to dark mode
-  - scheme: custom-blue-dark
-    toggle:
-      icon: material/lightbulb
-      name: Switch to light mode
+    - scheme: custom-blue
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to dark mode
+    - scheme: custom-blue-dark
+      toggle:
+        icon: material/lightbulb
+        name: Switch to light mode
+   # logo: assets/logo.png
+   # favicon: assets/logo.png
+
   features:
-  - content.code.annotate
-  - content.tooltips
-  - content.tabs.link
-  - navigation.indexes
-  - navigation.top
-  - navigation.tracking
-  - search.highlight
-  - toc.follow
+    - content.code.annotate
+    - content.tooltips
+    - content.tabs.link
+    - navigation.indexes
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - toc.follow
+
 extra_css:
-- stylesheets/style.css
+  - stylesheets/style.css
+
 copyright: Copyright &copy; 2017-2024
 markdown_extensions:
-- abbr
-- admonition
-- attr_list
-- md_in_html
-- meta
-- pymdownx.details
-- pymdownx.keys
-- pymdownx.tabbed
-- pymdownx.superfences
-- toc:
-    permalink: true
-    toc_depth: 4
+  - abbr
+  - admonition
+  - attr_list
+  - md_in_html
+  - meta
+  - pymdownx.details
+  - pymdownx.keys
+  - pymdownx.tabbed
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+      toc_depth: 4
+
 plugins:
-- macros
-- search
+  - macros
+  - search
+
 extra:
   test: This is a test abbreviation snippet
+
 nav:
-- Get started: index.md
-- Overview and user interface: overview_and_ui.md
-- Establishing serial port connection to a local device: setting_up_application.md
-- Establishing Bluetooth Low Energy connections: connecting_devices.md
-- Viewing service details: service_discovery.md
-- Updating connection parameters: update_connection.md
-- Pairing devices: pairing_devices.md
-- Configuring server setup: maintaining_server_setup.md
-- Setting up advertising: advertising_setup.md
-- Updating firmware over the air: dfu.md
-- Adding UUID definitions: adding_uuid_defs.md
-- Troubleshooting: troubleshooting.md
-- Revision history: revision_history.md
+  - Get started: index.md
+  - Overview and user interface: overview_and_ui.md
+  - Establishing serial port connection to a local device: setting_up_application.md
+  - Establishing Bluetooth Low Energy connections: connecting_devices.md
+  - Viewing service details: service_discovery.md
+  - Updating connection parameters: update_connection.md
+  - Pairing devices: pairing_devices.md
+  - Configuring server setup: maintaining_server_setup.md
+  - Setting up advertising: advertising_setup.md
+  - Updating firmware over the air: dfu.md
+  - Adding UUID definitions: adding_uuid_defs.md
+  - Troubleshooting: troubleshooting.md
+  - Revision history: revision_history.md
