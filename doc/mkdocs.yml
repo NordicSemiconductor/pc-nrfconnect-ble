@@ -13,8 +13,8 @@ theme:
       toggle:
         icon: material/lightbulb
         name: Switch to light mode
-   # logo: assets/logo.png
-   # favicon: assets/logo.png
+    # logo: assets/logo.png
+    # favicon: assets/logo.png
 
   features:
     - content.code.annotate
@@ -26,10 +26,13 @@ theme:
     - search.highlight
     - toc.follow
 
+
 extra_css:
   - stylesheets/style.css
 
-copyright: Copyright &copy; 2017-2024
+copyright:
+  Copyright &copy; 2017-2024
+
 markdown_extensions:
   - abbr
   - admonition
