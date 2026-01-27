@@ -2,6 +2,7 @@
 
 | Date       | Description |
 |------------|-------------|
+| January 2026   | - Renamed the Home page to [Get started](./index.md) page<br/>- Removed the separate Installing the Bluetooth Low Energy app page. This page is now a section of the Get started page. |
 | March 2025   | Replaced the ``nrfjprog`` commands from the archived nRF Command Line Tools with the matching commands from nRF Util on the [Troubleshooting](./troubleshooting.md) page |
 | January 2025   | Added the [Application source code](./index.md#application-source-code) section on the [Home](./index.md) page |
 | November 2024   | Added an archiving note for the nRF Command Line Tools on the [Troubleshooting](./troubleshooting.md) page |
