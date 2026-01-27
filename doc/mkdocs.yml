@@ -13,8 +13,9 @@ theme:
       toggle:
         icon: material/lightbulb
         name: Switch to light mode
-  # logo: assets/logo.png
-  # favicon: assets/logo.png
+    # logo: assets/logo.png
+    # favicon: assets/logo.png
+
   features:
     - content.code.annotate
     - content.tooltips
@@ -54,8 +55,7 @@ extra:
   test: This is a test abbreviation snippet
 
 nav:
-  - Home: index.md
-  - Installing the Bluetooth Low Energy app: installing.md
+  - Get started: index.md
   - Overview and user interface: overview_and_ui.md
   - Establishing serial port connection to a local device: setting_up_application.md
   - Establishing Bluetooth Low Energy connections: connecting_devices.md
