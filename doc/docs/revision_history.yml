@@ -1,0 +1,59 @@
+tool:
+- name: Bluetooth Low Energy app
+  link: true
+sections:
+- name: January 2026
+  entries:
+  - "Renamed the Home page to [Get started](./index.md)."
+  - "Removed the separate Installing the Bluetooth Low Energy app page. This page is now a section of the Get started page."
+- name: March 2025
+  entries:
+  - "Replaced the ``nrfjprog`` commands from the archived nRF Command Line Tools with the matching commands from nRF Util on the [Troubleshooting](./troubleshooting.md) page"
+- name: January 2025
+  entries:
+  - "Added the [Application source code](./index.md#application-source-code) section on the [Home](./index.md) page"
+- name: November 2024
+  entries:
+  - "Added an archiving note for the nRF Command Line Tools on the [Troubleshooting](./troubleshooting.md) page"
+- name: October 2024
+  entries:
+  - "Removed outdated entry about nRF52840 USB problems on the [Troubleshooting](./troubleshooting.md) page"
+- name: May 2024
+  entries:
+  - "Editorial changes"
+- name: February 2024
+  entries:
+  - "Updated documentation for the [Bluetooth Low Energy app v4.0.4-patch1](https://github.com/NordicSemiconductor/pc-nrfconnect-ble/blob/main/Changelog.md#404-patch1---2023-09-05) together with several editorial changes to structure and layout"
+- name: September 2022
+  entries:
+  - "Updated for installation changes in the Bluetooth Low Energy app v4.0.0 and new user interface in version 3.0.1 and later"
+- name: June 2021
+  entries:
+  - "Editorial changes"
+- name: September 2019
+  entries:
+  - "Updated to match the Bluetooth Low Energy app v2.3.1:"
+  - "Updated [Installing the Bluetooth Low Energy app](index.md#installing-the-bluetooth-low-energy-app)"
+  - "Clarified supported devices"
+- name: May 2019
+  entries:
+  - "Updated [Installing the Bluetooth Low Energy app](index.md#installing-the-bluetooth-low-energy-app)"
+  - "Editorial changes"
+- name: June 2018
+  entries:
+  - "Added support for nRF52840 Dongle PCA10059"
+- name: February 2018
+  entries:
+  - "Server setup can be applied multiple times with adapter reset"
+- name: July 2017
+  entries:
+  - "Application ported to new framework"
+  - "Added support for multiple custom properties in advertisement data"
+  - "Added support for Buttonless DFU Service"
+- name: January 2017
+  entries:
+  - "Added Secure DFU"
+  - "Added support for nRF52 Development Kit PCA10056"
+- name: July 2016
+  entries:
+  - "First release"
