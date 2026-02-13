@@ -67,4 +67,3 @@ nav:
   - Updating firmware over the air: dfu.md
   - Adding UUID definitions: adding_uuid_defs.md
   - Troubleshooting: troubleshooting.md
-  - Revision history: revision_history.md
