@@ -47,7 +47,7 @@ To solve the issue, complete the following steps:
     ```
 
 1. Disconnect and connect the DK to the serial port again.
-1. [Select the device](https://docs.nordicsemi.com/bundle/nrf-connect-desktop/page/common_interface.html#select-device).
+1. [Select the device](https://docs.nordicsemi.com/bundle/swtools_docs/page/common_interface.html#select-device).
 1. When prompted about programming, select **Yes**.
 
 The app will program the DK and the connection will successfully open with a related log entry.
