@@ -4,17 +4,9 @@ After starting the Bluetooth Low Energy app, the application window is displayed
 
 ![Application window](./screenshots/nRF_connect_app_window.png "Application window")
 
-The window consists of the following main elements.
+## Common interface
 
-## Select Device
-
-To the upper left, you can select a local serial device. You can use the selected local device to scan for Bluetooth Low Energy devices, which are listed in the side panel below.
-
-You can access the following options by selecting the arrow under the device name.
-
-- Show the device at the top of the list by making it favorite.
-- Rename the device.
-- View and select between device serial ports.
+This app uses the nRF Connect for Desktop UI framework. Shared UI elements such as **Select device**, **About** tab, and **Log** panel are described in the [Common user interface](https://docs.nordicsemi.com/bundle/nrf-connect-desktop/page/common_interface.html) documentation.
 
 ## Discovered devices panel
 
@@ -63,18 +55,3 @@ You can configure the local device's GATT (Generic Attribute profile) attribute 
 ![Server setup](./screenshots/server_setup.PNG).
 
 See [Configuring server setup](./maintaining_server_setup.md) for information about what you can do in this tab.
-
-## About tab
-
-You can view application information, restore defaults, access source code, and documentation. You also can find information on the selected device, access support tools, and enable verbose logging.
-
-![About tab](./screenshots/nRF_Connect_for_Desktop_BLE_about.png "About tab")
-
-## Log
-
-The Log panel allows you to view the most important log events, tagged with a timestamp. Each time you open the app, a new session log file is created. You can find the Log panel and its controls, below the main application window.
-
-- When troubleshooting, to view more detailed information than shown in the Log panel, use **Open log file** to open the current log file in a text editor.
-- To clear the information currently displayed in the Log panel, use **Clear Log**. The contents of the log file are not affected.
-- To hide or display the Log panel in the user interface, use **Show Log**.
-- To freeze Log panel scrolling, use **Autoscroll Log**.
