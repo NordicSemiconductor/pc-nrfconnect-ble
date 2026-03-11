@@ -1,10 +1,10 @@
-# Bluetooth® Low Energy app
+# Get started
 
 The Bluetooth® Low Energy app in nRF Connect for Desktop helps you learn how to configure and test Bluetooth Low Energy devices. It allows you to set up a local device, connect it to advertising devices, and discover their services. You can maintain the connection parameters, pair devices, update firmware OTA, and change local device server setup. It also offers a detailed log for troubleshooting purposes.
 
 ## Installing the Bluetooth Low Energy app
 
-For installation instructions, see [Installing nRF Connect for Desktop apps](https://docs.nordicsemi.com/bundle/nrf-connect-desktop/page/installing_apps.html) in the nRF Connect for Desktop documentation.
+For installation instructions, see [Installing nRF Connect for Desktop apps](https://docs.nordicsemi.com/bundle/nrf-connect-desktop/page/installing_apps.html).
 
 !!! note "Note"
       From version 4.0.0, the Bluetooth Low Energy app is installed as a standalone application, for reasons of driver compatibility. The application functionality remains the same, and a proxy app is used from nRF Connect for Desktop. A desktop shortcut is also created automatically during the install process.
