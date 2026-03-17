@@ -14,7 +14,7 @@ for reading and writing to the external nodes.
 
 The Bluetooth Low Energy app is installed from nRF Connect for Desktop. For
 detailed steps, see
-[Installing nRF Connect for Desktop apps](https://docs.nordicsemi.com/bundle/nrf-connect-desktop/page/installing_apps.html)
+[Installing nRF Connect for Desktop apps](https://docs.nordicsemi.com/bundle/swtools_docs/page/app/nrf-connect-desktop/installing_apps.html)
 in the nRF Connect from Desktop documentation.
 
 **Note:** From version 4.0.0, the Bluetooth Low Energy app is installed as a
@@ -26,11 +26,11 @@ installation process.
 ## Documentation
 
 Read the
-[Bluetooth Low Energy app](https://docs.nordicsemi.com/bundle/nrf-connect-ble/page/index.html)
+[Bluetooth Low Energy app](https://docs.nordicsemi.com/bundle/swtools_docs/page/app/pc-nrfconnect-ble/index.html)
 official documentation, which includes information about the
-[establishing Bluetooth LE connections](https://docs.nordicsemi.com/bundle/nrf-connect-ble/page/connecting_devices.html),
-[pairing devices](https://docs.nordicsemi.com/bundle/nrf-connect-ble/page/pairing_devices.html),
-[updating firmware over the air](https://docs.nordicsemi.com/bundle/nrf-connect-ble/page/dfu.html),
+[establishing Bluetooth LE connections](https://docs.nordicsemi.com/bundle/swtools_docs/page/app/pc-nrfconnect-ble/connecting_devices.html),
+[pairing devices](https://docs.nordicsemi.com/bundle/swtools_docs/page/app/pc-nrfconnect-ble/pairing_devices.html),
+[updating firmware over the air](https://docs.nordicsemi.com/bundle/swtools_docs/page/app/pc-nrfconnect-ble/dfu.html),
 among other pages.
 
 ## Development
