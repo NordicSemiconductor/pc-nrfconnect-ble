@@ -11,7 +11,7 @@ on:
 
 jobs:
     publish-docs-bundle:
-        uses: NordicSemiconductor/pc-nrfconnect-shared/.github/workflows/docs-publish.yml@main
+        uses: nordicsemi/pc-nrfconnect-shared/.github/workflows/docs-publish.yml@main
         with:
             bundle-name: nrf-connect-ble
             release-type: dev

@@ -11,6 +11,6 @@ on:
 
 jobs:
     create-doc-bundle:
-        uses: NordicSemiconductor/pc-nrfconnect-shared/.github/workflows/docs-bundle.yml@main
+        uses: nordicsemi/pc-nrfconnect-shared/.github/workflows/docs-bundle.yml@main
         with:
             bundle-name: nrf-connect-ble
