@@ -40,7 +40,7 @@
         "Changelog.md"
     ],
     "devDependencies": {
-        "@nordicsemiconductor/pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v98"
+        "@nordicsemiconductor/pc-nrfconnect-shared": "github:Nordicsemi/pc-nrfconnect-shared#v98"
     },
     "dependencies": {
         "bluetooth-numbers-database": "https://github.com/nordicsemi/bluetooth-numbers-database#75bb6a8079"
