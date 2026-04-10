@@ -3,10 +3,10 @@
     "version": "4.0.4-patch1",
     "displayName": "Bluetooth Low Energy",
     "description": "General tool for development and testing with Bluetooth Low Energy",
-    "homepage": "https://github.com/NordicSemiconductor/pc-nrfconnect-ble",
+    "homepage": "https://github.com/nordicsemi/pc-nrfconnect-ble",
     "repository": {
         "type": "git",
-        "url": "https://github.com/NordicSemiconductor/pc-nrfconnect-ble.git"
+        "url": "https://github.com/nordicsemi/pc-nrfconnect-ble.git"
     },
     "author": "Nordic Semiconductor ASA",
     "license": "SEE LICENSE IN LICENSE",
@@ -40,10 +40,10 @@
         "Changelog.md"
     ],
     "devDependencies": {
-        "@nordicsemiconductor/pc-nrfconnect-shared": "github:NordicSemiconductor/pc-nrfconnect-shared#v98"
+        "@nordicsemiconductor/pc-nrfconnect-shared": "github:Nordicsemi/pc-nrfconnect-shared#v98"
     },
     "dependencies": {
-        "bluetooth-numbers-database": "https://github.com/NordicSemiconductor/bluetooth-numbers-database#75bb6a8079"
+        "bluetooth-numbers-database": "https://github.com/nordicsemi/bluetooth-numbers-database#75bb6a8079"
     },
     "bundledDependencies": [
         "bluetooth-numbers-database",
